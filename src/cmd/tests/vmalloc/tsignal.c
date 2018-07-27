@@ -46,7 +46,7 @@ struct _piece_s
     size_t size;
 };
 
-static int Step = 0; /* number of allocation steps done	*/
+static int Step = 0;     /* number of allocation steps done	*/
 static int Allocing = 0; /* longjmp while in a malloc call */
 static int Nlongjmp = 0; /* total number of such jumps	*/
 static sigjmp_buf Jmpbuf;
@@ -196,7 +196,7 @@ tmain()
 #if 1
     switch ((cpid = fork()))
     {
-    case 0: /* child process */
+    case 0:      /* child process */
         for (;;) /* keep sending sighup to parent */
         {
             asorelax(2012);

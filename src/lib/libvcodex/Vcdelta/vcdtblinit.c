@@ -30,12 +30,12 @@ Vcdtable_t *_Vcdtbl = 0;
 
 Vcdindex_t _Vcdindex = { 0 };
 Vcdsize_t _Vcdsize = {
-    17, /* add		*/
+    17,                                     /* add		*/
     { 18, 18, 18, 18, 18, 18, 18, 18, 18 }, /* copy		*/
-    { 4, 4, 4, 4, 4, 4, 4, 4, 4 }, /* add1		*/
-    { 6, 6, 6, 6, 6, 6, 4, 4, 4 }, /* copy2	*/
-    { 4, 4, 4, 4, 4, 4, 4, 4, 4 }, /* copy1	*/
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1 }, /* add2		*/
+    { 4, 4, 4, 4, 4, 4, 4, 4, 4 },          /* add1		*/
+    { 6, 6, 6, 6, 6, 6, 4, 4, 4 },          /* copy2	*/
+    { 4, 4, 4, 4, 4, 4, 4, 4, 4 },          /* copy1	*/
+    { 1, 1, 1, 1, 1, 1, 1, 1, 1 },          /* add2		*/
 };
 static Vcdtable_t _Vcdtable = { 4, /* s_near	*/
                                 3, /* s_same	*/
@@ -57,8 +57,8 @@ Vcdindex_t *idx;
     i
     = 0; /* the only RUN instruction has index 0	*/
     code[i].inst1.type = VCD_RUN;
-    code[i].inst1.size = 0; /* size coded separately	*/
-    code[i].inst1.mode = 0; /* there is no mode for RUN	*/
+    code[i].inst1.size = 0;        /* size coded separately	*/
+    code[i].inst1.mode = 0;        /* there is no mode for RUN	*/
     code[i].inst2.type = VCD_NOOP; /* there is no merged inst 	*/
     code[i].inst1.size = 0;
     code[i].inst1.mode = 0;

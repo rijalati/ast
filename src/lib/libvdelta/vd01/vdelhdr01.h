@@ -116,9 +116,9 @@ _END_EXTERNS_
 **
 ** An invariance is 2*K_MERGE + K_QTYPE + 1 == 16
 */
-#define K_RTYPE 4 /* # of K_RECENT types		*/
-#define K_QTYPE 3 /* # of K_QUICK types		*/
-#define K_MERGE (K_RTYPE + 2) /* # of types allowing add+copy	*/
+#define K_RTYPE 4                    /* # of K_RECENT types		*/
+#define K_QTYPE 3                    /* # of K_QUICK types		*/
+#define K_MERGE (K_RTYPE + 2)        /* # of types allowing add+copy	*/
 #define K_QSIZE (K_QTYPE << VD_BITS) /* size of K_QUICK cache	*/
 
 #define K_QUICK 1 /* start of K_QUICK types	*/
@@ -129,7 +129,7 @@ _END_EXTERNS_
 #define K_DDECL(quick, recent, rhere) /* cache decls in vdelta	*/            \
     int quick[K_QSIZE];                                                      \
     int recent[K_RTYPE];                                                     \
-    int rhere /*;*/
+    int rhere                         /*;*/
 #define K_UDECL(quick, recent, rhere) /* cache decls in vdupdate	*/          \
     long quick[K_QSIZE];                                                     \
     long recent[K_RTYPE];                                                    \
@@ -154,9 +154,9 @@ _END_EXTERNS_
 #define VD_ISCOPY(k) ((k) > 0 && (k) < (K_RECENT + K_RTYPE))
 #define K_ISMERGE(k) ((k) >= (K_RECENT + K_RTYPE))
 
-#define A_SIZE ((1 << S_BITS) - 1) /* max local ADD size	*/
-#define A_ISLOCAL(s) ((s) <= A_SIZE) /* can be coded locally	*/
-#define A_LPUT(s) (s) /* coded local value	*/
+#define A_SIZE ((1 << S_BITS) - 1)    /* max local ADD size	*/
+#define A_ISLOCAL(s) ((s) <= A_SIZE)  /* can be coded locally	*/
+#define A_LPUT(s) (s)                 /* coded local value	*/
 #define A_PUT(s) ((s) - (A_SIZE + 1)) /* coded normal value	*/
 
 #define A_ISHERE(i) (( i )&A_SIZE) /* locally coded size	*/
@@ -164,9 +164,9 @@ _END_EXTERNS_
 #define A_GET(s) ((s) + (A_SIZE + 1))
 
 #define C_SIZE ((1 << S_BITS) + M_MIN - 2) /* max local COPY size	*/
-#define C_ISLOCAL(s) ((s) <= C_SIZE) /* can be coded locally	*/
-#define C_LPUT(s) ((s) - (M_MIN - 1)) /* coded local value	*/
-#define C_PUT(s) ((s) - (C_SIZE + 1)) /* coded normal value	*/
+#define C_ISLOCAL(s) ((s) <= C_SIZE)       /* can be coded locally	*/
+#define C_LPUT(s) ((s) - (M_MIN - 1))      /* coded local value	*/
+#define C_PUT(s) ((s) - (C_SIZE + 1))      /* coded normal value	*/
 
 #define C_ISHERE(i) ((i) & ((1 << S_BITS) - 1)) /* size was coded local */
 #define C_LGET(i) (((i) & ((1 << S_BITS) - 1)) + (M_MIN - 1))
@@ -176,13 +176,13 @@ _END_EXTERNS_
 #define K_GET(i) ((i) >> S_BITS)
 
 /* coding merged ADD/COPY instructions */
-#define A_TINY 2 /* bits for tiny ADD		*/
+#define A_TINY 2                 /* bits for tiny ADD		*/
 #define A_TINYSIZE (1 << A_TINY) /* max tiny ADD size	*/
 #define A_ISTINY(s) ((s) <= A_TINYSIZE)
 #define A_TPUT(s) (( s )-1)
 #define A_TGET(i) (((i) & (A_TINYSIZE - 1)) + 1)
 
-#define C_TINY 2 /* bits for tiny COPY		*/
+#define C_TINY 2                               /* bits for tiny COPY		*/
 #define C_TINYSIZE ((1 << C_TINY) + M_MIN - 1) /* max tiny COPY size	*/
 #define C_ISTINY(s) ((s) <= C_TINYSIZE)
 #define C_TPUT(s) ((( s )-M_MIN) << A_TINY)
@@ -218,7 +218,7 @@ _END_EXTERNS_
 
 /* Below here is code for a buffered I/O subsystem to speed up I/O */
 #define I_SHIFT 7
-#define I_MORE (1 << I_SHIFT) /* continuation bit	*/
+#define I_MORE (1 << I_SHIFT)                   /* continuation bit	*/
 #define I_CODE(n) ((uchar)((n) & (I_MORE - 1))) /* get lower bits	*/
 
 /* structure to do buffered IO */

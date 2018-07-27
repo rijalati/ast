@@ -78,8 +78,8 @@
 #include "FEATURE/vmalloc"
 #include "vmalloc.h"
 
-#include <aso.h> /* atomic scalar operations		*/
-#include <debug.h> /* DEBUG_ASSERT() and friends		*/
+#include <aso.h>    /* atomic scalar operations		*/
+#include <debug.h>  /* DEBUG_ASSERT() and friends		*/
 #include <setjmp.h> /* use the type jmp_buf for alignment	*/
 
 /* extra information needed about methods to get memory from the system */
@@ -94,10 +94,10 @@
 typedef unsigned char Vmuchar_t;
 typedef unsigned long Vmulong_t;
 
-typedef union _head_u Head_t; /* the header of a memory block		*/
-typedef union _body_u Body_t; /* the body of a memory block when free	*/
+typedef union _head_u Head_t;    /* the header of a memory block		*/
+typedef union _body_u Body_t;    /* the body of a memory block when free	*/
 typedef struct _block_s Block_t; /* the type of a memory block		*/
-typedef struct _seg_s Seg_t; /* the type of a raw memory segment	*/
+typedef struct _seg_s Seg_t;     /* the type of a raw memory segment	*/
 
 #define NIL(t) (( t )0)
 #if __STD_C
@@ -128,20 +128,20 @@ typedef struct _seg_s Seg_t; /* the type of a raw memory segment	*/
 
 #define VM_test 0x0000ffff /* any TEST set				*/
 
-#define VM_abort 0x00010000 /* abort() on assertion failure		*/
+#define VM_abort 0x00010000     /* abort() on assertion failure		*/
 #define VM_check_reg 0x00020000 /* enable region integrity checks	*/
 #define VM_check_seg 0x00040000 /* enable segment availability prechecks*/
-#define VM_debug 0x00080000 /* test=debug				*/
-#define VM_keep 0x00100000 /* disable free()			*/
-#define VM_pause 0x00200000 /* pause() on assertion failure		*/
-#define VM_usage 0x00400000 /* usage stats at each getmemory	*/
-#define VM_verbose 0x00800000 /* verbose messages to standard error	*/
+#define VM_debug 0x00080000     /* test=debug				*/
+#define VM_keep 0x00100000      /* disable free()			*/
+#define VM_pause 0x00200000     /* pause() on assertion failure		*/
+#define VM_usage 0x00400000     /* usage stats at each getmemory	*/
+#define VM_verbose 0x00800000   /* verbose messages to standard error	*/
 
-#define VM_anon 0x01000000 /* MAP_ANON block allocator		*/
-#define VM_break 0x02000000 /* sbrk() block allocator		*/
+#define VM_anon 0x01000000   /* MAP_ANON block allocator		*/
+#define VM_break 0x02000000  /* sbrk() block allocator		*/
 #define VM_native 0x04000000 /* native malloc() block allocator	*/
-#define VM_safe 0x08000000 /* safe MAP_ANON emulation of sbrk()	*/
-#define VM_zero 0x10000000 /* /dev/zero block allocator		*/
+#define VM_safe 0x08000000   /* safe MAP_ANON emulation of sbrk()	*/
+#define VM_zero 0x10000000   /* /dev/zero block allocator		*/
 
 #define VM_GETMEMORY (VM_anon | VM_break | VM_native | VM_safe | VM_zero)
 
@@ -153,7 +153,7 @@ typedef struct _seg_s Seg_t; /* the type of a raw memory segment	*/
 #    ifdef _BLD_DEBUG
 #        define DEBUG 1
 #    endif /*_BLD_DEBUG*/
-#endif /*DEBUG*/
+#endif     /*DEBUG*/
 extern void _vmmessage _ARG_(( const char *, long, const char *, long ));
 #if DEBUG
 #    define MESSAGE(s) _vmmessage(__FILE__, __LINE__, (s), 0)
@@ -227,10 +227,10 @@ extern void _vmmessage _ARG_(( const char *, long, const char *, long ));
 #define KPVALIGN(vm, sz, al, func) (func((vm), (sz), (al), 1))
 
 /* Block sizes will always be 0%(BITS+1) so the below bits will be free */
-#define BUSY (0x1) /* a normal (Vmbest) block is busy	*/
+#define BUSY (0x1)  /* a normal (Vmbest) block is busy	*/
 #define PFREE (0x2) /* preceding normal block is free	*/
 #define SMALL (0x4) /* a segment block is busy		*/
-#define MARK (0x8) /* for marking usage (eg, beststat())	*/
+#define MARK (0x8)  /* for marking usage (eg, beststat())	*/
 #define BITS (BUSY | PFREE | SMALL | MARK)
 #define ALIGNB (BITS + 1) /* to guarantee blksize == 0%(BITS+1)	*/
 
@@ -278,9 +278,9 @@ struct _two_s
 
 typedef union _word_u
 {
-    size_t size; /* to store a size_t	*/
+    size_t size;        /* to store a size_t	*/
     unsigned int intdt; /* to store an integer	*/
-    Void_t *ptrdt; /* to store a pointer	*/
+    Void_t *ptrdt;      /* to store a pointer	*/
 } Word_t;
 
 struct _head_s /* a block header has two words */
@@ -297,9 +297,9 @@ union _head_u
 
 struct _body_s /* Note that self is actually at end of block */
 {
-    Block_t *link; /* next in link list		*/
-    Block_t *rght; /* right child in free tree	*/
-    Block_t *left; /* left child in free tree	*/
+    Block_t *link;  /* next in link list		*/
+    Block_t *rght;  /* right child in free tree	*/
+    Block_t *left;  /* left child in free tree	*/
     Block_t **self; /* self pointer when free	*/
 };
 #define BODYSIZE ROUND(sizeof(struct _body_s), MEM_ALIGN)
@@ -321,8 +321,9 @@ struct _block_s
 };
 
 #define SEG(b) ((b)->head.head.one.ptrdt) /* the containing segment	*/
-#define SIZE(b) ((b)->head.head.two.size) /* field containing block size     \
-                                           */
+#define SIZE(b)                                                              \
+    ((b)->head.head.two.size)     /* field containing block size             \
+                                   */
 #define BDSZ(b) (SIZE(b) & ~BITS) /* naked size of block		*/
 
 #define PACK(b) ((b)->head.head.one.ptrdt) /* the containing pack		*/
@@ -346,19 +347,20 @@ struct _block_s
 #    define SMENCODE(i)                                                      \
         ((uint32_t)(i) << 24) /* code index of a small block	*/
 #    define SMDECODE(i)                                                      \
-        ((uint32_t)(i) >> 24) /* code index of a small block	*/
+        ((uint32_t)(i) >> 24)              /* code index of a small block	*/
 #    define SMBITS (BITS | SMENCODE(0xff)) /* bits not related to size	*/
 #else
 #    define SMENCODE(i)                                                      \
         ((uint64_t)(i) << 24) /* code index of a small block	*/
 #    define SMDECODE(i)                                                      \
         ((uint64_t)(i) >> 24) /* code index of a small block	*/
-#    define SMBITS (BITS | SMENCODE(0xffff)) /* bits not related to size     \
-                                              */
+#    define SMBITS                                                           \
+        (BITS | SMENCODE(0xffff)) /* bits not related to size                \
+                                   */
 #endif
 
 #define SMINDEXB(b) (SMDECODE(SIZE(b))) /* get index of a small block	*/
-#define SMBDSZ(b) (SIZE(b) & ~SMBITS) /* size of small block	*/
+#define SMBDSZ(b) (SIZE(b) & ~SMBITS)   /* size of small block	*/
 #define TRUESIZE(z) ((z) & ((( z )&SMALL) ? ~SMBITS : ~BITS))
 #define TRUEBDSZ(b) ((SIZE(b) & SMALL) ? SMBDSZ(b) : BDSZ(b))
 #define TRUENEXT(b) (( Block_t * )((b)->body.data + TRUEBDSZ(b)))
@@ -386,19 +388,19 @@ struct _vmuser_s
 {
     Vmuser_t *next;
     unsigned int dtid; /* key to identify data item	*/
-    ssize_t size; /* size of data area		*/
-    Void_t *data; /* user data area		*/
+    ssize_t size;      /* size of data area		*/
+    Void_t *data;      /* user data area		*/
 };
 
 struct _seg_s /* a segment of raw memory obtained via Vmdisc_t.memoryf */
 {
-    Vmdata_t *vmdt; /* region holding this segment	*/
+    Vmdata_t *vmdt;  /* region holding this segment	*/
     Vmuchar_t *base; /* true base address of segment	*/
-    size_t size; /* true size of segment		*/
-    int iffy; /* should not extend segment	*/
-    Block_t *begb; /* starting allocatable memory	*/
-    Block_t *endb; /* block at end of memory	*/
-    Seg_t *next; /* next segment in linked list	*/
+    size_t size;     /* true size of segment		*/
+    int iffy;        /* should not extend segment	*/
+    Block_t *begb;   /* starting allocatable memory	*/
+    Block_t *endb;   /* block at end of memory	*/
+    Seg_t *next;     /* next segment in linked list	*/
 };
 
 struct _free_s /* list of objects locked out by concurrent free() */
@@ -409,17 +411,17 @@ typedef struct _free_s Free_t;
 
 struct Vmdata_s /* Vmdata_t: common region data */
 {
-    int mode; /* operation modes 		*/
+    int mode;          /* operation modes 		*/
     unsigned int lock; /* lock for segment management	*/
-    size_t incr; /* to round memory requests	*/
-    Seg_t *seg; /* list of raw memory segments	*/
+    size_t incr;       /* to round memory requests	*/
+    Seg_t *seg;        /* list of raw memory segments	*/
     Vmuchar_t *segmin; /* min address in all segments	*/
     Vmuchar_t *segmax; /* max address in all segments	*/
-    Block_t *free; /* not allocated to method yet	*/
-    Vmuser_t *user; /* user data identified by key	*/
+    Block_t *free;     /* not allocated to method yet	*/
+    Vmuser_t *user;    /* user data identified by key	*/
     unsigned int ulck; /* lock of user list for update	*/
     unsigned int dlck; /* lock used by Vmdebug		*/
-    Free_t *delay; /* delayed free list		*/
+    Free_t *delay;     /* delayed free list		*/
 };
 
 typedef struct _vmhold_s Vmhold_t; /* to hold open regions 	*/
@@ -430,7 +432,7 @@ struct _vmhold_s
 };
 
 #define VM_SEGEXTEND (01) /* physically extend memory as needed	*/
-#define VM_SEGALL (02) /* always return entire segment		*/
+#define VM_SEGALL (02)    /* always return entire segment		*/
 
 /* external symbols for use inside vmalloc only */
 typedef struct _vmextern_s
@@ -445,15 +447,15 @@ typedef struct _vmextern_s
     void(*vm_trace)
     _ARG_((Vmalloc_t *, Vmuchar_t *, Vmuchar_t *, size_t, size_t));
     int(*vm_chkmem) _ARG_((Vmuchar_t *, size_t));
-    Vmuchar_t *vm_memmin; /* address lower abound	*/
-    Vmuchar_t *vm_memmax; /* address upper abound	*/
-    Vmuchar_t *vm_memaddr; /* vmmaddress() memory	*/
-    Vmuchar_t *vm_memsbrk; /* Vmdcsystem's memory	*/
-    Vmhold_t *vm_hold; /* list to hold regions	*/
-    size_t vm_pagesize; /* OS memory page size	*/
-    size_t vm_segsize; /* min segment size	*/
+    Vmuchar_t *vm_memmin;     /* address lower abound	*/
+    Vmuchar_t *vm_memmax;     /* address upper abound	*/
+    Vmuchar_t *vm_memaddr;    /* vmmaddress() memory	*/
+    Vmuchar_t *vm_memsbrk;    /* Vmdcsystem's memory	*/
+    Vmhold_t *vm_hold;        /* list to hold regions	*/
+    size_t vm_pagesize;       /* OS memory page size	*/
+    size_t vm_segsize;        /* min segment size	*/
     unsigned int vm_sbrklock; /* lock for sbrkmem	*/
-    unsigned int vm_assert; /* options for ASSERT() 	*/
+    unsigned int vm_assert;   /* options for ASSERT() 	*/
 } Vmextern_t;
 
 #define _Vmseginit (_Vmextern.vm_seginit)
@@ -475,9 +477,9 @@ typedef struct _vmextern_s
 #define _Vmassert (_Vmextern.vm_assert)
 
 extern Vmalloc_t *_vmheapinit _ARG_(( Vmalloc_t * )); /* initialize Vmheap	*/
-extern int _vmheapbusy _ARG_(( void )); /* initializing Vmheap	*/
+extern int _vmheapbusy _ARG_(( void ));     /* initializing Vmheap	*/
 extern ssize_t _vmpagesize _ARG_(( void )); /* get system page size	*/
-extern int _vmboundaries _ARG_(( void )); /* get mem boundaries	*/
+extern int _vmboundaries _ARG_(( void ));   /* get mem boundaries	*/
 extern Vmalloc_t *_vmopen _ARG_(( Vmalloc_t *, Vmdisc_t *, Vmethod_t *, int ));
 extern void _vmoptions _ARG_(( int )); /* VMALLOC_OPTIONS preferences	*/
 extern int _vmstat _ARG_((Vmalloc_t *, Vmstat_t *, size_t)); /* internal

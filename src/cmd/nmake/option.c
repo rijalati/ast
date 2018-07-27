@@ -465,15 +465,15 @@ typedef struct Oplist_s Oplist_t;
 
 struct Oplist_s /* linked option list		*/
 {
-    char *option; /* option value for set()	*/
+    char *option;   /* option value for set()	*/
     Oplist_t *next; /* next in list			*/
 };
 
 typedef struct Optstate_s /* option state			*/
 {
-    Oplist_t *hidden; /* options hidden by cmd line	*/
-    Oplist_t *lasthidden; /* tail of hidden		*/
-    Oplist_t *delayed; /* delayed unknown options	*/
+    Oplist_t *hidden;      /* options hidden by cmd line	*/
+    Oplist_t *lasthidden;  /* tail of hidden		*/
+    Oplist_t *delayed;     /* delayed unknown options	*/
     Oplist_t *lastdelayed; /* tail of delayed		*/
 
     Option_t *head; /* head of external option list	*/
@@ -481,7 +481,7 @@ typedef struct Optstate_s /* option state			*/
 
     Hash_table_t *table;
 
-    Sfio_t *usage; /* generated optget() usage	*/
+    Sfio_t *usage;  /* generated optget() usage	*/
     int usageindex; /* next user index		*/
 } Optstate_t;
 

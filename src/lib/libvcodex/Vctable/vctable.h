@@ -25,10 +25,10 @@
 ** Written by Binh Dao Vo and Kiem-Phong Vo
 */
 
-#define VCTBL_RLE 0001 /* use run-length entropy (default)	*/
-#define VCTBL_CEE 0002 /* use conditional entropy		*/
-#define VCTBL_LEFT 0010 /* left to right dependency (default) 	*/
-#define VCTBL_RIGHT 0020 /* right to left dependency		*/
+#define VCTBL_RLE 0001    /* use run-length entropy (default)	*/
+#define VCTBL_CEE 0002    /* use conditional entropy		*/
+#define VCTBL_LEFT 0010   /* left to right dependency (default) 	*/
+#define VCTBL_RIGHT 0020  /* right to left dependency		*/
 #define VCTBL_SINGLE 0100 /* single predictor			*/
 
 typedef struct _vctblcolumn_s /* transform specification for each column	*/
@@ -40,17 +40,17 @@ typedef struct _vctblcolumn_s /* transform specification for each column	*/
 
 typedef struct _vctblplan_s /* transform plan for all columns		*/
 {
-    ssize_t ncols; /* # of columns	or row size	*/
+    ssize_t ncols;        /* # of columns	or row size	*/
     Vctblcolumn_t *trans; /* the plan to transform data	*/
-    Vcodex_t *zip; /* to compress a plan encoding	*/
-    ssize_t train; /* size of training data	*/
-    ssize_t dtsz; /* last data size compressed	*/
-    ssize_t cmpsz; /* and result			*/
-    int good; /* training deemed good		*/
+    Vcodex_t *zip;        /* to compress a plan encoding	*/
+    ssize_t train;        /* size of training data	*/
+    ssize_t dtsz;         /* last data size compressed	*/
+    ssize_t cmpsz;        /* and result			*/
+    int good;             /* training deemed good		*/
 } Vctblplan_t;
 
 _BEGIN_EXTERNS_
-extern Vcmethod_t *Vctable; /* fixed-length table transform	*/
+extern Vcmethod_t *Vctable;  /* fixed-length table transform	*/
 extern Vcmethod_t *Vcrtable; /* flat file table transform	*/
 
 extern Vctblplan_t *

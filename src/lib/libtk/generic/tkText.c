@@ -398,9 +398,9 @@ static int DumpSegment _ANSI_ARGS_((Tcl_Interp * interp,
 int Tk_TextCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     Tk_Window new;
@@ -565,9 +565,9 @@ char **argv; /* Argument strings. */
 
 static int TextWidgetCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about text widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     TkText *textPtr = ( TkText * )clientData;
     int result = TCL_OK;
@@ -1093,11 +1093,11 @@ static void DestroyText(memPtr) char *memPtr; /* Info about text widget. */
 
 static int ConfigureText(interp, textPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-TkText *textPtr; /* Information about widget;  may or may
-                  * not already have values for some fields. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+TkText *textPtr;    /* Information about widget;  may or may
+                     * not already have values for some fields. */
+int argc;           /* Number of valid entries in argv. */
+char **argv;        /* Arguments. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     int oldExport = textPtr->exportSelection;
     int charHeight;
@@ -1472,8 +1472,8 @@ static void InsertChars(textPtr,
                                                     text widget. */
 TkTextIndex *indexPtr; /* Where to insert new characters.  May be
                         * modified and/or invalidated. */
-char *string; /* Null-terminated string containing new
-               * information to add to text. */
+char *string;          /* Null-terminated string containing new
+                        * information to add to text. */
 {
     int lineIndex, resetView, offset;
     TkTextIndex newTop;
@@ -1720,13 +1720,13 @@ char *index2String; /* String describing location of last
 
 static int TextFetchSelection(clientData, offset, buffer, maxBytes)
 ClientData clientData; /* Information about text widget. */
-int offset; /* Offset within selection of first
-             * character to be returned. */
-char *buffer; /* Location in which to place
-               * selection. */
-int maxBytes; /* Maximum number of bytes to place
-               * at buffer, not including terminating
-               * NULL character. */
+int offset;            /* Offset within selection of first
+                        * character to be returned. */
+char *buffer;          /* Location in which to place
+                        * selection. */
+int maxBytes;          /* Maximum number of bytes to place
+                        * at buffer, not including terminating
+                        * NULL character. */
 {
     TkText *textPtr = ( TkText * )clientData;
     TkTextIndex eof;
@@ -1957,10 +1957,10 @@ ClientData clientData; /* Pointer to record describing text. */
  */
 
 static int TextSearchCmd(textPtr, interp, argc, argv)
-TkText *textPtr; /* Information about text widget. */
+TkText *textPtr;    /* Information about text widget. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int backwards, exact, c, i, argsLeft, noCase, leftToScan;
     size_t length;
@@ -2417,10 +2417,10 @@ done:
 
 TkTextTabArray *TkTextGetTabs(interp, tkwin, string)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Window tkwin; /* Window in which the tabs will be
-                  * used. */
-char *string; /* Description of the tab stops.  See
-               * the text manual entry for details. */
+Tk_Window tkwin;    /* Window in which the tabs will be
+                     * used. */
+char *string;       /* Description of the tab stops.  See
+                     * the text manual entry for details. */
 {
     int argc, i, count, c;
     char **argv;
@@ -2540,16 +2540,16 @@ static int
 TextDumpCmd(textPtr, interp, argc, argv) TkText *textPtr; /* Information about
                                                              text widget. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings.  Someone else has already
-              * parsed this command enough to know that
-              * argv[1] is "dump". */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings.  Someone else has already
+                     * parsed this command enough to know that
+                     * argv[1] is "dump". */
 {
     TkTextIndex index1, index2;
     int arg;
-    int lineno; /* Current line number */
+    int lineno;   /* Current line number */
     int what = 0; /* bitfield to select segment types */
-    int atEnd; /* True if dumping up to logical end */
+    int atEnd;    /* True if dumping up to logical end */
     TkTextLine *linePtr;
     char *command = NULL; /* Script callback to apply to segments */
 #define TK_DUMP_TEXT 0x1
@@ -2725,11 +2725,11 @@ static void
 DumpLine(interp, textPtr, what, linePtr, start, end, lineno, command)
 Tcl_Interp *interp;
 TkText *textPtr;
-int what; /* bit flags to select segment types */
+int what;            /* bit flags to select segment types */
 TkTextLine *linePtr; /* The current line */
-int start, end; /* Character range to dump */
-int lineno; /* Line number for indices dump */
-char *command; /* Script to apply to the segment */
+int start, end;      /* Character range to dump */
+int lineno;          /* Line number for indices dump */
+char *command;       /* Script to apply to the segment */
 {
     int offset;
     TkTextSegment *segPtr;
@@ -2747,9 +2747,9 @@ char *command; /* Script to apply to the segment */
         if ((what & TK_DUMP_TEXT) && (segPtr->typePtr == &tkTextCharType)
             && (offset + segPtr->size > start))
         {
-            char savedChar; /* Last char used in the seg */
+            char savedChar;          /* Last char used in the seg */
             int last = segPtr->size; /* Index of savedChar */
-            int first = 0; /* Index of first char in seg */
+            int first = 0;           /* Index of first char in seg */
             if (offset + segPtr->size > end)
             {
                 last = end - offset;
@@ -2834,12 +2834,12 @@ char *command; /* Script to apply to the segment */
  */
 static int DumpSegment(interp, key, value, command, lineno, offset, what)
 Tcl_Interp *interp;
-char *key; /* Segment type key */
-char *value; /* Segment value */
+char *key;     /* Segment type key */
+char *value;   /* Segment value */
 char *command; /* Script callback */
-int lineno; /* Line number for indices dump */
-int offset; /* Character position */
-int what; /* Look for TK_DUMP_INDEX bit */
+int lineno;    /* Line number for indices dump */
+int offset;    /* Character position */
+int what;      /* Look for TK_DUMP_INDEX bit */
 {
     char buffer[30];
     sprintf(buffer, "%d.%d", lineno, offset);

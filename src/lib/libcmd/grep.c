@@ -149,9 +149,9 @@ typedef struct State_s State_t;
 typedef struct Item_s /* list item			*/
 {
     struct Item_s *next; /* next in list			*/
-    uintmax_t hits; /* labeled pattern matches	*/
-    uintmax_t total; /* total hits			*/
-    char string[1]; /* string value			*/
+    uintmax_t hits;      /* labeled pattern matches	*/
+    uintmax_t total;     /* total hits			*/
+    char string[1];      /* string value			*/
 } Item_t;
 
 typedef struct List_s /* generic list			*/
@@ -163,13 +163,13 @@ typedef struct List_s /* generic list			*/
 struct State_s /* program state		*/
 {
     regdisc_t redisc; /* regex discipline		*/
-    regex_t re; /* main compiled re		*/
+    regex_t re;       /* main compiled re		*/
 
     Vmalloc_t *vm; /* allocation region		*/
 
     struct
     {
-        char *base; /* sfsetbuf buffer		*/
+        char *base;  /* sfsetbuf buffer		*/
         size_t size; /* sfsetbuf size		*/
         int noshare; /* turn off SF_SHARE		*/
     } buffer;
@@ -178,36 +178,36 @@ struct State_s /* program state		*/
 
     Sfio_t *tmp; /* tmp re compile string	*/
 
-    List_t files; /* pattern file list		*/
+    List_t files;    /* pattern file list		*/
     List_t patterns; /* pattern list			*/
-    List_t labels; /* labelled re list		*/
+    List_t labels;   /* labelled re list		*/
 
     regmatch_t posvec[1]; /* match position vector	*/
-    regmatch_t *pos; /* match position pointer	*/
-    int posnum; /* number of match positions	*/
+    regmatch_t *pos;      /* match position pointer	*/
+    int posnum;           /* number of match positions	*/
 
-    char *span; /* line span buffer		*/
+    char *span;      /* line span buffer		*/
     size_t spansize; /* span buffer size		*/
 
-    int any; /* if any pattern hit		*/
-    int after; /* # lines to list after match	*/
-    int before; /* # lines to list before match	*/
-    int list; /* list files with hits		*/
+    int any;      /* if any pattern hit		*/
+    int after;    /* # lines to list after match	*/
+    int before;   /* # lines to list before match	*/
+    int list;     /* list files with hits		*/
     int notfound; /* some input file not found	*/
-    int options; /* regex options		*/
+    int options;  /* regex options		*/
 
     uintmax_t hits; /* total matched pattern count	*/
 
-    unsigned char byline; /* multiple pattern line by line*/
-    unsigned char count; /* count number of hits		*/
-    unsigned char label; /* all patterns labelled	*/
-    unsigned char match; /* match sense			*/
-    unsigned char only; /* only print matching parts	*/
-    unsigned char query; /* return status but no output	*/
-    unsigned char number; /* line numbers			*/
-    unsigned char prefix; /* print file prefix		*/
+    unsigned char byline;   /* multiple pattern line by line*/
+    unsigned char count;    /* count number of hits		*/
+    unsigned char label;    /* all patterns labelled	*/
+    unsigned char match;    /* match sense			*/
+    unsigned char only;     /* only print matching parts	*/
+    unsigned char query;    /* return status but no output	*/
+    unsigned char number;   /* line numbers			*/
+    unsigned char prefix;   /* print file prefix		*/
     unsigned char suppress; /* no unopenable file messages	*/
-    unsigned char words; /* word matches only		*/
+    unsigned char words;    /* word matches only		*/
 };
 
 static void *

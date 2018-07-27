@@ -52,13 +52,13 @@ bldtrie(Vchtrie_t *trie,
 #else
 static int bldtrie(trie, clen, bits, root, len, sort, ns, lev)
 Vchtrie_t *trie; /* handle holding entire trie	*/
-ssize_t *clen; /* table of code lengths	*/
-Vcbit_t *bits; /* table of prefix codes	*/
-Node_t *root; /* parent node of the new table	*/
-ssize_t len; /* prefix len already processed	*/
-Vcbit_t **sort; /* list of codes sharing prefix	*/
-ssize_t ns; /* # of elts in sort[]		*/
-ssize_t lev; /* level in the trie		*/
+ssize_t *clen;   /* table of code lengths	*/
+Vcbit_t *bits;   /* table of prefix codes	*/
+Node_t *root;    /* parent node of the new table	*/
+ssize_t len;     /* prefix len already processed	*/
+Vcbit_t **sort;  /* list of codes sharing prefix	*/
+ssize_t ns;      /* # of elts in sort[]		*/
+ssize_t lev;     /* level in the trie		*/
 #endif
 {
     ssize_t k, m, p, s, e, z, msk, olen;
@@ -111,7 +111,7 @@ ssize_t lev; /* level in the trie		*/
         {
             for (e = s + (1 << p); s < e; ++s)
             {
-                node[s] = m; /* the byte to be decoded */
+                node[s] = m;        /* the byte to be decoded */
                 size[s] = z - olen; /* # bits to consume */
             }
             k += 1;

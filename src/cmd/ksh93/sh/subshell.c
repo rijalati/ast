@@ -57,34 +57,34 @@ struct Link
  */
 static struct subshell
 {
-    Shell_t *shp; /* shell interpreter */
+    Shell_t *shp;          /* shell interpreter */
     struct subshell *prev; /* previous subshell data */
     struct subshell *pipe; /* subshell where output goes to pipe on fork */
-    Dt_t *var; /* variable table at time of subshell */
-    struct Link *svar; /* save shell variable table */
-    Dt_t *sfun; /* function scope for subshell */
-    Dt_t *salias; /* alias scope for subshell */
-    Pathcomp_t *pathlist; /* for PATH variable */
+    Dt_t *var;             /* variable table at time of subshell */
+    struct Link *svar;     /* save shell variable table */
+    Dt_t *sfun;            /* function scope for subshell */
+    Dt_t *salias;          /* alias scope for subshell */
+    Pathcomp_t *pathlist;  /* for PATH variable */
 #if (ERROR_VERSION >= 20030214L)
     struct Error_context_s *errcontext;
 #else
     struct errorcontext *errcontext;
 #endif
-    Shopt_t options; /* save shell options */
-    pid_t subpid; /* child process id */
-    Sfio_t *saveout; /*saved standard output */
-    char *pwd; /* present working directory */
+    Shopt_t options;   /* save shell options */
+    pid_t subpid;      /* child process id */
+    Sfio_t *saveout;   /*saved standard output */
+    char *pwd;         /* present working directory */
     const char *shpwd; /* saved pointer to sh.pwd */
-    void *jobs; /* save job info */
-    int shpwdfd; /* fd for present working directory */
-    mode_t mask; /* saved umask */
-    short tmpfd; /* saved tmp file descriptor */
-    short pipefd; /* read fd if pipe is created */
+    void *jobs;        /* save job info */
+    int shpwdfd;       /* fd for present working directory */
+    mode_t mask;       /* saved umask */
+    short tmpfd;       /* saved tmp file descriptor */
+    short pipefd;      /* read fd if pipe is created */
     char jobcontrol;
     char monitor;
     unsigned char fdstatus;
     int fdsaved; /* bit make for saved files */
-    int sig; /* signal for $$ */
+    int sig;     /* signal for $$ */
     pid_t bckpid;
     pid_t cpid;
     int coutpipe;

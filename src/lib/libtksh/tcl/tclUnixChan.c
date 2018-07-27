@@ -12,7 +12,7 @@
  * SCCS: @(#) tclUnixChan.c 1.185 96/11/12 14:49:17
  */
 
-#include "tclInt.h" /* Internal definitions for Tcl. */
+#include "tclInt.h"  /* Internal definitions for Tcl. */
 #include "tclPort.h" /* Portability features for Tcl. */
 
 #undef lseek
@@ -23,7 +23,7 @@
 
 typedef struct FileState
 {
-    Tcl_File inFile; /* Input from file. */
+    Tcl_File inFile;  /* Input from file. */
     Tcl_File outFile; /* Output to file. */
 } FileState;
 
@@ -33,15 +33,15 @@ typedef struct FileState
 
 typedef struct PipeState
 {
-    Tcl_File inFile; /* Output from pipe. */
-    Tcl_File outFile; /* Input to pipe. */
+    Tcl_File inFile;    /* Output from pipe. */
+    Tcl_File outFile;   /* Input to pipe. */
     Tcl_File errorFile; /* Error output from pipe. */
-    int numPids; /* How many processes are attached to this pipe? */
-    int *pidPtr; /* The process IDs themselves. Allocated by
-                  * the creator of the pipe. */
-    int isNonBlocking; /* Nonzero when the pipe is in nonblocking mode.
-                        * Used to decide whether to wait for the children
-                        * at close time. */
+    int numPids;        /* How many processes are attached to this pipe? */
+    int *pidPtr;        /* The process IDs themselves. Allocated by
+                         * the creator of the pipe. */
+    int isNonBlocking;  /* Nonzero when the pipe is in nonblocking mode.
+                         * Used to decide whether to wait for the children
+                         * at close time. */
 } PipeState;
 
 /*
@@ -50,11 +50,11 @@ typedef struct PipeState
 
 typedef struct TcpState
 {
-    int flags; /* ORed combination of the
-                * bitfields defined below. */
-    Tcl_File sock; /* The socket itself. */
+    int flags;                     /* ORed combination of the
+                                    * bitfields defined below. */
+    Tcl_File sock;                 /* The socket itself. */
     Tcl_TcpAcceptProc *acceptProc; /* Proc to call on accept. */
-    ClientData acceptProcData; /* The data for the accept proc. */
+    ClientData acceptProcData;     /* The data for the accept proc. */
 } TcpState;
 
 /*
@@ -62,7 +62,7 @@ typedef struct TcpState
  * structure.
  */
 
-#define TCP_ASYNC_SOCKET (1 << 0) /* Asynchronous socket. */
+#define TCP_ASYNC_SOCKET (1 << 0)  /* Asynchronous socket. */
 #define TCP_ASYNC_CONNECT (1 << 1) /* Async connect in progress. */
 
 /*
@@ -171,17 +171,17 @@ static int WaitForConnect _ANSI_ARGS_((TcpState * statePtr,
  */
 
 static Tcl_ChannelType fileChannelType = {
-    "file", /* Type name. */
+    "file",            /* Type name. */
     FileBlockModeProc, /* Set blocking/nonblocking mode.*/
-    FileCloseProc, /* Close proc. */
-    FileInputProc, /* Input proc. */
-    FileOutputProc, /* Output proc. */
-    FileSeekProc, /* Seek proc. */
-    NULL, /* Set option proc. */
-    NULL, /* Get option proc. */
-    FileWatchProc, /* Initialize notifier. */
-    FileReadyProc, /* Are there events? */
-    FileGetProc, /* Get Tcl_Files out of channel. */
+    FileCloseProc,     /* Close proc. */
+    FileInputProc,     /* Input proc. */
+    FileOutputProc,    /* Output proc. */
+    FileSeekProc,      /* Seek proc. */
+    NULL,              /* Set option proc. */
+    NULL,              /* Get option proc. */
+    FileWatchProc,     /* Initialize notifier. */
+    FileReadyProc,     /* Are there events? */
+    FileGetProc,       /* Get Tcl_Files out of channel. */
 };
 
 /*
@@ -190,17 +190,17 @@ static Tcl_ChannelType fileChannelType = {
  */
 
 static Tcl_ChannelType pipeChannelType = {
-    "pipe", /* Type name. */
+    "pipe",            /* Type name. */
     PipeBlockModeProc, /* Set blocking/nonblocking mode.*/
-    PipeCloseProc, /* Close proc. */
-    PipeInputProc, /* Input proc. */
-    PipeOutputProc, /* Output proc. */
-    NULL, /* Seek proc. */
-    NULL, /* Set option proc. */
-    NULL, /* Get option proc. */
-    PipeWatchProc, /* Initialize notifier. */
-    PipeReadyProc, /* Are there events? */
-    PipeGetProc, /* Get Tcl_Files out of channel. */
+    PipeCloseProc,     /* Close proc. */
+    PipeInputProc,     /* Input proc. */
+    PipeOutputProc,    /* Output proc. */
+    NULL,              /* Seek proc. */
+    NULL,              /* Set option proc. */
+    NULL,              /* Get option proc. */
+    PipeWatchProc,     /* Initialize notifier. */
+    PipeReadyProc,     /* Are there events? */
+    PipeGetProc,       /* Get Tcl_Files out of channel. */
 };
 
 /*
@@ -209,17 +209,17 @@ static Tcl_ChannelType pipeChannelType = {
  */
 
 static Tcl_ChannelType tcpChannelType = {
-    "tcp", /* Type name. */
+    "tcp",            /* Type name. */
     TcpBlockModeProc, /* Set blocking/nonblocking mode.*/
-    TcpCloseProc, /* Close proc. */
-    TcpInputProc, /* Input proc. */
-    TcpOutputProc, /* Output proc. */
-    NULL, /* Seek proc. */
-    NULL, /* Set option proc. */
+    TcpCloseProc,     /* Close proc. */
+    TcpInputProc,     /* Input proc. */
+    TcpOutputProc,    /* Output proc. */
+    NULL,             /* Seek proc. */
+    NULL,             /* Set option proc. */
     TcpGetOptionProc, /* Get option proc. */
-    TcpWatchProc, /* Initialize notifier. */
-    TcpReadyProc, /* Are there events? */
-    TcpGetProc, /* Get Tcl_Files out of channel. */
+    TcpWatchProc,     /* Initialize notifier. */
+    TcpReadyProc,     /* Are there events? */
+    TcpGetProc,       /* Get Tcl_Files out of channel. */
 };
 
 /*
@@ -346,13 +346,13 @@ int mode; /* The mode to set. Can be one of
 
 static int FileInputProc(instanceData, buf, toRead, errorCodePtr)
 ClientData instanceData; /* File state. */
-char *buf; /* Where to store data read. */
-int toRead; /* How much space is available
-             * in the buffer? */
-int *errorCodePtr; /* Where to store error code. */
+char *buf;               /* Where to store data read. */
+int toRead;              /* How much space is available
+                          * in the buffer? */
+int *errorCodePtr;       /* Where to store error code. */
 {
     FileState *fsPtr = ( FileState * )instanceData;
-    int fd; /* The OS handle for reading. */
+    int fd;        /* The OS handle for reading. */
     int bytesRead; /* How many bytes were actually
                     * read from the input device? */
 
@@ -396,9 +396,9 @@ int *errorCodePtr; /* Where to store error code. */
 
 static int FileOutputProc(instanceData, buf, toWrite, errorCodePtr)
 ClientData instanceData; /* File state. */
-char *buf; /* The data buffer. */
-int toWrite; /* How many bytes to write? */
-int *errorCodePtr; /* Where to store error code. */
+char *buf;               /* The data buffer. */
+int toWrite;             /* How many bytes to write? */
+int *errorCodePtr;       /* Where to store error code. */
 {
     FileState *fsPtr = ( FileState * )instanceData;
     int written;
@@ -501,12 +501,12 @@ Tcl_Interp *interp; /* For error reporting - unused. */
 
 static int FileSeekProc(instanceData, offset, mode, errorCodePtr)
 ClientData instanceData; /* File state. */
-long offset; /* Offset to seek to. */
-int mode; /* Relative to where
-           * should we seek? Can be
-           * one of SEEK_START,
-           * SEEK_SET or SEEK_END. */
-int *errorCodePtr; /* To store error code. */
+long offset;             /* Offset to seek to. */
+int mode;                /* Relative to where
+                          * should we seek? Can be
+                          * one of SEEK_START,
+                          * SEEK_SET or SEEK_END. */
+int *errorCodePtr;       /* To store error code. */
 {
     FileState *fsPtr = ( FileState * )instanceData;
     int newLoc;
@@ -943,13 +943,13 @@ Tcl_Interp *interp; /* For error reporting. */
 
 static int PipeInputProc(instanceData, buf, toRead, errorCodePtr)
 ClientData instanceData; /* Pipe state. */
-char *buf; /* Where to store data read. */
-int toRead; /* How much space is available
-             * in the buffer? */
-int *errorCodePtr; /* Where to store error code. */
+char *buf;               /* Where to store data read. */
+int toRead;              /* How much space is available
+                          * in the buffer? */
+int *errorCodePtr;       /* Where to store error code. */
 {
     PipeState *psPtr = ( PipeState * )instanceData;
-    int fd; /* The OS handle for reading. */
+    int fd;        /* The OS handle for reading. */
     int bytesRead; /* How many bytes were actually
                     * read from the input device? */
 
@@ -993,9 +993,9 @@ int *errorCodePtr; /* Where to store error code. */
 
 static int PipeOutputProc(instanceData, buf, toWrite, errorCodePtr)
 ClientData instanceData; /* Pipe state. */
-char *buf; /* The data buffer. */
-int toWrite; /* How many bytes to write? */
-int *errorCodePtr; /* Where to store error code. */
+char *buf;               /* The data buffer. */
+int toWrite;             /* How many bytes to write? */
+int *errorCodePtr;       /* Where to store error code. */
 {
     PipeState *psPtr = ( PipeState * )instanceData;
     int written;
@@ -1165,12 +1165,12 @@ int direction; /* Which Tcl_File to retrieve? */
 Tcl_Channel Tcl_OpenFileChannel(interp, fileName, modeString, permissions)
 Tcl_Interp *interp; /* Interpreter for error reporting;
                      * can be NULL. */
-char *fileName; /* Name of file to open. */
-char *modeString; /* A list of POSIX open modes or
-                   * a string such as "rw". */
-int permissions; /* If the open involves creating a
-                  * file, with what modes to create
-                  * it? */
+char *fileName;     /* Name of file to open. */
+char *modeString;   /* A list of POSIX open modes or
+                     * a string such as "rw". */
+int permissions;    /* If the open involves creating a
+                     * file, with what modes to create
+                     * it? */
 {
     int fd, seekFlag, mode, channelPermissions;
     Tcl_File file;
@@ -1319,11 +1319,11 @@ int permissions; /* If the open involves creating a
  */
 
 Tcl_Channel Tcl_MakeFileChannel(inFd, outFd, mode)
-ClientData inFd; /* OS level handle used for input. */
+ClientData inFd;  /* OS level handle used for input. */
 ClientData outFd; /* OS level handle used for output. */
-int mode; /* ORed combination of TCL_READABLE and
-           * TCL_WRITABLE to indicate whether inFile
-           * and/or outFile are valid. */
+int mode;         /* ORed combination of TCL_READABLE and
+                   * TCL_WRITABLE to indicate whether inFile
+                   * and/or outFile are valid. */
 {
     Tcl_Channel chan;
     int fileUsed;
@@ -1400,15 +1400,15 @@ int mode; /* ORed combination of TCL_READABLE and
 
 Tcl_Channel
 TclCreateCommandChannel(readFile, writeFile, errorFile, numPids, pidPtr)
-Tcl_File readFile; /* If non-null, gives the file for reading. */
+Tcl_File readFile;  /* If non-null, gives the file for reading. */
 Tcl_File writeFile; /* If non-null, gives the file for writing. */
 Tcl_File errorFile; /* If non-null, gives the file where errors
                      * can be read. */
-int numPids; /* The number of pids in the pid array. */
-int *pidPtr; /* An array of process identifiers.
-              * Allocated by the caller, freed when
-              * the channel is closed or the processes
-              * are detached (in a background exec). */
+int numPids;        /* The number of pids in the pid array. */
+int *pidPtr;        /* An array of process identifiers.
+                     * Allocated by the caller, freed when
+                     * the channel is closed or the processes
+                     * are detached (in a background exec). */
 {
     Tcl_Channel channel;
     char channelName[20];
@@ -1498,16 +1498,16 @@ int *pidPtr; /* An array of process identifiers.
 /* ARGSUSED */
 int Tcl_PidCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
-    Tcl_Channel chan; /* The channel to get pids for. */
+    Tcl_Channel chan;             /* The channel to get pids for. */
     Tcl_ChannelType *chanTypePtr; /* The type of that channel. */
-    PipeState *pipePtr; /* The pipe state. */
-    int i; /* Loops over PIDs attached to the
-            * pipe. */
-    char string[50]; /* Temp buffer for string rep. of
-                      * PIDs attached to the pipe. */
+    PipeState *pipePtr;           /* The pipe state. */
+    int i;                        /* Loops over PIDs attached to the
+                                   * pipe. */
+    char string[50];              /* Temp buffer for string rep. of
+                                   * PIDs attached to the pipe. */
 
     if (argc > 2)
     {
@@ -2520,7 +2520,7 @@ Tcl_Channel TclGetDefaultStdChannel(
 type) int type; /* One of TCL_STDIN, TCL_STDOUT, TCL_STDERR. */
 {
     Tcl_Channel channel = NULL;
-    int fd = 0; /* Initializations needed to prevent */
+    int fd = 0;   /* Initializations needed to prevent */
     int mode = 0; /* compiler warning (used before set). */
     char *bufMode = NULL;
 
@@ -2628,15 +2628,15 @@ void TclClosePipeFile(file) Tcl_File file;
  */
 
 int Tcl_GetOpenFile(interp, string, forWriting, checkUsage, filePtr)
-Tcl_Interp *interp; /* Interpreter in which to find file. */
-char *string; /* String that identifies file. */
-int forWriting; /* 1 means the file is going to be used
-                 * for writing, 0 means for reading. */
-int checkUsage; /* 1 means verify that the file was opened
-                 * in a mode that allows the access specified
-                 * by "forWriting". Ignored, we always
-                 * check that the channel is open for the
-                 * requested mode. */
+Tcl_Interp *interp;  /* Interpreter in which to find file. */
+char *string;        /* String that identifies file. */
+int forWriting;      /* 1 means the file is going to be used
+                      * for writing, 0 means for reading. */
+int checkUsage;      /* 1 means verify that the file was opened
+                      * in a mode that allows the access specified
+                      * by "forWriting". Ignored, we always
+                      * check that the channel is open for the
+                      * requested mode. */
 ClientData *filePtr; /* Store pointer to FILE structure here. */
 {
     Tcl_Channel chan;

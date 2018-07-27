@@ -24,9 +24,9 @@
 **	Written by Binh Vo and Kiem-Phong Vo (04/24/2006)
 */
 
-#define TR_PLAIN 1 /* strictly tranposed data only	*/
+#define TR_PLAIN 1     /* strictly tranposed data only	*/
 #define TR_SEPARATOR 2 /* setting record separator	*/
-#define TR_COLUMNS 3 /* setting number of columns	*/
+#define TR_COLUMNS 3   /* setting number of columns	*/
 
 typedef struct _transflip_s
 {
@@ -38,7 +38,7 @@ typedef struct _transctxt_s
 {
     Vccontext_t ctxt;
     ssize_t ncols; /* number of columns in table	*/
-    int rsep; /* or record separator		*/
+    int rsep;      /* or record separator		*/
 } Transctxt_t;
 
 typedef struct _transpose_s
@@ -162,7 +162,7 @@ Vcchar_t *flip;
 
         if (r < nrows)
         {
-            fl[r].rpos += 1; /* add to its length */
+            fl[r].rpos += 1;     /* add to its length */
             if (data[z] == rsep) /* this record is done */
                 fl[r].open = r + 1;
             z += 1;
@@ -178,7 +178,7 @@ Vcchar_t *flip;
         fl[r].open = r;
         z = fl[r].rpos; /* save current length */
         fl[r].rpos = p; /* set starting position */
-        p += z; /* starting position for next record */
+        p += z;         /* starting position for next record */
     }
 
     /* rebuild records */
@@ -214,9 +214,9 @@ static void transfixed(oldtbl,
                        nrows,
                        ncols,
                        newtbl) Vcchar_t *oldtbl; /* original table	*/
-ssize_t nrows; /* #rows in otbl	*/
-ssize_t ncols; /* #columns in otbl	*/
-Vcchar_t *newtbl; /* new transposed table	*/
+ssize_t nrows;                                   /* #rows in otbl	*/
+ssize_t ncols;                                   /* #columns in otbl	*/
+Vcchar_t *newtbl;                                /* new transposed table	*/
 #endif
 {
     ssize_t r, nr, rr, c, nc, cc;
@@ -413,7 +413,7 @@ Void_t **out;
             if (dt[z] == rsep)
                 break;
         vc->undone = sz - (z + 1); /* exclude the dangling record */
-        sz = z + 1; /* data to be processed */
+        sz = z + 1;                /* data to be processed */
     }
     else
     {

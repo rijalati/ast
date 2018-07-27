@@ -87,9 +87,9 @@
 
 #    define MIME_FILES_ENV "MAILCAP"
 
-#    define MIME_LIST (1 << 0) /* mimeload arg is : list	*/
+#    define MIME_LIST (1 << 0)    /* mimeload arg is : list	*/
 #    define MIME_NOMAGIC (1 << 1) /* no magic for mimetype()	*/
-#    define MIME_PIPE (1 << 2) /* mimeview() io is piped	*/
+#    define MIME_PIPE (1 << 2)    /* mimeview() io is piped	*/
 #    define MIME_REPLACE (1 << 3) /* replace existing definition	*/
 
 #    define MIME_USER (1L << 16) /* first user flag bit		*/
@@ -103,8 +103,8 @@ typedef struct Mimedisc_s Mimedisc_t;
 struct Mimedisc_s
 {
     unsigned long version; /* interface version		*/
-    unsigned long flags; /* MIME_* flags			*/
-    Error_f errorf; /* error function		*/
+    unsigned long flags;   /* MIME_* flags			*/
+    Error_f errorf;        /* error function		*/
     int (*valuef)(Mime_t *, void *, char *, size_t, Mimedisc_t *);
     /* value extraction function	*/
 };

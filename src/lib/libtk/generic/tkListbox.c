@@ -24,20 +24,20 @@
 
 typedef struct Element
 {
-    int textLength; /* # non-NULL characters in text. */
-    int lBearing; /* Distance from first character's
-                   * origin to left edge of character. */
-    int pixelWidth; /* Total width of element in pixels (including
-                     * left bearing and right bearing). */
-    int selected; /* 1 means this item is selected, 0 means
-                   * it isn't. */
+    int textLength;          /* # non-NULL characters in text. */
+    int lBearing;            /* Distance from first character's
+                              * origin to left edge of character. */
+    int pixelWidth;          /* Total width of element in pixels (including
+                              * left bearing and right bearing). */
+    int selected;            /* 1 means this item is selected, 0 means
+                              * it isn't. */
     struct Element *nextPtr; /* Next in list of all elements of this
                               * listbox, or NULL for last element. */
-    char text[4]; /* Characters of this element, NULL-
-                   * terminated.  The actual space allocated
-                   * here will be as large as needed (> 4,
-                   * most likely).  Must be the last field
-                   * of the record. */
+    char text[4];            /* Characters of this element, NULL-
+                              * terminated.  The actual space allocated
+                              * here will be as large as needed (> 4,
+                              * most likely).  Must be the last field
+                              * of the record. */
 } Element;
 
 #define ElementSize(stringLength)                                            \
@@ -50,20 +50,20 @@ typedef struct Element
 
 typedef struct
 {
-    Tk_Window tkwin; /* Window that embodies the listbox.  NULL
-                      * means that the window has been destroyed
-                      * but the data structures haven't yet been
-                      * cleaned up.*/
-    Display *display; /* Display containing widget.  Used, among
-                       * other things, so that resources can be
-                       * freed even after tkwin has gone away. */
-    Tcl_Interp *interp; /* Interpreter associated with listbox. */
+    Tk_Window tkwin;       /* Window that embodies the listbox.  NULL
+                            * means that the window has been destroyed
+                            * but the data structures haven't yet been
+                            * cleaned up.*/
+    Display *display;      /* Display containing widget.  Used, among
+                            * other things, so that resources can be
+                            * freed even after tkwin has gone away. */
+    Tcl_Interp *interp;    /* Interpreter associated with listbox. */
     Tcl_Command widgetCmd; /* Token for listbox's widget command. */
-    int numElements; /* Total number of elements in this listbox. */
-    Element *firstPtr; /* First in list of elements (NULL if no
-                        * elements). */
-    Element *lastPtr; /* Last in list of elements (NULL if no
-                       * elements). */
+    int numElements;       /* Total number of elements in this listbox. */
+    Element *firstPtr;     /* First in list of elements (NULL if no
+                            * elements). */
+    Element *lastPtr;      /* Last in list of elements (NULL if no
+                            * elements). */
 
     /*
      * Information used when displaying widget:
@@ -71,105 +71,105 @@ typedef struct
 
     Tk_3DBorder normalBorder; /* Used for drawing border around whole
                                * window, plus used for background. */
-    int borderWidth; /* Width of 3-D border around window. */
-    int relief; /* 3-D effect: TK_RELIEF_RAISED, etc. */
-    int highlightWidth; /* Width in pixels of highlight to draw
-                         * around widget when it has the focus.
-                         * <= 0 means don't draw a highlight. */
+    int borderWidth;          /* Width of 3-D border around window. */
+    int relief;               /* 3-D effect: TK_RELIEF_RAISED, etc. */
+    int highlightWidth;       /* Width in pixels of highlight to draw
+                               * around widget when it has the focus.
+                               * <= 0 means don't draw a highlight. */
     XColor *highlightBgColorPtr;
     /* Color for drawing traversal highlight
      * area when highlight is off. */
     XColor *highlightColorPtr; /* Color for drawing traversal highlight. */
-    int inset; /* Total width of all borders, including
-                * traversal highlight and 3-D border.
-                * Indicates how much interior stuff must
-                * be offset from outside edges to leave
-                * room for borders. */
-    XFontStruct *fontPtr; /* Information about text font, or NULL. */
-    XColor *fgColorPtr; /* Text color in normal mode. */
-    GC textGC; /* For drawing normal text. */
-    Tk_3DBorder selBorder; /* Borders and backgrounds for selected
-                            * elements. */
-    int selBorderWidth; /* Width of border around selection. */
-    XColor *selFgColorPtr; /* Foreground color for selected elements. */
-    GC selTextGC; /* For drawing selected text. */
-    int width; /* Desired width of window, in characters. */
-    int height; /* Desired height of window, in lines. */
-    int lineHeight; /* Number of pixels allocated for each line
-                     * in display. */
-    int topIndex; /* Index of top-most element visible in
-                   * window. */
-    int fullLines; /* Number of lines that fit are completely
-                    * visible in window.  There may be one
-                    * additional line at the bottom that is
-                    * partially visible. */
-    int partialLine; /* 0 means that the window holds exactly
-                      * fullLines lines.  1 means that there is
-                      * one additional line that is partially
-                      * visble. */
-    int setGrid; /* Non-zero means pass gridding information
-                  * to window manager. */
+    int inset;                 /* Total width of all borders, including
+                                * traversal highlight and 3-D border.
+                                * Indicates how much interior stuff must
+                                * be offset from outside edges to leave
+                                * room for borders. */
+    XFontStruct *fontPtr;      /* Information about text font, or NULL. */
+    XColor *fgColorPtr;        /* Text color in normal mode. */
+    GC textGC;                 /* For drawing normal text. */
+    Tk_3DBorder selBorder;     /* Borders and backgrounds for selected
+                                * elements. */
+    int selBorderWidth;        /* Width of border around selection. */
+    XColor *selFgColorPtr;     /* Foreground color for selected elements. */
+    GC selTextGC;              /* For drawing selected text. */
+    int width;                 /* Desired width of window, in characters. */
+    int height;                /* Desired height of window, in lines. */
+    int lineHeight;            /* Number of pixels allocated for each line
+                                * in display. */
+    int topIndex;              /* Index of top-most element visible in
+                                * window. */
+    int fullLines;             /* Number of lines that fit are completely
+                                * visible in window.  There may be one
+                                * additional line at the bottom that is
+                                * partially visible. */
+    int partialLine;           /* 0 means that the window holds exactly
+                                * fullLines lines.  1 means that there is
+                                * one additional line that is partially
+                                * visble. */
+    int setGrid;               /* Non-zero means pass gridding information
+                                * to window manager. */
 
     /*
      * Information to support horizontal scrolling:
      */
 
-    int maxWidth; /* Width (in pixels) of widest string in
-                   * listbox. */
+    int maxWidth;    /* Width (in pixels) of widest string in
+                      * listbox. */
     int xScrollUnit; /* Number of pixels in one "unit" for
                       * horizontal scrolling (window scrolls
                       * horizontally in increments of this size).
                       * This is an average character size. */
-    int xOffset; /* The left edge of each string in the
-                  * listbox is offset to the left by this
-                  * many pixels (0 means no offset, positive
-                  * means there is an offset). */
+    int xOffset;     /* The left edge of each string in the
+                      * listbox is offset to the left by this
+                      * many pixels (0 means no offset, positive
+                      * means there is an offset). */
 
     /*
      * Information about what's selected or active, if any.
      */
 
-    Tk_Uid selectMode; /* Selection style: single, browse, multiple,
-                        * or extended.  This value isn't used in C
-                        * code, but the Tcl bindings use it. */
-    int numSelected; /* Number of elements currently selected. */
-    int selectAnchor; /* Fixed end of selection (i.e. element
-                       * at which selection was started.) */
+    Tk_Uid selectMode;   /* Selection style: single, browse, multiple,
+                          * or extended.  This value isn't used in C
+                          * code, but the Tcl bindings use it. */
+    int numSelected;     /* Number of elements currently selected. */
+    int selectAnchor;    /* Fixed end of selection (i.e. element
+                          * at which selection was started.) */
     int exportSelection; /* Non-zero means tie internal listbox
                           * to X selection. */
-    int active; /* Index of "active" element (the one that
-                 * has been selected by keyboard traversal).
-                 * -1 means none. */
+    int active;          /* Index of "active" element (the one that
+                          * has been selected by keyboard traversal).
+                          * -1 means none. */
 
     /*
      * Information for scanning:
      */
 
-    int scanMarkX; /* X-position at which scan started (e.g.
-                    * button was pressed here). */
-    int scanMarkY; /* Y-position at which scan started (e.g.
-                    * button was pressed here). */
+    int scanMarkX;       /* X-position at which scan started (e.g.
+                          * button was pressed here). */
+    int scanMarkY;       /* Y-position at which scan started (e.g.
+                          * button was pressed here). */
     int scanMarkXOffset; /* Value of "xOffset" field when scan
                           * started. */
-    int scanMarkYIndex; /* Index of line that was at top of window
-                         * when scan started. */
+    int scanMarkYIndex;  /* Index of line that was at top of window
+                          * when scan started. */
 
     /*
      * Miscellaneous information:
      */
 
     Tk_Cursor cursor; /* Current cursor for window, or None. */
-    char *takeFocus; /* Value of -takefocus option;  not used in
-                      * the C code, but used by keyboard traversal
-                      * scripts.  Malloc'ed, but may be NULL. */
+    char *takeFocus;  /* Value of -takefocus option;  not used in
+                       * the C code, but used by keyboard traversal
+                       * scripts.  Malloc'ed, but may be NULL. */
     char *yScrollCmd; /* Command prefix for communicating with
                        * vertical scrollbar.  NULL means no command
                        * to issue.  Malloc'ed. */
     char *xScrollCmd; /* Command prefix for communicating with
                        * horizontal scrollbar.  NULL means no command
                        * to issue.  Malloc'ed. */
-    int flags; /* Various flag bits:  see below for
-                * definitions. */
+    int flags;        /* Various flag bits:  see below for
+                       * definitions. */
 } Listbox;
 
 /*
@@ -444,9 +444,9 @@ static int NearestListboxElement _ANSI_ARGS_((Listbox * listPtr, int y));
 int Tk_ListboxCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Listbox *listPtr;
     Tk_Window new;
@@ -570,9 +570,9 @@ error:
 
 static int ListboxWidgetCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about listbox widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Listbox *listPtr = ( Listbox * )clientData;
     int result = TCL_OK;
@@ -1272,11 +1272,11 @@ static void DestroyListbox(memPtr) char *memPtr; /* Info about listbox widget.
 
 static int ConfigureListbox(interp, listPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Listbox *listPtr; /* Information about widget;  may or may
-                   * not already have values for some fields. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Listbox *listPtr;   /* Information about widget;  may or may
+                     * not already have values for some fields. */
+int argc;           /* Number of valid entries in argv. */
+char **argv;        /* Arguments. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     XGCValues gcValues;
     GC new;
@@ -1624,16 +1624,16 @@ static void
 ListboxComputeGeometry(listPtr, fontChanged, maxIsStale, updateGrid)
 Listbox *listPtr; /* Listbox whose geometry is to be
                    * recomputed. */
-int fontChanged; /* Non-zero means the font may have changed
-                  * so per-element width information also
-                  * has to be computed. */
-int maxIsStale; /* Non-zero means the "maxWidth" field may
-                 * no longer be up-to-date and must
-                 * be recomputed.  If fontChanged is 1 then
-                 * this must be 1. */
-int updateGrid; /* Non-zero means call Tk_SetGrid or
-                 * Tk_UnsetGrid to update gridding for
-                 * the window. */
+int fontChanged;  /* Non-zero means the font may have changed
+                   * so per-element width information also
+                   * has to be computed. */
+int maxIsStale;   /* Non-zero means the "maxWidth" field may
+                   * no longer be up-to-date and must
+                   * be recomputed.  If fontChanged is 1 then
+                   * this must be 1. */
+int updateGrid;   /* Non-zero means call Tk_SetGrid or
+                   * Tk_UnsetGrid to update gridding for
+                   * the window. */
 {
     Element *elPtr;
     int dummy, fontHeight, width, height, pixelWidth, pixelHeight;
@@ -1729,9 +1729,9 @@ static void InsertEls(listPtr,
                       argc,
                       argv) Listbox *listPtr; /* Listbox that is to get the
                                                * new elements. */
-int index; /* Add the new elements before this
-            * element. */
-int argc; /* Number of new elements to add. */
+int index;   /* Add the new elements before this
+              * element. */
+int argc;    /* Number of new elements to add. */
 char **argv; /* New elements (one per entry). */
 {
     Element *prevPtr, *newPtr;
@@ -1862,7 +1862,7 @@ static void DeleteEls(listPtr,
                       first,
                       last) Listbox *listPtr; /* Listbox widget to modify. */
 int first; /* Index of first element to delete. */
-int last; /* Index of last element to delete. */
+int last;  /* Index of last element to delete. */
 {
     Element *prevPtr, *elPtr;
     int count, i, widthChanged;
@@ -2011,7 +2011,7 @@ int last; /* Index of last element to delete. */
 
 static void ListboxEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
-XEvent *eventPtr; /* Information about event. */
+XEvent *eventPtr;      /* Information about event. */
 {
     Listbox *listPtr = ( Listbox * )clientData;
 
@@ -2150,14 +2150,14 @@ ClientData clientData; /* Pointer to widget record for widget. */
 
 static int GetListboxIndex(interp, listPtr, string, numElsOK, indexPtr)
 Tcl_Interp *interp; /* For error messages. */
-Listbox *listPtr; /* Listbox for which the index is being
-                   * specified. */
-char *string; /* Specifies an element in the listbox. */
-int numElsOK; /* 0 means the return value must be less
-               * less than the number of entries in
-               * the listbox;  1 means it may also be
-               * equal to the number of entries. */
-int *indexPtr; /* Where to store converted index. */
+Listbox *listPtr;   /* Listbox for which the index is being
+                     * specified. */
+char *string;       /* Specifies an element in the listbox. */
+int numElsOK;       /* 0 means the return value must be less
+                     * less than the number of entries in
+                     * the listbox;  1 means it may also be
+                     * equal to the number of entries. */
+int *indexPtr;      /* Where to store converted index. */
 {
     int c;
     size_t length;
@@ -2468,12 +2468,12 @@ int y; /* Y-coordinate in listPtr's window. */
 
 static void ListboxSelect(listPtr, first, last, select)
 Listbox *listPtr; /* Information about widget. */
-int first; /* Index of first element to
-            * select or deselect. */
-int last; /* Index of last element to
-           * select or deselect. */
-int select; /* 1 means select items, 0 means
-             * deselect them. */
+int first;        /* Index of first element to
+                   * select or deselect. */
+int last;         /* Index of last element to
+                   * select or deselect. */
+int select;       /* 1 means select items, 0 means
+                   * deselect them. */
 {
     int i, firstRedisplay, increment, oldCount;
     Element *elPtr;
@@ -2548,13 +2548,13 @@ int select; /* 1 means select items, 0 means
 
 static int ListboxFetchSelection(clientData, offset, buffer, maxBytes)
 ClientData clientData; /* Information about listbox widget. */
-int offset; /* Offset within selection of first
-             * byte to be returned. */
-char *buffer; /* Location in which to place
-               * selection. */
-int maxBytes; /* Maximum number of bytes to place
-               * at buffer, not including terminating
-               * NULL character. */
+int offset;            /* Offset within selection of first
+                        * byte to be returned. */
+char *buffer;          /* Location in which to place
+                        * selection. */
+int maxBytes;          /* Maximum number of bytes to place
+                        * at buffer, not including terminating
+                        * NULL character. */
 {
     Listbox *listPtr = ( Listbox * )clientData;
     Element *elPtr;
@@ -2667,10 +2667,10 @@ ListboxRedrawRange(listPtr, first, last) Listbox *listPtr; /* Information
                                                               about widget. */
 int first; /* Index of first element in list
             * that needs to be redrawn. */
-int last; /* Index of last element in list
-           * that needs to be redrawn.  May
-           * be less than first;
-           * these just bracket a range. */
+int last;  /* Index of last element in list
+            * that needs to be redrawn.  May
+            * be less than first;
+            * these just bracket a range. */
 {
     if ((listPtr->tkwin == NULL) || !Tk_IsMapped(listPtr->tkwin)
         || (listPtr->flags & REDRAW_PENDING))

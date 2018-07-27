@@ -37,8 +37,8 @@
 typedef struct _sort_s
 {
     struct _sort_s *next; /* fifo queue link	*/
-    ssize_t *vect; /* vector part to sort	*/
-    ssize_t size; /* number of elements	*/
+    ssize_t *vect;        /* vector part to sort	*/
+    ssize_t size;         /* number of elements	*/
 } Sort_t;
 
 #if __STD_C
@@ -47,10 +47,10 @@ vcrdvector(Vcrdtable_t *tbl, ssize_t f, Vcchar_t *trdt, ssize_t trsz, int type)
 #else
 int vcrdvector(tbl, f, trdt, trsz, type) Vcrdtable_t *tbl; /* table with data
                                                               to be sorted	*/
-ssize_t f; /* field to be sorted		*/
+ssize_t f;      /* field to be sorted		*/
 Vcchar_t *trdt; /* space for transformed data	*/
-ssize_t trsz; /* size of above space		*/
-int type; /* encoding or decoding		*/
+ssize_t trsz;   /* size of above space		*/
+int type;       /* encoding or decoding		*/
 #endif
 {
     ssize_t p, r, cmin, cmax, cpos, flen, recn;
@@ -107,7 +107,7 @@ int type; /* encoding or decoding		*/
         }
     }
     else /* if(type == VC_DECODE) */
-    { /**/
+    {    /**/
         DEBUG_ASSERT(trdt != NIL(Vcchar_t *));
 
         vect = tbl->fld[f].vect;
@@ -166,7 +166,7 @@ int type; /* encoding or decoding		*/
             }
         }
         else /* if(type == VC_DECODE) */
-        { /* reset signal for completed records */
+        {    /* reset signal for completed records */
             if (cpos > 0)
             {
                 for (p = 0; p < tbl->recn; ++p)
@@ -181,7 +181,7 @@ int type; /* encoding or decoding		*/
 
             for (recn = 0, dt = rdt, p = 0; p < tbl->recn; ++p)
             {
-                r = vect[p]; /* record being processed */
+                r = vect[p];     /* record being processed */
                 if (cldt[r] < 0) /* record already done */
                     recn += 1;
                 else if (dt < enddt) /* byte belongs to it */
@@ -348,7 +348,7 @@ int type; /* encoding or decoding		*/
         if (p < ns)
             /**/ DEBUG_ASSERT(p < nt && s[p] < t[p]);
         else /*if(p == ns)*/
-        { /**/
+        {    /**/
             DEBUG_ASSERT(ns <= nt);
             if (ns == nt)
                 /**/ DEBUG_ASSERT(vect[r - 1] < vect[r]);

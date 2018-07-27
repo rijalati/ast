@@ -24,21 +24,21 @@
 
 typedef struct
 {
-    Tk_Window tkwin; /* Window that embodies the message.  NULL
-                      * means that the window has been destroyed
-                      * but the data structures haven't yet been
-                      * cleaned up.*/
-    Display *display; /* Display containing widget.  Used, among
-                       * other things, so that resources can be
-                       * freed even after tkwin has gone away. */
-    Tcl_Interp *interp; /* Interpreter associated with message. */
+    Tk_Window tkwin;       /* Window that embodies the message.  NULL
+                            * means that the window has been destroyed
+                            * but the data structures haven't yet been
+                            * cleaned up.*/
+    Display *display;      /* Display containing widget.  Used, among
+                            * other things, so that resources can be
+                            * freed even after tkwin has gone away. */
+    Tcl_Interp *interp;    /* Interpreter associated with message. */
     Tcl_Command widgetCmd; /* Token for message's widget command. */
-    Tk_Uid string; /* String displayed in message. */
-    int numChars; /* Number of characters in string, not
-                   * including terminating NULL character. */
-    char *textVarName; /* Name of variable (malloc'ed) or NULL.
-                        * If non-NULL, message displays the contents
-                        * of this variable. */
+    Tk_Uid string;         /* String displayed in message. */
+    int numChars;          /* Number of characters in string, not
+                            * including terminating NULL character. */
+    char *textVarName;     /* Name of variable (malloc'ed) or NULL.
+                            * If non-NULL, message displays the contents
+                            * of this variable. */
 
     /*
      * Information used when displaying widget:
@@ -47,8 +47,8 @@ typedef struct
     Tk_3DBorder border; /* Structure used to draw 3-D border and
                          * background.  NULL means a border hasn't
                          * been created yet. */
-    int borderWidth; /* Width of border. */
-    int relief; /* 3-D effect: TK_RELIEF_RAISED, etc. */
+    int borderWidth;    /* Width of border. */
+    int relief;         /* 3-D effect: TK_RELIEF_RAISED, etc. */
     int highlightWidth; /* Width in pixels of highlight to draw
                          * around widget when it has the focus.
                          * <= 0 means don't draw a highlight. */
@@ -56,38 +56,38 @@ typedef struct
     /* Color for drawing traversal highlight
      * area when highlight is off. */
     XColor *highlightColorPtr; /* Color for drawing traversal highlight. */
-    int inset; /* Total width of all borders, including
-                * traversal highlight and 3-D border.
-                * Indicates how much interior stuff must
-                * be offset from outside edges to leave
-                * room for borders. */
-    XFontStruct *fontPtr; /* Information about text font, or NULL. */
-    XColor *fgColorPtr; /* Foreground color in normal mode. */
-    GC textGC; /* GC for drawing text in normal mode. */
-    int padX, padY; /* User-requested extra space around text. */
-    Tk_Anchor anchor; /* Where to position text within window region
-                       * if window is larger or smaller than
-                       * needed. */
-    int width; /* User-requested width, in pixels.  0 means
-                * compute width using aspect ratio below. */
-    int aspect; /* Desired aspect ratio for window
-                 * (100*width/height). */
-    int lineLength; /* Length of each line, in pixels.  Computed
-                     * from width and/or aspect. */
-    int msgHeight; /* Total number of pixels in vertical direction
-                    * needed to display message. */
-    Tk_Justify justify; /* Justification for text. */
+    int inset;                 /* Total width of all borders, including
+                                * traversal highlight and 3-D border.
+                                * Indicates how much interior stuff must
+                                * be offset from outside edges to leave
+                                * room for borders. */
+    XFontStruct *fontPtr;      /* Information about text font, or NULL. */
+    XColor *fgColorPtr;        /* Foreground color in normal mode. */
+    GC textGC;                 /* GC for drawing text in normal mode. */
+    int padX, padY;            /* User-requested extra space around text. */
+    Tk_Anchor anchor;          /* Where to position text within window region
+                                * if window is larger or smaller than
+                                * needed. */
+    int width;                 /* User-requested width, in pixels.  0 means
+                                * compute width using aspect ratio below. */
+    int aspect;                /* Desired aspect ratio for window
+                                * (100*width/height). */
+    int lineLength;            /* Length of each line, in pixels.  Computed
+                                * from width and/or aspect. */
+    int msgHeight;             /* Total number of pixels in vertical direction
+                                * needed to display message. */
+    Tk_Justify justify;        /* Justification for text. */
 
     /*
      * Miscellaneous information:
      */
 
     Tk_Cursor cursor; /* Current cursor for window, or None. */
-    char *takeFocus; /* Value of -takefocus option;  not used in
-                      * the C code, but used by keyboard traversal
-                      * scripts.  Malloc'ed, but may be NULL. */
-    int flags; /* Various flags;  see below for
-                * definitions. */
+    char *takeFocus;  /* Value of -takefocus option;  not used in
+                       * the C code, but used by keyboard traversal
+                       * scripts.  Malloc'ed, but may be NULL. */
+    int flags;        /* Various flags;  see below for
+                       * definitions. */
 } Message;
 
 /*
@@ -311,9 +311,9 @@ static void DisplayMessage _ANSI_ARGS_((ClientData clientData));
 int Tk_MessageCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Message *msgPtr;
     Tk_Window new;
@@ -408,9 +408,9 @@ error:
 
 static int MessageWidgetCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about message widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Message *msgPtr = ( Message * )clientData;
     size_t length;
@@ -544,11 +544,11 @@ static void DestroyMessage(memPtr) char *memPtr; /* Info about message widget.
 
 static int ConfigureMessage(interp, msgPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Message *msgPtr; /* Information about widget;  may or may
-                  * not already have values for some fields. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Message *msgPtr;    /* Information about widget;  may or may
+                     * not already have values for some fields. */
+int argc;           /* Number of valid entries in argv. */
+char **argv;        /* Arguments. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     XGCValues gcValues;
     GC newGC;
@@ -981,7 +981,7 @@ ClientData clientData; /* Information about window. */
 
 static void MessageEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
-XEvent *eventPtr; /* Information about event. */
+XEvent *eventPtr;      /* Information about event. */
 {
     Message *msgPtr = ( Message * )clientData;
 
@@ -1096,10 +1096,10 @@ ClientData clientData; /* Pointer to widget record for widget. */
 /* ARGSUSED */
 static char *MessageTextVarProc(clientData, interp, name1, name2, flags)
 ClientData clientData; /* Information about message. */
-Tcl_Interp *interp; /* Interpreter containing variable. */
-char *name1; /* Name of variable. */
-char *name2; /* Second part of variable name. */
-int flags; /* Information about what happened. */
+Tcl_Interp *interp;    /* Interpreter containing variable. */
+char *name1;           /* Name of variable. */
+char *name2;           /* Second part of variable name. */
+int flags;             /* Information about what happened. */
 {
     Message *msgPtr = ( Message * )clientData;
     char *value;

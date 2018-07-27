@@ -34,14 +34,14 @@
 #    define EXIT_CODE(x) (( x )&0177)
 #endif
 
-#define AFTER 0 /* done -- making after prereqs	*/
-#define BEFORE 001 /* done -- before after prereqs	*/
-#define BLOCKED 002 /* waiting for prereqs		*/
+#define AFTER 0          /* done -- making after prereqs	*/
+#define BEFORE 001       /* done -- before after prereqs	*/
+#define BLOCKED 002      /* waiting for prereqs		*/
 #define INTERMEDIATE 003 /* waiting for parent cancel	*/
-#define READY 004 /* job ready to run		*/
-#define RUNNING 005 /* job action sent to coshell	*/
+#define READY 004        /* job ready to run		*/
+#define RUNNING 005      /* job action sent to coshell	*/
 
-#define PUSHED 010 /* currently push'd		*/
+#define PUSHED 010       /* currently push'd		*/
 #define STATUS (~PUSHED) /* status mask			*/
 
 #define MAMNAME(r)                                                           \
@@ -79,34 +79,34 @@ typedef struct Joblist_s Joblist_t;
 struct Context_s /* job target context		*/
 {
     Context_t *next; /* for free list link		*/
-    Frame_t *frame; /* active target frames		*/
-    Frame_t *last; /* last active target frame	*/
-    int targetview; /* state.targetview		*/
+    Frame_t *frame;  /* active target frames		*/
+    Frame_t *last;   /* last active target frame	*/
+    int targetview;  /* state.targetview		*/
 };
 
 struct Joblist_s /* job list cell		*/
 {
-    Joblist_t *next; /* next in list			*/
-    Joblist_t *prev; /* prev in list			*/
-    Cojob_t *cojob; /* coshell job info		*/
-    Rule_t *target; /* target for job		*/
-    List_t *prereqs; /* these must be done		*/
+    Joblist_t *next;    /* next in list			*/
+    Joblist_t *prev;    /* prev in list			*/
+    Cojob_t *cojob;     /* coshell job info		*/
+    Rule_t *target;     /* target for job		*/
+    List_t *prereqs;    /* these must be done		*/
     Context_t *context; /* job target context		*/
-    char *action; /* unexpanded action		*/
-    int status; /* job status			*/
-    Flags_t flags; /* job flags			*/
+    char *action;       /* unexpanded action		*/
+    int status;         /* job status			*/
+    Flags_t flags;      /* job flags			*/
 };
 
 typedef struct Jobstate_s /* job state			*/
 {
-    Joblist_t *firstjob; /* first job			*/
-    Joblist_t *lastjob; /* last job			*/
-    Joblist_t *freejob; /* free jobs			*/
-    Frame_t *freeframe; /* free target frames		*/
+    Joblist_t *firstjob;    /* first job			*/
+    Joblist_t *lastjob;     /* last job			*/
+    Joblist_t *freejob;     /* free jobs			*/
+    Frame_t *freeframe;     /* free target frames		*/
     Context_t *freecontext; /* free job context headers	*/
-    int intermediate; /* # INTERMEDIATE jobs		*/
-    Sfio_t *tmp; /* tmp stream			*/
-    Rule_t *triggered; /* triggered but not yet a job	*/
+    int intermediate;       /* # INTERMEDIATE jobs		*/
+    Sfio_t *tmp;            /* tmp stream			*/
+    Rule_t *triggered;      /* triggered but not yet a job	*/
 } Jobstate_t;
 
 static Jobstate_t jobs;

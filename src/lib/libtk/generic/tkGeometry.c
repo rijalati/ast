@@ -23,12 +23,12 @@
 
 typedef struct MaintainSlave
 {
-    Tk_Window slave; /* The slave window being positioned. */
-    Tk_Window master; /* The master that determines slave's
-                       * position; it must be a descendant of
-                       * slave's parent. */
-    int x, y; /* Desired position of slave relative to
-               * master. */
+    Tk_Window slave;   /* The slave window being positioned. */
+    Tk_Window master;  /* The master that determines slave's
+                        * position; it must be a descendant of
+                        * slave's parent. */
+    int x, y;          /* Desired position of slave relative to
+                        * master. */
     int width, height; /* Desired dimensions of slave. */
     struct MaintainSlave *nextPtr;
     /* Next in list of Maintains associated
@@ -42,13 +42,13 @@ typedef struct MaintainSlave
 
 typedef struct MaintainMaster
 {
-    Tk_Window ancestor; /* The lowest ancestor of this window
-                         * for which we have *not* created a
-                         * StructureNotify handler.  May be the
-                         * same as the window itself. */
-    int checkScheduled; /* Non-zero means that there is already a
-                         * call to MaintainCheckProc scheduled as
-                         * an idle handler. */
+    Tk_Window ancestor;      /* The lowest ancestor of this window
+                              * for which we have *not* created a
+                              * StructureNotify handler.  May be the
+                              * same as the window itself. */
+    int checkScheduled;      /* Non-zero means that there is already a
+                              * call to MaintainCheckProc scheduled as
+                              * an idle handler. */
     MaintainSlave *slavePtr; /* First in list of all slaves associated
                               * with this master. */
 } MaintainMaster;
@@ -103,9 +103,9 @@ void Tk_ManageGeometry(tkwin,
                        clientData) Tk_Window tkwin; /* Window whose geometry
                                                      * is to be managed by
                                                      * proc.  */
-Tk_GeomMgr *mgrPtr; /* Static structure describing the
-                     * geometry manager.  This structure
-                     * must never go away. */
+Tk_GeomMgr *mgrPtr;    /* Static structure describing the
+                        * geometry manager.  This structure
+                        * must never go away. */
 ClientData clientData; /* Arbitrary one-word argument to
                         * pass to geometry manager procedures. */
 {
@@ -258,10 +258,10 @@ int width; /* Width of internal border, in pixels. */
  */
 
 void Tk_MaintainGeometry(slave, master, x, y, width, height)
-Tk_Window slave; /* Slave for geometry management. */
-Tk_Window master; /* Master for slave; must be a descendant
-                   * of slave's parent. */
-int x, y; /* Desired position of slave within master. */
+Tk_Window slave;   /* Slave for geometry management. */
+Tk_Window master;  /* Master for slave; must be a descendant
+                    * of slave's parent. */
+int x, y;          /* Desired position of slave within master. */
 int width, height; /* Desired dimensions for slave. */
 {
     Tcl_HashEntry *hPtr;
@@ -499,7 +499,7 @@ Tk_Window master; /* Master for slave; must be a descendant
 static void MaintainMasterProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to MaintainMaster structure
                         * for the master window. */
-XEvent *eventPtr; /* Describes what just happened. */
+XEvent *eventPtr;      /* Describes what just happened. */
 {
     MaintainMaster *masterPtr = ( MaintainMaster * )clientData;
     MaintainSlave *slavePtr;
@@ -557,7 +557,7 @@ XEvent *eventPtr; /* Describes what just happened. */
 static void MaintainSlaveProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to MaintainSlave structure
                         * for master-slave pair. */
-XEvent *eventPtr; /* Describes what just happened. */
+XEvent *eventPtr;      /* Describes what just happened. */
 {
     MaintainSlave *slavePtr = ( MaintainSlave * )clientData;
 

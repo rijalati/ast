@@ -436,7 +436,7 @@ log(x) double x;
     /* (exact) + (tiny)						*/
 
     u1 += m * logF_head[N] + logF_head[j]; /* exact */
-    u2 = (u2 + logF_tail[j]) + q; /* tiny */
+    u2 = (u2 + logF_tail[j]) + q;          /* tiny */
     u2 += logF_tail[N] * m;
     return (u1 + u2);
 }

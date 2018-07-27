@@ -25,7 +25,7 @@
 #endif
 
 #define _VCODEX_PRIVATE                                                      \
-    Vcbuffer_t *list; /* allocated buffers	*/                                \
+    Vcbuffer_t *list;  /* allocated buffers	*/                               \
     unsigned int busy; /* total buffer size 	*/                              \
     unsigned int nbuf; /* number of buffers 	*/
 
@@ -79,9 +79,9 @@
 
 #define TYPECAST(tp, p) ((tp)(( unsigned long )(p)))
 
-#define RL_ESC 255 /* default escape character	*/
+#define RL_ESC 255  /* default escape character	*/
 #define RL_ZERO 254 /* (0,RL_ZERO) codes 0-runs	*/
-#define RL_ONE 253 /* (1,RL_ONE) codes 1-runs	*/
+#define RL_ONE 253  /* (1,RL_ONE) codes 1-runs	*/
 
 #define VCRAND() (_Vcrand_ = _Vcrand_ * 16777617 + 3)
 #define VCRSEED(x) (_Vcrand_ = (x))

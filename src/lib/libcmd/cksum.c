@@ -118,25 +118,25 @@ static const char usage[]
 
 typedef struct State_s /* program state		*/
 {
-    int all; /* list all items		*/
-    Sfio_t *check; /* check previous output	*/
-    int flags; /* sumprint() SUM_* flags	*/
-    gid_t gid; /* caller gid			*/
-    int header; /* list method on output	*/
-    int list; /* list file name too		*/
-    Sum_t *oldsum; /* previous sum method		*/
-    int permissions; /* include mode,uer,group	*/
-    int haveperm; /* permissions in the input	*/
-    int recursive; /* recursively descend dirs	*/
-    size_t scale; /* scale override		*/
+    int all;            /* list all items		*/
+    Sfio_t *check;      /* check previous output	*/
+    int flags;          /* sumprint() SUM_* flags	*/
+    gid_t gid;          /* caller gid			*/
+    int header;         /* list method on output	*/
+    int list;           /* list file name too		*/
+    Sum_t *oldsum;      /* previous sum method		*/
+    int permissions;    /* include mode,uer,group	*/
+    int haveperm;       /* permissions in the input	*/
+    int recursive;      /* recursively descend dirs	*/
+    size_t scale;       /* scale override		*/
     unsigned long size; /* combined size of all files	*/
-    int silent; /* silent check, 0 exit if ok	*/
+    int silent;         /* silent check, 0 exit if ok	*/
     int (*sort)(FTSENT *const *, FTSENT *const *);
     Sum_t *sum; /* sum method			*/
-    bool text; /* \r\n == \n			*/
-    int total; /* list totals only		*/
-    uid_t uid; /* caller uid			*/
-    int warn; /* invalid check line warnings	*/
+    bool text;  /* \r\n == \n			*/
+    int total;  /* list totals only		*/
+    uid_t uid;  /* caller uid			*/
+    int warn;   /* invalid check line warnings	*/
 } State_t;
 
 static void

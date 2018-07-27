@@ -29,8 +29,8 @@
 typedef struct
 {
     char *name; /* Name of event. */
-    int type; /* Event type for X, such as
-               * ButtonPress. */
+    int type;   /* Event type for X, such as
+                 * ButtonPress. */
 } EventInfo;
 
 static EventInfo eventArray[] = { { "Motion", MotionNotify },
@@ -135,11 +135,11 @@ static int flagArray[LASTEvent] = {
 typedef struct TImageMaster
 {
     Tk_ImageMaster master; /* Tk's token for image master. */
-    Tcl_Interp *interp; /* Interpreter for application. */
-    int width, height; /* Dimensions of image. */
-    char *imageName; /* Name of image (malloc-ed). */
-    char *varName; /* Name of variable in which to log
-                    * events for image (malloc-ed). */
+    Tcl_Interp *interp;    /* Interpreter for application. */
+    int width, height;     /* Dimensions of image. */
+    char *imageName;       /* Name of image (malloc-ed). */
+    char *varName;         /* Name of variable in which to log
+                            * events for image (malloc-ed). */
 } TImageMaster;
 
 /*
@@ -150,8 +150,8 @@ typedef struct TImageMaster
 typedef struct TImageInstance
 {
     TImageMaster *masterPtr; /* Pointer to master for image. */
-    XColor *fg; /* Foreground color for drawing in image. */
-    GC gc; /* Graphics context for drawing in image. */
+    XColor *fg;              /* Foreground color for drawing in image. */
+    GC gc;                   /* Graphics context for drawing in image. */
 } TImageInstance;
 
 /*
@@ -180,12 +180,12 @@ static void ImageFree _ANSI_ARGS_((ClientData clientData, Display *display));
 static void ImageDelete _ANSI_ARGS_((ClientData clientData));
 
 static Tk_ImageType imageType = {
-    "test", /* name */
-    ImageCreate, /* createProc */
-    ImageGet, /* getProc */
-    ImageDisplay, /* displayProc */
-    ImageFree, /* freeProc */
-    ImageDelete, /* deleteProc */
+    "test",                /* name */
+    ImageCreate,           /* createProc */
+    ImageGet,              /* getProc */
+    ImageDisplay,          /* displayProc */
+    ImageFree,             /* freeProc */
+    ImageDelete,           /* deleteProc */
     ( Tk_ImageType * )NULL /* nextPtr */
 };
 
@@ -197,7 +197,7 @@ static Tk_ImageType imageType = {
 
 typedef struct NewApp
 {
-    Tcl_Interp *interp; /* Token for interpreter. */
+    Tcl_Interp *interp;     /* Token for interpreter. */
     struct NewApp *nextPtr; /* Next in list of new interpreters. */
 } NewApp;
 
@@ -327,9 +327,9 @@ int Tktest_Init(interp) Tcl_Interp *interp; /* Interpreter for application. */
 #ifdef WIN_TCL
 static int TestclipboardCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window for application. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     TkWindow *winPtr = ( TkWindow * )clientData;
     HGLOBAL handle;
@@ -371,9 +371,9 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 static int TestdeleteappsCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window for application. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     NewApp *nextPtr;
 
@@ -407,9 +407,9 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 static int TesteventCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window for application. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window main = ( Tk_Window )clientData;
     Tk_Window tkwin, tkwin2;
@@ -969,9 +969,9 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 static int TestmakeexistCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window for application. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window main = ( Tk_Window )clientData;
     int i;
@@ -1010,15 +1010,15 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 static int
 ImageCreate(interp, name, argc, argv, typePtr, master, clientDataPtr)
-Tcl_Interp *interp; /* Interpreter for application containing
-                     * image. */
-char *name; /* Name to use for image. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings for options (doesn't
-              * include image name or type). */
-Tk_ImageType *typePtr; /* Pointer to our type record (not used). */
-Tk_ImageMaster master; /* Token for image, to be used by us in
-                        * later callbacks. */
+Tcl_Interp *interp;        /* Interpreter for application containing
+                            * image. */
+char *name;                /* Name to use for image. */
+int argc;                  /* Number of arguments. */
+char **argv;               /* Argument strings for options (doesn't
+                            * include image name or type). */
+Tk_ImageType *typePtr;     /* Pointer to our type record (not used). */
+Tk_ImageMaster master;     /* Token for image, to be used by us in
+                            * later callbacks. */
 ClientData *clientDataPtr; /* Store manager's token for image here;
                             * it will be returned in later callbacks. */
 {
@@ -1082,9 +1082,9 @@ ClientData *clientDataPtr; /* Store manager's token for image here;
 /* ARGSUSED */
 static int ImageCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window for application. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     TImageMaster *timPtr = ( TImageMaster * )clientData;
     int x, y, width, height;
@@ -1203,12 +1203,12 @@ static void ImageDisplay(clientData,
                          height,
                          drawableX,
                          drawableY)
-ClientData clientData; /* Pointer to TImageInstance for image. */
-Display *display; /* Display to use for drawing. */
-Drawable drawable; /* Where to redraw image. */
-int imageX, imageY; /* Origin of area to redraw, relative to
-                     * origin of image. */
-int width, height; /* Dimensions of area to redraw. */
+ClientData clientData;    /* Pointer to TImageInstance for image. */
+Display *display;         /* Display to use for drawing. */
+Drawable drawable;        /* Where to redraw image. */
+int imageX, imageY;       /* Origin of area to redraw, relative to
+                           * origin of image. */
+int width, height;        /* Dimensions of area to redraw. */
 int drawableX, drawableY; /* Coordinates in drawable corresponding to
                            * imageX and imageY. */
 {
@@ -1278,7 +1278,7 @@ int drawableX, drawableY; /* Coordinates in drawable corresponding to
 
 static void ImageFree(clientData, display)
 ClientData clientData; /* Pointer to TImageInstance for instance. */
-Display *display; /* Display where image was to be drawn. */
+Display *display;      /* Display where image was to be drawn. */
 {
     TImageInstance *instPtr = ( TImageInstance * )clientData;
     char buffer[200];
@@ -1351,9 +1351,9 @@ ClientData clientData; /* Pointer to TImageMaster for image.  When
 /* ARGSUSED */
 static int TestsendCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window for application. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     TkWindow *winPtr = ( TkWindow * )clientData;
 

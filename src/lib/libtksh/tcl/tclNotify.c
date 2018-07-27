@@ -40,8 +40,8 @@ TclEventSource *tclFirstEventSourcePtr = NULL;
 
 static int blockTimeSet = 0; /* 0 means there is no maximum block
                               * time:  block forever. */
-static Tcl_Time blockTime; /* If blockTimeSet is 1, gives the
-                            * maximum elapsed time for the next block. */
+static Tcl_Time blockTime;   /* If blockTimeSet is 1, gives the
+                              * maximum elapsed time for the next block. */
 
 /*
  * The following variables keep track of the event queue.  In addition
@@ -108,8 +108,8 @@ Tcl_EventSetupProc *setupProc; /* Procedure to invoke to figure out
                                 * what to wait for. */
 Tcl_EventCheckProc *checkProc; /* Procedure to call after waiting
                                 * to see what happened. */
-ClientData clientData; /* One-word argument to pass to
-                        * setupProc and checkProc. */
+ClientData clientData;         /* One-word argument to pass to
+                                * setupProc and checkProc. */
 {
     TclEventSource *sourcePtr;
 
@@ -145,8 +145,8 @@ Tcl_EventSetupProc *setupProc; /* Procedure to invoke to figure out
                                 * what to wait for. */
 Tcl_EventCheckProc *checkProc; /* Procedure to call after waiting
                                 * to see what happened. */
-ClientData clientData; /* One-word argument to pass to
-                        * setupProc and checkProc. */
+ClientData clientData;         /* One-word argument to pass to
+                                * setupProc and checkProc. */
 {
     TclEventSource *sourcePtr, *prevPtr;
 
@@ -195,12 +195,12 @@ ClientData clientData; /* One-word argument to pass to
  */
 
 void Tcl_QueueEvent(evPtr, position)
-Tcl_Event *evPtr; /* Event to add to queue.  The storage
-                   * space must have been allocated the caller
-                   * with malloc (ckalloc), and it becomes
-                   * the property of the event queue.  It
-                   * will be freed after the event has been
-                   * handled. */
+Tcl_Event *evPtr;           /* Event to add to queue.  The storage
+                             * space must have been allocated the caller
+                             * with malloc (ckalloc), and it becomes
+                             * the property of the event queue.  It
+                             * will be freed after the event has been
+                             * handled. */
 Tcl_QueuePosition position; /* One of TCL_QUEUE_TAIL, TCL_QUEUE_HEAD,
                              * TCL_QUEUE_MARK. */
 {

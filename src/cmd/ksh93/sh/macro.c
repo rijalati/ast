@@ -61,29 +61,29 @@ static int Skip;
 static int _c_;
 typedef struct _mac_
 {
-    Shell_t *shp; /* pointer to shell interpreter */
-    Sfio_t *sp; /* stream pointer for here-document */
+    Shell_t *shp;            /* pointer to shell interpreter */
+    Sfio_t *sp;              /* stream pointer for here-document */
     struct argnod **arghead; /* address of head of argument list */
-    char *ifsp; /* pointer to IFS value */
-    int fields; /* number of fields */
-    short quoted; /* set when word has quotes */
-    unsigned char ifs; /* first char of IFS */
-    char atmode; /* when processing $@ */
-    char quote; /* set within double quoted contexts */
-    char lit; /* set within single quotes */
-    char split; /* set when word splittin is possible */
-    char pattern; /* set when file expansion follows */
-    char patfound; /* set if pattern character found */
-    char assign; /* set for assignments */
-    char arith; /* set for ((...)) */
-    char let; /* set when expanding let arguments */
-    char zeros; /* strip leading zeros when set */
-    char arrayok; /* $x[] ok for arrays */
-    char subcopy; /* set when copying subscript */
-    char macsub; /* set to 1 when running mac_substitute */
-    char maccase; /* set to 1 when expanding case pattern */
-    int dotdot; /* set for .. in subscript */
-    void *nvwalk; /* for name space walking*/
+    char *ifsp;              /* pointer to IFS value */
+    int fields;              /* number of fields */
+    short quoted;            /* set when word has quotes */
+    unsigned char ifs;       /* first char of IFS */
+    char atmode;             /* when processing $@ */
+    char quote;              /* set within double quoted contexts */
+    char lit;                /* set within single quotes */
+    char split;              /* set when word splittin is possible */
+    char pattern;            /* set when file expansion follows */
+    char patfound;           /* set if pattern character found */
+    char assign;             /* set for assignments */
+    char arith;              /* set for ((...)) */
+    char let;                /* set when expanding let arguments */
+    char zeros;              /* strip leading zeros when set */
+    char arrayok;            /* $x[] ok for arrays */
+    char subcopy;            /* set when copying subscript */
+    char macsub;             /* set to 1 when running mac_substitute */
+    char maccase;            /* set to 1 when expanding case pattern */
+    int dotdot;              /* set for .. in subscript */
+    void *nvwalk;            /* for name space walking*/
 } Mac_t;
 
 #undef ESCAPE
@@ -96,15 +96,15 @@ typedef struct _mac_
 #define ltos(x) fmtbase(( long )(x), 0, 0)
 
 /* type of macro expansions */
-#define M_BRACE 1 /* ${var}	*/
-#define M_TREE 2 /* ${var.}	*/
-#define M_SIZE 3 /* ${#var}	*/
-#define M_VNAME 4 /* ${!var}	*/
-#define M_SUBNAME 5 /* ${!var[sub]}	*/
-#define M_NAMESCAN 6 /* ${!var*}	*/
+#define M_BRACE 1     /* ${var}	*/
+#define M_TREE 2      /* ${var.}	*/
+#define M_SIZE 3      /* ${#var}	*/
+#define M_VNAME 4     /* ${!var}	*/
+#define M_SUBNAME 5   /* ${!var[sub]}	*/
+#define M_NAMESCAN 6  /* ${!var*}	*/
 #define M_NAMECOUNT 7 /* ${#var*}	*/
-#define M_TYPE 8 /* ${@var}	*/
-#define M_EVAL 9 /* ${$var}	*/
+#define M_TYPE 8      /* ${@var}	*/
+#define M_EVAL 9      /* ${$var}	*/
 
 static int
 substring(const char *, size_t, const char *, int[], int);

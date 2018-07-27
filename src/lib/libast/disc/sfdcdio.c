@@ -34,7 +34,7 @@
 typedef struct _direct_s
 {
     Sfdisc_t disc; /* Sfio discipline	*/
-    int cntl; /* file control flags	*/
+    int cntl;      /* file control flags	*/
 #ifdef F_DIOINFO
     struct dioattr dio; /* direct IO params	*/
 #endif

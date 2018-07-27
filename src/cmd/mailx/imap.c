@@ -85,12 +85,12 @@
 
 #    define IMAP (( Imap_t * )state.msg.imap.state)
 
-#    define IMAP_VERSION 4 /* at least this		*/
+#    define IMAP_VERSION 4  /* at least this		*/
 #    define IMAP_REVISION 1 /* at least this		*/
 
-#    define IMAP_data 1 /* data item			*/
-#    define IMAP_list 2 /* list item			*/
-#    define IMAP_name 3 /* name (atom) item		*/
+#    define IMAP_data 1   /* data item			*/
+#    define IMAP_list 2   /* list item			*/
+#    define IMAP_name 3   /* name (atom) item		*/
 #    define IMAP_number 4 /* number item			*/
 #    define IMAP_string 5 /* string item			*/
 
@@ -130,112 +130,112 @@ struct Imaparg_s
 };
 
 typedef struct
-{ /* flag table element		*/
+{                     /* flag table element		*/
     const char *name; /* canonical flag name		*/
-    int code; /* IMAP_* code			*/
-    int flag; /* mailx M* flag		*/
+    int code;         /* IMAP_* code			*/
+    int flag;         /* mailx M* flag		*/
 } Imapflag_t;
 
 typedef struct
-{ /* lex table element		*/
+{                     /* lex table element		*/
     const char *name; /* canonical name		*/
-    int code; /* IMAP_* code			*/
+    int code;         /* IMAP_* code			*/
 } Imaplex_t;
 
 typedef struct
-{ /* IMAP Msg_t.m_info info	*/
-    char *from; /* from address			*/
-    char *date; /* localized date		*/
-    char *subject; /* subject			*/
+{                      /* IMAP Msg_t.m_info info	*/
+    char *from;        /* from address			*/
+    char *date;        /* localized date		*/
+    char *subject;     /* subject			*/
     Imappart_t *parts; /* multipart parts		*/
-    int attachments; /* attachment count		*/
+    int attachments;   /* attachment count		*/
 } Imapmsg_t;
 
 struct Imappart_s
-{ /* message part			*/
+{                     /* message part			*/
     Imappart_t *next; /* next part			*/
-    short content; /* IMAP_CONTENT_* type		*/
+    short content;    /* IMAP_CONTENT_* type		*/
     short attachment; /* attachment ordinal		*/
-    int lines; /* # lines			*/
-    size_t size; /* # octets			*/
-    char *id; /* IMAP BODY[id]		*/
-    char *type; /* MIME type/subtype		*/
-    char *encoding; /* MIME encoding		*/
-    char *name; /* attachment name		*/
-    char *options; /* encoding options		*/
-    Imapmsg_t *msg; /* IMAP_CONTENT_message info	*/
+    int lines;        /* # lines			*/
+    size_t size;      /* # octets			*/
+    char *id;         /* IMAP BODY[id]		*/
+    char *type;       /* MIME type/subtype		*/
+    char *encoding;   /* MIME encoding		*/
+    char *name;       /* attachment name		*/
+    char *options;    /* encoding options		*/
+    Imapmsg_t *msg;   /* IMAP_CONTENT_message info	*/
 };
 
 typedef struct
-{ /* imap_BODYSTRUCTURE discipline*/
+{                         /* imap_BODYSTRUCTURE discipline*/
     Imappart_t *lastpart; /* part list tail		*/
-    int prestack; /* one before stack is ok	*/
-    int idstack[64]; /* for nested message ids	*/
-    int *id; /* top of idstack		*/
+    int prestack;         /* one before stack is ok	*/
+    int idstack[64];      /* for nested message ids	*/
+    int *id;              /* top of idstack		*/
 } Imapbody_t;
 
 struct Imapblock_s
-{ /* multiline response cache	*/
+{                      /* multiline response cache	*/
     Imapblock_t *next; /* next in list			*/
-    size_t length; /* length of this block		*/
-    char *data; /* data for this block		*/
+    size_t length;     /* length of this block		*/
+    char *data;        /* data for this block		*/
 };
 
 typedef struct
-{ /* response info		*/
-    int state; /* IMAP_OP_* state		*/
-    int code; /* IMAP_* code			*/
-    int count; /* optional count prefix	*/
-    int retain; /* retain until imapfree()	*/
-    char msg[32]; /* first part of last message	*/
-    Vmalloc_t *vm; /* local store			*/
-    Imaplist_t args; /* arg list			*/
+{                        /* response info		*/
+    int state;           /* IMAP_OP_* state		*/
+    int code;            /* IMAP_* code			*/
+    int count;           /* optional count prefix	*/
+    int retain;          /* retain until imapfree()	*/
+    char msg[32];        /* first part of last message	*/
+    Vmalloc_t *vm;       /* local store			*/
+    Imaplist_t args;     /* arg list			*/
     Imapblock_t *blocks; /* multiline cache		*/
 } Imapop_t;
 
 typedef struct
 {
-    Imapop_t op[8]; /* pending ops			*/
-    Sfio_t *mp; /* tmp message stream		*/
-    Sfio_t *np; /* tmp normalization stream	*/
-    Sfio_t *rp; /* IMAP service recv stream	*/
-    Sfio_t *sp; /* IMAP service send stream	*/
-    Sfio_t *tp; /* tmp string stream		*/
-    Vmdisc_t vmdisc; /* vmopen() discipline		*/
-    Vmalloc_t *gm; /* IMAP global store		*/
-    Vmalloc_t *vm; /* IMAP mailbox store		*/
-    int auth; /* IMAP_AUTH_* methods		*/
+    Imapop_t op[8];    /* pending ops			*/
+    Sfio_t *mp;        /* tmp message stream		*/
+    Sfio_t *np;        /* tmp normalization stream	*/
+    Sfio_t *rp;        /* IMAP service recv stream	*/
+    Sfio_t *sp;        /* IMAP service send stream	*/
+    Sfio_t *tp;        /* tmp string stream		*/
+    Vmdisc_t vmdisc;   /* vmopen() discipline		*/
+    Vmalloc_t *gm;     /* IMAP global store		*/
+    Vmalloc_t *vm;     /* IMAP mailbox store		*/
+    int auth;          /* IMAP_AUTH_* methods		*/
     int authenticated; /* connection authenticated	*/
-    int connected; /* connected to server		*/
-    int exiting; /* attempting to logout		*/
-    char *host; /* IMAP server host		*/
-    Msg_t *index; /* last SEARCH message index	*/
-    char *meth; /* IMAP authentication method	*/
-    int revision; /* IMAP service revision	*/
-    int selected; /* mailbox selected		*/
-    int tag; /* last op tag (index)		*/
-    char *user; /* IMAP user name		*/
-    int version; /* IMAP service version		*/
+    int connected;     /* connected to server		*/
+    int exiting;       /* attempting to logout		*/
+    char *host;        /* IMAP server host		*/
+    Msg_t *index;      /* last SEARCH message index	*/
+    char *meth;        /* IMAP authentication method	*/
+    int revision;      /* IMAP service revision	*/
+    int selected;      /* mailbox selected		*/
+    int tag;           /* last op tag (index)		*/
+    char *user;        /* IMAP user name		*/
+    int version;       /* IMAP service version		*/
 
     struct
     {
-        Sfio_t *fp; /* output stream		*/
-        char *prefix; /* line prefix			*/
+        Sfio_t *fp;      /* output stream		*/
+        char *prefix;    /* line prefix			*/
         short prefixlen; /* line prefix length		*/
-        short emptylen; /* empty line prefix length	*/
-    } copy; /* imap_copy() state for FETCH	*/
+        short emptylen;  /* empty line prefix length	*/
+    } copy;              /* imap_copy() state for FETCH	*/
 
     struct
     {
-        int delimiter; /* mailbox hierarchy delimiter	*/
-        int exists; /* # messages			*/
-        int recent; /* first recent message		*/
-        int read_only; /* no updates			*/
-        int trycreate; /* op may work after CREATE	*/
-        int uidnext; /* next expected message UID	*/
+        int delimiter;   /* mailbox hierarchy delimiter	*/
+        int exists;      /* # messages			*/
+        int recent;      /* first recent message		*/
+        int read_only;   /* no updates			*/
+        int trycreate;   /* op may work after CREATE	*/
+        int uidnext;     /* next expected message UID	*/
         int uidvalidity; /* UID validation		*/
-        int unseen; /* first unseen message		*/
-    } mailbox; /* mailbox state		*/
+        int unseen;      /* first unseen message		*/
+    } mailbox;           /* mailbox state		*/
 } Imap_t;
 
 /*
@@ -272,12 +272,12 @@ static const Imaplex_t imapstate[] = {
  * part content types
  */
 
-#    define IMAP_CONTENT_data 0 /* must be 0			*/
+#    define IMAP_CONTENT_data 0       /* must be 0			*/
 #    define IMAP_CONTENT_attachment 1 /* part is an attachment	*/
-#    define IMAP_CONTENT_header 2 /* part is a header		*/
-#    define IMAP_CONTENT_message 3 /* part is an embeded message	*/
-#    define IMAP_CONTENT_multipart 4 /* part is an embeded message	*/
-#    define IMAP_CONTENT_text 5 /* part is plain text		*/
+#    define IMAP_CONTENT_header 2     /* part is a header		*/
+#    define IMAP_CONTENT_message 3    /* part is an embeded message	*/
+#    define IMAP_CONTENT_multipart 4  /* part is an embeded message	*/
+#    define IMAP_CONTENT_text 5       /* part is plain text		*/
 
 static const Imaplex_t imapcontent[] = {
     "attachment", IMAP_CONTENT_attachment, "data",    IMAP_CONTENT_data,

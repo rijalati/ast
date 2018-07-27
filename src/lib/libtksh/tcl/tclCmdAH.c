@@ -46,8 +46,8 @@ static int StoreStatData _ANSI_ARGS_((Tcl_Interp * interp,
 /* ARGSUSED */
 int Tcl_BreakCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     if (argc != 1)
     {
@@ -78,8 +78,8 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_CaseCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int i, result;
     int body;
@@ -240,8 +240,8 @@ cleanup:
 /* ARGSUSED */
 int Tcl_CatchCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int result;
 
@@ -289,8 +289,8 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_CdCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     char *dirName;
     Tcl_DString buffer;
@@ -344,8 +344,8 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_ConcatCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     if (argc >= 2)
     {
@@ -376,8 +376,8 @@ char **argv; /* Argument strings. */
 int Tcl_ContinueCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used.
                                                                   */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     if (argc != 1)
     {
@@ -408,8 +408,8 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_ErrorCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Interp *iPtr = ( Interp * )interp;
 
@@ -457,8 +457,8 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_EvalCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int result;
     char *cmd;
@@ -517,8 +517,8 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_ExitCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int value;
 
@@ -564,8 +564,8 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_ExprCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Tcl_DString buffer;
     int i, result;
@@ -616,8 +616,8 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_FileCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     char *fileName, *extension;
     int c, statOp, result;
@@ -1179,9 +1179,9 @@ not3Args:
  */
 
 static int StoreStatData(interp, varName, statPtr)
-Tcl_Interp *interp; /* Interpreter for error reports. */
-char *varName; /* Name of associative array variable
-                * in which to store stat results. */
+Tcl_Interp *interp;   /* Interpreter for error reports. */
+char *varName;        /* Name of associative array variable
+                       * in which to store stat results. */
 struct stat *statPtr; /* Pointer to buffer containing
                        * stat data to store in varName. */
 {
@@ -1329,8 +1329,8 @@ static char *GetTypeFromMode(mode) int mode;
 /* ARGSUSED */
 int Tcl_ForCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int result, value;
 
@@ -1422,19 +1422,19 @@ char **argv; /* Argument strings. */
 int Tcl_ForeachCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used.
                                                                  */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int result = TCL_OK;
-    int i; /* i selects a value list */
-    int j, maxj; /* Number of loop iterations */
-    int v; /* v selects a loop variable */
+    int i;        /* i selects a value list */
+    int j, maxj;  /* Number of loop iterations */
+    int v;        /* v selects a loop variable */
     int numLists; /* Count of value lists */
 #define STATIC_SIZE 4
-    int indexArray[STATIC_SIZE]; /* Array of value list indices */
-    int varcListArray[STATIC_SIZE]; /* Number of loop variables per list */
+    int indexArray[STATIC_SIZE];       /* Array of value list indices */
+    int varcListArray[STATIC_SIZE];    /* Number of loop variables per list */
     char **varvListArray[STATIC_SIZE]; /* Array of variable name lists */
-    int argcListArray[STATIC_SIZE]; /* Array of value list sizes */
+    int argcListArray[STATIC_SIZE];    /* Array of value list sizes */
     char **argvListArray[STATIC_SIZE]; /* Array of value lists */
 
     int *index = indexArray;
@@ -1612,29 +1612,29 @@ errorReturn:
 /* ARGSUSED */
 int Tcl_FormatCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
-    char *format; /* Used to read characters from the format
-                   * string. */
-    char newFormat[40]; /* A new format specifier is generated here. */
-    int width; /* Field width from field specifier, or 0 if
-                * no width given. */
-    int precision; /* Field precision from field specifier, or 0
-                    * if no precision given. */
-    int size; /* Number of bytes needed for result of
-               * conversion, based on type of conversion
-               * ("e", "s", etc.), width, and precision. */
-    int intValue; /* Used to hold value to pass to sprintf, if
-                   * it's a one-word integer or char value */
+    char *format;          /* Used to read characters from the format
+                            * string. */
+    char newFormat[40];    /* A new format specifier is generated here. */
+    int width;             /* Field width from field specifier, or 0 if
+                            * no width given. */
+    int precision;         /* Field precision from field specifier, or 0
+                            * if no precision given. */
+    int size;              /* Number of bytes needed for result of
+                            * conversion, based on type of conversion
+                            * ("e", "s", etc.), width, and precision. */
+    int intValue;          /* Used to hold value to pass to sprintf, if
+                            * it's a one-word integer or char value */
     char *ptrValue = NULL; /* Used to hold value to pass to sprintf, if
                             * it's a one-word value. */
-    double doubleValue; /* Used to hold value to pass to sprintf if
-                         * it's a double value. */
-    int whichValue; /* Indicates which of intValue, ptrValue,
-                     * or doubleValue has the value to pass to
-                     * sprintf, according to the following
-                     * definitions: */
+    double doubleValue;    /* Used to hold value to pass to sprintf if
+                            * it's a double value. */
+    int whichValue;        /* Indicates which of intValue, ptrValue,
+                            * or doubleValue has the value to pass to
+                            * sprintf, according to the following
+                            * definitions: */
 #define INT_VALUE 0
 #define PTR_VALUE 1
 #define DOUBLE_VALUE 2
@@ -1642,21 +1642,21 @@ char **argv; /* Argument strings. */
     = interp->result; /* Where result is stored.  Starts off at
                        * interp->resultSpace, but may get dynamically
                        * re-allocated if this isn't enough. */
-    int dstSize = 0; /* Number of non-null characters currently
-                      * stored at dst. */
+    int dstSize = 0;  /* Number of non-null characters currently
+                       * stored at dst. */
     int dstSpace = TCL_RESULT_SIZE;
     /* Total amount of storage space available
      * in dst (not including null terminator. */
-    int noPercent; /* Special case for speed:  indicates there's
-                    * no field specifier, just a string to copy. */
-    int argIndex; /* Index of argument to substitute next. */
-    int gotXpg = 0; /* Non-zero means that an XPG3 %n$-style
-                     * specifier has been seen. */
+    int noPercent;         /* Special case for speed:  indicates there's
+                            * no field specifier, just a string to copy. */
+    int argIndex;          /* Index of argument to substitute next. */
+    int gotXpg = 0;        /* Non-zero means that an XPG3 %n$-style
+                            * specifier has been seen. */
     int gotSequential = 0; /* Non-zero means that a regular sequential
                             * (non-XPG3) conversion specifier has been
                             * seen. */
-    int useShort; /* Value to be printed is short (half word). */
-    char *end; /* Used to locate end of numerical fields. */
+    int useShort;          /* Value to be printed is short (half word). */
+    char *end;             /* Used to locate end of numerical fields. */
 
     /*
      * This procedure is a bit nasty.  The goal is to use sprintf to

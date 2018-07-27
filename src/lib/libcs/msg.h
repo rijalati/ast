@@ -54,9 +54,9 @@
 #    define MSG_CHANNEL_USR(n) (((n) >> 16) & ((1 << 16) - 1))
 #    define MSG_CHANNEL(u, s) (((u) << 16) | ((s) & ((1 << 16) - 1)))
 
-#    define MSG_LIST_ID (1 << 0) /* list channel id		*/
+#    define MSG_LIST_ID (1 << 0)    /* list channel id		*/
 #    define MSG_LIST_STAMP (1 << 1) /* include time stamp		*/
-#    define MSG_LIST_USER (1 << 8) /* first user bit		*/
+#    define MSG_LIST_USER (1 << 8)  /* first user bit		*/
 
 #    define MSG_SIZE_ACK 4
 #    define MSG_SIZE_ARG 6
@@ -66,13 +66,13 @@
 #    define MSG_SIZE_SIZE 2
 
 #    define MSG_VAR_FILE (1 << MSG_ARG_INDEX) /* file variant		*/
-#    define MSG_VAR_IPC (2 << MSG_ARG_INDEX) /* ipc variant		*/
-#    define MSG_VAR_SYM (3 << MSG_ARG_INDEX) /* symlink variant	*/
+#    define MSG_VAR_IPC (2 << MSG_ARG_INDEX)  /* ipc variant		*/
+#    define MSG_VAR_SYM (3 << MSG_ARG_INDEX)  /* symlink variant	*/
 
-#    define MSG_ACK (1 << (MSG_ARG_INDEX + 2)) /* msgcall() ack	*/
-#    define MSG_FLUSH (1 << (MSG_ARG_INDEX + 3)) /* msgcall() msg flush	*/
+#    define MSG_ACK (1 << (MSG_ARG_INDEX + 2))    /* msgcall() ack	*/
+#    define MSG_FLUSH (1 << (MSG_ARG_INDEX + 3))  /* msgcall() msg flush	*/
 #    define MSG_RETURN (1 << (MSG_ARG_INDEX + 4)) /* msgcall()+msgreturn()*/
-#    define MSG_VALUE (1 << (MSG_ARG_INDEX + 5)) /* args have value	*/
+#    define MSG_VALUE (1 << (MSG_ARG_INDEX + 5))  /* args have value	*/
 
 #    define MSG_CALL(c) ((c) & ((1 << MSG_ARG_INDEX) - 1))
 #    define MSG_MASK(c) (1 << MSG_CALL(c))

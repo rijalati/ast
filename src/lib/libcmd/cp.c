@@ -143,49 +143,49 @@ static const char usage_tail[] =
 #define LN 2
 #define MV 3
 
-#define PRESERVE_IDS 0x1 /* preserve uid gid		*/
+#define PRESERVE_IDS 0x1  /* preserve uid gid		*/
 #define PRESERVE_PERM 0x2 /* preserve permissions		*/
 #define PRESERVE_TIME 0x4 /* preserve times		*/
 
-#define BAK_replace 0 /* no backup -- just replace	*/
+#define BAK_replace 0  /* no backup -- just replace	*/
 #define BAK_existing 1 /* number if already else simple*/
-#define BAK_number 2 /* append .suffix number suffix	*/
-#define BAK_simple 3 /* append suffix		*/
+#define BAK_number 2   /* append .suffix number suffix	*/
+#define BAK_simple 3   /* append suffix		*/
 
 typedef struct State_s /* program state		*/
 {
     Shbltin_t *context; /* builtin context		*/
-    int backup; /* BAK_* type			*/
-    int directory; /* destination is directory	*/
-    int flags; /* FTS_* flags			*/
-    int force; /* force approval		*/
-    int fs3d; /* 3d fs enabled		*/
-    int hierarchy; /* preserve hierarchy		*/
-    int interactive; /* prompt for approval		*/
-    int missmode; /* default missing dir mode	*/
-    int official; /* move to next view		*/
-    int op; /* {CP,LN,MV}			*/
-    int perm; /* permissions to preserve	*/
-    int postsiz; /* state.path post index	*/
-    int presiz; /* state.path pre index		*/
-    int preserve; /* preserve { ids perms times }	*/
-    int recursive; /* subtrees too			*/
-    int remove; /* remove destination before op	*/
-    int suflen; /* strlen(state.suffix)		*/
-    int sync; /* fsync() each file after copy	*/
-    int uid; /* caller uid			*/
-    int update; /* replace only if newer	*/
-    int verbose; /* list each file before op	*/
-    int wflags; /* open() for write flags	*/
+    int backup;         /* BAK_* type			*/
+    int directory;      /* destination is directory	*/
+    int flags;          /* FTS_* flags			*/
+    int force;          /* force approval		*/
+    int fs3d;           /* 3d fs enabled		*/
+    int hierarchy;      /* preserve hierarchy		*/
+    int interactive;    /* prompt for approval		*/
+    int missmode;       /* default missing dir mode	*/
+    int official;       /* move to next view		*/
+    int op;             /* {CP,LN,MV}			*/
+    int perm;           /* permissions to preserve	*/
+    int postsiz;        /* state.path post index	*/
+    int presiz;         /* state.path pre index		*/
+    int preserve;       /* preserve { ids perms times }	*/
+    int recursive;      /* subtrees too			*/
+    int remove;         /* remove destination before op	*/
+    int suflen;         /* strlen(state.suffix)		*/
+    int sync;           /* fsync() each file after copy	*/
+    int uid;            /* caller uid			*/
+    int update;         /* replace only if newer	*/
+    int verbose;        /* list each file before op	*/
+    int wflags;         /* open() for write flags	*/
 
-    int (*link)(const char *, const char *); /* link	*/
+    int (*link)(const char *, const char *);  /* link	*/
     int (*stat)(const char *, struct stat *); /* stat	*/
 
 #define INITSTATE pathsiz /* (re)init state before this	*/
-    int pathsiz; /* state.path buffer size	*/
+    int pathsiz;          /* state.path buffer size	*/
 
 
-    char *path; /* to pathname buffer		*/
+    char *path;   /* to pathname buffer		*/
     char *opname; /* state.op message string	*/
     char *suffix; /* backup suffix		*/
 

@@ -31,14 +31,14 @@
 typedef struct TagSearch
 {
     TkCanvas *canvasPtr; /* Canvas widget being searched. */
-    Tk_Uid tag; /* Tag to search for.   0 means return
-                 * all items. */
-    Tk_Item *prevPtr; /* Item just before last one found (or NULL
-                       * if last one found was first in the item
-                       * list of canvasPtr). */
+    Tk_Uid tag;          /* Tag to search for.   0 means return
+                          * all items. */
+    Tk_Item *prevPtr;    /* Item just before last one found (or NULL
+                          * if last one found was first in the item
+                          * list of canvasPtr). */
     Tk_Item *currentPtr; /* Pointer to last item returned. */
-    int searchOver; /* Non-zero means NextItem should always
-                     * return NULL. */
+    int searchOver;      /* Non-zero means NextItem should always
+                          * return NULL. */
 } TagSearch;
 
 /*
@@ -385,9 +385,9 @@ static Tk_Item *StartTagSearch _ANSI_ARGS_((TkCanvas * canvasPtr,
 int Tk_CanvasCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     TkCanvas *canvasPtr;
@@ -544,9 +544,9 @@ error:
 static int CanvasWidgetCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about canvas
                         * widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     TkCanvas *canvasPtr = ( TkCanvas * )clientData;
     size_t length;
@@ -2105,12 +2105,12 @@ static void DestroyCanvas(memPtr) char *memPtr; /* Info about canvas widget.
  */
 
 static int ConfigureCanvas(interp, canvasPtr, argc, argv, flags)
-Tcl_Interp *interp; /* Used for error reporting. */
+Tcl_Interp *interp;  /* Used for error reporting. */
 TkCanvas *canvasPtr; /* Information about widget;  may or may
                       * not already have values for some fields. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+int argc;            /* Number of valid entries in argv. */
+char **argv;         /* Arguments. */
+int flags;           /* Flags to pass to Tk_ConfigureWidget. */
 {
     XGCValues gcValues;
     GC new;
@@ -2508,7 +2508,7 @@ done:
 
 static void CanvasEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
-XEvent *eventPtr; /* Information about event. */
+XEvent *eventPtr;      /* Information about event. */
 {
     TkCanvas *canvasPtr = ( TkCanvas * )clientData;
 
@@ -2665,10 +2665,10 @@ ClientData clientData; /* Pointer to widget record for widget. */
 
 void Tk_CanvasEventuallyRedraw(canvas, x1, y1, x2, y2)
 Tk_Canvas canvas; /* Information about widget. */
-int x1, y1; /* Upper left corner of area to redraw.
-             * Pixels on edge are redrawn. */
-int x2, y2; /* Lower right corner of area to redraw.
-             * Pixels on edge are not redrawn. */
+int x1, y1;       /* Upper left corner of area to redraw.
+                   * Pixels on edge are redrawn. */
+int x2, y2;       /* Lower right corner of area to redraw.
+                   * Pixels on edge are not redrawn. */
 {
     TkCanvas *canvasPtr = ( TkCanvas * )canvas;
     if ((x1 == x2) || (y1 == y2))
@@ -2855,9 +2855,9 @@ InitCanvas()
  */
 
 static Tk_Item *StartTagSearch(canvasPtr, tag, searchPtr)
-TkCanvas *canvasPtr; /* Canvas whose items are to be
-                      * searched. */
-char *tag; /* String giving tag value. */
+TkCanvas *canvasPtr;  /* Canvas whose items are to be
+                       * searched. */
+char *tag;            /* String giving tag value. */
 TagSearch *searchPtr; /* Record describing tag search;
                        * will be initialized here. */
 {
@@ -3073,9 +3073,9 @@ static void DoItem(interp,
                    itemPtr,
                    tag) Tcl_Interp *interp; /* Interpreter in which to
                                              * (possibly) record item id. */
-Tk_Item *itemPtr; /* Item to (possibly) modify. */
-Tk_Uid tag; /* Tag to add to those already
-             * present for item, or NULL. */
+Tk_Item *itemPtr;                           /* Item to (possibly) modify. */
+Tk_Uid tag;                                 /* Tag to add to those already
+                                             * present for item, or NULL. */
 {
     Tk_Uid *tagPtr;
     int count;
@@ -3158,23 +3158,23 @@ Tk_Uid tag; /* Tag to add to those already
  */
 
 static int FindItems(interp, canvasPtr, argc, argv, newTag, cmdName, option)
-Tcl_Interp *interp; /* Interpreter for error reporting. */
+Tcl_Interp *interp;  /* Interpreter for error reporting. */
 TkCanvas *canvasPtr; /* Canvas whose items are to be
                       * searched. */
-int argc; /* Number of entries in argv.  Must be
-           * greater than zero. */
-char **argv; /* Arguments that describe what items
-              * to search for (see user doc on
-              * "find" and "addtag" options). */
-char *newTag; /* If non-NULL, gives new tag to set
-               * on all found items;  if NULL, then
-               * ids of found items are returned
-               * in interp->result. */
-char *cmdName; /* Name of original Tcl command, for
-                * use in error messages. */
-char *option; /* For error messages:  gives option
-               * from Tcl command and other stuff
-               * up to what's in argc/argv. */
+int argc;            /* Number of entries in argv.  Must be
+                      * greater than zero. */
+char **argv;         /* Arguments that describe what items
+                      * to search for (see user doc on
+                      * "find" and "addtag" options). */
+char *newTag;        /* If non-NULL, gives new tag to set
+                      * on all found items;  if NULL, then
+                      * ids of found items are returned
+                      * in interp->result. */
+char *cmdName;       /* Name of original Tcl command, for
+                      * use in error messages. */
+char *option;        /* For error messages:  gives option
+                      * from Tcl command and other stuff
+                      * up to what's in argc/argv. */
 {
     int c;
     size_t length;
@@ -3476,20 +3476,20 @@ char *option; /* For error messages:  gives option
  */
 
 static int FindArea(interp, canvasPtr, argv, uid, enclosed)
-Tcl_Interp *interp; /* Interpreter for error reporting
-                     * and result storing. */
+Tcl_Interp *interp;  /* Interpreter for error reporting
+                      * and result storing. */
 TkCanvas *canvasPtr; /* Canvas whose items are to be
                       * searched. */
-char **argv; /* Array of four arguments that
-              * give the coordinates of the
-              * rectangular area to search. */
-Tk_Uid uid; /* If non-NULL, gives new tag to set
-             * on all found items;  if NULL, then
-             * ids of found items are returned
-             * in interp->result. */
-int enclosed; /* 0 means overlapping or enclosed
-               * items are OK, 1 means only enclosed
-               * items are OK. */
+char **argv;         /* Array of four arguments that
+                      * give the coordinates of the
+                      * rectangular area to search. */
+Tk_Uid uid;          /* If non-NULL, gives new tag to set
+                      * on all found items;  if NULL, then
+                      * ids of found items are returned
+                      * in interp->result. */
+int enclosed;        /* 0 means overlapping or enclosed
+                      * items are OK, 1 means only enclosed
+                      * items are OK. */
 {
     double rect[4], tmp;
     int x1, y1, x2, y2;
@@ -3572,8 +3572,8 @@ int enclosed; /* 0 means overlapping or enclosed
 static void
 RelinkItems(canvasPtr, tag, prevPtr) TkCanvas *canvasPtr; /* Canvas to be
                                                              modified. */
-char *tag; /* Tag identifying items to be moved
-            * in the redisplay list. */
+char *tag;        /* Tag identifying items to be moved
+                   * in the redisplay list. */
 Tk_Item *prevPtr; /* Reposition the items so that they
                    * go just after this item (NULL means
                    * put at beginning of list). */
@@ -3675,8 +3675,8 @@ Tk_Item *prevPtr; /* Reposition the items so that they
 
 static void CanvasBindProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to canvas structure. */
-XEvent *eventPtr; /* Pointer to X event that just
-                   * happened. */
+XEvent *eventPtr;      /* Pointer to X event that just
+                        * happened. */
 {
     TkCanvas *canvasPtr = ( TkCanvas * )clientData;
 
@@ -4196,8 +4196,8 @@ ClientData clientData; /* Pointer to record describing entry. */
 
 static void CanvasFocusProc(canvasPtr, gotFocus)
 TkCanvas *canvasPtr; /* Canvas that just got or lost focus. */
-int gotFocus; /* 1 means window is getting focus, 0 means
-               * it's losing it. */
+int gotFocus;        /* 1 means window is getting focus, 0 means
+                      * it's losing it. */
 {
     Tcl_DeleteTimerHandler(canvasPtr->insertBlinkHandler);
     if (gotFocus)
@@ -4259,8 +4259,8 @@ static void CanvasSelectTo(canvasPtr,
                            index) TkCanvas *canvasPtr; /* Information about
                                                           widget. */
 Tk_Item *itemPtr; /* Item that is to hold selection. */
-int index; /* Index of element that is to become the
-            * "other" end of the selection. */
+int index;        /* Index of element that is to become the
+                   * "other" end of the selection. */
 {
     int oldFirst, oldLast;
     Tk_Item *oldSelPtr;
@@ -4340,13 +4340,13 @@ int index; /* Index of element that is to become the
 
 static int CanvasFetchSelection(clientData, offset, buffer, maxBytes)
 ClientData clientData; /* Information about canvas widget. */
-int offset; /* Offset within selection of first
-             * character to be returned. */
-char *buffer; /* Location in which to place
-               * selection. */
-int maxBytes; /* Maximum number of bytes to place
-               * at buffer, not including terminating
-               * NULL character. */
+int offset;            /* Offset within selection of first
+                        * character to be returned. */
+char *buffer;          /* Location in which to place
+                        * selection. */
+int maxBytes;          /* Maximum number of bytes to place
+                        * at buffer, not including terminating
+                        * NULL character. */
 {
     TkCanvas *canvasPtr = ( TkCanvas * )clientData;
 
@@ -4462,12 +4462,12 @@ screen2,
 object1,
 object2,
 string) int screen1; /* Lowest coordinate visible in the window. */
-int screen2; /* Highest coordinate visible in the window. */
-int object1; /* Lowest coordinate in the object. */
-int object2; /* Highest coordinate in the object. */
-char *string; /* Two real numbers get printed here.  Must
-               * have enough storage for two %g
-               * conversions. */
+int screen2;         /* Highest coordinate visible in the window. */
+int object1;         /* Lowest coordinate in the object. */
+int object2;         /* Highest coordinate in the object. */
+char *string;        /* Two real numbers get printed here.  Must
+                      * have enough storage for two %g
+                      * conversions. */
 {
     double range, f1, f2;
 

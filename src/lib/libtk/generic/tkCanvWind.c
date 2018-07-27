@@ -21,16 +21,16 @@
 
 typedef struct WindowItem
 {
-    Tk_Item header; /* Generic stuff that's the same for all
-                     * types.  MUST BE FIRST IN STRUCTURE. */
-    double x, y; /* Coordinates of positioning point for
-                  * window. */
-    Tk_Window tkwin; /* Window associated with item.  NULL means
-                      * window has been destroyed. */
-    int width; /* Width to use for window (<= 0 means use
-                * window's requested width). */
-    int height; /* Width to use for window (<= 0 means use
-                 * window's requested width). */
+    Tk_Item header;   /* Generic stuff that's the same for all
+                       * types.  MUST BE FIRST IN STRUCTURE. */
+    double x, y;      /* Coordinates of positioning point for
+                       * window. */
+    Tk_Window tkwin;  /* Window associated with item.  NULL means
+                       * window has been destroyed. */
+    int width;        /* Width to use for window (<= 0 means use
+                       * window's requested width). */
+    int height;       /* Width to use for window (<= 0 means use
+                       * window's requested width). */
     Tk_Anchor anchor; /* Where to anchor window relative to
                        * (x,y). */
     Tk_Canvas canvas; /* Canvas containing this item. */
@@ -147,26 +147,26 @@ static double WinItemToPoint _ANSI_ARGS_((Tk_Canvas canvas,
  */
 
 Tk_ItemType tkWindowType = {
-    "window", /* name */
-    sizeof(WindowItem), /* itemSize */
-    CreateWinItem, /* createProc */
-    configSpecs, /* configSpecs */
-    ConfigureWinItem, /* configureProc */
-    WinItemCoords, /* coordProc */
-    DeleteWinItem, /* deleteProc */
-    DisplayWinItem, /* displayProc */
-    1, /* alwaysRedraw */
-    WinItemToPoint, /* pointProc */
-    WinItemToArea, /* areaProc */
+    "window",                        /* name */
+    sizeof(WindowItem),              /* itemSize */
+    CreateWinItem,                   /* createProc */
+    configSpecs,                     /* configSpecs */
+    ConfigureWinItem,                /* configureProc */
+    WinItemCoords,                   /* coordProc */
+    DeleteWinItem,                   /* deleteProc */
+    DisplayWinItem,                  /* displayProc */
+    1,                               /* alwaysRedraw */
+    WinItemToPoint,                  /* pointProc */
+    WinItemToArea,                   /* areaProc */
     ( Tk_ItemPostscriptProc * )NULL, /* postscriptProc */
-    ScaleWinItem, /* scaleProc */
-    TranslateWinItem, /* translateProc */
-    ( Tk_ItemIndexProc * )NULL, /* indexProc */
-    ( Tk_ItemCursorProc * )NULL, /* cursorProc */
-    ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL, /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL, /* dTextProc */
-    ( Tk_ItemType * )NULL /* nextPtr */
+    ScaleWinItem,                    /* scaleProc */
+    TranslateWinItem,                /* translateProc */
+    ( Tk_ItemIndexProc * )NULL,      /* indexProc */
+    ( Tk_ItemCursorProc * )NULL,     /* cursorProc */
+    ( Tk_ItemSelectionProc * )NULL,  /* selectionProc */
+    ( Tk_ItemInsertProc * )NULL,     /* insertProc */
+    ( Tk_ItemDCharsProc * )NULL,     /* dTextProc */
+    ( Tk_ItemType * )NULL            /* nextPtr */
 };
 
 
@@ -176,8 +176,8 @@ Tk_ItemType tkWindowType = {
  */
 
 static Tk_GeomMgr canvasGeomType = {
-    "canvas", /* name */
-    WinItemRequestProc, /* requestProc */
+    "canvas",             /* name */
+    WinItemRequestProc,   /* requestProc */
     WinItemLostSlaveProc, /* lostSlaveProc */
 };
 
@@ -204,11 +204,11 @@ static Tk_GeomMgr canvasGeomType = {
 
 static int CreateWinItem(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Canvas canvas; /* Canvas to hold new item. */
-Tk_Item *itemPtr; /* Record to hold new item;  header
-                   * has been initialized by caller. */
-int argc; /* Number of arguments in argv. */
-char **argv; /* Arguments describing rectangle. */
+Tk_Canvas canvas;   /* Canvas to hold new item. */
+Tk_Item *itemPtr;   /* Record to hold new item;  header
+                     * has been initialized by caller. */
+int argc;           /* Number of arguments in argv. */
+char **argv;        /* Arguments describing rectangle. */
 {
     WindowItem *winItemPtr = ( WindowItem * )itemPtr;
 
@@ -274,13 +274,13 @@ char **argv; /* Arguments describing rectangle. */
 
 static int WinItemCoords(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item whose coordinates are to be
-                   * read or modified. */
-int argc; /* Number of coordinates supplied in
-           * argv. */
-char **argv; /* Array of coordinates: x1, y1,
-              * x2, y2, ... */
+Tk_Canvas canvas;   /* Canvas containing item. */
+Tk_Item *itemPtr;   /* Item whose coordinates are to be
+                     * read or modified. */
+int argc;           /* Number of coordinates supplied in
+                     * argv. */
+char **argv;        /* Array of coordinates: x1, y1,
+                     * x2, y2, ... */
 {
     WindowItem *winItemPtr = ( WindowItem * )itemPtr;
     char x[TCL_DOUBLE_SPACE], y[TCL_DOUBLE_SPACE];
@@ -331,11 +331,11 @@ char **argv; /* Array of coordinates: x1, y1,
 
 static int ConfigureWinItem(interp, canvas, itemPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing itemPtr. */
-Tk_Item *itemPtr; /* Window item to reconfigure. */
-int argc; /* Number of elements in argv.  */
-char **argv; /* Arguments describing things to configure. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Tk_Canvas canvas;   /* Canvas containing itemPtr. */
+Tk_Item *itemPtr;   /* Window item to reconfigure. */
+int argc;           /* Number of elements in argv.  */
+char **argv;        /* Arguments describing things to configure. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     WindowItem *winItemPtr = ( WindowItem * )itemPtr;
     Tk_Window oldWindow;
@@ -609,10 +609,10 @@ regionX,
 regionY,
 regionWidth,
 regionHeight) Tk_Canvas canvas; /* Canvas that contains item. */
-Tk_Item *itemPtr; /* Item to be displayed. */
-Display *display; /* Display on which to draw item. */
-Drawable drawable; /* Pixmap or window in which to draw
-                    * item. */
+Tk_Item *itemPtr;               /* Item to be displayed. */
+Display *display;               /* Display on which to draw item. */
+Drawable drawable;              /* Pixmap or window in which to draw
+                                 * item. */
 int regionX, regionY, regionWidth, regionHeight;
 /* Describes region of canvas that
  * must be redisplayed (not used). */
@@ -749,9 +749,9 @@ static int
 WinItemToArea(canvas, itemPtr, rectPtr) Tk_Canvas canvas; /* Canvas containing
                                                              item. */
 Tk_Item *itemPtr; /* Item to check against rectangle. */
-double *rectPtr; /* Pointer to array of four coordinates
-                  * (x1, y1, x2, y2) describing rectangular
-                  * area.  */
+double *rectPtr;  /* Pointer to array of four coordinates
+                   * (x1, y1, x2, y2) describing rectangular
+                   * area.  */
 {
     WindowItem *winItemPtr = ( WindowItem * )itemPtr;
 
@@ -794,11 +794,11 @@ double *rectPtr; /* Pointer to array of four coordinates
  */
 
 static void ScaleWinItem(canvas, itemPtr, originX, originY, scaleX, scaleY)
-Tk_Canvas canvas; /* Canvas containing rectangle. */
-Tk_Item *itemPtr; /* Rectangle to be scaled. */
+Tk_Canvas canvas;        /* Canvas containing rectangle. */
+Tk_Item *itemPtr;        /* Rectangle to be scaled. */
 double originX, originY; /* Origin about which to scale rect. */
-double scaleX; /* Amount to scale in X direction. */
-double scaleY; /* Amount to scale in Y direction. */
+double scaleX;           /* Amount to scale in X direction. */
+double scaleY;           /* Amount to scale in Y direction. */
 {
     WindowItem *winItemPtr = ( WindowItem * )itemPtr;
 
@@ -835,8 +835,8 @@ double scaleY; /* Amount to scale in Y direction. */
  */
 
 static void TranslateWinItem(canvas, itemPtr, deltaX, deltaY)
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item that is being moved. */
+Tk_Canvas canvas;      /* Canvas containing item. */
+Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
@@ -869,7 +869,7 @@ double deltaX, deltaY; /* Amount by which item is to be
 
 static void WinItemStructureProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to record describing window item. */
-XEvent *eventPtr; /* Describes what just happened. */
+XEvent *eventPtr;      /* Describes what just happened. */
 {
     WindowItem *winItemPtr = ( WindowItem * )clientData;
 
@@ -899,8 +899,8 @@ XEvent *eventPtr; /* Describes what just happened. */
 
 static void WinItemRequestProc(clientData, tkwin)
 ClientData clientData; /* Pointer to record for window item. */
-Tk_Window tkwin; /* Window that changed its desired
-                  * size. */
+Tk_Window tkwin;       /* Window that changed its desired
+                        * size. */
 {
     WindowItem *winItemPtr = ( WindowItem * )clientData;
 
@@ -936,7 +936,7 @@ Tk_Window tkwin; /* Window that changed its desired
 static void WinItemLostSlaveProc(clientData, tkwin)
 ClientData clientData; /* WindowItem structure for slave window that
                         * was stolen away. */
-Tk_Window tkwin; /* Tk's handle for the slave window. */
+Tk_Window tkwin;       /* Tk's handle for the slave window. */
 {
     WindowItem *winItemPtr = ( WindowItem * )clientData;
     Tk_Window canvasTkwin = Tk_CanvasTkwin(winItemPtr->canvas);

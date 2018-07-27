@@ -58,11 +58,11 @@ USAGE_LICENSE
 
 #define CHECKSUM_OP SFDCEVENT('P', 'Z', 1)
 
-#define CHECKSUM (1 << 0) /* checksum enabled		*/
+#define CHECKSUM (1 << 0)      /* checksum enabled		*/
 #define CHECKSUM_TAIL (1 << 1) /* CHECKSUM tail handled	*/
 #define CHECKSUM_WARN (1 << 2) /* warn if no checksum trailer	*/
-#define CONVERT (1 << 3) /* conversion enabled		*/
-#define SHOW (1 << 4) /* show conversions and exit	*/
+#define CONVERT (1 << 3)       /* conversion enabled		*/
+#define SHOW (1 << 4)          /* show conversions and exit	*/
 
 struct Chain_s;
 typedef struct Chain_s Chain_t;

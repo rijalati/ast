@@ -436,7 +436,7 @@ Vcmtarg_t _Mapargs[] = { { "a2e", "ASCII -> Xopen dd(1) EBCDIC", A2E },
 typedef struct _vcmap_s
 {
     Vcchar_t *map; /* character map	*/
-    int inplace; /* inplace mapping	*/
+    int inplace;   /* inplace mapping	*/
 } Vcmap_t;
 
 #if __STD_C

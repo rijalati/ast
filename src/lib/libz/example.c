@@ -438,7 +438,7 @@ uLong comprLen, uncomprLen;
     CHECK_ERR(err, "inflate");
 
     d_stream.avail_in = ( uInt )comprLen - 2; /* read all compressed data */
-    err = inflateSync(&d_stream); /* but skip the damaged part */
+    err = inflateSync(&d_stream);             /* but skip the damaged part */
     CHECK_ERR(err, "inflateSync");
 
     err = inflate(&d_stream, Z_FINISH);

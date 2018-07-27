@@ -40,14 +40,14 @@ typedef enum
 
 typedef struct Slave
 {
-    Tk_Window tkwin; /* Tk's token for window. */
+    Tk_Window tkwin;          /* Tk's token for window. */
     struct Master *masterPtr; /* Pointer to information for window
                                * relative to which tkwin is placed.
                                * This isn't necessarily the logical
                                * parent of tkwin.  NULL means the
                                * master was deleted or never assigned. */
-    struct Slave *nextPtr; /* Next in list of windows placed relative
-                            * to same master (NULL for end of list). */
+    struct Slave *nextPtr;    /* Next in list of windows placed relative
+                               * to same master (NULL for end of list). */
 
     /*
      * Geometry information for window;  where there are both relative
@@ -55,17 +55,17 @@ typedef struct Slave
      * one of them is actually used, depending on flags.
      */
 
-    int x, y; /* X and Y pixel coordinates for tkwin. */
-    float relX, relY; /* X and Y coordinates relative to size of
-                       * master. */
-    int width, height; /* Absolute dimensions for tkwin. */
+    int x, y;                  /* X and Y pixel coordinates for tkwin. */
+    float relX, relY;          /* X and Y coordinates relative to size of
+                                * master. */
+    int width, height;         /* Absolute dimensions for tkwin. */
     float relWidth, relHeight; /* Dimensions for tkwin relative to size of
                                 * master. */
-    Tk_Anchor anchor; /* Which point on tkwin is placed at the
-                       * given position. */
-    BorderMode borderMode; /* How to treat borders of master window. */
-    int flags; /* Various flags;  see below for bit
-                * definitions. */
+    Tk_Anchor anchor;          /* Which point on tkwin is placed at the
+                                * given position. */
+    BorderMode borderMode;     /* How to treat borders of master window. */
+    int flags;                 /* Various flags;  see below for bit
+                                * definitions. */
 } Slave;
 
 /*
@@ -89,10 +89,10 @@ typedef struct Slave
 
 typedef struct Master
 {
-    Tk_Window tkwin; /* Tk's token for master window. */
+    Tk_Window tkwin;        /* Tk's token for master window. */
     struct Slave *slavePtr; /* First in linked list of slaves
                              * placed relative to this master. */
-    int flags; /* See below for bit definitions. */
+    int flags;              /* See below for bit definitions. */
 } Master;
 
 /*
@@ -124,8 +124,8 @@ static void PlaceLostSlaveProc _ANSI_ARGS_((ClientData clientData,
                                             Tk_Window tkwin));
 
 static Tk_GeomMgr placerType = {
-    "place", /* name */
-    PlaceRequestProc, /* requestProc */
+    "place",            /* name */
+    PlaceRequestProc,   /* requestProc */
     PlaceLostSlaveProc, /* lostSlaveProc */
 };
 
@@ -164,9 +164,9 @@ static void UnlinkSlave _ANSI_ARGS_((Slave * slavePtr));
 
 int Tk_PlaceCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin;
     Slave *slavePtr;
@@ -556,10 +556,10 @@ static Master *FindMaster(tkwin) Tk_Window tkwin; /* Token for desired master.
 
 static int ConfigureSlave(interp, slavePtr, argc, argv)
 Tcl_Interp *interp; /* Used for error reporting. */
-Slave *slavePtr; /* Pointer to current information
-                  * about slave. */
-int argc; /* Number of config arguments. */
-char **argv; /* String values for arguments. */
+Slave *slavePtr;    /* Pointer to current information
+                     * about slave. */
+int argc;           /* Number of config arguments. */
+char **argv;        /* String values for arguments. */
 {
     Master *masterPtr;
     int c, result;
@@ -1078,7 +1078,7 @@ ClientData clientData; /* Pointer to Master record. */
 static void MasterStructureProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to Master structure for window
                         * referred to by eventPtr. */
-XEvent *eventPtr; /* Describes what just happened. */
+XEvent *eventPtr;      /* Describes what just happened. */
 {
     Master *masterPtr = ( Master * )clientData;
     Slave *slavePtr, *nextPtr;
@@ -1159,7 +1159,7 @@ XEvent *eventPtr; /* Describes what just happened. */
 static void SlaveStructureProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to Slave structure for window
                         * referred to by eventPtr. */
-XEvent *eventPtr; /* Describes what just happened. */
+XEvent *eventPtr;      /* Describes what just happened. */
 {
     Slave *slavePtr = ( Slave * )clientData;
 
@@ -1193,8 +1193,8 @@ XEvent *eventPtr; /* Describes what just happened. */
 /* ARGSUSED */
 static void PlaceRequestProc(clientData, tkwin)
 ClientData clientData; /* Pointer to our record for slave. */
-Tk_Window tkwin; /* Window that changed its desired
-                  * size. */
+Tk_Window tkwin;       /* Window that changed its desired
+                        * size. */
 {
     Slave *slavePtr = ( Slave * )clientData;
     Master *masterPtr;
@@ -1237,7 +1237,7 @@ Tk_Window tkwin; /* Window that changed its desired
 static void PlaceLostSlaveProc(clientData, tkwin)
 ClientData clientData; /* Slave structure for slave window that
                         * was stolen away. */
-Tk_Window tkwin; /* Tk's handle for the slave window. */
+Tk_Window tkwin;       /* Tk's handle for the slave window. */
 {
     Slave *slavePtr = ( Slave * )clientData;
 

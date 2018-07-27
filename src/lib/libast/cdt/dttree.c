@@ -767,7 +767,7 @@ int type;
         if (type & (DT_START | DT_SEARCH | DT_MATCH))
         {
         no_root:
-            if (!(l = link._rght)) /* no LEFT subtree */
+            if (!(l = link._rght))       /* no LEFT subtree */
                 tree->root = link._left; /* tree is RIGHT tree */
             else
             {
@@ -779,7 +779,7 @@ int type;
                         LROTATE(l, t);
                 }
                 l->_rght = link._left; /* hook RIGHT tree to LEFT root */
-                tree->root = l; /* LEFT tree is now the entire tree */
+                tree->root = l;        /* LEFT tree is now the entire tree */
             }
 
             if (type & (DT_DELETE | DT_DETACH | DT_REMOVE | DT_STEP))

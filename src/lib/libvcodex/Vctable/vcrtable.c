@@ -34,30 +34,30 @@
 ** Written by Kiem-Phong Vo (05/01/2008)
 */
 
-#define RT_RSEP 1 /* setting fld separ	*/
-#define RT_FSEP 2 /* setting rec separ	*/
+#define RT_RSEP 1   /* setting fld separ	*/
+#define RT_FSEP 2   /* setting rec separ	*/
 #define RT_SCHEMA 3 /* defining schema	*/
-#define RT_ALIGN 4 /* defining alignment	*/
-#define RT_RENEW 5 /* always renew context	*/
+#define RT_ALIGN 4  /* defining alignment	*/
+#define RT_RENEW 5  /* always renew context	*/
 
 #define RT_MAXINT (1 << 28) /* max codable integer	*/
 
 #define RT_SHORT 16 /* code short fld as-is	*/
 
 /* codes in persistence data for Rtfld_t.type */
-#define RT_ISEQ (1 << 0) /* integer sequence	*/
-#define RT_DASH (1 << 1) /* sequence ends with /	*/
+#define RT_ISEQ (1 << 0)  /* integer sequence	*/
+#define RT_DASH (1 << 1)  /* sequence ends with /	*/
 #define RT_CLEAR (1 << 2) /* clear value set	*/
-#define RT_FIXZ (1 << 3) /* fixed length field	*/
-#define RT_ASIS (1 << 4) /* coded as-is in table	*/
+#define RT_FIXZ (1 << 3)  /* fixed length field	*/
+#define RT_ASIS (1 << 4)  /* coded as-is in table	*/
 
 typedef struct _rtval_s /* mapping value to ordinal */
 {
-    Dtlink_t olnk; /* search by ordinal	*/
-    Dtlink_t dlnk; /* search by data	*/
+    Dtlink_t olnk;  /* search by ordinal	*/
+    Dtlink_t dlnk;  /* search by data	*/
     Vcchar_t *data; /* a data field value	*/
-    ssize_t dtsz; /* length of data	*/
-    ssize_t ordn; /* Note: ordn >= 1	*/
+    ssize_t dtsz;   /* length of data	*/
+    ssize_t ordn;   /* Note: ordn >= 1	*/
 } Rtval_t;
 
 /* A field can be coded either by ordinal numbers of unique
@@ -66,13 +66,13 @@ typedef struct _rtval_s /* mapping value to ordinal */
 */
 typedef struct _rtfld_s /* all data for a field */
 {
-    int type; /* field type		*/
+    int type;      /* field type		*/
     Rtval_t **val; /* decoding value list 	*/
-    Dt_t *ddt; /* store values by data	*/
-    Dt_t *odt; /* store vals by order	*/
-    ssize_t asis; /* fixed size coding	*/
-    ssize_t pcnt; /* previous # of values	*/
-    ssize_t vcnt; /* current # of values	*/
+    Dt_t *ddt;     /* store values by data	*/
+    Dt_t *odt;     /* store vals by order	*/
+    ssize_t asis;  /* fixed size coding	*/
+    ssize_t pcnt;  /* previous # of values	*/
+    ssize_t vcnt;  /* current # of values	*/
     /* or # elts for ISEQ	*/
     ssize_t vmax; /* max coding value 	*/
 } Rtfld_t;
@@ -80,24 +80,24 @@ typedef struct _rtfld_s /* all data for a field */
 typedef struct _rtctxt_s /* context of invocation */
 {
     Vccontext_t ctxt;
-    int fsep; /* field separator	*/
-    int rsep; /* record separator	*/
-    ssize_t algn; /* field alignment	*/
-    ssize_t recz; /* 0 if not schematic	*/
-    ssize_t fldn; /* # of fields in use	*/
+    int fsep;      /* field separator	*/
+    int rsep;      /* record separator	*/
+    ssize_t algn;  /* field alignment	*/
+    ssize_t recz;  /* 0 if not schematic	*/
+    ssize_t fldn;  /* # of fields in use	*/
     ssize_t *fldz; /* size of each field	*/
-    Rtfld_t *fld; /* list of fields	*/
+    Rtfld_t *fld;  /* list of fields	*/
 } Rtctxt_t;
 
 typedef struct _rtable_s
 {
     Rtctxt_t *ctxt; /* default context	*/
-    Vcodex_t *tbl; /* table transform	*/
-    Vcodex_t *bwt; /* BWT transform	*/
-    int renew; /* always renew context	*/
-    int dot; /* the dot character	*/
-    int dash; /* the dash character	*/
-    int zero; /* the zero digit	*/
+    Vcodex_t *tbl;  /* table transform	*/
+    Vcodex_t *bwt;  /* BWT transform	*/
+    int renew;      /* always renew context	*/
+    int dot;        /* the dot character	*/
+    int dash;       /* the dash character	*/
+    int zero;       /* the zero digit	*/
 } Rtable_t;
 
 /* arguments passable to vcopen() */
@@ -207,11 +207,11 @@ rta2i(Rtable_t *rt,
 #else
 static ssize_t rta2i(rt, rf, dt, dz, cv, cz) Rtable_t *rt; /* table
                                                               information	*/
-Rtfld_t *rf; /* field in processing	*/
+Rtfld_t *rf;  /* field in processing	*/
 Vcchar_t *dt; /* data to convert	*/
-ssize_t dz; /* data length		*/
+ssize_t dz;   /* data length		*/
 Vcchar_t *cv; /* buffer to convert to	*/
-ssize_t cz; /* buffer length	*/
+ssize_t cz;   /* buffer length	*/
 #endif
 {
     Vcchar_t *edt;
@@ -282,7 +282,7 @@ ssize_t cz; /* buffer length	*/
     }
 
     rf->type |= (ndash ? RT_DASH : 0); /* whether or not there is a dash */
-    rf->vcnt = vcnt; /* sequence count */
+    rf->vcnt = vcnt;                   /* sequence count */
     rf->vmax = vmax > rf->vmax ? vmax : rf->vmax; /* max value to code with */
     return vciosize(&io);
 }
@@ -298,11 +298,11 @@ rti2a(Rtable_t *rt,
 #else
 static ssize_t rti2a(rt, rf, dt, dz, cv, cz) Rtable_t *rt; /* table
                                                               information	*/
-Rtfld_t *rf; /* field in processing	*/
-Vcchar_t *dt; /* data to convert	*/
-ssize_t dz; /* data length		*/
-Vcchar_t *cv; /* buffer to convert to	*/
-ssize_t cz; /* buffer length	*/
+Rtfld_t *rf;                                /* field in processing	*/
+Vcchar_t *dt;                               /* data to convert	*/
+ssize_t dz;                                 /* data length		*/
+Vcchar_t *cv;                               /* buffer to convert to	*/
+ssize_t cz;                                 /* buffer length	*/
 #endif
 {
     ssize_t k, n;
@@ -350,7 +350,7 @@ static void
 vlclose(Rtval_t **val, ssize_t vm)
 #else
 static void vlclose(val, vm) Rtval_t **val; /* list of values		*/
-ssize_t vm; /* max index of values	*/
+ssize_t vm;                                 /* max index of values	*/
 #endif
 {
     if (val)
@@ -475,8 +475,8 @@ Void_t **out;
             rc->fsep = rc->rsep;
 
         recn = fldn = 0; /* count records and number of fields per record */
-        fmin = -1; /* fewest fields in a record */
-        rowz = -1; /* see if this is a fixed length record */
+        fmin = -1;       /* fewest fields in a record */
+        rowz = -1;       /* see if this is a fixed length record */
         for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;)
         {
             for (f = 0, d = dt; d < edt; ++d)
@@ -515,7 +515,7 @@ Void_t **out;
         }
     }
     if (fldn <= 0 || recn <= 0)
-        return 0; /* nothing to do */
+        return 0;       /* nothing to do */
     vc->undone -= size; /* a remaining incomplete record, if any */
 
     if (fldn != rc->fldn) /* records differ from before */
@@ -549,7 +549,7 @@ Void_t **out;
             {
                 rc->fld[f].type |= RT_ASIS;
                 rc->fld[f].vcnt = rc->fldz[f]; /* size of field */
-                rc->fld[f].vmax = 0xff; /* vcsizem(0xff) == 1, below */
+                rc->fld[f].vmax = 0xff;        /* vcsizem(0xff) == 1, below */
             }
         }
     }
@@ -600,8 +600,8 @@ Void_t **out;
                 if (!(rc->fld[f].type & (RT_ISEQ | RT_ASIS)))
                     u += 1; /* an uncodable field */
 
-                f += 1; /* count field */
-                dt = d + 1; /* next field or record */
+                f += 1;             /* count field */
+                dt = d + 1;         /* next field or record */
                 if (*d == rc->rsep) /* end of record */
                     break;
             } /**/
@@ -710,7 +710,7 @@ Void_t **out;
                     d += 1;
 
             if (rc->fld[f].type & RT_ASIS) /* code literally */
-            { /**/
+            {                              /**/
                 DEBUG_ASSERT(rc->fld[f].asis == rc->fld[f].vcnt);
                 /**/ DEBUG_ASSERT(rc->fld[f].asis == (d - dt));
                 vcioputs(&io, dt, d - dt);
@@ -752,7 +752,7 @@ Void_t **out;
         }
 
         for (; f < fldn; ++f) /* fill in missing fields with 0's */
-        { /**/
+        {                     /**/
             DEBUG_ASSERT(rc->fld[f].type == 0);
             vcioputm(&io, 0, rc->fld[f].vmax);
         }
@@ -802,23 +802,23 @@ Void_t **out;
     /**/ DEBUG_PRINT(2, "Processed tblz=%d\n", tblz);
 
     /* compute size of output data */
-    z = vcsizeu(size) + /* original data size */
-        sizeof(Vcchar_t) + /* the '.' character */
-        sizeof(Vcchar_t) + /* the '/' character */
-        sizeof(Vcchar_t) + /* the '0' character */
-        sizeof(Vcchar_t) + /* record separator */
-        sizeof(Vcchar_t) + /* field separator */
-        vcsizeu(fldn) + /* number of fields per record */
-        vcsizeu(valz) + valz; /* new field values */
+    z = vcsizeu(size) +        /* original data size */
+        sizeof(Vcchar_t) +     /* the '.' character */
+        sizeof(Vcchar_t) +     /* the '/' character */
+        sizeof(Vcchar_t) +     /* the '0' character */
+        sizeof(Vcchar_t) +     /* record separator */
+        sizeof(Vcchar_t) +     /* field separator */
+        vcsizeu(fldn) +        /* number of fields per record */
+        vcsizeu(valz) + valz;  /* new field values */
     for (f = 0; f < fldn; ++f) /* field format */
     {
-        z += sizeof(Vcchar_t) + /* type of field */
+        z += sizeof(Vcchar_t) +         /* type of field */
              vcsizeu(rc->fld[f].vmax) + /* max bound of indices */
-             vcsizeu(rc->fld[f].vcnt); /* # of elts in sequence */
-        if (rc->fld[f].type & RT_FIXZ) /* a fixed length field */
+             vcsizeu(rc->fld[f].vcnt);  /* # of elts in sequence */
+        if (rc->fld[f].type & RT_FIXZ)  /* a fixed length field */
             z += vcsizeu(rc->fldz[f]);
     }
-    z += vcsizeu(rowz) + /* row size of table data */
+    z += vcsizeu(rowz) +       /* row size of table data */
          vcsizeu(tblz) + tblz; /* table data */
 
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), z, 0)))

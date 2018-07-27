@@ -47,8 +47,8 @@ static int ParseTime _ANSI_ARGS_((Tcl_Interp * interp,
 
 int Tcl_ClockCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int c;
     size_t length;
@@ -334,10 +334,10 @@ badTime:
  */
 
 static int FormatClock(interp, clockVal, useGMT, format)
-Tcl_Interp *interp; /* Current interpreter. */
+Tcl_Interp *interp;     /* Current interpreter. */
 unsigned long clockVal; /* Time in seconds. */
-int useGMT; /* Boolean */
-char *format; /* Format string */
+int useGMT;             /* Boolean */
+char *format;           /* Format string */
 {
     struct tm *timeDataPtr;
     Tcl_DString buffer;

@@ -246,10 +246,10 @@ native_setlocale(int category, const char *locale)
 #define DR1 0xbb /* 8-bit mini >> on xterm	*/
 
 #define DB (( int )sizeof(wchar_t) * 8 - 1)
-#define DC 7 /* wchar_t embedded char bits	*/
-#define DX (DB / DC) /* wchar_t max embedded chars	*/
+#define DC 7                  /* wchar_t embedded char bits	*/
+#define DX (DB / DC)          /* wchar_t max embedded chars	*/
 #define DZ (DB - DX * DC + 1) /* wchar_t embedded size bits	*/
-#define DD 3 /* # mb delimiter chars <n...>	*/
+#define DD 3                  /* # mb delimiter chars <n...>	*/
 
 static unsigned char debug_order[] = {
     0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,

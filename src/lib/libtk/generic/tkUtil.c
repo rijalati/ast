@@ -35,11 +35,11 @@
  */
 
 void Tk_DrawFocusHighlight(tkwin, gc, width, drawable)
-Tk_Window tkwin; /* Window whose focus highlight ring is
-                  * to be drawn. */
-GC gc; /* Graphics context to use for drawing
-        * the highlight ring. */
-int width; /* Width of the highlight ring, in pixels. */
+Tk_Window tkwin;   /* Window whose focus highlight ring is
+                    * to be drawn. */
+GC gc;             /* Graphics context to use for drawing
+                    * the highlight ring. */
+int width;         /* Width of the highlight ring, in pixels. */
 Drawable drawable; /* Where to draw the ring (typically a
                     * pixmap for double buffering). */
 {
@@ -91,12 +91,12 @@ Drawable drawable; /* Where to draw the ring (typically a
 
 int Tk_GetScrollInfo(interp, argc, argv, dblPtr, intPtr)
 Tcl_Interp *interp; /* Used for error reporting. */
-int argc; /* # arguments for command. */
-char **argv; /* Arguments for command. */
-double *dblPtr; /* Filled in with argument "moveto"
-                 * option, if any. */
-int *intPtr; /* Filled in with number of pages
-              * or lines to scroll, if any. */
+int argc;           /* # arguments for command. */
+char **argv;        /* Arguments for command. */
+double *dblPtr;     /* Filled in with argument "moveto"
+                     * option, if any. */
+int *intPtr;        /* Filled in with number of pages
+                     * or lines to scroll, if any. */
 {
     int c;
     size_t length;
@@ -222,10 +222,10 @@ int numKey; /* The key to try to find in the table. */
  */
 
 int TkFindStateNum(interp, field, mapPtr, strKey)
-Tcl_Interp *interp; /* Interp for error reporting. */
-CONST char *field; /* String to use when constructing error. */
+Tcl_Interp *interp;       /* Interp for error reporting. */
+CONST char *field;        /* String to use when constructing error. */
 CONST TkStateMap *mapPtr; /* Lookup table. */
-CONST char *strKey; /* String to try to find in lookup table. */
+CONST char *strKey;       /* String to try to find in lookup table. */
 {
     CONST TkStateMap *mPtr;
 

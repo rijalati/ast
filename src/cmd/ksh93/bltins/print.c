@@ -496,7 +496,7 @@ strformat(char *s)
                 continue;
             }
 #    endif /* FMT_EXP_WIDE */
-#endif /* SHOPT_MULTIBYTE */
+#endif     /* SHOPT_MULTIBYTE */
             if (c == '%')
                 *t++ = '%';
             else if (c == 0)

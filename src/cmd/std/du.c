@@ -92,7 +92,7 @@ typedef struct Fileid_s /* unique file id		*/
 typedef struct Hit_s /* file already seen		*/
 {
     Dtlink_t link; /* dictionary link		*/
-    Fileid_t id; /* unique file id		*/
+    Fileid_t id;   /* unique file id		*/
 } Hit_t;
 
 static void

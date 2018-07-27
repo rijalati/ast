@@ -56,8 +56,8 @@ ssize_t
 rsprocess(Rs_t *rs, Void_t *argdata, ssize_t s_data)
 #else
 ssize_t rsprocess(rs, argdata, s_data) Rs_t *rs; /* Rs_t sort context	*/
-Void_t *argdata; /* data string		*/
-ssize_t s_data; /* data size		*/
+Void_t *argdata;                                 /* data string		*/
+ssize_t s_data;                                  /* data size		*/
 #endif
 {
     reg Rsobj_t *r;
@@ -221,7 +221,7 @@ ssize_t s_data; /* data size		*/
                         r->keylen += r->datalen - key;
                 }
                 else /* key must be constructed separately */
-                { /* make sure there is enough space */
+                {    /* make sure there is enough space */
                     if (s_key < (k = key * r->datalen))
                     {
                         if (k < RS_RESERVE && rs->meth->type != RS_MTVERIFY)

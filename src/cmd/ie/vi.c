@@ -48,7 +48,7 @@ extern char echoctl;
 #    else
 #        define echoctl 0
 #    endif /* ECHOCTL */
-#endif /*OLDTERMIO */
+#endif     /*OLDTERMIO */
 
 #ifndef FIORDCHK
 #    define NTICKS 5 /* number of ticks for typeahead */
@@ -67,11 +67,11 @@ struct tms
     time_t tms_cstime;
 };
 #        endif /* _sys_times */
-#    endif /* KSHELL */
-#endif /* FIORDCHK */
+#    endif     /* KSHELL */
+#endif         /* FIORDCHK */
 
 #define MAXCHAR MAXLINE - 2 /* max char per line */
-#define WINDOW MAXWINDOW /* max char in window of which */
+#define WINDOW MAXWINDOW    /* max char in window of which */
 /* WINDOW-2 are available to user */
 /* actual window size may be smaller */
 
@@ -93,7 +93,7 @@ static int bigvi;
 #    define ismetach(v) ismeta(virtual[v])
 #    define digit(c) isdigit(c)
 #    define is_print(c) isprint(c)
-#endif /* MULTIBYTE */
+#endif                       /* MULTIBYTE */
 #define fold(c) ((c) & ~040) /* lower and uppercase equivalent */
 #ifdef INT16
 /* save space by defining functions for these */
@@ -107,81 +107,81 @@ static int bigvi;
 #define getchar() ed_getchar()
 #define putchar(c) ed_putchar(c)
 #define bell ed_ringbell() /* ring terminal's bell */
-#define crlf ed_crlf() /* return and linefeed */
+#define crlf ed_crlf()     /* return and linefeed */
 
 #define in_raw editb.e_addnl /* next char input is raw */
 #define crallowed editb.e_crlf
-#define cur_virt editb.e_cur /* current virtual column */
-#define cur_phys editb.e_pcur /* current phys column cursor is at */
+#define cur_virt editb.e_cur   /* current virtual column */
+#define cur_phys editb.e_pcur  /* current phys column cursor is at */
 #define curhline editb.e_hline /* current history line */
 #define env editb.e_env
 #define fildes editb.e_fd
-#define findchar editb.e_fchar /* last find char */
-#define first_virt editb.e_fcol /* first allowable column */
+#define findchar editb.e_fchar        /* last find char */
+#define first_virt editb.e_fcol       /* first allowable column */
 #define first_wind editb.e_globals[0] /* first column of window */
-#define globals editb.e_globals /* local global variables */
+#define globals editb.e_globals       /* local global variables */
 #define histmin editb.e_hismin
 #define histmax editb.e_hismax
-#define last_phys editb.e_peol /* last column in physical */
-#define last_virt editb.e_eol /* last column */
-#define last_wind editb.e_globals[1] /* last column in window */
-#define lastmotion editb.e_globals[2] /* last motion */
-#define lastrepeat editb.e_mode /* last repeat count for motion cmds */
-#define long_char editb.e_globals[3] /* line bigger than window */
-#define long_line editb.e_globals[4] /* line bigger than window */
-#define lsearch editb.e_search /* last search string */
-#define lookahead editb.e_index /* characters in buffer */
-#define previous editb.e_lbuf /* lookahead buffer */
-#define max_col editb.e_llimit /* maximum column */
-#define ocur_phys editb.e_globals[5] /* old current physical position */
-#define ocur_virt editb.e_globals[6] /* old last virtual position */
+#define last_phys editb.e_peol         /* last column in physical */
+#define last_virt editb.e_eol          /* last column */
+#define last_wind editb.e_globals[1]   /* last column in window */
+#define lastmotion editb.e_globals[2]  /* last motion */
+#define lastrepeat editb.e_mode        /* last repeat count for motion cmds */
+#define long_char editb.e_globals[3]   /* line bigger than window */
+#define long_line editb.e_globals[4]   /* line bigger than window */
+#define lsearch editb.e_search         /* last search string */
+#define lookahead editb.e_index        /* characters in buffer */
+#define previous editb.e_lbuf          /* lookahead buffer */
+#define max_col editb.e_llimit         /* maximum column */
+#define ocur_phys editb.e_globals[5]   /* old current physical position */
+#define ocur_virt editb.e_globals[6]   /* old last virtual position */
 #define ofirst_wind editb.e_globals[7] /* old window first col */
-#define o_v_char editb.e_globals[8] /* prev virtual[ocur_virt] */
-#define Prompt editb.e_prompt /* pointer to prompt */
-#define plen editb.e_plen /* length of prompt */
-#define physical editb.e_physbuf /* physical image */
-#define repeat editb.e_repeat /* repeat count for motion cmds */
-#define ttyspeed editb.e_ttyspeed /* tty speed */
-#define u_column editb.e_ucol /* undo current column */
-#define U_saved editb.e_saved /* original virtual saved */
-#define U_space editb.e_Ubuf /* used for U command */
-#define u_space editb.e_ubuf /* used for u command */
-#define usreof editb.e_eof /* user defined eof char */
-#define usrerase editb.e_erase /* user defined erase char */
-#define usrintr editb.e_intr /* user defined intr char */
-#define usrkill editb.e_kill /* user defined kill char */
-#define usrquit editb.e_quit /* user defined quit char */
-#define virtual editb.e_inbuf /* pointer to virtual image buffer */
-#define window editb.e_window /* window buffer */
-#define w_size editb.e_wsize /* window size */
-#define inmacro editb.e_inmacro /* true when in macro */
-#define yankbuf editb.e_killbuf /* yank/delete buffer */
+#define o_v_char editb.e_globals[8]    /* prev virtual[ocur_virt] */
+#define Prompt editb.e_prompt          /* pointer to prompt */
+#define plen editb.e_plen              /* length of prompt */
+#define physical editb.e_physbuf       /* physical image */
+#define repeat editb.e_repeat          /* repeat count for motion cmds */
+#define ttyspeed editb.e_ttyspeed      /* tty speed */
+#define u_column editb.e_ucol          /* undo current column */
+#define U_saved editb.e_saved          /* original virtual saved */
+#define U_space editb.e_Ubuf           /* used for U command */
+#define u_space editb.e_ubuf           /* used for u command */
+#define usreof editb.e_eof             /* user defined eof char */
+#define usrerase editb.e_erase         /* user defined erase char */
+#define usrintr editb.e_intr           /* user defined intr char */
+#define usrkill editb.e_kill           /* user defined kill char */
+#define usrquit editb.e_quit           /* user defined quit char */
+#define virtual editb.e_inbuf          /* pointer to virtual image buffer */
+#define window editb.e_window          /* window buffer */
+#define w_size editb.e_wsize           /* window size */
+#define inmacro editb.e_inmacro        /* true when in macro */
+#define yankbuf editb.e_killbuf        /* yank/delete buffer */
 
 #ifndef KSHELL
 extern clock_t
 times();
 #endif /* KSHELL */
 
-#define ABORT -2 /* user abort */
-#define APPEND -10 /* append chars */
-#define BAD -1 /* failure flag */
-#define BIGVI -15 /* user wants real vi */
-#define CONTROL -20 /* control mode */
-#define ENTER -25 /* enter flag */
-#define GOOD 0 /* success flag */
-#define INPUT -30 /* input mode */
-#define INSERT -35 /* insert mode */
-#define REPLACE -40 /* replace chars */
-#define SEARCH -45 /* search flag */
+#define ABORT -2      /* user abort */
+#define APPEND -10    /* append chars */
+#define BAD -1        /* failure flag */
+#define BIGVI -15     /* user wants real vi */
+#define CONTROL -20   /* control mode */
+#define ENTER -25     /* enter flag */
+#define GOOD 0        /* success flag */
+#define INPUT -30     /* input mode */
+#define INSERT -35    /* insert mode */
+#define REPLACE -40   /* replace chars */
+#define SEARCH -45    /* search flag */
 #define TRANSLATE -50 /* translate virt to phys only */
 
 #define DEL '\177' /* interrupt char */
 
 #define INVALID (-1) /* invalid column */
 #define QUIT_C '\34' /* quit char */
-#define SYSERR (-1) /* system error */
+#define SYSERR (-1)  /* system error */
 
-static char addnl; /* boolean - add newline flag */
+static char addnl;           /* boolean - add newline flag */
 static char last_cmd = '\0'; /* last command */
 static char repeat_set;
 static char nonewline;
@@ -235,19 +235,19 @@ textmod();
 -*/
 
 int vi_read(fd, shbuf, nchar) int fd; /* input file descriptor */
-char *shbuf; /* shell line buffer */
-unsigned nchar; /* number of chars to read */
+char *shbuf;                          /* shell line buffer */
+unsigned nchar;                       /* number of chars to read */
 {
-    int c; /* general variable */
-    int i; /* general variable */
-    int term_char; /* read() termination character */
-    char prompt[PRSIZE + 2]; /* prompt */
+    int c;                         /* general variable */
+    int i;                         /* general variable */
+    int term_char;                 /* read() termination character */
+    char prompt[PRSIZE + 2];       /* prompt */
     genchar Physical[2 * MAXLINE]; /* physical image */
-    genchar Ubuf[MAXLINE]; /* used for U command */
-    genchar ubuf[MAXLINE]; /* used for u command */
-    genchar Window[WINDOW + 10]; /* window image */
-    int Globals[9]; /* local global variables */
-    int esc_or_hang = 0; /* <ESC> or hangup */
+    genchar Ubuf[MAXLINE];         /* used for U command */
+    genchar ubuf[MAXLINE];         /* used for u command */
+    genchar Window[WINDOW + 10];   /* window image */
+    int Globals[9];                /* local global variables */
+    int esc_or_hang = 0;           /* <ESC> or hangup */
 #ifndef FIORDCHK
     clock_t oldtime, newtime;
     struct tms dummy;
@@ -742,8 +742,8 @@ cntlmode()
     int c;
     int i;
     genchar tmp_u_space[MAXLINE]; /* temporary u_space */
-    genchar *real_u_space; /* points to real u_space */
-    int tmp_u_column = INVALID; /* temporary u_column */
+    genchar *real_u_space;        /* points to real u_space */
+    int tmp_u_column = INVALID;   /* temporary u_column */
     int was_inmacro;
 
     if (!U_saved)
@@ -2229,7 +2229,7 @@ addin:
         /***** Input commands *****/
 
 #ifdef KSHELL
-    case '*': /** do file name expansion in place **/
+    case '*':  /** do file name expansion in place **/
     case '\\': /** do file name completion in place **/
         if (cur_virt == INVALID)
             return (BAD);
@@ -2275,7 +2275,7 @@ addin:
         bell;
         return (BAD);
 
-#endif /* KSHELL */
+#endif        /* KSHELL */
     case '_': /** append last argument of prev command **/
         save_v();
         {

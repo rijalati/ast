@@ -56,7 +56,7 @@
     0x10000 /* file descriptor number was selected automatically */
 #define IOHERESTRING 0x20000 /* allow here documents to be string streams */
 #define IOSAVESTRING 0x40000 /* string file was saved */
-#define IOUSEVEX 0x80000 /* use spawnvex to save and restore  */
+#define IOUSEVEX 0x80000     /* use spawnvex to save and restore  */
 
 /*
  * The remainder of this file is only used when compiled with shell

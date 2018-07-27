@@ -25,15 +25,15 @@
 ** Written by Kiem-Phong Vo
 */
 
-#define M_SIZE (1024) /* max size of an allocated blk	*/
+#define M_SIZE (1024)      /* max size of an allocated blk	*/
 #define N_ALLOC (4 * 1024) /* #allocations in each process	*/
-#define N_FREE (2 * 1024) /* #frees <= #allocations	*/
+#define N_FREE (2 * 1024)  /* #frees <= #allocations	*/
 
 typedef struct _piece_s
 {
     Void_t *addr; /* allocated address	*/
-    size_t size; /* size to be allocated	*/
-    int free; /* 1: to be freed	*/
+    size_t size;  /* size to be allocated	*/
+    int free;     /* 1: to be freed	*/
 } Piece_t;
 Piece_t Piece[N_ALLOC];
 
@@ -140,7 +140,7 @@ tmain()
     pid_t proc[N_PROC];
     char *store;
 
-    size = 0; /* make up list of pieces for allocation */
+    size = 0;   /* make up list of pieces for allocation */
     srandom(0); /* make it easier to debug */
     for (k = 0; k < N_ALLOC; ++k)
     {

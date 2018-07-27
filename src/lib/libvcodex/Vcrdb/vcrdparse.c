@@ -25,7 +25,7 @@
 ** Written by Kiem-Phong Vo
 */
 
-#define MAXDOT 127 /* convert max of 127 elements	*/
+#define MAXDOT 127                /* convert max of 127 elements	*/
 #define MAXBUF ((MAXDOT + 1) * 4) /* size of buffer to decode	*/
 
 #if __STD_C
@@ -34,9 +34,9 @@ vcrdparse(Vcrdinfo_t *info, Vcchar_t *data, ssize_t dtsz, int type)
 #else
 Vcrdtable_t *vcrdparse(info, data, dtsz, type)
 Vcrdinfo_t *info; /* information about the data	*/
-Vcchar_t *data; /* the data to be parsed	*/
-ssize_t dtsz; /* the size of the data		*/
-int type; /* VCRD_FIELD if field-oriented	*/
+Vcchar_t *data;   /* the data to be parsed	*/
+ssize_t dtsz;     /* the size of the data		*/
+int type;         /* VCRD_FIELD if field-oriented	*/
 #endif
 {
     ssize_t fldn, recn, f, r, z, maxz;
@@ -152,10 +152,10 @@ int type; /* VCRD_FIELD if field-oriented	*/
         return NIL(Vcrdtable_t *);
 
     /* allocate structure for keeping table data */
-    z = sizeof(Vcrdtable_t) + /* size of the table itself */
+    z = sizeof(Vcrdtable_t) +        /* size of the table itself */
         fldn * sizeof(Vcrdfield_t) + /* size of the fields */
         fldn * recn * sizeof(Vcrdrecord_t)
-        + /* pointers to record data in fields */
+        +                              /* pointers to record data in fields */
         fldn * recn * sizeof(ssize_t); /* space for transform vectors */
     if (!(tbl = ( Vcrdtable_t * )calloc(1, z)))
         return NIL(Vcrdtable_t *);
@@ -172,7 +172,7 @@ int type; /* VCRD_FIELD if field-oriented	*/
     }
 
     tbl->parz = dtsz = data - orig; /* size of data consumed */
-    if (tbl->parz == 0) /* data will be filled in later */
+    if (tbl->parz == 0)             /* data will be filled in later */
         return tbl;
 
     if (type & VCRD_FIELD) /* parse field-oriented data into the table. */
@@ -219,7 +219,7 @@ int type; /* VCRD_FIELD if field-oriented	*/
 
                 if (info->fldn > 0 && (z = info->flen[f]) > 0)
                     data += z; /* fixed-length data */
-                else /* variable length data */
+                else           /* variable length data */
                 {
                     for (dt = data; dt < enddt; ++dt)
                         if (*dt == info->fsep || *dt == info->rsep)
@@ -255,10 +255,10 @@ vcrdfield(Vcrdtable_t *tbl,
 #else
 ssize_t vcrdfield(tbl, f, flen, data, dtsz) Vcrdtable_t *tbl; /* table to
                                                                  parse into	*/
-ssize_t f; /* field index		*/
-ssize_t flen; /* fixed length if > 0	*/
+ssize_t f;      /* field index		*/
+ssize_t flen;   /* fixed length if > 0	*/
 Vcchar_t *data; /* field data		*/
-ssize_t dtsz; /* data size		*/
+ssize_t dtsz;   /* data size		*/
 #endif
 {
     ssize_t maxz, z, r, recn;
@@ -331,10 +331,10 @@ text2byte(Vcrdinfo_t *info, Vcchar_t *dt, Vcchar_t *cvdt, int flde, int *type)
 #else
 static ssize_t text2byte(info, dt, cvdt, flde, type)
 Vcrdinfo_t *info; /* table information	*/
-Vcchar_t *dt; /* data to convert	*/
-Vcchar_t *cvdt; /* buffer to convert to	*/
-int flde; /* required end char	*/
-int *type; /* conversion type	*/
+Vcchar_t *dt;     /* data to convert	*/
+Vcchar_t *cvdt;   /* buffer to convert to	*/
+int flde;         /* required end char	*/
+int *type;        /* conversion type	*/
 #endif
 {
     int f, byte, dign, ty;
@@ -358,7 +358,7 @@ int *type; /* conversion type	*/
                 if (cvdt) /* set the converted byte */
                     cvdt[f] = ( Vcchar_t )byte;
 
-                *type = ty; /* return the format (dot or dot|slash) */
+                *type = ty;   /* return the format (dot or dot|slash) */
                 return f + 1; /* return number of converted bytes */
             }
             else if (*dt == info->dot || *dt == info->slash)
@@ -407,13 +407,13 @@ byte2text(Vcrdinfo_t *info,
           int type)
 #else
 static ssize_t byte2text(info, dt, sz, cvdt, cvsz, flde, type)
-Vcrdinfo_t *info; /* table information	*/
-Vcchar_t *dt; /* data to convert	*/
-ssize_t sz; /* data length		*/
-Vcchar_t *cvdt; /* conversion buffer	*/
-ssize_t cvsz; /* buffer length	*/
-int flde; /* ending character	*/
-int type; /* DOT, SLASH, etc.	*/
+Vcrdinfo_t *info;                                    /* table information	*/
+Vcchar_t *dt;                                        /* data to convert	*/
+ssize_t sz;                                          /* data length		*/
+Vcchar_t *cvdt;                                      /* conversion buffer	*/
+ssize_t cvsz;                                        /* buffer length	*/
+int flde;                                            /* ending character	*/
+int type;                                            /* DOT, SLASH, etc.	*/
 #endif
 {
     ssize_t z;
@@ -468,10 +468,10 @@ int type; /* DOT, SLASH, etc.	*/
 static int
 flddot(Vcrdtable_t *tbl, ssize_t f, int attrs, int type)
 #else
-static int flddot(tbl, f, type) Vcrdtable_t *tbl; /* table data		*/
-ssize_t f; /* field to convert	*/
-int attrs; /* attributes		*/
-int type; /* 1/0: encode/decode	*/
+static int flddot(tbl, f, type) Vcrdtable_t *tbl;    /* table data		*/
+ssize_t f;                                           /* field to convert	*/
+int attrs;                                           /* attributes		*/
+int type;                                            /* 1/0: encode/decode	*/
 #endif
 {
     ssize_t r, z, dtsz, cvsz;
@@ -552,7 +552,7 @@ int type; /* 1/0: encode/decode	*/
                     return -1;
             }
             memcpy(data + cvsz, cvdt, z);
-            cvsz += z; /* total converted data size */
+            cvsz += z;        /* total converted data size */
             rcrd[r].dtsz = z; /* reset record size */
         }
 
@@ -579,8 +579,8 @@ int type; /* 1/0: encode/decode	*/
 static int
 fldvariable(Vcrdtable_t *tbl, ssize_t f)
 #else
-static int fldvariable(tbl, f) Vcrdtable_t *tbl; /* table data	*/
-ssize_t f; /* field index	*/
+static int fldvariable(tbl, f) Vcrdtable_t *tbl;     /* table data	*/
+ssize_t f;                                           /* field index	*/
 #endif
 {
     ssize_t r, z, maxz;
@@ -634,9 +634,9 @@ int
 vcrdattrs(Vcrdtable_t *tbl, ssize_t f, int attrs, int type)
 #else
 int vcrdattrs(tbl, f, attrs, type) Vcrdtable_t *tbl; /* table of data	*/
-ssize_t f; /* f >=0: single field	*/
+ssize_t f;                                           /* f >=0: single field	*/
 int attrs; /* attributes to un/set	*/
-int type; /* 1: on, 0: off	*/
+int type;  /* 1: on, 0: off	*/
 #endif
 {
     ssize_t endf;
@@ -710,7 +710,7 @@ ssize_t
 fldend(Vcrdtable_t *tbl, ssize_t r)
 #else
 ssize_t fldend(tbl, r) Vcrdtable_t *tbl; /* table data		*/
-ssize_t r; /* record being checked	*/
+ssize_t r;                               /* record being checked	*/
 #endif
 {
     ssize_t f;
@@ -743,10 +743,10 @@ vcrdextract(Vcrdtable_t *tbl,
 #else
 ssize_t vcrdextract(tbl, fldi, data, type) Vcrdtable_t *tbl; /* table to get
                                                                 data from	*/
-ssize_t fldi; /* field index or -1 for all	*/
+ssize_t fldi;   /* field index or -1 for all	*/
 Vcchar_t *data; /* buffer to return data	*/
-ssize_t dtsz; /* buffer size			*/
-int type; /* VCRD_FIELD/VCRD_RECORD	*/
+ssize_t dtsz;   /* buffer size			*/
+int type;       /* VCRD_FIELD/VCRD_RECORD	*/
 #endif
 {
     ssize_t f, r, endf, sz;

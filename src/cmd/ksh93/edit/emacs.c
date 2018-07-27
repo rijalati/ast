@@ -110,13 +110,13 @@ typedef struct _emacs_
     char cr_ok;
     char CntrlO;
     char overflow; /* Screen overflow flag set */
-    char scvalid; /* Screen is up to date */
+    char scvalid;  /* Screen is up to date */
     char lastdraw; /* last update type */
-    int offset; /* Screen offset */
+    int offset;    /* Screen offset */
     enum
     {
         CRT = 0, /* Crt terminal */
-        PAPER /* Paper terminal */
+        PAPER    /* Paper terminal */
     } terminal;
     Histloc_t _location;
     int prevdirection;
@@ -162,11 +162,11 @@ characters in the middle of the line.
 
 typedef enum
 {
-    FIRST, /* First time thru for logical line, prompt on screen */
+    FIRST,   /* First time thru for logical line, prompt on screen */
     REFRESH, /* Redraw entire screen */
-    APPEND, /* Append char before cursor to screen */
-    UPDATE, /* Update the screen as need be */
-    FINAL /* Update screen even if pending look ahead */
+    APPEND,  /* Append char before cursor to screen */
+    UPDATE,  /* Update the screen as need be */
+    FINAL    /* Update screen even if pending look ahead */
 } Draw_t;
 
 static void
@@ -242,7 +242,7 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
         location.hist_line = 0;
     }
     ep->in_mult = hloff; /* save pos in last command */
-#endif /* ESH_NFIRST */
+#endif                   /* ESH_NFIRST */
     i = sigsetjmp(env, 0);
     if (i != 0)
     {
@@ -284,7 +284,7 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
 #    endif /* SHOPT_MULTIBYTE */
             ed_ungetchar(ep->ed, cntl('Y'));
         }
-#endif /* ESH_NFIRST */
+#endif     /* ESH_NFIRST */
     }
     ep->CntrlO = 0;
     while ((c = ed_getchar(ep->ed, 0)) != (-1))
@@ -409,21 +409,21 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
             goto process;
 
         case DELETE: /* delete char 0x7f */
-        case '\b': /* backspace, ^h */
+        case '\b':   /* backspace, ^h */
         case ERASECHAR:
             if (count > i)
                 count = i;
 #ifdef ESH_KAPPEND
             kptr = &kstack[count]; /* move old contents here */
-            if (killing) /* prepend to killbuf */
+            if (killing)           /* prepend to killbuf */
             {
                 c = genlen(kstack) + CHARSIZE; /* include '\0' */
-                while (c--) /* copy stuff */
+                while (c--)                    /* copy stuff */
                     kptr[c] = kstack[c];
             }
             else
                 *kptr = 0; /* this is end of data */
-            killing = 2; /* we are killing */
+            killing = 2;   /* we are killing */
             i -= count;
             eol -= count;
             genncpy(kstack, out + i, cur - i);
@@ -1221,7 +1221,7 @@ xcommands(Emacs_t *ep, int count)
         show_info(ep, hbuf);
         return;
     }
-#        if 0 /* debugging, modify as required */
+#        if 0  /* debugging, modify as required */
 		case cntl('D'):		/* ^X^D show debugging info */
 			{
 				char debugbuf[MAXLINE];
@@ -1243,8 +1243,8 @@ xcommands(Emacs_t *ep, int count)
 				return;
 			}
 #        endif /* debugging code */
-#    endif /* ESH_BETTER */
-#endif /* KSHELL */
+#    endif     /* ESH_BETTER */
+#endif         /* KSHELL */
 
     default:
         beep();
@@ -1375,11 +1375,11 @@ draw(Emacs_t *ep, Draw_t option)
 #define BOTH '*'
 #define UPPER '>'
 
-    genchar *sptr; /* Pointer within screen */
+    genchar *sptr;                /* Pointer within screen */
     genchar nscreen[2 * MAXLINE]; /* New entire screen */
-    genchar *ncursor; /* New cursor */
-    genchar *nptr; /* Pointer to New screen */
-    char longline; /* Line overflow */
+    genchar *ncursor;             /* New cursor */
+    genchar *nptr;                /* Pointer to New screen */
+    char longline;                /* Line overflow */
     genchar *logcursor;
     genchar *nscend; /* end of logical screen */
     int i;

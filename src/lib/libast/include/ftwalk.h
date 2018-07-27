@@ -52,7 +52,7 @@
 #    define _FTSENT_LOCAL_PRIVATE_ /* <fts.h> internal	*/                    \
         union                                                                \
         {                                                                    \
-            long number; /* local numeric value	*/                           \
+            long number;   /* local numeric value	*/                         \
             void *pointer; /* local pointer value	*/                         \
         } local;
 
@@ -100,7 +100,7 @@
  * Ftw_t.status entry values
  */
 
-#    define FTW_NAME FTS_DOT /* access by Ftw_t.name		*/
+#    define FTW_NAME FTS_DOT     /* access by Ftw_t.name		*/
 #    define FTW_PATH FTS_NOCHDIR /* access by Ftw_t.path		*/
 
 /*

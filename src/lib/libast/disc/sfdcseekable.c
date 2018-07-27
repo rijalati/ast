@@ -31,11 +31,11 @@
 
 typedef struct _skable_s
 {
-    Sfdisc_t disc; /* sfio discipline */
-    Sfio_t *shadow; /* to shadow data */
+    Sfdisc_t disc;   /* sfio discipline */
+    Sfio_t *shadow;  /* to shadow data */
     Sfoff_t discard; /* sfseek(f,-1,SEEK_SET) discarded data */
-    Sfoff_t extent; /* shadow extent */
-    int eof; /* if eof has been reached */
+    Sfoff_t extent;  /* shadow extent */
+    int eof;         /* if eof has been reached */
 } Seek_t;
 
 #if __STD_C
@@ -43,8 +43,8 @@ static ssize_t
 skwrite(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *disc)
 #else
 static ssize_t skwrite(f, buf, n, disc) Sfio_t *f; /* stream involved */
-Void_t *buf; /* buffer to read into */
-size_t n; /* number of bytes to read */
+Void_t *buf;                                       /* buffer to read into */
+size_t n;       /* number of bytes to read */
 Sfdisc_t *disc; /* discipline */
 #endif
 {
@@ -56,8 +56,8 @@ static ssize_t
 skread(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
 #else
 static ssize_t skread(f, buf, n, disc) Sfio_t *f; /* stream involved */
-Void_t *buf; /* buffer to read into */
-size_t n; /* number of bytes to read */
+Void_t *buf;                                      /* buffer to read into */
+size_t n;       /* number of bytes to read */
 Sfdisc_t *disc; /* discipline */
 #endif
 {

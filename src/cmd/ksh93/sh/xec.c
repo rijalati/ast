@@ -4207,7 +4207,7 @@ sh_ntfork(Shell_t *shp, const Shnode_t *t, char *argv[], int *jobid, int flag)
                 job.curpgid = spawnpid;
         }
 #        endif /* SIGTSTP */
-#    endif /* JOBS */
+#    endif     /* JOBS */
         savejobid = *jobid;
         if (otype)
             return (0);
@@ -4226,7 +4226,7 @@ fork(void)
     return (-1);
 }
 #    endif /* _lib_fork */
-#endif /* SHOPT_SPAWN */
+#endif     /* SHOPT_SPAWN */
 
 /*
  * This routine is used to execute the given function <fun> in a new scope

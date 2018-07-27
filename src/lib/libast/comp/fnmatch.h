@@ -33,17 +33,17 @@
 
 #    define FNM_NOESCAPE 0x0001 /* \ is literal			*/
 #    define FNM_PATHNAME 0x0002 /* explicit match for /		*/
-#    define FNM_PERIOD 0x0004 /* explicit match for leading .	*/
-#    define FNM_NOSYS 0x0010 /* not implemented		*/
+#    define FNM_PERIOD 0x0004   /* explicit match for leading .	*/
+#    define FNM_NOSYS 0x0010    /* not implemented		*/
 
 /* nonstandard fnmatch() flags */
 
-#    define FNM_AUGMENTED 0x0008 /* enable ! & ( | )		*/
-#    define FNM_ICASE 0x0020 /* ignore case in match		*/
+#    define FNM_AUGMENTED 0x0008   /* enable ! & ( | )		*/
+#    define FNM_ICASE 0x0020       /* ignore case in match		*/
 #    define FNM_LEADING_DIR 0x0040 /* match up to implicit /	*/
 
-#    define FNM_CASEFOLD FNM_ICASE /* gnu/bsd compatibility	*/
-#    define FNM_IGNORECASE FNM_ICASE /* gnu/bsd compatibility	*/
+#    define FNM_CASEFOLD FNM_ICASE     /* gnu/bsd compatibility	*/
+#    define FNM_IGNORECASE FNM_ICASE   /* gnu/bsd compatibility	*/
 #    define FNM_FILE_NAME FNM_PATHNAME /* gnu compatibility		*/
 
 /* fnmatch error codes -- other non-zero values from <regex.h> */

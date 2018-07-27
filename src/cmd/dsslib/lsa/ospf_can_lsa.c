@@ -122,17 +122,17 @@ read_aligned_words(Dssfile_t *fp,
  * Type object for file types containing LSAR lsa logs.
  */
 Dssformat_t can_lsa_format = {
-    FORMAT_NAME, /* name */
+    FORMAT_NAME,                 /* name */
     "OSPF canonical lsa format", /* description */
     CXH,
     identf_can_lsa_file, /* identf */
-    open_can_lsa_file, /* openf */
-    read_can_lsa_rec, /* readf */
-    write_can_lsa_rec, /* writef */
-    NULL, /* seekf */
-    close_can_lsa_file, /* closef */
-    NULL, /* savef */
-    NULL, /* dropf */
+    open_can_lsa_file,   /* openf */
+    read_can_lsa_rec,    /* readf */
+    write_can_lsa_rec,   /* writef */
+    NULL,                /* seekf */
+    close_can_lsa_file,  /* closef */
+    NULL,                /* savef */
+    NULL,                /* dropf */
     /* private stuff */
     OSPF_CAN_LSA_NEXT /* next */
 };

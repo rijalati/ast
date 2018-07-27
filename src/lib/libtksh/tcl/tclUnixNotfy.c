@@ -167,9 +167,9 @@ Tcl_NumEventsFound()
 
 int Tcl_FileReady(file,
                   mask) Tcl_File file; /* Generic file handle for a stream. */
-int mask; /* OR'ed combination of TCL_READABLE,
-           * TCL_WRITABLE, and TCL_EXCEPTION:
-           * indicates conditions caller cares about. */
+int mask;                              /* OR'ed combination of TCL_READABLE,
+                                        * TCL_WRITABLE, and TCL_EXCEPTION:
+                                        * indicates conditions caller cares about. */
 {
     int index, result, type, fd;
     fd_mask bit;

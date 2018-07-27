@@ -280,7 +280,7 @@ typedef struct Tcl_Value
 {
     Tcl_ValueType type; /* Indicates intValue or doubleValue is
                          * valid, or both. */
-    long intValue; /* Integer value. */
+    long intValue;      /* Integer value. */
     double doubleValue; /* Double-precision floating value. */
 } Tcl_Value;
 
@@ -339,12 +339,12 @@ typedef char *( Tcl_VarTraceProc )_ANSI_ARGS_((ClientData clientData,
 
 typedef struct Tcl_CmdInfo
 {
-    Tcl_CmdProc *proc; /* Procedure to implement command. */
-    ClientData clientData; /* ClientData passed to proc. */
+    Tcl_CmdProc *proc;             /* Procedure to implement command. */
+    ClientData clientData;         /* ClientData passed to proc. */
     Tcl_CmdDeleteProc *deleteProc; /* Procedure to call when command
                                     * is deleted. */
-    ClientData deleteData; /* Value to pass to deleteProc (usually
-                            * the same as clientData). */
+    ClientData deleteData;         /* Value to pass to deleteProc (usually
+                                    * the same as clientData). */
 } Tcl_CmdInfo;
 
 /*
@@ -358,8 +358,8 @@ typedef struct Tcl_DString
 {
     char *string; /* Points to beginning of string:  either
                    * staticSpace below or a malloc'ed array. */
-    int length; /* Number of non-NULL characters in the
-                 * string. */
+    int length;   /* Number of non-NULL characters in the
+                   * string. */
     int spaceAvl; /* Total number of bytes available for the
                    * string and its terminating NULL char. */
     char staticSpace[TCL_DSTRING_STATIC_SIZE];
@@ -507,26 +507,26 @@ struct Tcl_HashTable;
 
 typedef struct Tcl_HashEntry
 {
-    struct Tcl_HashEntry *nextPtr; /* Pointer to next entry in this
-                                    * hash bucket, or NULL for end of
-                                    * chain. */
-    struct Tcl_HashTable *tablePtr; /* Pointer to table containing entry. */
+    struct Tcl_HashEntry *nextPtr;    /* Pointer to next entry in this
+                                       * hash bucket, or NULL for end of
+                                       * chain. */
+    struct Tcl_HashTable *tablePtr;   /* Pointer to table containing entry. */
     struct Tcl_HashEntry **bucketPtr; /* Pointer to bucket that points to
                                        * first entry in this entry's chain:
                                        * used for deleting the entry. */
-    ClientData clientData; /* Application stores something here
-                            * with Tcl_SetHashValue. */
+    ClientData clientData;            /* Application stores something here
+                                       * with Tcl_SetHashValue. */
     union
-    { /* Key has one of these forms: */
+    {                       /* Key has one of these forms: */
         char *oneWordValue; /* One-word value for key. */
-        int words[1]; /* Multiple integer words for key.
-                       * The actual size will be as large
-                       * as necessary for this table's
-                       * keys. */
-        char string[4]; /* String for key.  The actual size
-                         * will be as large as needed to hold
-                         * the key. */
-    } key; /* MUST BE LAST FIELD IN RECORD!! */
+        int words[1];       /* Multiple integer words for key.
+                             * The actual size will be as large
+                             * as necessary for this table's
+                             * keys. */
+        char string[4];     /* String for key.  The actual size
+                             * will be as large as needed to hold
+                             * the key. */
+    } key;                  /* MUST BE LAST FIELD IN RECORD!! */
 } Tcl_HashEntry;
 
 /*
@@ -544,23 +544,23 @@ typedef struct Tcl_HashTable
     Tcl_HashEntry *staticBuckets[TCL_SMALL_HASH_TABLE];
     /* Bucket array used for small tables
      * (to avoid mallocs and frees). */
-    int numBuckets; /* Total number of buckets allocated
-                     * at **bucketPtr. */
-    int numEntries; /* Total number of entries present
-                     * in table. */
+    int numBuckets;  /* Total number of buckets allocated
+                      * at **bucketPtr. */
+    int numEntries;  /* Total number of entries present
+                      * in table. */
     int rebuildSize; /* Enlarge table when numEntries gets
                       * to be this large. */
-    int downShift; /* Shift count used in hashing
-                    * function.  Designed to use high-
-                    * order bits of randomized keys. */
-    int mask; /* Mask value used in hashing
-               * function. */
-    int keyType; /* Type of keys used in this table.
-                  * It's either TCL_STRING_KEYS,
-                  * TCL_ONE_WORD_KEYS, or an integer
-                  * giving the number of ints that
-                  * is the size of the key.
-                  */
+    int downShift;   /* Shift count used in hashing
+                      * function.  Designed to use high-
+                      * order bits of randomized keys. */
+    int mask;        /* Mask value used in hashing
+                      * function. */
+    int keyType;     /* Type of keys used in this table.
+                      * It's either TCL_STRING_KEYS,
+                      * TCL_ONE_WORD_KEYS, or an integer
+                      * giving the number of ints that
+                      * is the size of the key.
+                      */
     Tcl_HashEntry *( *findProc )_ANSI_ARGS_((struct Tcl_HashTable * tablePtr,
                                              char *key));
     Tcl_HashEntry *( *createProc )
@@ -574,9 +574,9 @@ typedef struct Tcl_HashTable
 
 typedef struct Tcl_HashSearch
 {
-    Tcl_HashTable *tablePtr; /* Table being searched. */
-    int nextIndex; /* Index of next bucket to be
-                    * enumerated after present one. */
+    Tcl_HashTable *tablePtr;     /* Table being searched. */
+    int nextIndex;               /* Index of next bucket to be
+                                  * enumerated after present one. */
     Tcl_HashEntry *nextEntryPtr; /* Next entry to be enumerated in the
                                   * the current bucket. */
 } Tcl_HashSearch;
@@ -634,7 +634,7 @@ typedef struct Tcl_HashSearch
 
 struct Tcl_Event
 {
-    Tcl_EventProc *proc; /* Procedure to call to service this event. */
+    Tcl_EventProc *proc;       /* Procedure to call to service this event. */
     struct Tcl_Event *nextPtr; /* Next in list of pending events, or NULL. */
 };
 
@@ -658,7 +658,7 @@ typedef enum
 
 typedef struct Tcl_Time
 {
-    long sec; /* Seconds. */
+    long sec;  /* Seconds. */
     long usec; /* Microseconds. */
 } Tcl_Time;
 
@@ -714,9 +714,9 @@ _ANSI_ARGS_((ClientData instanceData, int mask));
 typedef enum Tcl_EolTranslation
 {
     TCL_TRANSLATE_AUTO, /* Eol == \r, \n and \r\n. */
-    TCL_TRANSLATE_CR, /* Eol == \r. */
-    TCL_TRANSLATE_LF, /* Eol == \n. */
-    TCL_TRANSLATE_CRLF /* Eol == \r\n. */
+    TCL_TRANSLATE_CR,   /* Eol == \r. */
+    TCL_TRANSLATE_LF,   /* Eol == \n. */
+    TCL_TRANSLATE_CRLF  /* Eol == \r\n. */
 } Tcl_EolTranslation;
 
 /*
@@ -735,14 +735,14 @@ typedef struct Tcl_ChannelType
     Tcl_DriverBlockModeProc *blockModeProc;
     /* Set blocking mode for the
      * raw channel. May be NULL. */
-    Tcl_DriverCloseProc *closeProc; /* Procedure to call to close
-                                     * the channel. */
-    Tcl_DriverInputProc *inputProc; /* Procedure to call for input
-                                     * on channel. */
+    Tcl_DriverCloseProc *closeProc;   /* Procedure to call to close
+                                       * the channel. */
+    Tcl_DriverInputProc *inputProc;   /* Procedure to call for input
+                                       * on channel. */
     Tcl_DriverOutputProc *outputProc; /* Procedure to call for output
                                        * on channel. */
-    Tcl_DriverSeekProc *seekProc; /* Procedure to call to seek
-                                   * on the channel. May be NULL. */
+    Tcl_DriverSeekProc *seekProc;     /* Procedure to call to seek
+                                       * on the channel. May be NULL. */
     Tcl_DriverSetOptionProc *setOptionProc;
     /* Set an option on a channel. */
     Tcl_DriverGetOptionProc *getOptionProc;

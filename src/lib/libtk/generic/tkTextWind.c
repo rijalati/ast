@@ -28,8 +28,8 @@ static void EmbWinLostSlaveProc _ANSI_ARGS_((ClientData clientData,
                                              Tk_Window tkwin));
 
 static Tk_GeomMgr textGeomType = {
-    "text", /* name */
-    EmbWinRequestProc, /* requestProc */
+    "text",              /* name */
+    EmbWinRequestProc,   /* requestProc */
     EmbWinLostSlaveProc, /* lostSlaveProc */
 };
 
@@ -110,14 +110,14 @@ static void EmbWinUndisplayProc _ANSI_ARGS_((TkText * textPtr,
  */
 
 static Tk_SegType tkTextEmbWindowType = {
-    "window", /* name */
-    0, /* leftGravity */
-    ( Tk_SegSplitProc * )NULL, /* splitProc */
-    EmbWinDeleteProc, /* deleteProc */
-    EmbWinCleanupProc, /* cleanupProc */
+    "window",                       /* name */
+    0,                              /* leftGravity */
+    ( Tk_SegSplitProc * )NULL,      /* splitProc */
+    EmbWinDeleteProc,               /* deleteProc */
+    EmbWinCleanupProc,              /* cleanupProc */
     ( Tk_SegLineChangeProc * )NULL, /* lineChangeProc */
-    EmbWinLayoutProc, /* layoutProc */
-    EmbWinCheckProc /* checkProc */
+    EmbWinLayoutProc,               /* layoutProc */
+    EmbWinCheckProc                 /* checkProc */
 };
 
 /*
@@ -198,12 +198,12 @@ static Tk_ConfigSpec configSpecs[]
  */
 
 int TkTextWindowCmd(textPtr, interp, argc, argv)
-TkText *textPtr; /* Information about text widget. */
+TkText *textPtr;    /* Information about text widget. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings.  Someone else has already
-              * parsed this command enough to know that
-              * argv[1] is "window". */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings.  Someone else has already
+                     * parsed this command enough to know that
+                     * argv[1] is "window". */
 {
     size_t length;
     TkTextSegment *ewPtr;
@@ -428,12 +428,12 @@ char **argv; /* Argument strings.  Someone else has already
  */
 
 static int EmbWinConfigure(textPtr, ewPtr, argc, argv)
-TkText *textPtr; /* Information about text widget that
-                  * contains embedded window. */
+TkText *textPtr;      /* Information about text widget that
+                       * contains embedded window. */
 TkTextSegment *ewPtr; /* Embedded window to be configured. */
-int argc; /* Number of strings in argv. */
-char **argv; /* Array of strings describing configuration
-              * options. */
+int argc;             /* Number of strings in argv. */
+char **argv;          /* Array of strings describing configuration
+                       * options. */
 {
     Tk_Window oldWindow;
     Tcl_HashEntry *hPtr;
@@ -558,12 +558,12 @@ char **argv; /* Array of strings describing configuration
 /* ARGSUSED */
 static int AlignParseProc(clientData, interp, tkwin, value, widgRec, offset)
 ClientData clientData; /* Not used.*/
-Tcl_Interp *interp; /* Used for reporting errors. */
-Tk_Window tkwin; /* Window for text widget. */
-char *value; /* Value of option. */
-char *widgRec; /* Pointer to TkTextEmbWindow
-                * structure. */
-int offset; /* Offset into item (ignored). */
+Tcl_Interp *interp;    /* Used for reporting errors. */
+Tk_Window tkwin;       /* Window for text widget. */
+char *value;           /* Value of option. */
+char *widgRec;         /* Pointer to TkTextEmbWindow
+                        * structure. */
+int offset;            /* Offset into item (ignored). */
 {
     TkTextEmbWindow *embPtr = ( TkTextEmbWindow * )widgRec;
 
@@ -616,11 +616,11 @@ int offset; /* Offset into item (ignored). */
 
 /* ARGSUSED */
 static char *AlignPrintProc(clientData, tkwin, widgRec, offset, freeProcPtr)
-ClientData clientData; /* Ignored. */
-Tk_Window tkwin; /* Window for text widget. */
-char *widgRec; /* Pointer to TkTextEmbWindow
-                * structure. */
-int offset; /* Ignored. */
+ClientData clientData;      /* Ignored. */
+Tk_Window tkwin;            /* Window for text widget. */
+char *widgRec;              /* Pointer to TkTextEmbWindow
+                             * structure. */
+int offset;                 /* Ignored. */
 Tcl_FreeProc **freeProcPtr; /* Pointer to variable to fill in with
                              * information about how to reclaim
                              * storage for return string. */
@@ -662,7 +662,7 @@ Tcl_FreeProc **freeProcPtr; /* Pointer to variable to fill in with
 
 static void EmbWinStructureProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to record describing window item. */
-XEvent *eventPtr; /* Describes what just happened. */
+XEvent *eventPtr;      /* Describes what just happened. */
 {
     TkTextSegment *ewPtr = ( TkTextSegment * )clientData;
     TkTextIndex index;
@@ -702,8 +702,8 @@ XEvent *eventPtr; /* Describes what just happened. */
 /* ARGSUSED */
 static void EmbWinRequestProc(clientData, tkwin)
 ClientData clientData; /* Pointer to record for window item. */
-Tk_Window tkwin; /* Window that changed its desired
-                  * size. */
+Tk_Window tkwin;       /* Window that changed its desired
+                        * size. */
 {
     TkTextSegment *ewPtr = ( TkTextSegment * )clientData;
     TkTextIndex index;
@@ -735,8 +735,8 @@ Tk_Window tkwin; /* Window that changed its desired
 
 static void EmbWinLostSlaveProc(clientData, tkwin)
 ClientData clientData; /* Pointer to record describing window item. */
-Tk_Window tkwin; /* Window that was claimed away by another
-                  * geometry manager. */
+Tk_Window tkwin;       /* Window that was claimed away by another
+                        * geometry manager. */
 {
     TkTextSegment *ewPtr = ( TkTextSegment * )clientData;
     TkTextIndex index;
@@ -784,10 +784,10 @@ Tk_Window tkwin; /* Window that was claimed away by another
 /* ARGSUSED */
 static int EmbWinDeleteProc(ewPtr, linePtr, treeGone)
 TkTextSegment *ewPtr; /* Segment being deleted. */
-TkTextLine *linePtr; /* Line containing segment. */
-int treeGone; /* Non-zero means the entire tree is
-               * being deleted, so everything must
-               * get cleaned up. */
+TkTextLine *linePtr;  /* Line containing segment. */
+int treeGone;         /* Non-zero means the entire tree is
+                       * being deleted, so everything must
+                       * get cleaned up. */
 {
     Tcl_HashEntry *hPtr;
 
@@ -848,7 +848,7 @@ int treeGone; /* Non-zero means the entire tree is
 
 static TkTextSegment *EmbWinCleanupProc(ewPtr, linePtr)
 TkTextSegment *ewPtr; /* Mark segment that's being moved. */
-TkTextLine *linePtr; /* Line that now contains segment. */
+TkTextLine *linePtr;  /* Line that now contains segment. */
 {
     ewPtr->body.ew.linePtr = linePtr;
     return ewPtr;
@@ -884,17 +884,17 @@ static int EmbWinLayoutProc(textPtr,
                             chunkPtr) TkText *textPtr; /* Text widget being
                                                           layed out. */
 TkTextIndex *indexPtr; /* Identifies first character in chunk. */
-TkTextSegment *ewPtr; /* Segment corresponding to indexPtr. */
-int offset; /* Offset within segPtr corresponding to
-             * indexPtr (always 0). */
-int maxX; /* Chunk must not occupy pixels at this
-           * position or higher. */
-int maxChars; /* Chunk must not include more than this
-               * many characters. */
-int noCharsYet; /* Non-zero means no characters have been
-                 * assigned to this line yet. */
-Tk_Uid wrapMode; /* Wrap mode to use for line: tkTextCharUid,
-                  * tkTextNoneUid, or tkTextWordUid. */
+TkTextSegment *ewPtr;  /* Segment corresponding to indexPtr. */
+int offset;            /* Offset within segPtr corresponding to
+                        * indexPtr (always 0). */
+int maxX;              /* Chunk must not occupy pixels at this
+                        * position or higher. */
+int maxChars;          /* Chunk must not include more than this
+                        * many characters. */
+int noCharsYet;        /* Non-zero means no characters have been
+                        * assigned to this line yet. */
+Tk_Uid wrapMode;       /* Wrap mode to use for line: tkTextCharUid,
+                        * tkTextNoneUid, or tkTextWordUid. */
 TkTextDispChunk *chunkPtr;
 /* Structure to fill in with information
  * about this chunk.  The x field has already
@@ -1087,20 +1087,20 @@ TkTextLine *linePtr; /* Line containing segment. */
 static void
 EmbWinDisplayProc(chunkPtr, x, y, lineHeight, baseline, display, dst, screenY)
 TkTextDispChunk *chunkPtr; /* Chunk that is to be drawn. */
-int x; /* X-position in dst at which to
-        * draw this chunk (differs from
-        * the x-position in the chunk because
-        * of scrolling). */
-int y; /* Top of rectangular bounding box
-        * for line: tells where to draw this
-        * chunk in dst (x-position is in
-        * the chunk itself). */
-int lineHeight; /* Total height of line. */
-int baseline; /* Offset of baseline from y. */
-Display *display; /* Display to use for drawing. */
-Drawable dst; /* Pixmap or window in which to draw */
-int screenY; /* Y-coordinate in text window that
-              * corresponds to y. */
+int x;                     /* X-position in dst at which to
+                            * draw this chunk (differs from
+                            * the x-position in the chunk because
+                            * of scrolling). */
+int y;                     /* Top of rectangular bounding box
+                            * for line: tells where to draw this
+                            * chunk in dst (x-position is in
+                            * the chunk itself). */
+int lineHeight;            /* Total height of line. */
+int baseline;              /* Offset of baseline from y. */
+Display *display;          /* Display to use for drawing. */
+Drawable dst;              /* Pixmap or window in which to draw */
+int screenY;               /* Y-coordinate in text window that
+                            * corresponds to y. */
 {
     TkTextSegment *ewPtr = ( TkTextSegment * )chunkPtr->clientData;
     int lineX, windowX, windowY, width, height;
@@ -1242,19 +1242,19 @@ static void EmbWinBboxProc(chunkPtr,
                            widthPtr,
                            heightPtr)
 TkTextDispChunk *chunkPtr; /* Chunk containing desired char. */
-int index; /* Index of desired character within
-            * the chunk. */
-int y; /* Topmost pixel in area allocated
-        * for this line. */
-int lineHeight; /* Total height of line. */
-int baseline; /* Location of line's baseline, in
-               * pixels measured down from y. */
-int *xPtr, *yPtr; /* Gets filled in with coords of
-                   * character's upper-left pixel. */
-int *widthPtr; /* Gets filled in with width of
-                * character, in pixels. */
-int *heightPtr; /* Gets filled in with height of
-                 * character, in pixels. */
+int index;                 /* Index of desired character within
+                            * the chunk. */
+int y;                     /* Topmost pixel in area allocated
+                            * for this line. */
+int lineHeight;            /* Total height of line. */
+int baseline;              /* Location of line's baseline, in
+                            * pixels measured down from y. */
+int *xPtr, *yPtr;          /* Gets filled in with coords of
+                            * character's upper-left pixel. */
+int *widthPtr;             /* Gets filled in with width of
+                            * character, in pixels. */
+int *heightPtr;            /* Gets filled in with height of
+                            * character, in pixels. */
 {
     TkTextSegment *ewPtr = ( TkTextSegment * )chunkPtr->clientData;
     Tk_Window tkwin;
@@ -1361,7 +1361,7 @@ EmbWinDelayedUnmap(clientData) ClientData clientData; /* Token for the window
 int TkTextWindowIndex(textPtr, name, indexPtr) TkText *textPtr; /* Text widget
                                                                    containing
                                                                    window. */
-char *name; /* Name of window. */
+char *name;            /* Name of window. */
 TkTextIndex *indexPtr; /* Index information gets stored here. */
 {
     Tcl_HashEntry *hPtr;

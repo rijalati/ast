@@ -26,36 +26,36 @@ typedef struct GlobPattern
 {
     struct GlobPattern *next; /* Chains to the next glob pattern
                                * in a glob pattern list */
-    char *pattern; /* String value of the pattern, such
-                    * as "*.txt" or "*.*"
-                    */
+    char *pattern;            /* String value of the pattern, such
+                               * as "*.txt" or "*.*"
+                               */
 } GlobPattern;
 
 typedef struct MacFileType
 {
     struct MacFileType *next; /* Chains to the next mac file type
                                * in a mac file type list */
-    OSType type; /* Mac file type, such as 'TEXT' or
-                  * 'GIFF' */
+    OSType type;              /* Mac file type, such as 'TEXT' or
+                               * 'GIFF' */
 } MacFileType;
 
 typedef struct FileFilterClause
 {
     struct FileFilterClause *next; /* Chains to the next clause in
                                     * a clause list */
-    GlobPattern *patterns; /* Head of glob pattern type list */
-    GlobPattern *patternsTail; /* Tail of glob pattern type list */
-    MacFileType *macTypes; /* Head of mac file type list */
-    MacFileType *macTypesTail; /* Tail of mac file type list */
+    GlobPattern *patterns;         /* Head of glob pattern type list */
+    GlobPattern *patternsTail;     /* Tail of glob pattern type list */
+    MacFileType *macTypes;         /* Head of mac file type list */
+    MacFileType *macTypesTail;     /* Tail of mac file type list */
 } FileFilterClause;
 
 typedef struct FileFilter
 {
-    struct FileFilter *next; /* Chains to the next filter
-                              * in a filter list */
-    char *name; /* Name of the file filter,
-                 * such as "Text Documents" */
-    FileFilterClause *clauses; /* Head of the clauses list */
+    struct FileFilter *next;       /* Chains to the next filter
+                                    * in a filter list */
+    char *name;                    /* Name of the file filter,
+                                    * such as "Text Documents" */
+    FileFilterClause *clauses;     /* Head of the clauses list */
     FileFilterClause *clausesTail; /* Tail of the clauses list */
 } FileFilter;
 
@@ -73,9 +73,9 @@ typedef struct FileFilter
 
 typedef struct FileFilterList
 {
-    FileFilter *filters; /* Head of the filter list */
+    FileFilter *filters;     /* Head of the filter list */
     FileFilter *filtersTail; /* Tail of the filter list */
-    int numFilters; /* number of filters in the list */
+    int numFilters;          /* number of filters in the list */
 } FileFilterList;
 
 EXTERN void TkFreeFileFilters _ANSI_ARGS_((FileFilterList * flistPtr));

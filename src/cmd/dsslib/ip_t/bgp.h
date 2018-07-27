@@ -34,7 +34,7 @@
 
 #    define BGP_VERSION 20120811L /* interface version	*/
 
-#    define BGP_SET16 0xffff /* as16 path set marker	*/
+#    define BGP_SET16 0xffff     /* as16 path set marker	*/
 #    define BGP_SET32 0xffffffff /* as32 path set marker	*/
 
 /*
@@ -186,17 +186,17 @@ typedef uint32_t Bgpnum_t;
 
 typedef struct Bgpvec_s /* vector data			*/
 {
-    Bgpasn_t offset; /* data[] offset		*/
-    Bgpasn_t size; /* # elements			*/
-    Bgpasn_t maxsize; /* max allocated size		*/
+    Bgpasn_t offset;   /* data[] offset		*/
+    Bgpasn_t size;     /* # elements			*/
+    Bgpasn_t maxsize;  /* max allocated size		*/
     Bgpasn_t elements; /* sizeof() elements		*/
-    Bgpasn_t flags; /* data-specific flags		*/
-    Bgpasn_t attr; /* data-specific attribute	*/
+    Bgpasn_t flags;    /* data-specific flags		*/
+    Bgpasn_t attr;     /* data-specific attribute	*/
 } Bgpvec_t;
 
 typedef union Bgpaddr_u /* ipv4/ipv6 address		*/
 {
-    Bgpnum_t v4; /* ipv4 addr			*/
+    Bgpnum_t v4;          /* ipv4 addr			*/
     unsigned char v6[16]; /* ipv6 addr			*/
 } Bgpaddr_t;
 
@@ -263,9 +263,9 @@ typedef struct Bgprd_s
 
     /* 32 bit members */
 
-    Bgpnum_t as32; /* route distinguisher as32	*/
+    Bgpnum_t as32;   /* route distinguisher as32	*/
     Bgpnum_t number; /* route distinguisher number	*/
-    Bgpnum_t set; /* BGP_RD_SET_* bitmask		*/
+    Bgpnum_t set;    /* BGP_RD_SET_* bitmask		*/
 
     /* 16 bit members */
 
@@ -306,13 +306,13 @@ typedef struct Bgpmvpn_s
 
     Bgpaddr_t group_addr; /* group address		*/
     Bgpaddr_t originator; /* originator address		*/
-    Bgpaddr_t src_addr; /* source address		*/
+    Bgpaddr_t src_addr;   /* source address		*/
 
     Bgprd_t rd; /* route distinguisher		*/
 
     /* 32 bit members */
 
-    Bgpnum_t set; /* BGP_MVPN_SET_* bitmask	*/
+    Bgpnum_t set;      /* BGP_MVPN_SET_* bitmask	*/
     Bgpnum_t src_as32; /* source as32			*/
 
     /* 16 bit members */
@@ -330,67 +330,67 @@ typedef struct Bgproute_s
 {
     /* 128/32 bit members						*/
 
-    Bgpaddr_t addr; /* prefix address		*/
+    Bgpaddr_t addr;       /* prefix address		*/
     Bgpaddr_t agg_addr32; /* aggregator as32 addr		*/
-    Bgpaddr_t agg_addr; /* aggregator addr		*/
-    Bgpaddr_t dpa_addr; /* dpa addr			*/
-    Bgpaddr_t dst_addr; /* destination addr		*/
-    Bgpaddr_t hop; /* next hop addr		*/
+    Bgpaddr_t agg_addr;   /* aggregator addr		*/
+    Bgpaddr_t dpa_addr;   /* dpa addr			*/
+    Bgpaddr_t dst_addr;   /* destination addr		*/
+    Bgpaddr_t hop;        /* next hop addr		*/
     Bgpaddr_t originator; /* originator addr		*/
-    Bgpaddr_t src_addr; /* source addr			*/
+    Bgpaddr_t src_addr;   /* source addr			*/
 
     Bgpaigp_t aigp; /* AIGP attributes		*/
-    Bgprd_t rd; /* route distinguisher		*/
+    Bgprd_t rd;     /* route distinguisher		*/
 
     /* 32 bit members */
 
-    Bgpnum_t size; /* actual record size		*/
-    Bgpnum_t local; /* local preference		*/
-    Bgpnum_t med; /* med				*/
-    Bgpnum_t weight; /* router proprietary weight	*/
-    Bgpnum_t time; /* packet event time stamp	*/
-    Bgpnum_t usec; /* packet event time stamp usec	*/
-    Bgpnum_t stamp; /* data time stamp		*/
-    Bgpnum_t message; /* message group index		*/
+    Bgpnum_t size;     /* actual record size		*/
+    Bgpnum_t local;    /* local preference		*/
+    Bgpnum_t med;      /* med				*/
+    Bgpnum_t weight;   /* router proprietary weight	*/
+    Bgpnum_t time;     /* packet event time stamp	*/
+    Bgpnum_t usec;     /* packet event time stamp usec	*/
+    Bgpnum_t stamp;    /* data time stamp		*/
+    Bgpnum_t message;  /* message group index		*/
     Bgpnum_t agg_as32; /* aggregator as32		*/
     Bgpnum_t dpa_as32; /* dpa as32			*/
     Bgpnum_t dst_as32; /* destination as32		*/
     Bgpnum_t src_as32; /* source as32			*/
-    Bgpnum_t set; /* BGP_SET_* bitmask		*/
-    Bgpnum_t label; /* nlri label			*/
-    Bgpnum_t flags; /* aux flags			*/
-    Bgpnum_t id; /* aux id			*/
+    Bgpnum_t set;      /* BGP_SET_* bitmask		*/
+    Bgpnum_t label;    /* nlri label			*/
+    Bgpnum_t flags;    /* aux flags			*/
+    Bgpnum_t id;       /* aux id			*/
 
     /* 16 bit members */
 
-    Bgpvec_t path; /* as path			*/
-    Bgpvec_t cluster; /* clusters			*/
+    Bgpvec_t path;      /* as path			*/
+    Bgpvec_t cluster;   /* clusters			*/
     Bgpvec_t community; /* communities			*/
-    Bgpvec_t extended; /* extended communities		*/
-    Bgpvec_t labels; /* NLRI labels			*/
-    Bgpvec_t path32; /* as32 path			*/
-    Bgpvec_t ped; /* pe discriminator addr.label	*/
-    Bgpvec_t unknown; /* unknown attributes		*/
+    Bgpvec_t extended;  /* extended communities		*/
+    Bgpvec_t labels;    /* NLRI labels			*/
+    Bgpvec_t path32;    /* as32 path			*/
+    Bgpvec_t ped;       /* pe discriminator addr.label	*/
+    Bgpvec_t unknown;   /* unknown attributes		*/
 
-    Bgpasn_t attr; /* BGP_[a-z]* route attributes	*/
+    Bgpasn_t attr;   /* BGP_[a-z]* route attributes	*/
     Bgpasn_t agg_as; /* aggregator as		*/
     Bgpasn_t dpa_as; /* dpa as			*/
     Bgpasn_t dst_as; /* destination as		*/
     Bgpasn_t src_as; /* source as			*/
 
-    Bgpasn_t mvpn; /* MVPN NLRI list data[] offset	*/
+    Bgpasn_t mvpn;   /* MVPN NLRI list data[] offset	*/
     Bgpasn_t tunnel; /* PMSI tunnel data[] offset	*/
 
     /* 8 bit members */
 
-    unsigned char bits; /* prefix bits			*/
-    unsigned char type; /* BGP_TYPE_*			*/
+    unsigned char bits;   /* prefix bits			*/
+    unsigned char type;   /* BGP_TYPE_*			*/
     unsigned char origin; /* BGP_ORIGIN_*			*/
     unsigned char blocks; /* # blocks for this record	*/
-    unsigned char afi; /* announce afi			*/
-    unsigned char safi; /* announce subsequent afi	*/
-    unsigned char p1; /* parameter 1			*/
-    unsigned char p2; /* parameter 2			*/
+    unsigned char afi;    /* announce afi			*/
+    unsigned char safi;   /* announce subsequent afi	*/
+    unsigned char p1;     /* parameter 1			*/
+    unsigned char p2;     /* parameter 2			*/
 
     /* unaligned fixed buffer members */
 

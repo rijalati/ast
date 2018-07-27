@@ -45,9 +45,9 @@
 
 #    define MAGIC_FILE_ENV "MAGICFILE"
 
-#    define MAGIC_MIME (1 << 0) /* magictype returns MIME type	*/
+#    define MAGIC_MIME (1 << 0)    /* magictype returns MIME type	*/
 #    define MAGIC_VERBOSE (1 << 1) /* verbose magic file errors	*/
-#    define MAGIC_ALL (1 << 2) /* list all table matches	*/
+#    define MAGIC_ALL (1 << 2)     /* list all table matches	*/
 
 #    define MAGIC_USER (1L << 16) /* first user flag bit		*/
 
@@ -57,8 +57,8 @@ struct Magicdisc_s;
 typedef struct Magicdisc_s
 {
     unsigned long version; /* interface version		*/
-    unsigned long flags; /* MAGIC_* flags		*/
-    Error_f errorf; /* error function		*/
+    unsigned long flags;   /* MAGIC_* flags		*/
+    Error_f errorf;        /* error function		*/
 } Magicdisc_t;
 
 typedef struct Magic_s

@@ -20,7 +20,7 @@
 #include "fus3d.h"
 
 static char *specialpaths[] = {
-    "", /* NDFS_SPECIALPATH_NOT */
+    "",                          /* NDFS_SPECIALPATH_NOT */
     NDFS_SPECIALPATH_pfx "del;", /* NDFS_SPECIALPATH_DEL */
     NDFS_SPECIALPATH_pfx "tmp;", /* NDFS_SPECIALPATH_TMP */
     NDFS_SPECIALPATH_pfx "off;", /* NDFS_SPECIALPATH_OFF */

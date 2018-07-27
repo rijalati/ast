@@ -25,12 +25,12 @@
 ** Written by Kiem-Phong Vo
 */
 
-#define CSIZE (1 << 12) /* number of hash table slots	*/
+#define CSIZE (1 << 12)  /* number of hash table slots	*/
 #define NVOTE(w) (4 * w) /* # of votes for a position	*/
 
 typedef struct _cand_s /* a candidate index		*/
 {
-    int idx; /* actual index			*/
+    int idx;  /* actual index			*/
     int vote; /* number of votes received	*/
 } Cand_t;
 
@@ -191,10 +191,10 @@ vcwfvote(Vcwfile_t *vcwf, Cand_t *cand, Grint_t *msig, int v, int maxi)
 static void vcwfvote(vcwf, cand, m, v, maxi) Vcwfile_t *vcwf; /* window
                                                                  matching
                                                                  handle		*/
-Cand_t *cand; /* list of candidates			*/
+Cand_t *cand;  /* list of candidates			*/
 Grint_t *msig; /* matching location to voter v below	*/
-int v; /* position of voter in work[]		*/
-int maxi; /* max index that can be matched	*/
+int v;         /* position of voter in work[]		*/
+int maxi;      /* max index that can be matched	*/
 #endif
 {
     int i, idx, vote;
@@ -268,7 +268,7 @@ vcwfsearch(Vcwfile_t *vcwf, Vcchar_t *data, size_t size)
 #else
 int vcwfsearch(vcwf, data, size) Vcwfile_t *vcwf;
 Vcchar_t *data; /* data to be matched	*/
-size_t size; /* size of data		*/
+size_t size;    /* size of data		*/
 #endif
 {
     Grint_t **ss, **es, **ms, workn;

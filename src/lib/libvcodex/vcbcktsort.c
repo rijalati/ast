@@ -37,10 +37,10 @@ vcbcktsort(ssize_t *indx,
 #else
 ssize_t vcbcktsort(indx, list, n, data, bckt) ssize_t *indx; /* output sorted
                                                                 indxes	*/
-ssize_t *list; /* indices to be sorted	*/
-ssize_t n; /* # of indices		*/
+ssize_t *list;  /* indices to be sorted	*/
+ssize_t n;      /* # of indices		*/
 Vcchar_t *data; /* data used to sort	*/
-ssize_t *bckt; /* [256] buckets	*/
+ssize_t *bckt;  /* [256] buckets	*/
 #endif
 {
     ssize_t i, p, c;

@@ -41,15 +41,15 @@ typedef struct Error_info_s
 
 #define ERROR_catalog(s) s
 
-#define ERROR_INFO 0 /* info message -- no err_id	*/
-#define ERROR_WARNING 1 /* warning message		*/
-#define ERROR_ERROR 2 /* error message -- no err_exit	*/
-#define ERROR_FATAL 3 /* error message with err_exit	*/
+#define ERROR_INFO 0            /* info message -- no err_id	*/
+#define ERROR_WARNING 1         /* warning message		*/
+#define ERROR_ERROR 2           /* error message -- no err_exit	*/
+#define ERROR_FATAL 3           /* error message with err_exit	*/
 #define ERROR_PANIC ERROR_LEVEL /* panic message with err_exit	*/
 
-#define ERROR_LEVEL 0x00ff /* level portion of status	*/
+#define ERROR_LEVEL 0x00ff  /* level portion of status	*/
 #define ERROR_SYSTEM 0x0100 /* report system errno message	*/
-#define ERROR_USAGE 0x0800 /* usage message		*/
+#define ERROR_USAGE 0x0800  /* usage message		*/
 
 #define error_info _err_info
 #define error _err_msg

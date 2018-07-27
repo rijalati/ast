@@ -53,25 +53,25 @@
 #        define IDEVICE(p, v)
 #    endif
 
-#    define LS_ATIME (1 << 0) /* list st_atime		*/
-#    define LS_BLOCKS (1 << 1) /* list blocks used by file	*/
-#    define LS_CTIME (1 << 2) /* list st_ctime		*/
+#    define LS_ATIME (1 << 0)    /* list st_atime		*/
+#    define LS_BLOCKS (1 << 1)   /* list blocks used by file	*/
+#    define LS_CTIME (1 << 2)    /* list st_ctime		*/
 #    define LS_EXTERNAL (1 << 3) /* st_mode is modex canonical	*/
-#    define LS_INUMBER (1 << 4) /* list st_ino			*/
-#    define LS_LONG (1 << 5) /* long listing			*/
-#    define LS_MARK (1 << 6) /* append file name marks	*/
-#    define LS_NOGROUP (1 << 7) /* omit group name for LS_LONG	*/
-#    define LS_NOUSER (1 << 8) /* omit user name for LS_LONG	*/
-#    define LS_NUMBER (1 << 9) /* number instead of name	*/
+#    define LS_INUMBER (1 << 4)  /* list st_ino			*/
+#    define LS_LONG (1 << 5)     /* long listing			*/
+#    define LS_MARK (1 << 6)     /* append file name marks	*/
+#    define LS_NOGROUP (1 << 7)  /* omit group name for LS_LONG	*/
+#    define LS_NOUSER (1 << 8)   /* omit user name for LS_LONG	*/
+#    define LS_NUMBER (1 << 9)   /* number instead of name	*/
 
 #    define LS_USER (1 << 10) /* first user flag bit		*/
 
-#    define LS_W_BLOCKS 6 /* LS_BLOCKS field width	*/
+#    define LS_W_BLOCKS 6  /* LS_BLOCKS field width	*/
 #    define LS_W_INUMBER 9 /* LS_INUMBER field width	*/
-#    define LS_W_LONG 57 /* LS_LONG width (w/o names)	*/
-#    define LS_W_LINK 4 /* link text width (w/o names)	*/
-#    define LS_W_MARK 1 /* LS_MARK field width		*/
-#    define LS_W_NAME 9 /* group|user name field width	*/
+#    define LS_W_LONG 57   /* LS_LONG width (w/o names)	*/
+#    define LS_W_LINK 4    /* link text width (w/o names)	*/
+#    define LS_W_MARK 1    /* LS_MARK field width		*/
+#    define LS_W_NAME 9    /* group|user name field width	*/
 
 #    if _BLD_ast && defined(__EXPORT__)
 #        define extern __EXPORT__

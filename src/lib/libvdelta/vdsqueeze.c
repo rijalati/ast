@@ -28,7 +28,7 @@
 long S_copy, S_add; /* amount of input covered by COPY and ADD	*/
 long N_copy, N_add; /* # of COPY and ADD instructions		*/
 long M_copy, M_add; /* max size of a COPY or ADD instruction	*/
-long N_merge; /* # of merged instructions			*/
+long N_merge;       /* # of merged instructions			*/
 #endif
 
 #define MERGABLE(a, c, k)                                                    \
@@ -38,12 +38,12 @@ typedef struct _table_s Table_t;
 struct _table_s
 {
     uchar *delta; /* output area		*/
-    uchar *tar; /* target string	*/
+    uchar *tar;   /* target string	*/
     int n_tar;
     K_DDECL(quick, recent, rhere); /* address caches	*/
-    int *link; /* base of elements	*/
-    int size; /* size of hash table	*/
-    int *hash; /* hash table		*/
+    int *link;                     /* base of elements	*/
+    int size;                      /* size of hash table	*/
+    int *hash;                     /* hash table		*/
 };
 
 /* encode and output delta instructions */
@@ -52,10 +52,10 @@ static int
 vdputinst(Table_t *tab, uchar *begs, uchar *here, reg int copy, int n_copy)
 #else
 static int vdputinst(tab, begs, here, copy, n_copy) Table_t *tab;
-uchar *begs; /* ADD data if any	*/
-uchar *here; /* current location	*/
+uchar *begs;  /* ADD data if any	*/
+uchar *here;  /* current location	*/
 reg int copy; /* best match if any	*/
-int n_copy; /* length of match	*/
+int n_copy;   /* length of match	*/
 #endif
 {
     reg int n_add, i_add, i_copy, k_type;
@@ -63,11 +63,11 @@ int n_copy; /* length of match	*/
     uchar buf[sizeof(long) + 1];
 
     n_add = begs ? here - begs : 0; /* add size		*/
-    c_addr = here - tab->tar; /* current address	*/
+    c_addr = here - tab->tar;       /* current address	*/
     k_type = 0;
 
     if (copy >= 0) /* process the COPY instruction */
-    { /**/
+    {              /**/
         DBTOTAL(N_copy, 1);
         DBTOTAL(S_copy, n_copy);
         DBMAX(M_copy, n_copy);

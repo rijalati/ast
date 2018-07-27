@@ -28,9 +28,9 @@
 ** AMA_SIZE and AMA_HEAD. This is true for known character maps
 ** and MUST BE SO for any new one that might be put in use.
 */
-#define EOL ('\n') /* the new line character	*/
-#define AMAEOL(x) (( x )&177) /* \n is in low 7 bits	*/
-#define AMA_TEXTLINE EOL /* exclude \n in output	*/
+#define EOL ('\n')                    /* the new line character	*/
+#define AMAEOL(x) (( x )&177)         /* \n is in low 7 bits	*/
+#define AMA_TEXTLINE EOL              /* exclude \n in output	*/
 #define AMA_FULLLINE (EOL | (1 << 7)) /* include \n in output	*/
 
 #define AMA_SIZE 2 /* AMA record size in first 2 bytes	*/
@@ -40,25 +40,25 @@
 #define AMA_ETOA (1 << 8) /* decode EBCDIC->ASCII	*/
 
 /* the below macros define the coding of record lengths */
-#define MAXSIZE (1 << 16) /* max allowed record size	*/
+#define MAXSIZE (1 << 16)                      /* max allowed record size	*/
 #define GETSIZE(dt) (((dt)[0] << 8) + (dt)[1]) /* record size	*/
 #define PUTSIZE(dt, v)                                                       \
     (((dt)[0] = (((v) >> 8) & 0377)), ((dt)[1] = (( v )&0377)))
 
 typedef struct _vartbl_s
 {
-    int type; /* indicator byte		*/
+    int type;      /* indicator byte		*/
     Vcodex_t *map; /* for EBCDIC->ASCII mapping	*/
-    Dt_t *szdt; /* dictionary sorted by sizes	*/
+    Dt_t *szdt;    /* dictionary sorted by sizes	*/
 } Vartbl_t;
 
 typedef struct _tbl_s
 {
     Dtlink_t link;
-    ssize_t size; /* record size			*/
-    ssize_t count; /* record count			*/
-    ssize_t dtsz; /* data size			*/
-    Vcchar_t *data; /* data buffer for all records	*/
+    ssize_t size;      /* record size			*/
+    ssize_t count;     /* record count			*/
+    ssize_t dtsz;      /* data size			*/
+    Vcchar_t *data;    /* data buffer for all records	*/
     Vccontext_t *ctxt; /* context to invoke vc->coder	*/
 } Tbl_t;
 
@@ -338,7 +338,7 @@ Void_t **out;
         RETURN(-1);
     vcioinit(&io, zipdt, zipsz);
 
-    vcioputu(&io, ntbl); /* # of tables */
+    vcioputu(&io, ntbl);      /* # of tables */
     vcioputc(&io, var->type); /* data type indicator */
 
     /* output the table of sizes first */
@@ -352,8 +352,8 @@ Void_t **out;
         if (tbl->count <= 0 || tbl == sztbl)
             continue;
 
-        vcioputu(&io, tbl->size); /* number of columns */
-        vcioputu(&io, tbl->dtsz); /* size of processed data */
+        vcioputu(&io, tbl->size);            /* number of columns */
+        vcioputu(&io, tbl->dtsz);            /* size of processed data */
         vcioputs(&io, tbl->data, tbl->dtsz); /* data itself */
         ntbl -= 1;
     } /**/

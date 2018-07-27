@@ -27,37 +27,37 @@
 
 typedef struct StyleValues
 {
-    Tk_3DBorder border; /* Used for drawing background under text.
-                         * NULL means use widget background. */
-    int borderWidth; /* Width of 3-D border for background. */
-    int relief; /* 3-D relief for background. */
-    Pixmap bgStipple; /* Stipple bitmap for background.  None
-                       * means draw solid. */
-    XColor *fgColor; /* Foreground color for text. */
-    XFontStruct *fontPtr; /* Font for displaying text. */
-    Pixmap fgStipple; /* Stipple bitmap for text and other
-                       * foreground stuff.   None means draw
-                       * solid.*/
-    int justify; /* Justification style for text. */
-    int lMargin1; /* Left margin, in pixels, for first display
-                   * line of each text line. */
-    int lMargin2; /* Left margin, in pixels, for second and
-                   * later display lines of each text line. */
-    int offset; /* Offset in pixels of baseline, relative to
-                 * baseline of line. */
-    int overstrike; /* Non-zero means draw overstrike through
-                     * text. */
-    int rMargin; /* Right margin, in pixels. */
-    int spacing1; /* Spacing above first dline in text line. */
-    int spacing2; /* Spacing between lines of dline. */
-    int spacing3; /* Spacing below last dline in text line. */
+    Tk_3DBorder border;          /* Used for drawing background under text.
+                                  * NULL means use widget background. */
+    int borderWidth;             /* Width of 3-D border for background. */
+    int relief;                  /* 3-D relief for background. */
+    Pixmap bgStipple;            /* Stipple bitmap for background.  None
+                                  * means draw solid. */
+    XColor *fgColor;             /* Foreground color for text. */
+    XFontStruct *fontPtr;        /* Font for displaying text. */
+    Pixmap fgStipple;            /* Stipple bitmap for text and other
+                                  * foreground stuff.   None means draw
+                                  * solid.*/
+    int justify;                 /* Justification style for text. */
+    int lMargin1;                /* Left margin, in pixels, for first display
+                                  * line of each text line. */
+    int lMargin2;                /* Left margin, in pixels, for second and
+                                  * later display lines of each text line. */
+    int offset;                  /* Offset in pixels of baseline, relative to
+                                  * baseline of line. */
+    int overstrike;              /* Non-zero means draw overstrike through
+                                  * text. */
+    int rMargin;                 /* Right margin, in pixels. */
+    int spacing1;                /* Spacing above first dline in text line. */
+    int spacing2;                /* Spacing between lines of dline. */
+    int spacing3;                /* Spacing below last dline in text line. */
     TkTextTabArray *tabArrayPtr; /* Locations and types of tab stops (may
                                   * be NULL). */
-    int underline; /* Non-zero means draw underline underneath
-                    * text. */
-    Tk_Uid wrapMode; /* How to handle wrap-around for this tag.
-                      * One of tkTextCharUid, tkTextNoneUid,
-                      * or tkTextWordUid. */
+    int underline;               /* Non-zero means draw underline underneath
+                                  * text. */
+    Tk_Uid wrapMode;             /* How to handle wrap-around for this tag.
+                                  * One of tkTextCharUid, tkTextNoneUid,
+                                  * or tkTextWordUid. */
 } StyleValues;
 
 /*
@@ -68,15 +68,15 @@ typedef struct StyleValues
 
 typedef struct TextStyle
 {
-    int refCount; /* Number of times this structure is
-                   * referenced in Chunks. */
-    GC bgGC; /* Graphics context for background.  None
-              * means use widget background. */
-    GC fgGC; /* Graphics context for foreground. */
+    int refCount;           /* Number of times this structure is
+                             * referenced in Chunks. */
+    GC bgGC;                /* Graphics context for background.  None
+                             * means use widget background. */
+    GC fgGC;                /* Graphics context for foreground. */
     StyleValues *sValuePtr; /* Raw information from which GCs were
                              * derived. */
-    Tcl_HashEntry *hPtr; /* Pointer to entry in styleTable.  Used
-                          * to delete entry. */
+    Tcl_HashEntry *hPtr;    /* Pointer to entry in styleTable.  Used
+                             * to delete entry. */
 } TextStyle;
 
 /*
@@ -98,42 +98,42 @@ typedef struct TextStyle
 
 typedef struct DLine
 {
-    TkTextIndex index; /* Identifies first character in text
-                        * that is displayed on this line. */
-    int count; /* Number of characters accounted for by this
-                * display line, including a trailing space
-                * or newline that isn't actually displayed. */
-    int y; /* Y-position at which line is supposed to
-            * be drawn (topmost pixel of rectangular
-            * area occupied by line). */
-    int oldY; /* Y-position at which line currently
-               * appears on display.  -1 means line isn't
-               * currently visible on display and must be
-               * redrawn.  This is used to move lines by
-               * scrolling rather than re-drawing. */
-    int height; /* Height of line, in pixels. */
-    int baseline; /* Offset of text baseline from y, in
-                   * pixels. */
-    int spaceAbove; /* How much extra space was added to the
-                     * top of the line because of spacing
-                     * options.  This is included in height
-                     * and baseline. */
-    int spaceBelow; /* How much extra space was added to the
-                     * bottom of the line because of spacing
-                     * options.  This is included in height. */
-    int length; /* Total length of line, in pixels. */
+    TkTextIndex index;         /* Identifies first character in text
+                                * that is displayed on this line. */
+    int count;                 /* Number of characters accounted for by this
+                                * display line, including a trailing space
+                                * or newline that isn't actually displayed. */
+    int y;                     /* Y-position at which line is supposed to
+                                * be drawn (topmost pixel of rectangular
+                                * area occupied by line). */
+    int oldY;                  /* Y-position at which line currently
+                                * appears on display.  -1 means line isn't
+                                * currently visible on display and must be
+                                * redrawn.  This is used to move lines by
+                                * scrolling rather than re-drawing. */
+    int height;                /* Height of line, in pixels. */
+    int baseline;              /* Offset of text baseline from y, in
+                                * pixels. */
+    int spaceAbove;            /* How much extra space was added to the
+                                * top of the line because of spacing
+                                * options.  This is included in height
+                                * and baseline. */
+    int spaceBelow;            /* How much extra space was added to the
+                                * bottom of the line because of spacing
+                                * options.  This is included in height. */
+    int length;                /* Total length of line, in pixels. */
     TkTextDispChunk *chunkPtr; /* Pointer to first chunk in list of all
                                 * of those that are displayed on this
                                 * line of the screen. */
-    struct DLine *nextPtr; /* Next in list of all display lines for
-                            * this window.   The list is sorted in
-                            * order from top to bottom.  Note:  the
-                            * next DLine doesn't always correspond
-                            * to the next line of text:  (a) can have
-                            * multiple DLines for one text line, and
-                            * (b) can have gaps where DLine's have been
-                            * deleted because they're out of date. */
-    int flags; /* Various flag bits:  see below for values. */
+    struct DLine *nextPtr;     /* Next in list of all display lines for
+                                * this window.   The list is sorted in
+                                * order from top to bottom.  Note:  the
+                                * next DLine doesn't always correspond
+                                * to the next line of text:  (a) can have
+                                * multiple DLines for one text line, and
+                                * (b) can have gaps where DLine's have been
+                                * deleted because they're out of date. */
+    int flags;                 /* Various flag bits:  see below for values. */
 } DLine;
 
 /*
@@ -173,45 +173,45 @@ typedef struct TextDInfo
 {
     Tcl_HashTable styleTable; /* Hash table that maps from StyleValues
                                * to TextStyles for this widget. */
-    DLine *dLinePtr; /* First in list of all display lines for
-                      * this widget, in order from top to bottom. */
-    GC copyGC; /* Graphics context for copying from off-
-                * screen pixmaps onto screen. */
-    GC scrollGC; /* Graphics context for copying from one place
-                  * in the window to another (scrolling):
-                  * differs from copyGC in that we need to get
-                  * GraphicsExpose events. */
-    int x; /* First x-coordinate that may be used for
-            * actually displaying line information.
-            * Leaves space for border, etc. */
-    int y; /* First y-coordinate that may be used for
-            * actually displaying line information.
-            * Leaves space for border, etc. */
-    int maxX; /* First x-coordinate to right of available
-               * space for displaying lines. */
-    int maxY; /* First y-coordinate below available
-               * space for displaying lines. */
-    int topOfEof; /* Top-most pixel (lowest y-value) that has
-                   * been drawn in the appropriate fashion for
-                   * the portion of the window after the last
-                   * line of the text.  This field is used to
-                   * figure out when to redraw part or all of
-                   * the eof field. */
+    DLine *dLinePtr;          /* First in list of all display lines for
+                               * this widget, in order from top to bottom. */
+    GC copyGC;                /* Graphics context for copying from off-
+                               * screen pixmaps onto screen. */
+    GC scrollGC;              /* Graphics context for copying from one place
+                               * in the window to another (scrolling):
+                               * differs from copyGC in that we need to get
+                               * GraphicsExpose events. */
+    int x;                    /* First x-coordinate that may be used for
+                               * actually displaying line information.
+                               * Leaves space for border, etc. */
+    int y;                    /* First y-coordinate that may be used for
+                               * actually displaying line information.
+                               * Leaves space for border, etc. */
+    int maxX;                 /* First x-coordinate to right of available
+                               * space for displaying lines. */
+    int maxY;                 /* First y-coordinate below available
+                               * space for displaying lines. */
+    int topOfEof;             /* Top-most pixel (lowest y-value) that has
+                               * been drawn in the appropriate fashion for
+                               * the portion of the window after the last
+                               * line of the text.  This field is used to
+                               * figure out when to redraw part or all of
+                               * the eof field. */
 
     /*
      * Information used for scrolling:
      */
 
-    int newCharOffset; /* Desired x scroll position, measured as the
-                        * number of average-size characters off-screen
-                        * to the left for a line with no left
-                        * margin. */
+    int newCharOffset;  /* Desired x scroll position, measured as the
+                         * number of average-size characters off-screen
+                         * to the left for a line with no left
+                         * margin. */
     int curPixelOffset; /* Actual x scroll position, measured as the
                          * number of pixels off-screen to the left. */
-    int maxLength; /* Length in pixels of longest line that's
-                    * visible in window (length may exceed window
-                    * size).  If there's no wrapping, this will
-                    * be zero. */
+    int maxLength;      /* Length in pixels of longest line that's
+                         * visible in window (length may exceed window
+                         * size).  If there's no wrapping, this will
+                         * be zero. */
     double xScrollFirst, xScrollLast;
     /* Most recent values reported to horizontal
      * scrollbar;  used to eliminate unnecessary
@@ -225,12 +225,12 @@ typedef struct TextDInfo
      * The following information is used to implement scanning:
      */
 
-    int scanMarkChar; /* Character that was at the left edge of
-                       * the window when the scan started. */
-    int scanMarkX; /* X-position of mouse at time scan started. */
+    int scanMarkChar;    /* Character that was at the left edge of
+                          * the window when the scan started. */
+    int scanMarkX;       /* X-position of mouse at time scan started. */
     int scanTotalScroll; /* Total scrolling (in screen lines) that has
                           * occurred since scanMarkY was set. */
-    int scanMarkY; /* Y-position of mouse at time scan started. */
+    int scanMarkY;       /* Y-position of mouse at time scan started. */
 
     /*
      * Miscellaneous information:
@@ -247,8 +247,8 @@ typedef struct TextDInfo
                             * is currently being displayed.  If redisplay
                             * continues, it will use freed memory and
                             * could dump core. */
-    int flags; /* Various flag values:  see below for
-                * definitions. */
+    int flags;             /* Various flag values:  see below for
+                            * definitions. */
 } TextDInfo;
 
 /*
@@ -258,7 +258,7 @@ typedef struct TextDInfo
 
 typedef struct CharInfo
 {
-    int numChars; /* Number of characters to display. */
+    int numChars;  /* Number of characters to display. */
     char chars[4]; /* Characters to display.  Actual size
                     * will be numChars, not 4.  THIS MUST BE
                     * THE LAST FIELD IN THE STRUCTURE. */
@@ -293,9 +293,9 @@ typedef struct CharInfo
  */
 
 static int numRedisplays; /* Number of calls to DisplayText. */
-static int linesRedrawn; /* Number of calls to DisplayDLine. */
-static int numCopies; /* Number of calls to XCopyArea to copy part
-                       * of the screen. */
+static int linesRedrawn;  /* Number of calls to DisplayDLine. */
+static int numCopies;     /* Number of calls to XCopyArea to copy part
+                           * of the screen. */
 
 /*
  * Forward declarations for procedures defined later in this file:
@@ -746,41 +746,41 @@ static DLine *LayoutDLine(textPtr,
 TkTextIndex *indexPtr; /* Beginning of display line.  May not
                         * necessarily point to a character segment. */
 {
-    DLine *dlPtr; /* New display line. */
-    TkTextSegment *segPtr; /* Current segment in text. */
+    DLine *dlPtr;                  /* New display line. */
+    TkTextSegment *segPtr;         /* Current segment in text. */
     TkTextDispChunk *lastChunkPtr; /* Last chunk allocated so far
                                     * for line. */
-    TkTextDispChunk *chunkPtr; /* Current chunk. */
+    TkTextDispChunk *chunkPtr;     /* Current chunk. */
     TkTextIndex curIndex;
-    TkTextDispChunk *breakChunkPtr; /* Chunk containing best word break
-                                     * point, if any. */
-    TkTextIndex breakIndex; /* Index of first character in
-                             * breakChunkPtr. */
-    int breakCharOffset; /* Character within breakChunkPtr just
-                          * to right of best break point. */
-    int noCharsYet; /* Non-zero means that no characters
-                     * have been placed on the line yet. */
-    int justify; /* How to justify line: taken from
-                  * style for first character in line. */
-    int jIndent; /* Additional indentation (beyond
-                  * margins) due to justification. */
-    int rMargin; /* Right margin width for line. */
-    Tk_Uid wrapMode; /* Wrap mode to use for this line. */
-    int x = 0, maxX = 0; /* Initializations needed only to
-                          * stop compiler warnings. */
-    int wholeLine; /* Non-zero means this display line
-                    * runs to the end of the text line. */
-    int tabIndex; /* Index of the current tab stop. */
-    int gotTab; /* Non-zero means the current chunk
-                 * contains a tab. */
-    TkTextDispChunk *tabChunkPtr; /* Pointer to the chunk containing
-                                   * the previous tab stop. */
-    int maxChars; /* Maximum number of characters to
-                   * include in this chunk. */
-    TkTextTabArray *tabArrayPtr; /* Tab stops for line;  taken from
-                                  * style for first character on line. */
-    int tabSize; /* Number of pixels consumed by current
-                  * tab stop. */
+    TkTextDispChunk *breakChunkPtr;    /* Chunk containing best word break
+                                        * point, if any. */
+    TkTextIndex breakIndex;            /* Index of first character in
+                                        * breakChunkPtr. */
+    int breakCharOffset;               /* Character within breakChunkPtr just
+                                        * to right of best break point. */
+    int noCharsYet;                    /* Non-zero means that no characters
+                                        * have been placed on the line yet. */
+    int justify;                       /* How to justify line: taken from
+                                        * style for first character in line. */
+    int jIndent;                       /* Additional indentation (beyond
+                                        * margins) due to justification. */
+    int rMargin;                       /* Right margin width for line. */
+    Tk_Uid wrapMode;                   /* Wrap mode to use for this line. */
+    int x = 0, maxX = 0;               /* Initializations needed only to
+                                        * stop compiler warnings. */
+    int wholeLine;                     /* Non-zero means this display line
+                                        * runs to the end of the text line. */
+    int tabIndex;                      /* Index of the current tab stop. */
+    int gotTab;                        /* Non-zero means the current chunk
+                                        * contains a tab. */
+    TkTextDispChunk *tabChunkPtr;      /* Pointer to the chunk containing
+                                        * the previous tab stop. */
+    int maxChars;                      /* Maximum number of characters to
+                                        * include in this chunk. */
+    TkTextTabArray *tabArrayPtr;       /* Tab stops for line;  taken from
+                                        * style for first character on line. */
+    int tabSize;                       /* Number of pixels consumed by current
+                                        * tab stop. */
     TkTextDispChunk *lastCharChunkPtr; /* Pointer to last chunk in display
                                         * lines with numChars > 0.  Used to
                                         * drop 0-sized chunks from the end
@@ -1611,14 +1611,14 @@ static void FreeDLines(textPtr,
                        unlink) TkText *textPtr; /* Information about overall
                                                  * text widget. */
 DLine *firstPtr; /* Pointer to first DLine to free up. */
-DLine *lastPtr; /* Pointer to DLine just after last
-                 * one to free (NULL means everything
-                 * starting with firstPtr). */
-int unlink; /* 1 means DLines are currently linked
-             * into the list rooted at
-             * textPtr->dInfoPtr->dLinePtr and
-             * they have to be unlinked.  0 means
-             * just free without unlinking. */
+DLine *lastPtr;  /* Pointer to DLine just after last
+                  * one to free (NULL means everything
+                  * starting with firstPtr). */
+int unlink;      /* 1 means DLines are currently linked
+                  * into the list rooted at
+                  * textPtr->dInfoPtr->dLinePtr and
+                  * they have to be unlinked.  0 means
+                  * just free without unlinking. */
 {
     TkTextDispChunk *chunkPtr, *nextChunkPtr;
     DLine *nextDLinePtr;
@@ -1682,12 +1682,12 @@ int unlink; /* 1 means DLines are currently linked
 
 static void DisplayDLine(textPtr, dlPtr, prevPtr, pixmap)
 TkText *textPtr; /* Text widget in which to draw line. */
-DLine *dlPtr; /* Information about line to draw. */
-DLine *prevPtr; /* Line just before one to draw, or NULL
-                 * if dlPtr is the top line. */
-Pixmap pixmap; /* Pixmap to use for double-buffering.
-                * Caller must make sure it's large enough
-                * to hold line. */
+DLine *dlPtr;    /* Information about line to draw. */
+DLine *prevPtr;  /* Line just before one to draw, or NULL
+                  * if dlPtr is the top line. */
+Pixmap pixmap;   /* Pixmap to use for double-buffering.
+                  * Caller must make sure it's large enough
+                  * to hold line. */
 {
     TkTextDispChunk *chunkPtr;
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
@@ -1856,37 +1856,37 @@ Pixmap pixmap; /* Pixmap to use for double-buffering.
 
 static void DisplayLineBackground(textPtr, dlPtr, prevPtr, pixmap)
 TkText *textPtr; /* Text widget containing line. */
-DLine *dlPtr; /* Information about line to draw. */
-DLine *prevPtr; /* Line just above dlPtr, or NULL if dlPtr
-                 * is the top-most line in the window. */
-Pixmap pixmap; /* Pixmap to use for double-buffering.
-                * Caller must make sure it's large enough
-                * to hold line.  Caller must also have
-                * filled it with the background color for
-                * the widget. */
+DLine *dlPtr;    /* Information about line to draw. */
+DLine *prevPtr;  /* Line just above dlPtr, or NULL if dlPtr
+                  * is the top-most line in the window. */
+Pixmap pixmap;   /* Pixmap to use for double-buffering.
+                  * Caller must make sure it's large enough
+                  * to hold line.  Caller must also have
+                  * filled it with the background color for
+                  * the widget. */
 {
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
-    TkTextDispChunk *chunkPtr; /* Pointer to chunk in the current line. */
+    TkTextDispChunk *chunkPtr;  /* Pointer to chunk in the current line. */
     TkTextDispChunk *chunkPtr2; /* Pointer to chunk in the line above or
                                  * below the current one.  NULL if we're to
                                  * the left of or to the right of the chunks
                                  * in the line. */
-    TkTextDispChunk *nextPtr2; /* Next chunk after chunkPtr2 (it's not the
-                                * same as chunkPtr2->nextPtr in the case
-                                * where chunkPtr2 is NULL because the line
-                                * is indented). */
-    int leftX; /* The left edge of the region we're
-                * currently working on. */
-    int leftXIn; /* 1 means beveled edge at leftX slopes right
-                  * as it goes down, 0 means it slopes left
-                  * as it goes down. */
-    int rightX; /* Right edge of chunkPtr. */
-    int rightX2; /* Right edge of chunkPtr2. */
-    int matchLeft; /* Does the style of this line match that
-                    * of its neighbor just to the left of
-                    * the current x coordinate? */
-    int matchRight; /* Does line's style match its neighbor
-                     * just to the right of the current x-coord? */
+    TkTextDispChunk *nextPtr2;  /* Next chunk after chunkPtr2 (it's not the
+                                 * same as chunkPtr2->nextPtr in the case
+                                 * where chunkPtr2 is NULL because the line
+                                 * is indented). */
+    int leftX;                  /* The left edge of the region we're
+                                 * currently working on. */
+    int leftXIn;                /* 1 means beveled edge at leftX slopes right
+                                 * as it goes down, 0 means it slopes left
+                                 * as it goes down. */
+    int rightX;                 /* Right edge of chunkPtr. */
+    int rightX2;                /* Right edge of chunkPtr2. */
+    int matchLeft;              /* Does the style of this line match that
+                                 * of its neighbor just to the left of
+                                 * the current x coordinate? */
+    int matchRight;             /* Does line's style match its neighbor
+                                 * just to the right of the current x-coord? */
     int minX, maxX, xOffset;
     StyleValues *sValuePtr;
     Display *display;
@@ -2802,10 +2802,10 @@ void TkTextEventuallyRepick(textPtr) TkText *textPtr; /* Widget record for
 
 /* ARGSUSED */
 void TkTextRedrawRegion(textPtr, x, y, width, height)
-TkText *textPtr; /* Widget record for text widget. */
-int x, y; /* Coordinates of upper-left corner of area
-           * to be redrawn, in pixels relative to
-           * textPtr's window. */
+TkText *textPtr;   /* Widget record for text widget. */
+int x, y;          /* Coordinates of upper-left corner of area
+                    * to be redrawn, in pixels relative to
+                    * textPtr's window. */
 int width, height; /* Width and height of area to be redrawn. */
 {
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
@@ -3001,16 +3001,16 @@ TkTextIndex *index2Ptr; /* Index of character just after last one
  */
 
 void TkTextRedrawTag(textPtr, index1Ptr, index2Ptr, tagPtr, withTag)
-TkText *textPtr; /* Widget record for text widget. */
+TkText *textPtr;        /* Widget record for text widget. */
 TkTextIndex *index1Ptr; /* First character in range to consider
                          * for redisplay.  NULL means start at
                          * beginning of text. */
 TkTextIndex *index2Ptr; /* Character just after last one to consider
                          * for redisplay.  NULL means process all
                          * the characters in the text. */
-TkTextTag *tagPtr; /* Information about tag. */
-int withTag; /* 1 means redraw characters that have the
-              * tag, 0 means redraw those without. */
+TkTextTag *tagPtr;      /* Information about tag. */
+int withTag;            /* 1 means redraw characters that have the
+                         * tag, 0 means redraw those without. */
 {
     DLine *dlPtr;
     DLine *endPtr;
@@ -3290,10 +3290,10 @@ void TkTextSetYView(textPtr,
                                                    widget. */
 TkTextIndex *indexPtr; /* Position that is to appear somewhere
                         * in the view. */
-int pickPlace; /* 0 means topLine must appear at top of
-                * screen.  1 means we get to pick where it
-                * appears:  minimize screen motion or else
-                * display line at center of screen. */
+int pickPlace;         /* 0 means topLine must appear at top of
+                        * screen.  1 means we get to pick where it
+                        * appears:  minimize screen motion or else
+                        * display line at center of screen. */
 {
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
     DLine *dlPtr;
@@ -3452,17 +3452,17 @@ scheduleUpdate:
  */
 
 static void MeasureUp(textPtr, srcPtr, distance, dstPtr)
-TkText *textPtr; /* Text widget in which to measure. */
+TkText *textPtr;     /* Text widget in which to measure. */
 TkTextIndex *srcPtr; /* Index of character from which to start
                       * measuring. */
-int distance; /* Vertical distance in pixels measured
-               * from the pixel just below the lowest
-               * one in srcPtr's line. */
+int distance;        /* Vertical distance in pixels measured
+                      * from the pixel just below the lowest
+                      * one in srcPtr's line. */
 TkTextIndex *dstPtr; /* Index to fill in with result. */
 {
-    int lineNum; /* Number of current line. */
-    int charsToCount; /* Maximum number of characters to measure
-                       * in current line. */
+    int lineNum;           /* Number of current line. */
+    int charsToCount;      /* Maximum number of characters to measure
+                            * in current line. */
     TkTextIndex bestIndex; /* Best candidate seen so far for result. */
     TkTextIndex index;
     DLine *dlPtr, *lowestPtr;
@@ -3556,8 +3556,8 @@ int TkTextSeeCmd(textPtr,
                  interp,
                  argc,
                  argv) TkText *textPtr; /* Information about text widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
+Tcl_Interp *interp;                     /* Current interpreter. */
+int argc;                               /* Number of arguments. */
 char **argv; /* Argument strings.  Someone else has already
               * parsed this command enough to know that
               * argv[1] is "see". */
@@ -3709,8 +3709,8 @@ int TkTextXviewCmd(textPtr,
                    interp,
                    argc,
                    argv) TkText *textPtr; /* Information about text widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
+Tcl_Interp *interp;                       /* Current interpreter. */
+int argc;                                 /* Number of arguments. */
 char **argv; /* Argument strings.  Someone else has already
               * parsed this command enough to know that
               * argv[1] is "xview". */
@@ -3915,8 +3915,8 @@ int TkTextYviewCmd(textPtr,
                    interp,
                    argc,
                    argv) TkText *textPtr; /* Information about text widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
+Tcl_Interp *interp;                       /* Current interpreter. */
+int argc;                                 /* Number of arguments. */
 char **argv; /* Argument strings.  Someone else has already
               * parsed this command enough to know that
               * argv[1] is "yview". */
@@ -4102,8 +4102,8 @@ int TkTextScanCmd(textPtr,
                   interp,
                   argc,
                   argv) TkText *textPtr; /* Information about text widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
+Tcl_Interp *interp;                      /* Current interpreter. */
+int argc;                                /* Number of arguments. */
 char **argv; /* Argument strings.  Someone else has already
               * parsed this command enough to know that
               * argv[1] is "scan". */
@@ -4234,9 +4234,9 @@ static void GetXView(interp, textPtr, report)
 Tcl_Interp *interp; /* If "report" is FALSE, string
                      * describing visible range gets
                      * stored in interp->result. */
-TkText *textPtr; /* Information about text widget. */
-int report; /* Non-zero means report info to
-             * scrollbar if it has changed. */
+TkText *textPtr;    /* Information about text widget. */
+int report;         /* Non-zero means report info to
+                     * scrollbar if it has changed. */
 {
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
     char buffer[200];
@@ -4309,9 +4309,9 @@ static void GetYView(interp, textPtr, report)
 Tcl_Interp *interp; /* If "report" is FALSE, string
                      * describing visible range gets
                      * stored in interp->result. */
-TkText *textPtr; /* Information about text widget. */
-int report; /* Non-zero means report info to
-             * scrollbar if it has changed. */
+TkText *textPtr;    /* Information about text widget. */
+int report;         /* Non-zero means report info to
+                     * scrollbar if it has changed. */
 {
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
     char buffer[200];
@@ -4468,9 +4468,9 @@ TkTextIndex *indexPtr; /* Index of desired character. */
  */
 
 void TkTextPixelIndex(textPtr, x, y, indexPtr)
-TkText *textPtr; /* Widget record for text widget. */
-int x, y; /* Pixel coordinates of point in widget's
-           * window. */
+TkText *textPtr;       /* Widget record for text widget. */
+int x, y;              /* Pixel coordinates of point in widget's
+                        * window. */
 TkTextIndex *indexPtr; /* This index gets filled in with the
                         * index of the character nearest to (x,y). */
 {
@@ -4580,11 +4580,11 @@ TkTextIndex *indexPtr; /* This index gets filled in with the
  */
 
 int TkTextCharBbox(textPtr, indexPtr, xPtr, yPtr, widthPtr, heightPtr)
-TkText *textPtr; /* Widget record for text widget. */
-TkTextIndex *indexPtr; /* Index of character whose bounding
-                        * box is desired. */
-int *xPtr, *yPtr; /* Filled with character's upper-left
-                   * coordinate. */
+TkText *textPtr;           /* Widget record for text widget. */
+TkTextIndex *indexPtr;     /* Index of character whose bounding
+                            * box is desired. */
+int *xPtr, *yPtr;          /* Filled with character's upper-left
+                            * coordinate. */
 int *widthPtr, *heightPtr; /* Filled in with character's dimensions. */
 {
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
@@ -4707,14 +4707,14 @@ int *widthPtr, *heightPtr; /* Filled in with character's dimensions. */
 
 int
 TkTextDLineInfo(textPtr, indexPtr, xPtr, yPtr, widthPtr, heightPtr, basePtr)
-TkText *textPtr; /* Widget record for text widget. */
-TkTextIndex *indexPtr; /* Index of character whose bounding
-                        * box is desired. */
-int *xPtr, *yPtr; /* Filled with line's upper-left
-                   * coordinate. */
+TkText *textPtr;           /* Widget record for text widget. */
+TkTextIndex *indexPtr;     /* Index of character whose bounding
+                            * box is desired. */
+int *xPtr, *yPtr;          /* Filled with line's upper-left
+                            * coordinate. */
 int *widthPtr, *heightPtr; /* Filled in with line's dimensions. */
-int *basePtr; /* Filled in with the baseline position,
-               * measured as an offset down from *yPtr. */
+int *basePtr;              /* Filled in with the baseline position,
+                            * measured as an offset down from *yPtr. */
 {
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
     DLine *dlPtr;
@@ -4789,16 +4789,16 @@ int TkTextCharLayoutProc(textPtr,
 TkTextIndex *indexPtr; /* Index of first character to lay out
                         * (corresponds to segPtr and offset). */
 TkTextSegment *segPtr; /* Segment being layed out. */
-int offset; /* Offset within segment of first character
-             * to consider. */
-int maxX; /* Chunk must not occupy pixels at this
-           * position or higher. */
-int maxChars; /* Chunk must not include more than this
-               * many characters. */
-int noCharsYet; /* Non-zero means no characters have been
-                 * assigned to this display line yet. */
-Tk_Uid wrapMode; /* How to handle line wrapping: tkTextCharUid,
-                  * tkTextNoneUid, or tkTextWordUid. */
+int offset;            /* Offset within segment of first character
+                        * to consider. */
+int maxX;              /* Chunk must not occupy pixels at this
+                        * position or higher. */
+int maxChars;          /* Chunk must not include more than this
+                        * many characters. */
+int noCharsYet;        /* Non-zero means no characters have been
+                        * assigned to this display line yet. */
+Tk_Uid wrapMode;       /* How to handle line wrapping: tkTextCharUid,
+                        * tkTextNoneUid, or tkTextWordUid. */
 TkTextDispChunk *chunkPtr;
 /* Structure to fill in with information
  * about this chunk.  The x field has already
@@ -4951,19 +4951,19 @@ TkTextDispChunk *chunkPtr;
 static void
 CharDisplayProc(chunkPtr, x, y, height, baseline, display, dst, screenY)
 TkTextDispChunk *chunkPtr; /* Chunk that is to be drawn. */
-int x; /* X-position in dst at which to
-        * draw this chunk (may differ from
-        * the x-position in the chunk because
-        * of scrolling). */
-int y; /* Y-position at which to draw this
-        * chunk in dst. */
-int height; /* Total height of line. */
-int baseline; /* Offset of baseline from y. */
-Display *display; /* Display to use for drawing. */
-Drawable dst; /* Pixmap or window in which to draw
-               * chunk. */
-int screenY; /* Y-coordinate in text window that
-              * corresponds to y. */
+int x;                     /* X-position in dst at which to
+                            * draw this chunk (may differ from
+                            * the x-position in the chunk because
+                            * of scrolling). */
+int y;                     /* Y-position at which to draw this
+                            * chunk in dst. */
+int height;                /* Total height of line. */
+int baseline;              /* Offset of baseline from y. */
+Display *display;          /* Display to use for drawing. */
+Drawable dst;              /* Pixmap or window in which to draw
+                            * chunk. */
+int screenY;               /* Y-coordinate in text window that
+                            * corresponds to y. */
 {
     CharInfo *ciPtr = ( CharInfo * )chunkPtr->clientData;
     TextStyle *stylePtr;
@@ -5151,21 +5151,21 @@ static void CharBboxProc(chunkPtr,
                          widthPtr,
                          heightPtr)
 TkTextDispChunk *chunkPtr; /* Chunk containing desired char. */
-int index; /* Index of desired character within
-            * the chunk. */
-int y; /* Topmost pixel in area allocated
-        * for this line. */
-int lineHeight; /* Height of line, in pixels. */
-int baseline; /* Location of line's baseline, in
-               * pixels measured down from y. */
-int *xPtr, *yPtr; /* Gets filled in with coords of
-                   * character's upper-left pixel.
-                   * X-coord is in same coordinate
-                   * system as chunkPtr->x. */
-int *widthPtr; /* Gets filled in with width of
-                * character, in pixels. */
-int *heightPtr; /* Gets filled in with height of
-                 * character, in pixels. */
+int index;                 /* Index of desired character within
+                            * the chunk. */
+int y;                     /* Topmost pixel in area allocated
+                            * for this line. */
+int lineHeight;            /* Height of line, in pixels. */
+int baseline;              /* Location of line's baseline, in
+                            * pixels measured down from y. */
+int *xPtr, *yPtr;          /* Gets filled in with coords of
+                            * character's upper-left pixel.
+                            * X-coord is in same coordinate
+                            * system as chunkPtr->x. */
+int *widthPtr;             /* Gets filled in with width of
+                            * character, in pixels. */
+int *heightPtr;            /* Gets filled in with height of
+                            * character, in pixels. */
 {
     CharInfo *ciPtr = ( CharInfo * )chunkPtr->clientData;
     int maxX;
@@ -5243,17 +5243,17 @@ int *heightPtr; /* Gets filled in with height of
  */
 
 static void AdjustForTab(textPtr, tabArrayPtr, index, chunkPtr)
-TkText *textPtr; /* Information about the text widget as
-                  * a whole. */
+TkText *textPtr;             /* Information about the text widget as
+                              * a whole. */
 TkTextTabArray *tabArrayPtr; /* Information about the tab stops
                               * that apply to this line.  May be
                               * NULL to indicate default tabbing
                               * (every 8 chars). */
-int index; /* Index of current tab stop. */
-TkTextDispChunk *chunkPtr; /* Chunk whose last character is
-                            * the tab;  the following chunks
-                            * contain information to be shifted
-                            * right. */
+int index;                   /* Index of current tab stop. */
+TkTextDispChunk *chunkPtr;   /* Chunk whose last character is
+                              * the tab;  the following chunks
+                              * contain information to be shifted
+                              * right. */
 
 {
     int x, desired, delta, width, decimal, i, gotDigit;
@@ -5466,13 +5466,13 @@ static int SizeOfTab(textPtr,
                      x,
                      maxX) TkText *textPtr; /* Information about the text
                                              * widget as a whole. */
-TkTextTabArray *tabArrayPtr; /* Information about the tab stops
-                              * that apply to this line.  NULL
-                              * means use default tabbing (every
-                              * 8 chars.) */
-int index; /* Index of current tab stop. */
-int x; /* Current x-location in line. Only
-        * used if tabArrayPtr == NULL. */
+TkTextTabArray *tabArrayPtr;                /* Information about the tab stops
+                                             * that apply to this line.  NULL
+                                             * means use default tabbing (every
+                                             * 8 chars.) */
+int index;                                  /* Index of current tab stop. */
+int x;    /* Current x-location in line. Only
+           * used if tabArrayPtr == NULL. */
 int maxX; /* X-location of pixel just past the
            * right edge of the line. */
 {

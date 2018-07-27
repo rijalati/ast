@@ -81,7 +81,7 @@ Dtdisc_t *disc;
     free(obj);
 }
 
-static Dt_t *Hashtab; /* object dictionary	*/
+static Dt_t *Hashtab;      /* object dictionary	*/
 static Dtdisc_t Hashdisc = /* discipline		*/
 { sizeof(Dtlink_t),
   -1,

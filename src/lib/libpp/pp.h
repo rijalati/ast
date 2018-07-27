@@ -59,13 +59,13 @@
 #        include <limits.h>
 #    endif
 
-#    define PPDEFAULT "pp_default.h" /* runtime definitions	*/
-#    define PPPROBE "cc" /* default probe key	*/
+#    define PPDEFAULT "pp_default.h"  /* runtime definitions	*/
+#    define PPPROBE "cc"              /* default probe key	*/
 #    define PPSTANDARD "/usr/include" /* standard include dir	*/
 
-#    define PPBLKSIZ 1024 /* unit block size	*/
-#    define PPBAKSIZ (1 * PPBLKSIZ) /* input pushback size	*/
-#    define PPBUFSIZ (32 * PPBLKSIZ) /* io buffer size	*/
+#    define PPBLKSIZ 1024                 /* unit block size	*/
+#    define PPBAKSIZ (1 * PPBLKSIZ)       /* input pushback size	*/
+#    define PPBUFSIZ (32 * PPBLKSIZ)      /* io buffer size	*/
 #    define PPTOKSIZ ((PPBUFSIZ / 2) - 1) /* max token size	*/
 
 #    define PPWRITE(n)                                                       \
@@ -143,116 +143,116 @@
 
 #    define REF_CREATE (REF_NORMAL + 1) /* include wrapper (internal)	*/
 #    define REF_DELETE (REF_NORMAL + 2) /* macro definition (internal)	*/
-#    define REF_NORMAL 0 /* normal macro reference	*/
-#    define REF_IF (-1) /* if, ifdef, ifndef, elif	*/
-#    define REF_UNDEF (-2) /* undef			*/
+#    define REF_NORMAL 0                /* normal macro reference	*/
+#    define REF_IF (-1)                 /* if, ifdef, ifndef, elif	*/
+#    define REF_UNDEF (-2)              /* undef			*/
 
-#    define SYM_ACTIVE (1L << 0) /* active macro lock		*/
-#    define SYM_BUILTIN (1L << 1) /* builtin macro		*/
-#    define SYM_DISABLED (1L << 2) /* macro expansion disabled	*/
-#    define SYM_EMPTY (1L << 3) /* allow empty/missing actuals	*/
-#    define SYM_FINAL (1L << 4) /* final hosted value		*/
-#    define SYM_FUNCTION (1L << 5) /* macro with args		*/
-#    define SYM_INIT (1L << 6) /* initialization macro		*/
-#    define SYM_INITIAL (1L << 7) /* initial hosted value		*/
-#    define SYM_KEYWORD (1L << 8) /* keyword identifier		*/
-#    define SYM_LEX (1L << 9) /* ppsymkey with lex field	*/
-#    define SYM_MULTILINE (1L << 10) /* multi-line macro		*/
-#    define SYM_NOEXPAND (1L << 11) /* no identifiers in macro body	*/
-#    define SYM_NOTICED (1L << 12) /* symbol noticed in output	*/
+#    define SYM_ACTIVE (1L << 0)      /* active macro lock		*/
+#    define SYM_BUILTIN (1L << 1)     /* builtin macro		*/
+#    define SYM_DISABLED (1L << 2)    /* macro expansion disabled	*/
+#    define SYM_EMPTY (1L << 3)       /* allow empty/missing actuals	*/
+#    define SYM_FINAL (1L << 4)       /* final hosted value		*/
+#    define SYM_FUNCTION (1L << 5)    /* macro with args		*/
+#    define SYM_INIT (1L << 6)        /* initialization macro		*/
+#    define SYM_INITIAL (1L << 7)     /* initial hosted value		*/
+#    define SYM_KEYWORD (1L << 8)     /* keyword identifier		*/
+#    define SYM_LEX (1L << 9)         /* ppsymkey with lex field	*/
+#    define SYM_MULTILINE (1L << 10)  /* multi-line macro		*/
+#    define SYM_NOEXPAND (1L << 11)   /* no identifiers in macro body	*/
+#    define SYM_NOTICED (1L << 12)    /* symbol noticed in output	*/
 #    define SYM_PREDEFINED (1L << 13) /* predefined macro		*/
-#    define SYM_PREDICATE (1L << 14) /* also a predicate		*/
-#    define SYM_READONLY (1L << 15) /* readonly macro		*/
-#    define SYM_REDEFINE (1L << 16) /* ok to redefine		*/
-#    define SYM_VARIADIC (1L << 17) /* variadic macro with args	*/
-#    define SYM_UNUSED 24 /* first unused symbol flag bit	*/
+#    define SYM_PREDICATE (1L << 14)  /* also a predicate		*/
+#    define SYM_READONLY (1L << 15)   /* readonly macro		*/
+#    define SYM_REDEFINE (1L << 16)   /* ok to redefine		*/
+#    define SYM_VARIADIC (1L << 17)   /* variadic macro with args	*/
+#    define SYM_UNUSED 24             /* first unused symbol flag bit	*/
 
-#    define PP_ASSERT 1 /* preassert symbol		*/
-#    define PP_BUILTIN 2 /* #(<id>) handler		*/
-#    define PP_CDIR 3 /* C (vs. C++) file dirs follow	*/
-#    define PP_CHOP 4 /* include prefix chop		*/
-#    define PP_COMMENT 5 /* passed comment handler	*/
+#    define PP_ASSERT 1        /* preassert symbol		*/
+#    define PP_BUILTIN 2       /* #(<id>) handler		*/
+#    define PP_CDIR 3          /* C (vs. C++) file dirs follow	*/
+#    define PP_CHOP 4          /* include prefix chop		*/
+#    define PP_COMMENT 5       /* passed comment handler	*/
 #    define PP_COMPATIBILITY 6 /* old (Reiser) dialect		*/
-#    define PP_COMPILE 7 /* tokenize for front end	*/
-#    define PP_DEBUG 8 /* set debug trace level	*/
-#    define PP_DEFINE 9 /* predefine symbol		*/
-#    define PP_DEFAULT 10 /* read default include files	*/
-#    define PP_DIRECTIVE 11 /* initialization directive	*/
-#    define PP_DONE 12 /* all processing done		*/
-#    define PP_DUMP 13 /* do checkpoint dump		*/
-#    define PP_FILEDEPS 14 /* output file dependencies	*/
-#    define PP_FILENAME 15 /* set input file name		*/
-#    define PP_HOSTDIR 16 /* hosted file dirs follow	*/
-#    define PP_ID 17 /* add to identifier set	*/
-#    define PP_IGNORE 18 /* ignore this include file	*/
-#    define PP_IGNORELIST 19 /* include ignore list file	*/
-#    define PP_INCLUDE 20 /* add dir to include search	*/
-#    define PP_INCREF 21 /* include file push/ret handler*/
-#    define PP_INIT 22 /* one time initialization	*/
-#    define PP_INPUT 23 /* set input source file	*/
-#    define PP_KEYARGS 24 /* name=value macro args	*/
-#    define PP_LINE 25 /* line sync handler		*/
-#    define PP_LINEBASE 26 /* base name in line sync	*/
-#    define PP_LINEFILE 27 /* line sync requires file arg	*/
-#    define PP_LINEID 28 /* PP_LINE directive id		*/
-#    define PP_LINETYPE 29 /* # extra line sync type args	*/
-#    define PP_LOCAL 30 /* previous PP_INCLUDE for ""	*/
-#    define PP_MACREF 31 /* macro def/ref handler	*/
-#    define PP_MULTIPLE 32 /* set all files multiple	*/
-#    define PP_NOHASH 33 /* don't hash PP_COMPILE T_ID's	*/
-#    define PP_NOISE 34 /* convert T_X_* to T_NOISE	*/
-#    define PP_OPTION 35 /* set pragma option		*/
-#    define PP_OPTARG 36 /* unknown option arg handler	*/
-#    define PP_OUTPUT 37 /* set output file sink		*/
-#    define PP_PASSTHROUGH 38 /* ppcpp() expands # lines only	*/
-#    define PP_PEDANTIC 39 /* pedantic non-hosted warnings	*/
-#    define PP_PLUSCOMMENT 40 /* enable C++ comments		*/
-#    define PP_PLUSPLUS 41 /* tokenize for C++		*/
-#    define PP_POOL 42 /* pool for multiple io passes	*/
-#    define PP_PRAGMA 43 /* passed pragma handler	*/
-#    define PP_PRAGMAFLAGS 44 /* global pragma flags		*/
-#    define PP_PROBE 45 /* ppdefault probe key		*/
-#    define PP_QUOTE 46 /* add to quote set		*/
-#    define PP_READ 47 /* include file without output	*/
-#    define PP_REGUARD 48 /* file pop emits guard define	*/
-#    define PP_RESERVED 49 /* COMPILE reserved keyword	*/
-#    define PP_RESET 50 /* reset to initiali predefs	*/
-#    define PP_SPACEOUT 51 /* pplex returns space,newline	*/
-#    define PP_STANDALONE 52 /* standalone preprocessor	*/
-#    define PP_STANDARD 53 /* standard include dir		*/
-#    define PP_STRICT 54 /* strict implementation	*/
-#    define PP_TEST 55 /* enable (undocumented) tests	*/
-#    define PP_TEXT 56 /* include file with output	*/
-#    define PP_TRANSITION 57 /* on COMPATIBILITY boundary	*/
-#    define PP_TRUNCATE 58 /* truncate macro names		*/
-#    define PP_UNDEF 59 /* undef symbol after ppdefault	*/
-#    define PP_VENDOR 60 /* vendor file dirs follow	*/
-#    define PP_WARN 61 /* enable annoying warnings	*/
+#    define PP_COMPILE 7       /* tokenize for front end	*/
+#    define PP_DEBUG 8         /* set debug trace level	*/
+#    define PP_DEFINE 9        /* predefine symbol		*/
+#    define PP_DEFAULT 10      /* read default include files	*/
+#    define PP_DIRECTIVE 11    /* initialization directive	*/
+#    define PP_DONE 12         /* all processing done		*/
+#    define PP_DUMP 13         /* do checkpoint dump		*/
+#    define PP_FILEDEPS 14     /* output file dependencies	*/
+#    define PP_FILENAME 15     /* set input file name		*/
+#    define PP_HOSTDIR 16      /* hosted file dirs follow	*/
+#    define PP_ID 17           /* add to identifier set	*/
+#    define PP_IGNORE 18       /* ignore this include file	*/
+#    define PP_IGNORELIST 19   /* include ignore list file	*/
+#    define PP_INCLUDE 20      /* add dir to include search	*/
+#    define PP_INCREF 21       /* include file push/ret handler*/
+#    define PP_INIT 22         /* one time initialization	*/
+#    define PP_INPUT 23        /* set input source file	*/
+#    define PP_KEYARGS 24      /* name=value macro args	*/
+#    define PP_LINE 25         /* line sync handler		*/
+#    define PP_LINEBASE 26     /* base name in line sync	*/
+#    define PP_LINEFILE 27     /* line sync requires file arg	*/
+#    define PP_LINEID 28       /* PP_LINE directive id		*/
+#    define PP_LINETYPE 29     /* # extra line sync type args	*/
+#    define PP_LOCAL 30        /* previous PP_INCLUDE for ""	*/
+#    define PP_MACREF 31       /* macro def/ref handler	*/
+#    define PP_MULTIPLE 32     /* set all files multiple	*/
+#    define PP_NOHASH 33       /* don't hash PP_COMPILE T_ID's	*/
+#    define PP_NOISE 34        /* convert T_X_* to T_NOISE	*/
+#    define PP_OPTION 35       /* set pragma option		*/
+#    define PP_OPTARG 36       /* unknown option arg handler	*/
+#    define PP_OUTPUT 37       /* set output file sink		*/
+#    define PP_PASSTHROUGH 38  /* ppcpp() expands # lines only	*/
+#    define PP_PEDANTIC 39     /* pedantic non-hosted warnings	*/
+#    define PP_PLUSCOMMENT 40  /* enable C++ comments		*/
+#    define PP_PLUSPLUS 41     /* tokenize for C++		*/
+#    define PP_POOL 42         /* pool for multiple io passes	*/
+#    define PP_PRAGMA 43       /* passed pragma handler	*/
+#    define PP_PRAGMAFLAGS 44  /* global pragma flags		*/
+#    define PP_PROBE 45        /* ppdefault probe key		*/
+#    define PP_QUOTE 46        /* add to quote set		*/
+#    define PP_READ 47         /* include file without output	*/
+#    define PP_REGUARD 48      /* file pop emits guard define	*/
+#    define PP_RESERVED 49     /* COMPILE reserved keyword	*/
+#    define PP_RESET 50        /* reset to initiali predefs	*/
+#    define PP_SPACEOUT 51     /* pplex returns space,newline	*/
+#    define PP_STANDALONE 52   /* standalone preprocessor	*/
+#    define PP_STANDARD 53     /* standard include dir		*/
+#    define PP_STRICT 54       /* strict implementation	*/
+#    define PP_TEST 55         /* enable (undocumented) tests	*/
+#    define PP_TEXT 56         /* include file with output	*/
+#    define PP_TRANSITION 57   /* on COMPATIBILITY boundary	*/
+#    define PP_TRUNCATE 58     /* truncate macro names		*/
+#    define PP_UNDEF 59        /* undef symbol after ppdefault	*/
+#    define PP_VENDOR 60       /* vendor file dirs follow	*/
+#    define PP_WARN 61         /* enable annoying warnings	*/
 
-#    define PP_comment (1 << 0) /* PP_COMMENT is set		*/
+#    define PP_comment (1 << 0)       /* PP_COMMENT is set		*/
 #    define PP_compatibility (1 << 1) /* PP_COMPATIBILITY is set	*/
-#    define PP_hosted (1 << 2) /* current file is hosted	*/
-#    define PP_linebase (1 << 3) /* base name in line sync	*/
-#    define PP_linefile (1 << 4) /* line sync file arg required	*/
-#    define PP_linehosted (1 << 5) /* line sync hosted arg required*/
-#    define PP_lineignore (1 << 6) /* line sync for ignored file	*/
-#    define PP_linetype (1 << 7) /* line sync type arg required	*/
-#    define PP_strict (1 << 8) /* PP_STRICT is set		*/
-#    define PP_transition (1 << 9) /* PP_TRANSITION is set		*/
+#    define PP_hosted (1 << 2)        /* current file is hosted	*/
+#    define PP_linebase (1 << 3)      /* base name in line sync	*/
+#    define PP_linefile (1 << 4)      /* line sync file arg required	*/
+#    define PP_linehosted (1 << 5)    /* line sync hosted arg required*/
+#    define PP_lineignore (1 << 6)    /* line sync for ignored file	*/
+#    define PP_linetype (1 << 7)      /* line sync type arg required	*/
+#    define PP_strict (1 << 8)        /* PP_STRICT is set		*/
+#    define PP_transition (1 << 9)    /* PP_TRANSITION is set		*/
 
-#    define PP_deps (1 << 0) /* generate header deps		*/
-#    define PP_deps_file (1 << 1) /* write deps to separate file	*/
+#    define PP_deps (1 << 0)           /* generate header deps		*/
+#    define PP_deps_file (1 << 1)      /* write deps to separate file	*/
 #    define PP_deps_generated (1 << 2) /* missing deps are generated	*/
-#    define PP_deps_local (1 << 3) /* only local header deps	*/
+#    define PP_deps_local (1 << 3)     /* only local header deps	*/
 
-#    define PP_sync 0 /* normal line sync		*/
-#    define PP_sync_push '1' /* [3] include file push	*/
-#    define PP_sync_pop '2' /* [3] include file pop		*/
+#    define PP_sync 0          /* normal line sync		*/
+#    define PP_sync_push '1'   /* [3] include file push	*/
+#    define PP_sync_pop '2'    /* [3] include file pop		*/
 #    define PP_sync_ignore '3' /* [3] ignored include file	*/
 #    define PP_sync_hosted '3' /* [4] hosted include file	*/
 
-#    define PP_SYNC_PUSH (1 << 0) /* pp.incref PP_sync_push type	*/
-#    define PP_SYNC_POP (1 << 1) /* pp.incref PP_sync_pop type	*/
+#    define PP_SYNC_PUSH (1 << 0)   /* pp.incref PP_sync_push type	*/
+#    define PP_SYNC_POP (1 << 1)    /* pp.incref PP_sync_pop type	*/
 #    define PP_SYNC_IGNORE (1 << 2) /* pp.incref PP_sync_ignore type*/
 #    define PP_SYNC_HOSTED (1 << 3) /* pp.incref PP_sync_hosted type*/
 #    define PP_SYNC_INSERT (1 << 4) /* pinserted by other means	*/
@@ -265,11 +265,11 @@
  *	 free tokens start at T_TOKEN
  */
 
-#    define N_PP 0401 /* pp tokens 0401..0437	*/
-#    define N_NUMBER 0440 /* numbers 0440..0477	*/
+#    define N_PP 0401                 /* pp tokens 0401..0437	*/
+#    define N_NUMBER 0440             /* numbers 0440..0477	*/
 #    define N_TEST (N_NUMBER | 07700) /* number test mask	*/
-#    define N_TOKEN 0500 /* free 0500..07777	*/
-#    define N_WIDE 1 /* wide quoted constant	*/
+#    define N_TOKEN 0500              /* free 0500..07777	*/
+#    define N_WIDE 1                  /* wide quoted constant	*/
 
 /*
  * NOTE: preserve the token ranges and encodings for is*(x)
@@ -285,14 +285,14 @@
 
 #    define N_LONG 0001
 #    define N_UNSIGNED 0002 /* if ppisinteger(x)	*/
-#    define N_FLOAT 0002 /* if ppisreal(x)		*/
+#    define N_FLOAT 0002    /* if ppisreal(x)		*/
 
 #    define N_REAL 0004
 #    define N_OCTAL 0010
 #    define N_HEXADECIMAL 0020
 
 #    define N_EXPONENT 010000 /* for lexing only	*/
-#    define N_SIGN 020000 /* for lexing only	*/
+#    define N_SIGN 020000     /* for lexing only	*/
 #    define N_TRAILING 040000 /* for lexing only	*/
 
 #    if !defined(T_DOUBLE)
@@ -331,47 +331,47 @@
  * quoted constants
  */
 
-#        define T_HEADER (N_PP + 2) /*	<..>	*/
-#        define T_CHARCONST (N_PP + 3) /*	'..'	*/
+#        define T_HEADER (N_PP + 2)                 /*	<..>	*/
+#        define T_CHARCONST (N_PP + 3)              /*	'..'	*/
 #        define T_WCHARCONST (T_CHARCONST | N_WIDE) /*	L'..'	*/
-#        define T_STRING (N_PP + 5) /*	".."	*/
-#        define T_WSTRING (T_STRING | N_WIDE) /*	L".."	*/
+#        define T_STRING (N_PP + 5)                 /*	".."	*/
+#        define T_WSTRING (T_STRING | N_WIDE)       /*	L".."	*/
 
 /*
  * multichar operators
  */
 
-#        define T_PTRMEM (N_PP + 7) /*	->	*/
-#        define T_ADDADD (N_PP + 8) /*	++	*/
-#        define T_SUBSUB (N_PP + 9) /*	--	*/
-#        define T_LSHIFT (N_PP + 10) /*	<<	*/
-#        define T_RSHIFT (N_PP + 11) /*	>>	*/
-#        define T_LE (N_PP + 12) /*	<=	*/
-#        define T_GE (N_PP + 13) /*	>=	*/
-#        define T_EQ (N_PP + 14) /*	==	*/
-#        define T_NE (N_PP + 15) /*	!=	*/
-#        define T_ANDAND (N_PP + 16) /*	&&	*/
-#        define T_OROR (N_PP + 17) /*	||	*/
-#        define T_MPYEQ (N_PP + 18) /*	*=	*/
-#        define T_DIVEQ (N_PP + 19) /*	/=	*/
-#        define T_MODEQ (N_PP + 20) /*	%=	*/
-#        define T_ADDEQ (N_PP + 21) /*	+=	*/
-#        define T_SUBEQ (N_PP + 22) /*	-=	*/
+#        define T_PTRMEM (N_PP + 7)    /*	->	*/
+#        define T_ADDADD (N_PP + 8)    /*	++	*/
+#        define T_SUBSUB (N_PP + 9)    /*	--	*/
+#        define T_LSHIFT (N_PP + 10)   /*	<<	*/
+#        define T_RSHIFT (N_PP + 11)   /*	>>	*/
+#        define T_LE (N_PP + 12)       /*	<=	*/
+#        define T_GE (N_PP + 13)       /*	>=	*/
+#        define T_EQ (N_PP + 14)       /*	==	*/
+#        define T_NE (N_PP + 15)       /*	!=	*/
+#        define T_ANDAND (N_PP + 16)   /*	&&	*/
+#        define T_OROR (N_PP + 17)     /*	||	*/
+#        define T_MPYEQ (N_PP + 18)    /*	*=	*/
+#        define T_DIVEQ (N_PP + 19)    /*	/=	*/
+#        define T_MODEQ (N_PP + 20)    /*	%=	*/
+#        define T_ADDEQ (N_PP + 21)    /*	+=	*/
+#        define T_SUBEQ (N_PP + 22)    /*	-=	*/
 #        define T_LSHIFTEQ (N_PP + 23) /*	<<=	*/
 #        define T_RSHIFTEQ (N_PP + 24) /*	>>=	*/
-#        define T_ANDEQ (N_PP + 25) /*	&=	*/
-#        define T_XOREQ (N_PP + 26) /*	^=	*/
-#        define T_OREQ (N_PP + 27) /*	|=	*/
-#        define T_TOKCAT (N_PP + 28) /*	##	*/
+#        define T_ANDEQ (N_PP + 25)    /*	&=	*/
+#        define T_XOREQ (N_PP + 26)    /*	^=	*/
+#        define T_OREQ (N_PP + 27)     /*	|=	*/
+#        define T_TOKCAT (N_PP + 28)   /*	##	*/
 #        define T_VARIADIC (N_PP + 29) /*	...	*/
 
 /*
  * C++ tokens
  */
 
-#        define T_DOTREF (N_TOKEN + 0) /*	.*	*/
+#        define T_DOTREF (N_TOKEN + 0)    /*	.*	*/
 #        define T_PTRMEMREF (N_TOKEN + 1) /*	->*	*/
-#        define T_SCOPE (N_TOKEN + 2) /*	::	*/
+#        define T_SCOPE (N_TOKEN + 2)     /*	::	*/
 
 /*
  * compiler tokens
@@ -389,7 +389,7 @@
 
 struct ppdirs /* directory list		*/
 {
-    char *name; /* directory name		*/
+    char *name;          /* directory name		*/
     struct ppdirs *next; /* next in list			*/
 
 #    ifdef _PP_DIRS_PRIVATE_
@@ -400,12 +400,12 @@ struct ppdirs /* directory list		*/
 struct ppkeyword /* pp keyword info		*/
 {
     char *name; /* keyword name			*/
-    int value; /* keyword token value		*/
+    int value;  /* keyword token value		*/
 };
 
 struct ppmacro /* pp macro info		*/
 {
-    int arity; /* # formal arguments		*/
+    int arity;   /* # formal arguments		*/
     char *value; /* definition value		*/
 
 #    ifdef _PP_MACRO_PRIVATE_
@@ -415,10 +415,10 @@ struct ppmacro /* pp macro info		*/
 
 struct ppsymbol /* pp symbol info		*/
 {
-    HASH_HEADER; /* hash stuff and symbol name	*/
-    unsigned long flags; /* SYM_* status			*/
+    HASH_HEADER;           /* hash stuff and symbol name	*/
+    unsigned long flags;   /* SYM_* status			*/
     struct ppmacro *macro; /* macro info			*/
-    void *value; /* value (for other passes)	*/
+    void *value;           /* value (for other passes)	*/
 
 #    ifdef _PP_SYMBOL_PRIVATE_
     _PP_SYMBOL_PRIVATE_
@@ -430,24 +430,24 @@ struct ppsymbol /* pp symbol info		*/
 #    define _PP_CONTEXT_PUBLIC_                                              \
         struct ppdirs *lcldirs; /* the "..." dir list		*/                    \
         struct ppdirs *stddirs; /* next is the <...> dir list	*/             \
-        int flags; /* PP_[a-z]* flags		*/                                    \
-        Hash_table_t *symtab; /* macro and id hash table	*/
+        int flags;              /* PP_[a-z]* flags		*/                       \
+        Hash_table_t *symtab;   /* macro and id hash table	*/
 
 struct ppglobals /* globals accessed by pp.*	*/
 {
-    const char *version; /* version stamp		*/
-    char *lineid; /* line sync directive id	*/
-    char *outfile; /* output file name		*/
-    char *pass; /* pass name			*/
-    char *token; /* pplex() token name		*/
+    const char *version;     /* version stamp		*/
+    char *lineid;            /* line sync directive id	*/
+    char *outfile;           /* output file name		*/
+    char *pass;              /* pass name			*/
+    char *token;             /* pplex() token name		*/
     struct ppsymbol *symbol; /* last symbol if PP_COMPILE	*/
 
     /* exposed for the output macros */
 
-    char *outb; /* output buffer base		*/
-    char *outbuf; /* output buffer		*/
-    char *outp; /* outbuf pointer		*/
-    char *oute; /* outbuf end			*/
+    char *outb;           /* output buffer base		*/
+    char *outbuf;         /* output buffer		*/
+    char *outp;           /* outbuf pointer		*/
+    char *oute;           /* outbuf end			*/
     unsigned long offset; /* output offset		*/
 
 #    ifdef _PP_CONTEXT_PUBLIC_

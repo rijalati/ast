@@ -30,12 +30,12 @@
 #ifndef _STACK_H
 #    define _STACK_H
 
-typedef struct stacktable *STACK; /* stack pointer		*/
+typedef struct stacktable *STACK;      /* stack pointer		*/
 typedef struct stackposition STACKPOS; /* stack position		*/
 
 struct stackblock /* stack block cell		*/
 {
-    void **stack; /* actual stack			*/
+    void **stack;            /* actual stack			*/
     struct stackblock *prev; /* previous block in list	*/
     struct stackblock *next; /* next block in list		*/
 };
@@ -43,15 +43,15 @@ struct stackblock /* stack block cell		*/
 struct stackposition /* stack position		*/
 {
     struct stackblock *block; /* current block pointer	*/
-    int index; /* index within current block	*/
+    int index;                /* index within current block	*/
 };
 
 struct stacktable /* stack information		*/
 {
     struct stackblock *blocks; /* stack table blocks		*/
-    void *error; /* error return value		*/
-    int size; /* size of each block		*/
-    STACKPOS position; /* current stack position	*/
+    void *error;               /* error return value		*/
+    int size;                  /* size of each block		*/
+    STACKPOS position;         /* current stack position	*/
 };
 
 /*

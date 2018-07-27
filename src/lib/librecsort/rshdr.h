@@ -37,24 +37,24 @@
 #define RS_RESERVE (256 * 1024) /* for I/O reservation		*/
 
 #define _RS_PRIVATE_                                                         \
-    unsigned long events; /* active events		*/                               \
-    Void_t *methdata; /* private method data		*/                             \
-    Vmalloc_t *vm; /* region to allocate temp data	*/                        \
-    ssize_t c_max; /* max datasize per chain	*/                              \
-    ssize_t c_size; /* current size			*/                                     \
-    Rsobj_t *sorted; /* defined after a reclist call	*/                      \
-    Rsobj_t **list; /* list of processed contexts	*/                         \
-    int n_list; /* number of such contexts	*/                                \
-    Rsobj_t *free; /* free list of objects		*/                               \
-    Rskey_t *key; /* rsinit() key coder state	*/                             \
-    Sfio_t *f; /* current output stream	*/                                   \
+    unsigned long events;                /* active events		*/                \
+    Void_t *methdata;                    /* private method data		*/          \
+    Vmalloc_t *vm;                       /* region to allocate temp data	*/  \
+    ssize_t c_max;                       /* max datasize per chain	*/        \
+    ssize_t c_size;                      /* current size			*/                \
+    Rsobj_t *sorted;                     /* defined after a reclist call	*/  \
+    Rsobj_t **list;                      /* list of processed contexts	*/    \
+    int n_list;                          /* number of such contexts	*/       \
+    Rsobj_t *free;                       /* free list of objects		*/         \
+    Rskey_t *key;                        /* rsinit() key coder state	*/      \
+    Sfio_t *f;                           /* current output stream	*/         \
     unsigned char *rsrv, *endrsrv, *cur; /* for fast writes	*/
 
 #include "recsort.h"
 
 /* internal control bits */
 #define RS_SORTED 010000 /* context has been sorted	*/
-#define RS_LOCAL 020000 /* local call			*/
+#define RS_LOCAL 020000  /* local call			*/
 
 #if !_PACKAGE_ast
 #    if __STD_C

@@ -20,25 +20,25 @@
 
 typedef struct PolygonItem
 {
-    Tk_Item header; /* Generic stuff that's the same for all
-                     * types.  MUST BE FIRST IN STRUCTURE. */
-    int numPoints; /* Number of points in polygon (always >= 3).
-                    * Polygon is always closed. */
-    int pointsAllocated; /* Number of points for which space is
-                          * allocated at *coordPtr. */
-    double *coordPtr; /* Pointer to malloc-ed array containing
-                       * x- and y-coords of all points in polygon.
-                       * X-coords are even-valued indices, y-coords
-                       * are corresponding odd-valued indices. */
-    int width; /* Width of outline. */
+    Tk_Item header;       /* Generic stuff that's the same for all
+                           * types.  MUST BE FIRST IN STRUCTURE. */
+    int numPoints;        /* Number of points in polygon (always >= 3).
+                           * Polygon is always closed. */
+    int pointsAllocated;  /* Number of points for which space is
+                           * allocated at *coordPtr. */
+    double *coordPtr;     /* Pointer to malloc-ed array containing
+                           * x- and y-coords of all points in polygon.
+                           * X-coords are even-valued indices, y-coords
+                           * are corresponding odd-valued indices. */
+    int width;            /* Width of outline. */
     XColor *outlineColor; /* Color for outline. */
-    GC outlineGC; /* Graphics context for drawing outline. */
-    XColor *fillColor; /* Foreground color for polygon. */
-    Pixmap fillStipple; /* Stipple bitmap for filling polygon. */
-    GC fillGC; /* Graphics context for filling polygon. */
-    int smooth; /* Non-zero means draw shape smoothed (i.e.
-                 * with Bezier splines). */
-    int splineSteps; /* Number of steps in each spline segment. */
+    GC outlineGC;         /* Graphics context for drawing outline. */
+    XColor *fillColor;    /* Foreground color for polygon. */
+    Pixmap fillStipple;   /* Stipple bitmap for filling polygon. */
+    GC fillGC;            /* Graphics context for filling polygon. */
+    int smooth;           /* Non-zero means draw shape smoothed (i.e.
+                           * with Bezier splines). */
+    int splineSteps;      /* Number of steps in each spline segment. */
 } PolygonItem;
 
 /*
@@ -162,26 +162,26 @@ static void TranslatePolygon _ANSI_ARGS_(
  */
 
 Tk_ItemType tkPolygonType = {
-    "polygon", /* name */
-    sizeof(PolygonItem), /* itemSize */
-    CreatePolygon, /* createProc */
-    configSpecs, /* configSpecs */
-    ConfigurePolygon, /* configureProc */
-    PolygonCoords, /* coordProc */
-    DeletePolygon, /* deleteProc */
-    DisplayPolygon, /* displayProc */
-    0, /* alwaysRedraw */
-    PolygonToPoint, /* pointProc */
-    PolygonToArea, /* areaProc */
-    PolygonToPostscript, /* postscriptProc */
-    ScalePolygon, /* scaleProc */
-    TranslatePolygon, /* translateProc */
-    ( Tk_ItemIndexProc * )NULL, /* indexProc */
-    ( Tk_ItemCursorProc * )NULL, /* icursorProc */
+    "polygon",                      /* name */
+    sizeof(PolygonItem),            /* itemSize */
+    CreatePolygon,                  /* createProc */
+    configSpecs,                    /* configSpecs */
+    ConfigurePolygon,               /* configureProc */
+    PolygonCoords,                  /* coordProc */
+    DeletePolygon,                  /* deleteProc */
+    DisplayPolygon,                 /* displayProc */
+    0,                              /* alwaysRedraw */
+    PolygonToPoint,                 /* pointProc */
+    PolygonToArea,                  /* areaProc */
+    PolygonToPostscript,            /* postscriptProc */
+    ScalePolygon,                   /* scaleProc */
+    TranslatePolygon,               /* translateProc */
+    ( Tk_ItemIndexProc * )NULL,     /* indexProc */
+    ( Tk_ItemCursorProc * )NULL,    /* icursorProc */
     ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL, /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL, /* dTextProc */
-    ( Tk_ItemType * )NULL /* nextPtr */
+    ( Tk_ItemInsertProc * )NULL,    /* insertProc */
+    ( Tk_ItemDCharsProc * )NULL,    /* dTextProc */
+    ( Tk_ItemType * )NULL           /* nextPtr */
 };
 
 /*
@@ -215,11 +215,11 @@ Tk_ItemType tkPolygonType = {
 
 static int CreatePolygon(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Canvas canvas; /* Canvas to hold new item. */
-Tk_Item *itemPtr; /* Record to hold new item;  header
-                   * has been initialized by caller. */
-int argc; /* Number of arguments in argv. */
-char **argv; /* Arguments describing polygon. */
+Tk_Canvas canvas;   /* Canvas to hold new item. */
+Tk_Item *itemPtr;   /* Record to hold new item;  header
+                     * has been initialized by caller. */
+int argc;           /* Number of arguments in argv. */
+char **argv;        /* Arguments describing polygon. */
 {
     PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
     int i;
@@ -303,13 +303,13 @@ error:
 
 static int PolygonCoords(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item whose coordinates are to be
-                   * read or modified. */
-int argc; /* Number of coordinates supplied in
-           * argv. */
-char **argv; /* Array of coordinates: x1, y1,
-              * x2, y2, ... */
+Tk_Canvas canvas;   /* Canvas containing item. */
+Tk_Item *itemPtr;   /* Item whose coordinates are to be
+                     * read or modified. */
+int argc;           /* Number of coordinates supplied in
+                     * argv. */
+char **argv;        /* Array of coordinates: x1, y1,
+                     * x2, y2, ... */
 {
     PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
     char buffer[TCL_DOUBLE_SPACE];
@@ -405,11 +405,11 @@ char **argv; /* Array of coordinates: x1, y1,
 
 static int ConfigurePolygon(interp, canvas, itemPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Canvas canvas; /* Canvas containing itemPtr. */
-Tk_Item *itemPtr; /* Polygon item to reconfigure. */
-int argc; /* Number of elements in argv.  */
-char **argv; /* Arguments describing things to configure. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Tk_Canvas canvas;   /* Canvas containing itemPtr. */
+Tk_Item *itemPtr;   /* Polygon item to reconfigure. */
+int argc;           /* Number of elements in argv.  */
+char **argv;        /* Arguments describing things to configure. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
     XGCValues gcValues;
@@ -615,19 +615,19 @@ PolygonItem *polyPtr; /* Item whose bbox is to be
 
 void
 TkFillPolygon(canvas, coordPtr, numPoints, display, drawable, gc, outlineGC)
-Tk_Canvas canvas; /* Canvas whose coordinate system
-                   * is to be used for drawing. */
-double *coordPtr; /* Array of coordinates for polygon:
-                   * x1, y1, x2, y2, .... */
-int numPoints; /* Twice this many coordinates are
-                * present at *coordPtr. */
-Display *display; /* Display on which to draw polygon. */
+Tk_Canvas canvas;  /* Canvas whose coordinate system
+                    * is to be used for drawing. */
+double *coordPtr;  /* Array of coordinates for polygon:
+                    * x1, y1, x2, y2, .... */
+int numPoints;     /* Twice this many coordinates are
+                    * present at *coordPtr. */
+Display *display;  /* Display on which to draw polygon. */
 Drawable drawable; /* Pixmap or window in which to draw
                     * polygon. */
-GC gc; /* Graphics context for drawing. */
-GC outlineGC; /* If not None, use this to draw an
-               * outline around the polygon after
-               * filling it. */
+GC gc;             /* Graphics context for drawing. */
+GC outlineGC;      /* If not None, use this to draw an
+                    * outline around the polygon after
+                    * filling it. */
 {
     XPoint staticPoints[MAX_STATIC_POINTS];
     XPoint *pointPtr;
@@ -697,11 +697,11 @@ GC outlineGC; /* If not None, use this to draw an
 
 static void
 DisplayPolygon(canvas, itemPtr, display, drawable, x, y, width, height)
-Tk_Canvas canvas; /* Canvas that contains item. */
-Tk_Item *itemPtr; /* Item to be displayed. */
-Display *display; /* Display on which to draw item. */
-Drawable drawable; /* Pixmap or window in which to draw
-                    * item. */
+Tk_Canvas canvas;        /* Canvas that contains item. */
+Tk_Item *itemPtr;        /* Item to be displayed. */
+Display *display;        /* Display on which to draw item. */
+Drawable drawable;       /* Pixmap or window in which to draw
+                          * item. */
 int x, y, width, height; /* Describes region of canvas that
                           * must be redisplayed (not used). */
 {
@@ -893,9 +893,9 @@ static int
 PolygonToArea(canvas, itemPtr, rectPtr) Tk_Canvas canvas; /* Canvas containing
                                                              item. */
 Tk_Item *itemPtr; /* Item to check against polygon. */
-double *rectPtr; /* Pointer to array of four coordinates
-                  * (x1, y1, x2, y2) describing rectangular
-                  * area.  */
+double *rectPtr;  /* Pointer to array of four coordinates
+                   * (x1, y1, x2, y2) describing rectangular
+                   * area.  */
 {
     PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
     double *coordPtr, rect2[4], halfWidth;
@@ -1011,11 +1011,11 @@ done:
  */
 
 static void ScalePolygon(canvas, itemPtr, originX, originY, scaleX, scaleY)
-Tk_Canvas canvas; /* Canvas containing polygon. */
-Tk_Item *itemPtr; /* Polygon to be scaled. */
+Tk_Canvas canvas;        /* Canvas containing polygon. */
+Tk_Item *itemPtr;        /* Polygon to be scaled. */
 double originX, originY; /* Origin about which to scale rect. */
-double scaleX; /* Amount to scale in X direction. */
-double scaleY; /* Amount to scale in Y direction. */
+double scaleX;           /* Amount to scale in X direction. */
+double scaleY;           /* Amount to scale in Y direction. */
 {
     PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
     double *coordPtr;
@@ -1050,8 +1050,8 @@ double scaleY; /* Amount to scale in Y direction. */
  */
 
 static void TranslatePolygon(canvas, itemPtr, deltaX, deltaY)
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item that is being moved. */
+Tk_Canvas canvas;      /* Canvas containing item. */
+Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
@@ -1092,12 +1092,12 @@ double deltaX, deltaY; /* Amount by which item is to be
 static int PolygonToPostscript(interp, canvas, itemPtr, prepass)
 Tcl_Interp *interp; /* Leave Postscript or error message
                      * here. */
-Tk_Canvas canvas; /* Information about overall canvas. */
-Tk_Item *itemPtr; /* Item for which Postscript is
-                   * wanted. */
-int prepass; /* 1 means this is a prepass to
-              * collect font information;  0 means
-              * final Postscript is being created. */
+Tk_Canvas canvas;   /* Information about overall canvas. */
+Tk_Item *itemPtr;   /* Item for which Postscript is
+                     * wanted. */
+int prepass;        /* 1 means this is a prepass to
+                     * collect font information;  0 means
+                     * final Postscript is being created. */
 {
     char string[100];
     PolygonItem *polyPtr = ( PolygonItem * )itemPtr;

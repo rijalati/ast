@@ -25,8 +25,9 @@
  */
 
 #define CODESET_ctype 0 /* current locale LC_CTYPE codeset name			*/
-#define CODESET_utf32 1 /* UTF-32BE or UTF-32LE depending on native arch     \
-                         */
+#define CODESET_utf32                                                        \
+    1 /* UTF-32BE or UTF-32LE depending on native arch                       \
+       */
 
 #define codeset(op) _ast_codeset(op)
 

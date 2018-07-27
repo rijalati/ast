@@ -34,37 +34,37 @@
 
 typedef struct _shlex_
 {
-    Shell_t *sh; /* pointer to the interpreter */
-    struct argnod *arg; /* current word */
+    Shell_t *sh;           /* pointer to the interpreter */
+    struct argnod *arg;    /* current word */
     struct ionod *heredoc; /* pending here document list */
-    int token; /* current token number */
-    int lastline; /* last line number */
-    int lasttok; /* previous token number */
-    int digits; /* numerical value with word token */
-    int nonstandard; /* nonstandard construct in profile */
-    char aliasok; /* on when alias is legal */
-    char assignok; /* on when name=value is legal */
-    char inexec; /* on when processing exec */
-    char intypeset; /* on when processing typeset */
-    char comp_assign; /* in compound assignment */
-    char comsub; /* parsing command substitution */
-    char noreserv; /* reserved works not legal */
-    char typed; /* possible type definition on PATH */
-    int inlineno; /* saved value of sh.inlineno */
-    int firstline; /* saved value of sh.st.firstline */
-    int assignlevel; /* nesting level for assignment */
-    short fundepth; /* nesting level for functions */
+    int token;             /* current token number */
+    int lastline;          /* last line number */
+    int lasttok;           /* previous token number */
+    int digits;            /* numerical value with word token */
+    int nonstandard;       /* nonstandard construct in profile */
+    char aliasok;          /* on when alias is legal */
+    char assignok;         /* on when name=value is legal */
+    char inexec;           /* on when processing exec */
+    char intypeset;        /* on when processing typeset */
+    char comp_assign;      /* in compound assignment */
+    char comsub;           /* parsing command substitution */
+    char noreserv;         /* reserved works not legal */
+    char typed;            /* possible type definition on PATH */
+    int inlineno;          /* saved value of sh.inlineno */
+    int firstline;         /* saved value of sh.st.firstline */
+    int assignlevel;       /* nesting level for assignment */
+    short fundepth;        /* nesting level for functions */
 #    if SHOPT_KIA
-    Sfio_t *kiafile; /* kia output file */
-    Sfio_t *kiatmp; /* kia reference file */
-    unsigned long script; /* script entity number */
+    Sfio_t *kiafile;       /* kia output file */
+    Sfio_t *kiatmp;        /* kia reference file */
+    unsigned long script;  /* script entity number */
     unsigned long fscript; /* script file entity number */
     unsigned long current; /* current entity number */
     unsigned long unknown; /* <unknown> entity number */
-    off_t kiabegin; /* offset of first entry */
-    char *scriptname; /* name of script file */
-    Dt_t *entity_tree; /* for entity ids */
-#    endif /* SHOPT_KIA */
+    off_t kiabegin;        /* offset of first entry */
+    char *scriptname;      /* name of script file */
+    Dt_t *entity_tree;     /* for entity ids */
+#    endif                 /* SHOPT_KIA */
 #    ifdef _SHLEX_PRIVATE
     _SHLEX_PRIVATE
 #    endif
@@ -103,11 +103,11 @@ typedef struct _shlex_
 #    define ETESTSYM (SYMREP | ']')
 
 #    define SYMMASK 0170000
-#    define SYMPIPE 010000 /* trailing '|' */
-#    define SYMLPAR 020000 /* trailing LPAREN */
-#    define SYMAMP 040000 /* trailing '&' */
-#    define SYMGT 0100000 /* trailing '>' */
-#    define SYMSEMI 0110000 /* trailing ';' */
+#    define SYMPIPE 010000   /* trailing '|' */
+#    define SYMLPAR 020000   /* trailing LPAREN */
+#    define SYMAMP 040000    /* trailing '&' */
+#    define SYMGT 0100000    /* trailing '>' */
+#    define SYMSEMI 0110000  /* trailing ';' */
 #    define SYMSHARP 0120000 /* trailing '#' */
 #    define IOSEEKSYM (SYMSHARP | '<')
 #    define IOMOV0SYM (SYMAMP | '<')

@@ -25,16 +25,16 @@
 **	Written by Binh Dao Vo and Kiem-Phong Vo
 */
 
-#define COLSZ (64 * 1024) /* min data to compute #cols	*/
+#define COLSZ (64 * 1024)         /* min data to compute #cols	*/
 #define UPPERSZ (3 * 1024 * 1024) /* max data to compute plan	*/
 
 #define TBL_COLUMNS 1 /* defining #columns		*/
-#define TBL_LEFT 2 /* use left to right dependency	*/
-#define TBL_RIGHT 3 /* use right to left dependency	*/
-#define TBL_BOTH 4 /* use right to left dependency	*/
-#define TBL_CEE 5 /* use conditional entropy	*/
-#define TBL_RLE 6 /* use run-length entropy	*/
-#define TBL_SINGLE 7 /* single predictor only	*/
+#define TBL_LEFT 2    /* use left to right dependency	*/
+#define TBL_RIGHT 3   /* use right to left dependency	*/
+#define TBL_BOTH 4    /* use right to left dependency	*/
+#define TBL_CEE 5     /* use conditional entropy	*/
+#define TBL_RLE 6     /* use run-length entropy	*/
+#define TBL_SINGLE 7  /* single predictor only	*/
 
 #define SETPLAN(c, p)                                                        \
     {                                                                        \
@@ -53,8 +53,8 @@ typedef struct _tblctxt_s
 {
     Vccontext_t ctxt;
     Vctblplan_t *plan; /* plan for transforming data	*/
-    ssize_t ncols; /* #columns for this context	*/
-    int flags; /* flags to open a plan		*/
+    ssize_t ncols;     /* #columns for this context	*/
+    int flags;         /* flags to open a plan		*/
 } Tblctxt_t;
 
 typedef struct _table_s
@@ -63,10 +63,10 @@ typedef struct _table_s
     Tblctxt_t *ctxt; /* default context		*/
 
     Tblindex_t *cidx; /* 1-sorted column indices	*/
-    ssize_t *idx; /* space for 2-sorted indices	*/
+    ssize_t *idx;     /* space for 2-sorted indices	*/
 
-    ssize_t ncols; /* number of columns		*/
-    ssize_t nrows; /* number of rows		*/
+    ssize_t ncols;  /* number of columns		*/
+    ssize_t nrows;  /* number of rows		*/
     Vcchar_t *data; /* table in column-major order	*/
 } Table_t;
 
@@ -280,7 +280,7 @@ re_train: /* recurse to here if necessary to retrain data */
     tbl->ncols = ncols;
     tbl->nrows = nrows = size / ncols;
     vc->undone = size - ncols * nrows; /* amount left unprocessed */
-    if ((dtsz = ncols * nrows) == 0) /* amount to be processed  */
+    if ((dtsz = ncols * nrows) == 0)   /* amount to be processed  */
         return 0;
 
     /* allocate space for new indices */

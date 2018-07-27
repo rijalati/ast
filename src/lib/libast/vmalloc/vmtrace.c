@@ -51,8 +51,8 @@ trtrace(vm, oldaddr, newaddr, size, align) Vmalloc_t *vm; /* region call was
                                                              made from	*/
 Vmuchar_t *oldaddr; /* old data address		*/
 Vmuchar_t *newaddr; /* new data address		*/
-size_t size; /* size of piece		*/
-size_t align; /* alignment			*/
+size_t size;        /* size of piece		*/
+size_t align;       /* alignment			*/
 #    endif
 {
     char buf[1024], *bufp, *endbuf;

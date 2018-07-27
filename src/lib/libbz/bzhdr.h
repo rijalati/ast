@@ -136,12 +136,12 @@ bz_internal_error(int errcode);
                 if (!(cond))                                                 \
                     bz_internal_error(errcode);                              \
             }
-#        define AssertD(cond, msg) /* */
-#        define VPrintf0(zf) /* */
-#        define VPrintf1(zf, za1) /* */
-#        define VPrintf2(zf, za1, za2) /* */
-#        define VPrintf3(zf, za1, za2, za3) /* */
-#        define VPrintf4(zf, za1, za2, za3, za4) /* */
+#        define AssertD(cond, msg)                    /* */
+#        define VPrintf0(zf)                          /* */
+#        define VPrintf1(zf, za1)                     /* */
+#        define VPrintf2(zf, za1, za2)                /* */
+#        define VPrintf3(zf, za1, za2, za3)           /* */
+#        define VPrintf4(zf, za1, za2, za3, za4)      /* */
 #        define VPrintf5(zf, za1, za2, za3, za4, za5) /* */
 #    endif
 

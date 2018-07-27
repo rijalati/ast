@@ -118,7 +118,7 @@ struct State_s
     int bd;
 
     ulg u, n, d, w;
-    size_t s; /* original size */
+    size_t s;   /* original size */
     ulg l[256]; /* bit lengths for codes */
 
     Vmalloc_t *vm;
@@ -224,7 +224,7 @@ fill(State_t *state)
 static int
 get_tree(State_t *state,
          ulg *l, /* bit lengths */
-         ulg n) /* number expected */
+         ulg n)  /* number expected */
 /* Get the bit lengths for a code representation from the compressed
    stream.  If get_tree() returns 4, then there is an error in the data.
    Otherwise zero is returned. */
@@ -236,7 +236,7 @@ get_tree(State_t *state,
 
     /* get bit lengths */
     i = NEXTBYTE(state) + 1; /* length/count pairs to read */
-    k = 0; /* next code */
+    k = 0;                   /* next code */
     do
     {
         b = ((j = NEXTBYTE(state)) & 0xf) + 1; /* bits in code (1..16) */
@@ -257,15 +257,15 @@ explode_lit8(State_t *state, char *buff, size_t size)
 /* Decompress the imploded data using coded literals and an 8K sliding
    window. */
 {
-    size_t s; /* bytes to decompress */
-    ulg e; /* table entry flag/number of extra bits */
-    ulg n, d; /* length and index for copy */
-    ulg w; /* current window position */
+    size_t s;  /* bytes to decompress */
+    ulg e;     /* table entry flag/number of extra bits */
+    ulg n, d;  /* length and index for copy */
+    ulg w;     /* current window position */
     Huff_t *t; /* pointer to table entry */
-    ulg u; /* true if unflushed */
+    ulg u;     /* true if unflushed */
     size_t j;
     Huff_t *tb, *tl, *td; /* literal, length, and distance tables */
-    int bb, bl, bd; /* number of bits decoded by those */
+    int bb, bl, bd;       /* number of bits decoded by those */
 
     tb = state->tb;
     tl = state->tl;
@@ -332,7 +332,7 @@ explode_lit8(State_t *state, char *buff, size_t size)
                 e = t->e;
             }
             DUMPBITS(state, t->b);
-            d = w - d - t->v.n; /* construct offset */
+            d = w - d - t->v.n;         /* construct offset */
             NEEDBITS(state, ( ulg )bl); /* get coded length */
             t = tl + IGETBITS(state, bl);
             e = t->e;
@@ -398,15 +398,15 @@ explode_lit4(State_t *state, char *buff, size_t size)
 /* Decompress the imploded data using coded literals and a 4K sliding
    window. */
 {
-    size_t s; /* bytes to decompress */
-    ulg e; /* table entry flag/number of extra bits */
-    ulg n, d; /* length and index for copy */
-    ulg w; /* current window position */
+    size_t s;  /* bytes to decompress */
+    ulg e;     /* table entry flag/number of extra bits */
+    ulg n, d;  /* length and index for copy */
+    ulg w;     /* current window position */
     Huff_t *t; /* pointer to table entry */
-    ulg u; /* true if unflushed */
+    ulg u;     /* true if unflushed */
     size_t j;
     Huff_t *tb, *tl, *td; /* literal, length, and distance tables */
-    int bb, bl, bd; /* number of bits decoded by those */
+    int bb, bl, bd;       /* number of bits decoded by those */
 
     tb = state->tb;
     tl = state->tl;
@@ -472,7 +472,7 @@ explode_lit4(State_t *state, char *buff, size_t size)
                 e = t->e;
             }
             DUMPBITS(state, t->b);
-            d = w - d - t->v.n; /* construct offset */
+            d = w - d - t->v.n;         /* construct offset */
             NEEDBITS(state, ( ulg )bl); /* get coded length */
             t = tl + IGETBITS(state, bl);
             e = t->e;
@@ -538,15 +538,15 @@ explode_nolit8(State_t *state, char *buff, size_t size)
 /* Decompress the imploded data using uncoded literals and an 8K sliding
    window. */
 {
-    size_t s; /* bytes to decompress */
-    ulg e; /* table entry flag/number of extra bits */
-    ulg n, d; /* length and index for copy */
-    ulg w; /* current window position */
+    size_t s;  /* bytes to decompress */
+    ulg e;     /* table entry flag/number of extra bits */
+    ulg n, d;  /* length and index for copy */
+    ulg w;     /* current window position */
     Huff_t *t; /* pointer to table entry */
-    ulg u; /* true if unflushed */
+    ulg u;     /* true if unflushed */
     size_t j;
     Huff_t *tl, *td; /* length and distance state tables */
-    int bl, bd; /* number of bits decoded by tl[] and td[] */
+    int bl, bd;      /* number of bits decoded by tl[] and td[] */
 
     tl = state->tl;
     td = state->td;
@@ -601,7 +601,7 @@ explode_nolit8(State_t *state, char *buff, size_t size)
                 e = t->e;
             }
             DUMPBITS(state, t->b);
-            d = w - d - t->v.n; /* construct offset */
+            d = w - d - t->v.n;         /* construct offset */
             NEEDBITS(state, ( ulg )bl); /* get coded length */
             t = tl + IGETBITS(state, bl);
             e = t->e;
@@ -667,15 +667,15 @@ explode_nolit4(State_t *state, char *buff, size_t size)
 /* Decompress the imploded data using uncoded literals and a 4K sliding
    window. */
 {
-    size_t s; /* bytes to decompress */
-    ulg e; /* table entry flag/number of extra bits */
-    ulg n, d; /* length and index for copy */
-    ulg w; /* current window position */
+    size_t s;  /* bytes to decompress */
+    ulg e;     /* table entry flag/number of extra bits */
+    ulg n, d;  /* length and index for copy */
+    ulg w;     /* current window position */
     Huff_t *t; /* pointer to table entry */
-    ulg u; /* true if unflushed */
+    ulg u;     /* true if unflushed */
     size_t j;
     Huff_t *tl, *td; /* length and distance state tables */
-    int bl, bd; /* number of bits decoded by tl[] and td[] */
+    int bl, bd;      /* number of bits decoded by tl[] and td[] */
 
     tl = state->tl;
     td = state->td;
@@ -728,7 +728,7 @@ explode_nolit4(State_t *state, char *buff, size_t size)
                 e = t->e;
             }
             DUMPBITS(state, t->b);
-            d = w - d - t->v.n; /* construct offset */
+            d = w - d - t->v.n;         /* construct offset */
             NEEDBITS(state, ( ulg )bl); /* get coded length */
             t = tl + IGETBITS(state, bl);
             e = t->e;

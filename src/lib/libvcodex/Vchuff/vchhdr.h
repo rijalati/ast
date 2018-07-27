@@ -24,7 +24,7 @@
 #include "vchuff.h"
 
 #define Vchobj_t Vcchar_t /* object type in Huffman code	*/
-#define VCH_SIZE 256 /* max alphabet size		*/
+#define VCH_SIZE 256      /* max alphabet size		*/
 
 #define VCH_SW 16 /* size of fast switch algorithms below	*/
 

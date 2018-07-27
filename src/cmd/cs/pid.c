@@ -53,21 +53,21 @@ struct notify /* notification address list	*/
 typedef struct /* pid info			*/
 {
     HASH_HEADER;
-    Notify_t *notify; /* notification address list	*/
-    int decay; /* expiration decay		*/
+    Notify_t *notify;     /* notification address list	*/
+    int decay;            /* expiration decay		*/
     unsigned long expire; /* kill poll expiration		*/
-    pid_t pid; /* request pid			*/
+    pid_t pid;            /* request pid			*/
 } Pid_t;
 
 typedef struct /* server state			*/
 {
-    Hash_table_t *pids; /* Pid_t hash			*/
-    int decay; /* max expiration decay		*/
-    int dormant; /* no activity			*/
-    int expire; /* expiration increment		*/
+    Hash_table_t *pids;   /* Pid_t hash			*/
+    int decay;            /* max expiration decay		*/
+    int dormant;          /* no activity			*/
+    int expire;           /* expiration increment		*/
     unsigned long active; /* number of active pids	*/
-    char msg[1024]; /* msg text			*/
-    char buf[1024]; /* work buffer			*/
+    char msg[1024];       /* msg text			*/
+    char buf[1024];       /* work buffer			*/
 } State_t;
 
 /*

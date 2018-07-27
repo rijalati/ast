@@ -330,11 +330,9 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     {
         sfprintf(expr->op, "	<FIELD>\n");
         sfprintf(expr->op, "		<NAME>%s</>\n", field->variable->name);
-        sfprintf(expr->op,
-                 "		<DESCRIPTION>%s</>\n",
-                 field->variable->description);
         sfprintf(
-        expr->op, "		<TYPE>%s</>\n", field->variable->type->name);
+        expr->op, "		<DESCRIPTION>%s</>\n", field->variable->description);
+        sfprintf(expr->op, "		<TYPE>%s</>\n", field->variable->type->name);
         sfprintf(expr->op, "		<PHYSICAL>\n");
         switch (field->representation)
         {

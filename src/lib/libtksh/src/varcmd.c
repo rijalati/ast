@@ -38,8 +38,8 @@ MakeSearchId _ANSI_ARGS_((Tcl_Interp * interp, Namval_t *nv, char *varName));
 /* ARGSUSED */
 int Tcl_SetCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     if (argc == 2)
     {
@@ -78,8 +78,8 @@ char **argv; /* Argument strings. */
 
 int Tcl_GlobalCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
 
     if (argc < 2)
@@ -121,8 +121,8 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_UnsetCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int i;
 
@@ -165,8 +165,8 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_AppendCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int i;
     char *result = NULL; /* (Initialization only needed to keep
@@ -238,8 +238,8 @@ char **argv; /* Argument strings. */
 int Tcl_LappendCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used.
                                                                  */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int i;
     char *result = NULL; /* (Initialization only needed to keep
@@ -355,8 +355,8 @@ CallFrame **framePtr;
 /* ARGSUSED */
 int Tcl_UpvarCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Interp *iPtr = ( Interp * )interp;
     int result;
@@ -458,8 +458,8 @@ char **argv; /* Argument strings. */
 int Tcl_UplevelCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used.
                                                                  */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int result;
     CallFrame *savedVarFramePtr, *framePtr;
@@ -566,14 +566,14 @@ char **argv; /* Argument strings. */
 int Tcl_UpVar(interp, frameName, varName, localName, flags)
 Tcl_Interp *interp; /* Command interpreter in which varName is
                      * to be looked up. */
-char *frameName; /* Name of the frame containing the source
-                  * variable, such as "1" or "#0". */
-char *varName; /* Name of a variable in interp.  May be
-                * either a scalar name or an element
-                * in an array. */
-char *localName; /* Destination variable name. */
-int flags; /* Either 0 or TCL_GLOBAL_ONLY;  indicates
-            * whether localName is local or global. */
+char *frameName;    /* Name of the frame containing the source
+                     * variable, such as "1" or "#0". */
+char *varName;      /* Name of a variable in interp.  May be
+                     * either a scalar name or an element
+                     * in an array. */
+char *localName;    /* Destination variable name. */
+int flags;          /* Either 0 or TCL_GLOBAL_ONLY;  indicates
+                     * whether localName is local or global. */
 {
     int result;
     CallFrame *framePtr;
@@ -646,13 +646,13 @@ scalar:
  */
 
 int Tcl_UpVar2(interp, frameName, part1, part2, localName, flags)
-Tcl_Interp *interp; /* Interpreter containing variables.  Used
-                     * for error messages too. */
-char *frameName; /* Name of the frame containing the source
-                  * variable, such as "1" or "#0". */
+Tcl_Interp *interp;  /* Interpreter containing variables.  Used
+                      * for error messages too. */
+char *frameName;     /* Name of the frame containing the source
+                      * variable, such as "1" or "#0". */
 char *part1, *part2; /* Two parts of source variable name. */
-char *localName; /* Destination variable name. */
-int flags; /* TCL_GLOBAL_ONLY or 0. */
+char *localName;     /* Destination variable name. */
+int flags;           /* TCL_GLOBAL_ONLY or 0. */
 {
     int result;
     CallFrame *framePtr;
@@ -687,8 +687,8 @@ int flags; /* TCL_GLOBAL_ONLY or 0. */
 /* ARGSUSED */
 int Tcl_ArrayCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int c, notArray;
     size_t length;

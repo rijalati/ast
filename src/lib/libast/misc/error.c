@@ -58,11 +58,11 @@ extern Error_info_t _error_info_;
 
 Error_info_t _error_info_ = {
     2,         exit, write, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* version			*/
-    0, /* auxilliary			*/
+    0,                                                 /* auxilliary			*/
     0,         0,    0,     0, 0, 0, 0, /* top of old context stack	*/
     0,         0,    0,     0, 0, 0, 0, /* old empty context		*/
-    0, /* time				*/
-    translate, 0 /* catalog			*/
+    0,                                  /* time				*/
+    translate, 0                        /* catalog			*/
 };
 
 #undef extern

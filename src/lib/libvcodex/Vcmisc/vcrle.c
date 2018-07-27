@@ -33,7 +33,7 @@ static ssize_t rleg _ARG_(( Rle_t *, int ));
 
 struct _rle_s
 {
-    Rle_f rlef; /* rle function to call	*/
+    Rle_f rlef;     /* rle function to call	*/
     Vcchar_t *ibuf; /* default input data	*/
     ssize_t isiz;
 
@@ -111,7 +111,7 @@ int encoding;
             else
             {
                 if (z >= 0) /* encode the 0-run */
-                { /**/
+                {           /**/
                     DEBUG_PRINT(9, "%d\n", z);
                     vcioinit(&io, o, 8 * sizeof(ssize_t));
                     vcioput2(&io, z, 0, RL_ZERO);
@@ -124,7 +124,7 @@ int encoding;
             }
         }
         if (z >= 0) /* final 0-run if any */
-        { /**/
+        {           /**/
             DEBUG_PRINT(9, "%d\n", z);
             vcioinit(&io, o, 8 * sizeof(ssize_t));
             vcioput2(&io, z, 0, RL_ZERO);
@@ -410,7 +410,7 @@ int encoding;
     {
         dt = rle->obuf;
         enddt = rle->endo; /* output data */
-        run = rle->abuf; /* buffer of encoded run lengths */
+        run = rle->abuf;   /* buffer of encoded run lengths */
 
         for (endb = (chr = rle->ibuf) + rle->isiz; chr < endb;)
         {
@@ -470,9 +470,9 @@ Void_t **out;
     if (rle->rlef == rleg) /* size for data + size/2 for lengths */
         outsz = 2 * vcsizeu(size) + size + size / 2;
     else if (rle->rlef == rle2)
-        outsz = size; /* binary coding never exceeds size */
+        outsz = size;                 /* binary coding never exceeds size */
     else if (size < 64 * 1024 * 1024) /* if get here: rle0/1 coding */
-        outsz = 2 * size; /* small, just overallocate */
+        outsz = 2 * size;             /* small, just overallocate */
     else /* count the extra RL_ESC's that might be needed */
     {
         for (dt = rle->ibuf, sz = 0, k = 0; k < size; ++k)

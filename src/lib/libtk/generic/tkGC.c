@@ -24,9 +24,9 @@
 
 typedef struct
 {
-    GC gc; /* Graphics context. */
-    Display *display; /* Display to which gc belongs. */
-    int refCount; /* Number of active uses of gc. */
+    GC gc;                       /* Graphics context. */
+    Display *display;            /* Display to which gc belongs. */
+    int refCount;                /* Number of active uses of gc. */
     Tcl_HashEntry *valueHashPtr; /* Entry in valueTable (needed when deleting
                                   * this structure). */
 } TkGC;
@@ -41,8 +41,8 @@ typedef struct
 {
     XGCValues values; /* Desired values for GC. */
     Display *display; /* Display for which GC is valid. */
-    int screenNum; /* screen number of display */
-    int depth; /* and depth for which GC is valid. */
+    int screenNum;    /* screen number of display */
+    int depth;        /* and depth for which GC is valid. */
 } ValueKey;
 
 /*
@@ -54,7 +54,7 @@ static Tcl_HashTable idTable;
 typedef struct
 {
     Display *display; /* Display for which GC was allocated. */
-    GC gc; /* X's identifier for GC. */
+    GC gc;            /* X's identifier for GC. */
 } IdKey;
 
 static int initialized = 0; /* 0 means static structures haven't been
@@ -392,7 +392,7 @@ XGCValues *valuePtr;
 
 void Tk_FreeGC(display,
                gc) Display *display; /* Display for which gc was allocated. */
-GC gc; /* Graphics context to be released. */
+GC gc;                               /* Graphics context to be released. */
 {
     IdKey idKey;
     Tcl_HashEntry *idHashPtr;

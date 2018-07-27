@@ -28,9 +28,9 @@
 */
 
 #define BATCH (2 * sizeof(int)) /* accumulate this many digits at a time */
-#define IPART 0 /* doing integer part */
-#define FPART 1 /* doing fractional part */
-#define EPART 2 /* doing exponent part */
+#define IPART 0                 /* doing integer part */
+#define FPART 1                 /* doing fractional part */
+#define EPART 2                 /* doing exponent part */
 
 #if __STD_C
 static Sfdouble_t
@@ -80,7 +80,7 @@ Sfdouble_t
 _sfstrtod(reg const char *s, char **retp)
 #else
 Sfdouble_t _sfstrtod(s, retp) reg char *s; /* string to convert */
-char **retp; /* to return the remainder of string */
+char **retp;                               /* to return the remainder of string */
 #endif
 {
     reg int n, c, m;

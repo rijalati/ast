@@ -590,16 +590,16 @@ int *readPtr; /* Fill in with number of characters read
 int TclParseQuotes(interp, string, termChar, flags, termPtr, pvPtr)
 Tcl_Interp *interp; /* Interpreter to use for nested command
                      * evaluations and error messages. */
-char *string; /* Character just after opening double-
-               * quote. */
-int termChar; /* Character that terminates "quoted" string
-               * (usually double-quote, but sometimes
-               * right-paren or something else). */
-int flags; /* Flags to pass to nested Tcl_Eval calls. */
-char **termPtr; /* Store address of terminating character
-                 * here. */
-ParseValue *pvPtr; /* Information about where to place
-                    * fully-substituted result of parse. */
+char *string;       /* Character just after opening double-
+                     * quote. */
+int termChar;       /* Character that terminates "quoted" string
+                     * (usually double-quote, but sometimes
+                     * right-paren or something else). */
+int flags;          /* Flags to pass to nested Tcl_Eval calls. */
+char **termPtr;     /* Store address of terminating character
+                     * here. */
+ParseValue *pvPtr;  /* Information about where to place
+                     * fully-substituted result of parse. */
 {
     char *src, *dst, c;
 
@@ -726,12 +726,12 @@ ParseValue *pvPtr; /* Information about where to place
 int TclParseNestedCmd(interp, string, flags, termPtr, pvPtr)
 Tcl_Interp *interp; /* Interpreter to use for nested command
                      * evaluations and error messages. */
-char *string; /* Character just after opening bracket. */
-int flags; /* Flags to pass to nested Tcl_Eval. */
-char **termPtr; /* Store address of terminating character
-                 * here. */
-ParseValue *pvPtr; /* Information about where to place
-                    * result of command. */
+char *string;       /* Character just after opening bracket. */
+int flags;          /* Flags to pass to nested Tcl_Eval. */
+char **termPtr;     /* Store address of terminating character
+                     * here. */
+ParseValue *pvPtr;  /* Information about where to place
+                     * result of command. */
 {
     int result, length, shortfall;
     Interp *iPtr = ( Interp * )interp;
@@ -796,11 +796,11 @@ ParseValue *pvPtr; /* Information about where to place
 int TclParseBraces(interp, string, termPtr, pvPtr)
 Tcl_Interp *interp; /* Interpreter to use for nested command
                      * evaluations and error messages. */
-char *string; /* Character just after opening bracket. */
-char **termPtr; /* Store address of terminating character
-                 * here. */
-ParseValue *pvPtr; /* Information about where to place
-                    * result of command. */
+char *string;       /* Character just after opening bracket. */
+char **termPtr;     /* Store address of terminating character
+                     * here. */
+ParseValue *pvPtr;  /* Information about where to place
+                     * result of command. */
 {
     int level;
     char *src, *dst, *end;
@@ -939,17 +939,17 @@ int
 TclParseWords(interp, string, flags, maxWords, termPtr, argcPtr, argv, pvPtr)
 Tcl_Interp *interp; /* Interpreter to use for nested command
                      * evaluations and error messages. */
-char *string; /* First character of word. */
-int flags; /* Flags to control parsing (same values as
-            * passed to Tcl_Eval). */
-int maxWords; /* Maximum number of words to parse. */
-char **termPtr; /* Store address of terminating character
-                 * here. */
-int *argcPtr; /* Filled in with actual number of words
-               * parsed. */
-char **argv; /* Store addresses of individual words here. */
-ParseValue *pvPtr; /* Information about where to place
-                    * fully-substituted word. */
+char *string;       /* First character of word. */
+int flags;          /* Flags to control parsing (same values as
+                     * passed to Tcl_Eval). */
+int maxWords;       /* Maximum number of words to parse. */
+char **termPtr;     /* Store address of terminating character
+                     * here. */
+int *argcPtr;       /* Filled in with actual number of words
+                     * parsed. */
+char **argv;        /* Store addresses of individual words here. */
+ParseValue *pvPtr;  /* Information about where to place
+                     * fully-substituted word. */
 {
     char *src, *dst;
     char c;
@@ -1244,8 +1244,8 @@ ParseValue *pvPtr; /* Information about buffer that
                     * in the structure is non-zero, it
                     * means that the current buffer is
                     * dynamically allocated. */
-int needed; /* Minimum amount of additional space
-             * to allocate. */
+int needed;        /* Minimum amount of additional space
+                    * to allocate. */
 {
     int newSpace;
     char *new;
@@ -1306,9 +1306,9 @@ int needed; /* Minimum amount of additional space
 
 char *TclWordEnd(start, nested, semiPtr) char *start; /* Beginning of a word
                                                          of a Tcl command. */
-int nested; /* Zero means this is a top-level command.
-             * One means this is a nested command (close
-             * bracket is a word terminator). */
+int nested;   /* Zero means this is a top-level command.
+               * One means this is a nested command (close
+               * bracket is a word terminator). */
 int *semiPtr; /* Set to 1 if word ends with a command-
                * terminating semi-colon, zero otherwise.
                * If NULL then ignored. */
@@ -1693,11 +1693,11 @@ int nested; /* Zero means this is a top-level command.
 
 char *Tcl_ParseVar(interp, string, termPtr)
 Tcl_Interp *interp; /* Context for looking up variable. */
-char *string; /* String containing variable name.
-               * First character must be "$". */
-char **termPtr; /* If non-NULL, points to word to fill
-                 * in with character just after last
-                 * one in the variable specifier. */
+char *string;       /* String containing variable name.
+                     * First character must be "$". */
+char **termPtr;     /* If non-NULL, points to word to fill
+                     * in with character just after last
+                     * one in the variable specifier. */
 
 {
     char *name1, *name1End, c, *result;

@@ -25,14 +25,14 @@
 */
 
 #define M_SIZE (4 * 1024) /* max size of a blk	*/
-#define N_ALLOC (512) /* #allocations 	*/
-#define N_FREE (256) /* #frees <= #allocs	*/
+#define N_ALLOC (512)     /* #allocations 	*/
+#define N_FREE (256)      /* #frees <= #allocs	*/
 
 typedef struct _piece_s
 {
     Void_t *addr; /* allocated address	*/
-    size_t size; /* size to be allocated	*/
-    int free; /* 1: to be freed	*/
+    size_t size;  /* size to be allocated	*/
+    int free;     /* 1: to be freed	*/
 } Piece_t;
 Piece_t Piece[N_ALLOC];
 
@@ -102,7 +102,7 @@ tmain()
     Vmalloc_t *vm;
     char *store;
 
-    size = 0; /* make up list of pieces for allocation */
+    size = 0;   /* make up list of pieces for allocation */
     srandom(0); /* make it easier to debug */
     for (k = 0; k < N_ALLOC; ++k)
     {

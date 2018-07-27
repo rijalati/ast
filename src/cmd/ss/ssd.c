@@ -55,14 +55,14 @@ static const char id[] = "\n@(#)$Id: ssd (AT&T Research) 2007-11-19 $\0\n";
 
 struct whod
 {
-    char wd_vers; /* protocol version #		*/
-    char wd_type; /* packet type, see below	*/
-    char wd_pad[2]; /* spare			*/
-    long wd_sendtime; /* sender time stamp		*/
-    long wd_recvtime; /* receiver time stamp		*/
+    char wd_vers;         /* protocol version #		*/
+    char wd_type;         /* packet type, see below	*/
+    char wd_pad[2];       /* spare			*/
+    long wd_sendtime;     /* sender time stamp		*/
+    long wd_recvtime;     /* receiver time stamp		*/
     char wd_hostname[32]; /* hosts name			*/
-    long wd_loadav[3]; /* load average as in uptime(1)	*/
-    long wd_boottime; /* system boot time		*/
+    long wd_loadav[3];    /* load average as in uptime(1)	*/
+    long wd_boottime;     /* system boot time		*/
 };
 
 #ifndef S_IXUSR

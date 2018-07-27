@@ -28,9 +28,9 @@
 typedef struct _lsar_lsa_state_t
 {
     ospf_lsa_can_t lsa_can; /* Canonical LSA object */
-    uint8_t valid_rec; /* valid rec? TRUE - yes */
-    uint8_t lsu_group; /* LSU group? 0 v/s non-zero */
-    uint32_t no_lsas; /* Total number of LSAs */
+    uint8_t valid_rec;      /* valid rec? TRUE - yes */
+    uint8_t lsu_group;      /* LSU group? 0 v/s non-zero */
+    uint32_t no_lsas;       /* Total number of LSAs */
     uint32_t no_lsas_processed;
     /* Number of LSAs processed */
     ospf_lsa_t *lsap; /* Ptr to unprocessed LSA
@@ -102,17 +102,17 @@ init_lsar_state_rec(lsar_lsa_state_t *state_p);
  * Type object for file types containing LSAR lsa logs.
  */
 Dssformat_t lsar_lsa_format = {
-    FORMAT_NAME, /* name */
+    FORMAT_NAME,                /* name */
     "OSPF LSAR lsa log format", /* description */
     CXH,
     identf_lsar_lsa_file, /* identf */
-    open_lsar_lsa_file, /* openf */
-    read_lsar_lsa_rec, /* readf */
-    NULL, /* writef */
-    NULL, /* seekf */
-    close_lsar_lsa_file, /* closef */
-    NULL, /* savef */
-    NULL, /* dropf */
+    open_lsar_lsa_file,   /* openf */
+    read_lsar_lsa_rec,    /* readf */
+    NULL,                 /* writef */
+    NULL,                 /* seekf */
+    close_lsar_lsa_file,  /* closef */
+    NULL,                 /* savef */
+    NULL,                 /* dropf */
     /* private stuff */
     OSPF_LSAR_LSA_NEXT /* next */
 };

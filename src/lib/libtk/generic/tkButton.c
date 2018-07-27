@@ -25,47 +25,47 @@
 
 typedef struct
 {
-    Tk_Window tkwin; /* Window that embodies the button.  NULL
-                      * means that the window has been destroyed. */
-    Display *display; /* Display containing widget.  Needed to
-                       * free up resources after tkwin is gone. */
-    Tcl_Interp *interp; /* Interpreter associated with button. */
+    Tk_Window tkwin;       /* Window that embodies the button.  NULL
+                            * means that the window has been destroyed. */
+    Display *display;      /* Display containing widget.  Needed to
+                            * free up resources after tkwin is gone. */
+    Tcl_Interp *interp;    /* Interpreter associated with button. */
     Tcl_Command widgetCmd; /* Token for button's widget command. */
-    int type; /* Type of widget:  restricts operations
-               * that may be performed on widget.  See
-               * below for possible values. */
+    int type;              /* Type of widget:  restricts operations
+                            * that may be performed on widget.  See
+                            * below for possible values. */
 
     /*
      * Information about what's in the button.
      */
 
-    char *text; /* Text to display in button (malloc'ed)
-                 * or NULL. */
-    int numChars; /* # of characters in text. */
-    int underline; /* Index of character to underline.  < 0 means
-                    * don't underline anything. */
-    char *textVarName; /* Name of variable (malloc'ed) or NULL.
-                        * If non-NULL, button displays the contents
-                        * of this variable. */
-    Pixmap bitmap; /* Bitmap to display or None.  If not None
-                    * then text and textVar are ignored. */
-    char *imageString; /* Name of image to display (malloc'ed), or
-                        * NULL.  If non-NULL, bitmap, text, and
-                        * textVarName are ignored. */
-    Tk_Image image; /* Image to display in window, or NULL if
-                     * none. */
+    char *text;              /* Text to display in button (malloc'ed)
+                              * or NULL. */
+    int numChars;            /* # of characters in text. */
+    int underline;           /* Index of character to underline.  < 0 means
+                              * don't underline anything. */
+    char *textVarName;       /* Name of variable (malloc'ed) or NULL.
+                              * If non-NULL, button displays the contents
+                              * of this variable. */
+    Pixmap bitmap;           /* Bitmap to display or None.  If not None
+                              * then text and textVar are ignored. */
+    char *imageString;       /* Name of image to display (malloc'ed), or
+                              * NULL.  If non-NULL, bitmap, text, and
+                              * textVarName are ignored. */
+    Tk_Image image;          /* Image to display in window, or NULL if
+                              * none. */
     char *selectImageString; /* Name of image to display when selected
                               * (malloc'ed), or NULL. */
-    Tk_Image selectImage; /* Image to display in window when selected,
-                           * or NULL if none.  Ignored if image is
-                           * NULL. */
+    Tk_Image selectImage;    /* Image to display in window when selected,
+                              * or NULL if none.  Ignored if image is
+                              * NULL. */
 
     /*
      * Information used when displaying widget:
      */
 
-    Tk_Uid state; /* State of button for display purposes:
-                   * normal, active, or disabled. */
+    Tk_Uid state;             /* State of button for display purposes:
+                               * normal, active, or disabled. */
     Tk_3DBorder normalBorder; /* Structure used to draw 3-D
                                * border and background when window
                                * isn't active.  NULL means no such
@@ -74,69 +74,69 @@ typedef struct
                                * border and background when window
                                * is active.  NULL means no such
                                * border exists. */
-    int borderWidth; /* Width of border. */
-    int relief; /* 3-d effect: TK_RELIEF_RAISED, etc. */
-    int highlightWidth; /* Width in pixels of highlight to draw
-                         * around widget when it has the focus.
-                         * <= 0 means don't draw a highlight. */
+    int borderWidth;          /* Width of border. */
+    int relief;               /* 3-d effect: TK_RELIEF_RAISED, etc. */
+    int highlightWidth;       /* Width in pixels of highlight to draw
+                               * around widget when it has the focus.
+                               * <= 0 means don't draw a highlight. */
     XColor *highlightBgColorPtr;
     /* Color for drawing traversal highlight
      * area when highlight is off. */
     XColor *highlightColorPtr; /* Color for drawing traversal highlight. */
-    int inset; /* Total width of all borders, including
-                * traversal highlight and 3-D border.
-                * Indicates how much interior stuff must
-                * be offset from outside edges to leave
-                * room for borders. */
-    XFontStruct *fontPtr; /* Information about text font, or NULL. */
-    XColor *normalFg; /* Foreground color in normal mode. */
-    XColor *activeFg; /* Foreground color in active mode.  NULL
-                       * means use normalFg instead. */
-    XColor *disabledFg; /* Foreground color when disabled.  NULL
-                         * means use normalFg with a 50% stipple
-                         * instead. */
-    GC normalTextGC; /* GC for drawing text in normal mode.  Also
-                      * used to copy from off-screen pixmap onto
-                      * screen. */
-    GC activeTextGC; /* GC for drawing text in active mode (NULL
-                      * means use normalTextGC). */
-    Pixmap gray; /* Pixmap for displaying disabled text if
-                  * disabledFg is NULL. */
-    GC disabledGC; /* Used to produce disabled effect.  If
-                    * disabledFg isn't NULL, this GC is used to
-                    * draw button text or icon.  Otherwise
-                    * text or icon is drawn with normalGC and
-                    * this GC is used to stipple background
-                    * across it.  For labels this is None. */
-    GC copyGC; /* Used for copying information from an
-                * off-screen pixmap to the screen. */
-    char *widthString; /* Value of -width option.  Malloc'ed. */
-    char *heightString; /* Value of -height option.  Malloc'ed. */
-    int width, height; /* If > 0, these specify dimensions to request
-                        * for window, in characters for text and in
-                        * pixels for bitmaps.  In this case the actual
-                        * size of the text string or bitmap is
-                        * ignored in computing desired window size. */
-    int wrapLength; /* Line length (in pixels) at which to wrap
-                     * onto next line.  <= 0 means don't wrap
-                     * except at newlines. */
-    int padX, padY; /* Extra space around text (pixels to leave
-                     * on each side).  Ignored for bitmaps and
-                     * images. */
-    Tk_Anchor anchor; /* Where text/bitmap should be displayed
-                       * inside button region. */
-    Tk_Justify justify; /* Justification to use for multi-line text. */
-    int indicatorOn; /* True means draw indicator, false means
-                      * don't draw it. */
-    Tk_3DBorder selectBorder; /* For drawing indicator background, or perhaps
-                               * widget background, when selected. */
-    int textWidth; /* Width needed to display text as requested,
-                    * in pixels. */
-    int textHeight; /* Height needed to display text as requested,
-                     * in pixels. */
-    int indicatorSpace; /* Horizontal space (in pixels) allocated for
-                         * display of indicator. */
-    int indicatorDiameter; /* Diameter of indicator, in pixels. */
+    int inset;                 /* Total width of all borders, including
+                                * traversal highlight and 3-D border.
+                                * Indicates how much interior stuff must
+                                * be offset from outside edges to leave
+                                * room for borders. */
+    XFontStruct *fontPtr;      /* Information about text font, or NULL. */
+    XColor *normalFg;          /* Foreground color in normal mode. */
+    XColor *activeFg;          /* Foreground color in active mode.  NULL
+                                * means use normalFg instead. */
+    XColor *disabledFg;        /* Foreground color when disabled.  NULL
+                                * means use normalFg with a 50% stipple
+                                * instead. */
+    GC normalTextGC;           /* GC for drawing text in normal mode.  Also
+                                * used to copy from off-screen pixmap onto
+                                * screen. */
+    GC activeTextGC;           /* GC for drawing text in active mode (NULL
+                                * means use normalTextGC). */
+    Pixmap gray;               /* Pixmap for displaying disabled text if
+                                * disabledFg is NULL. */
+    GC disabledGC;             /* Used to produce disabled effect.  If
+                                * disabledFg isn't NULL, this GC is used to
+                                * draw button text or icon.  Otherwise
+                                * text or icon is drawn with normalGC and
+                                * this GC is used to stipple background
+                                * across it.  For labels this is None. */
+    GC copyGC;                 /* Used for copying information from an
+                                * off-screen pixmap to the screen. */
+    char *widthString;         /* Value of -width option.  Malloc'ed. */
+    char *heightString;        /* Value of -height option.  Malloc'ed. */
+    int width, height;         /* If > 0, these specify dimensions to request
+                                * for window, in characters for text and in
+                                * pixels for bitmaps.  In this case the actual
+                                * size of the text string or bitmap is
+                                * ignored in computing desired window size. */
+    int wrapLength;            /* Line length (in pixels) at which to wrap
+                                * onto next line.  <= 0 means don't wrap
+                                * except at newlines. */
+    int padX, padY;            /* Extra space around text (pixels to leave
+                                * on each side).  Ignored for bitmaps and
+                                * images. */
+    Tk_Anchor anchor;          /* Where text/bitmap should be displayed
+                                * inside button region. */
+    Tk_Justify justify;        /* Justification to use for multi-line text. */
+    int indicatorOn;           /* True means draw indicator, false means
+                                * don't draw it. */
+    Tk_3DBorder selectBorder;  /* For drawing indicator background, or perhaps
+                                * widget background, when selected. */
+    int textWidth;             /* Width needed to display text as requested,
+                                * in pixels. */
+    int textHeight;            /* Height needed to display text as requested,
+                                * in pixels. */
+    int indicatorSpace;        /* Horizontal space (in pixels) allocated for
+                                * display of indicator. */
+    int indicatorDiameter;     /* Diameter of indicator, in pixels. */
 
     /*
      * For check and radio buttons, the fields below are used
@@ -146,27 +146,27 @@ typedef struct
     char *selVarName; /* Name of variable used to control selected
                        * state of button.  Malloc'ed (if
                        * not NULL). */
-    char *onValue; /* Value to store in variable when
-                    * this button is selected.  Malloc'ed (if
-                    * not NULL). */
-    char *offValue; /* Value to store in variable when this
-                     * button isn't selected.  Malloc'ed
-                     * (if not NULL).  Valid only for check
-                     * buttons. */
+    char *onValue;    /* Value to store in variable when
+                       * this button is selected.  Malloc'ed (if
+                       * not NULL). */
+    char *offValue;   /* Value to store in variable when this
+                       * button isn't selected.  Malloc'ed
+                       * (if not NULL).  Valid only for check
+                       * buttons. */
 
     /*
      * Miscellaneous information:
      */
 
     Tk_Cursor cursor; /* Current cursor for window, or None. */
-    char *takeFocus; /* Value of -takefocus option;  not used in
-                      * the C code, but used by keyboard traversal
-                      * scripts.  Malloc'ed, but may be NULL. */
-    char *command; /* Command to execute when button is
-                    * invoked; valid for buttons only.
-                    * If not NULL, it's malloc-ed. */
-    int flags; /* Various flags;  see below for
-                * definitions. */
+    char *takeFocus;  /* Value of -takefocus option;  not used in
+                       * the C code, but used by keyboard traversal
+                       * scripts.  Malloc'ed, but may be NULL. */
+    char *command;    /* Command to execute when button is
+                       * invoked; valid for buttons only.
+                       * If not NULL, it's malloc-ed. */
+    int flags;        /* Various flags;  see below for
+                       * definitions. */
 } Button;
 
 /*
@@ -653,9 +653,9 @@ static int InvokeButton _ANSI_ARGS_((Button * butPtr));
 int Tk_ButtonCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     return ButtonCreate(clientData, interp, argc, argv, TYPE_BUTTON);
 }
@@ -663,9 +663,9 @@ char **argv; /* Argument strings. */
 int Tk_CheckbuttonCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     return ButtonCreate(clientData, interp, argc, argv, TYPE_CHECK_BUTTON);
 }
@@ -673,9 +673,9 @@ char **argv; /* Argument strings. */
 int Tk_LabelCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     return ButtonCreate(clientData, interp, argc, argv, TYPE_LABEL);
 }
@@ -683,9 +683,9 @@ char **argv; /* Argument strings. */
 int Tk_RadiobuttonCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     return ButtonCreate(clientData, interp, argc, argv, TYPE_RADIO_BUTTON);
 }
@@ -711,12 +711,12 @@ char **argv; /* Argument strings. */
 static int ButtonCreate(clientData, interp, argc, argv, type)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
-int type; /* Type of button to create: TYPE_LABEL,
-           * TYPE_BUTTON, TYPE_CHECK_BUTTON, or
-           * TYPE_RADIO_BUTTON. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
+int type;              /* Type of button to create: TYPE_LABEL,
+                        * TYPE_BUTTON, TYPE_CHECK_BUTTON, or
+                        * TYPE_RADIO_BUTTON. */
 {
     Button *butPtr;
     Tk_Window tkwin = ( Tk_Window )clientData;
@@ -841,9 +841,9 @@ int type; /* Type of button to create: TYPE_LABEL,
 
 static int ButtonWidgetCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about button widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Button *butPtr = ( Button * )clientData;
     int result = TCL_OK;
@@ -1159,11 +1159,11 @@ static void DestroyButton(butPtr) Button *butPtr; /* Info about button widget.
 
 static int ConfigureButton(interp, butPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Button *butPtr; /* Information about widget;  may or may
-                 * not already have values for some fields. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Button *butPtr;     /* Information about widget;  may or may
+                     * not already have values for some fields. */
+int argc;           /* Number of valid entries in argv. */
+char **argv;        /* Arguments. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     XGCValues gcValues;
     GC newGC;
@@ -1947,7 +1947,7 @@ ClientData clientData; /* Information about widget. */
 
 static void ButtonEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
-XEvent *eventPtr; /* Information about event. */
+XEvent *eventPtr;      /* Information about event. */
 {
     Button *butPtr = ( Button * )clientData;
     if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0))
@@ -2253,10 +2253,10 @@ static int InvokeButton(butPtr) Button *butPtr; /* Information about button.
 /* ARGSUSED */
 static char *ButtonVarProc(clientData, interp, name1, name2, flags)
 ClientData clientData; /* Information about button. */
-Tcl_Interp *interp; /* Interpreter containing variable. */
-char *name1; /* Name of variable. */
-char *name2; /* Second part of variable name. */
-int flags; /* Information about what happened. */
+Tcl_Interp *interp;    /* Interpreter containing variable. */
+char *name1;           /* Name of variable. */
+char *name2;           /* Second part of variable name. */
+int flags;             /* Information about what happened. */
 {
     Button *butPtr = ( Button * )clientData;
     char *value;
@@ -2339,10 +2339,10 @@ redisplay:
 /* ARGSUSED */
 static char *ButtonTextVarProc(clientData, interp, name1, name2, flags)
 ClientData clientData; /* Information about button. */
-Tcl_Interp *interp; /* Interpreter containing variable. */
-char *name1; /* Not used. */
-char *name2; /* Not used. */
-int flags; /* Information about what happened. */
+Tcl_Interp *interp;    /* Interpreter containing variable. */
+char *name1;           /* Not used. */
+char *name2;           /* Not used. */
+int flags;             /* Information about what happened. */
 {
     Button *butPtr = ( Button * )clientData;
     char *value;
@@ -2410,11 +2410,11 @@ int flags; /* Information about what happened. */
 
 static void
 ButtonImageProc(clientData, x, y, width, height, imgWidth, imgHeight)
-ClientData clientData; /* Pointer to widget record. */
-int x, y; /* Upper left pixel (within image)
-           * that must be redisplayed. */
-int width, height; /* Dimensions of area to redisplay
-                    * (may be <= 0). */
+ClientData clientData;   /* Pointer to widget record. */
+int x, y;                /* Upper left pixel (within image)
+                          * that must be redisplayed. */
+int width, height;       /* Dimensions of area to redisplay
+                          * (may be <= 0). */
 int imgWidth, imgHeight; /* New dimensions of image. */
 {
     Button *butPtr = ( Button * )clientData;
@@ -2450,11 +2450,11 @@ int imgWidth, imgHeight; /* New dimensions of image. */
 
 static void
 ButtonSelectImageProc(clientData, x, y, width, height, imgWidth, imgHeight)
-ClientData clientData; /* Pointer to widget record. */
-int x, y; /* Upper left pixel (within image)
-           * that must be redisplayed. */
-int width, height; /* Dimensions of area to redisplay
-                    * (may be <= 0). */
+ClientData clientData;   /* Pointer to widget record. */
+int x, y;                /* Upper left pixel (within image)
+                          * that must be redisplayed. */
+int width, height;       /* Dimensions of area to redisplay
+                          * (may be <= 0). */
 int imgWidth, imgHeight; /* New dimensions of image. */
 {
     Button *butPtr = ( Button * )clientData;

@@ -139,7 +139,7 @@ gzFile out;
     int len;
     int err;
     int ifd = fileno(in);
-    caddr_t buf; /* mmap'ed buffer for the entire input file */
+    caddr_t buf;   /* mmap'ed buffer for the entire input file */
     off_t buf_len; /* length of the input file */
     struct stat sb;
 

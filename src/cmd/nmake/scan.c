@@ -29,29 +29,29 @@
 
 #include <tm.h>
 
-#define SCAN_define (1 << 0) /* enable D actions		*/
-#define SCAN_macro (1 << 1) /* macro (default line) style	*/
+#define SCAN_define (1 << 0)      /* enable D actions		*/
+#define SCAN_macro (1 << 1)       /* macro (default line) style	*/
 #define SCAN_nopropagate (1 << 2) /* don't propagate scan index	*/
-#define SCAN_state (1 << 3) /* scan for state vars		*/
-#define SCAN_override (1 << 4) /* no scan override warning	*/
+#define SCAN_state (1 << 3)       /* scan for state vars		*/
+#define SCAN_override (1 << 4)    /* no scan override warning	*/
 
-#define QUOTE_blank (1 << 0) /* blank out quote		*/
+#define QUOTE_blank (1 << 0)   /* blank out quote		*/
 #define QUOTE_comment (1 << 1) /* comment quote type		*/
-#define QUOTE_nested (1 << 2) /* nesting quote		*/
+#define QUOTE_nested (1 << 2)  /* nesting quote		*/
 #define QUOTE_newline (1 << 3) /* newline terminates quote	*/
-#define QUOTE_quote (1 << 4) /* normal quote			*/
-#define QUOTE_single (1 << 5) /* quote next char		*/
-#define QUOTE_space (1 << 6) /* quote preceded by space	*/
+#define QUOTE_quote (1 << 4)   /* normal quote			*/
+#define QUOTE_single (1 << 5)  /* quote next char		*/
+#define QUOTE_space (1 << 6)   /* quote preceded by space	*/
 
 #define ANY '\t' /* 0 or more internal code	*/
 #define ARG '\n' /* grab arg internal code	*/
 #define DIG '\b' /* 0 or more digit internal code*/
 #define NAM '\v' /* 0 or more var internal code	*/
 #define REP '\r' /* repeat group internal code	*/
-#define SPC ' ' /* 0 or more space internal code*/
+#define SPC ' '  /* 0 or more space internal code*/
 #define TOK '\f' /* 0 or more token chars	*/
 
-#define SCANARGS 2 /* max number % arg matches	*/
+#define SCANARGS 2      /* max number % arg matches	*/
 #define SCANBUFFER 4096 /* scan buffer size		*/
 
 typedef unsigned short Scanstate_t;
@@ -61,46 +61,46 @@ typedef struct Quote_s Quote_t;
 
 typedef struct Action_s /* state action			*/
 {
-    short type; /* action type id		*/
-    short flags; /* SCAN_* flags			*/
+    short type;    /* action type id		*/
+    short flags;   /* SCAN_* flags			*/
     char *pattern; /* match expression		*/
-    char *map; /* path name map		*/
-    char *script; /* script			*/
+    char *map;     /* path name map		*/
+    char *script;  /* script			*/
     struct
     {
         unsigned long clear; /* clear these			*/
-        unsigned long set; /* set these			*/
-    } attribute; /* attributes			*/
+        unsigned long set;   /* set these			*/
+    } attribute;             /* attributes			*/
     struct
     {
         unsigned long clear; /* clear these			*/
-        unsigned long set; /* set these			*/
-    } property; /* properties			*/
-    int attrprop; /* attribute|property mods	*/
-    int scan; /* scan index			*/
+        unsigned long set;   /* set these			*/
+    } property;              /* properties			*/
+    int attrprop;            /* attribute|property mods	*/
+    int scan;                /* scan index			*/
 } Action_t;
 
 struct Quote_s /* quote/comment match info	*/
 {
     Quote_t *next; /* next in list			*/
-    char *begin; /* begin pattern		*/
-    char *end; /* end pattern			*/
-    int escape; /* end escape char		*/
-    int flags; /* QUOTE_* flags		*/
+    char *begin;   /* begin pattern		*/
+    char *end;     /* end pattern			*/
+    int escape;    /* end escape char		*/
+    int flags;     /* QUOTE_* flags		*/
 };
 
 typedef struct Scan_s /* scan info			*/
 {
     unsigned char type[UCHAR_MAX]; /* SCAN_* types indexed by char	*/
-    int flags; /* SCAN_* flags			*/
-    char *external; /* external scan		*/
-    Action_t *before; /* do this before scanexec	*/
-    Action_t *after; /* do this after scanexec	*/
-    Quote_t *quote; /* quote patterns		*/
-    Action_t *action; /* action table			*/
-    Action_t *classid; /* classid action		*/
-    Scanstate_t *state; /* state transition table	*/
-    void *data; /* private data			*/
+    int flags;                     /* SCAN_* flags			*/
+    char *external;                /* external scan		*/
+    Action_t *before;              /* do this before scanexec	*/
+    Action_t *after;               /* do this after scanexec	*/
+    Quote_t *quote;                /* quote patterns		*/
+    Action_t *action;              /* action table			*/
+    Action_t *classid;             /* classid action		*/
+    Scanstate_t *state;            /* state transition table	*/
+    void *data;                    /* private data			*/
 } Scan_t;
 
 /*

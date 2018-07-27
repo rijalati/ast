@@ -1091,7 +1091,7 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
 #    else
 #        define S_IXALL 0111
 #    endif /*S_EXEC */
-#endif /* S_IXUSR */
+#endif     /* S_IXUSR */
 
 static int
 canexecute(Shell_t *shp, char *path, int isfun)
@@ -1582,7 +1582,7 @@ exscript(Shell_t *shp, char *path, char *argv[], char *const *envp)
     shp->infd = sh_iomovefd(shp, shp->infd);
 #if SHOPT_ACCT
     sh_accbegin(path); /* reset accounting */
-#endif /* SHOPT_ACCT */
+#endif                 /* SHOPT_ACCT */
     shp->arglist = sh_argcreate(argv);
     shp->lastarg = strdup(path);
     /* save name of calling command */
@@ -1608,7 +1608,7 @@ static struct acct sabuf;
 static struct tms buffer;
 static clock_t before;
 static char *SHACCT; /* set to value of SHACCT environment variable */
-static shaccton; /* non-zero causes accounting record to be written */
+static shaccton;     /* non-zero causes accounting record to be written */
 static int compress(time_t);
 /*
  *	initialize accounting, i.e., see if SHACCT variable set

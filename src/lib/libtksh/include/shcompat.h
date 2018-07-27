@@ -19,11 +19,11 @@
 /* Functions to save and restore Fcin */
 typedef struct _fcin
 {
-    Sfio_t *_fcfile; /* input file pointer */
+    Sfio_t *_fcfile;       /* input file pointer */
     unsigned char *fcbuff; /* pointer to input buffer */
     unsigned char *fclast; /* pointer to end of input buffer */
-    unsigned char *fcptr; /* pointer to next input char */
-    unsigned char fcchar; /* saved character */
+    unsigned char *fcptr;  /* pointer to next input char */
+    unsigned char fcchar;  /* saved character */
     void(*fcfun) __PROTO__(( Sfio_t *, const char *, int ));
 } Fcin_t;
 extern __MANGLE__ Fcin_t _Fcin; /* used by macros */

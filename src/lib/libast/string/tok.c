@@ -37,7 +37,7 @@ typedef struct Tok_s /* token stream state		*/
 {
     union
     {
-        char *end; /* end ('\0') of last token	*/
+        char *end;         /* end ('\0') of last token	*/
         struct Tok_s *nxt; /* next in free list		*/
     } ptr;
     char chr; /* replace *end with this	*/

@@ -84,20 +84,20 @@ Tk_CreateErrorHandler(display,
                       errorProc,
                       clientData) Display *display; /* Display for which to
                                                      * handle errors. */
-int error; /* Consider only errors with this
-            * error_code (-1 means consider
-            * all errors). */
-int request; /* Consider only errors with this
-              * major request code (-1 means
-              * consider all major codes). */
-int minorCode; /* Consider only errors with this
-                * minor request code (-1 means
-                * consider all minor codes). */
+int error;               /* Consider only errors with this
+                          * error_code (-1 means consider
+                          * all errors). */
+int request;             /* Consider only errors with this
+                          * major request code (-1 means
+                          * consider all major codes). */
+int minorCode;           /* Consider only errors with this
+                          * minor request code (-1 means
+                          * consider all minor codes). */
 Tk_ErrorProc *errorProc; /* Procedure to invoke when a
                           * matching error occurs.  NULL means
                           * just ignore matching errors. */
-ClientData clientData; /* Arbitrary value to pass to
-                        * errorProc. */
+ClientData clientData;   /* Arbitrary value to pass to
+                          * errorProc. */
 {
     TkErrorHandler *errorPtr;
     TkDisplay *dispPtr;

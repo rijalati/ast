@@ -34,7 +34,7 @@ typedef struct Flat_s Flat_t;
 
 struct Flat_s
 {
-    Dtdisc_t dc; /* discipline structure for dictionary	*/
+    Dtdisc_t dc;    /* discipline structure for dictionary	*/
     Ivfree_f freef; /* user data free */
     Dt_t *dt;
     Iv_t *iv;

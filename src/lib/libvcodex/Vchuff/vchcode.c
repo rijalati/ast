@@ -33,11 +33,12 @@ rlcode(ssize_t nsym,
        ssize_t rlsz,
        int encode)
 #else
-static ssize_t rlcode(nsym, clen, cmax, rle, rlsz, encode) ssize_t nsym; /* alphabet
-                                                                            size
-                                                                          */
+static ssize_t
+rlcode(nsym, clen, cmax, rle, rlsz, encode) ssize_t nsym; /* alphabet
+                                                             size
+                                                           */
 ssize_t *clen; /* code lengths to be encoded	*/
-ssize_t cmax; /* max size of any code		*/
+ssize_t cmax;  /* max size of any code		*/
 Vcchar_t *rle; /* buffer to store rle sequence	*/
 ssize_t rlsz;
 int encode;
@@ -107,10 +108,10 @@ vchputcode(ssize_t nsym,
 ssize_t vchputcode(nsym, clen, maxs, data, dtsz) ssize_t nsym; /* alphabet
                                                                   size or
                                                                   #symbols	*/
-ssize_t *clen; /* code lengths to be output	*/
-ssize_t maxs; /* max length of any code	*/
+ssize_t *clen;  /* code lengths to be output	*/
+ssize_t maxs;   /* max length of any code	*/
 Vcchar_t *data; /* data buffer for output	*/
-size_t dtsz; /* buffer size (need >= 256)	*/
+size_t dtsz;    /* buffer size (need >= 256)	*/
 #endif
 {
     reg ssize_t n, k, nl, cs;
@@ -161,10 +162,10 @@ vchgetcode(ssize_t nsym,
 ssize_t
 vchgetcode(nsym, clen, maxs, data, dtsz) ssize_t nsym; /* alphabet size or
                                                           #symbols		*/
-ssize_t *clen; /* code lengths to be reconstructed	*/
-ssize_t maxs; /* max length of any code		*/
+ssize_t *clen;  /* code lengths to be reconstructed	*/
+ssize_t maxs;   /* max length of any code		*/
 Vcchar_t *data; /* data that encodes the code table	*/
-size_t dtsz; /* size of above data buffer		*/
+size_t dtsz;    /* size of above data buffer		*/
 #endif
 {
     ssize_t i, n, k, nl, cs;

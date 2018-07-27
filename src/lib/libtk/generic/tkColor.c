@@ -39,23 +39,23 @@
 
 typedef struct TkColor
 {
-    XColor color; /* Information about this color. */
-    unsigned int magic; /* Used for quick integrity check on this
-                         * structure.   Must always have the
-                         * value COLOR_MAGIC. */
-    GC gc; /* Simple gc with this color as foreground
-            * color and all other fields defaulted.
-            * May be None. */
-    Screen *screen; /* Screen where this color is valid.  Used
-                     * to delete it, and to find its display. */
-    Colormap colormap; /* Colormap from which this entry was
-                        * allocated. */
-    Visual *visual; /* Visual associated with colormap. */
-    int refCount; /* Number of uses of this structure. */
+    XColor color;            /* Information about this color. */
+    unsigned int magic;      /* Used for quick integrity check on this
+                              * structure.   Must always have the
+                              * value COLOR_MAGIC. */
+    GC gc;                   /* Simple gc with this color as foreground
+                              * color and all other fields defaulted.
+                              * May be None. */
+    Screen *screen;          /* Screen where this color is valid.  Used
+                              * to delete it, and to find its display. */
+    Colormap colormap;       /* Colormap from which this entry was
+                              * allocated. */
+    Visual *visual;          /* Visual associated with colormap. */
+    int refCount;            /* Number of uses of this structure. */
     Tcl_HashTable *tablePtr; /* Hash table that indexes this structure
                               * (needed when deleting structure). */
-    Tcl_HashEntry *hashPtr; /* Pointer to hash table entry for this
-                             * structure. (for use in deleting entry). */
+    Tcl_HashEntry *hashPtr;  /* Pointer to hash table entry for this
+                              * structure. (for use in deleting entry). */
 } TkColor;
 
 /*
@@ -66,10 +66,10 @@ typedef struct TkColor
 static Tcl_HashTable nameTable;
 typedef struct
 {
-    Tk_Uid name; /* Name of desired color. */
+    Tk_Uid name;       /* Name of desired color. */
     Colormap colormap; /* Colormap from which color will be
                         * allocated. */
-    Display *display; /* Display for colormap. */
+    Display *display;  /* Display for colormap. */
 } NameKey;
 
 /*
@@ -81,9 +81,9 @@ static Tcl_HashTable valueTable;
 typedef struct
 {
     int red, green, blue; /* Values for desired color. */
-    Colormap colormap; /* Colormap from which color will be
-                        * allocated. */
-    Display *display; /* Display for colormap. */
+    Colormap colormap;    /* Colormap from which color will be
+                           * allocated. */
+    Display *display;     /* Display for colormap. */
 } ValueKey;
 
 static int initialized = 0; /* 0 means static structures haven't been
@@ -103,16 +103,16 @@ static int initialized = 0; /* 0 means static structures haven't been
 
 struct TkStressedCmap
 {
-    Colormap colormap; /* X's token for the colormap. */
-    int numColors; /* Number of entries currently active
-                    * at *colorPtr. */
-    XColor *colorPtr; /* Pointer to malloc'ed array of all
-                       * colors that seem to be available in
-                       * the colormap.  Some may not actually
-                       * be available, e.g. because they are
-                       * read-write for another client;  when
-                       * we find this out, we remove them
-                       * from the array. */
+    Colormap colormap;              /* X's token for the colormap. */
+    int numColors;                  /* Number of entries currently active
+                                     * at *colorPtr. */
+    XColor *colorPtr;               /* Pointer to malloc'ed array of all
+                                     * colors that seem to be available in
+                                     * the colormap.  Some may not actually
+                                     * be available, e.g. because they are
+                                     * read-write for another client;  when
+                                     * we find this out, we remove them
+                                     * from the array. */
     struct TkStressedCmap *nextPtr; /* Next in list of all stressed
                                      * colormaps for the display. */
 };
@@ -157,8 +157,8 @@ XColor *Tk_GetColor(interp,
                     name) Tcl_Interp *interp; /* Place to leave error message
                                                * if color can't be found. */
 Tk_Window tkwin; /* Window in which color will be used. */
-Tk_Uid name; /* Name of color to allocated (in form
-              * suitable for passing to XParseColor). */
+Tk_Uid name;     /* Name of color to allocated (in form
+                  * suitable for passing to XParseColor). */
 {
     NameKey nameKey;
     Tcl_HashEntry *nameHashPtr;
@@ -572,12 +572,12 @@ ColorInit()
  */
 
 static void FindClosestColor(tkwin, desiredColorPtr, actualColorPtr)
-Tk_Window tkwin; /* Window where color will be used. */
+Tk_Window tkwin;         /* Window where color will be used. */
 XColor *desiredColorPtr; /* RGB values of color that was
                           * wanted (but unavailable). */
-XColor *actualColorPtr; /* Structure to fill in with RGB and
-                         * pixel for closest available
-                         * color. */
+XColor *actualColorPtr;  /* Structure to fill in with RGB and
+                          * pixel for closest available
+                          * color. */
 {
     TkStressedCmap *stressPtr;
     float tmp, distance, closestDistance;
@@ -705,10 +705,9 @@ XColor *actualColorPtr; /* Structure to fill in with RGB and
  *----------------------------------------------------------------------
  */
 
-int TkCmapStressed(tkwin,
-                   colormap) Tk_Window tkwin; /* Window that identifies the
-                                               * display containing the
-                                               * colormap. */
+int TkCmapStressed(tkwin, colormap) Tk_Window tkwin; /* Window that identifies
+                                                      * the display containing
+                                                      * the colormap. */
 Colormap colormap; /* Colormap to check for stress. */
 {
     TkStressedCmap *stressPtr;
@@ -751,8 +750,8 @@ Colormap colormap; /* Colormap to check for stress. */
  */
 
 static void DeleteStressedCmap(display, colormap)
-Display *display; /* Xlib's handle for the display
-                   * containing the colormap. */
+Display *display;  /* Xlib's handle for the display
+                    * containing the colormap. */
 Colormap colormap; /* Colormap to flush. */
 {
     TkStressedCmap *prevPtr, *stressPtr;

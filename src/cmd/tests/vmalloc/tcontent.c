@@ -22,13 +22,13 @@
 
 #define N_EMPHE 100000 /* max #allocs for emphemeral threads	*/
 
-#define CH_FREE 1 /* character to fill free space		*/
-#define CH_MALLOC 3 /* character to fill malloc space	*/
+#define CH_FREE 1    /* character to fill free space		*/
+#define CH_MALLOC 3  /* character to fill malloc space	*/
 #define CH_REALLOC 5 /* character to fill realloc space	*/
 
 static size_t Nthread = N_THREAD; /* number of main threads		*/
-static size_t Nalloc = 10000; /* total number of allocations	*/
-static size_t Life = 10; /* life before free or realloc	*/
+static size_t Nalloc = 10000;     /* total number of allocations	*/
+static size_t Life = 10;          /* life before free or realloc	*/
 
 static size_t Smalllo = 10;
 static size_t Smallhi = 100;

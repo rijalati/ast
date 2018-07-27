@@ -89,7 +89,7 @@ static char sccsid[] = "@(#)support.c	8.1 (Berkeley) 6/4/93";
 static const unsigned short msign = 0x7fff, mexp = 0x7f80;
 static const short prep1 = 57, gap = 7, bias = 129;
 static const double novf = 1.7E38, nunf = 3.0E-39, zero = 0.0;
-#    else /* defined(vax)||defined(tahoe) */
+#    else  /* defined(vax)||defined(tahoe) */
 static const unsigned short msign = 0x7fff, mexp = 0x7ff0;
 static const short prep1 = 54, gap = 4, bias = 1023;
 static const double novf = 1.7E308, nunf = 3.0E-308, zero = 0.0;
@@ -104,7 +104,7 @@ double N;
 
 #        ifdef national
     unsigned short *px = ( unsigned short * )&x + 3;
-#        else /* national */
+#        else  /* national */
     unsigned short *px = ( unsigned short * )&x;
 #        endif /* national */
 
@@ -120,7 +120,7 @@ double N;
         {
             return (copysign(infnan(ERANGE), x));
         }
-#        else /* defined(vax)||defined(tahoe) */
+#        else  /* defined(vax)||defined(tahoe) */
     if ((k = *px & mexp) != mexp)
     {
         if (N < -2100)
@@ -171,7 +171,7 @@ extern double _copysign(x, y) double x, y;
 #        ifdef national
     unsigned short *px = ( unsigned short * )&x + 3,
                    *py = ( unsigned short * )&y + 3;
-#        else /* national */
+#        else  /* national */
     unsigned short *px = ( unsigned short * )&x, *py = ( unsigned short * )&y;
 #        endif /* national */
 
@@ -202,13 +202,13 @@ extern double logb(x) double x;
 
 #        ifdef national
     short *px = ( short * )&x + 3, k;
-#        else /* national */
+#        else  /* national */
     short *px = ( short * )&x, k;
 #        endif /* national */
 
 #        if defined(vax) || defined(tahoe)
     return ( int )(((*px & mexp) >> gap) - bias);
-#        else /* defined(vax)||defined(tahoe) */
+#        else  /* defined(vax)||defined(tahoe) */
     if ((k = *px & mexp) != mexp)
         if (k != 0)
             return ((k >> gap) - bias);
@@ -237,10 +237,10 @@ extern int _finite(x) double x;
 #        else /* defined(vax)||defined(tahoe) */
 #            ifdef national
     return ((*(( short * )&x + 3) & mexp) != mexp);
-#            else /* national */
+#            else  /* national */
     return ((*(( short * )&x) & mexp) != mexp);
 #            endif /* national */
-#        endif /* defined(vax)||defined(tahoe) */
+#        endif     /* defined(vax)||defined(tahoe) */
 }
 
 #    endif
@@ -269,7 +269,7 @@ extern double drem(x, p) double x, p;
                    *pp = ( unsigned short * )&p + 3,
                    *pd = ( unsigned short * )&dp + 3,
                    *pt = ( unsigned short * )&tmp + 3;
-#            else /* national */
+#            else  /* national */
     unsigned short *px = ( unsigned short * )&x, *pp = ( unsigned short * )&p,
                    *pd = ( unsigned short * )&dp,
                    *pt = ( unsigned short * )&tmp;
@@ -278,8 +278,8 @@ extern double drem(x, p) double x, p;
     *pp &= msign;
 
 #            if defined(vax) || defined(tahoe)
-    if ((*px & mexp) == ~msign) /* is x a reserved operand? */
-#            else /* defined(vax)||defined(tahoe) */
+    if ((*px & mexp) == ~msign)   /* is x a reserved operand? */
+#            else  /* defined(vax)||defined(tahoe) */
     if ((*px & mexp) == mexp)
 #            endif /* defined(vax)||defined(tahoe) */
         return (x - p) - (x - p); /* create nan if x is inf */
@@ -287,14 +287,14 @@ extern double drem(x, p) double x, p;
     {
 #            if defined(vax) || defined(tahoe)
         return (infnan(EDOM));
-#            else /* defined(vax)||defined(tahoe) */
+#            else  /* defined(vax)||defined(tahoe) */
         return zero / zero;
 #            endif /* defined(vax)||defined(tahoe) */
     }
 
 #            if defined(vax) || defined(tahoe)
     if ((*pp & mexp) == ~msign) /* is p a reserved operand? */
-#            else /* defined(vax)||defined(tahoe) */
+#            else  /* defined(vax)||defined(tahoe) */
     if ((*pp & mexp) == mexp)
 #            endif /* defined(vax)||defined(tahoe) */
     {
@@ -335,7 +335,7 @@ extern double drem(x, p) double x, p;
 #            if defined(vax) || defined(tahoe)
             if (x < tmp)
                 *pt -= 128;
-#            else /* defined(vax)||defined(tahoe) */
+#            else  /* defined(vax)||defined(tahoe) */
             if (x < tmp)
                 *pt -= 16;
 #            endif /* defined(vax)||defined(tahoe) */
@@ -379,7 +379,7 @@ extern double sqrt(x) double x;
     int m, n, i;
 #        if defined(vax) || defined(tahoe)
     int k = 54;
-#        else /* defined(vax)||defined(tahoe) */
+#        else  /* defined(vax)||defined(tahoe) */
     int k = 51;
 #        endif /* defined(vax)||defined(tahoe) */
 
@@ -392,7 +392,7 @@ extern double sqrt(x) double x;
     {
 #        if defined(vax) || defined(tahoe)
         return (infnan(EDOM)); /* NaN */
-#        else /* defined(vax)||defined(tahoe) */
+#        else  /* defined(vax)||defined(tahoe) */
         return (zero / zero);
 #        endif /* defined(vax)||defined(tahoe) */
     }
@@ -499,7 +499,7 @@ double x,y;
 
 #        ifdef national /* order of words in floating point number */
 	static const n0=3,n1=2,n2=1,n3=0;
-#        else /* VAX, SUN, ZILOG, TAHOE */
+#        else           /* VAX, SUN, ZILOG, TAHOE */
 	static const n0=0,n1=1,n2=2,n3=3;
 #        endif
 

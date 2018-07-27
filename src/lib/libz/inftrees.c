@@ -47,26 +47,26 @@ unsigned FAR *bits;
 unsigned short FAR *work;
 #endif
 {
-    unsigned len; /* a code's length in bits */
-    unsigned sym; /* index of code symbols */
+    unsigned len;      /* a code's length in bits */
+    unsigned sym;      /* index of code symbols */
     unsigned min, max; /* minimum and maximum code lengths */
-    unsigned root; /* number of index bits for root table */
-    unsigned curr; /* number of index bits for current table */
-    unsigned drop; /* code bits to drop for sub-table */
-    int left; /* number of prefix codes available */
-    unsigned used; /* code entries in table used */
-    unsigned huff; /* Huffman code */
-    unsigned incr; /* for incrementing code, index */
-    unsigned fill; /* index for replicating entries */
-    unsigned low; /* low bits for current root entry */
-    unsigned mask; /* mask for low root bits */
-    code this; /* table entry for duplication */
-    code FAR *next; /* next available space in table */
-    const unsigned short FAR *base; /* base value table to use */
+    unsigned root;     /* number of index bits for root table */
+    unsigned curr;     /* number of index bits for current table */
+    unsigned drop;     /* code bits to drop for sub-table */
+    int left;          /* number of prefix codes available */
+    unsigned used;     /* code entries in table used */
+    unsigned huff;     /* Huffman code */
+    unsigned incr;     /* for incrementing code, index */
+    unsigned fill;     /* index for replicating entries */
+    unsigned low;      /* low bits for current root entry */
+    unsigned mask;     /* mask for low root bits */
+    code this;         /* table entry for duplication */
+    code FAR *next;    /* next available space in table */
+    const unsigned short FAR *base;  /* base value table to use */
     const unsigned short FAR *extra; /* extra bits table to use */
-    int end; /* use base and extra for symbol > end */
+    int end;                         /* use base and extra for symbol > end */
     unsigned short count[MAXBITS + 1]; /* number of codes of each length */
-    unsigned short offs[MAXBITS + 1]; /* offsets in table for each length */
+    unsigned short offs[MAXBITS + 1];  /* offsets in table for each length */
     static const unsigned short lbase[31]
     = { /* Length codes 257..285 base */
         3,  4,  5,  6,  7,  8,  9,  10,  11,  13,  15,  17,  19,  23, 27, 31,
@@ -134,7 +134,7 @@ unsigned short FAR *work;
     if (root > max)
         root = max;
     if (max == 0)
-    { /* no symbols to code at all */
+    {                                  /* no symbols to code at all */
         this.op = ( unsigned char )64; /* invalid code marker */
         this.bits = ( unsigned char )1;
         this.val = ( unsigned short )0;
@@ -224,15 +224,15 @@ unsigned short FAR *work;
     }
 
     /* initialize state for loop */
-    huff = 0; /* starting code */
-    sym = 0; /* starting code symbol */
-    len = min; /* starting code length */
-    next = *table; /* current table to fill in */
-    curr = root; /* current table index bits */
-    drop = 0; /* current bits to drop from code for index */
+    huff = 0;               /* starting code */
+    sym = 0;                /* starting code symbol */
+    len = min;              /* starting code length */
+    next = *table;          /* current table to fill in */
+    curr = root;            /* current table index bits */
+    drop = 0;               /* current bits to drop from code for index */
     low = ( unsigned )(-1); /* trigger new sub-table when len > root */
-    used = 1U << root; /* use root table entries */
-    mask = used - 1; /* mask for comparing low */
+    used = 1U << root;      /* use root table entries */
+    mask = used - 1;        /* mask for comparing low */
 
     /* check available table space */
     if (type == LENS && used >= ENOUGH - MAXD)

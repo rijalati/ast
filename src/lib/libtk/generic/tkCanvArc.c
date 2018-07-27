@@ -20,38 +20,38 @@
 
 typedef struct ArcItem
 {
-    Tk_Item header; /* Generic stuff that's the same for all
-                     * types.  MUST BE FIRST IN STRUCTURE. */
-    double bbox[4]; /* Coordinates (x1, y1, x2, y2) of bounding
-                     * box for oval of which arc is a piece. */
-    double start; /* Angle at which arc begins, in degrees
-                   * between 0 and 360. */
-    double extent; /* Extent of arc (angular distance from
-                    * start to end of arc) in degrees between
-                    * -360 and 360. */
-    double *outlinePtr; /* Points to (x,y) coordinates for points
-                         * that define one or two closed polygons
-                         * representing the portion of the outline
-                         * that isn't part of the arc (the V-shape
-                         * for a pie slice or a line-like segment
-                         * for a chord).  Malloc'ed. */
-    int numOutlinePoints; /* Number of points at outlinePtr.  Zero
-                           * means no space allocated. */
-    int width; /* Width of outline (in pixels). */
-    XColor *outlineColor; /* Color for outline.  NULL means don't
-                           * draw outline. */
-    XColor *fillColor; /* Color for filling arc (used for drawing
-                        * outline too when style is "arc").  NULL
-                        * means don't fill arc. */
-    Pixmap fillStipple; /* Stipple bitmap for filling item. */
+    Tk_Item header;        /* Generic stuff that's the same for all
+                            * types.  MUST BE FIRST IN STRUCTURE. */
+    double bbox[4];        /* Coordinates (x1, y1, x2, y2) of bounding
+                            * box for oval of which arc is a piece. */
+    double start;          /* Angle at which arc begins, in degrees
+                            * between 0 and 360. */
+    double extent;         /* Extent of arc (angular distance from
+                            * start to end of arc) in degrees between
+                            * -360 and 360. */
+    double *outlinePtr;    /* Points to (x,y) coordinates for points
+                            * that define one or two closed polygons
+                            * representing the portion of the outline
+                            * that isn't part of the arc (the V-shape
+                            * for a pie slice or a line-like segment
+                            * for a chord).  Malloc'ed. */
+    int numOutlinePoints;  /* Number of points at outlinePtr.  Zero
+                            * means no space allocated. */
+    int width;             /* Width of outline (in pixels). */
+    XColor *outlineColor;  /* Color for outline.  NULL means don't
+                            * draw outline. */
+    XColor *fillColor;     /* Color for filling arc (used for drawing
+                            * outline too when style is "arc").  NULL
+                            * means don't fill arc. */
+    Pixmap fillStipple;    /* Stipple bitmap for filling item. */
     Pixmap outlineStipple; /* Stipple bitmap for outline. */
-    Tk_Uid style; /* How to draw arc: arc, chord, or pieslice. */
-    GC outlineGC; /* Graphics context for outline. */
-    GC fillGC; /* Graphics context for filling item. */
-    double center1[2]; /* Coordinates of center of arc outline at
-                        * start (see ComputeArcOutline). */
-    double center2[2]; /* Coordinates of center of arc outline at
-                        * start+extent (see ComputeArcOutline). */
+    Tk_Uid style;          /* How to draw arc: arc, chord, or pieslice. */
+    GC outlineGC;          /* Graphics context for outline. */
+    GC fillGC;             /* Graphics context for filling item. */
+    double center1[2];     /* Coordinates of center of arc outline at
+                            * start (see ComputeArcOutline). */
+    double center2[2];     /* Coordinates of center of arc outline at
+                            * start+extent (see ComputeArcOutline). */
 } ArcItem;
 
 /*
@@ -212,26 +212,26 @@ static int VertLineToArc _ANSI_ARGS_((double x,
  */
 
 Tk_ItemType tkArcType = {
-    "arc", /* name */
-    sizeof(ArcItem), /* itemSize */
-    CreateArc, /* createProc */
-    configSpecs, /* configSpecs */
-    ConfigureArc, /* configureProc */
-    ArcCoords, /* coordProc */
-    DeleteArc, /* deleteProc */
-    DisplayArc, /* displayProc */
-    0, /* alwaysRedraw */
-    ArcToPoint, /* pointProc */
-    ArcToArea, /* areaProc */
-    ArcToPostscript, /* postscriptProc */
-    ScaleArc, /* scaleProc */
-    TranslateArc, /* translateProc */
-    ( Tk_ItemIndexProc * )NULL, /* indexProc */
-    ( Tk_ItemCursorProc * )NULL, /* icursorProc */
+    "arc",                          /* name */
+    sizeof(ArcItem),                /* itemSize */
+    CreateArc,                      /* createProc */
+    configSpecs,                    /* configSpecs */
+    ConfigureArc,                   /* configureProc */
+    ArcCoords,                      /* coordProc */
+    DeleteArc,                      /* deleteProc */
+    DisplayArc,                     /* displayProc */
+    0,                              /* alwaysRedraw */
+    ArcToPoint,                     /* pointProc */
+    ArcToArea,                      /* areaProc */
+    ArcToPostscript,                /* postscriptProc */
+    ScaleArc,                       /* scaleProc */
+    TranslateArc,                   /* translateProc */
+    ( Tk_ItemIndexProc * )NULL,     /* indexProc */
+    ( Tk_ItemCursorProc * )NULL,    /* icursorProc */
     ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL, /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL, /* dTextProc */
-    ( Tk_ItemType * )NULL /* nextPtr */
+    ( Tk_ItemInsertProc * )NULL,    /* insertProc */
+    ( Tk_ItemDCharsProc * )NULL,    /* dTextProc */
+    ( Tk_ItemType * )NULL           /* nextPtr */
 };
 
 #ifndef PI
@@ -270,11 +270,11 @@ static Tk_Uid pieSliceUid = NULL;
 
 static int CreateArc(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Canvas canvas; /* Canvas to hold new item. */
-Tk_Item *itemPtr; /* Record to hold new item;  header
-                   * has been initialized by caller. */
-int argc; /* Number of arguments in argv. */
-char **argv; /* Arguments describing arc. */
+Tk_Canvas canvas;   /* Canvas to hold new item. */
+Tk_Item *itemPtr;   /* Record to hold new item;  header
+                     * has been initialized by caller. */
+int argc;           /* Number of arguments in argv. */
+char **argv;        /* Arguments describing arc. */
 {
     ArcItem *arcPtr = ( ArcItem * )itemPtr;
 
@@ -364,13 +364,13 @@ char **argv; /* Arguments describing arc. */
 
 static int ArcCoords(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item whose coordinates are to be
-                   * read or modified. */
-int argc; /* Number of coordinates supplied in
-           * argv. */
-char **argv; /* Array of coordinates: x1, y1,
-              * x2, y2, ... */
+Tk_Canvas canvas;   /* Canvas containing item. */
+Tk_Item *itemPtr;   /* Item whose coordinates are to be
+                     * read or modified. */
+int argc;           /* Number of coordinates supplied in
+                     * argv. */
+char **argv;        /* Array of coordinates: x1, y1,
+                     * x2, y2, ... */
 {
     ArcItem *arcPtr = ( ArcItem * )itemPtr;
     char c0[TCL_DOUBLE_SPACE], c1[TCL_DOUBLE_SPACE];
@@ -430,11 +430,11 @@ char **argv; /* Array of coordinates: x1, y1,
 
 static int ConfigureArc(interp, canvas, itemPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing itemPtr. */
-Tk_Item *itemPtr; /* Arc item to reconfigure. */
-int argc; /* Number of elements in argv.  */
-char **argv; /* Arguments describing things to configure. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Tk_Canvas canvas;   /* Canvas containing itemPtr. */
+Tk_Item *itemPtr;   /* Arc item to reconfigure. */
+int argc;           /* Number of elements in argv.  */
+char **argv;        /* Arguments describing things to configure. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     ArcItem *arcPtr = ( ArcItem * )itemPtr;
     XGCValues gcValues;
@@ -743,11 +743,11 @@ ArcItem *arcPtr; /* Item whose bbox is to be
  */
 
 static void DisplayArc(canvas, itemPtr, display, drawable, x, y, width, height)
-Tk_Canvas canvas; /* Canvas that contains item. */
-Tk_Item *itemPtr; /* Item to be displayed. */
-Display *display; /* Display on which to draw item. */
-Drawable drawable; /* Pixmap or window in which to draw
-                    * item. */
+Tk_Canvas canvas;        /* Canvas that contains item. */
+Tk_Item *itemPtr;        /* Item to be displayed. */
+Display *display;        /* Display on which to draw item. */
+Drawable drawable;       /* Pixmap or window in which to draw
+                          * item. */
 int x, y, width, height; /* Describes region of canvas that
                           * must be redisplayed (not used). */
 {
@@ -1110,13 +1110,13 @@ static int ArcToArea(canvas,
                      itemPtr,
                      rectPtr) Tk_Canvas canvas; /* Canvas containing item. */
 Tk_Item *itemPtr; /* Item to check against arc. */
-double *rectPtr; /* Pointer to array of four coordinates
-                  * (x1, y1, x2, y2) describing rectangular
-                  * area.  */
+double *rectPtr;  /* Pointer to array of four coordinates
+                   * (x1, y1, x2, y2) describing rectangular
+                   * area.  */
 {
     ArcItem *arcPtr = ( ArcItem * )itemPtr;
-    double rx, ry; /* Radii for transformed oval:  these define
-                    * an oval centered at the origin. */
+    double rx, ry;   /* Radii for transformed oval:  these define
+                      * an oval centered at the origin. */
     double tRect[4]; /* Transformed version of x1, y1, x2, y2,
                       * for coord. system where arc is centered
                       * on the origin. */
@@ -1402,11 +1402,11 @@ double *rectPtr; /* Pointer to array of four coordinates
  */
 
 static void ScaleArc(canvas, itemPtr, originX, originY, scaleX, scaleY)
-Tk_Canvas canvas; /* Canvas containing arc. */
-Tk_Item *itemPtr; /* Arc to be scaled. */
+Tk_Canvas canvas;        /* Canvas containing arc. */
+Tk_Item *itemPtr;        /* Arc to be scaled. */
 double originX, originY; /* Origin about which to scale rect. */
-double scaleX; /* Amount to scale in X direction. */
-double scaleY; /* Amount to scale in Y direction. */
+double scaleX;           /* Amount to scale in X direction. */
+double scaleY;           /* Amount to scale in Y direction. */
 {
     ArcItem *arcPtr = ( ArcItem * )itemPtr;
 
@@ -1436,8 +1436,8 @@ double scaleY; /* Amount to scale in Y direction. */
  */
 
 static void TranslateArc(canvas, itemPtr, deltaX, deltaY)
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item that is being moved. */
+Tk_Canvas canvas;      /* Canvas containing item. */
+Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
@@ -1698,11 +1698,11 @@ static void ComputeArcOutline(arcPtr) ArcItem *arcPtr; /* Information about
  */
 
 static int HorizLineToArc(x1, x2, y, rx, ry, start, extent) double x1,
-x2; /* X-coords of endpoints of line segment.
-     * X1 must be <= x2. */
-double y; /* Y-coordinate of line segment. */
-double rx, ry; /* These x- and y-radii define an oval
-                * centered at the origin. */
+x2;                   /* X-coords of endpoints of line segment.
+                       * X1 must be <= x2. */
+double y;             /* Y-coordinate of line segment. */
+double rx, ry;        /* These x- and y-radii define an oval
+                       * centered at the origin. */
 double start, extent; /* Angles that define extent of arc, in
                        * the standard fashion for this module. */
 {
@@ -1766,10 +1766,10 @@ double start, extent; /* Angles that define extent of arc, in
 static int
 VertLineToArc(x, y1, y2, rx, ry, start, extent) double x; /* X-coordinate of
                                                              line segment. */
-double y1, y2; /* Y-coords of endpoints of line segment.
-                * Y1 must be <= y2. */
-double rx, ry; /* These x- and y-radii define an oval
-                * centered at the origin. */
+double y1, y2;        /* Y-coords of endpoints of line segment.
+                       * Y1 must be <= y2. */
+double rx, ry;        /* These x- and y-radii define an oval
+                       * centered at the origin. */
 double start, extent; /* Angles that define extent of arc, in
                        * the standard fashion for this module. */
 {
@@ -1831,9 +1831,9 @@ double start, extent; /* Angles that define extent of arc, in
  */
 
 static int AngleInRange(x, y, start, extent) double x,
-y; /* Coordinate of point;  angle measured
-    * from origin to here, relative to x-axis. */
-double start; /* First angle, degrees, >=0, <=360. */
+y;             /* Coordinate of point;  angle measured
+                * from origin to here, relative to x-axis. */
+double start;  /* First angle, degrees, >=0, <=360. */
 double extent; /* Size of arc in degrees >=-360, <=360. */
 {
     double diff;
@@ -1883,12 +1883,12 @@ double extent; /* Size of arc in degrees >=-360, <=360. */
 static int ArcToPostscript(interp, canvas, itemPtr, prepass)
 Tcl_Interp *interp; /* Leave Postscript or error message
                      * here. */
-Tk_Canvas canvas; /* Information about overall canvas. */
-Tk_Item *itemPtr; /* Item for which Postscript is
-                   * wanted. */
-int prepass; /* 1 means this is a prepass to
-              * collect font information;  0 means
-              * final Postscript is being created. */
+Tk_Canvas canvas;   /* Information about overall canvas. */
+Tk_Item *itemPtr;   /* Item for which Postscript is
+                     * wanted. */
+int prepass;        /* 1 means this is a prepass to
+                     * collect font information;  0 means
+                     * final Postscript is being created. */
 {
     ArcItem *arcPtr = ( ArcItem * )itemPtr;
     char buffer[400];

@@ -32,7 +32,7 @@ vmuserdata(Vmalloc_t *vm, unsigned int dtid, ssize_t size)
 #else
 Void_t *vmuserdata(vm, dtid, size) Vmalloc_t *vm;
 unsigned int dtid; /* ID of the requested data	*/
-ssize_t size; /* size of requested memory	*/
+ssize_t size;      /* size of requested memory	*/
 #endif
 {
     unsigned int key;

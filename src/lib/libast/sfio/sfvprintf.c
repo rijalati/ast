@@ -42,15 +42,15 @@
 #else
 /* characters when using ebcdic or ascii */
 #    if _chr_ebcdic
-#        define CC_vt 013 /* vertical tab	*/
+#        define CC_vt 013  /* vertical tab	*/
 #        define CC_esc 047 /* escape	*/
 #        define CC_bel 057 /* bell		*/
 #    else
-#        define CC_vt 013 /* vertical tab	*/
+#        define CC_vt 013  /* vertical tab	*/
 #        define CC_esc 033 /* escape	*/
 #        define CC_bel 007 /* bell		*/
-#    endif /* _chr_ebcdic */
-#endif /* _PACKAGE_ast */
+#    endif                 /* _chr_ebcdic */
+#endif                     /* _PACKAGE_ast */
 
 #if __STD_C
 static int
@@ -119,8 +119,8 @@ int
 sfvprintf(Sfio_t *f, const char *form, va_list args)
 #else
 int sfvprintf(f, form, args) Sfio_t *f; /* file to print to	*/
-char *form; /* format to use	*/
-va_list args; /* arg list if !argf	*/
+char *form;                             /* format to use	*/
+va_list args;                           /* arg list if !argf	*/
 #endif
 {
     int n, v, w, k, n_s, base, fmt, flags;
@@ -134,16 +134,16 @@ va_list args; /* arg list if !argf	*/
     Sfdouble_t dval;
     Void_t *valp;
     char *tls[2], **ls; /* for %..[separ]s		*/
-    char *t_str; /* stuff between ()		*/
-    ssize_t n_str; /* its length			*/
+    char *t_str;        /* stuff between ()		*/
+    ssize_t n_str;      /* its length			*/
 
-    Argv_t argv; /* for extf to return value	*/
-    Sffmt_t *ft; /* format environment		*/
+    Argv_t argv;       /* for extf to return value	*/
+    Sffmt_t *ft;       /* format environment		*/
     Fmt_t *fm, *fmstk; /* stack contexts		*/
 
-    char *oform; /* original format string	*/
-    va_list oargs; /* original arg list		*/
-    Fmtpos_t *fp; /* arg position list		*/
+    char *oform;    /* original format string	*/
+    va_list oargs;  /* original arg list		*/
+    Fmtpos_t *fp;   /* arg position list		*/
     int argp, argn; /* arg position and number	*/
 
 #define SLACK 1024
@@ -153,7 +153,7 @@ va_list args; /* arg list if !argf	*/
 #if _has_multibyte
     wchar_t *wsp;
     SFMBDCL(fmbs) /* state of format string	*/
-    SFMBDCL(mbs) /* state of some string		*/
+    SFMBDCL(mbs)  /* state of some string		*/
 #    ifdef mbwidth
     char *osp;
     int n_w, wc;

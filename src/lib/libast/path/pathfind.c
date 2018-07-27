@@ -38,7 +38,7 @@
 typedef struct Dir_s /* directory list element	*/
 {
     struct Dir_s *next; /* next in list			*/
-    char dir[1]; /* directory path		*/
+    char dir[1];        /* directory path		*/
 } Dir_t;
 
 static struct /* directory list state		*/

@@ -57,20 +57,20 @@ typedef int (
 struct Tagdisc_s /* user discipline		*/
 {
     unsigned long version; /* TAG_VERSION			*/
-    const char *id; /* pathfind() lib id		*/
-    Error_f errorf; /* error function		*/
+    const char *id;        /* pathfind() lib id		*/
+    Error_f errorf;        /* error function		*/
 };
 
 struct Tagframe_s /* tag parse stack frame	*/
 {
-    Tagframe_t *prev; /* previous in stack		*/
-    unsigned int level; /* nesting level		*/
-    Tags_t *tag; /* current tag			*/
-    void *data; /* user defined pointer		*/
-    void *head; /* user defined pointer		*/
-    void *tail; /* user defined pointer		*/
+    Tagframe_t *prev;    /* previous in stack		*/
+    unsigned int level;  /* nesting level		*/
+    Tags_t *tag;         /* current tag			*/
+    void *data;          /* user defined pointer		*/
+    void *head;          /* user defined pointer		*/
+    void *tail;          /* user defined pointer		*/
     unsigned long flags; /* user defined flags		*/
-    unsigned long attr; /* TAG_ATTR_* flags		*/
+    unsigned long attr;  /* TAG_ATTR_* flags		*/
 #    ifdef _TAG_FRAME_PRIVATE_
     _TAG_FRAME_PRIVATE_
 #    endif
@@ -78,18 +78,18 @@ struct Tagframe_s /* tag parse stack frame	*/
 
 struct Tags_s /* tag table entry		*/
 {
-    const char *name; /* tag name			*/
+    const char *name;        /* tag name			*/
     const char *description; /* tag description		*/
-    unsigned int index; /* user defined index		*/
-    Tagbeg_f begf; /* tag begin function		*/
-    Tagdat_f datf; /* tag data function		*/
-    Tagend_f endf; /* tag end function		*/
+    unsigned int index;      /* user defined index		*/
+    Tagbeg_f begf;           /* tag begin function		*/
+    Tagdat_f datf;           /* tag data function		*/
+    Tagend_f endf;           /* tag end function		*/
 };
 
 struct Tag_s
 {
     const char *id; /* interface id			*/
-    void *caller; /* caller defined handle	*/
+    void *caller;   /* caller defined handle	*/
 #    ifdef _TAG_PRIVATE_
     _TAG_PRIVATE_
 #    endif

@@ -61,25 +61,25 @@ static int MarkFindPrev _ANSI_ARGS_((Tcl_Interp * interp,
  */
 
 Tk_SegType tkTextRightMarkType = {
-    "mark", /* name */
-    0, /* leftGravity */
-    ( Tk_SegSplitProc * )NULL, /* splitProc */
-    MarkDeleteProc, /* deleteProc */
-    MarkCleanupProc, /* cleanupProc */
+    "mark",                         /* name */
+    0,                              /* leftGravity */
+    ( Tk_SegSplitProc * )NULL,      /* splitProc */
+    MarkDeleteProc,                 /* deleteProc */
+    MarkCleanupProc,                /* cleanupProc */
     ( Tk_SegLineChangeProc * )NULL, /* lineChangeProc */
-    MarkLayoutProc, /* layoutProc */
-    MarkCheckProc /* checkProc */
+    MarkLayoutProc,                 /* layoutProc */
+    MarkCheckProc                   /* checkProc */
 };
 
 Tk_SegType tkTextLeftMarkType = {
-    "mark", /* name */
-    1, /* leftGravity */
-    ( Tk_SegSplitProc * )NULL, /* splitProc */
-    MarkDeleteProc, /* deleteProc */
-    MarkCleanupProc, /* cleanupProc */
+    "mark",                         /* name */
+    1,                              /* leftGravity */
+    ( Tk_SegSplitProc * )NULL,      /* splitProc */
+    MarkDeleteProc,                 /* deleteProc */
+    MarkCleanupProc,                /* cleanupProc */
     ( Tk_SegLineChangeProc * )NULL, /* lineChangeProc */
-    MarkLayoutProc, /* layoutProc */
-    MarkCheckProc /* checkProc */
+    MarkLayoutProc,                 /* layoutProc */
+    MarkCheckProc                   /* checkProc */
 };
 
 /*
@@ -104,8 +104,8 @@ int TkTextMarkCmd(textPtr,
                   interp,
                   argc,
                   argv) TkText *textPtr; /* Information about text widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
+Tcl_Interp *interp;                      /* Current interpreter. */
+int argc;                                /* Number of arguments. */
 char **argv; /* Argument strings.  Someone else has already
               * parsed this command enough to know that
               * argv[1] is "mark". */
@@ -301,8 +301,8 @@ char **argv; /* Argument strings.  Someone else has already
  */
 
 TkTextSegment *TkTextSetMark(textPtr, name, indexPtr)
-TkText *textPtr; /* Text widget in which to create mark. */
-char *name; /* Name of mark to set. */
+TkText *textPtr;       /* Text widget in which to create mark. */
+char *name;            /* Name of mark to set. */
 TkTextIndex *indexPtr; /* Where to set mark. */
 {
     Tcl_HashEntry *hPtr;
@@ -386,7 +386,7 @@ void TkTextMarkSegToIndex(textPtr,
                           markPtr,
                           indexPtr) TkText *textPtr; /* Text widget containing
                                                         mark. */
-TkTextSegment *markPtr; /* Mark segment. */
+TkTextSegment *markPtr;                              /* Mark segment. */
 TkTextIndex *indexPtr; /* Index information gets stored here.  */
 {
     TkTextSegment *segPtr;
@@ -426,7 +426,7 @@ int TkTextMarkNameToIndex(textPtr,
                           name,
                           indexPtr) TkText *textPtr; /* Text widget containing
                                                         mark. */
-char *name; /* Name of mark. */
+char *name;                                          /* Name of mark. */
 TkTextIndex *indexPtr; /* Index information gets stored here. */
 {
     Tcl_HashEntry *hPtr;
@@ -462,10 +462,10 @@ TkTextIndex *indexPtr; /* Index information gets stored here. */
 /* ARGSUSED */
 static int MarkDeleteProc(segPtr, linePtr, treeGone)
 TkTextSegment *segPtr; /* Segment being deleted. */
-TkTextLine *linePtr; /* Line containing segment. */
-int treeGone; /* Non-zero means the entire tree is
-               * being deleted, so everything must
-               * get cleaned up. */
+TkTextLine *linePtr;   /* Line containing segment. */
+int treeGone;          /* Non-zero means the entire tree is
+                        * being deleted, so everything must
+                        * get cleaned up. */
 {
     return 1;
 }
@@ -489,7 +489,7 @@ int treeGone; /* Non-zero means the entire tree is
 
 static TkTextSegment *MarkCleanupProc(markPtr, linePtr)
 TkTextSegment *markPtr; /* Mark segment that's being moved. */
-TkTextLine *linePtr; /* Line that now contains segment. */
+TkTextLine *linePtr;    /* Line that now contains segment. */
 {
     markPtr->body.mark.linePtr = linePtr;
     return markPtr;
@@ -527,15 +527,15 @@ static int MarkLayoutProc(textPtr,
                                                         layed out. */
 TkTextIndex *indexPtr; /* Identifies first character in chunk. */
 TkTextSegment *segPtr; /* Segment corresponding to indexPtr. */
-int offset; /* Offset within segPtr corresponding to
-             * indexPtr (always 0). */
-int maxX; /* Chunk must not occupy pixels at this
-           * position or higher. */
-int maxChars; /* Chunk must not include more than this
-               * many characters. */
-int noCharsYet; /* Non-zero means no characters have been
-                 * assigned to this line yet. */
-Tk_Uid wrapMode; /* Not used. */
+int offset;            /* Offset within segPtr corresponding to
+                        * indexPtr (always 0). */
+int maxX;              /* Chunk must not occupy pixels at this
+                        * position or higher. */
+int maxChars;          /* Chunk must not include more than this
+                        * many characters. */
+int noCharsYet;        /* Non-zero means no characters have been
+                        * assigned to this line yet. */
+Tk_Uid wrapMode;       /* Not used. */
 TkTextDispChunk *chunkPtr;
 /* Structure to fill in with information
  * about this chunk.  The x field has already
@@ -594,20 +594,20 @@ void TkTextInsertDisplayProc(chunkPtr,
                              dst,
                              screenY)
 TkTextDispChunk *chunkPtr; /* Chunk that is to be drawn. */
-int x; /* X-position in dst at which to
-        * draw this chunk (may differ from
-        * the x-position in the chunk because
-        * of scrolling). */
-int y; /* Y-position at which to draw this
-        * chunk in dst (x-position is in
-        * the chunk itself). */
-int height; /* Total height of line. */
-int baseline; /* Offset of baseline from y. */
-Display *display; /* Display to use for drawing. */
-Drawable dst; /* Pixmap or window in which to draw
-               * chunk. */
-int screenY; /* Y-coordinate in text window that
-              * corresponds to y. */
+int x;                     /* X-position in dst at which to
+                            * draw this chunk (may differ from
+                            * the x-position in the chunk because
+                            * of scrolling). */
+int y;                     /* Y-position at which to draw this
+                            * chunk in dst (x-position is in
+                            * the chunk itself). */
+int height;                /* Total height of line. */
+int baseline;              /* Offset of baseline from y. */
+Display *display;          /* Display to use for drawing. */
+Drawable dst;              /* Pixmap or window in which to draw
+                            * chunk. */
+int screenY;               /* Y-coordinate in text window that
+                            * corresponds to y. */
 {
     TkText *textPtr = ( TkText * )chunkPtr->clientData;
     int halfWidth = textPtr->insertWidth / 2;
@@ -750,7 +750,7 @@ TkTextLine *linePtr; /* Line containing segment. */
 static int MarkFindNext(interp,
                         textPtr,
                         string) Tcl_Interp *interp; /* For error reporting */
-TkText *textPtr; /* The widget */
+TkText *textPtr;                                    /* The widget */
 char *string; /* The starting index or mark name */
 {
     TkTextIndex index;
@@ -834,7 +834,7 @@ char *string; /* The starting index or mark name */
 static int MarkFindPrev(interp,
                         textPtr,
                         string) Tcl_Interp *interp; /* For error reporting */
-TkText *textPtr; /* The widget */
+TkText *textPtr;                                    /* The widget */
 char *string; /* The starting index or mark name */
 {
     TkTextIndex index;

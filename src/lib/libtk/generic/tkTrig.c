@@ -48,7 +48,7 @@ double TkLineToPoint(end1Ptr,
                      end2Ptr,
                      pointPtr) double end1Ptr[2]; /* Coordinates of first
                                                      end-point of line. */
-double end2Ptr[2]; /* Coordinates of second end-point of line. */
+double end2Ptr[2];  /* Coordinates of second end-point of line. */
 double pointPtr[2]; /* Points to coords for point. */
 {
     double x, y;
@@ -338,25 +338,25 @@ capStyle,
 joinStyle,
 rectPtr) double *coordPtr; /* Points to an array of coordinates for
                             * the polyline:  x0, y0, x1, y1, ... */
-int numPoints; /* Total number of points at *coordPtr. */
-double width; /* Width of each line segment. */
-int capStyle; /* How are end-points of polyline drawn?
-               * CapRound, CapButt, or CapProjecting. */
-int joinStyle; /* How are joints in polyline drawn?
-                * JoinMiter, JoinRound, or JoinBevel. */
-double *rectPtr; /* Rectangular area to check against. */
+int numPoints;             /* Total number of points at *coordPtr. */
+double width;              /* Width of each line segment. */
+int capStyle;              /* How are end-points of polyline drawn?
+                            * CapRound, CapButt, or CapProjecting. */
+int joinStyle;             /* How are joints in polyline drawn?
+                            * JoinMiter, JoinRound, or JoinBevel. */
+double *rectPtr;           /* Rectangular area to check against. */
 {
     double radius, poly[10];
     int count;
     int changedMiterToBevel; /* Non-zero means that a mitered corner
                               * had to be treated as beveled after all
                               * because the angle was < 11 degrees. */
-    int inside; /* Tentative guess about what to return,
-                 * based on all points seen so far:  one
-                 * means everything seen so far was
-                 * inside the area;  -1 means everything
-                 * was outside the area.  0 means overlap
-                 * has been found. */
+    int inside;              /* Tentative guess about what to return,
+                              * based on all points seen so far:  one
+                              * means everything seen so far was
+                              * inside the area;  -1 means everything
+                              * was outside the area.  0 means overlap
+                              * has been found. */
 
     radius = width / 2.0;
     inside = -1;
@@ -518,14 +518,14 @@ double *rectPtr; /* Rectangular area to check against. */
  */
 
 double TkPolygonToPoint(polyPtr, numPoints, pointPtr) double
-*polyPtr; /* Points to an array coordinates for
-           * closed polygon:  x0, y0, x1, y1, ...
-           * The polygon may be self-intersecting. */
-int numPoints; /* Total number of points at *polyPtr. */
+*polyPtr;         /* Points to an array coordinates for
+                   * closed polygon:  x0, y0, x1, y1, ...
+                   * The polygon may be self-intersecting. */
+int numPoints;    /* Total number of points at *polyPtr. */
 double *pointPtr; /* Points to coords for point. */
 {
-    double bestDist; /* Closest distance between point and
-                      * any edge in polygon. */
+    double bestDist;   /* Closest distance between point and
+                        * any edge in polygon. */
     int intersections; /* Number of edges in the polygon that
                         * intersect a ray extending vertically
                         * upwards from the point to infinity. */
@@ -701,10 +701,10 @@ double *pointPtr; /* Points to coords for point. */
  */
 
 int TkPolygonToArea(polyPtr, numPoints, rectPtr) double
-*polyPtr; /* Points to an array coordinates for
-           * closed polygon:  x0, y0, x1, y1, ...
-           * The polygon may be self-intersecting. */
-int numPoints; /* Total number of points at *polyPtr. */
+*polyPtr;        /* Points to an array coordinates for
+                  * closed polygon:  x0, y0, x1, y1, ...
+                  * The polygon may be self-intersecting. */
+int numPoints;   /* Total number of points at *polyPtr. */
 double *rectPtr; /* Points to coords for rectangle, in the
                   * order x1, y1, x2, y2.  X1 and y1 must
                   * be lower-left corner. */
@@ -784,9 +784,9 @@ double TkOvalToPoint(ovalPtr,
                                                    * coordinates (x1, y1, x2,
                                                    * y2) defining oval's
                                                    * bounding box. */
-double width; /* Width of outline for oval. */
-int filled; /* Non-zero means oval should be treated as
-             * filled;  zero means only consider outline. */
+double width;       /* Width of outline for oval. */
+int filled;         /* Non-zero means oval should be treated as
+                     * filled;  zero means only consider outline. */
 double pointPtr[2]; /* Coordinates of point. */
 {
     double xDelta, yDelta, scaledDistance, distToOutline, distToCenter;
@@ -1066,13 +1066,13 @@ double *pointPtr; /* Address of two doubles giving
  */
 
 void TkBezierScreenPoints(canvas, control, numSteps, xPointPtr)
-Tk_Canvas canvas; /* Canvas in which curve is to be
-                   * drawn. */
-double control[]; /* Array of coordinates for four
-                   * control points:  x0, y0, x1, y1,
-                   * ... x3 y3. */
-int numSteps; /* Number of curve points to
-               * generate.  */
+Tk_Canvas canvas;  /* Canvas in which curve is to be
+                    * drawn. */
+double control[];  /* Array of coordinates for four
+                    * control points:  x0, y0, x1, y1,
+                    * ... x3 y3. */
+int numSteps;      /* Number of curve points to
+                    * generate.  */
 XPoint *xPointPtr; /* Where to put new points. */
 {
     int i;
@@ -1124,9 +1124,9 @@ void TkBezierPoints(control,
                                                  * four control points:  x0,
                                                  * y0, x1, y1,
                                                  * ... x3 y3. */
-int numSteps; /* Number of curve points to
-               * generate.  */
-double *coordPtr; /* Where to put new points. */
+int numSteps;                                   /* Number of curve points to
+                                                 * generate.  */
+double *coordPtr;                               /* Where to put new points. */
 {
     int i;
     double u, u2, u3, t, t2, t3;
@@ -1177,15 +1177,15 @@ int TkMakeBezierCurve(canvas,
                       xPoints,
                       dblPoints) Tk_Canvas canvas; /* Canvas in which curve is
                                                     * to be drawn. */
-double *pointPtr; /* Array of input coordinates:  x0,
-                   * y0, x1, y1, etc.. */
-int numPoints; /* Number of points at pointPtr. */
-int numSteps; /* Number of steps to use for each
-               * spline segments (determines
-               * smoothness of curve). */
-XPoint xPoints[]; /* Array of XPoints to fill in (e.g.
-                   * for display.  NULL means don't
-                   * fill in any XPoints. */
+double *pointPtr;   /* Array of input coordinates:  x0,
+                     * y0, x1, y1, etc.. */
+int numPoints;      /* Number of points at pointPtr. */
+int numSteps;       /* Number of steps to use for each
+                     * spline segments (determines
+                     * smoothness of curve). */
+XPoint xPoints[];   /* Array of XPoints to fill in (e.g.
+                     * for display.  NULL means don't
+                     * fill in any XPoints. */
 double dblPoints[]; /* Array of points to fill in as
                      * doubles, in the form x0, y0,
                      * x1, y1, ....  NULL means don't
@@ -1361,11 +1361,11 @@ double dblPoints[]; /* Array of points to fill in as
 void TkMakeBezierPostscript(interp, canvas, pointPtr, numPoints)
 Tcl_Interp *interp; /* Interpreter in whose result the
                      * Postscript is to be stored. */
-Tk_Canvas canvas; /* Canvas widget for which the
-                   * Postscript is being generated. */
-double *pointPtr; /* Array of input coordinates:  x0,
-                   * y0, x1, y1, etc.. */
-int numPoints; /* Number of points at pointPtr. */
+Tk_Canvas canvas;   /* Canvas widget for which the
+                     * Postscript is being generated. */
+double *pointPtr;   /* Array of input coordinates:  x0,
+                     * y0, x1, y1, etc.. */
+int numPoints;      /* Number of points at pointPtr. */
 {
     int closed, i;
     int numCoords = numPoints * 2;
@@ -1485,23 +1485,23 @@ int TkGetMiterPoints(p1,
                      m1,
                      m2) double p1[]; /* Points to x- and y-coordinates of
                                        * point before vertex. */
-double p2[]; /* Points to x- and y-coordinates of vertex
-              * for mitered joint. */
-double p3[]; /* Points to x- and y-coordinates of point
-              * after vertex. */
+double p2[];  /* Points to x- and y-coordinates of vertex
+               * for mitered joint. */
+double p3[];  /* Points to x- and y-coordinates of point
+               * after vertex. */
 double width; /* Width of line.  */
-double m1[]; /* Points to place to put "left" vertex
-              * point (see as you face from p1 to p2). */
-double m2[]; /* Points to place to put "right" vertex
-              * point. */
+double m1[];  /* Points to place to put "left" vertex
+               * point (see as you face from p1 to p2). */
+double m2[];  /* Points to place to put "right" vertex
+               * point. */
 {
-    double theta1; /* Angle of segment p2-p1. */
-    double theta2; /* Angle of segment p2-p3. */
-    double theta; /* Angle between line segments (angle
-                   * of joint). */
-    double theta3; /* Angle that bisects theta1 and
-                    * theta2 and points to m1. */
-    double dist; /* Distance of miter points from p2. */
+    double theta1;         /* Angle of segment p2-p1. */
+    double theta2;         /* Angle of segment p2-p3. */
+    double theta;          /* Angle between line segments (angle
+                            * of joint). */
+    double theta3;         /* Angle that bisects theta1 and
+                            * theta2 and points to m1. */
+    double dist;           /* Distance of miter points from p2. */
     double deltaX, deltaY; /* X and y offsets cooresponding to
                             * dist (fudge factors for bounding
                             * box). */
@@ -1613,17 +1613,17 @@ void TkGetButtPoints(p1,
                      m1,
                      m2) double p1[]; /* Points to x- and y-coordinates of
                                        * point before vertex. */
-double p2[]; /* Points to x- and y-coordinates of vertex
-              * for mitered joint. */
+double p2[];  /* Points to x- and y-coordinates of vertex
+               * for mitered joint. */
 double width; /* Width of line.  */
-int project; /* Non-zero means project p2 by an additional
-              * width/2 before computing m1 and m2. */
-double m1[]; /* Points to place to put "left" result
-              * point, as you face from p1 to p2. */
-double m2[]; /* Points to place to put "right" result
-              * point. */
+int project;  /* Non-zero means project p2 by an additional
+               * width/2 before computing m1 and m2. */
+double m1[];  /* Points to place to put "left" result
+               * point, as you face from p1 to p2. */
+double m2[];  /* Points to place to put "right" result
+               * point. */
 {
-    double length; /* Length of p1-p2 segment. */
+    double length;         /* Length of p1-p2 segment. */
     double deltaX, deltaY; /* Increments in coords. */
 
     width *= 0.5;

@@ -31,8 +31,8 @@ Void_t *
 sfreserve(Sfio_t *f, ssize_t size, int type)
 #else
 Void_t *sfreserve(f, size, type) Sfio_t *f; /* file to peek */
-ssize_t size; /* size of peek */
-int type; /* LOCKR: lock stream, LASTR: last record */
+ssize_t size;                               /* size of peek */
+int type;                                   /* LOCKR: lock stream, LASTR: last record */
 #endif
 {
     reg ssize_t n, now, sz, iosz;
@@ -130,7 +130,7 @@ int type; /* LOCKR: lock stream, LASTR: last record */
             iosz = sz - n; /* get enough to fulfill requirement */
             if (size < 0 && iosz < (f->size - n))
                 iosz = f->size - n; /* get as much as possible */
-            if (iosz <= 0) /* nothing to do */
+            if (iosz <= 0)          /* nothing to do */
                 break;
         }
 

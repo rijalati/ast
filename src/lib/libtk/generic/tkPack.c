@@ -31,44 +31,44 @@ typedef enum
 
 typedef struct Packer
 {
-    Tk_Window tkwin; /* Tk token for window.  NULL means that
-                      * the window has been deleted, but the
-                      * packet hasn't had a chance to clean up
-                      * yet because the structure is still in
-                      * use. */
+    Tk_Window tkwin;          /* Tk token for window.  NULL means that
+                               * the window has been deleted, but the
+                               * packet hasn't had a chance to clean up
+                               * yet because the structure is still in
+                               * use. */
     struct Packer *masterPtr; /* Master window within which this window
                                * is packed (NULL means this window
                                * isn't managed by the packer). */
-    struct Packer *nextPtr; /* Next window packed within same
-                             * parent.  List is priority-ordered:
-                             * first on list gets packed first. */
-    struct Packer *slavePtr; /* First in list of slaves packed
-                              * inside this window (NULL means
-                              * no packed slaves). */
-    Side side; /* Side of parent against which
-                * this window is packed. */
-    Tk_Anchor anchor; /* If frame allocated for window is larger
-                       * than window needs, this indicates how
-                       * where to position window in frame. */
-    int padX, padY; /* Total additional pixels to leave around the
-                     * window (half of this space is left on each
-                     * side).  This is space *outside* the window:
-                     * we'll allocate extra space in frame but
-                     * won't enlarge window). */
-    int iPadX, iPadY; /* Total extra pixels to allocate inside the
-                       * window (half this amount will appear on
-                       * each side). */
-    int doubleBw; /* Twice the window's last known border
-                   * width.  If this changes, the window
-                   * must be repacked within its parent. */
-    int *abortPtr; /* If non-NULL, it means that there is a nested
-                    * call to ArrangePacking already working on
-                    * this window.  *abortPtr may be set to 1 to
-                    * abort that nested call.  This happens, for
-                    * example, if tkwin or any of its slaves
-                    * is deleted. */
-    int flags; /* Miscellaneous flags;  see below
-                * for definitions. */
+    struct Packer *nextPtr;   /* Next window packed within same
+                               * parent.  List is priority-ordered:
+                               * first on list gets packed first. */
+    struct Packer *slavePtr;  /* First in list of slaves packed
+                               * inside this window (NULL means
+                               * no packed slaves). */
+    Side side;                /* Side of parent against which
+                               * this window is packed. */
+    Tk_Anchor anchor;         /* If frame allocated for window is larger
+                               * than window needs, this indicates how
+                               * where to position window in frame. */
+    int padX, padY;           /* Total additional pixels to leave around the
+                               * window (half of this space is left on each
+                               * side).  This is space *outside* the window:
+                               * we'll allocate extra space in frame but
+                               * won't enlarge window). */
+    int iPadX, iPadY;         /* Total extra pixels to allocate inside the
+                               * window (half this amount will appear on
+                               * each side). */
+    int doubleBw;             /* Twice the window's last known border
+                               * width.  If this changes, the window
+                               * must be repacked within its parent. */
+    int *abortPtr;            /* If non-NULL, it means that there is a nested
+                               * call to ArrangePacking already working on
+                               * this window.  *abortPtr may be set to 1 to
+                               * abort that nested call.  This happens, for
+                               * example, if tkwin or any of its slaves
+                               * is deleted. */
+    int flags;                /* Miscellaneous flags;  see below
+                               * for definitions. */
 } Packer;
 
 /*
@@ -124,8 +124,8 @@ static void PackLostSlaveProc _ANSI_ARGS_((ClientData clientData,
                                            Tk_Window tkwin));
 
 static Tk_GeomMgr packerType = {
-    "pack", /* name */
-    PackReqProc, /* requestProc */
+    "pack",            /* name */
+    PackReqProc,       /* requestProc */
     PackLostSlaveProc, /* lostSlaveProc */
 };
 
@@ -169,9 +169,9 @@ static int YExpansion _ANSI_ARGS_((Packer * slavePtr, int cavityHeight));
 int Tk_PackCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     size_t length;
@@ -569,7 +569,7 @@ Tk_Window tkwin; /* Other Tk-related information
 static void PackLostSlaveProc(clientData, tkwin)
 ClientData clientData; /* Packer structure for slave window that
                         * was stolen away. */
-Tk_Window tkwin; /* Tk's handle for the slave window. */
+Tk_Window tkwin;       /* Tk's handle for the slave window. */
 {
     Packer *slavePtr = ( Packer * )clientData;
 
@@ -617,10 +617,10 @@ ClientData clientData; /* Structure describing parent whose slaves
      * allocated to the current window. */
     int x, y, width, height; /* These variables are used to hold the
                               * actual geometry of the current window. */
-    int intBWidth; /* Width of internal border in parent window,
-                    * if any. */
-    int abort; /* May get set to non-zero to abort this
-                * repacking operation. */
+    int intBWidth;           /* Width of internal border in parent window,
+                              * if any. */
+    int abort;               /* May get set to non-zero to abort this
+                              * repacking operation. */
     int borderX, borderY;
     int maxWidth, maxHeight, tmp;
 
@@ -1156,14 +1156,14 @@ static Packer *GetPacker(tkwin) Tk_Window tkwin; /* Token for window for which
 
 static int PackAfter(interp, prevPtr, masterPtr, argc, argv)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Packer *prevPtr; /* Pack windows in argv just after this
-                  * window;  NULL means pack as first
-                  * child of masterPtr. */
-Packer *masterPtr; /* Master in which to pack windows. */
-int argc; /* Number of elements in argv. */
-char **argv; /* Array of lists, each containing 2
-              * elements:  window name and side
-              * against which to pack. */
+Packer *prevPtr;    /* Pack windows in argv just after this
+                     * window;  NULL means pack as first
+                     * child of masterPtr. */
+Packer *masterPtr;  /* Master in which to pack windows. */
+int argc;           /* Number of elements in argv. */
+char **argv;        /* Array of lists, each containing 2
+                     * elements:  window name and side
+                     * against which to pack. */
 {
     Packer *packPtr;
     Tk_Window tkwin, ancestor, parent;
@@ -1527,7 +1527,7 @@ static void DestroyPacker(memPtr) char *memPtr; /* Info about packed window
 static void PackStructureProc(clientData, eventPtr)
 ClientData clientData; /* Our information about window
                         * referred to by eventPtr. */
-XEvent *eventPtr; /* Describes what just happened. */
+XEvent *eventPtr;      /* Describes what just happened. */
 {
     Packer *packPtr = ( Packer * )clientData;
     if (eventPtr->type == ConfigureNotify)
@@ -1631,14 +1631,14 @@ XEvent *eventPtr; /* Describes what just happened. */
 
 static int ConfigureSlaves(interp, tkwin, argc, argv)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Window tkwin; /* Any window in application containing
-                  * slaves.  Used to look up slave names. */
-int argc; /* Number of elements in argv. */
-char *argv[]; /* Argument strings:  contains one or more
-               * window names followed by any number
-               * of "option value" pairs.  Caller must
-               * make sure that there is at least one
-               * window name. */
+Tk_Window tkwin;    /* Any window in application containing
+                     * slaves.  Used to look up slave names. */
+int argc;           /* Number of elements in argv. */
+char *argv[];       /* Argument strings:  contains one or more
+                     * window names followed by any number
+                     * of "option value" pairs.  Caller must
+                     * make sure that there is at least one
+                     * window name. */
 {
     Packer *masterPtr, *slavePtr, *prevPtr, *otherPtr;
     Tk_Window other, slave, parent, ancestor;

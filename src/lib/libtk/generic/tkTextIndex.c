@@ -51,11 +51,11 @@ static char *StartEnd _ANSI_ARGS_((char *string, TkTextIndex *indexPtr));
  */
 
 TkTextIndex *TkTextMakeIndex(tree, lineIndex, charIndex, indexPtr)
-TkTextBTree tree; /* Tree that lineIndex and charIndex refer
-                   * to. */
-int lineIndex; /* Index of desired line (0 means first
-                * line of text). */
-int charIndex; /* Index of desired character. */
+TkTextBTree tree;      /* Tree that lineIndex and charIndex refer
+                        * to. */
+int lineIndex;         /* Index of desired line (0 means first
+                        * line of text). */
+int charIndex;         /* Index of desired character. */
 TkTextIndex *indexPtr; /* Structure to fill in. */
 {
     TkTextSegment *segPtr;
@@ -201,9 +201,9 @@ TkTextLine *linePtr; /* Line containing segPtr. */
  */
 
 int TkTextGetIndex(interp, textPtr, string, indexPtr)
-Tcl_Interp *interp; /* Use this for error reporting. */
-TkText *textPtr; /* Information about text widget. */
-char *string; /* Textual description of position. */
+Tcl_Interp *interp;    /* Use this for error reporting. */
+TkText *textPtr;       /* Information about text widget. */
+char *string;          /* Textual description of position. */
 TkTextIndex *indexPtr; /* Index structure to fill in. */
 {
     char *p;
@@ -497,7 +497,7 @@ char *string; /* Place to store the position.  Must have
 
 int TkTextIndexCmp(index1Ptr,
                    index2Ptr) TkTextIndex *index1Ptr; /* First index. */
-TkTextIndex *index2Ptr; /* Second index. */
+TkTextIndex *index2Ptr;                               /* Second index. */
 {
     int line1, line2;
 
@@ -661,8 +661,8 @@ TkTextIndex *indexPtr; /* Index to update as specified in string. */
 void TkTextIndexForwChars(srcPtr,
                           count,
                           dstPtr) TkTextIndex *srcPtr; /* Source index. */
-int count; /* How many characters forward to
-            * move.  May be negative. */
+int count;           /* How many characters forward to
+                      * move.  May be negative. */
 TkTextIndex *dstPtr; /* Destination index: gets modified. */
 {
     TkTextLine *linePtr;
@@ -733,8 +733,8 @@ TkTextIndex *dstPtr; /* Destination index: gets modified. */
 void TkTextIndexBackChars(srcPtr,
                           count,
                           dstPtr) TkTextIndex *srcPtr; /* Source index. */
-int count; /* How many characters backward to
-            * move.  May be negative. */
+int count;           /* How many characters backward to
+                      * move.  May be negative. */
 TkTextIndex *dstPtr; /* Destination index: gets modified. */
 {
     TkTextSegment *segPtr;

@@ -31,41 +31,41 @@ typedef struct TkPostscriptInfo
 {
     int x, y, width, height; /* Area to print, in canvas pixel
                               * coordinates. */
-    int x2, y2; /* x+width and y+height. */
-    char *pageXString; /* String value of "-pagex" option or NULL. */
-    char *pageYString; /* String value of "-pagey" option or NULL. */
-    double pageX, pageY; /* Postscript coordinates (in points)
-                          * corresponding to pageXString and
-                          * pageYString. Don't forget that y-values
-                          * grow upwards for Postscript! */
-    char *pageWidthString; /* Printed width of output. */
-    char *pageHeightString; /* Printed height of output. */
-    double scale; /* Scale factor for conversion: each pixel
-                   * maps into this many points. */
-    Tk_Anchor pageAnchor; /* How to anchor bbox on Postscript page. */
-    int rotate; /* Non-zero means output should be rotated
-                 * on page (landscape mode). */
-    char *fontVar; /* If non-NULL, gives name of global variable
-                    * containing font mapping information.
-                    * Malloc'ed. */
-    char *colorVar; /* If non-NULL, give name of global variable
-                     * containing color mapping information.
-                     * Malloc'ed. */
-    char *colorMode; /* Mode for handling colors:  "monochrome",
-                      * "gray", or "color".  Malloc'ed. */
-    int colorLevel; /* Numeric value corresponding to colorMode:
-                     * 0 for mono, 1 for gray, 2 for color. */
-    char *fileName; /* Name of file in which to write Postscript;
-                     * NULL means return Postscript info as
-                     * result. Malloc'ed. */
-    Tcl_Channel chan; /* Open channel corresponding to fileName. */
+    int x2, y2;              /* x+width and y+height. */
+    char *pageXString;       /* String value of "-pagex" option or NULL. */
+    char *pageYString;       /* String value of "-pagey" option or NULL. */
+    double pageX, pageY;     /* Postscript coordinates (in points)
+                              * corresponding to pageXString and
+                              * pageYString. Don't forget that y-values
+                              * grow upwards for Postscript! */
+    char *pageWidthString;   /* Printed width of output. */
+    char *pageHeightString;  /* Printed height of output. */
+    double scale;            /* Scale factor for conversion: each pixel
+                              * maps into this many points. */
+    Tk_Anchor pageAnchor;    /* How to anchor bbox on Postscript page. */
+    int rotate;              /* Non-zero means output should be rotated
+                              * on page (landscape mode). */
+    char *fontVar;           /* If non-NULL, gives name of global variable
+                              * containing font mapping information.
+                              * Malloc'ed. */
+    char *colorVar;          /* If non-NULL, give name of global variable
+                              * containing color mapping information.
+                              * Malloc'ed. */
+    char *colorMode;         /* Mode for handling colors:  "monochrome",
+                              * "gray", or "color".  Malloc'ed. */
+    int colorLevel;          /* Numeric value corresponding to colorMode:
+                              * 0 for mono, 1 for gray, 2 for color. */
+    char *fileName;          /* Name of file in which to write Postscript;
+                              * NULL means return Postscript info as
+                              * result. Malloc'ed. */
+    Tcl_Channel chan;        /* Open channel corresponding to fileName. */
     Tcl_HashTable fontTable; /* Hash table containing names of all font
                               * families used in output.  The hash table
                               * values are not used. */
-    int prepass; /* Non-zero means that we're currently in
-                  * the pre-pass that collects font information,
-                  * so the Postscript generated isn't
-                  * relevant. */
+    int prepass;             /* Non-zero means that we're currently in
+                              * the pre-pass that collects font information,
+                              * so the Postscript generated isn't
+                              * relevant. */
 } TkPostscriptInfo;
 
 /*
@@ -210,12 +210,12 @@ static int GetPostscriptPoints _ANSI_ARGS_((Tcl_Interp * interp,
 /* ARGSUSED */
 int TkCanvPostscriptCmd(canvasPtr, interp, argc, argv)
 TkCanvas *canvasPtr; /* Information about canvas widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings.  Caller has
-              * already parsed this command enough
-              * to know that argv[1] is
-              * "postscript". */
+Tcl_Interp *interp;  /* Current interpreter. */
+int argc;            /* Number of arguments. */
+char **argv;         /* Argument strings.  Caller has
+                      * already parsed this command enough
+                      * to know that argv[1] is
+                      * "postscript". */
 {
     TkPostscriptInfo psInfo, *oldInfoPtr;
     int result = TCL_ERROR;
@@ -732,8 +732,8 @@ cleanup:
 int Tk_CanvasPsColor(interp, canvas, colorPtr)
 Tcl_Interp *interp; /* Interpreter for returning Postscript
                      * or error message. */
-Tk_Canvas canvas; /* Information about canvas. */
-XColor *colorPtr; /* Information about color. */
+Tk_Canvas canvas;   /* Information about canvas. */
+XColor *colorPtr;   /* Information about color. */
 {
     TkCanvas *canvasPtr = ( TkCanvas * )canvas;
     TkPostscriptInfo *psInfoPtr = canvasPtr->psInfoPtr;
@@ -814,9 +814,9 @@ XColor *colorPtr; /* Information about color. */
  */
 
 int Tk_CanvasPsFont(interp, canvas, fontStructPtr)
-Tcl_Interp *interp; /* Interpreter for returning Postscript
-                     * or error message. */
-Tk_Canvas canvas; /* Information about canvas. */
+Tcl_Interp *interp;         /* Interpreter for returning Postscript
+                             * or error message. */
+Tk_Canvas canvas;           /* Information about canvas. */
 XFontStruct *fontStructPtr; /* Information about font in which text
                              * is to be printed. */
 {
@@ -1051,12 +1051,12 @@ error:
 int Tk_CanvasPsBitmap(interp, canvas, bitmap, startX, startY, width, height)
 Tcl_Interp *interp; /* Interpreter for returning Postscript
                      * or error message. */
-Tk_Canvas canvas; /* Information about canvas. */
-Pixmap bitmap; /* Bitmap for which to generate
-                * Postscript. */
+Tk_Canvas canvas;   /* Information about canvas. */
+Pixmap bitmap;      /* Bitmap for which to generate
+                     * Postscript. */
 int startX, startY; /* Coordinates of upper-left corner
                      * of rectangular region to output. */
-int width, height; /* Height of rectangular region. */
+int width, height;  /* Height of rectangular region. */
 {
     TkCanvas *canvasPtr = ( TkCanvas * )canvas;
     TkPostscriptInfo *psInfoPtr = canvasPtr->psInfoPtr;
@@ -1168,8 +1168,8 @@ int width, height; /* Height of rectangular region. */
 int Tk_CanvasPsStipple(interp, canvas, bitmap)
 Tcl_Interp *interp; /* Interpreter for returning Postscript
                      * or error message. */
-Tk_Canvas canvas; /* Information about canvas. */
-Pixmap bitmap; /* Bitmap to use for stippling. */
+Tk_Canvas canvas;   /* Information about canvas. */
+Pixmap bitmap;      /* Bitmap to use for stippling. */
 {
     TkCanvas *canvasPtr = ( TkCanvas * )canvas;
     TkPostscriptInfo *psInfoPtr = canvasPtr->psInfoPtr;
@@ -1234,7 +1234,7 @@ Pixmap bitmap; /* Bitmap to use for stippling. */
 double Tk_CanvasPsY(canvas,
                     y) Tk_Canvas canvas; /* Token for canvas on whose behalf
                                           * Postscript is being generated. */
-double y; /* Y-coordinate in canvas coords. */
+double y;                                /* Y-coordinate in canvas coords. */
 {
     TkPostscriptInfo *psInfoPtr = (( TkCanvas * )canvas)->psInfoPtr;
 
@@ -1261,12 +1261,12 @@ double y; /* Y-coordinate in canvas coords. */
 void Tk_CanvasPsPath(interp, canvas, coordPtr, numPoints)
 Tcl_Interp *interp; /* Put generated Postscript in this
                      * interpreter's result field. */
-Tk_Canvas canvas; /* Canvas on whose behalf Postscript
-                   * is being generated. */
-double *coordPtr; /* Pointer to first in array of
-                   * 2*numPoints coordinates giving
-                   * points for path. */
-int numPoints; /* Number of points at *coordPtr. */
+Tk_Canvas canvas;   /* Canvas on whose behalf Postscript
+                     * is being generated. */
+double *coordPtr;   /* Pointer to first in array of
+                     * 2*numPoints coordinates giving
+                     * points for path. */
+int numPoints;      /* Number of points at *coordPtr. */
 {
     TkPostscriptInfo *psInfoPtr = (( TkCanvas * )canvas)->psInfoPtr;
     char buffer[200];
@@ -1314,8 +1314,8 @@ int numPoints; /* Number of points at *coordPtr. */
 
 static int GetPostscriptPoints(interp, string, doublePtr)
 Tcl_Interp *interp; /* Use this for error reporting. */
-char *string; /* String describing a screen distance. */
-double *doublePtr; /* Place to store converted result. */
+char *string;       /* String describing a screen distance. */
+double *doublePtr;  /* Place to store converted result. */
 {
     char *end;
     double d;

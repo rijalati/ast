@@ -1687,7 +1687,7 @@ again:
                                      && j >= 0)
                                 m--;
                             tm->tm_mday += j + m * 7;
-                            set &= ~(LAST | NEXT | THIS | ORDINAL); /*AHA*/
+                            set &= ~(LAST | NEXT | THIS | ORDINAL);   /*AHA*/
                             state &= ~(LAST | NEXT | THIS | ORDINAL); /*AHA*/
                             if (!(state & EXACT))
                                 goto clear_hour;
@@ -1836,7 +1836,7 @@ again:
                                        + ((tm->tm_mon < n) ? 1 : 0);
                     if (state & MDAY)
                         goto clear_hour;
-                    set &= ~(LAST | NEXT | THIS); /*AHA*/
+                    set &= ~(LAST | NEXT | THIS);   /*AHA*/
                     state &= ~(LAST | NEXT | THIS); /*AHA*/
                     goto clear_mday;
                 }

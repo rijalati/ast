@@ -23,25 +23,25 @@ typedef struct BitmapMaster
 {
     Tk_ImageMaster tkMaster; /* Tk's token for image master.  NULL means
                               * the image is being deleted. */
-    Tcl_Interp *interp; /* Interpreter for application that is
-                         * using image. */
-    Tcl_Command imageCmd; /* Token for image command (used to delete
-                           * it when the image goes away).  NULL means
-                           * the image command has already been
-                           * deleted. */
-    int width, height; /* Dimensions of image. */
-    char *data; /* Data comprising bitmap (suitable for
-                 * input to XCreateBitmapFromData).   May
-                 * be NULL if no data.  Malloc'ed. */
-    char *maskData; /* Data for bitmap's mask (suitable for
-                     * input to XCreateBitmapFromData).
-                     * Malloc'ed. */
-    Tk_Uid fgUid; /* Value of -foreground option (malloc'ed). */
-    Tk_Uid bgUid; /* Value of -background option (malloc'ed). */
-    char *fileString; /* Value of -file option (malloc'ed). */
-    char *dataString; /* Value of -data option (malloc'ed). */
-    char *maskFileString; /* Value of -maskfile option (malloc'ed). */
-    char *maskDataString; /* Value of -maskdata option (malloc'ed). */
+    Tcl_Interp *interp;      /* Interpreter for application that is
+                              * using image. */
+    Tcl_Command imageCmd;    /* Token for image command (used to delete
+                              * it when the image goes away).  NULL means
+                              * the image command has already been
+                              * deleted. */
+    int width, height;       /* Dimensions of image. */
+    char *data;              /* Data comprising bitmap (suitable for
+                              * input to XCreateBitmapFromData).   May
+                              * be NULL if no data.  Malloc'ed. */
+    char *maskData;          /* Data for bitmap's mask (suitable for
+                              * input to XCreateBitmapFromData).
+                              * Malloc'ed. */
+    Tk_Uid fgUid;            /* Value of -foreground option (malloc'ed). */
+    Tk_Uid bgUid;            /* Value of -background option (malloc'ed). */
+    char *fileString;        /* Value of -file option (malloc'ed). */
+    char *dataString;        /* Value of -data option (malloc'ed). */
+    char *maskFileString;    /* Value of -maskfile option (malloc'ed). */
+    char *maskDataString;    /* Value of -maskdata option (malloc'ed). */
     struct BitmapInstance *instancePtr;
     /* First in list of all instances associated
      * with this master. */
@@ -54,20 +54,20 @@ typedef struct BitmapMaster
 
 typedef struct BitmapInstance
 {
-    int refCount; /* Number of instances that share this
-                   * data structure. */
+    int refCount;            /* Number of instances that share this
+                              * data structure. */
     BitmapMaster *masterPtr; /* Pointer to master for image. */
-    Tk_Window tkwin; /* Window in which the instances will be
-                      * displayed. */
-    XColor *fg; /* Foreground color for displaying image. */
-    XColor *bg; /* Background color for displaying image. */
-    Pixmap bitmap; /* The bitmap to display. */
-    Pixmap mask; /* Mask: only display bitmap pixels where
-                  * there are 1's here. */
-    GC gc; /* Graphics context for displaying bitmap.
-            * None means there was an error while
-            * setting up the instance, so it cannot
-            * be displayed. */
+    Tk_Window tkwin;         /* Window in which the instances will be
+                              * displayed. */
+    XColor *fg;              /* Foreground color for displaying image. */
+    XColor *bg;              /* Background color for displaying image. */
+    Pixmap bitmap;           /* The bitmap to display. */
+    Pixmap mask;             /* Mask: only display bitmap pixels where
+                              * there are 1's here. */
+    GC gc;                   /* Graphics context for displaying bitmap.
+                              * None means there was an error while
+                              * setting up the instance, so it cannot
+                              * be displayed. */
     struct BitmapInstance *nextPtr;
     /* Next in list of all instance structures
      * associated with masterPtr (NULL means
@@ -101,12 +101,12 @@ static void ImgBmapFree _ANSI_ARGS_((ClientData clientData,
 static void ImgBmapDelete _ANSI_ARGS_((ClientData clientData));
 
 Tk_ImageType tkBitmapImageType = {
-    "bitmap", /* name */
-    ImgBmapCreate, /* createProc */
-    ImgBmapGet, /* getProc */
-    ImgBmapDisplay, /* displayProc */
-    ImgBmapFree, /* freeProc */
-    ImgBmapDelete, /* deleteProc */
+    "bitmap",              /* name */
+    ImgBmapCreate,         /* createProc */
+    ImgBmapGet,            /* getProc */
+    ImgBmapDisplay,        /* displayProc */
+    ImgBmapFree,           /* freeProc */
+    ImgBmapDelete,         /* deleteProc */
     ( Tk_ImageType * )NULL /* nextPtr */
 };
 
@@ -177,8 +177,8 @@ typedef struct ParseInfo
     char *string; /* Next character of string data for bitmap,
                    * or NULL if bitmap is being read from
                    * file. */
-    FILE *f; /* File containing bitmap data, or NULL
-              * if no file. */
+    FILE *f;      /* File containing bitmap data, or NULL
+                   * if no file. */
     char word[MAX_WORD_LENGTH + 1];
     /* Current word of bitmap data, NULL
      * terminated. */
@@ -218,15 +218,15 @@ static int NextBitmapWord _ANSI_ARGS_((ParseInfo * parseInfoPtr));
 /* ARGSUSED */
 static int
 ImgBmapCreate(interp, name, argc, argv, typePtr, master, clientDataPtr)
-Tcl_Interp *interp; /* Interpreter for application containing
-                     * image. */
-char *name; /* Name to use for image. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings for options (doesn't
-              * include image name or type). */
-Tk_ImageType *typePtr; /* Pointer to our type record (not used). */
-Tk_ImageMaster master; /* Token for image, to be used by us in
-                        * later callbacks. */
+Tcl_Interp *interp;        /* Interpreter for application containing
+                            * image. */
+char *name;                /* Name to use for image. */
+int argc;                  /* Number of arguments. */
+char **argv;               /* Argument strings for options (doesn't
+                            * include image name or type). */
+Tk_ImageType *typePtr;     /* Pointer to our type record (not used). */
+Tk_ImageMaster master;     /* Token for image, to be used by us in
+                            * later callbacks. */
 ClientData *clientDataPtr; /* Store manager's token for image here;
                             * it will be returned in later callbacks. */
 {
@@ -279,10 +279,10 @@ ClientData *clientDataPtr; /* Store manager's token for image here;
 static int ImgBmapConfigureMaster(masterPtr, argc, argv, flags)
 BitmapMaster *masterPtr; /* Pointer to data structure describing
                           * overall bitmap image to (reconfigure). */
-int argc; /* Number of entries in argv. */
-char **argv; /* Pairs of configuration options for image. */
-int flags; /* Flags to pass to Tk_ConfigureWidget,
-            * such as TK_CONFIG_ARGV_ONLY. */
+int argc;                /* Number of entries in argv. */
+char **argv;             /* Pairs of configuration options for image. */
+int flags;               /* Flags to pass to Tk_ConfigureWidget,
+                          * such as TK_CONFIG_ARGV_ONLY. */
 {
     BitmapInstance *instancePtr;
     int maskWidth, maskHeight, dummy1, dummy2;
@@ -555,15 +555,15 @@ char *TkGetBitmapData(interp,
                       heightPtr,
                       hotXPtr,
                       hotYPtr) Tcl_Interp *interp; /* For reporting errors. */
-char *string; /* String describing bitmap.  May
-               * be NULL. */
-char *fileName; /* Name of file containing bitmap
-                 * description.  Used only if string
-                 * is NULL.  Must not be NULL if
-                 * string is NULL. */
+char *string;              /* String describing bitmap.  May
+                            * be NULL. */
+char *fileName;            /* Name of file containing bitmap
+                            * description.  Used only if string
+                            * is NULL.  Must not be NULL if
+                            * string is NULL. */
 int *widthPtr, *heightPtr; /* Dimensions of bitmap get returned
                             * here. */
-int *hotXPtr, *hotYPtr; /* Position of hot spot or -1,-1. */
+int *hotXPtr, *hotYPtr;    /* Position of hot spot or -1,-1. */
 {
     int width, height, numBytes, hotX, hotY;
     char *p, *end, *expandedFileName;
@@ -854,9 +854,9 @@ parseInfoPtr) ParseInfo *parseInfoPtr; /* Describes what we're reading
 
 static int ImgBmapCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about the image master. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     BitmapMaster *masterPtr = ( BitmapMaster * )clientData;
     int c, code;
@@ -1028,13 +1028,13 @@ static void ImgBmapDisplay(clientData,
                            height,
                            drawableX,
                            drawableY)
-ClientData clientData; /* Pointer to BitmapInstance structure for
-                        * for instance to be displayed. */
-Display *display; /* Display on which to draw image. */
-Drawable drawable; /* Pixmap or window in which to draw image. */
-int imageX, imageY; /* Upper-left corner of region within image
-                     * to draw. */
-int width, height; /* Dimensions of region within image to draw. */
+ClientData clientData;    /* Pointer to BitmapInstance structure for
+                           * for instance to be displayed. */
+Display *display;         /* Display on which to draw image. */
+Drawable drawable;        /* Pixmap or window in which to draw image. */
+int imageX, imageY;       /* Upper-left corner of region within image
+                           * to draw. */
+int width, height;        /* Dimensions of region within image to draw. */
 int drawableX, drawableY; /* Coordinates within drawable that
                            * correspond to imageX and imageY. */
 {
@@ -1101,7 +1101,7 @@ int drawableX, drawableY; /* Coordinates within drawable that
 static void ImgBmapFree(clientData, display)
 ClientData clientData; /* Pointer to BitmapInstance structure for
                         * for instance to be displayed. */
-Display *display; /* Display containing window that used image. */
+Display *display;      /* Display containing window that used image. */
 {
     BitmapInstance *instancePtr = ( BitmapInstance * )clientData;
     BitmapInstance *prevPtr;

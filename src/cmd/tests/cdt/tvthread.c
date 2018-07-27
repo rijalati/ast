@@ -25,13 +25,13 @@
 
 /* Test concurrency by volleying objects between two dictionaries. */
 
-#define N_THREADS 8 /* #players	*/
+#define N_THREADS 8  /* #players	*/
 #define N_OBJ 100000 /* #objects	*/
 
 /* an object to be bounced back and forth */
 typedef struct obj_s
 {
-    int value; /* decimal value		*/
+    int value;  /* decimal value		*/
     int ins[2]; /* #insertion into Dict[0,1]	*/
     int del[2]; /* #deletion from Dict[0,1]	*/
 } Obj_t;

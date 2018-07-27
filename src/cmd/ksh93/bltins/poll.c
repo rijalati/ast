@@ -494,10 +494,10 @@ b_poll(int argc, char *argv[], Shbltin_t *context)
 {
     Shell_t *shp = sh_contexttoshell(context);
     Namval_t *np, *array_np, *array_np_sub;
-    Sfio_t *strstk = NULL; /* stk object for memory allocations */
+    Sfio_t *strstk = NULL;  /* stk object for memory allocations */
     const char *parrayname, /* name of array with poll data */
     *eventarrayname = NULL, /* name of array with indexes to results */
-    *subname, /* current subscript */
+    *subname,               /* current subscript */
     *s;
     int n;
     nfds_t numpollfd = 0; /* number of entries to poll */
@@ -505,14 +505,14 @@ b_poll(int argc, char *argv[], Shbltin_t *context)
     double timeout = -1.;
     char buff[PATH_MAX * 2 + 1]; /* fixme: theoretically enough to hold two
                                     variable names */
-    bool ttyraw = false; /* put ttys into raw more when polling */
+    bool ttyraw = false;         /* put ttys into raw more when polling */
     bool pollsfio
     = true; /* should we ask sfio layer if it has data cached ? */
     int pi; /* index for |pfnm| */
-    struct pollfd *pollfd = NULL, /* data for poll(2) */
-    *currpollfd; /* current |pollfd| we are working on */
+    struct pollfd *pollfd = NULL,     /* data for poll(2) */
+    *currpollfd;                      /* current |pollfd| we are working on */
     struct pollstat *pollstat = NULL, /* context data from shell array */
-    *currps; /* current |pollstat| we are working on */
+    *currps;        /* current |pollstat| we are working on */
     int retval = 0; /* return value of builtin */
 
     while (n = optget(argv, sh_optpoll))

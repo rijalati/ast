@@ -31,8 +31,8 @@ ssize_t
 sfwrite(Sfio_t *f, const Void_t *buf, size_t n)
 #else
 ssize_t sfwrite(f, buf, n) Sfio_t *f; /* write to this stream. 	*/
-Void_t *buf; /* buffer to be written.	*/
-size_t n; /* number of bytes. 		*/
+Void_t *buf;                          /* buffer to be written.	*/
+size_t n;                             /* number of bytes. 		*/
 #endif
 {
     reg uchar *s, *begs, *next;

@@ -195,26 +195,26 @@ typedef struct Netflow_s
 
     Nflong_t src_addrv4; /* ipv4 source address */
     Nflong_t dst_addrv4; /* ipv4 destination address */
-    Nflong_t hopv4; /* ipv4 address of next hop router */
-    Nfshort_t input; /* Input interface index */
-    Nfshort_t output; /* Output interface index */
-    Nflong_t packets; /* Packets sent in Duration */
-    Nflong_t bytes; /* Bytes sent in Duration. */
-    Nflong_t first; /* SysUptime at start of flow */
-    Nflong_t last; /* and of last packet of flow */
-    Nfshort_t src_port; /* TCP/UDP source port number */
-    Nfshort_t dst_port; /* TCP/UDP destination port number */
+    Nflong_t hopv4;      /* ipv4 address of next hop router */
+    Nfshort_t input;     /* Input interface index */
+    Nfshort_t output;    /* Output interface index */
+    Nflong_t packets;    /* Packets sent in Duration */
+    Nflong_t bytes;      /* Bytes sent in Duration. */
+    Nflong_t first;      /* SysUptime at start of flow */
+    Nflong_t last;       /* and of last packet of flow */
+    Nfshort_t src_port;  /* TCP/UDP source port number */
+    Nfshort_t dst_port;  /* TCP/UDP destination port number */
 
-    Nfbyte_t flags; /* Reason flow was discarded, etc...  */
+    Nfbyte_t flags;     /* Reason flow was discarded, etc...  */
     Nfbyte_t tcp_flags; /* Cumulative OR of tcp flags for this flow */
-    Nfbyte_t protocol; /* ip protocol, e.g., 6=TCP, 17=UDP, ... */
-    Nfbyte_t src_tos; /* ip Type-of-Service upon entering incoming interface
-                       */
+    Nfbyte_t protocol;  /* ip protocol, e.g., 6=TCP, 17=UDP, ... */
+    Nfbyte_t src_tos;   /* ip Type-of-Service upon entering incoming interface
+                         */
 
     /* (V5) */
 
-    Nfshort_t src_as16; /* 16 bit source BGP autonomous system number */
-    Nfshort_t dst_as16; /* 16 bit destination BGP autonomous system number */
+    Nfshort_t src_as16;  /* 16 bit source BGP autonomous system number */
+    Nfshort_t dst_as16;  /* 16 bit destination BGP autonomous system number */
     Nfbyte_t src_maskv4; /* ipv4 source address prefix mask bits */
     Nfbyte_t dst_maskv4; /* ipv4 destination address prefix mask bits */
     Nfshort_t pad5;
@@ -226,21 +226,21 @@ typedef struct Netflow_s
     /* (V1) */
 
     Nfbyte_t pad1;
-    Nfbyte_t tcp_retx_cnt; /* # mis-seq with delay > 1sec (V1) */
+    Nfbyte_t tcp_retx_cnt;  /* # mis-seq with delay > 1sec (V1) */
     Nfbyte_t tcp_retx_secs; /* # seconds between mis-sequenced packets (V1) */
     Nfbyte_t tcp_misseq_cnt; /* # mis-sequenced tcp packets (V1) */
 
     /* (V1-7) header */
 
     Nfshort_t version; /* Record version (header). */
-    Nfshort_t count; /* # records in packet (header). */
-    Nflong_t uptime; /* Elapsed millisecs since router booted (header). */
-    Nflong_t time; /* Current time since epoch (header). */
-    Nflong_t nsec; /* Residual nanoseconds (header). */
+    Nfshort_t count;   /* # records in packet (header). */
+    Nflong_t uptime;   /* Elapsed millisecs since router booted (header). */
+    Nflong_t time;     /* Current time since epoch (header). */
+    Nflong_t nsec;     /* Residual nanoseconds (header). */
     Nflong_t flow_sequence; /* Seq counter of total flows seen (header). */
-    Nfbyte_t engine_type; /* Type of flow switching engine 0: RP, 1:
-                             Vip/linecard */
-    Nfbyte_t engine_id; /* ID number of the flow switching engine */
+    Nfbyte_t engine_type;   /* Type of flow switching engine 0: RP, 1:
+                               Vip/linecard */
+    Nfbyte_t engine_id;     /* ID number of the flow switching engine */
     Nfshort_t sampler_interval; /* Sampling interval. */
     Nfbyte_t sampler_mode; /* Algorithm used for sampling data: 0x02 random
                               sampling */
@@ -250,32 +250,32 @@ typedef struct Netflow_s
 #    define NETFLOW_GROUP_8_BEGIN start
 
     Nftime_t start; /* nanoseconds since epoch at flow start (synthesized) */
-    Nftime_t end; /* nanoseconds since epoch at flow end (synthesized) */
+    Nftime_t end;   /* nanoseconds since epoch at flow end (synthesized) */
 
     Nfcount_t in_packets; /* Incoming counter for the number of packets
                              associated with an ip Flow */
     Nfcount_t in_bytes; /* Incoming counter for the number of bytes associated
                            with an ip Flow */
-    Nfcount_t mul_dst_bytes; /* Multicast outgoing byte count */
-    Nfcount_t mul_dst_packets; /* Multicast outgoing packet count */
-    Nfcount_t out_bytes; /* Outgoing counter for the number of bytes
-                            associated with an ip Flow */
-    Nfcount_t out_packets; /* Outgoing counter for the number of packets
-                              associated with an ip Flow */
-    Nfcount_t flows; /* Number of flows that were aggregated */
-    Nfcount_t total_bytes_exp; /* The number of bytes exported by the
-                                  observation domain */
+    Nfcount_t mul_dst_bytes;     /* Multicast outgoing byte count */
+    Nfcount_t mul_dst_packets;   /* Multicast outgoing packet count */
+    Nfcount_t out_bytes;         /* Outgoing counter for the number of bytes
+                                    associated with an ip Flow */
+    Nfcount_t out_packets;       /* Outgoing counter for the number of packets
+                                    associated with an ip Flow */
+    Nfcount_t flows;             /* Number of flows that were aggregated */
+    Nfcount_t total_bytes_exp;   /* The number of bytes exported by the
+                                    observation domain */
     Nfcount_t total_packets_exp; /* The number of packets exported by the
                                     observation domain */
-    Nfcount_t total_flows_exp; /* The number of flows exported by the
-                                  observation domain */
-    Nfcount_t input_snmp; /* Input interface index */
-    Nfcount_t output_snmp; /* Output interface index */
-    Nfcount_t in_src_mac; /* Incoming source MAC address */
-    Nfcount_t out_dst_mac; /* Outgoing destination MAC address */
-    Nfcount_t in_dst_mac; /* Incoming destination MAC address */
-    Nfcount_t out_src_mac; /* Outgoing source MAC address */
-    Nfcount_t in_permanent_bytes; /* Permanent flow byte count */
+    Nfcount_t total_flows_exp;   /* The number of flows exported by the
+                                    observation domain */
+    Nfcount_t input_snmp;        /* Input interface index */
+    Nfcount_t output_snmp;       /* Output interface index */
+    Nfcount_t in_src_mac;        /* Incoming source MAC address */
+    Nfcount_t out_dst_mac;       /* Outgoing destination MAC address */
+    Nfcount_t in_dst_mac;        /* Incoming destination MAC address */
+    Nfcount_t out_src_mac;       /* Outgoing source MAC address */
+    Nfcount_t in_permanent_bytes;   /* Permanent flow byte count */
     Nfcount_t in_permanent_packets; /* Permanent flow packet count */
 
     Nfcount_t vendor_43; /* vendor private value */
@@ -289,17 +289,17 @@ typedef struct Netflow_s
 
 #    define NETFLOW_GROUP_4_BEGIN set
 
-    Nflong_t set; /* NETFLOW_SET_* set bits */
+    Nflong_t set;       /* NETFLOW_SET_* set bits */
     Nflong_t bgp_hopv4; /* Next hop router's ipv4 address in the BGP domain */
-    Nflong_t flow_label; /* ipv6 RFC 2460 flow label */
+    Nflong_t flow_label;   /* ipv6 RFC 2460 flow label */
     Nflong_t src_prefixv4; /* ipv4 source address prefix (catalyst
                               architecture only) */
     Nflong_t dst_prefixv4; /* ipv4 destination address prefix (catalyst
                               architecture only) */
-    Nflong_t src_as32; /* 32 bit source BGP autonomous system number */
+    Nflong_t src_as32;     /* 32 bit source BGP autonomous system number */
     Nflong_t dst_as32; /* 32 bit destination BGP autonomous system number */
-    Nflong_t mpls_top_label_class; /* Forwarding Equivalent Class
-                                      corresponding to the MPLS Top Label */
+    Nflong_t mpls_top_label_class;    /* Forwarding Equivalent Class
+                                         corresponding to the MPLS Top Label */
     Nflong_t sampler_random_interval; /* Packet interval at which to sample */
     Nflong_t option_headers; /* Bit-encoded field identifying ipv6 option
                                 headers found in the flow */
@@ -324,21 +324,21 @@ typedef struct Netflow_s
     Nflong_t mpls_label_10; /* Stack position 10 MPLS label: 20 bits MPLS
                                label, 3 bits experimental, 1 bit end-of-stack
                              */
-    Nflong_t source_id; /* flow source id */
+    Nflong_t source_id;     /* flow source id */
 
 #    define NETFLOW_GROUP_2_BEGIN min_packet_length
 
     Nfshort_t min_packet_length; /* Minimum incoming ip packet length */
     Nfshort_t max_packet_length; /* Maximum incoming ip packet length */
-    Nfshort_t icmp_type; /* Internet Control Message Protocol packet type
-                            coded as ((type*256)+code) */
+    Nfshort_t icmp_type;     /* Internet Control Message Protocol packet type
+                                coded as ((type*256)+code) */
     Nfshort_t mul_igmp_type; /* Internet Group Management Protocol packet type
                                 coded */
-    Nfshort_t flow_active_timeout; /* Timeout value (in seconds) for active
-                                      flow cache entries */
+    Nfshort_t flow_active_timeout;   /* Timeout value (in seconds) for active
+                                        flow cache entries */
     Nfshort_t flow_inactive_timeout; /* Timeout value (in seconds) for
                                         inactive flow cache entries */
-    Nfshort_t ident; /* ipv4 identification field */
+    Nfshort_t ident;                 /* ipv4 identification field */
     Nfshort_t src_vlan; /* Virtual LAN identifier associated with ingress
                            interface */
     Nfshort_t dst_vlan; /* Virtual LAN identifier associated with egress
@@ -347,13 +347,13 @@ typedef struct Netflow_s
 
 #    define NETFLOW_GROUP_1_BEGIN sampler_algorithm
 
-    Nfbyte_t sampler_algorithm; /* 0x01: deterministic, 0x02: random */
+    Nfbyte_t sampler_algorithm;   /* 0x01: deterministic, 0x02: random */
     Nfbyte_t mpls_top_label_type; /* MPLS Top Label Type: 0x00 UNKNOWN 0x01
                                      TE-MIDPT 0x02 ATOM 0x03 VPN 0x04 BGP 0x05
                                      LDP */
-    Nfbyte_t sampler_id; /* Flow sampler ID */
-    Nfbyte_t min_ttl; /* Minimum TTL on incoming packets */
-    Nfbyte_t max_ttl; /* Maximum TTL on incoming packets */
+    Nfbyte_t sampler_id;          /* Flow sampler ID */
+    Nfbyte_t min_ttl;             /* Minimum TTL on incoming packets */
+    Nfbyte_t max_ttl;             /* Maximum TTL on incoming packets */
     Nfbyte_t dst_tos; /* Type of Service on exiting outgoing interface */
     Nfbyte_t ip_protocol_version; /* ip version 6: ipv6, 4 or not specified:
                                      ipv4 */
@@ -361,19 +361,19 @@ typedef struct Netflow_s
                          */
     Nfbyte_t forwarding_status; /* Forwarding status 0: unknown, 1: forwarded,
                                    2: dropped, 3: consumed */
-    Nfbyte_t forwarding_code; /* Forwarding reason code */
-    Nfbyte_t src_maskv6; /* ipv6 source address prefix mask bits */
+    Nfbyte_t forwarding_code;   /* Forwarding reason code */
+    Nfbyte_t src_maskv6;        /* ipv6 source address prefix mask bits */
     Nfbyte_t dst_maskv6; /* ipv6 destination address prefix mask bits */
 
     Nfprefix_t src_addrv6; /* ipv6 source address/prefix */
     Nfprefix_t dst_addrv6; /* ipv6 destination address/prefix */
 
-    Nfaddr_t bgp_hopv6; /* Next hop router ipv6 address in the BGP domain */
-    Nfaddr_t hopv6; /* ipv6 address of next hop router */
+    Nfaddr_t bgp_hopv6;   /* Next hop router ipv6 address in the BGP domain */
+    Nfaddr_t hopv6;       /* ipv6 address of next hop router */
     Nfaddr_t router_scv6; /* ipv4 address of router shortcut by switch (V7) */
 
-    Nfname_t if_name; /* Shortened interface name */
-    Nfname_t if_desc; /* Full interface name */
+    Nfname_t if_name;      /* Shortened interface name */
+    Nfname_t if_desc;      /* Full interface name */
     Nfname_t sampler_name; /* Flow sampler name */
 
 } Netflow_t;

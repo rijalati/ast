@@ -87,8 +87,8 @@
 #            else
 #                define __STD_C 0
 #            endif /*__cplusplus*/
-#        endif /*__STDC__*/
-#    endif /*__STD_C*/
+#        endif     /*__STDC__*/
+#    endif         /*__STD_C*/
 
 /* For C++, extern symbols must be protected against name mangling */
 #    ifndef _BEGIN_EXTERNS_
@@ -120,8 +120,8 @@
 #            if defined(_WIN32) || _WINIX
 #                define __INLINE__ __inline
 #            endif /*_WIN32*/
-#        endif /*__cplusplus*/
-#    endif /*__INLINE__*/
+#        endif     /*__cplusplus*/
+#    endif         /*__INLINE__*/
 
 /* The type Void_t is properly defined so that Void_t* can address any type */
 #    ifndef Void_t
@@ -187,7 +187,7 @@ struct _dtlink_s
     union
     {
         unsigned long _hash; /* hash value		*/
-        Dtlink_t *_left; /* left child		*/
+        Dtlink_t *_left;     /* left child		*/
     } hl;
 };
 
@@ -195,25 +195,25 @@ struct _dtlink_s
 struct _dthold_s
 {
     Dtlink_t hdr; /* header		*/
-    Void_t *obj; /* user object		*/
+    Void_t *obj;  /* user object		*/
 };
 
 /* method to manipulate dictionary structure */
 struct _dtmethod_s
 {
     Dtsearch_f searchf; /* search function	*/
-    int type; /* type of operation	*/
+    int type;           /* type of operation	*/
 };
 
 /* stuff that may have to be in shared memory */
 struct _dtdata_s
 {
-    int type; /* type of dictionary			*/
+    int type;       /* type of dictionary			*/
     Dtlink_t *here; /* finger to last search element	*/
     union
     {
         Dtlink_t **_htab; /* hash table				*/
-        Dtlink_t *_head; /* linked list				*/
+        Dtlink_t *_head;  /* linked list				*/
     } hh;
     int ntab; /* number of hash slots			*/
     int size; /* number of objects			*/
@@ -222,70 +222,70 @@ struct _dtdata_s
 /* structure to hold methods that manipulate an object */
 struct _dtdisc_s
 {
-    int key; /* where key begins in object		*/
-    int size; /* key size				*/
-    int link; /* offset to Dtlink_t field		*/
-    Dtmake_f makef; /* object constructor			*/
-    Dtfree_f freef; /* object destructor			*/
+    int key;            /* where key begins in object		*/
+    int size;           /* key size				*/
+    int link;           /* offset to Dtlink_t field		*/
+    Dtmake_f makef;     /* object constructor			*/
+    Dtfree_f freef;     /* object destructor			*/
     Dtcompar_f comparf; /* to compare two objects		*/
-    Dthash_f hashf; /* to compute a hash value for objects	*/
+    Dthash_f hashf;     /* to compute a hash value for objects	*/
     Dtmemory_f memoryf; /* to get memory for objects		*/
-    Dtevent_f eventf; /* to process events			*/
+    Dtevent_f eventf;   /* to process events			*/
 };
 
 /* the dictionary structure itself */
 struct _dt_s
 {
     Dtsearch_f searchf; /* searching function			*/
-    Dtdisc_t *disc; /* method to manipulate objs		*/
-    Dtdata_t *data; /* sharable data			*/
+    Dtdisc_t *disc;     /* method to manipulate objs		*/
+    Dtdata_t *data;     /* sharable data			*/
     Dtmemory_f memoryf; /* function to alloc/free memory	*/
-    Dtmethod_t *meth; /* dictionary method			*/
-    int type; /* type information			*/
-    int nview; /* number of parent view dictionaries	*/
-    Dt_t *view; /* next on viewpath			*/
-    Dt_t *walk; /* dictionary being walked		*/
+    Dtmethod_t *meth;   /* dictionary method			*/
+    int type;           /* type information			*/
+    int nview;          /* number of parent view dictionaries	*/
+    Dt_t *view;         /* next on viewpath			*/
+    Dt_t *walk;         /* dictionary being walked		*/
 };
 
 /* structure to get status of a dictionary */
 struct _dtstat_s
 {
-    int dt_meth; /* method type				*/
-    int dt_size; /* number of elements			*/
-    int dt_n; /* number of chains or levels		*/
-    int dt_max; /* max size of a chain or a level	*/
+    int dt_meth;   /* method type				*/
+    int dt_size;   /* number of elements			*/
+    int dt_n;      /* number of chains or levels		*/
+    int dt_max;    /* max size of a chain or a level	*/
     int *dt_count; /* counts of chains or levels by size	*/
 };
 
 /* supported storage methods */
-#    define DT_HASH 000001 /* hashing with chaining		*/
-#    define DT_TREE 000002 /* self-adjusting tree			*/
-#    define DT_LIST 000004 /* linked list				*/
-#    define DT_STACK 000010 /* stack				*/
-#    define DT_QUEUE 000020 /* queue				*/
+#    define DT_HASH 000001    /* hashing with chaining		*/
+#    define DT_TREE 000002    /* self-adjusting tree			*/
+#    define DT_LIST 000004    /* linked list				*/
+#    define DT_STACK 000010   /* stack				*/
+#    define DT_QUEUE 000020   /* queue				*/
 #    define DT_METHODS 000037 /* all currently supported methods	*/
 
 /* events */
-#    define DT_OPEN 1 /* a dictionary is being opened		*/
+#    define DT_OPEN 1  /* a dictionary is being opened		*/
 #    define DT_CLOSE 2 /* a dictionary is being closed		*/
-#    define DT_DISC 3 /* discipline is about to be changed	*/
-#    define DT_METH 4 /* method is about to be changed	*/
+#    define DT_DISC 3  /* discipline is about to be changed	*/
+#    define DT_METH 4  /* method is about to be changed	*/
 
 /* asserts to dtdisc() */
 #    define DT_COMPARF 000001 /* compare functions equivalent		*/
-#    define DT_HASHF 000002 /* hash functions equivalent		*/
+#    define DT_HASHF 000002   /* hash functions equivalent		*/
 
 /* types of search - for internal use only */
 #    define DT_INSERT 000001 /* insert object if not found		*/
 #    define DT_DELETE 000002 /* delete object if found		*/
 #    define DT_SEARCH 000004 /* look for an object			*/
-#    define DT_NEXT 000010 /* look for next element		*/
-#    define DT_PREV 000020 /* find previous element		*/
-#    define DT_RENEW 000040 /* renewing an object			*/
-#    define DT_CLEAR 000100 /* clearing all objects			*/
-#    define DT_FIRST 000200 /* get first object			*/
-#    define DT_LAST 000400 /* get last object			*/
-#    define DT_MATCH 001000 /* find object matching key		*/
+#    define DT_NEXT 000010   /* look for next element		*/
+#    define DT_PREV 000020   /* find previous element		*/
+#    define DT_RENEW 000040  /* renewing an object			*/
+#    define DT_CLEAR 000100  /* clearing all objects			*/
+#    define DT_FIRST 000200  /* get first object			*/
+#    define DT_LAST 000400   /* get last object			*/
+#    define DT_MATCH 001000  /* find object matching key		*/
 
 _BEGIN_EXTERNS_
 extern Dt_t *dtopen _ARG_(( Dtdisc_t *, Dtmethod_t * ));

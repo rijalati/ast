@@ -76,12 +76,12 @@ typedef SECURITY_ATTRIBUTES _vtattr_t;
 #endif
 
 /* common attributes for various structures */
-#define VT_RUNNING 000000001 /* thread is running		*/
+#define VT_RUNNING 000000001   /* thread is running		*/
 #define VT_SUSPENDED 000000002 /* thread is suspended		*/
-#define VT_WAITED 000000004 /* thread has been waited	*/
-#define VT_FREE 000010000 /* object can be freed		*/
-#define VT_INIT 000020000 /* object was initialized	*/
-#define VT_BITS 000030007 /* bits that we care about	*/
+#define VT_WAITED 000000004    /* thread has been waited	*/
+#define VT_FREE 000010000      /* object can be freed		*/
+#define VT_INIT 000020000      /* object was initialized	*/
+#define VT_BITS 000030007      /* bits that we care about	*/
 
 /* directives for vtset() */
 #define VT_STACK 1 /* set stack size		*/
@@ -143,13 +143,13 @@ struct _vtmutex_s
 /* structure for states of thread */
 struct _vthread_s
 {
-    _vtself_t self; /* self-handle		*/
-    _vtid_t id; /* thread id		*/
+    _vtself_t self;  /* self-handle		*/
+    _vtid_t id;      /* thread id		*/
     _vtattr_t attrs; /* attributes		*/
-    size_t stack; /* stack size		*/
-    int state; /* execution state	*/
-    int error; /* error status 	*/
-    Void_t *exit; /* exit value		*/
+    size_t stack;    /* stack size		*/
+    int state;       /* execution state	*/
+    int error;       /* error status 	*/
+    Void_t *exit;    /* exit value		*/
 };
 
 /* structure for exactly once execution */

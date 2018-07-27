@@ -50,14 +50,14 @@ extern char *		strrchr _ANSI_ARGS_((CONST char *string, int c));
  * Global variables used by the main program:
  */
 
-static Tcl_Interp *interp; /* Interpreter for this application. */
+static Tcl_Interp *interp;  /* Interpreter for this application. */
 static Tcl_DString command; /* Used to assemble lines of terminal input
                              * into Tcl commands. */
-static Tcl_DString line; /* Used to read the next line from the
-                          * terminal input. */
-static int tty; /* Non-zero means standard input is a
-                 * terminal-like device.  Zero means it's
-                 * a file. */
+static Tcl_DString line;    /* Used to read the next line from the
+                             * terminal input. */
+static int tty;             /* Non-zero means standard input is a
+                             * terminal-like device.  Zero means it's
+                             * a file. */
 
 /*
  * Forward declarations for procedures defined later in this file.
@@ -86,7 +86,7 @@ static void StdinProc _ANSI_ARGS_((ClientData clientData, int mask));
  */
 
 void Tksh_TkMain(argc, argv, appInitProc) int argc; /* Number of arguments. */
-char **argv; /* Array of argument strings. */
+char **argv;                  /* Array of argument strings. */
 Tcl_AppInitProc *appInitProc; /* Application-specific initialization
                                * procedure to call after most
                                * initialization but before starting
@@ -482,9 +482,9 @@ defaultPrompt:
 static int Tksh_BindCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     char *bindscript, *script = NULL, *oldarg;
     int result;

@@ -34,21 +34,21 @@ typedef struct Nest_s Nest_t;
 /* a segment [lo,hi] and associated "data". */
 struct Itvl_s
 {
-    Dtlink_t link; /* splay tree holder	*/
+    Dtlink_t link;     /* splay tree holder	*/
     unsigned char *lo; /* low point		*/
     unsigned char *hi; /* high point		*/
-    void *data; /* associated data	*/
+    void *data;        /* associated data	*/
 };
 
 struct Nest_s
 {
-    Dtdisc_t dc; /* dt discipline	*/
+    Dtdisc_t dc;    /* dt discipline	*/
     Ivfree_f freef; /* user data free	*/
-    Dt_t *dt; /* to keep intervals	*/
-    Iv_t *flat; /* flat interval handle	*/
-    Iv_t *iv; /* original interval	*/
-    Ivdisc_t disc; /* flat discipline	*/
-    int changed; /* intervals changed	*/
+    Dt_t *dt;       /* to keep intervals	*/
+    Iv_t *flat;     /* flat interval handle	*/
+    Iv_t *iv;       /* original interval	*/
+    Ivdisc_t disc;  /* flat discipline	*/
+    int changed;    /* intervals changed	*/
 };
 
 /* create a new segment identical to p */
@@ -139,7 +139,7 @@ nestset(Iv_t *iv, unsigned char *lo, unsigned char *hi, void *data)
         return dtinsert(nst->dt, &itvl) ? 0 : -1;
     }
     else if (fvcmp(size, it->lo, lo) || fvcmp(size, it->hi, hi))
-        return -1; /* must have been a crossing element */
+        return -1;             /* must have been a crossing element */
     else if (it->data != data) /* just update the data	*/
     {
         nst->changed = 1;

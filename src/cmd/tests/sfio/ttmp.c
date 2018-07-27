@@ -92,7 +92,7 @@ tmain()
 
     f = sftmp(( size_t )SF_UNBOUND);
 
-    sfputr(f, "1234", '\n'); /* write a string into it */
+    sfputr(f, "1234", '\n');    /* write a string into it */
     sfseek(f, ( Sfoff_t )0, 0); /* get back so we can read the string */
     s = sfreserve(f, SF_UNBOUND, 0);
     if (sfvalue(f) != 5)

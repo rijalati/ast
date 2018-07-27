@@ -42,8 +42,8 @@ typedef struct Member_s
 {
     char arf_name[16];
     char arf_date[4]; /* swapget() accessed		*/
-    char arf_uid[4]; /*	"			*/
-    char arf_gid[4]; /*	"			*/
+    char arf_uid[4];  /*	"			*/
+    char arf_gid[4];  /*	"			*/
     char arf_mode[4]; /*	"			*/
     char arf_size[4]; /*	"			*/
 } Member_t;
@@ -51,16 +51,16 @@ typedef struct Member_s
 typedef struct Symbol_s
 {
     char sym_name[8]; /* ' ' terminated		*/
-    char sym_ptr[4]; /* swapget() accessed		*/
+    char sym_ptr[4];  /* swapget() accessed		*/
 } Symbol_t;
 
 typedef struct State_s /* method state			*/
 {
-    off_t current; /* current dirent offset	*/
-    off_t offset; /* next dirent offset		*/
-    off_t patch; /* symdir time patch offset	*/
-    int swap; /* swapget() op if necessary	*/
-    int touch; /* touch symbol table time	*/
+    off_t current;   /* current dirent offset	*/
+    off_t offset;    /* next dirent offset		*/
+    off_t patch;     /* symdir time patch offset	*/
+    int swap;        /* swapget() op if necessary	*/
+    int touch;       /* touch symbol table time	*/
     Member_t member; /* current member		*/
 } State_t;
 

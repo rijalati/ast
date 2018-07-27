@@ -42,12 +42,12 @@
 struct index_array
 {
     Namarr_t header;
-    void *xp; /* if set, subscripts will be converted */
-    int cur; /* index of current element */
-    int last; /* index of highest assigned element */
-    int maxi; /* maximum index for array */
+    void *xp;            /* if set, subscripts will be converted */
+    int cur;             /* index of current element */
+    int last;            /* index of highest assigned element */
+    int maxi;            /* maximum index for array */
     unsigned char *bits; /* bit array for child subscripts */
-    union Value val[1]; /* array of value holders */
+    union Value val[1];  /* array of value holders */
 };
 
 struct assoc_array

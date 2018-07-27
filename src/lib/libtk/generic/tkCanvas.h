@@ -28,53 +28,53 @@
 
 typedef struct TkCanvas
 {
-    Tk_Window tkwin; /* Window that embodies the canvas.  NULL
-                      * means that the window has been destroyed
-                      * but the data structures haven't yet been
-                      * cleaned up.*/
-    Display *display; /* Display containing widget;  needed, among
-                       * other things, to release resources after
-                       * tkwin has already gone away. */
-    Tcl_Interp *interp; /* Interpreter associated with canvas. */
+    Tk_Window tkwin;       /* Window that embodies the canvas.  NULL
+                            * means that the window has been destroyed
+                            * but the data structures haven't yet been
+                            * cleaned up.*/
+    Display *display;      /* Display containing widget;  needed, among
+                            * other things, to release resources after
+                            * tkwin has already gone away. */
+    Tcl_Interp *interp;    /* Interpreter associated with canvas. */
     Tcl_Command widgetCmd; /* Token for canvas's widget command. */
     Tk_Item *firstItemPtr; /* First in list of all items in canvas,
                             * or NULL if canvas empty. */
-    Tk_Item *lastItemPtr; /* Last in list of all items in canvas,
-                           * or NULL if canvas empty. */
+    Tk_Item *lastItemPtr;  /* Last in list of all items in canvas,
+                            * or NULL if canvas empty. */
 
     /*
      * Information used when displaying widget:
      */
 
-    int borderWidth; /* Width of 3-D border around window. */
+    int borderWidth;      /* Width of 3-D border around window. */
     Tk_3DBorder bgBorder; /* Used for canvas background. */
-    int relief; /* Indicates whether window as a whole is
-                 * raised, sunken, or flat. */
-    int highlightWidth; /* Width in pixels of highlight to draw
-                         * around widget when it has the focus.
-                         * <= 0 means don't draw a highlight. */
+    int relief;           /* Indicates whether window as a whole is
+                           * raised, sunken, or flat. */
+    int highlightWidth;   /* Width in pixels of highlight to draw
+                           * around widget when it has the focus.
+                           * <= 0 means don't draw a highlight. */
     XColor *highlightBgColorPtr;
     /* Color for drawing traversal highlight
      * area when highlight is off. */
     XColor *highlightColorPtr; /* Color for drawing traversal highlight. */
-    int inset; /* Total width of all borders, including
-                * traversal highlight and 3-D border.
-                * Indicates how much interior stuff must
-                * be offset from outside edges to leave
-                * room for borders. */
-    GC pixmapGC; /* Used to copy bits from a pixmap to the
-                  * screen and also to clear the pixmap. */
-    int width, height; /* Dimensions to request for canvas window,
-                        * specified in pixels. */
-    int redrawX1, redrawY1; /* Upper left corner of area to redraw,
-                             * in pixel coordinates.  Border pixels
-                             * are included.  Only valid if
-                             * REDRAW_PENDING flag is set. */
-    int redrawX2, redrawY2; /* Lower right corner of area to redraw,
-                             * in integer canvas coordinates.  Border
-                             * pixels will *not* be redrawn. */
-    int confine; /* Non-zero means constrain view to keep
-                  * as much of canvas visible as possible. */
+    int inset;                 /* Total width of all borders, including
+                                * traversal highlight and 3-D border.
+                                * Indicates how much interior stuff must
+                                * be offset from outside edges to leave
+                                * room for borders. */
+    GC pixmapGC;               /* Used to copy bits from a pixmap to the
+                                * screen and also to clear the pixmap. */
+    int width, height;         /* Dimensions to request for canvas window,
+                                * specified in pixels. */
+    int redrawX1, redrawY1;    /* Upper left corner of area to redraw,
+                                * in pixel coordinates.  Border pixels
+                                * are included.  Only valid if
+                                * REDRAW_PENDING flag is set. */
+    int redrawX2, redrawY2;    /* Lower right corner of area to redraw,
+                                * in integer canvas coordinates.  Border
+                                * pixels will *not* be redrawn. */
+    int confine;               /* Non-zero means constrain view to keep
+                                * as much of canvas visible as possible. */
 
     /*
      * Information used to manage the selection and insertion cursor:
@@ -84,10 +84,10 @@ typedef struct TkCanvas
                                  * details.  This structure is shared with
                                  * the code that implements individual items.
                                  */
-    int insertOnTime; /* Number of milliseconds cursor should spend
-                       * in "on" state for each blink. */
-    int insertOffTime; /* Number of milliseconds cursor should spend
-                        * in "off" state for each blink. */
+    int insertOnTime;           /* Number of milliseconds cursor should spend
+                                 * in "on" state for each blink. */
+    int insertOffTime;          /* Number of milliseconds cursor should spend
+                                 * in "off" state for each blink. */
     Tcl_TimerToken insertBlinkHandler;
     /* Timer handler used to blink cursor on and
      * off. */
@@ -124,21 +124,21 @@ typedef struct TkCanvas
      * the address of an item named by id. */
     Tk_Item *currentItemPtr; /* The item currently containing the mouse
                               * pointer, or NULL if none. */
-    Tk_Item *newCurrentPtr; /* The item that is about to become the
-                             * current one, or NULL.  This field is
-                             * used to detect deletions  of the new
-                             * current item pointer that occur during
-                             * Leave processing of the previous current
-                             * item.  */
-    double closeEnough; /* The mouse is assumed to be inside an
-                         * item if it is this close to it. */
-    XEvent pickEvent; /* The event upon which the current choice
-                       * of currentItem is based.  Must be saved
-                       * so that if the currentItem is deleted,
-                       * can pick another. */
-    int state; /* Last known modifier state.  Used to
-                * defer picking a new current object
-                * while buttons are down. */
+    Tk_Item *newCurrentPtr;  /* The item that is about to become the
+                              * current one, or NULL.  This field is
+                              * used to detect deletions  of the new
+                              * current item pointer that occur during
+                              * Leave processing of the previous current
+                              * item.  */
+    double closeEnough;      /* The mouse is assumed to be inside an
+                              * item if it is this close to it. */
+    XEvent pickEvent;        /* The event upon which the current choice
+                              * of currentItem is based.  Must be saved
+                              * so that if the currentItem is deleted,
+                              * can pick another. */
+    int state;               /* Last known modifier state.  Used to
+                              * defer picking a new current object
+                              * while buttons are down. */
 
     /*
      * Information used for managing scrollbars:
@@ -156,8 +156,8 @@ typedef struct TkCanvas
      * these numbers determine the size and
      * location of the sliders on scrollbars).
      * Units are pixels in canvas coords. */
-    char *regionString; /* The option string from which scrollX1
-                         * etc. are derived.  Malloc'ed. */
+    char *regionString;   /* The option string from which scrollX1
+                           * etc. are derived.  Malloc'ed. */
     int xScrollIncrement; /* If >0, defines a grid for horizontal
                            * scrolling.  This is the size of the "unit",
                            * and the left edge of the screen will always
@@ -171,11 +171,11 @@ typedef struct TkCanvas
      * Information used for scanning:
      */
 
-    int scanX; /* X-position at which scan started (e.g.
-                * button was pressed here). */
+    int scanX;       /* X-position at which scan started (e.g.
+                      * button was pressed here). */
     int scanXOrigin; /* Value of xOrigin field when scan started. */
-    int scanY; /* Y-position at which scan started (e.g.
-                * button was pressed here). */
+    int scanY;       /* Y-position at which scan started (e.g.
+                      * button was pressed here). */
     int scanYOrigin; /* Value of yOrigin field when scan started. */
 
     /*
@@ -183,9 +183,9 @@ typedef struct TkCanvas
      * created or found with an item id search.
      */
 
-    Tk_Item *hotPtr; /* Pointer to "hot" item (one that's been
-                      * recently used.  NULL means there's no
-                      * hot item. */
+    Tk_Item *hotPtr;     /* Pointer to "hot" item (one that's been
+                          * recently used.  NULL means there's no
+                          * hot item. */
     Tk_Item *hotPrevPtr; /* Pointer to predecessor to hotPtr (NULL
                           * means item is first in list).  This is
                           * only a hint and may not really be hotPtr's
@@ -195,16 +195,16 @@ typedef struct TkCanvas
      * Miscellaneous information:
      */
 
-    Tk_Cursor cursor; /* Current cursor for window, or None. */
-    char *takeFocus; /* Value of -takefocus option;  not used in
-                      * the C code, but used by keyboard traversal
-                      * scripts.  Malloc'ed, but may be NULL. */
+    Tk_Cursor cursor;   /* Current cursor for window, or None. */
+    char *takeFocus;    /* Value of -takefocus option;  not used in
+                         * the C code, but used by keyboard traversal
+                         * scripts.  Malloc'ed, but may be NULL. */
     double pixelsPerMM; /* Scale factor between MM and pixels;
                          * used when converting coordinates. */
-    int flags; /* Various flags;  see below for
-                * definitions. */
-    int nextId; /* Number to use as id for next item
-                 * created in widget. */
+    int flags;          /* Various flags;  see below for
+                         * definitions. */
+    int nextId;         /* Number to use as id for next item
+                         * created in widget. */
     struct TkPostscriptInfo *psInfoPtr;
     /* Pointer to information used for generating
      * Postscript for the canvas.  NULL means

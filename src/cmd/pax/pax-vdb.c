@@ -30,9 +30,9 @@
 typedef struct Vdb_s
 {
     unsigned char delimiter; /* header delimiter		*/
-    unsigned char variant; /* variant header delimiters	*/
-    Sfio_t *directory; /* directory trailer stream	*/
-    struct stat st; /* member stat prototype	*/
+    unsigned char variant;   /* variant header delimiters	*/
+    Sfio_t *directory;       /* directory trailer stream	*/
+    struct stat st;          /* member stat prototype	*/
     struct
     {
         char *base; /* header buffer base		*/

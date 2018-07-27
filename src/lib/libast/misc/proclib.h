@@ -45,11 +45,11 @@ typedef unsigned long Sig_mask_t;
 struct Mods_s;
 
 #    define _PROC_PRIVATE_                                                   \
-        struct Mod_s *mods; /* process modification state	*/                 \
-        long flags; /* original PROC_* flags	*/                              \
-        Sig_mask_t mask; /* original blocked sig mask	*/                     \
+        struct Mod_s *mods;    /* process modification state	*/              \
+        long flags;            /* original PROC_* flags	*/                   \
+        Sig_mask_t mask;       /* original blocked sig mask	*/               \
         Sig_handler_t sigchld; /* PROC_FOREGROUND SIG_DFL	*/                 \
-        Sig_handler_t sigint; /* PROC_FOREGROUND SIG_IGN	*/                  \
+        Sig_handler_t sigint;  /* PROC_FOREGROUND SIG_IGN	*/                 \
         Sig_handler_t sigquit; /* PROC_FOREGROUND SIG_IGN	*/
 
 #    include <proc.h>

@@ -27,7 +27,7 @@ BinPackArguments: 'false'
 BreakBeforeBraces: 'Custom'
 BraceWrapping: {
     AfterClass: 'false'
-    AfterControlStatement: 'true'
+    AfterControlStatement: 'false'
     AfterEnum : 'true'
     AfterFunction : 'true'
     AfterNamespace : 'true'

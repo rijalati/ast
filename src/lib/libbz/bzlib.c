@@ -1637,8 +1637,8 @@ const char *BZ_API(bzlibVersion)(void)
 #    endif
 static BZFILE *
 bzopen_internal(const char *path, /* if !=0 */
-                FILE *fp, /* if !=0 && path==0 */
-                int fd, /* if path==0 && fp==0 */
+                FILE *fp,         /* if !=0 && path==0 */
+                int fd,           /* if path==0 && fp==0 */
                 const char *mode,
                 const void *buf,
                 unsigned int len)

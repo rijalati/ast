@@ -28,11 +28,11 @@ static const char id[] = "\n@(#)$Id: ast (AT&T Research) 2013-11-26 $\0\n";
 #undef strcmp
 
 _Ast_info_t _ast_info = {
-    "libast", /* id */
-    { 0 },    0,       0, 0, 0, 0, strcmp, /* collate */
-    0,        0,       1, /* mb_cur_max */
+    "libast",                                        /* id */
+    { 0 },    0,       0, 0, 0, 0, strcmp,           /* collate */
+    0,        0,       1,                            /* mb_cur_max */
     0,        0,       0, 0, 0, 0, 0,      20130624, /* version */
-    0,        AT_FDCWD /* pwd */
+    0,        AT_FDCWD                               /* pwd */
 };
 
 __EXTERN__(_Ast_info_t, _ast_info);

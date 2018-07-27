@@ -397,7 +397,7 @@ extern double erfc(x) double x;
     if ((ax = x) < 0)
         ax = -ax;
     if (ax < .84375)
-    { /* |x|<0.84375 */
+    {                                     /* |x|<0.84375 */
         if (ax < 1.38777878078144568e-17) /* |x|<2**-56 */
             return one - x;
         y = x * x;
@@ -461,7 +461,7 @@ extern double erfc(x) double x;
     TRUNC(z);
     y = z - ax;
     y *= (ax + z);
-    z *= -z; /* Here z + y = -x^2 */
+    z *= -z;            /* Here z + y = -x^2 */
     s = one / (-z - y); /* 1/(x*x) */
     if (ax >= 4)
     { /* 6 <= ax */

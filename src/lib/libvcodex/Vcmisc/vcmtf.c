@@ -65,7 +65,7 @@ static ssize_t mtfp(dt, enddt, output, encoding) Vcchar_t *dt; /* data to be
                                                                   un/mtf-ed	*/
 Vcchar_t *enddt;
 Vcchar_t *output; /* output array		*/
-int encoding; /* !=0 if encoding	*/
+int encoding;     /* !=0 if encoding	*/
 #endif
 {
     reg int c, p, m, n, predc;
@@ -127,7 +127,7 @@ static ssize_t mtf0(dt, enddt, output, encoding) Vcchar_t *dt; /* data to be
                                                                   un/mtf-ed	*/
 Vcchar_t *enddt;
 Vcchar_t *output; /* output array		*/
-int encoding; /* !=0 if encoding	*/
+int encoding;     /* !=0 if encoding	*/
 #endif
 {
     reg int c, p, m, n;

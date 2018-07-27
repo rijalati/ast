@@ -39,13 +39,13 @@
 
 typedef struct Ccmap_s
 {
-    const char *name; /* code set name		*/
+    const char *name;  /* code set name		*/
     const char *match; /* strmatch() pattern		*/
-    const char *desc; /* code set description		*/
+    const char *desc;  /* code set description		*/
     const char *canon; /* canonical name format	*/
     const char *index; /* default index		*/
-    int ccode; /* <ccode.h> code index		*/
-    void *data; /* map specific data		*/
+    int ccode;         /* <ccode.h> code index		*/
+    void *data;        /* map specific data		*/
 } Ccmap_t;
 
 #    if _BLD_ast && defined(__EXPORT__)

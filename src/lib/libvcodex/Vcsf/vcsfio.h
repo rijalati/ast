@@ -41,9 +41,9 @@
 
 /* header processing modes */
 #    define VCSF_VCDIFF 000001 /* output RFC3284 VCDIFF header	*/
-#    define VCSF_PLAIN 000002 /* no header to be output	*/
-#    define VCSF_TRANS 000004 /* set trans on VC_DECODE	*/
-#    define VCSF_FREE 000010 /* free sfdt on disc pop	*/
+#    define VCSF_PLAIN 000002  /* no header to be output	*/
+#    define VCSF_TRANS 000004  /* set trans on VC_DECODE	*/
+#    define VCSF_FREE 000010   /* free sfdt on disc pop	*/
 
 /* application-defined function to process error messages */
 typedef void(*Vcsferror_f) _ARG_(( const char * ));
@@ -51,10 +51,10 @@ typedef void(*Vcsferror_f) _ARG_(( const char * ));
 /* data passed to vcsfio() to initialize a stream */
 typedef struct _vcsfdata_s
 {
-    int type; /* various types of processing	*/
-    char *trans; /* transformation specification	*/
-    char *window; /* window specification		*/
-    char *source; /* source file to delta against	*/
+    int type;           /* various types of processing	*/
+    char *trans;        /* transformation specification	*/
+    char *window;       /* window specification		*/
+    char *source;       /* source file to delta against	*/
     Vcsferror_f errorf; /* to process errors		*/
 } Vcsfdata_t;
 

@@ -110,7 +110,7 @@ static const char usage[]
 
 typedef struct /* df entry			*/
 {
-    Mnt_t *mnt; /* mnt info			*/
+    Mnt_t *mnt;         /* mnt info			*/
     struct statvfs vfs; /* statvfs() info		*/
     unsigned long avail;
     unsigned long tavail;
@@ -128,15 +128,15 @@ typedef struct /* df entry			*/
 
 typedef struct /* sfkeyprintf() keys		*/
 {
-    char *name; /* key name			*/
-    char *heading; /* key heading			*/
+    char *name;        /* key name			*/
+    char *heading;     /* key heading			*/
     char *description; /* key description		*/
-    short index; /* key index			*/
-    short width; /* default width		*/
-    short abbrev; /* abbreviation width		*/
-    short disable; /* macro being expanded		*/
-    char *macro; /* macro definition		*/
-    Dtlink_t hashed; /* hash link			*/
+    short index;       /* key index			*/
+    short width;       /* default width		*/
+    short abbrev;      /* abbreviation width		*/
+    short disable;     /* macro being expanded		*/
+    char *macro;       /* macro definition		*/
+    Dtlink_t hashed;   /* hash link			*/
 } Key_t;
 
 #define KEY_environ (-1)
@@ -236,17 +236,17 @@ sync(void);
 
 static struct
 {
-    int block; /* block unit			*/
-    int local; /* local mounts only		*/
-    int posix; /* posix format			*/
-    int scale; /* metric scale power		*/
-    int sync; /* sync() first			*/
-    int timeout; /* status() timed out		*/
-    int verbose; /* verbose message level {-1,1}	*/
-    char *type; /* type pattern			*/
-    Sfio_t *mac; /* temporary macro stream	*/
-    Sfio_t *tmp; /* really temporary stream	*/
-    Dt_t *keys; /* format key table		*/
+    int block;      /* block unit			*/
+    int local;      /* local mounts only		*/
+    int posix;      /* posix format			*/
+    int scale;      /* metric scale power		*/
+    int sync;       /* sync() first			*/
+    int timeout;    /* status() timed out		*/
+    int verbose;    /* verbose message level {-1,1}	*/
+    char *type;     /* type pattern			*/
+    Sfio_t *mac;    /* temporary macro stream	*/
+    Sfio_t *tmp;    /* really temporary stream	*/
+    Dt_t *keys;     /* format key table		*/
     char buf[1024]; /* format item buffer		*/
 } state;
 

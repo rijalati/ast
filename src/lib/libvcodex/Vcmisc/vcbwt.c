@@ -56,7 +56,7 @@ Void_t **out;
     /**/ DEBUG_ASSERT(sp < size);
 
     hd = vcsizeu(sp); /* encoding size of the 0th position after sorting */
-    sz = size + 1; /* size of transformed data */
+    sz = size + 1;    /* size of transformed data */
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), sz, hd)))
         goto done;
 
@@ -66,7 +66,7 @@ Void_t **out;
     for (k = 0; k < size; ++k)
     {
         if (idx[k] == 0) /* special coding of the 0th position */
-        { /**/
+        {                /**/
             DEBUG_ASSERT(k == sp);
             bw[k] = k == 0 ? 0 : bw[k - 1];
         }

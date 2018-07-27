@@ -33,8 +33,8 @@
 
 /* delta instruction types */
 #    define VCD_NOOP 0
-#    define VCD_ADD 1 /* data immediately follow		*/
-#    define VCD_RUN 2 /* a run of a single byte		*/
+#    define VCD_ADD 1  /* data immediately follow		*/
+#    define VCD_RUN 2  /* a run of a single byte		*/
 #    define VCD_COPY 3 /* copy data from some earlier address	*/
 #    define VCD_BYTE 4 /* Vcinst_t.mode is the byte encoded	*/
 
@@ -44,14 +44,14 @@
    "near address" cache.
 */
 #    define VCD_ADDR 16 /* the maximum number of address modes	*/
-#    define VCD_SELF 0 /* COPY addr is coded as itself		*/
-#    define VCD_HERE 1 /* COPY addr is offset from current pos	*/
+#    define VCD_SELF 0  /* COPY addr is coded as itself		*/
+#    define VCD_HERE 1  /* COPY addr is offset from current pos	*/
 
 /* buffer size requirement for encoding/decoding code tables */
 #    define VCD_TBLSIZE (6 * 256 + 64)
 
-typedef struct _vcdinst_s Vcdinst_t; /* instruction type	*/
-typedef struct _vcdcode_s Vcdcode_t; /* a pair of insts	*/
+typedef struct _vcdinst_s Vcdinst_t;   /* instruction type	*/
+typedef struct _vcdcode_s Vcdcode_t;   /* a pair of insts	*/
 typedef struct _vcdtable_s Vcdtable_t; /* entire code table	*/
 
 struct _vcdinst_s
@@ -69,8 +69,8 @@ struct _vcdcode_s
 
 struct _vcdtable_s
 {
-    Vcchar_t s_near; /* size of near address cache	*/
-    Vcchar_t s_same; /* size of same address cache	*/
+    Vcchar_t s_near;     /* size of near address cache	*/
+    Vcchar_t s_same;     /* size of same address cache	*/
     Vcdcode_t code[256]; /* codes -> instructions	*/
 };
 

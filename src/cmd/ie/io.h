@@ -40,7 +40,7 @@
 #    ifdef _sys_file
 #        include <sys/file.h>
 #    endif /* _sys_file */
-#endif /* O_CREAT */
+#endif     /* O_CREAT */
 
 #ifndef S_ISDIR
 #    define S_ISDIR(m) ((( m )&S_IFMT) == S_IFDIR)
@@ -58,7 +58,7 @@
 #    ifndef S_ISFIFO
 #        define S_ISFIFO(m) ((( m )&S_IFMT) == S_IFIFO)
 #    endif /* S_ISFIFO */
-#endif /* S_IFIFO */
+#endif     /* S_IFIFO */
 #ifndef S_IRUSR
 #    define S_IRUSR (S_IREAD)
 #endif /* S_IRUSR */
@@ -108,18 +108,19 @@
 #define USERIO 10
 #define FCIO (NFILE - 1) /* history file */
 #ifdef KSHELL
-#    define INIO (NFILE - 2) /* saved standard ioput */
-#    define TMPIO (NFILE - 3) /* used for command substitution */
-#    define CINPIPE (NFILE - 4) /* default inpipe for co-process */
+#    define INIO (NFILE - 2)     /* saved standard ioput */
+#    define TMPIO (NFILE - 3)    /* used for command substitution */
+#    define CINPIPE (NFILE - 4)  /* default inpipe for co-process */
 #    define CINPIPE2 (NFILE - 5) /* other end of inpipe for co-process */
-#    define COTPIPE (NFILE - 6) /* default output pipe for co-process */
-#    define MAXFILES (NFILE - USERIO) /* maximum number of saved open files  \
-                                       */
+#    define COTPIPE (NFILE - 6)  /* default output pipe for co-process */
+#    define MAXFILES                                                         \
+        (NFILE - USERIO) /* maximum number of saved open files               \
+                          */
 
 #    define F_STRING                                                         \
         (( unsigned char )NFILE) /* file number for incore files */
-#    define F_INFINITE 0x7fff /* effectively infinite */
-#endif /* KSHELL */
+#    define F_INFINITE 0x7fff    /* effectively infinite */
+#endif                           /* KSHELL */
 
 /* SHELL file I/O structure */
 struct fileblk
@@ -139,7 +140,7 @@ struct fileblk
 #endif /* KSHELL */
 };
 
-#define filenum(fp) (( int )(fp->fdes)) /* file number */
+#define filenum(fp) (( int )(fp->fdes))  /* file number */
 #define fnobuff(fp) ((fp)->flag & IONBF) /* file is unbuffered */
 
 #define IOREAD 0001
@@ -166,7 +167,7 @@ extern struct fileblk *io_ftable[NFILE + USERIO];
 #    ifndef O_NONBLOCK
 #        define O_NONBLOCK FNDELAY
 #    endif /* !O_NONBLOCK */
-#endif /* FNDELAY */
+#endif     /* FNDELAY */
 #ifndef O_CREAT
 #    define O_CREAT 0400
 #    define O_TRUNC 01000
@@ -188,12 +189,12 @@ extern struct fileblk *io_ftable[NFILE + USERIO];
 #    define X_OK 1 /* is it executable by caller */
 #    define W_OK 2 /* writable by caller */
 #    define R_OK 4 /* readable by caller */
-#endif /* R_OK */
+#endif             /* R_OK */
 #ifndef SEEK_SET
 #    define SEEK_SET 0 /* absolute offset */
 #    define SEEK_CUR 1 /* relative offset */
 #    define SEEK_END 2 /* EOF offset */
-#endif /* SEEK_SET */
+#endif                 /* SEEK_SET */
 
 
 /*io nodes*/
@@ -379,4 +380,4 @@ extern const char e_devfdNN[];
 #    ifdef SUID_EXEC
 extern const char e_suidexec[];
 #    endif /* SUID_EXEC */
-#endif /* KSHELL */
+#endif     /* KSHELL */

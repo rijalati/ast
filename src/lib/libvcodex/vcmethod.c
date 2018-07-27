@@ -56,9 +56,9 @@ static Vcmethod_t *_Vcmethods[] = {
 typedef struct _vcmtlist_s Vcmtlist_t;
 struct _vcmtlist_s
 {
-    Vcmtlist_t *next; /* link list		*/
+    Vcmtlist_t *next;  /* link list		*/
     Vcmethod_t **list; /* list of methods 	*/
-    int size; /* list size		*/
+    int size;          /* list size		*/
 };
 
 static Vcmtlist_t *_Vcmtlist;
@@ -73,7 +73,7 @@ int
 vcaddmeth(Vcmethod_t **list, ssize_t size)
 #else
 int vcaddmeth(list, size) Vcmethod_t **list; /* methods to be added 	*/
-ssize_t size; /* number of them	*/
+ssize_t size;                                /* number of them	*/
 #endif
 {
     Vcmtlist_t *mtl;
@@ -270,9 +270,9 @@ int
 vcsetmtarg(Vcodex_t *vc, char *name, Void_t *val, int type)
 #else
 int vcsetmtarg(vc, name, val, type) Vcodex_t *vc;
-char *name; /* name of the parameter to set	*/
+char *name;  /* name of the parameter to set	*/
 Void_t *val; /* data to set the parameter	*/
-int type; /* different coding types:	*/
+int type;    /* different coding types:	*/
 /*   0: null-terminated string 	*/
 /*   1: 'char' in C-style	*/
 /*   >0: 'int' in decimal	*/
@@ -374,8 +374,8 @@ vcgetmtarg(char *data,
 #else
 char *vcgetmtarg(data, val, vlsz, args, arg) char *data; /* data to be parsed,
                                                             null-terminated	*/
-char *val; /* buffer to return the value		*/
-ssize_t vlsz; /* length of value buffer		*/
+char *val;       /* buffer to return the value		*/
+ssize_t vlsz;    /* length of value buffer		*/
 Vcmtarg_t *args; /* list of matchable arguments		*/
 Vcmtarg_t **arg; /* to return the matched argument	*/
 #endif
@@ -455,10 +455,10 @@ vcsubstring(char *data, int csep, char *val, ssize_t vlsz, int type)
 #else
 char *vcsubstring(data, csep, val, vlsz, type) char *data; /* data to extract
                                                               from	*/
-int csep; /* separator character	*/
-char *val; /* space for substring	*/
-ssize_t vlsz; /* size of val in bytes	*/
-int type; /* see above		*/
+int csep;                                        /* separator character	*/
+char *val;                                       /* space for substring	*/
+ssize_t vlsz;                                    /* size of val in bytes	*/
+int type;                                        /* see above		*/
 #endif
 {
     int c, k, endbrace, asep;
@@ -550,7 +550,7 @@ int type; /* see above		*/
             }
 
             if ((c = *data++) == 0)
-                goto end_string; /* unexpected eos */
+                goto end_string;           /* unexpected eos */
             else if (c >= '0' && c <= '7') /* \ddd notation */
             {
                 for (c -= '0', k = 0; k < 2; ++k)

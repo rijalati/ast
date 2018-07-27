@@ -5738,40 +5738,40 @@ static const char *opt_attribute[] = {
 };
 
 static const char *tag_name[] = {
-    0, /* unknown	*/
-    "A", /* OP_a		*/
-    "BODY", /* OP_body	*/
-    "BR", /* OP_br	*/
-    0, /* OP_cc	*/
+    0,        /* unknown	*/
+    "A",      /* OP_a		*/
+    "BODY",   /* OP_body	*/
+    "BR",     /* OP_br	*/
+    0,        /* OP_cc	*/
     "CENTER", /* OP_center	*/
-    0, /* OP_comment	*/
-    "DD", /* OP_dd	*/
-    "DIV", /* OP_div	*/
-    "DL", /* OP_dl	*/
-    "DT", /* OP_dt	*/
-    "FN", /* OP_fn	*/
-    0, /* OP_ft1	*/
-    "EM", /* OP_ft2	*/
+    0,        /* OP_comment	*/
+    "DD",     /* OP_dd	*/
+    "DIV",    /* OP_div	*/
+    "DL",     /* OP_dl	*/
+    "DT",     /* OP_dt	*/
+    "FN",     /* OP_fn	*/
+    0,        /* OP_ft1	*/
+    "EM",     /* OP_ft2	*/
     "STRONG", /* OP_ft3	*/
-    0, /* OP_ft4	*/
-    "TT", /* OP_ft5	*/
-    "H2", /* OP_h2	*/
-    "H3", /* OP_h3	*/
-    "H4", /* OP_h4	*/
-    "HEAD", /* OP_head	*/
-    "HR", /* OP_hr	*/
-    "HTML", /* OP_html	*/
-    0, /* OP_link	*/
-    "P", /* OP_p		*/
-    "PRE", /* OP_pre	*/
-    "FONT", /* OP_ps	*/
-    "SUB", /* OP_sub	*/
-    "SUP", /* OP_sup	*/
-    "TABLE", /* OP_tab	*/
-    "TD", /* OP_tab_data	*/
-    "TH", /* OP_tab_head	*/
-    "TR", /* OP_tab_row	*/
-    "TITLE", /* OP_title	*/
+    0,        /* OP_ft4	*/
+    "TT",     /* OP_ft5	*/
+    "H2",     /* OP_h2	*/
+    "H3",     /* OP_h3	*/
+    "H4",     /* OP_h4	*/
+    "HEAD",   /* OP_head	*/
+    "HR",     /* OP_hr	*/
+    "HTML",   /* OP_html	*/
+    0,        /* OP_link	*/
+    "P",      /* OP_p		*/
+    "PRE",    /* OP_pre	*/
+    "FONT",   /* OP_ps	*/
+    "SUB",    /* OP_sub	*/
+    "SUP",    /* OP_sup	*/
+    "TABLE",  /* OP_tab	*/
+    "TD",     /* OP_tab_data	*/
+    "TH",     /* OP_tab_head	*/
+    "TR",     /* OP_tab_row	*/
+    "TITLE",  /* OP_title	*/
 };
 
 /*

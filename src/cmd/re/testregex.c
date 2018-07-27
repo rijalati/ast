@@ -270,8 +270,8 @@ help(int html)
     "3\n");
     T(
     "    /	                        field 2 is a regsubcomp() expression\n");
-    T(
-    "    =	                        field 3 is a regdecomp() expression\n");
+    T("    =	                        field 3 is a regdecomp() "
+      "expression\n");
     T("\n");
     T("  Field 1 control lines:\n");
     T("\n");

@@ -30,18 +30,18 @@
 #ifndef _MNT_H
 #    define _MNT_H 1
 
-#    undef MNT_REMOTE /* aix clash			*/
+#    undef MNT_REMOTE           /* aix clash			*/
 #    define MNT_REMOTE (1 << 0) /* remote mount			*/
 
 typedef struct
 {
-    char *fs; /* filesystem name		*/
-    char *dir; /* mounted dir			*/
-    char *type; /* filesystem type		*/
+    char *fs;      /* filesystem name		*/
+    char *dir;     /* mounted dir			*/
+    char *type;    /* filesystem type		*/
     char *options; /* options			*/
-    int freq; /* backup frequency		*/
-    int npass; /* number of parallel passes	*/
-    int flags; /* MNT_* flags			*/
+    int freq;      /* backup frequency		*/
+    int npass;     /* number of parallel passes	*/
+    int flags;     /* MNT_* flags			*/
 } Mnt_t;
 
 #    if _BLD_ast && defined(__EXPORT__)

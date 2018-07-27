@@ -109,10 +109,10 @@ typedef struct Cchr_s
 
 typedef struct Stats_s
 {
-    unsigned long l; /* min length to left of x		*/
-    unsigned long k; /* min length to left of y		*/
-    unsigned long m; /* min length				*/
-    unsigned long n; /* max length				*/
+    unsigned long l;  /* min length to left of x		*/
+    unsigned long k;  /* min length to left of y		*/
+    unsigned long m;  /* min length				*/
+    unsigned long n;  /* max length				*/
     unsigned short a; /* number of alternations		*/
     unsigned short b; /* number of backrefs			*/
     unsigned short c; /* number of closures			*/
@@ -122,8 +122,8 @@ typedef struct Stats_s
     unsigned short s; /* number of simple closures		*/
     unsigned short t; /* number of tries			*/
     unsigned short u; /* number of unnamed subexpressions	*/
-    Rex_t *x; /* max length REX_STRING		*/
-    Rex_t *y; /* max length REX_TRIE			*/
+    Rex_t *x;         /* max length REX_STRING		*/
+    Rex_t *y;         /* max length REX_TRIE			*/
 } Stats_t;
 
 typedef struct Token_s
@@ -139,31 +139,31 @@ typedef struct Token_s
 
 typedef struct Cenv_s
 {
-    int delimiter; /* pattern delimiter		*/
-    int error; /* last error			*/
-    int explicit; /* explicit match on this char	*/
-    int mappeddot; /* inverse mapped '.'		*/
-    int mappednewline; /* inverse mapped '\n'		*/
-    int mappedslash; /* inverse mapped '/'		*/
-    regflags_t flags; /* flags arg to regcomp		*/
-    int type; /* BRE,ERE,ARE,SRE,KRE		*/
-    unsigned char *cursor; /* curent point in re		*/
+    int delimiter;          /* pattern delimiter		*/
+    int error;              /* last error			*/
+    int explicit;           /* explicit match on this char	*/
+    int mappeddot;          /* inverse mapped '.'		*/
+    int mappednewline;      /* inverse mapped '\n'		*/
+    int mappedslash;        /* inverse mapped '/'		*/
+    regflags_t flags;       /* flags arg to regcomp		*/
+    int type;               /* BRE,ERE,ARE,SRE,KRE		*/
+    unsigned char *cursor;  /* curent point in re		*/
     unsigned char *pattern; /* the original pattern		*/
     unsigned char *literal; /* literal restart pattern	*/
-    int parno; /* number of last open paren	*/
-    int parnest; /* paren nest count		*/
-    int posixkludge; /* to make * nonspecial		*/
-    Token_t token; /* token lookahead		*/
-    Stats_t stats; /* RE statistics		*/
-    int terminator; /* pattern terminator		*/
+    int parno;              /* number of last open paren	*/
+    int parnest;            /* paren nest count		*/
+    int posixkludge;        /* to make * nonspecial		*/
+    Token_t token;          /* token lookahead		*/
+    Stats_t stats;          /* RE statistics		*/
+    int terminator;         /* pattern terminator		*/
     Rex_t *paren[2 * (BACK_REF_MAX + 2)];
     /* paren[i]!=0 if \i defined	*/
-    regex_t *regex; /* user handle			*/
-    regdisc_t *disc; /* user discipline		*/
+    regex_t *regex;     /* user handle			*/
+    regdisc_t *disc;    /* user discipline		*/
     unsigned char *map; /* external to native ccode map	*/
     unsigned char *MAP; /* fold and/or map		*/
-    Mbstate_t q; /* pattern mb state		*/
-    int i; /* macro tmp int		*/
+    Mbstate_t q;        /* pattern mb state		*/
+    int i;              /* macro tmp int		*/
 } Cenv_t;
 
 /*

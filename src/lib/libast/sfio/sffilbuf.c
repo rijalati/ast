@@ -36,7 +36,7 @@ int
 _sffilbuf(Sfio_t *f, reg int n)
 #else
 int _sffilbuf(f, n) Sfio_t *f; /* fill the read buffer of this stream */
-reg int n; /* see above */
+reg int n;                     /* see above */
 #endif
 {
     reg ssize_t r;

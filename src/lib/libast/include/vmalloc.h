@@ -48,25 +48,25 @@ _ARG_(( Vmalloc_t *, Void_t *, size_t, Vmdisc_t *, Void_t * ));
 
 struct Vmstat_s
 {
-    size_t n_busy; /* number of busy blocks	*/
-    size_t s_busy; /* total amount of busy space	*/
-    size_t n_free; /* number of free blocks	*/
-    size_t s_free; /* total amount of free space	*/
-    size_t n_cache; /* number of cached free blocks	*/
-    size_t s_cache; /* size of cached free blocks	*/
-    size_t n_seg; /* number of segments		*/
-    size_t extent; /* total size of region		*/
-    size_t n_pack; /* number of packs (Vmbest)	*/
-    int mode; /* region mode bits		*/
+    size_t n_busy;   /* number of busy blocks	*/
+    size_t s_busy;   /* total amount of busy space	*/
+    size_t n_free;   /* number of free blocks	*/
+    size_t s_free;   /* total amount of free space	*/
+    size_t n_cache;  /* number of cached free blocks	*/
+    size_t s_cache;  /* size of cached free blocks	*/
+    size_t n_seg;    /* number of segments		*/
+    size_t extent;   /* total size of region		*/
+    size_t n_pack;   /* number of packs (Vmbest)	*/
+    int mode;        /* region mode bits		*/
     char mesg[1024]; /* summary message		*/
 };
 
 struct Vmdisc_s
 {
-    Vmemory_f memoryf; /* raw memory obtaining/freeing	*/
+    Vmemory_f memoryf;  /* raw memory obtaining/freeing	*/
     Vmexcept_f exceptf; /* exception handler		*/
-    size_t round; /* rounding requirement		*/
-    size_t size; /* actual size of discipline	*/
+    size_t round;       /* rounding requirement		*/
+    size_t size;        /* actual size of discipline	*/
 };
 
 struct Vmethod_s
@@ -78,7 +78,7 @@ struct Vmethod_s
     _ARG_(( Vmalloc_t *, Void_t *, int )); /* was addrf -- binary
                                               compatibility filler */
     int(*statf) _ARG_(( Vmalloc_t *, Vmstat_t *, int )); /* was sizef */
-    int(*eventf) _ARG_(( Vmalloc_t *, int, Void_t * )); /* was compactf */
+    int(*eventf) _ARG_(( Vmalloc_t *, int, Void_t * ));  /* was compactf */
     Void_t *( *alignf )_ARG_(( Vmalloc_t *, size_t, size_t, int ));
     unsigned int meth;
 };
@@ -86,27 +86,27 @@ struct Vmethod_s
 struct Vmalloc_s
 {
     Vmethod_t meth; /* method for allocation	*/
-    char *file; /* file name			*/
-    int line; /* line number			*/
-    char *func; /* calling function		*/
+    char *file;     /* file name			*/
+    int line;       /* line number			*/
+    char *func;     /* calling function		*/
     Vmdisc_t *disc; /* discipline to get space	*/
     Vmdata_t *data; /* the real region data		*/
 };
 
 /* bits used in Vmdata_t.mode field */
-#    define VM_DBCHECK 0000001 /* check for boundary overwrite	*/
-#    define VM_DBABORT 0000002 /* abort on any warning		*/
-#    define VM_MEMORYF 0000010 /* vm was allocated by memoryf	*/
+#    define VM_DBCHECK 0000001   /* check for boundary overwrite	*/
+#    define VM_DBABORT 0000002   /* abort on any warning		*/
+#    define VM_MEMORYF 0000010   /* vm was allocated by memoryf	*/
 #    define VM_OPENFLAGS 0000013 /* flags passable to vmopen()	*/
-#    define VM_SETFLAGS 0000003 /* public-settable flags	*/
+#    define VM_SETFLAGS 0000003  /* public-settable flags	*/
 
 /* coexists with the above but for internal usage only */
 #    define VM_HEAPINIT 0001000 /* initializing Vmheap		*/
 
 /* allocation methods - these bits share space with the above */
-#    define VM_MTBEST 0010000 /* Vmbest method		*/
-#    define VM_MTPOOL 0020000 /* Vmpool method		*/
-#    define VM_MTLAST 0040000 /* Vmlast method		*/
+#    define VM_MTBEST 0010000  /* Vmbest method		*/
+#    define VM_MTPOOL 0020000  /* Vmpool method		*/
+#    define VM_MTLAST 0040000  /* Vmlast method		*/
 #    define VM_MTDEBUG 0100000 /* Vmdebug method		*/
 #    define VM_METHODS 0170000 /* available allocation methods	*/
 
@@ -116,16 +116,16 @@ struct Vmalloc_s
 #    define VM_RSZERO 0000004 /* clear new space to zero's	*/
 
 /* event types */
-#    define VM_OPEN 1 /* region being opened		*/
-#    define VM_ENDOPEN 2 /* end of region opening	*/
-#    define VM_CLOSE 3 /* announce being closed	*/
+#    define VM_OPEN 1     /* region being opened		*/
+#    define VM_ENDOPEN 2  /* end of region opening	*/
+#    define VM_CLOSE 3    /* announce being closed	*/
 #    define VM_ENDCLOSE 4 /* end of region closing	*/
-#    define VM_DISC 5 /* discipline being changed	*/
-#    define VM_NOMEM 6 /* can't obtain memory		*/
+#    define VM_DISC 5     /* discipline being changed	*/
+#    define VM_NOMEM 6    /* can't obtain memory		*/
 
 /* events used internally by various methods */
 #    define VM_CHECKARENA 101 /* checking arena integrity	*/
-#    define VM_BLOCKHEAD 102 /* get size of extra head	*/
+#    define VM_BLOCKHEAD 102  /* get size of extra head	*/
 
 _BEGIN_EXTERNS_ /* public data */
 #    if _BLD_vmalloc && defined(__EXPORT__)
@@ -135,17 +135,17 @@ _BEGIN_EXTERNS_ /* public data */
 #        define extern extern __IMPORT__
 #    endif
 
-extern Vmethod_t *Vmbest; /* best allocation		*/
-extern Vmethod_t *Vmlast; /* last-block allocation	*/
-extern Vmethod_t *Vmpool; /* pool allocation		*/
+extern Vmethod_t *Vmbest;  /* best allocation		*/
+extern Vmethod_t *Vmlast;  /* last-block allocation	*/
+extern Vmethod_t *Vmpool;  /* pool allocation		*/
 extern Vmethod_t *Vmdebug; /* allocation with debugging	*/
 
 extern Vmdisc_t *Vmdcsystem; /* get memory from the OS	*/
-extern Vmdisc_t *Vmdcheap; /* get memory from Vmheap	*/
-extern Vmdisc_t *Vmdcsbrk; /* like Vmdcsystem - legacy use	*/
+extern Vmdisc_t *Vmdcheap;   /* get memory from Vmheap	*/
+extern Vmdisc_t *Vmdcsbrk;   /* like Vmdcsystem - legacy use	*/
 
-extern Vmalloc_t _Vmheap; /* use this with extreme care!	*/
-extern Vmalloc_t *Vmheap; /* == &_Vmheap but safe to use	*/
+extern Vmalloc_t _Vmheap;   /* use this with extreme care!	*/
+extern Vmalloc_t *Vmheap;   /* == &_Vmheap but safe to use	*/
 extern Vmalloc_t *Vmregion; /* malloc allocates from this	*/
 
 #    undef extern

@@ -128,8 +128,8 @@
 #    define inline __inline /*  Visual is not C99, but supports some kind of \
                                inline */
 #    define forceinline __forceinline
-#    include <intrin.h> /*  For Visual 2005 */
-#    if LZ4_ARCH64 /*  64-bit */
+#    include <intrin.h>                      /*  For Visual 2005 */
+#    if LZ4_ARCH64                           /*  64-bit */
 #        pragma intrinsic(_BitScanForward64) /*  For Visual 2005 */
 #        pragma intrinsic(_BitScanReverse64) /*  For Visual 2005 */
 #    else

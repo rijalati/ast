@@ -4,7 +4,7 @@
 static Tcl_Interp *interp; /* Interpreter for application. */
 
 void Tcl_Main(argc, argv, appInitProc) int argc; /* Number of arguments. */
-char **argv; /* Array of argument strings. */
+char **argv;                  /* Array of argument strings. */
 Tcl_AppInitProc *appInitProc; /* Application-specific initialization
                                * procedure to call after most
                                * initialization but before starting

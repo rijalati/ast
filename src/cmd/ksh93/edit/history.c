@@ -41,13 +41,13 @@
 
 #define HIST_MAX (sizeof(int) * HIST_BSIZE)
 #define HIST_BIG (0100000 - 1024) /* 1K less than maximum short */
-#define HIST_LINE 32 /* typical length for history line */
+#define HIST_LINE 32              /* typical length for history line */
 #define HIST_MARKSZ 6
 #define HIST_RECENT 600
-#define HIST_UNDO 0201 /* invalidate previous command */
+#define HIST_UNDO 0201  /* invalidate previous command */
 #define HIST_CMDNO 0202 /* next 3 bytes give command number */
 #define HIST_BSIZE 4096 /* size of history file buffer */
-#define HIST_DFLT 512 /* default size of history list */
+#define HIST_DFLT 512   /* default size of history list */
 
 #if SHOPT_AUDIT
 #    define _HIST_AUDIT                                                      \
@@ -60,10 +60,10 @@
 
 #define _HIST_PRIVATE                                                        \
     void *histshell;                                                         \
-    off_t histcnt; /* offset into history file */                            \
-    off_t histmarker; /* offset of last command marker */                    \
-    int histflush; /* set if flushed outside of hflush() */                  \
-    int histmask; /* power of two mask for histcnt */                        \
+    off_t histcnt;                 /* offset into history file */            \
+    off_t histmarker;              /* offset of last command marker */       \
+    int histflush;                 /* set if flushed outside of hflush() */  \
+    int histmask;                  /* power of two mask for histcnt */       \
     char histbuff[HIST_BSIZE + 1]; /* history file buffer */                 \
     int histwfail;                                                           \
     _HIST_AUDIT                                                              \

@@ -1,25 +1,25 @@
 /* : : generated from features/common by iffe version 2013-11-14 : : */
 #ifndef _AST_COMMON_H
 #    define _AST_COMMON_H 1
-#    define _sys_types 1 /* #include <sys/types.h> ok */
-#    define _hdr_pthread 1 /* #include <pthread.h> ok */
-#    define _hdr_stdarg 1 /* #include <stdarg.h> ok */
-#    define _hdr_stddef 1 /* #include <stddef.h> ok */
-#    define _hdr_stdint 1 /* #include <stdint.h> ok */
-#    define _hdr_inttypes 1 /* #include <inttypes.h> ok */
-#    define _hdr_unistd 1 /* #include <unistd.h> ok */
-#    define _hdr_time 1 /* #include <time.h> ok */
-#    define _sys_time 1 /* #include <sys/time.h> ok */
-#    define _sys_times 1 /* #include <sys/times.h> ok */
-#    define _hdr_stdlib 1 /* #include <stdlib.h> ok */
+#    define _sys_types 1       /* #include <sys/types.h> ok */
+#    define _hdr_pthread 1     /* #include <pthread.h> ok */
+#    define _hdr_stdarg 1      /* #include <stdarg.h> ok */
+#    define _hdr_stddef 1      /* #include <stddef.h> ok */
+#    define _hdr_stdint 1      /* #include <stdint.h> ok */
+#    define _hdr_inttypes 1    /* #include <inttypes.h> ok */
+#    define _hdr_unistd 1      /* #include <unistd.h> ok */
+#    define _hdr_time 1        /* #include <time.h> ok */
+#    define _sys_time 1        /* #include <sys/time.h> ok */
+#    define _sys_times 1       /* #include <sys/times.h> ok */
+#    define _hdr_stdlib 1      /* #include <stdlib.h> ok */
 #    define _typ_long_double 1 /* long double is a type */
-#    define _typ_size_t 1 /* size_t is a type */
-#    define _typ_ssize_t 1 /* ssize_t is a type */
-#    define _hdr_stdio 1 /* #include <stdio.h> ok */
-#    define _sys_stat 1 /* #include <sys/stat.h> ok */
-#    define _sys_socket 1 /* #include <sys/socket.h> ok */
-#    define _std_proto 1 /* standard C prototypes ok */
-#    define _ptr_void 1 /* standard C void* ok */
+#    define _typ_size_t 1      /* size_t is a type */
+#    define _typ_ssize_t 1     /* ssize_t is a type */
+#    define _hdr_stdio 1       /* #include <stdio.h> ok */
+#    define _sys_stat 1        /* #include <sys/stat.h> ok */
+#    define _sys_socket 1      /* #include <sys/socket.h> ok */
+#    define _std_proto 1       /* standard C prototypes ok */
+#    define _ptr_void 1        /* standard C void* ok */
 /* disable non-standard linux/gnu inlines */
 #    ifdef __GNUC__
 #        undef __OPTIMIZE_SIZE__
@@ -151,33 +151,33 @@
 #    define _ast_intmax_long 1
 #    define _ast_intswap 7
 
-#    define _ast_sizeof_intmax_t 8 /* sizeof(intmax_t) */
-#    define _ast_sizeof_short 2 /* sizeof(short) */
-#    define _ast_sizeof_int 4 /* sizeof(int) */
-#    define _ast_sizeof_long 8 /* sizeof(long) */
-#    define _ast_sizeof_size_t 8 /* sizeof(size_t) */
-#    define _ast_sizeof_off_t 8 /* sizeof(off_t) */
-#    define _ast_sizeof_pointer 8 /* sizeof(pointer) */
-#    define _ast_sizeof_float 4 /* sizeof(float) */
-#    define _ast_sizeof_double 8 /* sizeof(double) */
+#    define _ast_sizeof_intmax_t 8     /* sizeof(intmax_t) */
+#    define _ast_sizeof_short 2        /* sizeof(short) */
+#    define _ast_sizeof_int 4          /* sizeof(int) */
+#    define _ast_sizeof_long 8         /* sizeof(long) */
+#    define _ast_sizeof_size_t 8       /* sizeof(size_t) */
+#    define _ast_sizeof_off_t 8        /* sizeof(off_t) */
+#    define _ast_sizeof_pointer 8      /* sizeof(pointer) */
+#    define _ast_sizeof_float 4        /* sizeof(float) */
+#    define _ast_sizeof_double 8       /* sizeof(double) */
 #    define _ast_sizeof_long_double 16 /* sizeof(long_double) */
 
 #    define _ast_flt4_t float
 #    define _ast_flt8_t double
 #    define _ast_flt16_t long double
 #    define _ast_fltmax_t _ast_flt16_t
-#    define _typ_int8_t 1 /* int8_t is a type */
-#    define _typ_uint8_t 1 /* uint8_t is a type */
-#    define _typ_int16_t 1 /* int16_t is a type */
-#    define _typ_uint16_t 1 /* uint16_t is a type */
-#    define _typ_int32_t 1 /* int32_t is a type */
-#    define _typ_uint32_t 1 /* uint32_t is a type */
-#    define _typ_int64_t 1 /* int64_t is a type */
-#    define _typ_uint64_t 1 /* uint64_t is a type */
-#    define _typ_intmax_t 1 /* intmax_t is a type */
+#    define _typ_int8_t 1    /* int8_t is a type */
+#    define _typ_uint8_t 1   /* uint8_t is a type */
+#    define _typ_int16_t 1   /* int16_t is a type */
+#    define _typ_uint16_t 1  /* uint16_t is a type */
+#    define _typ_int32_t 1   /* int32_t is a type */
+#    define _typ_uint32_t 1  /* uint32_t is a type */
+#    define _typ_int64_t 1   /* int64_t is a type */
+#    define _typ_uint64_t 1  /* uint64_t is a type */
+#    define _typ_intmax_t 1  /* intmax_t is a type */
 #    define _typ_uintmax_t 1 /* uintmax_t is a type */
 #    define _typ_uintptr_t 1 /* uintptr_t is a type */
-#    define _typ__Bool 1 /* _Bool is a type */
+#    define _typ__Bool 1     /* _Bool is a type */
 #    if defined(_STDC_C99) || __STDC_VERSION__ >= 199901L
 #        include <stdbool.h>
 #    else

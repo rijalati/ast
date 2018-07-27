@@ -63,21 +63,21 @@ static XWindowChanges defChanges = { 0, 0, 1, 1, 0, 0, Above };
     | VisibilityChangeMask | FocusChangeMask | PropertyChangeMask            \
     | ColormapChangeMask
 static XSetWindowAttributes defAtts = {
-    None, /* background_pixmap */
-    0, /* background_pixel */
-    CopyFromParent, /* border_pixmap */
-    0, /* border_pixel */
+    None,             /* background_pixmap */
+    0,                /* background_pixel */
+    CopyFromParent,   /* border_pixmap */
+    0,                /* border_pixel */
     NorthWestGravity, /* bit_gravity */
     NorthWestGravity, /* win_gravity */
-    NotUseful, /* backing_store */
-    ( unsigned )~0, /* backing_planes */
-    0, /* backing_pixel */
-    False, /* save_under */
-    ALL_EVENTS_MASK, /* event_mask */
-    0, /* do_not_propagate_mask */
-    False, /* override_redirect */
-    CopyFromParent, /* colormap */
-    None /* cursor */
+    NotUseful,        /* backing_store */
+    ( unsigned )~0,   /* backing_planes */
+    0,                /* backing_pixel */
+    False,            /* save_under */
+    ALL_EVENTS_MASK,  /* event_mask */
+    0,                /* do_not_propagate_mask */
+    False,            /* override_redirect */
+    CopyFromParent,   /* colormap */
+    None              /* cursor */
 };
 
 /*
@@ -251,17 +251,17 @@ static void UnlinkWindow _ANSI_ARGS_((TkWindow * winPtr));
 
 static Tk_Window CreateTopLevelWindow(interp, parent, name, screenName)
 Tcl_Interp *interp; /* Interpreter to use for error reporting. */
-Tk_Window parent; /* Token for logical parent of new window
-                   * (used for naming, options, etc.).  May
-                   * be NULL. */
-char *name; /* Name for new window;  if parent is
-             * non-NULL, must be unique among parent's
-             * children. */
-char *screenName; /* Name of screen on which to create
-                   * window.  NULL means use DISPLAY environment
-                   * variable to determine.  Empty string means
-                   * use parent's screen, or DISPLAY if no
-                   * parent. */
+Tk_Window parent;   /* Token for logical parent of new window
+                     * (used for naming, options, etc.).  May
+                     * be NULL. */
+char *name;         /* Name for new window;  if parent is
+                     * non-NULL, must be unique among parent's
+                     * children. */
+char *screenName;   /* Name of screen on which to create
+                     * window.  NULL means use DISPLAY environment
+                     * variable to determine.  Empty string means
+                     * use parent's screen, or DISPLAY if no
+                     * parent. */
 {
     TkWindow *winPtr;
     TkDisplay *dispPtr;
@@ -376,9 +376,9 @@ char *screenName; /* Name of screen on which to create
 
 static TkDisplay *GetScreen(interp, screenName, screenPtr)
 Tcl_Interp *interp; /* Place to leave error message. */
-char *screenName; /* Name for screen.  NULL or empty means
-                   * use DISPLAY envariable. */
-int *screenPtr; /* Where to store screen number. */
+char *screenName;   /* Name for screen.  NULL or empty means
+                     * use DISPLAY envariable. */
+int *screenPtr;     /* Where to store screen number. */
 {
     TkDisplay *dispPtr;
     char *p;
@@ -541,8 +541,8 @@ TkDisplay *TkGetDisplay(display) Display *display; /* X's display pointer */
  */
 
 static TkWindow *AllocWindow(dispPtr, screenNum, parentPtr)
-TkDisplay *dispPtr; /* Display associated with new window. */
-int screenNum; /* Index of screen for new window. */
+TkDisplay *dispPtr;  /* Display associated with new window. */
+int screenNum;       /* Index of screen for new window. */
 TkWindow *parentPtr; /* Parent from which this window should
                       * inherit visual information.  NULL means
                       * use screen defaults instead of
@@ -625,12 +625,12 @@ TkWindow *parentPtr; /* Parent from which this window should
  */
 
 static int NameWindow(interp, winPtr, parentPtr, name)
-Tcl_Interp *interp; /* Interpreter to use for error reporting. */
-TkWindow *winPtr; /* Window that is to be named and inserted. */
+Tcl_Interp *interp;  /* Interpreter to use for error reporting. */
+TkWindow *winPtr;    /* Window that is to be named and inserted. */
 TkWindow *parentPtr; /* Pointer to logical parent for winPtr
                       * (used for naming, options, etc.). */
-char *name; /* Name for winPtr;   must be unique among
-             * parentPtr's children. */
+char *name;          /* Name for winPtr;   must be unique among
+                      * parentPtr's children. */
 {
 #define FIXED_SIZE 200
     char staticSpace[FIXED_SIZE];
@@ -750,11 +750,11 @@ char *name; /* Name for winPtr;   must be unique among
 
 Tk_Window TkCreateMainWindow(interp, screenName, baseName)
 Tcl_Interp *interp; /* Interpreter to use for error reporting. */
-char *screenName; /* Name of screen on which to create
-                   * window.  Empty or NULL string means
-                   * use DISPLAY environment variable. */
-char *baseName; /* Base name for application;  usually of the
-                 * form "prog instance". */
+char *screenName;   /* Name of screen on which to create
+                     * window.  Empty or NULL string means
+                     * use DISPLAY environment variable. */
+char *baseName;     /* Base name for application;  usually of the
+                     * form "prog instance". */
 {
     Tk_Window tkwin;
     int dummy;
@@ -874,14 +874,14 @@ Tk_Window Tk_CreateWindow(interp, parent, name, screenName)
 Tcl_Interp *interp; /* Interpreter to use for error reporting.
                      * Interp->result is assumed to be
                      * initialized by the caller. */
-Tk_Window parent; /* Token for parent of new window. */
-char *name; /* Name for new window.  Must be unique
-             * among parent's children. */
-char *screenName; /* If NULL, new window will be internal on
-                   * same screen as its parent.  If non-NULL,
-                   * gives name of screen on which to create
-                   * new window;  window will be a top-level
-                   * window. */
+Tk_Window parent;   /* Token for parent of new window. */
+char *name;         /* Name for new window.  Must be unique
+                     * among parent's children. */
+char *screenName;   /* If NULL, new window will be internal on
+                     * same screen as its parent.  If non-NULL,
+                     * gives name of screen on which to create
+                     * new window;  window will be a top-level
+                     * window. */
 {
     TkWindow *parentPtr = ( TkWindow * )parent;
     TkWindow *winPtr;
@@ -941,17 +941,17 @@ Tk_Window Tk_CreateWindowFromPath(interp, tkwin, pathName, screenName)
 Tcl_Interp *interp; /* Interpreter to use for error reporting.
                      * Interp->result is assumed to be
                      * initialized by the caller. */
-Tk_Window tkwin; /* Token for any window in application
-                  * that is to contain new window. */
-char *pathName; /* Path name for new window within the
-                 * application of tkwin.  The parent of
-                 * this window must already exist, but
-                 * the window itself must not exist. */
-char *screenName; /* If NULL, new window will be on same
-                   * screen as its parent.  If non-NULL,
-                   * gives name of screen on which to create
-                   * new window;  window will be a top-level
-                   * window. */
+Tk_Window tkwin;    /* Token for any window in application
+                     * that is to contain new window. */
+char *pathName;     /* Path name for new window within the
+                     * application of tkwin.  The parent of
+                     * this window must already exist, but
+                     * the window itself must not exist. */
+char *screenName;   /* If NULL, new window will be on same
+                     * screen as its parent.  If non-NULL,
+                     * gives name of screen on which to create
+                     * new window;  window will be a top-level
+                     * window. */
 {
 #define FIXED_SPACE 5
     char fixedSpace[FIXED_SPACE + 1];
@@ -1514,8 +1514,8 @@ void Tk_ConfigureWindow(tkwin,
                         valueMask,
                         valuePtr) Tk_Window tkwin; /* Window to re-configure.
                                                     */
-unsigned int valueMask; /* Mask indicating which parts of
-                         * *valuePtr are to be used. */
+unsigned int valueMask;   /* Mask indicating which parts of
+                           * *valuePtr are to be used. */
 XWindowChanges *valuePtr; /* New values. */
 {
     TkWindow *winPtr = ( TkWindow * )tkwin;
@@ -1611,9 +1611,9 @@ int width, height; /* New dimensions for window. */
 }
 
 void Tk_MoveResizeWindow(tkwin, x, y, width, height)
-Tk_Window tkwin; /* Window to move and resize. */
-int x, y; /* New location for window (within
-           * parent). */
+Tk_Window tkwin;   /* Window to move and resize. */
+int x, y;          /* New location for window (within
+                    * parent). */
 int width, height; /* New dimensions for window. */
 {
     TkWindow *winPtr = ( TkWindow * )tkwin;
@@ -1792,8 +1792,8 @@ Pixmap pixmap; /* Pixmap to use for window's
 
 void Tk_SetWindowBorder(tkwin,
                         pixel) Tk_Window tkwin; /* Window to manipulate. */
-unsigned long pixel; /* Pixel value to use for
-                      * window's border. */
+unsigned long pixel;                            /* Pixel value to use for
+                                                 * window's border. */
 {
     TkWindow *winPtr = ( TkWindow * )tkwin;
 
@@ -1905,8 +1905,8 @@ int Tk_SetWindowVisual(tkwin,
                        visual,
                        depth,
                        colormap) Tk_Window tkwin; /* Window to manipulate. */
-Visual *visual; /* New visual for window. */
-int depth; /* New depth for window. */
+Visual *visual;                                   /* New visual for window. */
+int depth;                                        /* New depth for window. */
 Colormap colormap; /* An appropriate colormap for the visual. */
 {
     TkWindow *winPtr = ( TkWindow * )tkwin;
@@ -1999,7 +1999,7 @@ static void DoConfigureNotify(winPtr) TkWindow *winPtr; /* Window whose
 
 void Tk_SetClass(tkwin, className) Tk_Window tkwin; /* Token for window to
                                                        assign class. */
-char *className; /* New class for tkwin. */
+char *className;                                    /* New class for tkwin. */
 {
     TkWindow *winPtr = ( TkWindow * )tkwin;
 
@@ -2033,9 +2033,9 @@ char *className; /* New class for tkwin. */
 
 Tk_Window Tk_NameToWindow(interp, pathName, tkwin)
 Tcl_Interp *interp; /* Where to report errors. */
-char *pathName; /* Path name of window. */
-Tk_Window tkwin; /* Token for window:  name is assumed to
-                  * belong to the same main window as tkwin. */
+char *pathName;     /* Path name of window. */
+Tk_Window tkwin;    /* Token for window:  name is assumed to
+                     * belong to the same main window as tkwin. */
 {
     Tcl_HashEntry *hPtr;
 
@@ -2073,7 +2073,7 @@ Tk_Window tkwin; /* Token for window:  name is assumed to
 Tk_Window Tk_IdToWindow(display,
                         window) Display *display; /* X display containing the
                                                      window. */
-Window window; /* X window window id. */
+Window window;                                    /* X window window id. */
 {
     TkDisplay *dispPtr;
     Tcl_HashEntry *hPtr;
@@ -2195,8 +2195,8 @@ static void UnlinkWindow(winPtr) TkWindow *winPtr; /* Child window to be
 int Tk_RestackWindow(tkwin, aboveBelow, other)
 Tk_Window tkwin; /* Token for window whose position in
                   * the stacking order is to change. */
-int aboveBelow; /* Indicates new position of tkwin relative
-                 * to other;  must be Above or Below. */
+int aboveBelow;  /* Indicates new position of tkwin relative
+                  * to other;  must be Above or Below. */
 Tk_Window other; /* Tkwin will be moved to a position that
                   * puts it just above or below this window.
                   * If NULL then tkwin goes above or below

@@ -31,8 +31,8 @@ vcwngfreq(size_t *freq, Vcchar_t *data, size_t size)
 #else
 int vcwngfreq(freq, data, size) size_t *freq; /* frequency array size NG_FREQ
                                                */
-Vcchar_t *data; /* data to be aggregated	*/
-size_t size; /* size of data in bytes	*/
+Vcchar_t *data;                               /* data to be aggregated	*/
+size_t size;                                  /* size of data in bytes	*/
 #endif
 {
     size_t n, gram;
@@ -66,22 +66,22 @@ vcwngmatch(int *mtch,
            double stop)
 #else
 double vcwngmatch(mtch, dfreq, size, data, dtsz, pos, stop) int
-*mtch; /* to return the best match	*/
-size_t *dfreq; /* vector of data frequency  	*/
-size_t size; /* size of data to be matched	*/
+*mtch;          /* to return the best match	*/
+size_t *dfreq;  /* vector of data frequency  	*/
+size_t size;    /* size of data to be matched	*/
 Vcchar_t *data; /* source data array		*/
-size_t dtsz; /* size of source data		*/
-size_t pos; /* starting position of search	*/
-double stop; /* stop search criterion	*/
+size_t dtsz;    /* size of source data		*/
+size_t pos;     /* starting position of search	*/
+double stop;    /* stop search criterion	*/
 #endif
 {
     size_t lfreq[NG_FREQ], rfreq[NG_FREQ]; /* frequency vectors	*/
     Vcchar_t *lldt, *lrdt; /* boundaries of left data segment	*/
-    Grint_t llgr, lrgr; /* left,right n-grams of left segment	*/
-    size_t ldif, lmax; /* running statistics of left segment	*/
+    Grint_t llgr, lrgr;    /* left,right n-grams of left segment	*/
+    size_t ldif, lmax;     /* running statistics of left segment	*/
     Vcchar_t *rldt, *rrdt; /* boundaries of right data segment	*/
-    Grint_t rlgr, rrgr; /* left,right n-grams of right segment	*/
-    size_t rdif, rmax; /* running statistics of right segment	*/
+    Grint_t rlgr, rrgr;    /* left,right n-grams of right segment	*/
+    size_t rdif, rmax;     /* running statistics of right segment	*/
     size_t bestp, l, r;
     double bestd;
     Vcchar_t *edata;

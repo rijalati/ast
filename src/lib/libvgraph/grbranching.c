@@ -24,8 +24,8 @@ typedef struct _brnode_s
 typedef struct _bredge_s
 {
     Grdata_t data;
-    ssize_t wght; /* the original edge weight		*/
-    ssize_t wadj; /* adjusted weight during construction	*/
+    ssize_t wght;   /* the original edge weight		*/
+    ssize_t wadj;   /* adjusted weight during construction	*/
     Grnode_t *root; /* strong component before collapsing	*/
     Gredge_t *edge; /* branching edge that this represents	*/
 } Bredge_t;
@@ -223,7 +223,7 @@ grbranching(Graph_t *gr)
                 break;
 
             if (cl >= endcl) /* hmm, this should not happen */
-            { /**/
+            {                /**/
                 ASSERT(cl < endcl);
                 free(clist);
                 return -1;

@@ -24,10 +24,10 @@
 
 typedef struct LoadedPackage
 {
-    char *fileName; /* Name of the file from which the
-                     * package was loaded.  An empty string
-                     * means the package is loaded statically.
-                     * Malloc-ed. */
+    char *fileName;    /* Name of the file from which the
+                        * package was loaded.  An empty string
+                        * means the package is loaded statically.
+                        * Malloc-ed. */
     char *packageName; /* Name of package prefix for the package,
                         * properly capitalized (first letter UC,
                         * others LC), no "_", as in "Net".
@@ -97,8 +97,8 @@ static void LoadExitProc _ANSI_ARGS_((ClientData clientData));
 
 int Tcl_LoadCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Tcl_Interp *target;
     LoadedPackage *pkgPtr, *defaultPtr;
@@ -497,16 +497,16 @@ done:
  */
 
 void Tcl_StaticPackage(interp, pkgName, initProc, safeInitProc)
-Tcl_Interp *interp; /* If not NULL, it means that the
-                     * package has already been loaded
-                     * into the given interpreter by
-                     * calling the appropriate init proc. */
-char *pkgName; /* Name of package (must be properly
-                * capitalized: first letter upper
-                * case, others lower case). */
-Tcl_PackageInitProc *initProc; /* Procedure to call to incorporate
-                                * this package into a trusted
-                                * interpreter. */
+Tcl_Interp *interp;                /* If not NULL, it means that the
+                                    * package has already been loaded
+                                    * into the given interpreter by
+                                    * calling the appropriate init proc. */
+char *pkgName;                     /* Name of package (must be properly
+                                    * capitalized: first letter upper
+                                    * case, others lower case). */
+Tcl_PackageInitProc *initProc;     /* Procedure to call to incorporate
+                                    * this package into a trusted
+                                    * interpreter. */
 Tcl_PackageInitProc *safeInitProc; /* Procedure to call to incorporate
                                     * this package into a safe interpreter
                                     * (one that will execute untrusted
@@ -585,10 +585,10 @@ Tcl_PackageInitProc *safeInitProc; /* Procedure to call to incorporate
 int TclGetLoadedPackages(interp, targetName)
 Tcl_Interp *interp; /* Interpreter in which to return
                      * information or error message. */
-char *targetName; /* Name of target interpreter or NULL.
-                   * If NULL, return info about all interps;
-                   * otherwise, just return info about this
-                   * interpreter. */
+char *targetName;   /* Name of target interpreter or NULL.
+                     * If NULL, return info about all interps;
+                     * otherwise, just return info about this
+                     * interpreter. */
 {
     Tcl_Interp *target;
     LoadedPackage *pkgPtr;
@@ -666,7 +666,7 @@ char *targetName; /* Name of target interpreter or NULL.
 static void LoadCleanupProc(clientData, interp)
 ClientData clientData; /* Pointer to first InterpPackage structure
                         * for interp. */
-Tcl_Interp *interp; /* Interpreter that is being deleted. */
+Tcl_Interp *interp;    /* Interpreter that is being deleted. */
 {
     InterpPackage *ipPtr, *nextPtr;
 

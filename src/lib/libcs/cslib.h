@@ -43,17 +43,17 @@ struct Server_s;
 typedef struct Server_s Server_t;
 
 #    define _CS_PRIVATE_                                                     \
-        Inet_t proxy; /* proxy inet addr.port 	*/                            \
-        int db; /* csdb() state			*/                                         \
-        int interrupt; /* last interrupt		*/                                 \
-        int nostream; /* cspeek() state		*/                                  \
-        int nosocket; /* cspeek() state		*/                                  \
-        Server_t *server; /* csserve() state		*/                             \
+        Inet_t proxy;               /* proxy inet addr.port 	*/              \
+        int db;                     /* csdb() state			*/                     \
+        int interrupt;              /* last interrupt		*/                    \
+        int nostream;               /* cspeek() state		*/                    \
+        int nosocket;               /* cspeek() state		*/                    \
+        Server_t *server;           /* csserve() state		*/                   \
         char full[4 * CS_NAME_MAX]; /* csname() full buffer	*/               \
-        char name[CS_NAME_MAX]; /* csname() short buffer	*/                  \
-        char ntoa[16]; /* csntoa() buffer		*/                                \
-        char path[PATH_MAX]; /* lib work buffer		*/                          \
-        char temp[CS_NAME_MAX]; /* lib work buffer		*/
+        char name[CS_NAME_MAX];     /* csname() short buffer	*/              \
+        char ntoa[16];              /* csntoa() buffer		*/                   \
+        char path[PATH_MAX];        /* lib work buffer		*/                   \
+        char temp[CS_NAME_MAX];     /* lib work buffer		*/
 
 #    include <cs.h>
 #    include <debug.h>

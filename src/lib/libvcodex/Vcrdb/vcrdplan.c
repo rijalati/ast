@@ -134,9 +134,9 @@ rdmatch(Vcrdtable_t *tbl,
 #else
 ssize_t rdmatch(tbl, f, vect, smpl, n_smpl)
 Vcrdtable_t *tbl; /* table of all records and fields	*/
-ssize_t f; /* field to compute weight		*/
-ssize_t *vect; /* permutation vector, NULL for ident	*/
-ssize_t *smpl; /* indicators for rows to sample	*/
+ssize_t f;        /* field to compute weight		*/
+ssize_t *vect;    /* permutation vector, NULL for ident	*/
+ssize_t *smpl;    /* indicators for rows to sample	*/
 ssize_t n_smpl;
 #endif
 {
@@ -192,9 +192,9 @@ rdentropy(Vcrdtable_t *tbl,
 #else
 ssize_t rdentropy(tbl, f, vect, smpl, n_smpl, vcw)
 Vcrdtable_t *tbl; /* table of all records and fields	*/
-ssize_t f; /* field to compute weight		*/
-ssize_t *vect; /* permutation vector, NULL for ident	*/
-ssize_t *smpl; /* indicators for rows to sample	*/
+ssize_t f;        /* field to compute weight		*/
+ssize_t *vect;    /* permutation vector, NULL for ident	*/
+ssize_t *smpl;    /* indicators for rows to sample	*/
 ssize_t n_smpl;
 Vcodex_t *vcw; /* weight function, NULL for match()	*/
 #endif
@@ -238,7 +238,7 @@ Vcrdplan_t *
 vcrdmakeplan(Vcrdtable_t *tbl, Vcodex_t *vcw)
 #else
 Vcrdplan_t *vcrdmakeplan(tbl, wvc) Vcrdtable_t *tbl; /* table of data	*/
-Vcodex_t *vcw; /* general compressor	*/
+Vcodex_t *vcw;                                       /* general compressor	*/
 #endif
 {
     Grnode_t *nd, *pd;
@@ -275,12 +275,12 @@ Vcodex_t *vcw; /* general compressor	*/
 
     VCRSEED(0xdeadbeef); /* reset random number generator */
     for (n_smpl = 16; n_smpl * n_smpl < recn;) /* sqrt(recn) */
-        n_smpl += 1; /**/
+        n_smpl += 1;                           /**/
     DEBUG_PRINT(2, "n_smpl=%d\n", n_smpl);
     for (z = (z = n_smpl / 4) * n_smpl >= 4096 ? z : 4096 / n_smpl; z > 0;
          --z)
     {
-        p = VCRAND() % recn; /* sample a set centered around p */
+        p = VCRAND() % recn;      /* sample a set centered around p */
         if ((f = p - n_smpl) < 4) /* first few records tend to be spurious */
             f = 4;
         if ((p = f + 2 * n_smpl) > recn)
@@ -400,10 +400,10 @@ fldtransform(Vcrdtable_t *tbl,
 #else
 static void
 fldtransform(tbl, f, vect, rtmp, type) Vcrdtable_t *tbl; /* table data		*/
-ssize_t f; /* field to transform	*/
-ssize_t *vect; /* transform vector	*/
+ssize_t f;          /* field to transform	*/
+ssize_t *vect;      /* transform vector	*/
 Vcrdrecord_t *rtmp; /* temp record space	*/
-int type; /* VC_ENCODE/DECODE	*/
+int type;           /* VC_ENCODE/DECODE	*/
 #endif
 {
     ssize_t r, recn = tbl->recn;
@@ -440,10 +440,10 @@ fldinvert(Vcrdtable_t *tbl,
 #else
 static int fldinvert(tbl, pl, f, level, rtmp) Vcrdtable_t *tbl; /* table data
                                                                  */
-Vcrdplan_t *pl; /* transform plan	*/
-ssize_t f; /* field to rebuild	*/
-ssize_t level; /* recursion level	*/
-Vcrdrecord_t *rtmp; /* temp record space	*/
+Vcrdplan_t *pl;                                   /* transform plan	*/
+ssize_t f;                                        /* field to rebuild	*/
+ssize_t level;                                    /* recursion level	*/
+Vcrdrecord_t *rtmp;                               /* temp record space	*/
 #endif
 {
     ssize_t p;
@@ -475,7 +475,7 @@ vcrdexecplan(Vcrdtable_t *tbl, Vcrdplan_t *pl, int type)
 #else
 int vcrdexecplan(tbl, pl, type) Vcrdtable_t *tbl; /* table data			*/
 Vcrdplan_t *pl; /* transform plan for data	*/
-int type; /* VC_ENCODE or VC_DECODE	*/
+int type;       /* VC_ENCODE or VC_DECODE	*/
 #endif
 {
     ssize_t fldn, recn, f, p;

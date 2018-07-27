@@ -29,10 +29,10 @@
 typedef struct _freq_s
 {
     Vcwfile_t *srcf; /* to find matches in source file	*/
-    Sfio_t *tarf; /* target file if it is seekable	*/
+    Sfio_t *tarf;    /* target file if it is seekable	*/
 
     Sfoff_t next; /* next sequential match location	*/
-    int dtsz; /* size of last data set		*/
+    int dtsz;     /* size of last data set		*/
 
     double bestd; /* best match distance so far		*/
 
@@ -48,9 +48,9 @@ typedef struct _freq_s
 #define SEQITVL (8 * 1024) /* search around next location		*/
 #define IDXITVL (2 * 1024) /* search around each candidate index	*/
 
-#define SEQMATCH 0.16 /* close enough for a sequential match	*/
-#define TARMATCH 0.08 /* close enough to prune target search	*/
-#define SRCHMATCH 0.04 /* close enough to prune search		*/
+#define SEQMATCH 0.16   /* close enough for a sequential match	*/
+#define TARMATCH 0.08   /* close enough to prune target search	*/
+#define SRCHMATCH 0.04  /* close enough to prune search		*/
 #define NGRAMMATCH 0.01 /* prune in ngram frequency matching	*/
 
 #define NOTARMATCH 0.20 /* do not use as a target file match	*/
@@ -62,8 +62,8 @@ frinterval(Vcwindow_t *vcw, size_t *dfreq, size_t size, Sfoff_t l, Sfoff_t r)
 #else
 static double frinterval(vcw, dfreq, size, l, r) Vcwindow_t *vcw;
 size_t *dfreq; /* frequencies of data n-grams	*/
-size_t size; /* size of data			*/
-Sfoff_t l, r; /* interval to search		*/
+size_t size;   /* size of data			*/
+Sfoff_t l, r;  /* interval to search		*/
 #endif
 {
     Vcchar_t *data;
@@ -102,7 +102,7 @@ frsearch(Vcwindow_t *vcw, size_t *dfreq, size_t size)
 #else
 static double frsearch(vcw, dfreq, size) Vcwindow_t *vcw;
 size_t *dfreq; /* frequencies of data n-grams	*/
-size_t size; /* size of data			*/
+size_t size;   /* size of data			*/
 #endif
 {
     Sfoff_t pos, l, r, max;
@@ -142,8 +142,8 @@ frtarget(Vcwindow_t *vcw, size_t *dfreq, size_t size, Sfoff_t here)
 #else
 static double frtarget(vcw, dfreq, size, here) Vcwindow_t *vcw;
 size_t *dfreq; /* frequencies of data n-grams	*/
-size_t size; /* size of data			*/
-Sfoff_t here; /* current location		*/
+size_t size;   /* size of data			*/
+Sfoff_t here;  /* current location		*/
 #endif
 {
     Sfoff_t pos, cpos;
@@ -201,7 +201,7 @@ frmatch(Vcwindow_t *vcw, Void_t *data, size_t dtsz, Sfoff_t here)
 #else
 static Vcwmatch_t *frmatch(vcw, data, dtsz, here) Vcwindow_t *vcw;
 Void_t *data; /* target data to be matched	*/
-size_t dtsz; /* data size			*/
+size_t dtsz;  /* data size			*/
 Sfoff_t here; /* current target position	*/
 #endif
 {

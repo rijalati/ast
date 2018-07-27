@@ -80,7 +80,7 @@ static char l_changed; /* set if mode bits changed */
 #        define T_CHARS 2
 #        define L_MASK 1
 #    endif /* TIOCGETP */
-#endif /* _hdr_sgtty */
+#endif     /* _hdr_sgtty */
 
 #ifndef IODELAY
 #    undef _SELECT5_
@@ -95,7 +95,7 @@ static int delay;
 int tty_speeds[] = { 0,   50,   75,   110,  134,  150,   200, 300,
                      600, 1200, 1800, 2400, 9600, 19200, 0 };
 #    endif /* KSHELL */
-#endif /* _SELECT5_ */
+#endif     /* _SELECT5_ */
 
 #ifdef KSHELL
 extern char *
@@ -115,15 +115,15 @@ static int
 compare();
 #endif
 #if VSH || ESH
-static struct termios ttyparm; /* initial tty parameters */
+static struct termios ttyparm;  /* initial tty parameters */
 static struct termios nttyparm; /* raw tty parameters */
-static char bellchr[] = "\7"; /* bell char */
+static char bellchr[] = "\7";   /* bell char */
 #    define tenex 1
 #    ifdef tenex
 static char *
 overlay();
 #    endif /* tenex */
-#endif /* VSH || ESH */
+#endif     /* VSH || ESH */
 
 
 /*
@@ -410,8 +410,8 @@ int tty_alt(fd) int fd;
     nttyparm.c_iflag &= ~(IGNCR | ICRNL);
     nttyparm.c_iflag |= INLCR;
     nttyparm.c_lflag |= (ECHOE | ECHOK);
-    nttyparm.c_cc[VEOF] = ESC; /* make ESC the eof char */
-    nttyparm.c_cc[VEOL] = '\r'; /* make CR an eol char */
+    nttyparm.c_cc[VEOF] = ESC;          /* make ESC the eof char */
+    nttyparm.c_cc[VEOL] = '\r';         /* make CR an eol char */
     nttyparm.c_cc[VEOL2] = editb.e_eof; /* make EOF an eol char */
 #            endif /* ECHOCTL */
 #            ifdef VWERASE
@@ -430,7 +430,7 @@ int tty_alt(fd) int fd;
 }
 
 #        endif /* TIOCGETC */
-#    endif /* RAWONLY */
+#    endif     /* RAWONLY */
 
 /*
  *	ED_WINDOW()
@@ -510,7 +510,7 @@ ed_flush()
     if (editb.e_raw == RAWMODE && n > 16)
         tty_set(fd, TCSADRAIN, &nttyparm);
 #        endif /* IODELAY */
-#    endif /* _SELECT5_ */
+#    endif     /* _SELECT5_ */
 }
 
 /*
@@ -1276,7 +1276,7 @@ int ed_genlen(str) genchar *str;
     return (sp - str - 1);
 }
 #    endif /* MULTIBYTE */
-#endif /* ESH || VSH */
+#endif     /* ESH || VSH */
 
 #ifdef MULTIBYTE
 /*
@@ -1415,8 +1415,8 @@ struct termios *tt;
             ott.c_lflag &= ~(ECHOCTL | IEXTEN);
             ott.c_iflag &= ~(IGNCR | ICRNL);
             ott.c_iflag |= INLCR;
-            ott.c_cc[VEOF] = ESC; /* ESC -> eof char */
-            ott.c_cc[VEOL] = '\r'; /* CR -> eol char */
+            ott.c_cc[VEOF] = ESC;             /* ESC -> eof char */
+            ott.c_cc[VEOL] = '\r';            /* CR -> eol char */
             ott.c_cc[VEOL2] = tt->c_cc[VEOF]; /* EOF -> eol char */
         }
         switch (mode)

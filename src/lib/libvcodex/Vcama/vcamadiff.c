@@ -24,7 +24,7 @@
 **	Written by Kiem-Phong Vo
 */
 
-#define SIZE 2 /* #bytes coding a record size	*/
+#define SIZE 2            /* #bytes coding a record size	*/
 #define MAXSIZE (1 << 16) /* max record size		*/
 #define GETSIZE(dt) (((dt)[0] << 8) + (dt)[1]) /* get AMA size	*/
 #define PUTSIZE(dt, v)                                                       \

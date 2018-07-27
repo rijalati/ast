@@ -28,85 +28,85 @@
 
 typedef struct MenuEntry
 {
-    int type; /* Type of menu entry;  see below for
-               * valid types. */
-    struct Menu *menuPtr; /* Menu with which this entry is associated. */
-    char *label; /* Main text label displayed in entry (NULL
-                  * if no label).  Malloc'ed. */
-    int labelLength; /* Number of non-NULL characters in label. */
-    int underline; /* Index of character to underline. */
-    Pixmap bitmap; /* Bitmap to display in menu entry, or None.
-                    * If not None then label is ignored. */
-    char *imageString; /* Name of image to display (malloc'ed), or
-                        * NULL.  If non-NULL, bitmap, text, and
-                        * textVarName are ignored. */
-    Tk_Image image; /* Image to display in menu entry, or NULL if
-                     * none. */
+    int type;                /* Type of menu entry;  see below for
+                              * valid types. */
+    struct Menu *menuPtr;    /* Menu with which this entry is associated. */
+    char *label;             /* Main text label displayed in entry (NULL
+                              * if no label).  Malloc'ed. */
+    int labelLength;         /* Number of non-NULL characters in label. */
+    int underline;           /* Index of character to underline. */
+    Pixmap bitmap;           /* Bitmap to display in menu entry, or None.
+                              * If not None then label is ignored. */
+    char *imageString;       /* Name of image to display (malloc'ed), or
+                              * NULL.  If non-NULL, bitmap, text, and
+                              * textVarName are ignored. */
+    Tk_Image image;          /* Image to display in menu entry, or NULL if
+                              * none. */
     char *selectImageString; /* Name of image to display when selected
                               * (malloc'ed), or NULL. */
-    Tk_Image selectImage; /* Image to display in entry when selected,
-                           * or NULL if none.  Ignored if image is
-                           * NULL. */
-    char *accel; /* Accelerator string displayed at right
-                  * of menu entry.  NULL means no such
-                  * accelerator.  Malloc'ed. */
-    int accelLength; /* Number of non-NULL characters in
-                      * accelerator. */
+    Tk_Image selectImage;    /* Image to display in entry when selected,
+                              * or NULL if none.  Ignored if image is
+                              * NULL. */
+    char *accel;             /* Accelerator string displayed at right
+                              * of menu entry.  NULL means no such
+                              * accelerator.  Malloc'ed. */
+    int accelLength;         /* Number of non-NULL characters in
+                              * accelerator. */
 
     /*
      * Information related to displaying entry:
      */
 
-    Tk_Uid state; /* State of button for display purposes:
-                   * normal, active, or disabled. */
-    int height; /* Number of pixels occupied by entry in
-                 * vertical dimension, including raised
-                 * border drawn around entry when active. */
-    int y; /* Y-coordinate of topmost pixel in entry. */
-    int indicatorOn; /* True means draw indicator, false means
-                      * don't draw it. */
-    int indicatorDiameter; /* Size of indicator display, in pixels. */
-    Tk_3DBorder border; /* Structure used to draw background for
-                         * entry.  NULL means use overall border
-                         * for menu. */
-    XColor *fg; /* Foreground color to use for entry.  NULL
-                 * means use foreground color from menu. */
+    Tk_Uid state;             /* State of button for display purposes:
+                               * normal, active, or disabled. */
+    int height;               /* Number of pixels occupied by entry in
+                               * vertical dimension, including raised
+                               * border drawn around entry when active. */
+    int y;                    /* Y-coordinate of topmost pixel in entry. */
+    int indicatorOn;          /* True means draw indicator, false means
+                               * don't draw it. */
+    int indicatorDiameter;    /* Size of indicator display, in pixels. */
+    Tk_3DBorder border;       /* Structure used to draw background for
+                               * entry.  NULL means use overall border
+                               * for menu. */
+    XColor *fg;               /* Foreground color to use for entry.  NULL
+                               * means use foreground color from menu. */
     Tk_3DBorder activeBorder; /* Used to draw background and border when
                                * element is active.  NULL means use
                                * activeBorder from menu. */
-    XColor *activeFg; /* Foreground color to use when entry is
-                       * active.  NULL means use active foreground
-                       * from menu. */
-    XFontStruct *fontPtr; /* Text font for menu entries.  NULL means
-                           * use overall font for menu. */
-    GC textGC; /* GC for drawing text in entry.  NULL means
-                * use overall textGC for menu. */
-    GC activeGC; /* GC for drawing text in entry when active.
-                  * NULL means use overall activeGC for
-                  * menu. */
-    GC disabledGC; /* Used to produce disabled effect for entry.
-                    * NULL means use overall disabledGC from
-                    * menu structure.  See comments for
-                    * disabledFg in menu structure for more
-                    * information. */
-    XColor *indicatorFg; /* Color for indicators in radio and check
-                          * button entries.  NULL means use indicatorFg
-                          * GC from menu. */
-    GC indicatorGC; /* For drawing indicators.  None means use
-                     * GC from menu. */
+    XColor *activeFg;         /* Foreground color to use when entry is
+                               * active.  NULL means use active foreground
+                               * from menu. */
+    XFontStruct *fontPtr;     /* Text font for menu entries.  NULL means
+                               * use overall font for menu. */
+    GC textGC;                /* GC for drawing text in entry.  NULL means
+                               * use overall textGC for menu. */
+    GC activeGC;              /* GC for drawing text in entry when active.
+                               * NULL means use overall activeGC for
+                               * menu. */
+    GC disabledGC;            /* Used to produce disabled effect for entry.
+                               * NULL means use overall disabledGC from
+                               * menu structure.  See comments for
+                               * disabledFg in menu structure for more
+                               * information. */
+    XColor *indicatorFg;      /* Color for indicators in radio and check
+                               * button entries.  NULL means use indicatorFg
+                               * GC from menu. */
+    GC indicatorGC;           /* For drawing indicators.  None means use
+                               * GC from menu. */
 
     /*
      * Information used to implement this entry's action:
      */
 
-    char *command; /* Command to invoke when entry is invoked.
-                    * Malloc'ed. */
-    char *name; /* Name of variable (for check buttons and
-                 * radio buttons) or menu (for cascade
-                 * entries).  Malloc'ed.*/
-    char *onValue; /* Value to store in variable when selected
-                    * (only for radio and check buttons).
-                    * Malloc'ed. */
+    char *command;  /* Command to invoke when entry is invoked.
+                     * Malloc'ed. */
+    char *name;     /* Name of variable (for check buttons and
+                     * radio buttons) or menu (for cascade
+                     * entries).  Malloc'ed.*/
+    char *onValue;  /* Value to store in variable when selected
+                     * (only for radio and check buttons).
+                     * Malloc'ed. */
     char *offValue; /* Value to store in variable when not
                      * selected (only for check buttons).
                      * Malloc'ed. */
@@ -333,84 +333,84 @@ static Tk_ConfigSpec entryConfigSpecs[]
 
 typedef struct Menu
 {
-    Tk_Window tkwin; /* Window that embodies the pane.  NULL
-                      * means that the window has been destroyed
-                      * but the data structures haven't yet been
-                      * cleaned up.*/
-    Display *display; /* Display containing widget.  Needed, among
-                       * other things, so that resources can be
-                       * freed up even after tkwin has gone away. */
-    Tcl_Interp *interp; /* Interpreter associated with menu. */
+    Tk_Window tkwin;       /* Window that embodies the pane.  NULL
+                            * means that the window has been destroyed
+                            * but the data structures haven't yet been
+                            * cleaned up.*/
+    Display *display;      /* Display containing widget.  Needed, among
+                            * other things, so that resources can be
+                            * freed up even after tkwin has gone away. */
+    Tcl_Interp *interp;    /* Interpreter associated with menu. */
     Tcl_Command widgetCmd; /* Token for menu's widget command. */
-    MenuEntry **entries; /* Array of pointers to all the entries
-                          * in the menu.  NULL means no entries. */
-    int numEntries; /* Number of elements in entries. */
-    int active; /* Index of active entry.  -1 means
-                 * nothing active. */
+    MenuEntry **entries;   /* Array of pointers to all the entries
+                            * in the menu.  NULL means no entries. */
+    int numEntries;        /* Number of elements in entries. */
+    int active;            /* Index of active entry.  -1 means
+                            * nothing active. */
 
     /*
      * Information used when displaying widget:
      */
 
-    Tk_3DBorder border; /* Structure used to draw 3-D
-                         * border and background for menu. */
-    int borderWidth; /* Width of border around whole menu. */
+    Tk_3DBorder border;       /* Structure used to draw 3-D
+                               * border and background for menu. */
+    int borderWidth;          /* Width of border around whole menu. */
     Tk_3DBorder activeBorder; /* Used to draw background and border for
                                * active element (if any). */
-    int activeBorderWidth; /* Width of border around active element. */
-    int relief; /* 3-d effect: TK_RELIEF_RAISED, etc. */
-    XFontStruct *fontPtr; /* Text font for menu entries. */
-    XColor *fg; /* Foreground color for entries. */
-    GC textGC; /* GC for drawing text and other features
-                * of menu entries. */
-    XColor *disabledFg; /* Foreground color when disabled.  NULL
-                         * means use normalFg with a 50% stipple
-                         * instead. */
-    Pixmap gray; /* Bitmap for drawing disabled entries in
-                  * a stippled fashion.  None means not
-                  * allocated yet. */
-    GC disabledGC; /* Used to produce disabled effect.  If
-                    * disabledFg isn't NULL, this GC is used to
-                    * draw text and icons for disabled entries.
-                    * Otherwise text and icons are drawn with
-                    * normalGC and this GC is used to stipple
-                    * background across them. */
-    XColor *activeFg; /* Foreground color for active entry. */
-    GC activeGC; /* GC for drawing active entry. */
-    XColor *indicatorFg; /* Color for indicators in radio and check
-                          * button entries. */
-    GC indicatorGC; /* For drawing indicators. */
-    int indicatorSpace; /* Number of pixels to allow for displaying
-                         * indicators in menu entries (includes extra
-                         * space around indicator). */
-    int labelWidth; /* Number of pixels to allow for displaying
-                     * labels in menu entries. */
+    int activeBorderWidth;    /* Width of border around active element. */
+    int relief;               /* 3-d effect: TK_RELIEF_RAISED, etc. */
+    XFontStruct *fontPtr;     /* Text font for menu entries. */
+    XColor *fg;               /* Foreground color for entries. */
+    GC textGC;                /* GC for drawing text and other features
+                               * of menu entries. */
+    XColor *disabledFg;       /* Foreground color when disabled.  NULL
+                               * means use normalFg with a 50% stipple
+                               * instead. */
+    Pixmap gray;              /* Bitmap for drawing disabled entries in
+                               * a stippled fashion.  None means not
+                               * allocated yet. */
+    GC disabledGC;            /* Used to produce disabled effect.  If
+                               * disabledFg isn't NULL, this GC is used to
+                               * draw text and icons for disabled entries.
+                               * Otherwise text and icons are drawn with
+                               * normalGC and this GC is used to stipple
+                               * background across them. */
+    XColor *activeFg;         /* Foreground color for active entry. */
+    GC activeGC;              /* GC for drawing active entry. */
+    XColor *indicatorFg;      /* Color for indicators in radio and check
+                               * button entries. */
+    GC indicatorGC;           /* For drawing indicators. */
+    int indicatorSpace;       /* Number of pixels to allow for displaying
+                               * indicators in menu entries (includes extra
+                               * space around indicator). */
+    int labelWidth;           /* Number of pixels to allow for displaying
+                               * labels in menu entries. */
 
     /*
      * Miscellaneous information:
      */
 
-    int tearOff; /* 1 means this is a tear-off menu, so the
-                  * first entry always shows a dashed stripe
-                  * for tearing off. */
-    char *tearOffCommand; /* If non-NULL, points to a command to
-                           * run whenever the menu is torn-off. */
-    int transient; /* 1 means menu is only posted briefly as
-                    * a popup or pulldown or cascade.  0 means
-                    * menu is always visible, e.g. as a torn-off
-                    * menu.  Determines whether save_under and
-                    * override_redirect should be set. */
-    Tk_Cursor cursor; /* Current cursor for window, or None. */
-    char *takeFocus; /* Value of -takefocus option;  not used in
-                      * the C code, but used by keyboard traversal
-                      * scripts.  Malloc'ed, but may be NULL. */
-    char *postCommand; /* Command to execute just before posting
-                        * this menu, or NULL.  Malloc-ed. */
+    int tearOff;              /* 1 means this is a tear-off menu, so the
+                               * first entry always shows a dashed stripe
+                               * for tearing off. */
+    char *tearOffCommand;     /* If non-NULL, points to a command to
+                               * run whenever the menu is torn-off. */
+    int transient;            /* 1 means menu is only posted briefly as
+                               * a popup or pulldown or cascade.  0 means
+                               * menu is always visible, e.g. as a torn-off
+                               * menu.  Determines whether save_under and
+                               * override_redirect should be set. */
+    Tk_Cursor cursor;         /* Current cursor for window, or None. */
+    char *takeFocus;          /* Value of -takefocus option;  not used in
+                               * the C code, but used by keyboard traversal
+                               * scripts.  Malloc'ed, but may be NULL. */
+    char *postCommand;        /* Command to execute just before posting
+                               * this menu, or NULL.  Malloc-ed. */
     MenuEntry *postedCascade; /* Points to menu entry for cascaded
                                * submenu that is currently posted, or
                                * NULL if no submenu posted. */
-    int flags; /* Various flags;  see below for
-                * definitions. */
+    int flags;                /* Various flags;  see below for
+                               * definitions. */
 } Menu;
 
 /*
@@ -694,9 +694,9 @@ static int PostSubmenu _ANSI_ARGS_((Tcl_Interp * interp,
 int Tk_MenuCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     Tk_Window new;
@@ -804,9 +804,9 @@ error:
 
 static int MenuWidgetCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about menu widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Menu *menuPtr = ( Menu * )clientData;
     MenuEntry *mePtr;
@@ -1590,11 +1590,11 @@ static void DestroyMenuEntry(memPtr) char *memPtr; /* Pointer to entry to be
 
 static int ConfigureMenu(interp, menuPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Menu *menuPtr; /* Information about widget;  may or may
-                * not already have values for some fields. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Menu *menuPtr;      /* Information about widget;  may or may
+                     * not already have values for some fields. */
+int argc;           /* Number of valid entries in argv. */
+char **argv;        /* Arguments. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     XSetWindowAttributes atts;
     XGCValues gcValues;
@@ -1778,16 +1778,16 @@ int flags; /* Flags to pass to Tk_ConfigureWidget. */
 
 static int ConfigureMenuEntry(interp, menuPtr, mePtr, index, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Menu *menuPtr; /* Information about whole menu. */
-MenuEntry *mePtr; /* Information about menu entry;  may
-                   * or may not already have values for
-                   * some fields. */
-int index; /* Index of mePtr within menuPtr's
-            * entries. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Additional flags to pass to
-            * Tk_ConfigureWidget. */
+Menu *menuPtr;      /* Information about whole menu. */
+MenuEntry *mePtr;   /* Information about menu entry;  may
+                     * or may not already have values for
+                     * some fields. */
+int index;          /* Index of mePtr within menuPtr's
+                     * entries. */
+int argc;           /* Number of valid entries in argv. */
+char **argv;        /* Arguments. */
+int flags;          /* Additional flags to pass to
+                     * Tk_ConfigureWidget. */
 {
     XGCValues gcValues;
     GC newGC, newActiveGC, newDisabledGC;
@@ -2784,13 +2784,13 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
 
 static int GetMenuIndex(interp, menuPtr, string, lastOK, indexPtr)
 Tcl_Interp *interp; /* For error messages. */
-Menu *menuPtr; /* Menu for which the index is being
-                * specified. */
-char *string; /* Specification of an entry in menu.  See
-               * manual entry for valid .*/
-int lastOK; /* Non-zero means its OK to return index
-             * just *after* last entry. */
-int *indexPtr; /* Where to store converted relief. */
+Menu *menuPtr;      /* Menu for which the index is being
+                     * specified. */
+char *string;       /* Specification of an entry in menu.  See
+                     * manual entry for valid .*/
+int lastOK;         /* Non-zero means its OK to return index
+                     * just *after* last entry. */
+int *indexPtr;      /* Where to store converted relief. */
 {
     int i, y;
 
@@ -2996,7 +2996,7 @@ MenuNewEntry(menuPtr, index, type) Menu *menuPtr; /* Menu that will hold the
                                                      new entry. */
 int index; /* Where in the menu the new entry is to
             * go. */
-int type; /* The type of the new entry. */
+int type;  /* The type of the new entry. */
 {
     MenuEntry *mePtr;
     MenuEntry **newEntries;
@@ -3079,15 +3079,15 @@ int type; /* The type of the new entry. */
 
 static int MenuAddOrInsert(interp, menuPtr, indexString, argc, argv)
 Tcl_Interp *interp; /* Used for error reporting. */
-Menu *menuPtr; /* Widget in which to create new
-                * entry. */
-char *indexString; /* String describing index at which
-                    * to insert.  NULL means insert at
-                    * end. */
-int argc; /* Number of elements in argv. */
-char **argv; /* Arguments to command:  first arg
-              * is type of entry, others are
-              * config options. */
+Menu *menuPtr;      /* Widget in which to create new
+                     * entry. */
+char *indexString;  /* String describing index at which
+                     * to insert.  NULL means insert at
+                     * end. */
+int argc;           /* Number of elements in argv. */
+char **argv;        /* Arguments to command:  first arg
+                     * is type of entry, others are
+                     * config options. */
 {
     int c, type, i, index;
     size_t length;
@@ -3192,10 +3192,10 @@ char **argv; /* Arguments to command:  first arg
 /* ARGSUSED */
 static char *MenuVarProc(clientData, interp, name1, name2, flags)
 ClientData clientData; /* Information about menu entry. */
-Tcl_Interp *interp; /* Interpreter containing variable. */
-char *name1; /* First part of variable's name. */
-char *name2; /* Second part of variable's name. */
-int flags; /* Describes what just happened. */
+Tcl_Interp *interp;    /* Interpreter containing variable. */
+char *name1;           /* First part of variable's name. */
+char *name2;           /* Second part of variable's name. */
+int flags;             /* Describes what just happened. */
 {
     MenuEntry *mePtr = ( MenuEntry * )clientData;
     Menu *menuPtr;
@@ -3326,10 +3326,10 @@ MenuEntry *mePtr; /* Entry to redraw.  NULL means redraw
 static int PostSubmenu(interp, menuPtr, mePtr)
 Tcl_Interp *interp; /* Used for invoking sub-commands and
                      * reporting errors. */
-Menu *menuPtr; /* Information about menu as a whole. */
-MenuEntry *mePtr; /* Info about submenu that is to be
-                   * posted.  NULL means make sure that
-                   * no submenu is posted. */
+Menu *menuPtr;      /* Information about menu as a whole. */
+MenuEntry *mePtr;   /* Info about submenu that is to be
+                     * posted.  NULL means make sure that
+                     * no submenu is posted. */
 {
     char string[30];
     int result, x, y;
@@ -3486,11 +3486,11 @@ int index; /* Index of entry to activate, or
  */
 
 static void MenuImageProc(clientData, x, y, width, height, imgWidth, imgHeight)
-ClientData clientData; /* Pointer to widget record. */
-int x, y; /* Upper left pixel (within image)
-           * that must be redisplayed. */
-int width, height; /* Dimensions of area to redisplay
-                    * (may be <= 0). */
+ClientData clientData;   /* Pointer to widget record. */
+int x, y;                /* Upper left pixel (within image)
+                          * that must be redisplayed. */
+int width, height;       /* Dimensions of area to redisplay
+                          * (may be <= 0). */
 int imgWidth, imgHeight; /* New dimensions of image. */
 {
     Menu *menuPtr = (( MenuEntry * )clientData)->menuPtr;
@@ -3522,11 +3522,11 @@ int imgWidth, imgHeight; /* New dimensions of image. */
 
 static void
 MenuSelectImageProc(clientData, x, y, width, height, imgWidth, imgHeight)
-ClientData clientData; /* Pointer to widget record. */
-int x, y; /* Upper left pixel (within image)
-           * that must be redisplayed. */
-int width, height; /* Dimensions of area to redisplay
-                    * (may be <= 0). */
+ClientData clientData;   /* Pointer to widget record. */
+int x, y;                /* Upper left pixel (within image)
+                          * that must be redisplayed. */
+int width, height;       /* Dimensions of area to redisplay
+                          * (may be <= 0). */
 int imgWidth, imgHeight; /* New dimensions of image. */
 {
     MenuEntry *mePtr = ( MenuEntry * )clientData;

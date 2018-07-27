@@ -243,25 +243,25 @@ static const char usage[]
 #include <tmx.h>
 #include <vmalloc.h>
 
-#define LS_ACROSS (LS_USER << 0) /* multi-column row order	*/
-#define LS_ALL (LS_USER << 1) /* list all			*/
-#define LS_ALWAYS (LS_USER << 2) /* always quote			*/
-#define LS_COLUMNS (LS_USER << 3) /* multi-column column order	*/
-#define LS_COMMAS (LS_USER << 4) /* comma separated name list	*/
-#define LS_DIRECTORY (LS_USER << 5) /* list directories as files	*/
-#define LS_ESCAPE (LS_USER << 6) /* C escape unprintable chars	*/
-#define LS_EXTENSION (LS_USER << 7) /* sort by name extension	*/
-#define LS_LABEL (LS_USER << 8) /* label for all dirs		*/
-#define LS_MARKDIR (LS_USER << 9) /* marks dirs with /		*/
-#define LS_MOST (LS_USER << 10) /* list all but . and ..	*/
-#define LS_NOBACKUP (LS_USER << 11) /* omit *~ names		*/
-#define LS_NOSTAT (LS_USER << 13) /* leaf FTS_NS ok		*/
+#define LS_ACROSS (LS_USER << 0)     /* multi-column row order	*/
+#define LS_ALL (LS_USER << 1)        /* list all			*/
+#define LS_ALWAYS (LS_USER << 2)     /* always quote			*/
+#define LS_COLUMNS (LS_USER << 3)    /* multi-column column order	*/
+#define LS_COMMAS (LS_USER << 4)     /* comma separated name list	*/
+#define LS_DIRECTORY (LS_USER << 5)  /* list directories as files	*/
+#define LS_ESCAPE (LS_USER << 6)     /* C escape unprintable chars	*/
+#define LS_EXTENSION (LS_USER << 7)  /* sort by name extension	*/
+#define LS_LABEL (LS_USER << 8)      /* label for all dirs		*/
+#define LS_MARKDIR (LS_USER << 9)    /* marks dirs with /		*/
+#define LS_MOST (LS_USER << 10)      /* list all but . and ..	*/
+#define LS_NOBACKUP (LS_USER << 11)  /* omit *~ names		*/
+#define LS_NOSTAT (LS_USER << 13)    /* leaf FTS_NS ok		*/
 #define LS_PRINTABLE (LS_USER << 14) /* ? for non-printable chars	*/
-#define LS_QUOTE (LS_USER << 15) /* "..." file names		*/
+#define LS_QUOTE (LS_USER << 15)     /* "..." file names		*/
 #define LS_RECURSIVE (LS_USER << 16) /* recursive directory descent	*/
-#define LS_SEPARATE (LS_USER << 17) /* dir header needs separator	*/
-#define LS_SHELL (LS_USER << 18) /* $'...' file names		*/
-#define LS_TIME (LS_USER << 19) /* sort by time			*/
+#define LS_SEPARATE (LS_USER << 17)  /* dir header needs separator	*/
+#define LS_SHELL (LS_USER << 18)     /* $'...' file names		*/
+#define LS_TIME (LS_USER << 19)      /* sort by time			*/
 
 #define LS_STAT LS_NOSTAT
 
@@ -276,7 +276,7 @@ static const char usage[]
                    || (f)->fts_name[2])))
 
 #define BETWEEN 2 /* space between columns	*/
-#define AFTER 1 /* space after last column	*/
+#define AFTER 1   /* space after last column	*/
 
 #define INVISIBLE (-1)
 #define LISTED (-2)
@@ -329,64 +329,64 @@ typedef int (*Order_f)(FTSENT *, FTSENT *);
 typedef struct Count_s /* dir/total counts		*/
 {
     Sfulong_t blocks; /* number of blocks		*/
-    Sfulong_t bytes; /* number of bytes		*/
-    Sfulong_t files; /* number of files		*/
+    Sfulong_t bytes;  /* number of bytes		*/
+    Sfulong_t files;  /* number of files		*/
 } Count_t;
 
 typedef struct Key_s /* sfkeyprintf() keys		*/
 {
-    char *name; /* key name			*/
-    short index; /* index			*/
+    char *name;    /* key name			*/
+    short index;   /* index			*/
     short disable; /* macro being expanded		*/
-    char *macro; /* macro definition		*/
+    char *macro;   /* macro definition		*/
     Dtlink_t link; /* dict link			*/
 } Key_t;
 
 typedef struct List_s /* list state			*/
 {
     Count_t count; /* directory counts		*/
-    FTSENT *ent; /* ent info			*/
-    char *dirnam; /* pr() dirnam			*/
-    int dirlen; /* pr() dirlen			*/
+    FTSENT *ent;   /* ent info			*/
+    char *dirnam;  /* pr() dirnam			*/
+    int dirlen;    /* pr() dirlen			*/
 } List_t;
 
 typedef struct State_s /* program state		*/
 {
-    Shbltin_t *context; /* builtin context		*/
-    Dtdisc_t keydisc; /* key dict discipline		*/
-    Dt_t *keys; /* key dict			*/
-    char flags[64]; /* command line option flags	*/
-    int ftsflags; /* FTS_* flags			*/
-    long lsflags; /* LS_* flags			*/
-    long timeflags; /* time LS_* flags		*/
-    long blocksize; /* file block size		*/
+    Shbltin_t *context;        /* builtin context		*/
+    Dtdisc_t keydisc;          /* key dict discipline		*/
+    Dt_t *keys;                /* key dict			*/
+    char flags[64];            /* command line option flags	*/
+    int ftsflags;              /* FTS_* flags			*/
+    long lsflags;              /* LS_* flags			*/
+    long timeflags;            /* time LS_* flags		*/
+    long blocksize;            /* file block size		*/
     unsigned long directories; /* directory count		*/
-    unsigned long testdate; /* --format test date		*/
-    Count_t total; /* total counts			*/
-    int adjust; /* key() print with adjustment	*/
-    int comma; /* LS_COMMAS ent.level crossing	*/
-    int height; /* output height in lines	*/
-    int reverse; /* reverse the sort		*/
-    int scale; /* metric scale power		*/
-    int testsize; /* st_size left shift		*/
-    int width; /* output width in chars	*/
-    char *endflags; /* trailing 0 in flags		*/
-    char *format; /* sfkeyprintf() format		*/
-    char *ignore; /* ignore files matching this	*/
-    char *timefmt; /* time list format		*/
-    char *prdata; /* pr buffer			*/
-    size_t prsize; /* pr buffer size		*/
-    char *txtdata; /* txt buffer			*/
-    size_t txtsize; /* txt buffer size		*/
-    unsigned short *siz; /* siz buffer			*/
-    size_t sizsiz; /* siz buffer size		*/
-    FTSENT **vec; /* vec buffer			*/
-    size_t vecsiz; /* vec buffer size		*/
-    Sfio_t *tmp; /* tmp string stream		*/
-    FTSENT *top; /* top directory -- no label	*/
-    Order_f order; /* sort comparison function	*/
-    List_t list; /* list state			*/
-    Vmalloc_t *vm; /* allocation region		*/
+    unsigned long testdate;    /* --format test date		*/
+    Count_t total;             /* total counts			*/
+    int adjust;                /* key() print with adjustment	*/
+    int comma;                 /* LS_COMMAS ent.level crossing	*/
+    int height;                /* output height in lines	*/
+    int reverse;               /* reverse the sort		*/
+    int scale;                 /* metric scale power		*/
+    int testsize;              /* st_size left shift		*/
+    int width;                 /* output width in chars	*/
+    char *endflags;            /* trailing 0 in flags		*/
+    char *format;              /* sfkeyprintf() format		*/
+    char *ignore;              /* ignore files matching this	*/
+    char *timefmt;             /* time list format		*/
+    char *prdata;              /* pr buffer			*/
+    size_t prsize;             /* pr buffer size		*/
+    char *txtdata;             /* txt buffer			*/
+    size_t txtsize;            /* txt buffer size		*/
+    unsigned short *siz;       /* siz buffer			*/
+    size_t sizsiz;             /* siz buffer size		*/
+    FTSENT **vec;              /* vec buffer			*/
+    size_t vecsiz;             /* vec buffer size		*/
+    Sfio_t *tmp;               /* tmp string stream		*/
+    FTSENT *top;               /* top directory -- no label	*/
+    Order_f order;             /* sort comparison function	*/
+    List_t list;               /* list state			*/
+    Vmalloc_t *vm;             /* allocation region		*/
 } State_t;
 
 static char	DEF_header[] =

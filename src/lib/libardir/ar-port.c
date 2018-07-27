@@ -45,25 +45,25 @@ typedef struct Header_s
 {
     char ar_name[16];
     char ar_date[12]; /* left-adj; decimal char*; blank fill	*/
-    char ar_uid[6]; /*	"				*/
-    char ar_gid[6]; /*	"				*/
-    char ar_mode[8]; /* left-adj; octal char*; blank fill	*/
+    char ar_uid[6];   /*	"				*/
+    char ar_gid[6];   /*	"				*/
+    char ar_mode[8];  /* left-adj; octal char*; blank fill	*/
     char ar_size[10]; /* left-adj; decimal char*; blank fill	*/
-    char ar_fmag[2]; /* FMAG_port_[01]			*/
+    char ar_fmag[2];  /* FMAG_port_[01]			*/
 } Header_t;
 
 typedef struct State_s /* method state			*/
 {
-    off_t current; /* current dirent offset	*/
-    off_t offset; /* next dirent offset		*/
-    off_t patch; /* symdir time patch offset	*/
-    char *names; /* long name table		*/
-    char *name; /* local long name		*/
-    int size; /* local long name max size	*/
-    int touch; /* touch symbol table time	*/
-    int separator; /* alternate path separator	*/
+    off_t current;   /* current dirent offset	*/
+    off_t offset;    /* next dirent offset		*/
+    off_t patch;     /* symdir time patch offset	*/
+    char *names;     /* long name table		*/
+    char *name;      /* local long name		*/
+    int size;        /* local long name max size	*/
+    int touch;       /* touch symbol table time	*/
+    int separator;   /* alternate path separator	*/
     Header_t header; /* current header		*/
-    char term[1]; /* trailing '\0' for header	*/
+    char term[1];    /* trailing '\0' for header	*/
 } State_t;
 
 /*

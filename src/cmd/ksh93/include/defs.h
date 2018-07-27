@@ -75,9 +75,9 @@ struct sh_scoped
     char *filename;
     char *funname;
     int64_t lineno;
-    Dt_t *save_tree; /* var_tree for calling function */
+    Dt_t *save_tree;        /* var_tree for calling function */
     struct sh_scoped *self; /* pointer to copy of this scope*/
-    Dt_t *var_local; /* local level variables for name() */
+    Dt_t *var_local;        /* local level variables for name() */
     struct slnod *staklist; /* link list of function stacks */
     int states;
     int breakcnt;
@@ -101,14 +101,14 @@ struct sh_scoped
 
 struct limits
 {
-    long arg_max; /* max arg+env exec() size */
-    int open_max; /* maximum number of file descriptors */
-    int clk_tck; /* number of ticks per second */
-    int child_max; /* maxumum number of children */
-    int ngroups_max; /* maximum number of process groups */
-    unsigned char posix_version; /* posix version number */
+    long arg_max;                   /* max arg+env exec() size */
+    int open_max;                   /* maximum number of file descriptors */
+    int clk_tck;                    /* number of ticks per second */
+    int child_max;                  /* maxumum number of children */
+    int ngroups_max;                /* maximum number of process groups */
+    unsigned char posix_version;    /* posix version number */
     unsigned char posix_jobcontrol; /* non-zero for job control systems */
-    unsigned char fs3d; /* non-zero for 3-d file system */
+    unsigned char fs3d;             /* non-zero for 3-d file system */
 };
 
 #    ifndef SH_wait_f_defined
@@ -147,40 +147,40 @@ struct shared
 };
 
 #    define _SH_PRIVATE                                                      \
-        struct shared *gd; /* global data */                                 \
+        struct shared *gd;   /* global data */                               \
         struct sh_scoped st; /* scoped information */                        \
-        Sfio_t *heredocs; /* current here-doc temp file */                   \
-        Sfio_t *funlog; /* for logging function definitions */               \
-        int **fdptrs; /* pointer to file numbers */                          \
+        Sfio_t *heredocs;    /* current here-doc temp file */                \
+        Sfio_t *funlog;      /* for logging function definitions */          \
+        int **fdptrs;        /* pointer to file numbers */                   \
         int savexit;                                                         \
         char *lastarg;                                                       \
-        char *lastpath; /* last alsolute path found */                       \
-        int path_err; /* last error on path search */                        \
+        char *lastpath;   /* last alsolute path found */                     \
+        int path_err;     /* last error on path search */                    \
         Dt_t *track_tree; /* for tracked aliases*/                           \
-        Dt_t *var_base; /* global level variables */                         \
+        Dt_t *var_base;   /* global level variables */                       \
         Dt_t *openmatch;                                                     \
         Dt_t *namref_root;                                                   \
-        Namval_t *namespace; /* current active namespace*/                   \
+        Namval_t *namespace;  /* current active namespace*/                  \
         Namval_t *last_table; /* last table used in last nv_open  */         \
         Namval_t *prev_table; /* previous table used in nv_open  */          \
-        Namval_t *oldnp; /* last valid parent node  */                       \
-        Namval_t **nodelist; /* for decl commands */                         \
-        Sfio_t *outpool; /* ouput stream pool */                             \
-        long timeout; /* read timeout */                                     \
-        long curenv; /* current subshell number */                           \
-        long jobenv; /* subshell number for jobs */                          \
-        int infd; /* input file descriptor */                                \
-        short nextprompt; /* next prompt is PS<nextprompt> */                \
+        Namval_t *oldnp;      /* last valid parent node  */                  \
+        Namval_t **nodelist;  /* for decl commands */                        \
+        Sfio_t *outpool;      /* ouput stream pool */                        \
+        long timeout;         /* read timeout */                             \
+        long curenv;          /* current subshell number */                  \
+        long jobenv;          /* subshell number for jobs */                 \
+        int infd;             /* input file descriptor */                    \
+        short nextprompt;     /* next prompt is PS<nextprompt> */            \
         short poolfiles;                                                     \
         Namval_t *posix_fun; /* points to last name() function */            \
-        char *outbuff; /* pointer to output buffer */                        \
-        char *errbuff; /* pointer to stderr buffer */                        \
-        char *prompt; /* pointer to prompt string */                         \
-        char *shname; /* shell name */                                       \
-        char *comdiv; /* points to sh -c argument */                         \
-        char *prefix; /* prefix for compound assignment */                   \
+        char *outbuff;       /* pointer to output buffer */                  \
+        char *errbuff;       /* pointer to stderr buffer */                  \
+        char *prompt;        /* pointer to prompt string */                  \
+        char *shname;        /* shell name */                                \
+        char *comdiv;        /* points to sh -c argument */                  \
+        char *prefix;        /* prefix for compound assignment */            \
         sigjmp_buf *jmplist; /* longjmp return stack */                      \
-        char *fifo; /* fifo name for process sub */                          \
+        char *fifo;          /* fifo name for process sub */                 \
         int oldexit;                                                         \
         pid_t bckpid; /* background process id */                            \
         pid_t cpid;                                                          \
@@ -188,7 +188,7 @@ struct shared
         pid_t pipepid;                                                       \
         pid_t outpipepid;                                                    \
         pid_t *procsub; /* pids for >() argument */                          \
-        int nprocsub; /* number of pids in procsub */                        \
+        int nprocsub;   /* number of pids in procsub */                      \
         int topfd;                                                           \
         int errorfd;                                                         \
         int savesig;                                                         \
@@ -203,22 +203,22 @@ struct shared
         char used_pos; /* used postional parameter */                        \
         char universe;                                                       \
         char winch;                                                          \
-        char inarith; /* set when in ((...)) */                              \
-        char indebug; /* set when in debug trap */                           \
-        unsigned char ignsig; /* ignored signal in subshell */               \
+        char inarith;          /* set when in ((...)) */                     \
+        char indebug;          /* set when in debug trap */                  \
+        unsigned char ignsig;  /* ignored signal in subshell */              \
         unsigned char lastsig; /* last signal received */                    \
-        char pathinit; /* pathinit called from subshell */                   \
-        char comsub; /* set when in $() comsub */                            \
-        char subshare; /* set when in ${..} comsub */                        \
-        char toomany; /* set when out of fd's */                             \
-        char instance; /* in set_instance */                                 \
-        char decomma; /* decimal_point=',' */                                \
-        char redir0; /* redirect of 0 */                                     \
-        char intrace; /* set when trace expands PS4 */                       \
-        char *readscript; /* set before reading a script */                  \
-        int subdup; /* bitmask for dups of 1 */                              \
-        int *inpipe; /* input pipe pointer */                                \
-        int *outpipe; /* output pipe pointer */                              \
+        char pathinit;         /* pathinit called from subshell */           \
+        char comsub;           /* set when in $() comsub */                  \
+        char subshare;         /* set when in ${..} comsub */                \
+        char toomany;          /* set when out of fd's */                    \
+        char instance;         /* in set_instance */                         \
+        char decomma;          /* decimal_point=',' */                       \
+        char redir0;           /* redirect of 0 */                           \
+        char intrace;          /* set when trace expands PS4 */              \
+        char *readscript;      /* set before reading a script */             \
+        int subdup;            /* bitmask for dups of 1 */                   \
+        int *inpipe;           /* input pipe pointer */                      \
+        int *outpipe;          /* output pipe pointer */                     \
         int cpipe[3];                                                        \
         int coutpipe;                                                        \
         int inuse_bits;                                                      \
@@ -309,21 +309,21 @@ struct shared
 
 /* states */
 /* low numbered states are same as options */
-#    define SH_NOFORK 0 /* set when fork not necessary */
-#    define SH_FORKED 7 /* set when process has been forked */
-#    define SH_PROFILE 8 /* set when processing profiles */
-#    define SH_NOALIAS 9 /* do not expand non-exported aliases */
-#    define SH_NOTRACK 10 /* set to disable sftrack() function */
-#    define SH_STOPOK 11 /* set for stopable builtins */
-#    define SH_GRACE 12 /* set for timeout grace period */
-#    define SH_TIMING 13 /* set while timing pipelines */
-#    define SH_DEFPATH 14 /* set when using default path */
-#    define SH_INIT 15 /* set when initializing the shell */
-#    define SH_TTYWAIT 16 /* waiting for keyboard input */
+#    define SH_NOFORK 0     /* set when fork not necessary */
+#    define SH_FORKED 7     /* set when process has been forked */
+#    define SH_PROFILE 8    /* set when processing profiles */
+#    define SH_NOALIAS 9    /* do not expand non-exported aliases */
+#    define SH_NOTRACK 10   /* set to disable sftrack() function */
+#    define SH_STOPOK 11    /* set for stopable builtins */
+#    define SH_GRACE 12     /* set for timeout grace period */
+#    define SH_TIMING 13    /* set while timing pipelines */
+#    define SH_DEFPATH 14   /* set when using default path */
+#    define SH_INIT 15      /* set when initializing the shell */
+#    define SH_TTYWAIT 16   /* waiting for keyboard input */
 #    define SH_FCOMPLETE 17 /* set for filename completion */
-#    define SH_PREINIT 18 /* set with SH_INIT before parsing options */
-#    define SH_COMPLETE 19 /* set for command completion */
-#    define SH_IOPROMPT 20 /* set when prompting */
+#    define SH_PREINIT 18   /* set with SH_INIT before parsing options */
+#    define SH_COMPLETE 19  /* set for command completion */
+#    define SH_IOPROMPT 20  /* set when prompting */
 
 #    define SH_BASH 41
 #    define SH_BRACEEXPAND 42
@@ -587,11 +587,11 @@ extern const char e_dict[];
 
 /* sh_printopts() mode flags -- set --[no]option by default */
 
-#    define PRINT_VERBOSE 0x01 /* option on|off list		*/
-#    define PRINT_ALL 0x02 /* list unset options too	*/
+#    define PRINT_VERBOSE 0x01   /* option on|off list		*/
+#    define PRINT_ALL 0x02       /* list unset options too	*/
 #    define PRINT_NO_HEADER 0x04 /* omit listing header		*/
-#    define PRINT_SHOPT 0x08 /* shopt -s|-u			*/
-#    define PRINT_TABLE 0x10 /* table of all options		*/
+#    define PRINT_SHOPT 0x08     /* shopt -s|-u			*/
+#    define PRINT_TABLE 0x10     /* table of all options		*/
 
 #    ifdef SHOPT_STATS
 /* performance statistics */

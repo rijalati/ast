@@ -43,7 +43,7 @@
 #    define PATH_SKIP 0020
 #    define PATH_BUILTIN_LIB 0040
 #    define PATH_STD_DIR 0100 /* directory is on  $(getconf PATH) */
-#    define PATH_BIN 0200 /* path behaves like /bin for builtins */
+#    define PATH_BIN 0200     /* path behaves like /bin for builtins */
 
 #    define PATH_OFFSET 2 /* path offset for path_join */
 #    define MAXDEPTH                                                         \
@@ -177,6 +177,6 @@ sh_accsusp(void);
 #        else
 #            undef SHOPT_ACCT
 #        endif /* _sys_acct */
-#    endif /* SHOPT_ACCT */
+#    endif     /* SHOPT_ACCT */
 
 #endif /*! PATH_OFFSET */

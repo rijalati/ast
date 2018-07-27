@@ -158,19 +158,19 @@ struct State_s
     uch *ip;
     uch *ie;
 
-    ulg wp; /* current position in slide */
+    ulg wp;           /* current position in slide */
     Huff_t *fixed_tl; /* inflate static */
     Huff_t *fixed_td; /* inflate static */
-    int fixed_bl; /* inflate static */
-    int fixed_bd; /* inflate static */
-    ulg bit_buf; /* bit buffer */
-    ulg bit_len; /* bits in bit buffer */
+    int fixed_bl;     /* inflate static */
+    int fixed_bd;     /* inflate static */
+    ulg bit_buf;      /* bit buffer */
+    ulg bit_len;      /* bits in bit buffer */
     ulg copy_len;
     ulg copy_pos;
     Huff_t *tl; /* literal length state table */
     Huff_t *td; /* literal distance state table */
-    int bl; /* number of bits decoded by tl[] */
-    int bd; /* number of bits decoded by td[] */
+    int bl;     /* number of bits decoded by tl[] */
+    int bd;     /* number of bits decoded by td[] */
 };
 
 static int
@@ -233,12 +233,12 @@ static ush cpdext[] = { /* Extra bits for distance codes */
 static uch *
 inflate_codes(State_t *state, uch *p, uch *e)
 {
-    ulg x; /* table entry flag/number of extra bits */
-    Huff_t *t; /* pointer to table entry */
+    ulg x;      /* table entry flag/number of extra bits */
+    Huff_t *t;  /* pointer to table entry */
     Huff_t *tl; /* literal length state table */
     Huff_t *td; /* literal distance state table */
-    int bl; /* number of bits decoded by tl[] */
-    int bd; /* number of bits decoded by td[] */
+    int bl;     /* number of bits decoded by tl[] */
+    int bd;     /* number of bits decoded by td[] */
     ulg l;
     ulg w;
     ulg d;
@@ -402,7 +402,7 @@ inflate_fixed(State_t *state)
     if (!state->fixed_tl)
     {
         Huff_t *tl; /* literal/length code table */
-        int i; /* temporary variable */
+        int i;      /* temporary variable */
         ulg l[288]; /* length list for huff() */
 
         /* literal table */
@@ -454,15 +454,15 @@ inflate_dynamic(State_t *state)
 {
     int i; /* temporary variables */
     ulg j;
-    ulg l; /* last length */
-    ulg n; /* number of lengths to get */
+    ulg l;      /* last length */
+    ulg n;      /* number of lengths to get */
     Huff_t *tl; /* literal/length code table */
     Huff_t *td; /* distance code table */
-    int bl; /* lookup bits for tl */
-    int bd; /* lookup bits for td */
-    ulg nb; /* number of bit length codes */
-    ulg nl; /* number of literal/length codes */
-    ulg nd; /* number of distance codes */
+    int bl;     /* lookup bits for tl */
+    int bd;     /* lookup bits for td */
+    ulg nb;     /* number of bit length codes */
+    ulg nl;     /* number of literal/length codes */
+    ulg nd;     /* number of distance codes */
 #ifdef PKZIP_BUG_WORKAROUND
     ulg ll[288 + 32]; /* literal/length and distance code lengths */
 #else
@@ -534,9 +534,9 @@ inflate_dynamic(State_t *state)
         j = (td = tl + (GETBITS(bl)))->b;
         DUMPBITS(j);
         j = td->v.n;
-        if (j < 16) /* length of code in bits (0..15) */
+        if (j < 16)          /* length of code in bits (0..15) */
             ll[i++] = l = j; /* save last length in l */
-        else if (j == 16) /* repeat last length 3 to 6 times */
+        else if (j == 16)    /* repeat last length 3 to 6 times */
         {
             NEEDBITS(state, 2);
             j = 3 + GETBITS(2);

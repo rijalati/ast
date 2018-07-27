@@ -34,7 +34,7 @@
 #define unlex(c) (peektoken = (c))
 
 static int peektoken; /* expression lookahead token	*/
-static char *errmsg; /* subexpr() error message	*/
+static char *errmsg;  /* subexpr() error message	*/
 
 /*
  * exists predicate evaluation

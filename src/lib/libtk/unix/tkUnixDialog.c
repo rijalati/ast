@@ -37,9 +37,9 @@
 
 static int EvalArgv(interp, cmdName, argc, argv)
 Tcl_Interp *interp; /* Current interpreter. */
-char *cmdName; /* Name of the TCL command to call */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+char *cmdName;      /* Name of the TCL command to call */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Tcl_CmdInfo cmdInfo;
 
@@ -101,9 +101,9 @@ char **argv; /* Argument strings. */
 
 int Tk_ChooseColorCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     return EvalArgv(interp, "tkColorDialog", argc, argv);
 }
@@ -131,9 +131,9 @@ char **argv; /* Argument strings. */
 
 int Tk_GetOpenFileCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
 
@@ -166,9 +166,9 @@ char **argv; /* Argument strings. */
 
 int Tk_GetSaveFileCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
 
@@ -203,9 +203,9 @@ char **argv; /* Argument strings. */
 
 int Tk_MessageBoxCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     return EvalArgv(interp, "tkMessageBox", argc, argv);
 }

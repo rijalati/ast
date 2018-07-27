@@ -47,8 +47,8 @@ static int initialized = 0;
  */
 
 int Tk_GetAnchor(interp, string, anchorPtr)
-Tcl_Interp *interp; /* Use this for error reporting. */
-char *string; /* String describing a direction. */
+Tcl_Interp *interp;   /* Use this for error reporting. */
+char *string;         /* String describing a direction. */
 Tk_Anchor *anchorPtr; /* Where to store Tk_Anchor corresponding
                        * to string. */
 {
@@ -190,9 +190,9 @@ char *Tk_NameOfAnchor(anchor) Tk_Anchor anchor; /* Anchor for which
 
 int Tk_GetJoinStyle(interp, string, joinPtr)
 Tcl_Interp *interp; /* Use this for error reporting. */
-char *string; /* String describing a justification style. */
-int *joinPtr; /* Where to store join style corresponding
-               * to string. */
+char *string;       /* String describing a justification style. */
+int *joinPtr;       /* Where to store join style corresponding
+                     * to string. */
 {
     int c;
     size_t length;
@@ -278,9 +278,9 @@ char *Tk_NameOfJoinStyle(join) int join; /* Join style for which identifying
 
 int Tk_GetCapStyle(interp, string, capPtr)
 Tcl_Interp *interp; /* Use this for error reporting. */
-char *string; /* String describing a justification style. */
-int *capPtr; /* Where to store cap style corresponding
-              * to string. */
+char *string;       /* String describing a justification style. */
+int *capPtr;        /* Where to store cap style corresponding
+                     * to string. */
 {
     int c;
     size_t length;
@@ -365,8 +365,8 @@ char *Tk_NameOfCapStyle(cap) int cap; /* Cap style for which identifying
  */
 
 int Tk_GetJustify(interp, string, justifyPtr)
-Tcl_Interp *interp; /* Use this for error reporting. */
-char *string; /* String describing a justification style. */
+Tcl_Interp *interp;     /* Use this for error reporting. */
+char *string;           /* String describing a justification style. */
 Tk_Justify *justifyPtr; /* Where to store Tk_Justify corresponding
                          * to string. */
 {
@@ -492,11 +492,11 @@ Tk_Uid Tk_GetUid(string) char *string; /* String to convert. */
 
 int Tk_GetScreenMM(interp, tkwin, string, doublePtr)
 Tcl_Interp *interp; /* Use this for error reporting. */
-Tk_Window tkwin; /* Window whose screen determines conversion
-                  * from centimeters and other absolute
-                  * units. */
-char *string; /* String describing a screen distance. */
-double *doublePtr; /* Place to store converted result. */
+Tk_Window tkwin;    /* Window whose screen determines conversion
+                     * from centimeters and other absolute
+                     * units. */
+char *string;       /* String describing a screen distance. */
+double *doublePtr;  /* Place to store converted result. */
 {
     char *end;
     double d;
@@ -572,11 +572,11 @@ double *doublePtr; /* Place to store converted result. */
 
 int Tk_GetPixels(interp, tkwin, string, intPtr)
 Tcl_Interp *interp; /* Use this for error reporting. */
-Tk_Window tkwin; /* Window whose screen determines conversion
-                  * from centimeters and other absolute
-                  * units. */
-char *string; /* String describing a justification style. */
-int *intPtr; /* Place to store converted result. */
+Tk_Window tkwin;    /* Window whose screen determines conversion
+                     * from centimeters and other absolute
+                     * units. */
+char *string;       /* String describing a justification style. */
+int *intPtr;        /* Place to store converted result. */
 {
     char *end;
     double d;

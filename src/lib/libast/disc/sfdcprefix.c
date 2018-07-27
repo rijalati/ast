@@ -32,10 +32,10 @@
 
 typedef struct
 {
-    Sfdisc_t disc; /* sfio discipline		*/
-    size_t length; /* prefix length		*/
-    size_t empty; /* empty line prefix length	*/
-    int skip; /* this line already prefixed	*/
+    Sfdisc_t disc;  /* sfio discipline		*/
+    size_t length;  /* prefix length		*/
+    size_t empty;   /* empty line prefix length	*/
+    int skip;       /* this line already prefixed	*/
     char prefix[1]; /* prefix string		*/
 } Prefix_t;
 

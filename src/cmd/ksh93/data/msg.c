@@ -172,7 +172,7 @@ const char e_jobusage[]
 #    else
 const char e_jobusage[] = "%s: Arguments must be %%job or process ids";
 #    endif /* SHOPT_COSHELL */
-#endif /* JOBS */
+#endif     /* JOBS */
 const char e_coredump[] = "(coredump)";
 const char e_alphanum[] = "[_[:alpha:]]*([_[:alnum:]])";
 const char e_devfdNN[] = "/dev/fd/+([0-9])";

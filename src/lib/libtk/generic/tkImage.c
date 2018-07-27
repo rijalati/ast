@@ -24,9 +24,9 @@
 
 typedef struct Image
 {
-    Tk_Window tkwin; /* Window passed to Tk_GetImage (needed to
-                      * "re-get" the image later if the manager
-                      * changes). */
+    Tk_Window tkwin;  /* Window passed to Tk_GetImage (needed to
+                       * "re-get" the image later if the manager
+                       * changes). */
     Display *display; /* Display for tkwin.  Needed because when
                        * the image is eventually freed tkwin may
                        * not exist anymore. */
@@ -55,21 +55,21 @@ typedef struct Image
 
 typedef struct ImageMaster
 {
-    Tk_ImageType *typePtr; /* Information about image type.  NULL means
-                            * that no image manager owns this image:  the
-                            * image was deleted. */
-    ClientData masterData; /* One-word argument to pass to image mgr
-                            * when dealing with the master, as opposed
-                            * to instances. */
-    int width, height; /* Last known dimensions for image. */
+    Tk_ImageType *typePtr;   /* Information about image type.  NULL means
+                              * that no image manager owns this image:  the
+                              * image was deleted. */
+    ClientData masterData;   /* One-word argument to pass to image mgr
+                              * when dealing with the master, as opposed
+                              * to instances. */
+    int width, height;       /* Last known dimensions for image. */
     Tcl_HashTable *tablePtr; /* Pointer to hash table containing image
                               * (the imageTable field in some TkMainInfo
                               * structure). */
-    Tcl_HashEntry *hPtr; /* Hash entry in mainPtr->imageTable for
-                          * this structure (used to delete the hash
-                          * entry). */
-    Image *instancePtr; /* Pointer to first in list of instances
-                         * derived from this name. */
+    Tcl_HashEntry *hPtr;     /* Hash entry in mainPtr->imageTable for
+                              * this structure (used to delete the hash
+                              * entry). */
+    Image *instancePtr;      /* Pointer to first in list of instances
+                              * derived from this name. */
 } ImageMaster;
 
 /*
@@ -140,9 +140,9 @@ Tk_ImageType *typePtr; /* Structure describing the type.  All of
 
 int Tk_ImageCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     TkWindow *winPtr = ( TkWindow * )clientData;
     int c, i, new, firstOption;
@@ -444,15 +444,15 @@ char **argv; /* Argument strings. */
  */
 
 void Tk_ImageChanged(imageMaster, x, y, width, height, imageWidth, imageHeight)
-Tk_ImageMaster imageMaster; /* Image that needs redisplay. */
-int x, y; /* Coordinates of upper-left pixel of
-           * region of image that needs to be
-           * redrawn. */
-int width, height; /* Dimensions (in pixels) of region of
-                    * image to redraw.  If either dimension
-                    * is zero then the image doesn't need to
-                    * be redrawn (perhaps all that happened is
-                    * that its size changed). */
+Tk_ImageMaster imageMaster;  /* Image that needs redisplay. */
+int x, y;                    /* Coordinates of upper-left pixel of
+                              * region of image that needs to be
+                              * redrawn. */
+int width, height;           /* Dimensions (in pixels) of region of
+                              * image to redraw.  If either dimension
+                              * is zero then the image doesn't need to
+                              * be redrawn (perhaps all that happened is
+                              * that its size changed). */
 int imageWidth, imageHeight; /* New dimensions of image. */
 {
     ImageMaster *masterPtr = ( ImageMaster * )imageMaster;
@@ -524,9 +524,9 @@ char *Tk_NameOfImage(imageMaster) Tk_ImageMaster imageMaster; /* Token for
 Tk_Image Tk_GetImage(interp, tkwin, name, changeProc, clientData)
 Tcl_Interp *interp; /* Place to leave error message if image
                      * can't be found. */
-Tk_Window tkwin; /* Token for window in which image will
-                  * be used. */
-char *name; /* Name of desired image. */
+Tk_Window tkwin;    /* Token for window in which image will
+                     * be used. */
+char *name;         /* Name of desired image. */
 Tk_ImageChangedProc *changeProc;
 /* Procedure to invoke when redisplay is
  * needed because image's pixels or size
@@ -654,14 +654,14 @@ void Tk_RedrawImage(image,
                     drawableX,
                     drawableY) Tk_Image image; /* Token for image to
                                                   redisplay. */
-int imageX, imageY; /* Upper-left pixel of region in image that
-                     * needs to be redisplayed. */
-int width, height; /* Dimensions of region to redraw. */
-Drawable drawable; /* Drawable in which to display image
-                    * (window or pixmap).  If this is a pixmap,
-                    * it must have the same depth as the window
-                    * used in the Tk_GetImage call for the
-                    * image. */
+int imageX, imageY;       /* Upper-left pixel of region in image that
+                           * needs to be redisplayed. */
+int width, height;        /* Dimensions of region to redraw. */
+Drawable drawable;        /* Drawable in which to display image
+                           * (window or pixmap).  If this is a pixmap,
+                           * it must have the same depth as the window
+                           * used in the Tk_GetImage call for the
+                           * image. */
 int drawableX, drawableY; /* Coordinates in drawable that correspond
                            * to imageX and imageY. */
 {
@@ -732,7 +732,7 @@ void Tk_SizeOfImage(image,
                     widthPtr,
                     heightPtr) Tk_Image image; /* Token for image whose size
                                                   is wanted. */
-int *widthPtr; /* Return width of image here. */
+int *widthPtr;  /* Return width of image here. */
 int *heightPtr; /* Return height of image here. */
 {
     Image *imagePtr = ( Image * )image;
@@ -763,7 +763,7 @@ int *heightPtr; /* Return height of image here. */
 void Tk_DeleteImage(interp,
                     name) Tcl_Interp *interp; /* Interpreter in which the
                                                * image was created. */
-char *name; /* Name of image. */
+char *name;                                   /* Name of image. */
 {
     Tcl_HashEntry *hPtr;
     Tcl_CmdInfo info;

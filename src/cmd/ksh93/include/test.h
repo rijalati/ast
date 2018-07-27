@@ -33,8 +33,8 @@
  *  These are the valid test operators
  */
 
-#    define TEST_ARITH 040 /* arithmetic operators */
-#    define TEST_BINOP 0200 /* binary operator */
+#    define TEST_ARITH 040    /* arithmetic operators */
+#    define TEST_BINOP 0200   /* binary operator */
 #    define TEST_PATTERN 0100 /* turn off bit for pattern compares */
 
 #    define TEST_NE (TEST_ARITH | 9)

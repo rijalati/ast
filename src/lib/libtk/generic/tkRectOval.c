@@ -21,17 +21,17 @@
 
 typedef struct RectOvalItem
 {
-    Tk_Item header; /* Generic stuff that's the same for all
-                     * types.  MUST BE FIRST IN STRUCTURE. */
-    double bbox[4]; /* Coordinates of bounding box for rectangle
-                     * or oval (x1, y1, x2, y2).  Item includes
-                     * x1 and x2 but not y1 and y2. */
-    int width; /* Width of outline. */
+    Tk_Item header;       /* Generic stuff that's the same for all
+                           * types.  MUST BE FIRST IN STRUCTURE. */
+    double bbox[4];       /* Coordinates of bounding box for rectangle
+                           * or oval (x1, y1, x2, y2).  Item includes
+                           * x1 and x2 but not y1 and y2. */
+    int width;            /* Width of outline. */
     XColor *outlineColor; /* Color for outline. */
-    XColor *fillColor; /* Color for filling rectangle/oval. */
-    Pixmap fillStipple; /* Stipple bitmap for filling item. */
-    GC outlineGC; /* Graphics context for outline. */
-    GC fillGC; /* Graphics context for filling item. */
+    XColor *fillColor;    /* Color for filling rectangle/oval. */
+    Pixmap fillStipple;   /* Stipple bitmap for filling item. */
+    GC outlineGC;         /* Graphics context for outline. */
+    GC fillGC;            /* Graphics context for filling item. */
 } RectOvalItem;
 
 /*
@@ -146,49 +146,49 @@ static void TranslateRectOval _ANSI_ARGS_(
  */
 
 Tk_ItemType tkRectangleType = {
-    "rectangle", /* name */
-    sizeof(RectOvalItem), /* itemSize */
-    CreateRectOval, /* createProc */
-    configSpecs, /* configSpecs */
-    ConfigureRectOval, /* configureProc */
-    RectOvalCoords, /* coordProc */
-    DeleteRectOval, /* deleteProc */
-    DisplayRectOval, /* displayProc */
-    0, /* alwaysRedraw */
-    RectToPoint, /* pointProc */
-    RectToArea, /* areaProc */
-    RectOvalToPostscript, /* postscriptProc */
-    ScaleRectOval, /* scaleProc */
-    TranslateRectOval, /* translateProc */
-    ( Tk_ItemIndexProc * )NULL, /* indexProc */
-    ( Tk_ItemCursorProc * )NULL, /* icursorProc */
+    "rectangle",                    /* name */
+    sizeof(RectOvalItem),           /* itemSize */
+    CreateRectOval,                 /* createProc */
+    configSpecs,                    /* configSpecs */
+    ConfigureRectOval,              /* configureProc */
+    RectOvalCoords,                 /* coordProc */
+    DeleteRectOval,                 /* deleteProc */
+    DisplayRectOval,                /* displayProc */
+    0,                              /* alwaysRedraw */
+    RectToPoint,                    /* pointProc */
+    RectToArea,                     /* areaProc */
+    RectOvalToPostscript,           /* postscriptProc */
+    ScaleRectOval,                  /* scaleProc */
+    TranslateRectOval,              /* translateProc */
+    ( Tk_ItemIndexProc * )NULL,     /* indexProc */
+    ( Tk_ItemCursorProc * )NULL,    /* icursorProc */
     ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL, /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL, /* dTextProc */
-    ( Tk_ItemType * )NULL /* nextPtr */
+    ( Tk_ItemInsertProc * )NULL,    /* insertProc */
+    ( Tk_ItemDCharsProc * )NULL,    /* dTextProc */
+    ( Tk_ItemType * )NULL           /* nextPtr */
 };
 
 Tk_ItemType tkOvalType = {
-    "oval", /* name */
-    sizeof(RectOvalItem), /* itemSize */
-    CreateRectOval, /* createProc */
-    configSpecs, /* configSpecs */
-    ConfigureRectOval, /* configureProc */
-    RectOvalCoords, /* coordProc */
-    DeleteRectOval, /* deleteProc */
-    DisplayRectOval, /* displayProc */
-    0, /* alwaysRedraw */
-    OvalToPoint, /* pointProc */
-    OvalToArea, /* areaProc */
-    RectOvalToPostscript, /* postscriptProc */
-    ScaleRectOval, /* scaleProc */
-    TranslateRectOval, /* translateProc */
-    ( Tk_ItemIndexProc * )NULL, /* indexProc */
-    ( Tk_ItemCursorProc * )NULL, /* cursorProc */
+    "oval",                         /* name */
+    sizeof(RectOvalItem),           /* itemSize */
+    CreateRectOval,                 /* createProc */
+    configSpecs,                    /* configSpecs */
+    ConfigureRectOval,              /* configureProc */
+    RectOvalCoords,                 /* coordProc */
+    DeleteRectOval,                 /* deleteProc */
+    DisplayRectOval,                /* displayProc */
+    0,                              /* alwaysRedraw */
+    OvalToPoint,                    /* pointProc */
+    OvalToArea,                     /* areaProc */
+    RectOvalToPostscript,           /* postscriptProc */
+    ScaleRectOval,                  /* scaleProc */
+    TranslateRectOval,              /* translateProc */
+    ( Tk_ItemIndexProc * )NULL,     /* indexProc */
+    ( Tk_ItemCursorProc * )NULL,    /* cursorProc */
     ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL, /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL, /* dTextProc */
-    ( Tk_ItemType * )NULL /* nextPtr */
+    ( Tk_ItemInsertProc * )NULL,    /* insertProc */
+    ( Tk_ItemDCharsProc * )NULL,    /* dTextProc */
+    ( Tk_ItemType * )NULL           /* nextPtr */
 };
 
 /*
@@ -213,11 +213,11 @@ Tk_ItemType tkOvalType = {
 
 static int CreateRectOval(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* For error reporting. */
-Tk_Canvas canvas; /* Canvas to hold new item. */
-Tk_Item *itemPtr; /* Record to hold new item;  header
-                   * has been initialized by caller. */
-int argc; /* Number of arguments in argv. */
-char **argv; /* Arguments describing rectangle. */
+Tk_Canvas canvas;   /* Canvas to hold new item. */
+Tk_Item *itemPtr;   /* Record to hold new item;  header
+                     * has been initialized by caller. */
+int argc;           /* Number of arguments in argv. */
+char **argv;        /* Arguments describing rectangle. */
 {
     RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
 
@@ -290,13 +290,13 @@ char **argv; /* Arguments describing rectangle. */
 
 static int RectOvalCoords(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item whose coordinates are to be
-                   * read or modified. */
-int argc; /* Number of coordinates supplied in
-           * argv. */
-char **argv; /* Array of coordinates: x1, y1,
-              * x2, y2, ... */
+Tk_Canvas canvas;   /* Canvas containing item. */
+Tk_Item *itemPtr;   /* Item whose coordinates are to be
+                     * read or modified. */
+int argc;           /* Number of coordinates supplied in
+                     * argv. */
+char **argv;        /* Array of coordinates: x1, y1,
+                     * x2, y2, ... */
 {
     RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
     char c0[TCL_DOUBLE_SPACE], c1[TCL_DOUBLE_SPACE];
@@ -360,11 +360,11 @@ char **argv; /* Array of coordinates: x1, y1,
 
 static int ConfigureRectOval(interp, canvas, itemPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing itemPtr. */
-Tk_Item *itemPtr; /* Rectangle item to reconfigure. */
-int argc; /* Number of elements in argv.  */
-char **argv; /* Arguments describing things to configure. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Tk_Canvas canvas;   /* Canvas containing itemPtr. */
+Tk_Item *itemPtr;   /* Rectangle item to reconfigure. */
+int argc;           /* Number of elements in argv.  */
+char **argv;        /* Arguments describing things to configure. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
     XGCValues gcValues;
@@ -506,7 +506,7 @@ Display *display; /* Display containing window for
 
 /* ARGSUSED */
 static void ComputeRectOvalBbox(canvas, rectOvalPtr)
-Tk_Canvas canvas; /* Canvas that contains item. */
+Tk_Canvas canvas;          /* Canvas that contains item. */
 RectOvalItem *rectOvalPtr; /* Item whose bbox is to be
                             * recomputed. */
 {
@@ -589,11 +589,11 @@ RectOvalItem *rectOvalPtr; /* Item whose bbox is to be
 
 static void
 DisplayRectOval(canvas, itemPtr, display, drawable, x, y, width, height)
-Tk_Canvas canvas; /* Canvas that contains item. */
-Tk_Item *itemPtr; /* Item to be displayed. */
-Display *display; /* Display on which to draw item. */
-Drawable drawable; /* Pixmap or window in which to draw
-                    * item. */
+Tk_Canvas canvas;        /* Canvas that contains item. */
+Tk_Item *itemPtr;        /* Item to be displayed. */
+Display *display;        /* Display on which to draw item. */
+Drawable drawable;       /* Pixmap or window in which to draw
+                          * item. */
 int x, y, width, height; /* Describes region of canvas that
                           * must be redisplayed (not used). */
 {
@@ -877,9 +877,9 @@ static int RectToArea(canvas,
                       itemPtr,
                       areaPtr) Tk_Canvas canvas; /* Canvas containing item. */
 Tk_Item *itemPtr; /* Item to check against rectangle. */
-double *areaPtr; /* Pointer to array of four coordinates
-                  * (x1, y1, x2, y2) describing rectangular
-                  * area.  */
+double *areaPtr;  /* Pointer to array of four coordinates
+                   * (x1, y1, x2, y2) describing rectangular
+                   * area.  */
 {
     RectOvalItem *rectPtr = ( RectOvalItem * )itemPtr;
     double halfWidth;
@@ -940,9 +940,9 @@ static int OvalToArea(canvas,
                       itemPtr,
                       areaPtr) Tk_Canvas canvas; /* Canvas containing item. */
 Tk_Item *itemPtr; /* Item to check against oval. */
-double *areaPtr; /* Pointer to array of four coordinates
-                  * (x1, y1, x2, y2) describing rectangular
-                  * area.  */
+double *areaPtr;  /* Pointer to array of four coordinates
+                   * (x1, y1, x2, y2) describing rectangular
+                   * area.  */
 {
     RectOvalItem *ovalPtr = ( RectOvalItem * )itemPtr;
     double oval[4], halfWidth;
@@ -1020,11 +1020,11 @@ double *areaPtr; /* Pointer to array of four coordinates
  */
 
 static void ScaleRectOval(canvas, itemPtr, originX, originY, scaleX, scaleY)
-Tk_Canvas canvas; /* Canvas containing rectangle. */
-Tk_Item *itemPtr; /* Rectangle to be scaled. */
+Tk_Canvas canvas;        /* Canvas containing rectangle. */
+Tk_Item *itemPtr;        /* Rectangle to be scaled. */
 double originX, originY; /* Origin about which to scale rect. */
-double scaleX; /* Amount to scale in X direction. */
-double scaleY; /* Amount to scale in Y direction. */
+double scaleX;           /* Amount to scale in X direction. */
+double scaleY;           /* Amount to scale in Y direction. */
 {
     RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
 
@@ -1059,8 +1059,8 @@ double scaleY; /* Amount to scale in Y direction. */
  */
 
 static void TranslateRectOval(canvas, itemPtr, deltaX, deltaY)
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item that is being moved. */
+Tk_Canvas canvas;      /* Canvas containing item. */
+Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
@@ -1096,12 +1096,12 @@ double deltaX, deltaY; /* Amount by which item is to be
 
 static int RectOvalToPostscript(interp, canvas, itemPtr, prepass)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Canvas canvas; /* Information about overall canvas. */
-Tk_Item *itemPtr; /* Item for which Postscript is
-                   * wanted. */
-int prepass; /* 1 means this is a prepass to
-              * collect font information;  0 means
-              * final Postscript is being created. */
+Tk_Canvas canvas;   /* Information about overall canvas. */
+Tk_Item *itemPtr;   /* Item for which Postscript is
+                     * wanted. */
+int prepass;        /* 1 means this is a prepass to
+                     * collect font information;  0 means
+                     * final Postscript is being created. */
 {
     char pathCmd[500], string[100];
     RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;

@@ -236,8 +236,8 @@ Void_t *
 sfsetbuf(Sfio_t *f, Void_t *buf, size_t size)
 #else
 Void_t *sfsetbuf(f, buf, size) Sfio_t *f; /* stream to be buffered */
-Void_t *buf; /* new buffer */
-size_t size; /* buffer size, -1 for default size */
+Void_t *buf;                              /* new buffer */
+size_t size;                              /* buffer size, -1 for default size */
 #endif
 {
     int sf_malloc, oflags, init, okmmap, local;

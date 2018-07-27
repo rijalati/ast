@@ -70,7 +70,7 @@
 #            undef __USE_BSD
 #        endif
 
-typedef uint8_t sha2_byte; /* Exactly 1 byte */
+typedef uint8_t sha2_byte;    /* Exactly 1 byte */
 typedef uint32_t sha2_word32; /* Exactly 4 bytes */
 typedef uint64_t sha2_word64; /* Exactly 8 bytes */
 
@@ -132,13 +132,13 @@ typedef uint64_t sha2_word64; /* Exactly 8 bytes */
 
 #        ifdef SHA2_USE_INTTYPES_H
 
-typedef uint8_t sha2_byte; /* Exactly 1 byte */
+typedef uint8_t sha2_byte;    /* Exactly 1 byte */
 typedef uint32_t sha2_word32; /* Exactly 4 bytes */
 typedef uint64_t sha2_word64; /* Exactly 8 bytes */
 
 #        else /* SHA2_USE_INTTYPES_H */
 
-typedef u_int8_t sha2_byte; /* Exactly 1 byte */
+typedef u_int8_t sha2_byte;    /* Exactly 1 byte */
 typedef u_int32_t sha2_word32; /* Exactly 4 bytes */
 typedef u_int64_t sha2_word64; /* Exactly 8 bytes */
 
@@ -547,7 +547,7 @@ SHA256_Transform(SHA256_CTX *sha, const sha2_word32 *data)
         REVERSE32(*data++, W256[j]);
         /* Apply the SHA-256 compression function to update a..h */
         T1 = h + Sigma1_256(e) + Ch(e, f, g) + K256[j] + W256[j];
-#        else /* BYTE_ORDER == LITTLE_ENDIAN */
+#        else  /* BYTE_ORDER == LITTLE_ENDIAN */
         /* Apply the SHA-256 compression function to update a..h with copy */
         T1 = h + Sigma1_256(e) + Ch(e, f, g) + K256[j] + (W256[j] = *data++);
 #        endif /* BYTE_ORDER == LITTLE_ENDIAN */
@@ -934,7 +934,7 @@ SHA512_Transform(SHA512_CTX *sha, const sha2_word64 *data)
         REVERSE64(*data++, W512[j]);
         /* Apply the SHA-512 compression function to update a..h */
         T1 = h + Sigma1_512(e) + Ch(e, f, g) + K512[j] + W512[j];
-#        else /* BYTE_ORDER == LITTLE_ENDIAN */
+#        else  /* BYTE_ORDER == LITTLE_ENDIAN */
         /* Apply the SHA-512 compression function to update a..h with copy */
         T1 = h + Sigma1_512(e) + Ch(e, f, g) + K512[j] + (W512[j] = *data++);
 #        endif /* BYTE_ORDER == LITTLE_ENDIAN */

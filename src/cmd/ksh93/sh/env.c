@@ -51,7 +51,7 @@ typedef struct _env_
 #define _BLD_env 1
 #include <env.h>
 
-#define ENV_VALID 2 /* set if env is valid */
+#define ENV_VALID 2   /* set if env is valid */
 #define ENV_PMALLOC 1 /* set if Evar_t->un.ptr  *s malloced */
 #define ENV_VMALLOC 2 /* set of Evar_t was malloced */
 #define ENV_BITS 3

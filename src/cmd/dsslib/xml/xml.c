@@ -59,46 +59,46 @@ typedef struct Xml_s Xml_t;
 struct Library_s /* library list			*/
 {
     Library_t *next; /* next in list			*/
-    char name[1]; /* library name			*/
+    char name[1];    /* library name			*/
 };
 
 struct Value_s /* value in current record	*/
 {
-    uintmax_t record; /* record number for value	*/
-    size_t offset; /* File_t.value offset		*/
-    size_t size; /* string value size		*/
-    int number; /* value is a number		*/
+    uintmax_t record;       /* record number for value	*/
+    size_t offset;          /* File_t.value offset		*/
+    size_t size;            /* string value size		*/
+    int number;             /* value is a number		*/
     Cxinternal_f internalf; /* convert to internal value	*/
 };
 
 struct File_s /* file read state		*/
 {
-    uintmax_t record; /* current record number	*/
+    uintmax_t record;   /* current record number	*/
     unsigned char *buf; /* input buffer 		*/
     unsigned char *rec; /* input record position	*/
     unsigned char *cur; /* input buffer position	*/
     unsigned char *end; /* input buffer end		*/
-    char *name; /* current .'d name		*/
-    char *root; /* root path			*/
-    char *value; /* current record tag values	*/
-    int image; /* keep current record image	*/
-    int level; /* part[] index			*/
-    int maxlevel; /* max part[] index		*/
-    int maxname; /* max .'d name length		*/
-    int prefix; /* implied .'d prefix		*/
-    int save; /* real char at *f->end		*/
-    size_t maxvalue; /* size of value		*/
+    char *name;         /* current .'d name		*/
+    char *root;         /* root path			*/
+    char *value;        /* current record tag values	*/
+    int image;          /* keep current record image	*/
+    int level;          /* part[] index			*/
+    int maxlevel;       /* max part[] index		*/
+    int maxname;        /* max .'d name length		*/
+    int prefix;         /* implied .'d prefix		*/
+    int save;           /* real char at *f->end		*/
+    size_t maxvalue;    /* size of value		*/
     unsigned char *prv; /* previous buffer chunk	*/
-    size_t prvsize; /* max previous buffer size	*/
-    size_t prvlen; /* current previous buffer size	*/
-    char *part[1]; /* .'d part stack		*/
+    size_t prvsize;     /* max previous buffer size	*/
+    size_t prvlen;      /* current previous buffer size	*/
+    char *part[1];      /* .'d part stack		*/
 };
 
 struct Field_s /* current proto schema field	*/
 {
-    Field_t *next; /* next in list			*/
-    char *name; /* qualified field name		*/
-    char *type; /* field type name		*/
+    Field_t *next;     /* next in list			*/
+    char *name;        /* qualified field name		*/
+    char *type;        /* field type name		*/
     Cxformat_t format; /* field output format		*/
 };
 

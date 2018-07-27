@@ -90,11 +90,11 @@ struct Nambfun
 struct Namarray
 {
     Namfun_t hdr;
-    long nelem; /* number of elements */
+    long nelem;                                  /* number of elements */
     void *(*fun)(Namval_t *, const char *, int); /* associative arrays */
-    void *fixed; /* for fixed sized arrays */
-    Dt_t *table; /* for subscripts */
-    void *scope; /* non-zerp when scoped */
+    void *fixed;                                 /* for fixed sized arrays */
+    Dt_t *table;                                 /* for subscripts */
+    void *scope;                                 /* non-zerp when scoped */
     int flags;
 };
 
@@ -113,7 +113,7 @@ struct Namdecl
 struct Namval
 {
     Dtlink_t nvlink; /* space for cdt links */
-    char *nvname; /* pointer to name of the node */
+    char *nvname;    /* pointer to name of the node */
 #    if _ast_sizeof_pointer >= 8
 #        if _ast_intswap > 0
     unsigned short nvflag; /* attributes */
@@ -145,35 +145,35 @@ struct Namval
         (( Namval_t * )(( char * )(p) + ( n )*NV_MINSZ - sizeof(Dtlink_t)))
 
 /* The following attributes are for internal use */
-#    define NV_NOFREE 0x200 /* don't free the space when releasing value */
-#    define NV_ARRAY 0x400 /* node is an array */
-#    define NV_REF 0x4000 /* reference bit */
-#    define NV_TABLE 0x800 /* node is a dictionary table */
+#    define NV_NOFREE 0x200  /* don't free the space when releasing value */
+#    define NV_ARRAY 0x400   /* node is an array */
+#    define NV_REF 0x4000    /* reference bit */
+#    define NV_TABLE 0x800   /* node is a dictionary table */
 #    define NV_IMPORT 0x1000 /* value imported from environment */
 #    define NV_MINIMAL NV_IMPORT /* node does not contain all fields */
 
 #    define NV_INTEGER 0x2 /* integer attribute */
 /* The following attributes are valid only when NV_INTEGER is off */
-#    define NV_LTOU 0x4 /* convert to uppercase */
-#    define NV_UTOL 0x8 /* convert to lowercase */
-#    define NV_ZFILL 0x10 /* right justify and fill with leading zeros */
-#    define NV_RJUST 0x20 /* right justify and blank fill */
-#    define NV_LJUST 0x40 /* left justify and blank fill */
+#    define NV_LTOU 0x4     /* convert to uppercase */
+#    define NV_UTOL 0x8     /* convert to lowercase */
+#    define NV_ZFILL 0x10   /* right justify and fill with leading zeros */
+#    define NV_RJUST 0x20   /* right justify and blank fill */
+#    define NV_LJUST 0x40   /* left justify and blank fill */
 #    define NV_BINARY 0x100 /* fixed size data buffer */
 #    define NV_RAW NV_LJUST /* used only with NV_BINARY */
 #    define NV_HOST (NV_RJUST | NV_LJUST) /* map to host filename */
 
 /* The following attributes do not effect the value */
-#    define NV_RDONLY 0x1 /* readonly bit */
+#    define NV_RDONLY 0x1    /* readonly bit */
 #    define NV_EXPORT 0x2000 /* export bit */
 #    define NV_TAGGED 0x8000 /* user define tag bit */
 
 /* The following are used with NV_INTEGER */
 #    define NV_SHORT (NV_RJUST) /* when integers are not long */
-#    define NV_LONG (NV_UTOL) /* for long long and long double */
+#    define NV_LONG (NV_UTOL)   /* for long long and long double */
 #    define NV_UNSIGN (NV_LTOU) /* for unsigned quantities */
 #    define NV_DOUBLE (NV_INTEGER | NV_ZFILL) /* for floating point */
-#    define NV_EXPNOTE (NV_LJUST) /* for scientific notation */
+#    define NV_EXPNOTE (NV_LJUST)             /* for scientific notation */
 #    define NV_HEXFLOAT (NV_LTOU) /* for C99 base16 float notation */
 
 /*  options for nv_open */
@@ -183,18 +183,18 @@ struct Namval
 #    define NV_ADD 8
 /* add node if not found */
 #    define NV_ASSIGN NV_NOFREE /* assignment is possible */
-#    define NV_NOASSIGN 0 /* backward compatibility */
+#    define NV_NOASSIGN 0       /* backward compatibility */
 #    define NV_NOARRAY 0x200000 /* array name not possible */
-#    define NV_IARRAY 0x400000 /* for indexed array */
-#    define NV_NOREF NV_REF /* don't follow reference */
-#    define NV_IDENT 0x80 /* name must be identifier */
-#    define NV_VARNAME 0x20000 /* name must be ?(.)id*(.id) */
-#    define NV_NOADD 0x40000 /* do not add node */
-#    define NV_NOSCOPE 0x80000 /* look only in current scope */
-#    define NV_NOFAIL 0x100000 /* return 0 on failure, no msg */
-#    define NV_NODISC NV_IDENT /* ignore disciplines */
+#    define NV_IARRAY 0x400000  /* for indexed array */
+#    define NV_NOREF NV_REF     /* don't follow reference */
+#    define NV_IDENT 0x80       /* name must be identifier */
+#    define NV_VARNAME 0x20000  /* name must be ?(.)id*(.id) */
+#    define NV_NOADD 0x40000    /* do not add node */
+#    define NV_NOSCOPE 0x80000  /* look only in current scope */
+#    define NV_NOFAIL 0x100000  /* return 0 on failure, no msg */
+#    define NV_NODISC NV_IDENT  /* ignore disciplines */
 
-#    define NV_FUNCT NV_IDENT /* option for nv_create */
+#    define NV_FUNCT NV_IDENT    /* option for nv_create */
 #    define NV_BLTINOPT NV_ZFILL /* mark builtins in libcmd */
 
 #    define NV_PUBLIC                                                        \
@@ -219,14 +219,14 @@ struct Namval
 #    define nv_isarray(np) (nv_isattr((np), NV_ARRAY))
 
 /* The following are operations for associative arrays */
-#    define NV_AINIT 1 /* initialize */
-#    define NV_AFREE 2 /* free array */
-#    define NV_ANEXT 3 /* advance to next subscript */
-#    define NV_ANAME 4 /* return subscript name */
-#    define NV_ADELETE 5 /* delete current subscript */
-#    define NV_AADD 6 /* add subscript if not found */
+#    define NV_AINIT 1    /* initialize */
+#    define NV_AFREE 2    /* free array */
+#    define NV_ANEXT 3    /* advance to next subscript */
+#    define NV_ANAME 4    /* return subscript name */
+#    define NV_ADELETE 5  /* delete current subscript */
+#    define NV_AADD 6     /* add subscript if not found */
 #    define NV_ACURRENT 7 /* return current subscript Namval_t* */
-#    define NV_ASETSUB 8 /* set current subscript */
+#    define NV_ASETSUB 8  /* set current subscript */
 
 /* The following are for nv_disc */
 #    define NV_FIRST 1
@@ -236,13 +236,13 @@ struct Namval
 
 /* The following are operations for nv_putsub() */
 #    define ARRAY_BITS 22
-#    define ARRAY_ADD (1L << ARRAY_BITS) /* add subscript if not found */
-#    define ARRAY_SCAN (2L << ARRAY_BITS) /* For ${array[@]} */
+#    define ARRAY_ADD (1L << ARRAY_BITS)   /* add subscript if not found */
+#    define ARRAY_SCAN (2L << ARRAY_BITS)  /* For ${array[@]} */
 #    define ARRAY_UNDEF (4L << ARRAY_BITS) /* For ${array} */
 
 
 /* These  are disciplines provided by the library for use with nv_discfun */
-#    define NV_DCADD 0 /* used to add named disciplines */
+#    define NV_DCADD 0      /* used to add named disciplines */
 #    define NV_DCRESTRICT 1 /* variable that are restricted in rsh */
 
 #    if defined(__EXPORT__) && defined(_DLL)
@@ -251,7 +251,7 @@ struct Namval
 #        else
 #            define extern __IMPORT__
 #        endif /* _BLD_shell */
-#    endif /* _DLL */
+#    endif     /* _DLL */
 /* prototype for array interface*/
 extern Namarr_t *
 nv_arrayptr(Namval_t *);

@@ -66,11 +66,11 @@ const char deflate_copyright[]
  */
 typedef enum
 {
-    need_more, /* block not completed, need more input or more output */
-    block_done, /* block flush performed */
+    need_more,      /* block not completed, need more input or more output */
+    block_done,     /* block flush performed */
     finish_started, /* finish started, need only more output at next deflate
                      */
-    finish_done /* finish done, accept no more input or output */
+    finish_done     /* finish done, accept no more input or output */
 } block_state;
 
 typedef block_state(*compress_func) OF((deflate_state * s, int flush));
@@ -126,7 +126,7 @@ check_match OF((deflate_state * s, IPos start, IPos match, int length));
 typedef struct config_s
 {
     ush good_length; /* reduce lazy search above this match length */
-    ush max_lazy; /* do not perform lazy search above this match length */
+    ush max_lazy;    /* do not perform lazy search above this match length */
     ush nice_length; /* quit search above this match length */
     ush max_chain;
     compress_func func;
@@ -142,7 +142,7 @@ local const config configuration_table[2] = {
 local const config configuration_table[10] = {
     /*      good lazy nice chain */
     /* 0 */ { 0, 0, 0, 0, deflate_stored }, /* store only */
-    /* 1 */ { 4, 4, 8, 4, deflate_fast }, /* max speed, no lazy matches */
+    /* 1 */ { 4, 4, 8, 4, deflate_fast },   /* max speed, no lazy matches */
     /* 2 */ { 4, 5, 16, 8, deflate_fast },
     /* 3 */ { 4, 6, 32, 32, deflate_fast },
 
@@ -1137,10 +1137,10 @@ local uInt longest_match(s, cur_match) deflate_state *s;
 IPos cur_match; /* current match */
 {
     unsigned chain_length = s->max_chain_length; /* max hash chain length */
-    Bytef *scan = s->window + s->strstart; /* current string */
-    Bytef *match; /* matched string */
-    int len; /* length of current match */
-    int best_len = s->prev_length; /* best match length so far */
+    Bytef *scan = s->window + s->strstart;       /* current string */
+    Bytef *match;                                /* matched string */
+    int len;                                     /* length of current match */
+    int best_len = s->prev_length;  /* best match length so far */
     int nice_match = s->nice_match; /* stop if match long enough */
     IPos limit = s->strstart > ( IPos )MAX_DIST(s)
                  ? s->strstart - ( IPos )MAX_DIST(s)
@@ -1287,7 +1287,7 @@ IPos cur_match; /* current match */
     return s->lookahead;
 }
 #    endif /* ASMV */
-#endif /* FASTEST */
+#endif     /* FASTEST */
 
 /* ---------------------------------------------------------------------------
  * Optimized version for level == 1 or strategy == Z_RLE only
@@ -1296,8 +1296,8 @@ local uInt longest_match_fast(s, cur_match) deflate_state *s;
 IPos cur_match; /* current match */
 {
     Bytef *scan = s->window + s->strstart; /* current string */
-    Bytef *match; /* matched string */
-    int len; /* length of current match */
+    Bytef *match;                          /* matched string */
+    int len;                               /* length of current match */
     Bytef *strend = s->window + s->strstart + MAX_MATCH;
 
     /* The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple
@@ -1596,7 +1596,7 @@ local block_state deflate_fast(s, flush) deflate_state *s;
 int flush;
 {
     IPos hash_head = NIL; /* head of the hash chain */
-    int bflush; /* set if current block must be flushed */
+    int bflush;           /* set if current block must be flushed */
 
     for (;;)
     {
@@ -1720,7 +1720,7 @@ local block_state deflate_slow(s, flush) deflate_state *s;
 int flush;
 {
     IPos hash_head = NIL; /* head of hash chain */
-    int bflush; /* set if current block must be flushed */
+    int bflush;           /* set if current block must be flushed */
 
     /* Process the input block. */
     for (;;)

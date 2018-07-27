@@ -125,9 +125,9 @@ typedef struct
 typedef struct
 {
     unsigned char hit[UCHAR_MAX + 1]; /* values seen		*/
-    unsigned long changes; /* number of changes	*/
-    unsigned int values; /* # different values	*/
-    int prev; /* prev row value	*/
+    unsigned long changes;            /* number of changes	*/
+    unsigned int values;              /* # different values	*/
+    int prev;                         /* prev row value	*/
 } Info_t;
 
 /*

@@ -32,8 +32,8 @@
 typedef struct _tee_s
 {
     Sfdisc_t disc; /* the sfio discipline structure */
-    Sfio_t *tee; /* the stream to tee to */
-    int status; /* if tee stream is still ok */
+    Sfio_t *tee;   /* the stream to tee to */
+    int status;    /* if tee stream is still ok */
 } Tee_t;
 
 /*	write to the teed stream.  */
@@ -43,8 +43,8 @@ teewrite(Sfio_t *f, const Void_t *buf, size_t size, Sfdisc_t *disc)
 #else
 static ssize_t teewrite(f, buf, size, disc) Sfio_t *f; /* the stream being
                                                           written to */
-Void_t *buf; /* the buffer of data being output */
-size_t size; /* the data size */
+Void_t *buf;    /* the buffer of data being output */
+size_t size;    /* the data size */
 Sfdisc_t *disc; /* the tee discipline */
 #endif
 {
@@ -80,7 +80,7 @@ int
 sfdctee(Sfio_t *f, Sfio_t *tee)
 #else
 int sfdctee(f, tee) Sfio_t *f; /* stream to tee from	*/
-Sfio_t *tee; /* stream to tee to	*/
+Sfio_t *tee;                   /* stream to tee to	*/
 #endif
 {
     reg Tee_t *te;

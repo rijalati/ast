@@ -26,25 +26,25 @@
 
 #define GRP_NTBL 32 /* max number of tables		*/
 #define GRP_IMAX 20 /* max initial number of tables	*/
-#define GRP_IMIN 4 /* min initial number of tables	*/
-#define GRP_ITER 3 /* desired number of iterations	*/
+#define GRP_IMIN 4  /* min initial number of tables	*/
+#define GRP_ITER 3  /* desired number of iterations	*/
 
 #define GRP_HUGE ((ssize_t)((~(( size_t )0)) >> 1))
 
 typedef struct _table_s
 {
     ssize_t size[VCH_SIZE]; /* code length table	*/
-    int maxs; /* max code length		*/
-    int runb; /* the run object if any	*/
-    ssize_t nblks; /* # of associated blocks	*/
-    ssize_t cost; /* cost of encoding		*/
+    int maxs;               /* max code length		*/
+    int runb;               /* the run object if any	*/
+    ssize_t nblks;          /* # of associated blocks	*/
+    ssize_t cost;           /* cost of encoding		*/
 } Table_t;
 
 typedef struct _obj_s
 {
-    Vchobj_t obj; /* object			*/
+    Vchobj_t obj;  /* object			*/
     Vcchar_t size; /* Huffman code size in part	*/
-    ssize_t freq; /* object frequency in part	*/
+    ssize_t freq;  /* object frequency in part	*/
 } Obj_t;
 
 typedef struct _group_s
@@ -52,18 +52,18 @@ typedef struct _group_s
     Vcodex_t *huf; /* Huffman coder/decoder	*/
     Vcodex_t *mtf; /* MTF coder/decoder		*/
 
-    ssize_t ptsz; /* actual part size		*/
-    ssize_t npts; /* number of parts		*/
+    ssize_t ptsz;   /* actual part size		*/
+    ssize_t npts;   /* number of parts		*/
     Vcchar_t *part; /* table index for each part	*/
     Vcchar_t *work; /* working space for indices	*/
-    ssize_t *ppos; /* position of part[] in objs[]	*/
-    ssize_t *sort; /* for sorting part positions	*/
+    ssize_t *ppos;  /* position of part[] in objs[]	*/
+    ssize_t *sort;  /* for sorting part positions	*/
 
     Obj_t *obj; /* objs and their frequencies	*/
 
-    ssize_t hufsz; /* size of single Huffman code 	*/
-    ssize_t cmpsz; /* current best compressed size	*/
-    ssize_t ntbl; /* number of coding tables	*/
+    ssize_t hufsz;         /* size of single Huffman code 	*/
+    ssize_t cmpsz;         /* current best compressed size	*/
+    ssize_t ntbl;          /* number of coding tables	*/
     Table_t tbl[GRP_NTBL]; /* best coding tables	*/
 } Group_t;
 
@@ -333,7 +333,7 @@ grppart(Group_t *grp, ssize_t ntbl, int niter)
 #else
 static void grppart(grp, ntbl, niter) Group_t *grp;
 ssize_t ntbl; /* # of tables aiming for	*/
-int niter; /* # of iterations to run	*/
+int niter;    /* # of iterations to run	*/
 #endif
 {
     ssize_t i, k, p, q, z, n, t, iter;
@@ -374,7 +374,7 @@ int niter; /* # of iterations to run	*/
         }
     }
     else /* increasing number of tables */
-    { /**/
+    {    /**/
         DEBUG_ASSERT(ntbl <= GRP_NTBL && grp->ntbl <= GRP_NTBL);
         memcpy(tbl, grp->tbl, grp->ntbl * sizeof(Table_t));
         n = ntbl - grp->ntbl;
@@ -586,7 +586,7 @@ grphuff(Vcodex_t *vc, const Void_t *data, size_t dtsz, Void_t **out)
 static ssize_t grphuff(vc, data, dtsz, out) Vcodex_t *vc; /* Vcodex handle
                                                            */
 Void_t *data; /* target data to be compressed	*/
-size_t dtsz; /* data size			*/
+size_t dtsz;  /* data size			*/
 Void_t **out; /* to return output buffer 	*/
 #endif
 {
@@ -718,7 +718,7 @@ grpunhuff(Vcodex_t *vc, const Void_t *orig, size_t dtsz, Void_t **out)
 static ssize_t grpunhuff(vc, orig, dtsz, out) Vcodex_t *vc; /* Vcodex handle
                                                              */
 Void_t *orig; /* data to be uncompressed	*/
-size_t dtsz; /* data size			*/
+size_t dtsz;  /* data size			*/
 Void_t **out; /* to return output buffer 	*/
 #endif
 {
@@ -796,7 +796,7 @@ Void_t **out; /* to return output buffer 	*/
     for (k = 0; k < npts; ++k)
     {
         dt = o + (k == npts - 1 ? endo - o : ptsz); /* end of this part */
-        if (tbl[part[k]].maxs == 0) /* reconstruct a run */
+        if (tbl[part[k]].maxs == 0)                 /* reconstruct a run */
         {
             p = tbl[part[k]].runb;
             while (o < dt)

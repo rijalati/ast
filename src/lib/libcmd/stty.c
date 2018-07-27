@@ -1311,7 +1311,7 @@ static int _i_;
 #    else
 #        define tcgetpgrp(a) (-1)
 #    endif /* TIOCGPGRP */
-#endif /* _lib_tcgetpgrp */
+#endif     /* _lib_tcgetpgrp */
 
 int
 b_stty(int argc, char **argv, Shbltin_t *context)

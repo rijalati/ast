@@ -26,7 +26,7 @@
 
 typedef struct AcceptCallback
 {
-    char *script; /* Script to invoke. */
+    char *script;       /* Script to invoke. */
     Tcl_Interp *interp; /* Interpreter in which to run it. */
 } AcceptCallback;
 
@@ -64,16 +64,16 @@ _ANSI_ARGS_((Tcl_Interp * interp, AcceptCallback *acceptCallbackPtr));
 /* ARGSUSED */
 int Tcl_PutsCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tcl_Channel chan; /* The channel to puts on. */
-    int i; /* Counter. */
-    int newline; /* Add a newline at end? */
-    char *channelId; /* Name of channel for puts. */
-    int result; /* Result of puts operation. */
-    int mode; /* Mode in which channel is opened. */
+    int i;            /* Counter. */
+    int newline;      /* Add a newline at end? */
+    char *channelId;  /* Name of channel for puts. */
+    int result;       /* Result of puts operation. */
+    int mode;         /* Mode in which channel is opened. */
 
     i = 1;
     newline = 1;
@@ -178,14 +178,14 @@ error:
 /* ARGSUSED */
 int Tcl_FlushCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tcl_Channel chan; /* The channel to flush on. */
-    int result; /* Result of call to channel
-                 * level function. */
-    int mode; /* Mode in which channel is opened. */
+    int result;       /* Result of call to channel
+                       * level function. */
+    int mode;         /* Mode in which channel is opened. */
 
     if (argc != 2)
     {
@@ -244,19 +244,19 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_GetsCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tcl_Channel chan; /* The channel to read from. */
-    char *varName; /* Assign to this variable? */
-    char buf[128]; /* Buffer to store string
-                    * representation of how long
-                    * a line was read. */
-    Tcl_DString ds; /* Dynamic string to hold the
-                     * buffer for the line just read. */
-    int lineLen; /* Length of line just read. */
-    int mode; /* Mode in which channel is opened. */
+    char *varName;    /* Assign to this variable? */
+    char buf[128];    /* Buffer to store string
+                       * representation of how long
+                       * a line was read. */
+    Tcl_DString ds;   /* Dynamic string to hold the
+                       * buffer for the line just read. */
+    int lineLen;      /* Length of line just read. */
+    int mode;         /* Mode in which channel is opened. */
 
     if ((argc != 2) && (argc != 3))
     {
@@ -349,24 +349,24 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_ReadCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
-    Tcl_Channel chan; /* The channel to read from. */
-    int newline, i; /* Discard newline at end? */
-    int toRead; /* How many bytes to read? */
-    int toReadNow; /* How many bytes to attempt to
-                    * read in the current iteration? */
-    int charactersRead; /* How many characters were read? */
+    Tcl_Channel chan;      /* The channel to read from. */
+    int newline, i;        /* Discard newline at end? */
+    int toRead;            /* How many bytes to read? */
+    int toReadNow;         /* How many bytes to attempt to
+                            * read in the current iteration? */
+    int charactersRead;    /* How many characters were read? */
     int charactersReadNow; /* How many characters were read
                             * in this iteration? */
-    int mode; /* Mode in which channel is opened. */
-    Tcl_DString ds; /* Used to accumulate the data
-                     * read by Tcl_Read. */
-    int bufSize; /* Channel buffer size; used to decide
-                  * in what chunk sizes to read from
-                  * the channel. */
+    int mode;              /* Mode in which channel is opened. */
+    Tcl_DString ds;        /* Used to accumulate the data
+                            * read by Tcl_Read. */
+    int bufSize;           /* Channel buffer size; used to decide
+                            * in what chunk sizes to read from
+                            * the channel. */
 
     if ((argc != 2) && (argc != 3))
     {
@@ -516,10 +516,10 @@ char **argv; /* Argument strings. */
 
 int TclUnsupported0Cmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Interpreter in which both channels
-                     * are defined. */
-int argc; /* How many arguments? */
-char **argv; /* The argument strings. */
+Tcl_Interp *interp;    /* Interpreter in which both channels
+                        * are defined. */
+int argc;              /* How many arguments? */
+char **argv;           /* The argument strings. */
 {
     Tcl_Channel inChan, outChan;
     int requested;
@@ -649,13 +649,13 @@ char **argv; /* The argument strings. */
 /* ARGSUSED */
 int Tcl_SeekCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tcl_Channel chan; /* The channel to tell on. */
     int offset, mode; /* Where to seek? */
-    int result; /* Of calling Tcl_Seek. */
+    int result;       /* Of calling Tcl_Seek. */
 
     if ((argc != 3) && (argc != 4))
     {
@@ -740,9 +740,9 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_TellCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tcl_Channel chan; /* The channel to tell on. */
 
@@ -790,12 +790,12 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_CloseCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tcl_Channel chan; /* The channel to close. */
-    int len; /* Length of error output. */
+    int len;          /* Length of error output. */
 
     if (argc != 2)
     {
@@ -856,15 +856,15 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_FconfigureCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tcl_Channel chan; /* The channel to set a mode on. */
-    int result; /* Of Tcl_Set/GetChannelOption. */
-    int i; /* Iterate over arg-value pairs. */
-    Tcl_DString ds; /* DString to hold result of
-                     * calling Tcl_GetChannelOption. */
+    int result;       /* Of Tcl_Set/GetChannelOption. */
+    int i;            /* Iterate over arg-value pairs. */
+    Tcl_DString ds;   /* DString to hold result of
+                       * calling Tcl_GetChannelOption. */
 
     if ((argc < 2) || (((argc % 2) == 1) && (argc != 3)))
     {
@@ -946,11 +946,11 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int Tcl_EofCmd(unused, interp, argc, argv) ClientData unused; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Tcl_Channel chan; /* The channel to query for EOF. */
-    int mode; /* Mode in which channel is opened. */
+    int mode;         /* Mode in which channel is opened. */
 
     if (argc != 2)
     {
@@ -1136,11 +1136,11 @@ Tcl_ExecCmd(dummy, interp, argc, argv)
 int Tcl_FblockedCmd(unused, interp, argc, argv) ClientData unused; /* Not
                                                                       used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Tcl_Channel chan; /* The channel to query for blocked. */
-    int mode; /* Mode in which channel was opened. */
+    int mode;         /* Mode in which channel was opened. */
 
     if (argc != 2)
     {
@@ -1191,8 +1191,8 @@ char **argv; /* Argument strings. */
 int Tcl_OpenCmd(notUsed, interp, argc, argv) ClientData notUsed; /* Not used.
                                                                   */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int pipeline, prot;
     char *modeString;

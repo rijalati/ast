@@ -87,9 +87,9 @@ typedef struct ChannelBuffer {
 
 typedef struct CloseCallback
 {
-    Tcl_CloseProc *proc; /* The procedure to call. */
-    ClientData clientData; /* Arbitrary one-word data to pass
-                            * to the callback. */
+    Tcl_CloseProc *proc;           /* The procedure to call. */
+    ClientData clientData;         /* Arbitrary one-word data to pass
+                                    * to the callback. */
     struct CloseCallback *nextPtr; /* For chaining close callbacks. */
 } CloseCallback;
 
@@ -112,10 +112,10 @@ typedef struct EventScriptRecord
                               * registered. This is used only when an
                               * error occurs during evaluation of the
                               * script, to delete the handler. */
-    char *script; /* Script to invoke. */
-    Tcl_Interp *interp; /* In what interpreter to invoke script? */
-    int mask; /* Events must overlap current mask for the
-               * stored script to be invoked. */
+    char *script;            /* Script to invoke. */
+    Tcl_Interp *interp;      /* In what interpreter to invoke script? */
+    int mask;                /* Events must overlap current mask for the
+                              * stored script to be invoked. */
     struct EventScriptRecord *nextPtr;
     /* Next in chain of records. */
 } EventScriptRecord;
@@ -149,8 +149,8 @@ typedef struct Channel
     char *channelName; /* The name of the channel instance in Tcl
                         * commands. Storage is owned by the generic IO
                         * code,  is dynamically allocated. */
-    int flags; /* ORed combination of the flags defined
-                * below. */
+    int flags;         /* ORed combination of the flags defined
+                        * below. */
 #if 1
     Sfio_t *sfPtr;
     Sfio_t *sfTmp;
@@ -163,18 +163,18 @@ typedef struct Channel
     Tcl_EolTranslation outputTranslation;
     /* What translation to use for generating
      * end of line sequences in output? */
-    int inEofChar; /* If nonzero, use this as a signal of EOF
-                    * on input. */
-    int outEofChar; /* If nonzero, append this to the channel
-                     * when it is closed if it is open for
-                     * writing. */
-    int unreportedError; /* Non-zero if an error report was deferred
-                          * because it happened in the background. The
-                          * value is the POSIX error code. */
-    ClientData instanceData; /* Instance specific data. */
-    Tcl_ChannelType *typePtr; /* Pointer to channel type structure. */
-    int refCount; /* How many interpreters hold references to
-                   * this IO channel? */
+    int inEofChar;             /* If nonzero, use this as a signal of EOF
+                                * on input. */
+    int outEofChar;            /* If nonzero, append this to the channel
+                                * when it is closed if it is open for
+                                * writing. */
+    int unreportedError;       /* Non-zero if an error report was deferred
+                                * because it happened in the background. The
+                                * value is the POSIX error code. */
+    ClientData instanceData;   /* Instance specific data. */
+    Tcl_ChannelType *typePtr;  /* Pointer to channel type structure. */
+    int refCount;              /* How many interpreters hold references to
+                                * this IO channel? */
     CloseCallback *closeCbPtr; /* Callbacks registered to be called when the
                                 * channel is closed. */
 #if 0
@@ -191,10 +191,10 @@ typedef struct Channel
 
     struct ChannelHandler *chPtr; /* List of channel handlers registered
                                    * for this channel. */
-    int interestMask; /* Mask of all events this channel has
-                       * handlers for. */
-    struct Channel *nextChanPtr; /* Next in list of channels currently open.
-                                  */
+    int interestMask;             /* Mask of all events this channel has
+                                   * handlers for. */
+    struct Channel *nextChanPtr;  /* Next in list of channels currently open.
+                                   */
     EventScriptRecord *scriptRecordPtr;
     /* Chain of all scripts registered for
      * event handlers ("fileevent") on this
@@ -275,8 +275,8 @@ typedef struct Channel
 
 typedef struct ChannelHandler
 {
-    Channel *chanPtr; /* The channel structure for this channel. */
-    int mask; /* Mask of desired events. */
+    Channel *chanPtr;      /* The channel structure for this channel. */
+    int mask;              /* Mask of desired events. */
     Tcl_ChannelProc *proc; /* Procedure to call in the type of
                             * Tcl_CreateChannelHandler. */
     ClientData clientData; /* Argument to pass to procedure. */
@@ -343,7 +343,7 @@ typedef struct ChannelHandlerEvent
 {
     Tcl_Event header; /* Standard header for all events. */
     Channel *chanPtr; /* The channel that is ready. */
-    int readyMask; /* Events that have occurred. */
+    int readyMask;    /* Events that have occurred. */
 } ChannelHandlerEvent;
 
 /*
@@ -1137,10 +1137,10 @@ Tcl_Channel Tcl_GetStdChannel(type) int type; /* One of TCL_STDIN, TCL_STDOUT,
  */
 
 void Tcl_CreateCloseHandler(chan, proc, clientData)
-Tcl_Channel chan; /* The channel for which to create the
-                   * close callback. */
-Tcl_CloseProc *proc; /* The callback routine to call when the
-                      * channel will be closed. */
+Tcl_Channel chan;      /* The channel for which to create the
+                        * close callback. */
+Tcl_CloseProc *proc;   /* The callback routine to call when the
+                        * channel will be closed. */
 ClientData clientData; /* Arbitrary data to pass to the
                         * close callback. */
 {
@@ -1177,10 +1177,10 @@ ClientData clientData; /* Arbitrary data to pass to the
  */
 
 void Tcl_DeleteCloseHandler(chan, proc, clientData)
-Tcl_Channel chan; /* The channel for which to cancel the
-                   * close callback. */
-Tcl_CloseProc *proc; /* The procedure for the callback to
-                      * remove. */
+Tcl_Channel chan;      /* The channel for which to cancel the
+                        * close callback. */
+Tcl_CloseProc *proc;   /* The procedure for the callback to
+                        * remove. */
 ClientData clientData; /* The callback data for the callback
                         * to remove. */
 {
@@ -1233,7 +1233,7 @@ ClientData clientData; /* The callback data for the callback
 static void
 CloseChannelsOnExit(clientData) ClientData clientData; /* NULL - unused. */
 {
-    Channel *chanPtr; /* Iterates over open channels. */
+    Channel *chanPtr;     /* Iterates over open channels. */
     Channel *nextChanPtr; /* Iterates over open channels. */
 
 
@@ -1383,12 +1383,12 @@ static Tcl_HashTable *GetChannelTable(interp) Tcl_Interp *interp;
 
 static void DeleteChannelTable(clientData, interp)
 ClientData clientData; /* The per-interpreter data structure. */
-Tcl_Interp *interp; /* The interpreter being deleted. */
+Tcl_Interp *interp;    /* The interpreter being deleted. */
 {
     Tcl_HashTable *hTblPtr; /* The hash table. */
     Tcl_HashSearch hSearch; /* Search variable. */
-    Tcl_HashEntry *hPtr; /* Search variable. */
-    Channel *chanPtr; /* Channel being deleted. */
+    Tcl_HashEntry *hPtr;    /* Search variable. */
+    Channel *chanPtr;       /* Channel being deleted. */
     EventScriptRecord *sPtr, *prevPtr, *nextPtr;
     /* Variables to loop over all channel events
      * registered, to delete the ones that refer
@@ -1538,11 +1538,11 @@ static void CheckForStdChannelsBeingClosed(chan) Tcl_Channel chan;
 int Tcl_UnregisterChannel(interp,
                           chan) Tcl_Interp *interp; /* Interpreter in which
                                                        channel is defined. */
-Tcl_Channel chan; /* Channel to delete. */
+Tcl_Channel chan;                                   /* Channel to delete. */
 {
     Tcl_HashTable *hTblPtr; /* Hash table of channels. */
-    Tcl_HashEntry *hPtr; /* Search variable. */
-    Channel *chanPtr; /* The real IO channel. */
+    Tcl_HashEntry *hPtr;    /* Search variable. */
+    Channel *chanPtr;       /* The real IO channel. */
 
     chanPtr = ( Channel * )chan;
 
@@ -1643,9 +1643,9 @@ Tcl_Channel chan; /* The channel to add to this interpreter
                    * channel table. */
 {
     Tcl_HashTable *hTblPtr; /* Hash table of channels. */
-    Tcl_HashEntry *hPtr; /* Search variable. */
-    int new; /* Is the hash entry new or does it exist? */
-    Channel *chanPtr; /* The actual channel. */
+    Tcl_HashEntry *hPtr;    /* Search variable. */
+    int new;                /* Is the hash entry new or does it exist? */
+    Channel *chanPtr;       /* The actual channel. */
 
     chanPtr = ( Channel * )chan;
 
@@ -1693,16 +1693,16 @@ Tcl_Channel chan; /* The channel to add to this interpreter
 Tcl_Channel Tcl_GetChannel(interp, chanName, modePtr)
 Tcl_Interp *interp; /* Interpreter in which to find or create
                      * the channel. */
-char *chanName; /* The name of the channel. */
-int *modePtr; /* Where to store the mode in which the
-               * channel was opened? Will contain an ORed
-               * combination of TCL_READABLE and
-               * TCL_WRITABLE, if non-NULL. */
+char *chanName;     /* The name of the channel. */
+int *modePtr;       /* Where to store the mode in which the
+                     * channel was opened? Will contain an ORed
+                     * combination of TCL_READABLE and
+                     * TCL_WRITABLE, if non-NULL. */
 {
-    Channel *chanPtr; /* The actual channel. */
+    Channel *chanPtr;       /* The actual channel. */
     Tcl_HashTable *hTblPtr; /* Hash table of channels. */
-    Tcl_HashEntry *hPtr; /* Search variable. */
-    char *name; /* Translated name. */
+    Tcl_HashEntry *hPtr;    /* Search variable. */
+    char *name;             /* Translated name. */
 
     /*
      * Substitute "stdin", etc.  Note that even though we immediately
@@ -1775,10 +1775,10 @@ int *modePtr; /* Where to store the mode in which the
 
 Tcl_Channel Tcl_CreateChannel(typePtr, chanName, instanceData, mask)
 Tcl_ChannelType *typePtr; /* The channel type record. */
-char *chanName; /* Name of channel to record. */
-ClientData instanceData; /* Instance specific data. */
-int mask; /* TCL_READABLE & TCL_WRITABLE to indicate
-           * if the channel is readable, writable. */
+char *chanName;           /* Name of channel to record. */
+ClientData instanceData;  /* Instance specific data. */
+int mask;                 /* TCL_READABLE & TCL_WRITABLE to indicate
+                           * if the channel is readable, writable. */
 {
     Channel *chanPtr; /* The channel structure newly created. */
 
@@ -2198,8 +2198,8 @@ DiscardOutputQueued(chanPtr)
  */
 
 static int FlushChannel(interp, chanPtr, calledFromAsyncFlush)
-Tcl_Interp *interp; /* For error reporting during close. */
-Channel *chanPtr; /* The channel to flush on. */
+Tcl_Interp *interp;       /* For error reporting during close. */
+Channel *chanPtr;         /* The channel to flush on. */
 int calledFromAsyncFlush; /* If nonzero then we are being
                            * called from an asynchronous
                            * flush callback. */
@@ -2449,11 +2449,11 @@ int calledFromAsyncFlush; /* If nonzero then we are being
 
 static int CloseChannel(interp, chanPtr, errorCode)
 Tcl_Interp *interp; /* For error reporting. */
-Channel *chanPtr; /* The channel to close. */
-int errorCode; /* Status of operation so far. */
+Channel *chanPtr;   /* The channel to close. */
+int errorCode;      /* Status of operation so far. */
 {
-    int result = 0; /* Of calling driver close
-                     * operation. */
+    int result = 0;       /* Of calling driver close
+                           * operation. */
     Channel *prevChanPtr; /* Preceding channel in list of
                            * all channels - used to splice a
                            * channel out of the list on close. */
@@ -2610,12 +2610,12 @@ Tcl_Channel chan; /* The channel being closed. Must
                    * interpreter. */
 {
     ChannelHandler *chPtr, *chNext; /* Iterate over channel handlers. */
-    CloseCallback *cbPtr; /* Iterate over close callbacks
-                           * for this channel. */
+    CloseCallback *cbPtr;           /* Iterate over close callbacks
+                                     * for this channel. */
     EventScriptRecord *ePtr,
-    *eNextPtr; /* Iterate over eventscript records. */
+    *eNextPtr;        /* Iterate over eventscript records. */
     Channel *chanPtr; /* The real IO channel. */
-    int result; /* Of calling FlushChannel. */
+    int result;       /* Of calling FlushChannel. */
 
     chanPtr = ( Channel * )chan;
     /*
@@ -2731,7 +2731,7 @@ Tcl_Channel chan; /* The channel being closed. Must
  */
 
 static int ChannelEventDeleteProc(evPtr, clientData)
-Tcl_Event *evPtr; /* The event to check for a match. */
+Tcl_Event *evPtr;      /* The event to check for a match. */
 ClientData clientData; /* The channel to check for. */
 {
     ChannelHandlerEvent *cEvPtr;
@@ -2773,7 +2773,7 @@ ClientData clientData; /* The channel to check for. */
 
 int Tcl_Write(chan, srcPtr, slen) Tcl_Channel chan; /* The channel to buffer
                                                        output for. */
-char *srcPtr; /* Output to buffer. */
+char *srcPtr;                                       /* Output to buffer. */
 int slen; /* Its length. Negative means
            * the output is null terminated
            * and we must compute its length. */
@@ -2971,7 +2971,7 @@ int slen; /* Its length. Negative means
 
 int Tcl_Flush(chan) Tcl_Channel chan; /* The Channel to flush. */
 {
-    int result; /* Of calling FlushChannel. */
+    int result;       /* Of calling FlushChannel. */
     Channel *chanPtr; /* The actual channel. */
 
     chanPtr = ( Channel * )chan;
@@ -3709,11 +3709,11 @@ GetEOL(chanPtr)
 int Tcl_Read(chan, bufPtr, toRead) Tcl_Channel chan; /* The channel from which
                                                         to read. */
 char *bufPtr; /* Where to store input read. */
-int toRead; /* Maximum number of characters to read. */
+int toRead;   /* Maximum number of characters to read. */
 {
     Channel *chanPtr; /* The real IO channel. */
-    int copied; /* How many characters were copied into
-                 * the result string? */
+    int copied;       /* How many characters were copied into
+                       * the result string? */
 #if 0
     int copiedNow;		/* How many characters were copied from
                                  * the current input buffer? */
@@ -3806,19 +3806,19 @@ int toRead; /* Maximum number of characters to read. */
 
 int Tcl_Gets(chan,
              lineRead) Tcl_Channel chan; /* Channel from which to read. */
-Tcl_DString *lineRead; /* The characters of the line read
-                        * (excluding the terminating newline if
-                        * present) will be appended to this
-                        * DString. The caller must have initialized
-                        * it and is responsible for managing the
-                        * storage. */
+Tcl_DString *lineRead;                   /* The characters of the line read
+                                          * (excluding the terminating newline if
+                                          * present) will be appended to this
+                                          * DString. The caller must have initialized
+                                          * it and is responsible for managing the
+                                          * storage. */
 {
     Channel *chanPtr; /* The channel to read from. */
-    char *buf; /* Points into DString where data
-                * will be stored. */
-    int offset; /* Offset from start of DString at
-                 * which to append the line just read. */
-    int copiedTotal; /* Accumulates total length of input copied. */
+    char *buf;        /* Points into DString where data
+                       * will be stored. */
+    int offset;       /* Offset from start of DString at
+                       * which to append the line just read. */
+    int copiedTotal;  /* Accumulates total length of input copied. */
 #if 0
     int copiedNow;		/* How many bytes were copied from the
                                  * current input buffer? */
@@ -3976,7 +3976,7 @@ Tcl_DString *lineRead; /* The characters of the line read
 
 int Tcl_Seek(chan, offset, mode) Tcl_Channel chan; /* The channel on which to
                                                       seek. */
-int offset; /* Offset to seek to. */
+int offset;                                        /* Offset to seek to. */
 int mode; /* Relative to which location to seek? */
 {
     Channel *chanPtr; /* The real IO channel. */
@@ -4428,7 +4428,7 @@ int Tcl_InputBuffered(chan) Tcl_Channel chan; /* The channel to query. */
 void Tcl_SetChannelBufferSize(chan,
                               sz) Tcl_Channel chan; /* The channel whose
                                                      * buffer size to set. */
-int sz; /* The size to set. */
+int sz;                                             /* The size to set. */
 {
     Channel *chanPtr;
 
@@ -4506,12 +4506,12 @@ int Tcl_GetChannelBufferSize(chan) Tcl_Channel chan; /* The channel for which
  */
 
 int Tcl_GetChannelOption(chan, optionName, dsPtr)
-Tcl_Channel chan; /* Channel on which to get option. */
-char *optionName; /* Option to get. */
+Tcl_Channel chan;   /* Channel on which to get option. */
+char *optionName;   /* Option to get. */
 Tcl_DString *dsPtr; /* Where to store value(s). */
 {
-    Channel *chanPtr; /* The real IO channel. */
-    size_t len; /* Length of optionName string. */
+    Channel *chanPtr;    /* The real IO channel. */
+    size_t len;          /* Length of optionName string. */
     char optionVal[128]; /* Buffer for sprintf. */
 
     chanPtr = ( Channel * )chan;
@@ -4750,14 +4750,14 @@ Tcl_DString *dsPtr; /* Where to store value(s). */
 
 int Tcl_SetChannelOption(interp, chan, optionName, newValue)
 Tcl_Interp *interp; /* For error reporting - can be NULL. */
-Tcl_Channel chan; /* Channel on which to set mode. */
-char *optionName; /* Which option to set? */
-char *newValue; /* New value for option. */
+Tcl_Channel chan;   /* Channel on which to set mode. */
+char *optionName;   /* Which option to set? */
+char *newValue;     /* New value for option. */
 {
-    int result; /* Result of channel type operation. */
-    int newMode; /* New (numeric) mode to sert. */
+    int result;       /* Result of channel type operation. */
+    int newMode;      /* New (numeric) mode to sert. */
     Channel *chanPtr; /* The real IO channel. */
-    size_t len; /* Length of optionName string. */
+    size_t len;       /* Length of optionName string. */
     int argc;
     char **argv;
     Tcl_File outFile; /* Used to cancel async flush. */
@@ -5282,9 +5282,9 @@ Channel *chanPtr;
 static void
 WaitForChannel(chanPtr, mask, timeout) Channel *chanPtr; /* Handle for channel
                                                             to wait for. */
-int mask; /* What to wait for: OR'ed combination of
-           * TCL_READABLE, TCL_WRITABLE, and
-           * TCL_EXCEPTION. */
+int mask;    /* What to wait for: OR'ed combination of
+              * TCL_READABLE, TCL_WRITABLE, and
+              * TCL_EXCEPTION. */
 int timeout; /* Maximum amount of time to wait for one
               * of the conditions in mask to occur, in
               * milliseconds.  A value of 0 means don't
@@ -5627,7 +5627,7 @@ int flags; /* Flags passed to Tk_DoOneEvent:
 static void FlushEventProc(clientData,
                            mask) ClientData clientData; /* Channel to produce
                                                            output on. */
-int mask; /* Not used. */
+int mask;                                               /* Not used. */
 {
     ( void )FlushChannel(NULL, ( Channel * )clientData, 1);
 }
@@ -5735,12 +5735,12 @@ int flags; /* Flags that indicate what events to
  */
 
 void Tcl_CreateChannelHandler(chan, mask, proc, clientData)
-Tcl_Channel chan; /* The channel to create the handler for. */
-int mask; /* OR'ed combination of TCL_READABLE,
-           * TCL_WRITABLE, and TCL_EXCEPTION:
-           * indicates conditions under which
-           * proc should be called. Use 0 to
-           * disable a registered handler. */
+Tcl_Channel chan;      /* The channel to create the handler for. */
+int mask;              /* OR'ed combination of TCL_READABLE,
+                        * TCL_WRITABLE, and TCL_EXCEPTION:
+                        * indicates conditions under which
+                        * proc should be called. Use 0 to
+                        * disable a registered handler. */
 Tcl_ChannelProc *proc; /* Procedure to call for each
                         * selected event. */
 ClientData clientData; /* Arbitrary data to pass to proc. */
@@ -5831,8 +5831,8 @@ ClientData clientData; /* Arbitrary data to pass to proc. */
  */
 
 void Tcl_DeleteChannelHandler(chan, proc, clientData)
-Tcl_Channel chan; /* The channel for which to remove the
-                   * callback. */
+Tcl_Channel chan;      /* The channel for which to remove the
+                        * callback. */
 Tcl_ChannelProc *proc; /* The procedure in the callback to delete. */
 ClientData clientData; /* The client data in the callback
                         * to delete. */
@@ -5929,10 +5929,10 @@ ClientData clientData; /* The client data in the callback
 static void ReturnScriptRecord(interp, chanPtr, mask)
 Tcl_Interp *interp; /* The interpreter in which the script
                      * is to be executed. */
-Channel *chanPtr; /* The channel for which the script is
-                   * stored. */
-int mask; /* Events in mask must overlap with events
-           * for which this script is stored. */
+Channel *chanPtr;   /* The channel for which the script is
+                     * stored. */
+int mask;           /* Events in mask must overlap with events
+                     * for which this script is stored. */
 {
     EventScriptRecord *esPtr;
 
@@ -5968,10 +5968,10 @@ int mask; /* Events in mask must overlap with events
 static void DeleteScriptRecord(interp, chanPtr, mask)
 Tcl_Interp *interp; /* Interpreter in which script was to be
                      * executed. */
-Channel *chanPtr; /* The channel for which to delete the
-                   * script record (if any). */
-int mask; /* Events in mask must exactly match mask
-           * of script to delete. */
+Channel *chanPtr;   /* The channel for which to delete the
+                     * script record (if any). */
+int mask;           /* Events in mask must exactly match mask
+                     * of script to delete. */
 {
     EventScriptRecord *esPtr, *prevEsPtr;
 
@@ -6023,12 +6023,12 @@ int mask; /* Events in mask must exactly match mask
 static void CreateScriptRecord(interp, chanPtr, mask, script)
 Tcl_Interp *interp; /* Interpreter in which to execute
                      * the stored script. */
-Channel *chanPtr; /* Channel for which script is to
-                   * be stored. */
-int mask; /* Set of events for which script
-           * will be invoked. */
-char *script; /* A copy of this script is stored
-               * in the newly created record. */
+Channel *chanPtr;   /* Channel for which script is to
+                     * be stored. */
+int mask;           /* Set of events for which script
+                     * will be invoked. */
+char *script;       /* A copy of this script is stored
+                     * in the newly created record. */
 {
     EventScriptRecord *esPtr;
 
@@ -6081,15 +6081,15 @@ char *script; /* A copy of this script is stored
 
 static void ChannelEventScriptInvoker(clientData, mask)
 ClientData clientData; /* The script+interp record. */
-int mask; /* Not used. */
+int mask;              /* Not used. */
 {
-    Tcl_Interp *interp; /* Interpreter in which to eval the script. */
-    Channel *chanPtr; /* The channel for which this handler is
-                       * registered. */
-    char *script; /* Script to eval. */
+    Tcl_Interp *interp;       /* Interpreter in which to eval the script. */
+    Channel *chanPtr;         /* The channel for which this handler is
+                               * registered. */
+    char *script;             /* Script to eval. */
     EventScriptRecord *esPtr; /* The event script + interpreter to eval it
                                * in. */
-    int result; /* Result of call to eval script. */
+    int result;               /* Result of call to eval script. */
 
     esPtr = ( EventScriptRecord * )clientData;
 
@@ -6150,18 +6150,18 @@ int mask; /* Not used. */
 /* ARGSUSED */
 int Tcl_FileEventCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Interpreter in which the channel
-                     * for which to create the handler
-                     * is found. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Interpreter in which the channel
+                        * for which to create the handler
+                        * is found. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Channel *chanPtr; /* The channel to create
                        * the handler for. */
     Tcl_Channel chan; /* The opaque type for the channel. */
-    int c; /* First char of mode argument. */
-    int mask; /* Mask for events of interest. */
-    size_t length; /* Length of mode argument. */
+    int c;            /* First char of mode argument. */
+    int mask;         /* Mask for events of interest. */
+    size_t length;    /* Length of mode argument. */
 
     /*
      * Parse arguments.
@@ -6264,17 +6264,17 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 int TclTestChannelCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Interpreter for result. */
-int argc; /* Count of additional args. */
-char **argv; /* Additional arg strings. */
+Tcl_Interp *interp;    /* Interpreter for result. */
+int argc;              /* Count of additional args. */
+char **argv;           /* Additional arg strings. */
 {
-    char *cmdName; /* Sub command. */
+    char *cmdName;          /* Sub command. */
     Tcl_HashTable *hTblPtr; /* Hash table of channels. */
     Tcl_HashSearch hSearch; /* Search variable. */
-    Tcl_HashEntry *hPtr; /* Search variable. */
-    Channel *chanPtr; /* The actual channel. */
-    Tcl_Channel chan; /* The opaque type. */
-    size_t len; /* Length of subcommand string. */
+    Tcl_HashEntry *hPtr;    /* Search variable. */
+    Channel *chanPtr;       /* The actual channel. */
+    Tcl_Channel chan;       /* The opaque type. */
+    size_t len;             /* Length of subcommand string. */
 #if 0
     int IOQueued;		/* How much IO is queued inside channel? */
     ChannelBuffer *bufPtr;	/* For iterating over queued IO. */
@@ -6675,10 +6675,10 @@ char **argv; /* Additional arg strings. */
 
 /* ARGSUSED */
 int TclTestChannelEventCmd(dummy, interp, argc, argv)
-ClientData dummy; /* Not used. */
+ClientData dummy;   /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Channel *chanPtr;
     EventScriptRecord *esPtr, *prevEsPtr, *nextEsPtr;

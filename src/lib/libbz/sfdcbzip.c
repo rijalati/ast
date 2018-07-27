@@ -62,7 +62,7 @@
 typedef struct
 {
     Sfdisc_t disc; /* sfio discipline		*/
-    Bz_t *bz; /* bz handle			*/
+    Bz_t *bz;      /* bz handle			*/
 } Sfbzip_t;
 
 /*

@@ -74,17 +74,17 @@ write_text_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc);
 
 /* Type object for file formats containing text lsa logs */
 Dssformat_t text_lsa_format = {
-    FORMAT_NAME, /* name */
+    FORMAT_NAME,            /* name */
     "OSPF lsa text format", /* description */
     CXH,
     identf_text_lsa_file, /* identf */
-    open_text_lsa_file, /* openf */
-    NULL, /* readf */
-    write_text_lsa_rec, /* writef */
-    NULL, /* seekf */
-    close_text_lsa_file, /* closef */
-    NULL, /* savef */
-    NULL, /* dropf */
+    open_text_lsa_file,   /* openf */
+    NULL,                 /* readf */
+    write_text_lsa_rec,   /* writef */
+    NULL,                 /* seekf */
+    close_text_lsa_file,  /* closef */
+    NULL,                 /* savef */
+    NULL,                 /* dropf */
     /* private stuff */
     OSPF_TEXT_LSA_NEXT /* next */
 };

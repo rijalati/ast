@@ -35,28 +35,28 @@
 #define AES_KEY192 (192 / 8) /* AES_192 key size in bytes	*/
 #define AES_KEY256 (256 / 8) /* AES_256 key size in bytes	*/
 
-#define AES_NROWS 4 /* number of Rijndael rows	*/
-#define AES_NB 4 /* four 32-bit ints or 128 bits	*/
+#define AES_NROWS 4                    /* number of Rijndael rows	*/
+#define AES_NB 4                       /* four 32-bit ints or 128 bits	*/
 #define AES_STATE (AES_NROWS * AES_NB) /* size of state	*/
-#define AES_EKEY (AES_NB * 64) /* max expanded key size	*/
+#define AES_EKEY (AES_NB * 64)         /* max expanded key size	*/
 
 #define AES_BLOCK 16 /* encrypt blocks of this size	*/
 
 typedef struct _aes_s /* an instance of AES */
 {
-    int K; /* cipher key size in bytes 	*/
+    int K;  /* cipher key size in bytes 	*/
     int Nk; /* key size in 32-bit words	*/
     int Nr; /* # of transforming rounds	*/
 
-    Vcchar_t ekey[AES_EKEY]; /* expanded key		*/
+    Vcchar_t ekey[AES_EKEY];  /* expanded key		*/
     Vcchar_t salt[AES_BLOCK]; /* encryption salt	*/
 
     Vcchar_t todo[AES_BLOCK]; /* data to be digested	*/
-    ssize_t tdsz; /* size of undigested data	*/
+    ssize_t tdsz;             /* size of undigested data	*/
 
     Vcchar_t *obuf; /* output buffer		*/
-    ssize_t obsz; /* size of output buffer	*/
-    ssize_t pdsz; /* size of processed data	*/
+    ssize_t obsz;   /* size of output buffer	*/
+    ssize_t pdsz;   /* size of processed data	*/
 } Aes_t;
 
 static Vcchar_t Sbox[256]
@@ -741,7 +741,7 @@ aes_encode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
             }
         }
 
-        obdt = salt = aes->salt; /* for digesting, buffer == salt */
+        obdt = salt = aes->salt;   /* for digesting, buffer == salt */
         if (xx->meth != Vcxaessum) /* encrypted buffer != salt */
             obdt = aes->obuf + aes->pdsz;
 
@@ -761,7 +761,7 @@ aes_encode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
             memcpy(aes->salt, salt, AES_BLOCK);
 
         if (size > 0) /* buffer unprocessed data */
-        { /**/
+        {             /**/
             DEBUG_ASSERT(aes->tdsz == 0 && size < AES_BLOCK);
             memcpy(aes->todo, data, size);
             aes->tdsz = size;
@@ -801,7 +801,7 @@ aes_encode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
         obsz = AES_BLOCK;
     }
     else /* encryption */
-    { /* encode the size of unprocessed data (even if zero) */
+    {    /* encode the size of unprocessed data (even if zero) */
         for (k = aes->tdsz; k < AES_BLOCK - 1; ++k)
             aes->todo[k] = 0;
         aes->todo[k] = aes->tdsz; /* keep size of real data */

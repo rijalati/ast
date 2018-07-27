@@ -49,19 +49,19 @@ static const char lib[] = "libast:magic";
     strgrpmatch(s, p, NiL, 0, STR_LEFT | STR_RIGHT | STR_ICASE)
 
 #define MAXNEST 10 /* { ... } nesting limit	*/
-#define MINITEM 4 /* magic buffer rounding	*/
+#define MINITEM 4  /* magic buffer rounding	*/
 
 typedef struct /* identifier dictionary entry	*/
 {
     const char name[16]; /* identifier name		*/
-    int value; /* identifier value		*/
-    Dtlink_t link; /* dictionary link		*/
+    int value;           /* identifier value		*/
+    Dtlink_t link;       /* dictionary link		*/
 } Info_t;
 
 typedef struct Edit /* edit substitution		*/
 {
     struct Edit *next; /* next in list			*/
-    regex_t *from; /* from pattern			*/
+    regex_t *from;     /* from pattern			*/
 } Edit_t;
 
 struct Entry;
@@ -69,16 +69,16 @@ struct Entry;
 typedef struct /* loop info			*/
 {
     struct Entry *lab; /* call this function		*/
-    int start; /* start here			*/
-    int size; /* increment by this amount	*/
-    int count; /* dynamic loop count		*/
-    int offset; /* dynamic offset		*/
+    int start;         /* start here			*/
+    int size;          /* increment by this amount	*/
+    int count;         /* dynamic loop count		*/
+    int offset;        /* dynamic offset		*/
 } Loop_t;
 
 typedef struct Entry /* magic file entry		*/
 {
     struct Entry *next; /* next in list			*/
-    char *expr; /* offset expression		*/
+    char *expr;         /* offset expression		*/
     union
     {
         unsigned long num;
@@ -86,16 +86,16 @@ typedef struct Entry /* magic file entry		*/
         struct Entry *lab;
         regex_t *sub;
         Loop_t *loop;
-    } value; /* comparison value		*/
-    char *desc; /* file description		*/
-    char *mime; /* file mime type		*/
+    } value;              /* comparison value		*/
+    char *desc;           /* file description		*/
+    char *mime;           /* file mime type		*/
     unsigned long offset; /* offset in bytes		*/
-    unsigned long mask; /* mask before compare		*/
-    char cont; /* continuation operation	*/
-    char type; /* datum type			*/
-    char op; /* comparison operation		*/
-    char nest; /* { or } nesting operation	*/
-    char swap; /* forced swap order		*/
+    unsigned long mask;   /* mask before compare		*/
+    char cont;            /* continuation operation	*/
+    char type;            /* datum type			*/
+    char op;              /* comparison operation		*/
+    char nest;            /* { or } nesting operation	*/
+    char swap;            /* forced swap order		*/
 } Entry_t;
 
 #define CC_BIT 5
@@ -158,38 +158,38 @@ typedef unsigned long Cctype_t;
 #define INFO_uid 11
 
 #define _MAGIC_PRIVATE_                                                      \
-    Magicdisc_t *disc; /* discipline		*/                                     \
-    Vmalloc_t *vm; /* vmalloc region	*/                                      \
-    Entry_t *magic; /* parsed magic table	*/                                 \
-    Entry_t *magiclast; /* last entry in magic	*/                            \
-    char *mime; /* MIME type		*/                                             \
-    unsigned char *x2n; /* CC_ALIEN=>CC_NATIVE	*/                            \
-    char fbuf[SF_BUFSIZE + 1]; /* file data		*/                              \
-    char xbuf[SF_BUFSIZE + 1]; /* indirect file data	*/                      \
-    char nbuf[256]; /* !CC_NATIVE data	*/                                    \
-    char mbuf[64]; /* mime string		*/                                        \
-    char sbuf[64]; /* type suffix string	*/                                  \
-    char tbuf[2 * PATH_MAX]; /* type string		*/                              \
-    Cctype_t cctype[UCHAR_MAX + 1]; /* char code types	*/                    \
+    Magicdisc_t *disc;                 /* discipline		*/                     \
+    Vmalloc_t *vm;                     /* vmalloc region	*/                  \
+    Entry_t *magic;                    /* parsed magic table	*/              \
+    Entry_t *magiclast;                /* last entry in magic	*/             \
+    char *mime;                        /* MIME type		*/                      \
+    unsigned char *x2n;                /* CC_ALIEN=>CC_NATIVE	*/             \
+    char fbuf[SF_BUFSIZE + 1];         /* file data		*/                      \
+    char xbuf[SF_BUFSIZE + 1];         /* indirect file data	*/              \
+    char nbuf[256];                    /* !CC_NATIVE data	*/                 \
+    char mbuf[64];                     /* mime string		*/                    \
+    char sbuf[64];                     /* type suffix string	*/              \
+    char tbuf[2 * PATH_MAX];           /* type string		*/                    \
+    Cctype_t cctype[UCHAR_MAX + 1];    /* char code types	*/                 \
     unsigned int count[UCHAR_MAX + 1]; /* char frequency count	*/            \
     unsigned int multi[UCHAR_MAX + 1]; /* muti char count	*/                 \
-    int keep[MAXNEST]; /* ckmagic nest stack	*/                              \
-    char *cap[MAXNEST]; /* ckmagic mime stack	*/                             \
-    char *msg[MAXNEST]; /* ckmagic text stack	*/                             \
-    Entry_t *ret[MAXNEST]; /* ckmagic return stack	*/                        \
-    int fbsz; /* fbuf size		*/                                               \
-    int fbmx; /* fbuf max size	*/                                            \
-    int xbsz; /* xbuf size		*/                                               \
-    int swap; /* swap() operation	*/                                         \
-    unsigned long flags; /* disc+open flags	*/                               \
-    long xoff; /* xbuf offset		*/                                            \
-    int identifier[ID_MAX + 1]; /* Info_t identifier	*/                      \
-    Sfio_t *fp; /* fbuf fp		*/                                               \
-    Sfio_t *tmp; /* tmp string		*/                                           \
-    regdisc_t redisc; /* regex discipline	*/                                 \
-    Dtdisc_t dtdisc; /* dict discipline	*/                                   \
-    Dt_t *idtab; /* identifier dict	*/                                       \
-    Dt_t *infotab; /* info keyword dict	*/
+    int keep[MAXNEST];                 /* ckmagic nest stack	*/              \
+    char *cap[MAXNEST];                /* ckmagic mime stack	*/              \
+    char *msg[MAXNEST];                /* ckmagic text stack	*/              \
+    Entry_t *ret[MAXNEST];             /* ckmagic return stack	*/            \
+    int fbsz;                          /* fbuf size		*/                      \
+    int fbmx;                          /* fbuf max size	*/                   \
+    int xbsz;                          /* xbuf size		*/                      \
+    int swap;                          /* swap() operation	*/                \
+    unsigned long flags;               /* disc+open flags	*/                 \
+    long xoff;                         /* xbuf offset		*/                    \
+    int identifier[ID_MAX + 1];        /* Info_t identifier	*/               \
+    Sfio_t *fp;                        /* fbuf fp		*/                        \
+    Sfio_t *tmp;                       /* tmp string		*/                     \
+    regdisc_t redisc;                  /* regex discipline	*/                \
+    Dtdisc_t dtdisc;                   /* dict discipline	*/                 \
+    Dt_t *idtab;                       /* identifier dict	*/                 \
+    Dt_t *infotab;                     /* info keyword dict	*/
 
 #include <magic.h>
 

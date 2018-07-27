@@ -32,18 +32,18 @@
 
 typedef struct _file_s
 {
-    Sfio_t *f; /* the stream		*/
+    Sfio_t *f;     /* the stream		*/
     Sfoff_t lower; /* its lowest end	*/
 } File_t;
 
 typedef struct _union_s
 {
     Sfdisc_t disc; /* discipline structure */
-    short type; /* type of streams	*/
-    short c; /* current stream	*/
-    short n; /* number of streams	*/
-    Sfoff_t here; /* current location	*/
-    File_t f[1]; /* array of streams	*/
+    short type;    /* type of streams	*/
+    short c;       /* current stream	*/
+    short n;       /* number of streams	*/
+    Sfoff_t here;  /* current location	*/
+    File_t f[1];   /* array of streams	*/
 } Union_t;
 
 #if __STD_C
@@ -51,8 +51,8 @@ static ssize_t
 unwrite(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *disc)
 #else
 static ssize_t unwrite(f, buf, n, disc) Sfio_t *f; /* stream involved */
-Void_t *buf; /* buffer to read into */
-size_t n; /* number of bytes to read */
+Void_t *buf;                                       /* buffer to read into */
+size_t n;       /* number of bytes to read */
 Sfdisc_t *disc; /* discipline */
 #endif
 {
@@ -64,8 +64,8 @@ static ssize_t
 unread(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
 #else
 static ssize_t unread(f, buf, n, disc) Sfio_t *f; /* stream involved */
-Void_t *buf; /* buffer to read into */
-size_t n; /* number of bytes to read */
+Void_t *buf;                                      /* buffer to read into */
+size_t n;       /* number of bytes to read */
 Sfdisc_t *disc; /* discipline */
 #endif
 {

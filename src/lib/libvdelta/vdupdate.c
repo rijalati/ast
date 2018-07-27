@@ -35,19 +35,19 @@
 /* structure for update table */
 typedef struct _utable_s
 {
-    Vdio_t io; /* io structure			*/
+    Vdio_t io;        /* io structure			*/
     Vddisc_t *source; /* source data discipline	*/
     Vddisc_t *target; /* target data discipline	*/
-    uchar *src; /* source string		*/
+    uchar *src;       /* source string		*/
     long n_src;
     uchar *tar; /* target string		*/
     long n_tar;
-    long s_org; /* start of window in source	*/
-    long t_org; /* start of window in target	*/
-    uchar data[1024]; /* buffer for data transferring	*/
-    char s_alloc; /* 1 if source was allocated	*/
-    char t_alloc; /* 1 if target was allocated	*/
-    char compress; /* 1 if compressing only	*/
+    long s_org;                    /* start of window in source	*/
+    long t_org;                    /* start of window in target	*/
+    uchar data[1024];              /* buffer for data transferring	*/
+    char s_alloc;                  /* 1 if source was allocated	*/
+    char t_alloc;                  /* 1 if target was allocated	*/
+    char compress;                 /* 1 if compressing only	*/
     K_UDECL(quick, recent, rhere); /* address caches		*/
 } Utable_t;
 
@@ -284,8 +284,8 @@ long
 vdupdate(Vddisc_t *source, Vddisc_t *target, Vddisc_t *delta)
 #else
 long vdupdate(source, target, delta) Vddisc_t *source; /* source data	*/
-Vddisc_t *target; /* target data	*/
-Vddisc_t *delta; /* delta data	*/
+Vddisc_t *target;                                      /* target data	*/
+Vddisc_t *delta;                                       /* delta data	*/
 #endif
 {
     reg int n, r;

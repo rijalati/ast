@@ -28,14 +28,14 @@
 
 typedef struct FileHandler
 {
-    Tcl_File file; /* Generic file handle for file. */
-    int mask; /* Mask of desired events: TCL_READABLE, etc. */
-    int readyMask; /* Events that were ready the last time that
-                    * FileHandlerCheckProc checked this file. */
-    Tcl_FileProc *proc; /* Procedure to call, in the style of
-                         * Tcl_CreateFileHandler.  This is NULL
-                         * if the handler was created by
-                         * Tcl_CreateFileHandler2. */
+    Tcl_File file;         /* Generic file handle for file. */
+    int mask;              /* Mask of desired events: TCL_READABLE, etc. */
+    int readyMask;         /* Events that were ready the last time that
+                            * FileHandlerCheckProc checked this file. */
+    Tcl_FileProc *proc;    /* Procedure to call, in the style of
+                            * Tcl_CreateFileHandler.  This is NULL
+                            * if the handler was created by
+                            * Tcl_CreateFileHandler2. */
     ClientData clientData; /* Argument to pass to proc. */
     struct FileHandler *nextPtr; /* Next in list of all files we care
                                   * about (NULL for end of list). */
@@ -57,11 +57,11 @@ typedef struct FileHandlerEvent
 {
     Tcl_Event header; /* Information that is standard for
                        * all events. */
-    Tcl_File file; /* File descriptor that is ready.  Used
-                    * to find the FileHandler structure for
-                    * the file (can't point directly to the
-                    * FileHandler structure because it could
-                    * go away while the event is queued). */
+    Tcl_File file;    /* File descriptor that is ready.  Used
+                       * to find the FileHandler structure for
+                       * the file (can't point directly to the
+                       * FileHandler structure because it could
+                       * go away while the event is queued). */
 } FileHandlerEvent;
 
 /*
@@ -73,12 +73,12 @@ typedef struct FileHandlerEvent
 
 typedef struct TimerHandler
 {
-    Tcl_Time time; /* When timer is to fire. */
-    Tcl_TimerProc *proc; /* Procedure to call. */
-    ClientData clientData; /* Argument to pass to proc. */
-    Tcl_TimerToken token; /* Identifies event so it can be
-                           * deleted.  Not used in modal
-                           * timeouts. */
+    Tcl_Time time;                /* When timer is to fire. */
+    Tcl_TimerProc *proc;          /* Procedure to call. */
+    ClientData clientData;        /* Argument to pass to proc. */
+    Tcl_TimerToken token;         /* Identifies event so it can be
+                                   * deleted.  Not used in modal
+                                   * timeouts. */
     struct TimerHandler *nextPtr; /* Next event in queue, or NULL for
                                    * end of queue. */
 } TimerHandler;
@@ -106,9 +106,9 @@ typedef struct TimerEvent
 {
     Tcl_Event header; /* Information that is standard for
                        * all events. */
-    Tcl_Time time; /* All timer events that specify this
-                    * time or earlier are ready
-                    * to fire. */
+    Tcl_Time time;    /* All timer events that specify this
+                       * time or earlier are ready
+                       * to fire. */
 } TimerEvent;
 
 /*
@@ -119,10 +119,10 @@ typedef struct TimerEvent
 
 typedef struct IdleHandler
 {
-    Tcl_IdleProc(*proc); /* Procedure to call. */
-    ClientData clientData; /* Value to pass to proc. */
-    int generation; /* Used to distinguish older handlers from
-                     * recently-created ones. */
+    Tcl_IdleProc(*proc);         /* Procedure to call. */
+    ClientData clientData;       /* Value to pass to proc. */
+    int generation;              /* Used to distinguish older handlers from
+                                  * recently-created ones. */
     struct IdleHandler *nextPtr; /* Next in list of active handlers. */
 } IdleHandler;
 
@@ -149,16 +149,16 @@ typedef struct AfterInfo
     /* Pointer to the "tclAfter" assocData for
      * the interp in which command will be
      * executed. */
-    char *command; /* Command to execute.  Malloc'ed, so must
-                    * be freed when structure is deallocated. */
-    int id; /* Integer identifier for command;  used to
-             * cancel it. */
-    Tcl_TimerToken token; /* Used to cancel the "after" command.  NULL
-                           * means that the command is run as an
-                           * idle handler rather than as a timer
-                           * handler.  NULL means this is an "after
-                           * idle" handler rather than a
-                           * timer handler. */
+    char *command;             /* Command to execute.  Malloc'ed, so must
+                                * be freed when structure is deallocated. */
+    int id;                    /* Integer identifier for command;  used to
+                                * cancel it. */
+    Tcl_TimerToken token;      /* Used to cancel the "after" command.  NULL
+                                * means that the command is run as an
+                                * idle handler rather than as a timer
+                                * handler.  NULL means this is an "after
+                                * idle" handler rather than a
+                                * timer handler. */
     struct AfterInfo *nextPtr; /* Next in list of all "after" commands for
                                 * this interpreter. */
     int interpType;
@@ -172,8 +172,8 @@ typedef struct AfterInfo
 
 typedef struct AfterAssocData
 {
-    Tcl_Interp *interp; /* The interpreter for which this data is
-                         * registered. */
+    Tcl_Interp *interp;       /* The interpreter for which this data is
+                               * registered. */
     AfterInfo *firstAfterPtr; /* First in list of all "after" commands
                                * still pending for this interpreter, or
                                * NULL if none. */
@@ -188,15 +188,15 @@ typedef struct AfterAssocData
 
 typedef struct BgError
 {
-    Tcl_Interp *interp; /* Interpreter in which error occurred.  NULL
-                         * means this error report has been cancelled
-                         * (a previous report generated a break). */
-    char *errorMsg; /* The error message (interp->result when
-                     * the error occurred).  Malloc-ed. */
-    char *errorInfo; /* Value of the errorInfo variable
-                      * (malloc-ed). */
-    char *errorCode; /* Value of the errorCode variable
-                      * (malloc-ed). */
+    Tcl_Interp *interp;      /* Interpreter in which error occurred.  NULL
+                              * means this error report has been cancelled
+                              * (a previous report generated a break). */
+    char *errorMsg;          /* The error message (interp->result when
+                              * the error occurred).  Malloc-ed. */
+    char *errorInfo;         /* Value of the errorInfo variable
+                              * (malloc-ed). */
+    char *errorCode;         /* Value of the errorCode variable
+                              * (malloc-ed). */
     struct BgError *nextPtr; /* Next in list of all pending error
                               * reports for this interpreter, or NULL
                               * for end of list. */
@@ -213,9 +213,9 @@ typedef struct ErrAssocData
     BgError *firstBgPtr; /* First in list of all background errors
                           * waiting to be processed for this
                           * interpreter (NULL if none). */
-    BgError *lastBgPtr; /* Last in list of all background errors
-                         * waiting to be processed for this
-                         * interpreter (NULL if none). */
+    BgError *lastBgPtr;  /* Last in list of all background errors
+                          * waiting to be processed for this
+                          * interpreter (NULL if none). */
 } ErrAssocData;
 
 /*
@@ -225,7 +225,7 @@ typedef struct ErrAssocData
 
 typedef struct ExitHandler
 {
-    Tcl_ExitProc *proc; /* Procedure to call when process exits. */
+    Tcl_ExitProc *proc;    /* Procedure to call when process exits. */
     ClientData clientData; /* One word of information to pass to proc. */
     struct ExitHandler *nextPtr; /* Next in list of all exit handlers for
                                   * this application, or NULL for end of list.
@@ -243,17 +243,17 @@ static ExitHandler *firstExitPtr = NULL;
 
 typedef struct FileWait
 {
-    Tcl_File file; /* File to wait on. */
-    int mask; /* Conditions to wait for (TCL_READABLE,
-               * etc.) */
-    int timeout; /* Original "timeout" argument to
-                  * Tcl_WaitForFile. */
+    Tcl_File file;      /* File to wait on. */
+    int mask;           /* Conditions to wait for (TCL_READABLE,
+                         * etc.) */
+    int timeout;        /* Original "timeout" argument to
+                         * Tcl_WaitForFile. */
     Tcl_Time abortTime; /* Time at which to abort the wait. */
-    int present; /* Conditions present on the file during
-                  * the last time through the event loop. */
-    int done; /* Non-zero means we're done:  either one of
-               * the desired conditions is present or the
-               * timeout period has elapsed. */
+    int present;        /* Conditions present on the file during
+                         * the last time through the event loop. */
+    int done;           /* Non-zero means we're done:  either one of
+                         * the desired conditions is present or the
+                         * timeout period has elapsed. */
 } FileWait;
 
 /*
@@ -328,13 +328,13 @@ static char *VwaitVarProc _ANSI_ARGS_((ClientData clientData,
  */
 
 void Tcl_CreateFileHandler(file, mask, proc, clientData)
-Tcl_File file; /* Handle of stream to watch. */
-int mask; /* OR'ed combination of TCL_READABLE,
-           * TCL_WRITABLE, and TCL_EXCEPTION:
-           * indicates conditions under which
-           * proc should be called. */
-Tcl_FileProc *proc; /* Procedure to call for each
-                     * selected event. */
+Tcl_File file;         /* Handle of stream to watch. */
+int mask;              /* OR'ed combination of TCL_READABLE,
+                        * TCL_WRITABLE, and TCL_EXCEPTION:
+                        * indicates conditions under which
+                        * proc should be called. */
+Tcl_FileProc *proc;    /* Procedure to call for each
+                        * selected event. */
 ClientData clientData; /* Arbitrary data to pass to proc. */
 {
     FileHandler *filePtr;
@@ -652,8 +652,8 @@ milliseconds,
 proc,
 clientData) int milliseconds; /* How many milliseconds to wait
                                * before invoking proc. */
-Tcl_TimerProc *proc; /* Procedure to invoke. */
-ClientData clientData; /* Arbitrary data to pass to proc. */
+Tcl_TimerProc *proc;          /* Procedure to invoke. */
+ClientData clientData;        /* Arbitrary data to pass to proc. */
 {
     TimerHandler *timerHandlerPtr, *tPtr2, *prevPtr;
     static int id = 0;
@@ -787,8 +787,8 @@ milliseconds,
 proc,
 clientData) int milliseconds; /* How many milliseconds to wait
                                * before invoking proc. */
-Tcl_TimerProc *proc; /* Procedure to invoke. */
-ClientData clientData; /* Arbitrary data to pass to proc. */
+Tcl_TimerProc *proc;          /* Procedure to invoke. */
+ClientData clientData;        /* Arbitrary data to pass to proc. */
 {
     TimerHandler *timerHandlerPtr;
 
@@ -845,7 +845,7 @@ ClientData clientData; /* Arbitrary data to pass to proc. */
  */
 
 void Tcl_DeleteModalTimeout(proc, clientData)
-Tcl_TimerProc *proc; /* Callback procedure for the timeout. */
+Tcl_TimerProc *proc;   /* Callback procedure for the timeout. */
 ClientData clientData; /* Arbitrary data to pass to proc. */
 {
     TimerHandler *timerHandlerPtr;
@@ -1172,7 +1172,7 @@ ClientData clientData; /* Arbitrary value to pass to proc. */
  */
 
 void Tcl_CancelIdleCall(proc, clientData)
-Tcl_IdleProc *proc; /* Procedure that was previously registered. */
+Tcl_IdleProc *proc;    /* Procedure that was previously registered. */
 ClientData clientData; /* Arbitrary value to pass to proc. */
 {
     IdleHandler *idlePtr, *prevPtr;
@@ -1536,7 +1536,7 @@ ClientData clientData; /* Pointer to ErrAssocData structure. */
 
 static void BgErrorDeleteProc(clientData, interp)
 ClientData clientData; /* Pointer to ErrAssocData structure. */
-Tcl_Interp *interp; /* Interpreter being deleted. */
+Tcl_Interp *interp;    /* Interpreter being deleted. */
 {
     ErrAssocData *assocPtr = ( ErrAssocData * )clientData;
     BgError *errPtr;
@@ -1606,7 +1606,7 @@ ClientData clientData; /* Arbitrary value to pass to proc. */
  */
 
 void Tcl_DeleteExitHandler(proc, clientData)
-Tcl_ExitProc *proc; /* Procedure that was previously registered. */
+Tcl_ExitProc *proc;    /* Procedure that was previously registered. */
 ClientData clientData; /* Arbitrary value to pass to proc. */
 {
     ExitHandler *exitPtr, *prevPtr;
@@ -1720,9 +1720,9 @@ int Tcl_AfterCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Points to the "tclAfter" assocData for
                         * this interpreter, or NULL if the assocData
                         * hasn't been created yet.*/
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     /*
      * The variable below is used to generate unique identifiers for
@@ -1966,8 +1966,8 @@ char **argv; /* Argument strings. */
 static AfterInfo *GetAfterEvent(assocPtr, string)
 AfterAssocData *assocPtr; /* Points to "after"-related information for
                            * this interpreter. */
-char *string; /* Textual identifier for after event, such
-               * as "after#6". */
+char *string;             /* Textual identifier for after event, such
+                           * as "after#6". */
 {
     AfterInfo *afterPtr;
     int id;
@@ -2128,7 +2128,7 @@ static void FreeAfterPtr(afterPtr) AfterInfo *afterPtr; /* Command to be
 static void AfterCleanupProc(clientData, interp)
 ClientData clientData; /* Points to AfterAssocData for the
                         * interpreter. */
-Tcl_Interp *interp; /* Interpreter that is being deleted. */
+Tcl_Interp *interp;    /* Interpreter that is being deleted. */
 {
     AfterAssocData *assocPtr = ( AfterAssocData * )clientData;
     AfterInfo *afterPtr;
@@ -2171,9 +2171,9 @@ Tcl_Interp *interp; /* Interpreter that is being deleted. */
 /* ARGSUSED */
 int Tcl_VwaitCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     int done, foundEvent;
 
@@ -2228,10 +2228,10 @@ char **argv; /* Argument strings. */
 /* ARGSUSED */
 static char *VwaitVarProc(clientData, interp, name1, name2, flags)
 ClientData clientData; /* Pointer to integer to set to 1. */
-Tcl_Interp *interp; /* Interpreter containing variable. */
-char *name1; /* Name of variable. */
-char *name2; /* Second part of variable name. */
-int flags; /* Information about what happened. */
+Tcl_Interp *interp;    /* Interpreter containing variable. */
+char *name1;           /* Name of variable. */
+char *name2;           /* Second part of variable name. */
+int flags;             /* Information about what happened. */
 {
     int *donePtr = ( int * )clientData;
 
@@ -2259,9 +2259,9 @@ int flags; /* Information about what happened. */
 /* ARGSUSED */
 int Tcl_UpdateCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     int flags = 0; /* Initialization needed only to stop
                     * compiler warnings. */
@@ -2333,9 +2333,9 @@ char **argv; /* Argument strings. */
 
 int TclWaitForFile(file, mask, timeout) Tcl_File file; /* Handle for file on
                                                           which to wait. */
-int mask; /* What to wait for: OR'ed combination of
-           * TCL_READABLE, TCL_WRITABLE, and
-           * TCL_EXCEPTION. */
+int mask;    /* What to wait for: OR'ed combination of
+              * TCL_READABLE, TCL_WRITABLE, and
+              * TCL_EXCEPTION. */
 int timeout; /* Maximum amount of time to wait for one
               * of the conditions in mask to occur, in
               * milliseconds.  A value of 0 means don't

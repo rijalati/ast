@@ -34,19 +34,19 @@ typedef struct Header_s
 {
     char ar_name[14];
     uint32_t ar_date; /* native representation*/
-    char ar_uid; /* 	"		*/
-    char ar_gid; /* 	"		*/
+    char ar_uid;      /* 	"		*/
+    char ar_gid;      /* 	"		*/
     uint16_t ar_mode; /* 	"		*/
     uint32_t ar_size; /* 	"		*/
 } Header_t;
 
 typedef struct State_s /* method state			*/
 {
-    off_t current; /* current dirent offset	*/
-    off_t offset; /* next dirent offset		*/
-    int swap; /* swapget() op if necessary	*/
+    off_t current;   /* current dirent offset	*/
+    off_t offset;    /* next dirent offset		*/
+    int swap;        /* swapget() op if necessary	*/
     Header_t header; /* current header		*/
-    char name[15]; /* ar_name with trailing '\0'	*/
+    char name[15];   /* ar_name with trailing '\0'	*/
 } State_t;
 
 /*

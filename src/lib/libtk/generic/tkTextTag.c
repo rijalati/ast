@@ -198,8 +198,8 @@ int TkTextTagCmd(textPtr,
                  interp,
                  argc,
                  argv) TkText *textPtr; /* Information about text widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
+Tcl_Interp *interp;                     /* Current interpreter. */
+int argc;                               /* Number of arguments. */
 char **argv; /* Argument strings.  Someone else has already
               * parsed this command enough to know that
               * argv[1] is "tag". */
@@ -1174,8 +1174,8 @@ static TkTextTag *FindTag(interp, textPtr, tagName)
 Tcl_Interp *interp; /* Interpreter to use for error message;
                      * if NULL, then don't record an error
                      * message. */
-TkText *textPtr; /* Widget in which tag is being used. */
-char *tagName; /* Name of desired tag. */
+TkText *textPtr;    /* Widget in which tag is being used. */
+char *tagName;      /* Name of desired tag. */
 {
     Tcl_HashEntry *hPtr;
 
@@ -1214,7 +1214,7 @@ char *tagName; /* Name of desired tag. */
 
 void TkTextFreeTag(textPtr,
                    tagPtr) TkText *textPtr; /* Info about overall widget. */
-TkTextTag *tagPtr; /* Tag being deleted. */
+TkTextTag *tagPtr;                          /* Tag being deleted. */
 {
     if (tagPtr->border != None)
     {
@@ -1315,7 +1315,7 @@ TkTextTag *tagPtr; /* Tag being deleted. */
 
 static void SortTags(numTags,
                      tagArrayPtr) int numTags; /* Number of tag pointers at
-                                                  *tagArrayPtr. */
+                                                *tagArrayPtr. */
 TkTextTag **tagArrayPtr; /* Pointer to array of pointers. */
 {
     int i, j, prio;
@@ -1410,7 +1410,7 @@ ChangeTagPriority(textPtr, tagPtr, prio) TkText *textPtr; /* Information about
                                                              text widget. */
 TkTextTag *tagPtr; /* Tag whose priority is to be
                     * changed. */
-int prio; /* New priority for tag. */
+int prio;          /* New priority for tag. */
 {
     int low, high, delta;
     TkTextTag *tagPtr2;

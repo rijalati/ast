@@ -105,9 +105,9 @@ static Sfpool_t *newpool(mode) reg int mode;
 static int
 _sfphead(Sfpool_t *p, Sfio_t *f, int n)
 #else
-static int _sfphead(p, f, n) Sfpool_t *p; /* the pool			*/
-Sfio_t *f; /* the stream			*/
-int n; /* current position in pool	*/
+static int _sfphead(p, f, n) Sfpool_t *p;   /* the pool			*/
+Sfio_t *f;                                  /* the stream			*/
+int n;                                      /* current position in pool	*/
 #endif
 {
     reg Sfio_t *head;
@@ -184,8 +184,8 @@ static int
 _sfpdelete(Sfpool_t *p, Sfio_t *f, int n)
 #else
 static int _sfpdelete(p, f, n) Sfpool_t *p; /* the pool		*/
-Sfio_t *f; /* the stream		*/
-int n; /* position in pool	*/
+Sfio_t *f;                                  /* the stream		*/
+int n;                                      /* position in pool	*/
 #endif
 {
     POOLMTXENTER(p);

@@ -67,7 +67,7 @@
 #define MAXBITS 16
 
 #define BITS MAXBITS /* Default bits. */
-#define HSIZE 69001 /* 95% occupancy */
+#define HSIZE 69001  /* 95% occupancy */
 
 /* A code_int must be able to hold 2**BITS values of type int, and also -1. */
 typedef int32_t code_int;
@@ -94,14 +94,14 @@ typedef struct s_zstate
         S_START,
         S_MIDDLE,
         S_EOF
-    } zs_state; /* State of computation */
-    int zs_n_bits; /* Number of bits/code. */
-    int zs_maxbits; /* User settable max # bits/code. */
-    code_int zs_maxcode; /* Maximum code, given n_bits. */
+    } zs_state;             /* State of computation */
+    int zs_n_bits;          /* Number of bits/code. */
+    int zs_maxbits;         /* User settable max # bits/code. */
+    code_int zs_maxcode;    /* Maximum code, given n_bits. */
     code_int zs_maxmaxcode; /* Should NEVER generate this code. */
     count_int zs_htab[HSIZE];
     u_short zs_codetab[HSIZE];
-    code_int zs_hsize; /* For dynamic table sizing. */
+    code_int zs_hsize;    /* For dynamic table sizing. */
     code_int zs_free_ent; /* First unused entry. */
     /*
      * Block compression parameters -- after all codes are used up,
@@ -112,9 +112,9 @@ typedef struct s_zstate
     long zs_ratio;
     count_int zs_checkpoint;
     int zs_offset;
-    long zs_in_count; /* Length of input. */
+    long zs_in_count;  /* Length of input. */
     long zs_bytes_out; /* Length of compressed output. */
-    long zs_sync_out; /* bytes_out at last sync */
+    long zs_sync_out;  /* bytes_out at last sync */
     long zs_out_count; /* # of codes output (for debugging). */
     char_type zs_buf[BITS];
     union
@@ -629,7 +629,7 @@ lzw_read(Sfio_t *f, Void_t *rbp, size_t num, Sfdisc_t *dp)
 
     finchar = oldcode = getcode(zs, f, dp);
     if (oldcode == -1) /* EOF already? */
-        return (0); /* Get out of here */
+        return (0);    /* Get out of here */
 
     /* First code must be 8 bits = char. */
     *bp++ = ( u_char )finchar;

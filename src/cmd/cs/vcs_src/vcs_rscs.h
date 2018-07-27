@@ -60,14 +60,14 @@ typedef struct rno_t rno_t;
 struct attr_t
 {
     char magic[4];
-    int type; /* type of file, i.e., DELTA */
-    int version; /* RSCS version number */
-    rno_t rno; /* rnode */
-    int tag_reg; /* tags region		*/
-    int del_reg; /* delta region		*/
-    int log_reg; /* log region		*/
-    int basetag; /* base tag 		*/
-    int base; /* base delta 		*/
+    int type;     /* type of file, i.e., DELTA */
+    int version;  /* RSCS version number */
+    rno_t rno;    /* rnode */
+    int tag_reg;  /* tags region		*/
+    int del_reg;  /* delta region		*/
+    int log_reg;  /* log region		*/
+    int basetag;  /* base tag 		*/
+    int base;     /* base delta 		*/
     int basesize; /* base delta size	*/
 };
 
@@ -92,12 +92,12 @@ typedef struct attr_t attr_t;
 
 struct tag_t
 {
-    int length; /* length of tag */
-    int type; /* type of data */
-    int del; /* addr of data */
-    int dsize; /* size of data */
-    struct stat stat; /* stat info    */
-    int domain; /* domain of the creator */
+    int length;           /* length of tag */
+    int type;             /* type of data */
+    int del;              /* addr of data */
+    int dsize;            /* size of data */
+    struct stat stat;     /* stat info    */
+    int domain;           /* domain of the creator */
     char version[MAXVID]; /* version id */
 };
 
@@ -123,7 +123,7 @@ struct rdirent_t
 {
     tag_t *tag;
     int oldaddr; /* for reconf used */
-    char *link; /* used by the link */
+    char *link;  /* used by the link */
     struct rdirent_t *next;
 };
 

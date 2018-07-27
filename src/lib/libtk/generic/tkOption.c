@@ -38,8 +38,8 @@ typedef struct Element
                                    * the remaining elements of all
                                    * options whose prefixes are the
                                    * same up through this element. */
-        Tk_Uid valueUid; /* For leaf nodes, this is the string
-                          * value of the option. */
+        Tk_Uid valueUid;          /* For leaf nodes, this is the string
+                                   * value of the option. */
     } child;
     int priority; /* Used to select among matching
                    * options.  Includes both the
@@ -47,8 +47,8 @@ typedef struct Element
                    * Greater value means higher
                    * priority.  Irrelevant except in
                    * leaf nodes. */
-    int flags; /* OR-ed combination of bits.  See
-                * below for values. */
+    int flags;    /* OR-ed combination of bits.  See
+                   * below for values. */
 } Element;
 
 /*
@@ -88,18 +88,18 @@ typedef struct Element
 
 typedef struct ElArray
 {
-    int arraySize; /* Number of elements actually
-                    * allocated in the "els" array. */
-    int numUsed; /* Number of elements currently in
-                  * use out of els. */
+    int arraySize;      /* Number of elements actually
+                         * allocated in the "els" array. */
+    int numUsed;        /* Number of elements currently in
+                         * use out of els. */
     Element *nextToUse; /* Pointer to &els[numUsed]. */
-    Element els[1]; /* Array of structures describing
-                     * children of this node.  The
-                     * array will actually contain enough
-                     * elements for all of the children
-                     * (and even a few extras, perhaps).
-                     * This must be the last field in
-                     * the structure. */
+    Element els[1];     /* Array of structures describing
+                         * children of this node.  The
+                         * array will actually contain enough
+                         * elements for all of the children
+                         * (and even a few extras, perhaps).
+                         * This must be the last field in
+                         * the structure. */
 } ElArray;
 
 #define EL_ARRAY_SIZE(numEls)                                                \
@@ -158,8 +158,8 @@ static TkWindow *cachedWindow = NULL; /* Lowest-level window currently
 
 typedef struct StackLevel
 {
-    TkWindow *winPtr; /* Window corresponding to this stack
-                       * level. */
+    TkWindow *winPtr;      /* Window corresponding to this stack
+                            * level. */
     int bases[NUM_STACKS]; /* For each stack, index of first
                             * element on stack corresponding to
                             * this level (used to restore "numUsed"
@@ -231,12 +231,12 @@ static void SetupStacks _ANSI_ARGS_((TkWindow * winPtr, int leaf));
 void Tk_AddOption(tkwin, name, value, priority)
 Tk_Window tkwin; /* Window token;  option will be associated
                   * with main window for this window. */
-char *name; /* Multi-element name of option. */
-char *value; /* String value for option. */
-int priority; /* Overall priority level to use for
-               * this option, such as TK_USER_DEFAULT_PRIO
-               * or TK_INTERACTIVE_PRIO.  Must be between
-               * 0 and TK_MAX_PRIO. */
+char *name;      /* Multi-element name of option. */
+char *value;     /* String value for option. */
+int priority;    /* Overall priority level to use for
+                  * this option, such as TK_USER_DEFAULT_PRIO
+                  * or TK_INTERACTIVE_PRIO.  Must be between
+                  * 0 and TK_MAX_PRIO. */
 {
     TkWindow *winPtr = (( TkWindow * )tkwin)->mainPtr->winPtr;
     ElArray **arrayPtrPtr;
@@ -413,7 +413,7 @@ Tk_Uid
 Tk_GetOption(tkwin, name, className) Tk_Window tkwin; /* Token for window that
                                                        * option is associated
                                                        * with. */
-char *name; /* Name of option. */
+char *name;                                           /* Name of option. */
 char *className; /* Class of option.  NULL means there
                   * is no class for this option:  just
                   * check for name. */
@@ -505,9 +505,9 @@ char *className; /* Class of option.  NULL means there
 int Tk_OptionCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     size_t length;
@@ -844,13 +844,13 @@ char *string; /* Describes a priority level, either
 
 static int AddFromString(interp, tkwin, string, priority)
 Tcl_Interp *interp; /* Interpreter to use for reporting results. */
-Tk_Window tkwin; /* Token for window:  options are entered
-                  * for this window's main window. */
-char *string; /* String containing option specifiers. */
-int priority; /* Priority level to use for options in
-               * this string, such as TK_USER_DEFAULT_PRIO
-               * or TK_INTERACTIVE_PRIO.  Must be between
-               * 0 and TK_MAX_PRIO. */
+Tk_Window tkwin;    /* Token for window:  options are entered
+                     * for this window's main window. */
+char *string;       /* String containing option specifiers. */
+int priority;       /* Priority level to use for options in
+                     * this string, such as TK_USER_DEFAULT_PRIO
+                     * or TK_INTERACTIVE_PRIO.  Must be between
+                     * 0 and TK_MAX_PRIO. */
 {
     char *src, *dst;
     char *name, *value;
@@ -1005,13 +1005,13 @@ int priority; /* Priority level to use for options in
 
 static int ReadOptionFile(interp, tkwin, fileName, priority)
 Tcl_Interp *interp; /* Interpreter to use for reporting results. */
-Tk_Window tkwin; /* Token for window:  options are entered
-                  * for this window's main window. */
-char *fileName; /* Name of file containing options. */
-int priority; /* Priority level to use for options in
-               * this file, such as TK_USER_DEFAULT_PRIO
-               * or TK_INTERACTIVE_PRIO.  Must be between
-               * 0 and TK_MAX_PRIO. */
+Tk_Window tkwin;    /* Token for window:  options are entered
+                     * for this window's main window. */
+char *fileName;     /* Name of file containing options. */
+int priority;       /* Priority level to use for options in
+                     * this file, such as TK_USER_DEFAULT_PRIO
+                     * or TK_INTERACTIVE_PRIO.  Must be between
+                     * 0 and TK_MAX_PRIO. */
 {
     char *realName, *buffer;
     int result, bufferSize;
@@ -1503,8 +1503,8 @@ arrayPtr) ElArray *arrayPtr; /* Array of options;  delete everything
 
 static int GetDefaultOptions(interp, winPtr)
 Tcl_Interp *interp; /* Interpreter to use for error reporting. */
-TkWindow *winPtr; /* Fetch option defaults for main window
-                   * associated with this. */
+TkWindow *winPtr;   /* Fetch option defaults for main window
+                     * associated with this. */
 {
     char *regProp;
     int result, actualFormat;

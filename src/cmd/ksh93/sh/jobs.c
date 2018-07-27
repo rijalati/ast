@@ -117,15 +117,15 @@ struct back_save
 #        else
 #            define CNSUSP 0
 #        endif /* _POSIX_VDISABLE */
-#    endif /* CNSUSP */
+#    endif     /* CNSUSP */
 #    ifndef CSWTCH
 #        ifdef CSUSP
 #            define CSWTCH CSUSP
 #        else
 #            define CSWTCH ('z' & 037)
 #        endif /* CSUSP */
-#    endif /* CSWTCH */
-#endif /* VSUSP */
+#    endif     /* CSWTCH */
+#endif         /* VSUSP */
 
 /* Process states */
 #define P_EXITSAVE 01

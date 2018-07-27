@@ -26,9 +26,9 @@
 **	Written by Kiem-Phong Vo
 */
 
-#define VCSF_BUFSIZE (256 * 1024) /* decoding buffer	*/
-#define VCSF_BUFMIN (64 * 1024) /* surely affordable!	*/
-#define VCSF_WSIZE (4 * 1024 * 1024) /* dflt encoding window	*/
+#define VCSF_BUFSIZE (256 * 1024)        /* decoding buffer	*/
+#define VCSF_BUFMIN (64 * 1024)          /* surely affordable!	*/
+#define VCSF_WSIZE (4 * 1024 * 1024)     /* dflt encoding window	*/
 #define VCSF_SLACK (16 * sizeof(size_t)) /* for extra coding	*/
 #define VCSFDTSZ(sz) ((((sz) / 1024) + 2) * 1024)
 
@@ -42,18 +42,18 @@
 typedef struct _sfdc_s
 {
     Sfdisc_t disc; /* Sfio discipline must be 1st	*/
-    Sfio_t *sf; /* stream to do IO with		*/
+    Sfio_t *sf;    /* stream to do IO with		*/
 
     Vcsfdata_t *sfdt; /* initialization parameters	*/
 
     unsigned int flags; /* states of the handle		*/
 
-    Sfoff_t pos; /* current stream position	*/
+    Sfoff_t pos;     /* current stream position	*/
     Vcwdisc_t vcwdc; /* windowing discipline		*/
     Vcwindow_t *vcw; /* to match delta-comp windows 	*/
 
     Vcdisc_t vcdc; /* encoding/decoding discipline	*/
-    Vcodex_t *vc; /* Vcodex handle for de/coding	*/
+    Vcodex_t *vc;  /* Vcodex handle for de/coding	*/
 
     Vcio_t *io; /* to write integers, etc.	*/
 
@@ -80,7 +80,7 @@ typedef struct _sfdc_s
 typedef struct _map_s /* to map an old method number to a transform */
 {
     const char *name; /* new method name	*/
-    int mtid; /* old method number	*/
+    int mtid;         /* old method number	*/
     Vcmethod_t *meth; /* corresponding method	*/
 } Map_t;
 
@@ -123,7 +123,7 @@ ssize_t cdsz;
             if (Map[k].mtid == id)
                 break;
         if (k >= elementsof(Map)) /* not matching any transform */
-            return dtsz; /* must be new header format */
+            return dtsz;          /* must be new header format */
 
         if (!Map[k].meth
             && !(Map[k].meth = vcgetmeth(( char * )Map[k].name, 1)))
@@ -143,7 +143,7 @@ ssize_t cdsz;
     }
 
     if (vciomore(&io) > 0) /* too many transforms */
-        return dtsz; /* must be new header */
+        return dtsz;       /* must be new header */
 
     /* construct new header in reverse order */
     vcioinit(&io, code, cdsz);
@@ -193,9 +193,9 @@ hdrvcdiff(Vcio_t *iodt, int indi, Vcchar_t *code, ssize_t cdsz)
 #else
 static ssize_t hdrvcdiff(iodt, indi, code, cdsz) Vcio_t *iodt; /* data to be
                                                                   decoded	*/
-int indi; /* indicator byte	*/
+int indi;       /* indicator byte	*/
 Vcchar_t *code; /* code buffer		*/
-ssize_t cdsz; /* size of code buffer	*/
+ssize_t cdsz;   /* size of code buffer	*/
 #endif
 {
     Vcio_t io;
@@ -682,8 +682,8 @@ vcsfdcread(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
 #else
 static ssize_t vcsfdcread(f, buf, n, disc) Sfio_t *f; /* stream reading from
                                                        */
-Void_t *buf; /* buffer to read data into	*/
-size_t n; /* number of bytes requested	*/
+Void_t *buf;    /* buffer to read data into	*/
+size_t n;       /* number of bytes requested	*/
 Sfdisc_t *disc; /* discipline structure		*/
 #endif
 {
@@ -828,8 +828,8 @@ vcsfdcwrite(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *disc)
 #else
 static ssize_t vcsfdcwrite(f, buf, n, disc) Sfio_t *f; /* stream writing to
                                                         */
-Void_t *buf; /* buffer of data to write out	*/
-size_t n; /* number of bytes requested	*/
+Void_t *buf;    /* buffer of data to write out	*/
+size_t n;       /* number of bytes requested	*/
 Sfdisc_t *disc; /* discipline structure		*/
 #endif
 {
@@ -863,7 +863,7 @@ Sfdisc_t *disc; /* discipline structure		*/
 
             if (sfdc->next > sfdc->data) /* not done yet */
             {
-                w = 0; /* so for(;;) won't add to sz, dt */
+                w = 0;    /* so for(;;) won't add to sz, dt */
                 continue; /* back to flushing */
             }
             else
@@ -1046,8 +1046,8 @@ static ssize_t
 getwindow(char *spec, Vcwmethod_t **vcwmt)
 #else
 static ssize_t getwindow(spec,
-                         vcwmt) char *spec; /* window/size specification	*/
-Vcwmethod_t **vcwmt; /* return windowing method	*/
+                         vcwmt) char *spec;  /* window/size specification	*/
+Vcwmethod_t **vcwmt;                         /* return windowing method	*/
 #endif
 {
     ssize_t wsize;
@@ -1081,8 +1081,8 @@ Vcsfio_t *
 vcsfio(Sfio_t *sf, Vcsfdata_t *sfdt, int type)
 #else
 Vcsfio_t *vcsfio(sf, sfdt, type) Sfio_t *sf; /* stream to be conditioned	*/
-Vcsfdata_t *sfdt; /* data to initialize stream	*/
-int type; /* VC_ENCODE or VC_DECODE or 0	*/
+Vcsfdata_t *sfdt;                            /* data to initialize stream	*/
+int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
 #endif
 {
     char *trans;
@@ -1183,7 +1183,7 @@ int type; /* VC_ENCODE or VC_DECODE or 0	*/
             errorsfio("Out of memory for output buffer");
     }
     else /* VC_DECODE */
-    { /* make output buffer */
+    {    /* make output buffer */
         if ((sfdc->bssz = wsize) <= 0)
             sfdc->bssz = VCSF_BUFSIZE;
         else if (sfdc->bssz < VCSF_BUFMIN)
@@ -1275,7 +1275,7 @@ typedef struct _rsrv_s Rsrv_t;
 struct _rsrv_s
 {
     Rsrv_t *next;
-    Sfio_t *f; /* file stream for I/O	*/
+    Sfio_t *f;    /* file stream for I/O	*/
     Void_t *data; /* reserved data	*/
     ssize_t dtsz; /* amount of data	*/
     ssize_t size; /* allocated buf size	*/

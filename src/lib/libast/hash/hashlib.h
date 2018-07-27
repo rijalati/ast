@@ -42,40 +42,40 @@ typedef void *(*Hash_region_f)(void *, void *, size_t, int);
 
 typedef struct /* root local pointers		*/
 {
-    Hash_hash_f hash; /* name hash routine		*/
+    Hash_hash_f hash;       /* name hash routine		*/
     Hash_compare_f compare; /* name comparision routine	*/
-    Hash_alloc_f alloc; /* value allocation routine	*/
-    Hash_free_f free; /* value free routine		*/
-    Hash_region_f region; /* region alloc/free routine	*/
-    void *handle; /* region handle arg		*/
+    Hash_alloc_f alloc;     /* value allocation routine	*/
+    Hash_free_f free;       /* value free routine		*/
+    Hash_region_f region;   /* region alloc/free routine	*/
+    void *handle;           /* region handle arg		*/
 } Hash_local_t;
 
 #    define _HASH_POSITION_PRIVATE_                                          \
         Hash_table_t *tab; /* table pointer		*/                              \
-        int flags; /* scan flags			*/                                        \
-        size_t slot; /* table slot			*/
+        int flags;         /* scan flags			*/                                \
+        size_t slot;       /* table slot			*/
 
 #    define _HASH_LAST_PRIVATE_                                              \
-        const char *name; /* last lookup name		*/                            \
+        const char *name;  /* last lookup name		*/                           \
         unsigned int hash; /* last lookup hash		*/
 
 #    define _HASH_ROOT_PRIVATE_                                              \
-        int namesize; /* fixed name size: 0 => string	*/                     \
-        int meanchain; /* resize mean chain length	*/                        \
-        Hash_local_t *local; /* root local pointers		*/                      \
-        Hash_root_t *next; /* next in list	of all roots	*/                   \
+        int namesize;             /* fixed name size: 0 => string	*/         \
+        int meanchain;            /* resize mean chain length	*/             \
+        Hash_local_t *local;      /* root local pointers		*/                 \
+        Hash_root_t *next;        /* next in list	of all roots	*/            \
         Hash_table_t *references; /* referencing table list	*/
 
 #    define _HASH_TABLE_PRIVATE_                                             \
-        unsigned char frozen; /* table freeze nesting		*/                    \
+        unsigned char frozen;     /* table freeze nesting		*/                \
         unsigned char bucketsize; /* min bucket size in char*'s	*/           \
-        Hash_bucket_t **table; /* hash slot table		*/                        \
-        Hash_table_t *next; /* root reference list link	*/
+        Hash_bucket_t **table;    /* hash slot table		*/                     \
+        Hash_table_t *next;       /* root reference list link	*/
 
 #    include <hash.h>
 
 #    define HASHMINSIZE (1 << 4) /* min table slots (power of 2)	*/
-#    define HASHMEANCHAIN 2 /* def resize mean chain len	*/
+#    define HASHMEANCHAIN 2      /* def resize mean chain len	*/
 
 #    define HASHMOD(t, h) (h &= (t->size - 1))
 #    define HASHVAL(x) ((x) & ~HASH_FLAGS)

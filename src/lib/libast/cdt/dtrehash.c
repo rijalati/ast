@@ -33,9 +33,9 @@
 #define HCLSOPEN(dt, hh, ty, sh)                                             \
     ((sh) == 0 ? 0 : hclslock((dt), (hh), (ty), 0))
 
-#define H_TABLE DT_HIBIT /* hibit indicates a table	*/
-#define H_NBITS (ssize_t)(DT_NBITS - 1) /* #bits in a hash value	*/
-#define HTABLE(l) ((l)->_hash & H_TABLE) /* test for a table	*/
+#define H_TABLE DT_HIBIT                   /* hibit indicates a table	*/
+#define H_NBITS (ssize_t)(DT_NBITS - 1)    /* #bits in a hash value	*/
+#define HTABLE(l) ((l)->_hash & H_TABLE)   /* test for a table	*/
 #define HVALUE(h) (((uint)(h)) & ~H_TABLE) /* get hash value	*/
 
 #if 0 /* if needed, remix bad hash values with (lbits*511+rbits) */
@@ -87,31 +87,31 @@
 
 typedef struct _htbl_s /* a trie branch or hash table */
 {
-    Dtlink_t link; /* parent table & position	*/
-    Dtlink_t *pobj; /* come down from parent list 	*/
+    Dtlink_t link;     /* parent table & position	*/
+    Dtlink_t *pobj;    /* come down from parent list 	*/
     Dtlink_t *list[1]; /* list of objects or subtables	*/
 } Htbl_t;
 
 typedef struct _fngr_s /* finger for faster dtnext(), dtstep()  */
 {
     Dtlink_t *here; /* fingered object		*/
-    Htbl_t *mtbl; /* table of the fingered object	*/
-    ssize_t mpos; /* position of object in table	*/
-    ssize_t mlev; /* level of table in hashtrie	*/
+    Htbl_t *mtbl;   /* table of the fingered object	*/
+    ssize_t mpos;   /* position of object in table	*/
+    ssize_t mlev;   /* level of table in hashtrie	*/
 } Fngr_t;
 
 typedef struct _hash_s /* recursive hashing data */
 {
     Dtdata_t data;
 
-    Htbl_t *root; /* top-most hash table		*/
-    ssize_t nlev; /* number of nontrivial levels	*/
+    Htbl_t *root;         /* top-most hash table		*/
+    ssize_t nlev;         /* number of nontrivial levels	*/
     ssize_t mask[H_NLEV]; /* bit mask per level 	*/
     ssize_t shft[H_NLEV]; /* shift amount per level	*/
 
-    uchar *lock; /* insertion/deletion locks	*/
+    uchar *lock;  /* insertion/deletion locks	*/
     ssize_t lmax; /* max lock index (2^n -1)	*/
-    uint *refn; /* reference counts		*/
+    uint *refn;   /* reference counts		*/
 
     Fngr_t fngr; /* finger to help dtnext/dtstep	*/
 } Hash_t;
@@ -121,9 +121,9 @@ static int
 hclslock(Dt_t *dt, uint hsh, int type, int locking)
 #else
 static int hclslock(dt, hsh, type, locking) Dt_t *dt;
-uint hsh; /* hash to class	*/
-int type; /* operation type	*/
-int locking; /* (0)1: (un)locking	*/
+uint hsh;                                           /* hash to class	*/
+int type;                                           /* operation type	*/
+int locking;                                        /* (0)1: (un)locking	*/
 #endif
 {
     Hash_t *hash = ( Hash_t * )dt->data;
@@ -145,7 +145,7 @@ int locking; /* (0)1: (un)locking	*/
         DEBUG_ASSERT(refn > 0);
     }
     else
-    { /* decrease reference count */
+    {                       /* decrease reference count */
         asosubint(refn, 1); /**/
         DEBUG_ASSERT(refn >= 0);
 
@@ -165,8 +165,8 @@ htable(Dt_t *dt, ssize_t lev, Htbl_t *ptbl, ssize_t ppos)
 #else
 static Htbl_t *htable(dt, lev, ptbl, hsh) Dt_t *dt; /* dictionary holding
                                                        objects	*/
-ssize_t lev; /* level of table		*/
-Htbl_t *ptbl; /* parent hash table		*/
+ssize_t lev;                                        /* level of table		*/
+Htbl_t *ptbl;                                       /* parent hash table		*/
 ssize_t ppos; /* position in parent table	*/
 #endif
 {
@@ -229,7 +229,7 @@ static Void_t *hclear(dt, tbl, lev, zap) Dt_t *dt; /* dictionary structure
                                                     */
 Htbl_t *tbl; /* current table to be cleared	*/
 ssize_t lev; /* level of current table	*/
-int zap; /* < 0: free all structures	*/
+int zap;     /* < 0: free all structures	*/
 /* >=0: free all but save root	*/
 #endif
 {
@@ -278,11 +278,11 @@ hfirst(Dt_t *dt,
 #else
 static Void_t *hfirst(dt, fngr, tbl, lev, pos, hsh, type) Dt_t *dt;
 Fngr_t *fngr; /* finger to speed search	*/
-Htbl_t *tbl; /* subtable to search		*/
-ssize_t lev; /* level of given subtable	*/
-ssize_t pos; /* starting position in table 	*/
-uint hsh; /* top level hash value		*/
-int type; /* operation type		*/
+Htbl_t *tbl;  /* subtable to search		*/
+ssize_t lev;  /* level of given subtable	*/
+ssize_t pos;  /* starting position in table 	*/
+uint hsh;     /* top level hash value		*/
+int type;     /* operation type		*/
 #endif
 {
     ssize_t tblz;
@@ -342,11 +342,11 @@ hnext(Dt_t *dt,
 #else
 static Void_t *hnext(dt, fngr, tbl, lev, pos, hsh, type) Dt_t *dt;
 Fngr_t *fngr; /* finger to speed up search	*/
-Htbl_t *tbl; /* hash subtable to search	*/
-ssize_t lev; /* subtable level		*/
-ssize_t pos; /* starting position in table 	*/
-uint hsh; /* top level hash value		*/
-int type; /* operation type		*/
+Htbl_t *tbl;  /* hash subtable to search	*/
+ssize_t lev;  /* subtable level		*/
+ssize_t pos;  /* starting position in table 	*/
+uint hsh;     /* top level hash value		*/
+int type;     /* operation type		*/
 #endif
 {
     Dtlink_t *t;
@@ -381,10 +381,10 @@ hflatten(Dt_t *dt,
 #else
 static Void_t *hflatten(dt, list, last, tbl, lev, zap) Dt_t *dt;
 Dtlink_t **list; /* to return chain of objects	*/
-Dtlink_t *last; /* currently last elt of chain	*/
-Htbl_t *tbl; /* current hash table to search */
-ssize_t lev; /* table level			*/
-int zap; /* erase the location		*/
+Dtlink_t *last;  /* currently last elt of chain	*/
+Htbl_t *tbl;     /* current hash table to search */
+ssize_t lev;     /* table level			*/
+int zap;         /* erase the location		*/
 #endif
 {
     ssize_t tblz, p;
@@ -640,7 +640,7 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
             key = _DTKEY(disc, obj);
     }
     hsh = _DTHSH(dt, key, disc); /* hash value from hash function */
-    hsh = HREMIX(hsh); /* remix value for what we need */
+    hsh = HREMIX(hsh);           /* remix value for what we need */
 
     HCLSLOCK(dt, hsh, type, share); /* lock and reference counting */
 
@@ -649,8 +649,8 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
     for (tbl = hash->root, lev = 0;;)
     {
         hshp = HBASP(hash, lev, hsh); /* base location of object */
-        srch = HSRCH(hash, lev); /* number of search steps */
-        modz = HSIZE(hash, lev) - 1; /* circular search of table */
+        srch = HSRCH(hash, lev);      /* number of search steps */
+        modz = HSIZE(hash, lev) - 1;  /* circular search of table */
         for (pos = hshp, k = 0; k < srch; ++k, pos = ((pos + 1) & modz))
         {
             if ((t = asogetptr(tbl->list + pos)) && HTABLE(t))
@@ -810,7 +810,7 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
         }
         else if (type & H_INSERT)
             goto do_insert; /* inserting a  new object */
-        else /* search/delete failed */
+        else                /* search/delete failed */
         {
             HCLSOPEN(dt, hsh, type, share);
             return NIL(Void_t *);
@@ -839,7 +839,7 @@ do_insert: /**/
         asoaddsize(&hash->data.size, 1);
     if (lnk)
     {
-        lnk->_hash = hsh; /* memoize hash for fast compares */
+        lnk->_hash = hsh;         /* memoize hash for fast compares */
         lnkp = HLNKP(opnt, opnp); /**/
         DEBUG_ASSERT(*lnkp == NIL(Dtlink_t *));
         asocasptr(lnkp, NIL(Dtlink_t *), lnk);

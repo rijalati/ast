@@ -76,11 +76,11 @@ typedef unsigned int pixel;
 
 typedef struct
 {
-    Display *display; /* Qualifies the colormap resource ID */
+    Display *display;  /* Qualifies the colormap resource ID */
     Colormap colormap; /* Colormap that the windows are using. */
-    double gamma; /* Gamma exponent value for images. */
-    Tk_Uid palette; /* Specifies how many shades of each primary
-                     * we want to allocate. */
+    double gamma;      /* Gamma exponent value for images. */
+    Tk_Uid palette;    /* Specifies how many shades of each primary
+                        * we want to allocate. */
 } ColorTableId;
 
 /*
@@ -91,21 +91,21 @@ typedef struct
 
 typedef struct ColorTable
 {
-    ColorTableId id; /* Information used in selecting this
-                      * color table. */
-    int flags; /* See below. */
-    int refCount; /* Number of instances using this map. */
+    ColorTableId id;  /* Information used in selecting this
+                       * color table. */
+    int flags;        /* See below. */
+    int refCount;     /* Number of instances using this map. */
     int liveRefCount; /* Number of instances which are actually
                        * in use, using this map. */
-    int numColors; /* Number of colors allocated for this map. */
+    int numColors;    /* Number of colors allocated for this map. */
 
     XVisualInfo visualInfo; /* Information about the visual for windows
                              * using this color table. */
 
-    pixel redValues[256]; /* Maps 8-bit values of red intensity
-                           * to a pixel value or index in pixelMap. */
-    pixel greenValues[256]; /* Ditto for green intensity */
-    pixel blueValues[256]; /* Ditto for blue intensity */
+    pixel redValues[256];    /* Maps 8-bit values of red intensity
+                              * to a pixel value or index in pixelMap. */
+    pixel greenValues[256];  /* Ditto for green intensity */
+    pixel blueValues[256];   /* Ditto for blue intensity */
     unsigned long *pixelMap; /* Actual pixel values allocated. */
 
     unsigned char colorQuant[3][256];
@@ -138,29 +138,29 @@ typedef struct ColorTable
 
 typedef struct PhotoMaster
 {
-    Tk_ImageMaster tkMaster; /* Tk's token for image master.  NULL means
-                              * the image is being deleted. */
-    Tcl_Interp *interp; /* Interpreter associated with the
-                         * application using this image. */
-    Tcl_Command imageCmd; /* Token for image command (used to delete
-                           * it when the image goes away).  NULL means
-                           * the image command has already been
-                           * deleted. */
-    int flags; /* Sundry flags, defined below. */
-    int width, height; /* Dimensions of image. */
+    Tk_ImageMaster tkMaster;   /* Tk's token for image master.  NULL means
+                                * the image is being deleted. */
+    Tcl_Interp *interp;        /* Interpreter associated with the
+                                * application using this image. */
+    Tcl_Command imageCmd;      /* Token for image command (used to delete
+                                * it when the image goes away).  NULL means
+                                * the image command has already been
+                                * deleted. */
+    int flags;                 /* Sundry flags, defined below. */
+    int width, height;         /* Dimensions of image. */
     int userWidth, userHeight; /* User-declared image dimensions. */
-    Tk_Uid palette; /* User-specified default palette for
-                     * instances of this image. */
-    double gamma; /* Display gamma value to correct for. */
-    char *fileString; /* Name of file to read into image. */
-    char *dataString; /* String value to use as contents of image. */
-    char *format; /* User-specified format of data in image
-                   * file or string value. */
-    unsigned char *pix24; /* Local storage for 24-bit image. */
-    int ditherX, ditherY; /* Location of first incorrectly
-                           * dithered pixel in image. */
-    TkRegion validRegion; /* Tk region indicating which parts of
-                           * the image have valid image data. */
+    Tk_Uid palette;            /* User-specified default palette for
+                                * instances of this image. */
+    double gamma;              /* Display gamma value to correct for. */
+    char *fileString;          /* Name of file to read into image. */
+    char *dataString;          /* String value to use as contents of image. */
+    char *format;              /* User-specified format of data in image
+                                * file or string value. */
+    unsigned char *pix24;      /* Local storage for 24-bit image. */
+    int ditherX, ditherY;      /* Location of first incorrectly
+                                * dithered pixel in image. */
+    TkRegion validRegion;      /* Tk region indicating which parts of
+                                * the image have valid image data. */
     struct PhotoInstance *instancePtr;
     /* First in the list of instances
      * associated with this master. */
@@ -186,28 +186,28 @@ typedef struct PhotoMaster
 typedef struct PhotoInstance
 {
     PhotoMaster *masterPtr; /* Pointer to master for image. */
-    Display *display; /* Display for windows using this instance. */
-    Colormap colormap; /* The image may only be used in windows with
-                        * this particular colormap. */
+    Display *display;       /* Display for windows using this instance. */
+    Colormap colormap;      /* The image may only be used in windows with
+                             * this particular colormap. */
     struct PhotoInstance *nextPtr;
     /* Pointer to the next instance in the list
      * of instances associated with this master. */
-    int refCount; /* Number of instances using this structure. */
-    Tk_Uid palette; /* Palette for these particular instances. */
-    double gamma; /* Gamma value for these instances. */
-    Tk_Uid defaultPalette; /* Default palette to use if a palette
-                            * is not specified for the master. */
+    int refCount;              /* Number of instances using this structure. */
+    Tk_Uid palette;            /* Palette for these particular instances. */
+    double gamma;              /* Gamma value for these instances. */
+    Tk_Uid defaultPalette;     /* Default palette to use if a palette
+                                * is not specified for the master. */
     ColorTable *colorTablePtr; /* Pointer to information about colors
                                 * allocated for image display in windows
                                 * like this one. */
-    Pixmap pixels; /* X pixmap containing dithered image. */
-    int width, height; /* Dimensions of the pixmap. */
-    schar *error; /* Error image, used in dithering. */
-    XImage *imagePtr; /* Image structure for converted pixels. */
-    XVisualInfo visualInfo; /* Information about the visual that these
-                             * windows are using. */
-    GC gc; /* Graphics context for writing images
-            * to the pixmap. */
+    Pixmap pixels;             /* X pixmap containing dithered image. */
+    int width, height;         /* Dimensions of the pixmap. */
+    schar *error;              /* Error image, used in dithering. */
+    XImage *imagePtr;          /* Image structure for converted pixels. */
+    XVisualInfo visualInfo;    /* Information about the visual that these
+                                * windows are using. */
+    GC gc;                     /* Graphics context for writing images
+                                * to the pixmap. */
 } PhotoInstance;
 
 /*
@@ -217,16 +217,16 @@ typedef struct PhotoInstance
 
 struct SubcommandOptions
 {
-    int options; /* Individual bits indicate which
-                  * options were specified - see below. */
-    char *name; /* Name specified without an option. */
-    int fromX, fromY; /* Values specified for -from option. */
-    int fromX2, fromY2; /* Second coordinate pair for -from option. */
-    int toX, toY; /* Values specified for -to option. */
-    int toX2, toY2; /* Second coordinate pair for -to option. */
-    int zoomX, zoomY; /* Values specified for -zoom option. */
+    int options;                /* Individual bits indicate which
+                                 * options were specified - see below. */
+    char *name;                 /* Name specified without an option. */
+    int fromX, fromY;           /* Values specified for -from option. */
+    int fromX2, fromY2;         /* Second coordinate pair for -from option. */
+    int toX, toY;               /* Values specified for -to option. */
+    int toX2, toY2;             /* Second coordinate pair for -to option. */
+    int zoomX, zoomY;           /* Values specified for -zoom option. */
     int subsampleX, subsampleY; /* Values specified for -subsample option. */
-    char *format; /* Value specified for -format option. */
+    char *format;               /* Value specified for -format option. */
 };
 
 /*
@@ -287,12 +287,12 @@ static void ImgPhotoFree _ANSI_ARGS_((ClientData clientData,
 static void ImgPhotoDelete _ANSI_ARGS_((ClientData clientData));
 
 Tk_ImageType tkPhotoImageType = {
-    "photo", /* name */
-    ImgPhotoCreate, /* createProc */
-    ImgPhotoGet, /* getProc */
-    ImgPhotoDisplay, /* displayProc */
-    ImgPhotoFree, /* freeProc */
-    ImgPhotoDelete, /* deleteProc */
+    "photo",               /* name */
+    ImgPhotoCreate,        /* createProc */
+    ImgPhotoGet,           /* getProc */
+    ImgPhotoDisplay,       /* displayProc */
+    ImgPhotoFree,          /* freeProc */
+    ImgPhotoDelete,        /* deleteProc */
     ( Tk_ImageType * )NULL /* nextPtr */
 };
 
@@ -500,15 +500,15 @@ void Tk_CreatePhotoImageFormat(formatPtr) Tk_PhotoImageFormat *formatPtr;
 
 static int
 ImgPhotoCreate(interp, name, argc, argv, typePtr, master, clientDataPtr)
-Tcl_Interp *interp; /* Interpreter for application containing
-                     * image. */
-char *name; /* Name to use for image. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings for options (doesn't
-              * include image name or type). */
-Tk_ImageType *typePtr; /* Pointer to our type record (not used). */
-Tk_ImageMaster master; /* Token for image, to be used by us in
-                        * later callbacks. */
+Tcl_Interp *interp;        /* Interpreter for application containing
+                            * image. */
+char *name;                /* Name to use for image. */
+int argc;                  /* Number of arguments. */
+char **argv;               /* Argument strings for options (doesn't
+                            * include image name or type). */
+Tk_ImageType *typePtr;     /* Pointer to our type record (not used). */
+Tk_ImageMaster master;     /* Token for image, to be used by us in
+                            * later callbacks. */
 ClientData *clientDataPtr; /* Store manager's token for image here;
                             * it will be returned in later callbacks. */
 {
@@ -580,9 +580,9 @@ ClientData *clientDataPtr; /* Store manager's token for image here;
 
 static int ImgPhotoCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about photo master. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     PhotoMaster *masterPtr = ( PhotoMaster * )clientData;
     int c, result, index;
@@ -1311,11 +1311,11 @@ static int ParseSubcommandOptions(optPtr,
 Tcl_Interp *interp; /* Interpreter to use for reporting errors. */
 int allowedOptions; /* Indicates which options are valid for
                      * the current command. */
-int *optIndexPtr; /* Points to a variable containing the
-                   * current index in argv; this variable is
-                   * updated by this procedure. */
-int argc; /* Number of arguments in argv[]. */
-char **argv; /* Arguments to be parsed. */
+int *optIndexPtr;   /* Points to a variable containing the
+                     * current index in argv; this variable is
+                     * updated by this procedure. */
+int argc;           /* Number of arguments in argv[]. */
+char **argv;        /* Arguments to be parsed. */
 {
     int index, c, bit, currentBit;
     size_t length;
@@ -1582,13 +1582,13 @@ char **argv; /* Arguments to be parsed. */
  */
 
 static int ImgPhotoConfigureMaster(interp, masterPtr, argc, argv, flags)
-Tcl_Interp *interp; /* Interpreter to use for reporting errors. */
+Tcl_Interp *interp;     /* Interpreter to use for reporting errors. */
 PhotoMaster *masterPtr; /* Pointer to data structure describing
                          * overall photo image to (re)configure. */
-int argc; /* Number of entries in argv. */
-char **argv; /* Pairs of configuration options for image. */
-int flags; /* Flags to pass to Tk_ConfigureWidget,
-            * such as TK_CONFIG_ARGV_ONLY. */
+int argc;               /* Number of entries in argv. */
+char **argv;            /* Pairs of configuration options for image. */
+int flags;              /* Flags to pass to Tk_ConfigureWidget,
+                         * such as TK_CONFIG_ARGV_ONLY. */
 {
     PhotoInstance *instancePtr;
     char *oldFileString, *oldDataString, *realFileName, *oldPaletteString;
@@ -2197,13 +2197,13 @@ static void ImgPhotoDisplay(clientData,
                             height,
                             drawableX,
                             drawableY)
-ClientData clientData; /* Pointer to PhotoInstance structure for
-                        * for instance to be displayed. */
-Display *display; /* Display on which to draw image. */
-Drawable drawable; /* Pixmap or window in which to draw image. */
-int imageX, imageY; /* Upper-left corner of region within image
-                     * to draw. */
-int width, height; /* Dimensions of region within image to draw. */
+ClientData clientData;    /* Pointer to PhotoInstance structure for
+                           * for instance to be displayed. */
+Display *display;         /* Display on which to draw image. */
+Drawable drawable;        /* Pixmap or window in which to draw image. */
+int imageX, imageY;       /* Upper-left corner of region within image
+                           * to draw. */
+int width, height;        /* Dimensions of region within image to draw. */
 int drawableX, drawableY; /* Coordinates within drawable that
                            * correspond to imageX and imageY. */
 {
@@ -2266,7 +2266,7 @@ int drawableX, drawableY; /* Coordinates within drawable that
 static void ImgPhotoFree(clientData, display)
 ClientData clientData; /* Pointer to PhotoInstance structure for
                         * for instance to be displayed. */
-Display *display; /* Display containing window that used image. */
+Display *display;      /* Display containing window that used image. */
 {
     PhotoInstance *instancePtr = ( PhotoInstance * )clientData;
     ColorTable *colorPtr;
@@ -2739,7 +2739,7 @@ PhotoInstance *instancePtr; /* Instance whose size is to be
 static int IsValidPalette(instancePtr, palette)
 PhotoInstance *instancePtr; /* Instance to which the palette
                              * specification is to be applied. */
-char *palette; /* Palette specification string. */
+char *palette;              /* Palette specification string. */
 {
     int nRed, nGreen, nBlue, mono, numColors;
     char *endp;
@@ -3384,7 +3384,7 @@ ClientData clientData; /* Pointer to the ColorTable whose
 static int ReclaimColors(id, numColors)
 ColorTableId *id; /* Pointer to information identifying
                    * the color table which needs more colors. */
-int numColors; /* Number of colors required. */
+int numColors;    /* Number of colors required. */
 {
     Tcl_HashSearch srch;
     Tcl_HashEntry *entry;
@@ -3555,8 +3555,8 @@ static int MatchFileFormat(interp,
                            widthPtr,
                            heightPtr)
 Tcl_Interp *interp; /* Interpreter to use for reporting errors. */
-FILE *f; /* The image file, open for reading. */
-char *fileName; /* The name of the image file. */
+FILE *f;            /* The image file, open for reading. */
+char *fileName;     /* The name of the image file. */
 char *formatString; /* User-specified format string, or NULL. */
 Tk_PhotoImageFormat **imageFormatPtr;
 /* A pointer to the photo image format
@@ -3669,7 +3669,7 @@ static int MatchStringFormat(interp,
                              widthPtr,
                              heightPtr)
 Tcl_Interp *interp; /* Interpreter to use for reporting errors. */
-char *string; /* String containing the image data. */
+char *string;       /* String containing the image data. */
 char *formatString; /* User-specified format string, or NULL. */
 Tk_PhotoImageFormat **imageFormatPtr;
 /* A pointer to the photo image format
@@ -3797,8 +3797,8 @@ Tk_PhotoHandle handle; /* Opaque handle for the photo image
 Tk_PhotoImageBlock *blockPtr;
 /* Pointer to a structure describing the
  * pixel data to be copied into the image. */
-int x, y; /* Coordinates of the top-left pixel to
-           * be updated in the image. */
+int x, y;          /* Coordinates of the top-left pixel to
+                    * be updated in the image. */
 int width, height; /* Dimensions of the area of the image
                     * to be updated. */
 {
@@ -3966,11 +3966,11 @@ Tk_PhotoHandle handle; /* Opaque handle for the photo image
 Tk_PhotoImageBlock *blockPtr;
 /* Pointer to a structure describing the
  * pixel data to be copied into the image. */
-int x, y; /* Coordinates of the top-left pixel to
-           * be updated in the image. */
-int width, height; /* Dimensions of the area of the image
-                    * to be updated. */
-int zoomX, zoomY; /* Zoom factors for the X and Y axes. */
+int x, y;                   /* Coordinates of the top-left pixel to
+                             * be updated in the image. */
+int width, height;          /* Dimensions of the area of the image
+                             * to be updated. */
+int zoomX, zoomY;           /* Zoom factors for the X and Y axes. */
 int subsampleX, subsampleY; /* Subsampling factors for the X and Y axes. */
 {
     PhotoMaster *masterPtr;
@@ -4168,9 +4168,9 @@ int subsampleX, subsampleY; /* Subsampling factors for the X and Y axes. */
 static void Dither(masterPtr, x, y, width, height)
 PhotoMaster *masterPtr; /* Image master whose instances are
                          * to be updated. */
-int x, y; /* Coordinates of the top-left pixel
-           * in the area to be dithered. */
-int width, height; /* Dimensions of the area to be dithered. */
+int x, y;               /* Coordinates of the top-left pixel
+                         * in the area to be dithered. */
+int width, height;      /* Dimensions of the area to be dithered. */
 {
     PhotoInstance *instancePtr;
 
@@ -4251,9 +4251,9 @@ int width, height; /* Dimensions of the area to be dithered. */
 
 static void DitherInstance(instancePtr, xStart, yStart, width, height)
 PhotoInstance *instancePtr; /* The instance to be updated. */
-int xStart, yStart; /* Coordinates of the top-left pixel in the
-                     * block to be dithered. */
-int width, height; /* Dimensions of the block to be dithered. */
+int xStart, yStart;         /* Coordinates of the top-left pixel in the
+                             * block to be dithered. */
+int width, height;          /* Dimensions of the block to be dithered. */
 {
     PhotoMaster *masterPtr;
     ColorTable *colorPtr;
@@ -4703,7 +4703,7 @@ void Tk_PhotoBlank(handle) Tk_PhotoHandle handle; /* Handle for the image to
 
 void Tk_PhotoExpand(handle, width, height)
 Tk_PhotoHandle handle; /* Handle for the image to be expanded. */
-int width, height; /* Desired minimum dimensions of the image. */
+int width, height;     /* Desired minimum dimensions of the image. */
 {
     PhotoMaster *masterPtr;
 
@@ -4746,8 +4746,8 @@ int width, height; /* Desired minimum dimensions of the image. */
  */
 
 void Tk_PhotoGetSize(handle, widthPtr, heightPtr)
-Tk_PhotoHandle handle; /* Handle for the image whose dimensions
-                        * are requested. */
+Tk_PhotoHandle handle;     /* Handle for the image whose dimensions
+                            * are requested. */
 int *widthPtr, *heightPtr; /* The dimensions of the image are returned
                             * here. */
 {
@@ -4780,7 +4780,7 @@ int *widthPtr, *heightPtr; /* The dimensions of the image are returned
 void Tk_PhotoSetSize(handle, width, height)
 Tk_PhotoHandle handle; /* Handle for the image whose size is to
                         * be set. */
-int width, height; /* New dimensions for the image. */
+int width, height;     /* New dimensions for the image. */
 {
     PhotoMaster *masterPtr;
 

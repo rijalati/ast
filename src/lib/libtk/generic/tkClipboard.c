@@ -50,10 +50,10 @@ static void ClipboardLostSel _ANSI_ARGS_((ClientData clientData));
 
 static int ClipboardHandler(clientData, offset, buffer, maxBytes)
 ClientData clientData; /* Information about data to fetch. */
-int offset; /* Return selection bytes starting at this
-             * offset. */
-char *buffer; /* Place to store converted selection. */
-int maxBytes; /* Maximum # of bytes to store at buffer. */
+int offset;            /* Return selection bytes starting at this
+                        * offset. */
+char *buffer;          /* Place to store converted selection. */
+int maxBytes;          /* Maximum # of bytes to store at buffer. */
 {
     TkClipboardTarget *targetPtr = ( TkClipboardTarget * )clientData;
     TkClipboardBuffer *cbPtr;
@@ -136,10 +136,10 @@ int maxBytes; /* Maximum # of bytes to store at buffer. */
 
 static int ClipboardAppHandler(clientData, offset, buffer, maxBytes)
 ClientData clientData; /* Pointer to TkDisplay structure. */
-int offset; /* Return selection bytes starting at this
-             * offset. */
-char *buffer; /* Place to store converted selection. */
-int maxBytes; /* Maximum # of bytes to store at buffer. */
+int offset;            /* Return selection bytes starting at this
+                        * offset. */
+char *buffer;          /* Place to store converted selection. */
+int maxBytes;          /* Maximum # of bytes to store at buffer. */
 {
     TkDisplay *dispPtr = ( TkDisplay * )clientData;
     size_t length;
@@ -183,10 +183,10 @@ int maxBytes; /* Maximum # of bytes to store at buffer. */
 
 static int ClipboardWindowHandler(clientData, offset, buffer, maxBytes)
 ClientData clientData; /* Not used. */
-int offset; /* Return selection bytes starting at this
-             * offset. */
-char *buffer; /* Place to store converted selection. */
-int maxBytes; /* Maximum # of bytes to store at buffer. */
+int offset;            /* Return selection bytes starting at this
+                        * offset. */
+char *buffer;          /* Place to store converted selection. */
+int maxBytes;          /* Maximum # of bytes to store at buffer. */
 {
     buffer[0] = '.';
     buffer[1] = 0;
@@ -336,14 +336,14 @@ Tk_Window tkwin; /* Window in application that is clearing
 
 int Tk_ClipboardAppend(interp, tkwin, type, format, buffer)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Window tkwin; /* Window that selects a display. */
-Atom type; /* The desired conversion type for this
-            * clipboard item, e.g. STRING or LENGTH. */
-Atom format; /* Format in which the selection
-              * information should be returned to
-              * the requestor. */
-char *buffer; /* NULL terminated string containing the data
-               * to be added to the clipboard. */
+Tk_Window tkwin;    /* Window that selects a display. */
+Atom type;          /* The desired conversion type for this
+                     * clipboard item, e.g. STRING or LENGTH. */
+Atom format;        /* Format in which the selection
+                     * information should be returned to
+                     * the requestor. */
+char *buffer;       /* NULL terminated string containing the data
+                     * to be added to the clipboard. */
 {
     TkWindow *winPtr = ( TkWindow * )tkwin;
     TkDisplay *dispPtr = winPtr->dispPtr;
@@ -454,9 +454,9 @@ char *buffer; /* NULL terminated string containing the data
 int Tk_ClipboardCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     char *path = NULL;

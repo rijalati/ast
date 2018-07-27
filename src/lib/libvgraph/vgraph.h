@@ -35,7 +35,7 @@ struct _gredge_s
 
     Grnode_t *tail; /* tail of edge			*/
     Grnode_t *head; /* head of edge			*/
-    Void_t *label; /* (tail,head,label) ids edge	*/
+    Void_t *label;  /* (tail,head,label) ids edge	*/
 
     Gredge_t *onext; /* link for node->oedge 	*/
     Gredge_t *inext; /* link for node->iedge		*/
@@ -52,19 +52,19 @@ struct _graph_s
     int type; /* directed or undirected	*/
 
     Dtdisc_t nddc; /* CDT discipline for nodes	*/
-    Dt_t *nodes; /* set of nodes			*/
+    Dt_t *nodes;   /* set of nodes			*/
 
     Dtdisc_t eddc; /* CDT discipline for edges	*/
-    Dt_t *edges; /* set of edges			*/
+    Dt_t *edges;   /* set of edges			*/
 
     Grdata_t *data; /* list of algorithm data	*/
 };
 
 struct _grdisc_s
 {
-    ssize_t nodesz; /* size to allocate Grnode_t	*/
-    ssize_t edgesz; /* size to allocate Gredge_t	*/
-    ssize_t graphsz; /* size to allocate Graph_t	*/
+    ssize_t nodesz;   /* size to allocate Grnode_t	*/
+    ssize_t edgesz;   /* size to allocate Gredge_t	*/
+    ssize_t graphsz;  /* size to allocate Graph_t	*/
     Grevent_f eventf; /* event handling function	*/
 };
 
@@ -89,8 +89,8 @@ struct _gralgo_s
 /* discipline events */
 #    define GR_OPENING 001000
 #    define GR_CLOSING 002000
-#    define GR_NODE 000001 /* node operation	*/
-#    define GR_EDGE 000002 /* edge operation	*/
+#    define GR_NODE 000001  /* node operation	*/
+#    define GR_EDGE 000002  /* edge operation	*/
 #    define GR_GRAPH 000004 /* graph operation	*/
 
 /* Given s_t a struct type, e_t an element in s_t, and a_d an address of e_t,

@@ -34,13 +34,13 @@
 #            ifndef CNSUSP
 #                define CNSUSP CNSWTCH
 #            endif /* CNSUSP */
-#        endif /* __sgi */
+#        endif     /* __sgi */
 #    else
 #        ifdef _sys_termios
 #            include <sys/termios.h>
 #            define _hdr_termios
 #        endif /* _sys_termios */
-#    endif /* _hdr_termios */
+#    endif     /* _hdr_termios */
 #    if !defined(TCSETS) && !defined(TCSANOW)
 #        undef _hdr_termios
 #        undef _sys_termios
@@ -75,7 +75,7 @@
 #            include <sys/termio.h>
 #            define _hdr_termio 1
 #        endif /* _sys_termio */
-#    endif /* _hdr_termio */
+#    endif     /* _hdr_termio */
 #    if !defined(VEOL2) || !defined(TCGETA)
 #        undef _hdr_termio
 #        undef _sys_termio
@@ -99,7 +99,7 @@
 #            ifndef LPENDIN
 #                include <sys/nttyio.h>
 #            endif /* LPENDIN */
-#        endif /* _sys_nttyio */
+#        endif     /* _sys_nttyio */
 #        define termios sgttyb
 #        undef _sys_ioctl
 #        ifdef TIOCSETN
@@ -121,7 +121,7 @@ extern const int tty_speeds[];
 #            define tcgetattr(fd, tty) gtty(fd, tty)
 #            define tcsetattr(fd, action, tty) stty(fd, tty)
 #        endif /* TIOCGETP */
-#    endif /* _hdr_sgtty */
+#    endif     /* _hdr_sgtty */
 
 #    ifndef TCSANOW
 #        ifdef TCSETAW
@@ -139,9 +139,9 @@ extern const int tty_speeds[];
 #                define TCSADRAIN TIOCSETN
 #                define TCSAFLUSH TIOCSETP
 #            endif /* TIOCSETN */
-#        endif /* TCSETAW */
-#    endif /* TCSANOW */
-#endif /* _TERMINAL_H */
+#        endif     /* TCSETAW */
+#    endif         /* TCSANOW */
+#endif             /* _TERMINAL_H */
 
 #ifndef _hdr_termios
 #    define cfgetospeed(tp) ((tp)->c_cflag & CBAUD)
@@ -151,34 +151,34 @@ extern const int tty_speeds[];
 #    ifndef ECHOCTL
 #        define ECHOCTL LCTLECH
 #    endif /* !ECHOCTL */
-#endif /* LCTLECH */
+#endif     /* LCTLECH */
 #ifdef LNEW_CTLECH
 #    ifndef ECHOCTL
 #        define ECHOCTL LNEW_CTLECH
 #    endif /* !ECHOCTL */
-#endif /* LNEW_CTLECH */
+#endif     /* LNEW_CTLECH */
 #ifdef LNEW_PENDIN
 #    ifndef PENDIN
 #        define PENDIN LNEW_PENDIN
 #    endif /* !PENDIN */
-#endif /* LNEW_PENDIN */
+#endif     /* LNEW_PENDIN */
 #ifndef ECHOCTL
 #    ifndef VEOL2
 #        define RAWONLY 1
 #    endif /* !VEOL2 */
-#endif /* !ECHOCTL */
+#endif     /* !ECHOCTL */
 
 #ifdef _sys_filio
 #    ifndef FIONREAD
 #        include <sys/filio.h>
 #    endif /* FIONREAD */
-#endif /* _sys_filio */
+#endif     /* _sys_filio */
 /* set FIORDCHK if you can check for characters in input queue */
 #ifdef FIONREAD
 #    ifndef FIORDCHK
 #        define FIORDCHK FIONREAD
 #    endif /* !FIORDCHK */
-#endif /* FIONREAD */
+#endif     /* FIONREAD */
 
 #ifdef PROTO
 extern int

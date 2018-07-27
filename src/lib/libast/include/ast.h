@@ -81,12 +81,13 @@ struct _sfio_s;
 
 #    define EXIT_BITS 8 /* # exit status bits	*/
 
-#    define EXIT_USAGE 2 /* usage exit code	*/
+#    define EXIT_USAGE 2                       /* usage exit code	*/
 #    define EXIT_QUIT ((1 << (EXIT_BITS)) - 1) /* parent should quit	*/
 #    define EXIT_NOTFOUND                                                    \
         ((1 << (EXIT_BITS - 1)) - 1) /* command not found	*/
-#    define EXIT_NOEXEC ((1 << (EXIT_BITS - 1)) - 2) /* other exec error     \
-                                                      */
+#    define EXIT_NOEXEC                                                      \
+        ((1 << (EXIT_BITS - 1)) - 2) /* other exec error                     \
+                                      */
 
 #    define EXIT_CODE(x) ((x) & ((1 << EXIT_BITS) - 1))
 #    define EXIT_CORE(x)                                                     \
@@ -194,21 +195,21 @@ typedef struct
  */
 
 #    define STR_MAXIMAL 0x01 /* maximal match		*/
-#    define STR_LEFT 0x02 /* implicit left anchor		*/
-#    define STR_RIGHT 0x04 /* implicit right anchor	*/
-#    define STR_ICASE 0x08 /* ignore case			*/
-#    define STR_GROUP 0x10 /* (|&) inside [@|&](...) only	*/
-#    define STR_INT 0x20 /* deprecated int* match array	*/
+#    define STR_LEFT 0x02    /* implicit left anchor		*/
+#    define STR_RIGHT 0x04   /* implicit right anchor	*/
+#    define STR_ICASE 0x08   /* ignore case			*/
+#    define STR_GROUP 0x10   /* (|&) inside [@|&](...) only	*/
+#    define STR_INT 0x20     /* deprecated int* match array	*/
 
 /*
  * fmtquote() flags
  */
 
-#    define FMT_ALWAYS 0x01 /* always quote			*/
+#    define FMT_ALWAYS 0x01  /* always quote			*/
 #    define FMT_ESCAPED 0x02 /* already escaped		*/
-#    define FMT_SHELL 0x04 /* escape $ ` too		*/
-#    define FMT_WIDE 0x08 /* don't escape 8 bit chars	*/
-#    define FMT_PARAM 0x10 /* disable FMT_SHELL ${$( quote	*/
+#    define FMT_SHELL 0x04   /* escape $ ` too		*/
+#    define FMT_WIDE 0x08    /* don't escape 8 bit chars	*/
+#    define FMT_PARAM 0x10   /* disable FMT_SHELL ${$( quote	*/
 
 /*
  * chrexp() flags

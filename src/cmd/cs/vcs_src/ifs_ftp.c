@@ -143,7 +143,7 @@ char *buf;
     /* drwxrwxr-x 25 CSIE     ftp          1024 Jan 31 04:56 pub */
     case 'd':
         fi->ftype = 1; /* unix directory */
-    case '-': /* unix regular file */
+    case '-':          /* unix regular file */
         if (*(ptr - 14) == ' ')
         {
             ptr -= 15;

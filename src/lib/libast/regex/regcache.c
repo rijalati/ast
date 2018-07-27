@@ -29,7 +29,7 @@
 #include <ast.h>
 #include <regex.h>
 
-#define CACHE 8 /* default # cached re's	*/
+#define CACHE 8  /* default # cached re's	*/
 #define ROUND 64 /* pattern buffer size round	*/
 
 typedef unsigned long Key_t;

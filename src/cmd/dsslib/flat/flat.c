@@ -94,133 +94,133 @@ struct Value_s
 
 struct Physical_s /* physical field info		*/
 {
-    Cxtype_t *type; /* type				*/
+    Cxtype_t *type;    /* type				*/
     Cxformat_t format; /* format details		*/
-    Cxarray_t *array; /* physical array info		*/
+    Cxarray_t *array;  /* physical array info		*/
 };
 
 struct Flatten_s
 {
-    Dss_t *dss; /* output method stream		*/
-    Dssfile_t *file; /* output file			*/
-    Cx_t *cx; /* dss->cx			*/
-    Flat_t *flat; /* dss->meth->data		*/
-    Vmalloc_t *vm; /* vm region			*/
-    Cxcallout_f getf; /* dss->cx->getf		*/
+    Dss_t *dss;        /* output method stream		*/
+    Dssfile_t *file;   /* output file			*/
+    Cx_t *cx;          /* dss->cx			*/
+    Flat_t *flat;      /* dss->meth->data		*/
+    Vmalloc_t *vm;     /* vm region			*/
+    Cxcallout_f getf;  /* dss->cx->getf		*/
     Cxoperand_t value; /* flattenget() value		*/
-    int emptyspace; /* empty field value => space	*/
+    int emptyspace;    /* empty field value => space	*/
 };
 
 struct Table_s /* key table info		*/
 {
-    Dtdisc_t disc; /* dict discipline		*/
-    Sfio_t *oob; /* out of band stream		*/
-    Dt_t *dict; /* dictionary			*/
-    int span; /* key value span char		*/
+    Dtdisc_t disc;            /* dict discipline		*/
+    Sfio_t *oob;              /* out of band stream		*/
+    Dt_t *dict;               /* dictionary			*/
+    int span;                 /* key value span char		*/
     unsigned char identified; /* id table initialized		*/
-    unsigned char qualified; /* qualification check done	*/
-    unsigned char unknown; /* span unknown keys		*/
-    char id[UCHAR_MAX + 1]; /* identifier test map		*/
+    unsigned char qualified;  /* qualification check done	*/
+    unsigned char unknown;    /* span unknown keys		*/
+    char id[UCHAR_MAX + 1];   /* identifier test map		*/
 };
 
 struct Field_s /* field info			*/
 {
-    Cxvariable_t variable; /* logical field variable	*/
-    Physical_t physical; /* physical field info		*/
-    Field_t *next; /* next in list			*/
-    Cxexpr_t *width; /* variable size		*/
-    Cxvariable_t *flatten; /* flatten source variable	*/
+    Cxvariable_t variable;    /* logical field variable	*/
+    Physical_t physical;      /* physical field info		*/
+    Field_t *next;            /* next in list			*/
+    Cxexpr_t *width;          /* variable size		*/
+    Cxvariable_t *flatten;    /* flatten source variable	*/
     Flattenget_f flattengetf; /* flatten flatget()		*/
-    Flatget_f flatgetf; /* flat flatget()		*/
-    Cxstructure_t structure; /* structure info		*/
-    Record_t *record; /* sub-record context		*/
-    Table_t *table; /* parse time table holder	*/
-    size_t truncate; /* fixed width before truncation*/
-    unsigned char *map; /* physical.format.code map	*/
-    unsigned char *pam; /* conversion map		*/
-    unsigned char keyed; /* name=value key		*/
-    unsigned char structref; /* struct w/ member values only	*/
+    Flatget_f flatgetf;       /* flat flatget()		*/
+    Cxstructure_t structure;  /* structure info		*/
+    Record_t *record;         /* sub-record context		*/
+    Table_t *table;           /* parse time table holder	*/
+    size_t truncate;          /* fixed width before truncation*/
+    unsigned char *map;       /* physical.format.code map	*/
+    unsigned char *pam;       /* conversion map		*/
+    unsigned char keyed;      /* name=value key		*/
+    unsigned char structref;  /* struct w/ member values only	*/
 };
 
 struct Key_s /* field key			*/
 {
-    Dtlink_t link; /* dictionary link		*/
-    Key_t *next; /* ambiguous key link		*/
-    Field_t *field; /* field for this key		*/
+    Dtlink_t link;       /* dictionary link		*/
+    Key_t *next;         /* ambiguous key link		*/
+    Field_t *field;      /* field for this key		*/
     char *qualification; /* key qualification		*/
-    Cxexpr_t *expr; /* key qualification expression	*/
-    char name[1]; /* key name			*/
+    Cxexpr_t *expr;      /* key qualification expression	*/
+    char name[1];        /* key name			*/
 };
 
 struct Member_s /* record member		*/
 {
-    Cxoperand_t ret; /* value (first for dynamic Q)	*/
-    Field_t *field; /* static field info		*/
-    Cxtype_t *type; /* dynamic record data type	*/
-    size_t off; /* record data offset		*/
-    size_t siz; /* record data size		*/
+    Cxoperand_t ret;     /* value (first for dynamic Q)	*/
+    Field_t *field;      /* static field info		*/
+    Cxtype_t *type;      /* dynamic record data type	*/
+    size_t off;          /* record data offset		*/
+    size_t siz;          /* record data size		*/
     unsigned int serial; /* read serial number		*/
-    unsigned int keyed; /* keyed serial number		*/
+    unsigned int keyed;  /* keyed serial number		*/
 };
 
 struct Record_s /* current record info		*/
 {
-    Member_t *fields; /* fields (first for dynamic Q)	*/
-    Flatget_f getf; /* getf (second for dynamic Q)	*/
-    Dss_t *dss; /* dss handle			*/
-    Flat_t *flat; /* flat handle			*/
+    Member_t *fields;    /* fields (first for dynamic Q)	*/
+    Flatget_f getf;      /* getf (second for dynamic Q)	*/
+    Dss_t *dss;          /* dss handle			*/
+    Flat_t *flat;        /* flat handle			*/
     Dssrecord_t *record; /* dss record handle		*/
-    Cx_t *cx; /* cx handle			*/
-    Sfio_t *io; /* io stream			*/
-    Table_t *table; /* key table			*/
-    char *image; /* original record data buffer	*/
-    char *buf; /* record data buffer		*/
-    char *cur; /* current position in buf	*/
-    size_t siz; /* record data buffer size	*/
-    size_t offset; /* subrecord field offset	*/
-    size_t nfields; /* #fields per record		*/
-    size_t kfields; /* first keyed field index	*/
-    size_t serial; /* record serial		*/
-    size_t copy; /* record copy serial		*/
-    int index; /* next field index		*/
+    Cx_t *cx;            /* cx handle			*/
+    Sfio_t *io;          /* io stream			*/
+    Table_t *table;      /* key table			*/
+    char *image;         /* original record data buffer	*/
+    char *buf;           /* record data buffer		*/
+    char *cur;           /* current position in buf	*/
+    size_t siz;          /* record data buffer size	*/
+    size_t offset;       /* subrecord field offset	*/
+    size_t nfields;      /* #fields per record		*/
+    size_t kfields;      /* first keyed field index	*/
+    size_t serial;       /* record serial		*/
+    size_t copy;         /* record copy serial		*/
+    int index;           /* next field index		*/
 };
 
 struct Section_s /* section info			*/
 {
     Section_t *next; /* next in list			*/
-    regex_t *re; /* section line pattern		*/
-    int delimiter; /* section record delimiter	*/
-    size_t count; /* pattern/delimiter count	*/
-    size_t size; /* section size			*/
+    regex_t *re;     /* section line pattern		*/
+    int delimiter;   /* section record delimiter	*/
+    size_t count;    /* pattern/delimiter count	*/
+    size_t size;     /* section size			*/
 };
 
 struct Magic_s /* magic info			*/
 {
-    const char *string; /* magic string			*/
-    unsigned long number; /* magic number			*/
-    size_t size; /* magic header size		*/
-    size_t length; /* magic number/string length	*/
+    const char *string;    /* magic string			*/
+    unsigned long number;  /* magic number			*/
+    size_t size;           /* magic header size		*/
+    size_t length;         /* magic number/string length	*/
     unsigned long version; /* version stamp		*/
-    int swap; /* swap op			*/
+    int swap;              /* swap op			*/
 };
 
 struct Library_s /* library list			*/
 {
     Library_t *next; /* next in list			*/
-    char name[1]; /* library name			*/
+    char name[1];    /* library name			*/
 };
 
 struct Size_s /* block/record size field info	*/
 {
-    size_t fixed; /* fixed size			*/
-    int type; /* field type			*/
-    int width; /* field width			*/
-    int offset; /* field offset			*/
-    int reserve; /* min reserve size		*/
-    int size; /* total field size		*/
-    int base; /* numeric text base		*/
+    size_t fixed;      /* fixed size			*/
+    int type;          /* field type			*/
+    int width;         /* field width			*/
+    int offset;        /* field offset			*/
+    int reserve;       /* min reserve size		*/
+    int size;          /* total field size		*/
+    int base;          /* numeric text base		*/
     unsigned char add; /* add size to computed size	*/
-    char *buf; /* conversion buffer		*/
+    char *buf;         /* conversion buffer		*/
 };
 
 struct Flat_s /* Dssmeth_t.data		*/

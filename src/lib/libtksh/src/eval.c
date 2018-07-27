@@ -149,7 +149,7 @@ Tcl_DeleteCommand(Tcl_Interp *interp, char *cmdName)
         }
         nv_close(namval);
         sh_addbuiltin(cmdName, NULL, NULL); /* Removes */
-        namval->nvalue = NULL; /* XX ksh bug? */
+        namval->nvalue = NULL;              /* XX ksh bug? */
         return 0;
     }
     return -1;

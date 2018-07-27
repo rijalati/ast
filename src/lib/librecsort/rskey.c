@@ -104,7 +104,7 @@ unsigned char *zp;
 #endif
 {
     unsigned char *dig = cp + 1; /* byte for next digit */
-    int nib = 0; /* high nibble 1, low nibble 0 */
+    int nib = 0;                 /* high nibble 1, low nibble 0 */
     unsigned char *xp = dp;
     unsigned char *ep = xp + len; /* end pointer */
     unsigned char *trans = f->trans;
@@ -296,7 +296,7 @@ unsigned char *zp;
 #endif
 {
     unsigned char *dig = cp + 1; /* byte for next digit */
-    int nib = 0; /* high nibble 1, low nibble 0 */
+    int nib = 0;                 /* high nibble 1, low nibble 0 */
     unsigned char *xp = dp;
     unsigned char *ep = xp + len; /* end pointer */
     unsigned char *trans = f->trans;
@@ -367,7 +367,7 @@ unsigned char *zp;
 #endif
 {
     unsigned char *dig = cp + 1; /* byte for next digit */
-    int nib = 0; /* high nibble 1, low nibble 0 */
+    int nib = 0;                 /* high nibble 1, low nibble 0 */
     unsigned char *xp = dp;
     unsigned char *ep = xp + len; /* end pointer */
     unsigned char *trans = f->trans;

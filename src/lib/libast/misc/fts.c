@@ -44,23 +44,23 @@ typedef int (*Stat_f)(const char *, struct stat *);
 
 #define _FTS_PRIVATE_                                                        \
     FTSENT *parent; /* top parent		*/                                        \
-    FTSENT *todo; /* todo list		*/                                           \
-    FTSENT *top; /* top element		*/                                          \
+    FTSENT *todo;   /* todo list		*/                                         \
+    FTSENT *top;    /* top element		*/                                       \
     FTSENT *root;                                                            \
-    FTSENT *bot; /* bottom element	*/                                        \
+    FTSENT *bot;  /* bottom element	*/                                       \
     FTSENT *free; /* free element		*/                                        \
     FTSENT *diroot;                                                          \
     FTSENT *curdir;                                                          \
-    FTSENT *current; /* current element	*/                                   \
+    FTSENT *current;  /* current element	*/                                  \
     FTSENT *previous; /* previous current	*/                                 \
     FTSENT *dotdot;                                                          \
-    FTSENT *link; /* real current fts_link*/                                 \
-    FTSENT *pwd; /* pwd parent		*/                                           \
-    DIR *dir; /* current dir stream	*/                                       \
+    FTSENT *link;     /* real current fts_link*/                             \
+    FTSENT *pwd;      /* pwd parent		*/                                      \
+    DIR *dir;         /* current dir stream	*/                               \
     Compar_f comparf; /* node comparison func	*/                             \
-    size_t baselen; /* current strlen(base)	*/                               \
-    size_t homesize; /* sizeof(home)		*/                                     \
-    int cd; /* chdir status		*/                                              \
+    size_t baselen;   /* current strlen(base)	*/                             \
+    size_t homesize;  /* sizeof(home)		*/                                    \
+    int cd;           /* chdir status		*/                                    \
     int cpname;                                                              \
     int flags; /* fts_open() flags	*/                                        \
     int nd;                                                                  \
@@ -68,28 +68,28 @@ typedef int (*Stat_f)(const char *, struct stat *);
     unsigned char fs3d;                                                      \
     unsigned char nostat;                                                    \
     unsigned char state; /* fts_read() state	*/                              \
-    char *base; /* basename in path	*/                                       \
+    char *base;          /* basename in path	*/                              \
     char *name;                                                              \
-    char *path; /* path workspace	*/                                         \
-    char *home; /* home/path buffer	*/                                       \
+    char *path;    /* path workspace	*/                                      \
+    char *home;    /* home/path buffer	*/                                    \
     char *endbase; /* space to build paths */                                \
-    char *endbuf; /* space to build paths */                                 \
-    char *pad[2]; /* $0.02 to splain this	*/
+    char *endbuf;  /* space to build paths */                                \
+    char *pad[2];  /* $0.02 to splain this	*/
 
 /*
  * NOTE: <ftwalk.h> relies on status and statb being the first two elements
  */
 
 #define _FTSENT_PRIVATE_                                                     \
-    int nd; /* popdir() count	*/                                             \
-    FTSENT *left; /* left child		*/                                          \
-    FTSENT *right; /* right child		*/                                        \
-    FTSENT *pwd; /* pwd parent		*/                                           \
-    FTSENT *stack; /* getlist() stack	*/                                     \
-    long nlink; /* FTS_D link count	*/                                       \
-    unsigned char must; /* must stat		*/                                     \
-    unsigned char type; /* DT_* type		*/                                     \
-    unsigned char symlink; /* originally a symlink	*/                        \
+    int nd;                 /* popdir() count	*/                             \
+    FTSENT *left;           /* left child		*/                                \
+    FTSENT *right;          /* right child		*/                               \
+    FTSENT *pwd;            /* pwd parent		*/                                \
+    FTSENT *stack;          /* getlist() stack	*/                            \
+    long nlink;             /* FTS_D link count	*/                           \
+    unsigned char must;     /* must stat		*/                                 \
+    unsigned char type;     /* DT_* type		*/                                 \
+    unsigned char symlink;  /* originally a symlink	*/                       \
     char name[sizeof(int)]; /* fts_name data	*/
 
 #include <fts.h>

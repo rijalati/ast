@@ -32,7 +32,7 @@
 static Tcl_HashTable nameTable;
 typedef struct
 {
-    Tk_Uid name; /* Textual name for desired cursor. */
+    Tk_Uid name;      /* Textual name for desired cursor. */
     Display *display; /* Display for which cursor will be used. */
 } NameKey;
 
@@ -44,13 +44,13 @@ typedef struct
 static Tcl_HashTable dataTable;
 typedef struct
 {
-    char *source; /* Cursor bits. */
-    char *mask; /* Mask bits. */
+    char *source;      /* Cursor bits. */
+    char *mask;        /* Mask bits. */
     int width, height; /* Dimensions of cursor (and data
                         * and mask). */
-    int xHot, yHot; /* Location of cursor hot-spot. */
-    Tk_Uid fg, bg; /* Colors for cursor. */
-    Display *display; /* Display on which cursor will be used. */
+    int xHot, yHot;    /* Location of cursor hot-spot. */
+    Tk_Uid fg, bg;     /* Colors for cursor. */
+    Display *display;  /* Display on which cursor will be used. */
 } DataKey;
 
 /*
@@ -101,9 +101,9 @@ static void CursorInit _ANSI_ARGS_(( void ));
 
 Tk_Cursor Tk_GetCursor(interp, tkwin, string)
 Tcl_Interp *interp; /* Interpreter to use for error reporting. */
-Tk_Window tkwin; /* Window in which cursor will be used. */
-Tk_Uid string; /* Description of cursor.  See manual entry
-                * for details on legal syntax. */
+Tk_Window tkwin;    /* Window in which cursor will be used. */
+Tk_Uid string;      /* Description of cursor.  See manual entry
+                     * for details on legal syntax. */
 {
     NameKey nameKey;
     IdKey idKey;
@@ -190,13 +190,13 @@ Tk_Cursor Tk_GetCursorFromData(interp,
                                fg,
                                bg)
 Tcl_Interp *interp; /* Interpreter to use for error reporting. */
-Tk_Window tkwin; /* Window in which cursor will be used. */
-char *source; /* Bitmap data for cursor shape. */
-char *mask; /* Bitmap data for cursor mask. */
-int width, height; /* Dimensions of cursor. */
-int xHot, yHot; /* Location of hot-spot in cursor. */
-Tk_Uid fg; /* Foreground color for cursor. */
-Tk_Uid bg; /* Background color for cursor. */
+Tk_Window tkwin;    /* Window in which cursor will be used. */
+char *source;       /* Bitmap data for cursor shape. */
+char *mask;         /* Bitmap data for cursor mask. */
+int width, height;  /* Dimensions of cursor. */
+int xHot, yHot;     /* Location of hot-spot in cursor. */
+Tk_Uid fg;          /* Foreground color for cursor. */
+Tk_Uid bg;          /* Background color for cursor. */
 {
     DataKey dataKey;
     IdKey idKey;

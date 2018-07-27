@@ -133,7 +133,7 @@ printchar(int c)
     return ('?');
 }
 #endif
-#define MINWINDOW 15 /* minimum width window */
+#define MINWINDOW 15  /* minimum width window */
 #define DFLTWINDOW 80 /* default window width */
 #define RAWMODE 1
 #define ALTMODE 2
@@ -155,7 +155,7 @@ static char l_changed; /* set if mode bits changed */
 #        define T_CHARS 2
 #        define L_MASK 1
 #    endif /* TIOCGETP */
-#endif /* _hdr_sgtty */
+#endif     /* _hdr_sgtty */
 
 #if KSHELL
 static int
@@ -500,12 +500,12 @@ tty_alt(int fd)
 #            ifdef VEOL2
     nttyparm.c_iflag &= ~(IGNCR | ICRNL);
     nttyparm.c_iflag |= INLCR;
-    nttyparm.c_cc[VEOL] = '\r'; /* make CR an eol char */
+    nttyparm.c_cc[VEOL] = '\r';       /* make CR an eol char */
     nttyparm.c_cc[VEOL2] = ep->e_eof; /* make EOF an eol char */
 #            else
     nttyparm.c_cc[VEOL] = ep->e_eof; /* make EOF an eol char */
 #            endif /* VEOL2 */
-#        endif /* ECHOCTL */
+#        endif     /* ECHOCTL */
 #        ifdef VREPRINT
     nttyparm.c_cc[VREPRINT] = _POSIX_DISABLE;
 #        endif /* VREPRINT */
@@ -536,7 +536,7 @@ tty_alt(int fd)
 }
 
 #    endif /* TIOCGETC */
-#endif /* SHOPT_RAWONLY */
+#endif     /* SHOPT_RAWONLY */
 
 /*
  *	ED_WINDOW()
@@ -1078,9 +1078,9 @@ putstack(Edit_t *ep, char string[], int nbyte, int type)
             siglongjmp(ep->e_env, UINTR);
 #        endif /* KSHELL */
         }
-#    endif /* CBREAK */
+#    endif     /* CBREAK */
     }
-#endif /* SHOPT_MULTIBYTE */
+#endif         /* SHOPT_MULTIBYTE */
     return (1);
 }
 

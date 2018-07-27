@@ -78,12 +78,12 @@
  * Bit values for colon modifiers.
  */
 
-#define CMNEW 0x01 /* New messages */
-#define CMOLD 0x02 /* Old messages */
+#define CMNEW 0x01    /* New messages */
+#define CMOLD 0x02    /* Old messages */
 #define CMUNREAD 0x04 /* Unread messages */
 #define CMDELETE 0x08 /* Deleted messages */
-#define CMREAD 0x10 /* Read messages */
-#define CMSPAM 0x20 /* (probable) Spam messages */
+#define CMREAD 0x10   /* Read messages */
+#define CMSPAM 0x20   /* (probable) Spam messages */
 
 #define CMNOT 8 /* left shift for :!x */
 
@@ -95,8 +95,8 @@
 struct coltab
 {
     char co_char; /* What to find past : */
-    int co_bit; /* Associated modifier bit */
-    int co_mask; /* m_status bits to mask */
+    int co_bit;   /* Associated modifier bit */
+    int co_mask;  /* m_status bits to mask */
     int co_equal; /* ... must equal this */
 } coltab[] = { 'n',     CMNEW,   MNEW,     MNEW,   'o',   CMOLD, MNEW,
                0,       'u',     CMUNREAD, MREAD,  0,     'd',   CMDELETE,

@@ -33,10 +33,10 @@
 typedef struct
 {
     Sfdisc_t histdisc; /* discipline for history */
-    Sfio_t *histfp; /* history file stream pointer */
-    char *histname; /* name of history file */
-    int32_t histind; /* current command number index */
-    int histsize; /* number of accessible history lines */
+    Sfio_t *histfp;    /* history file stream pointer */
+    char *histname;    /* name of history file */
+    int32_t histind;   /* current command number index */
+    int histsize;      /* number of accessible history lines */
 #    ifdef _HIST_PRIVATE
     _HIST_PRIVATE
 #    endif /* _HIST_PRIVATE */

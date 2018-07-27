@@ -31,11 +31,11 @@
 
 typedef struct _subfile_s
 {
-    Sfdisc_t disc; /* sfio discipline */
+    Sfdisc_t disc;  /* sfio discipline */
     Sfio_t *parent; /* parent stream */
     Sfoff_t offset; /* starting offset */
     Sfoff_t extent; /* size wanted */
-    Sfoff_t here; /* current seek location */
+    Sfoff_t here;   /* current seek location */
 } Subfile_t;
 
 #if __STD_C

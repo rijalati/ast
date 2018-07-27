@@ -146,10 +146,10 @@
 #        include <ls.h>
 #        include <tm.h>
 #    else
-#        include <sys/types.h>
-#        include <unistd.h>
 #        include <sys/stat.h>
 #        include <sys/times.h>
+#        include <sys/types.h>
+#        include <unistd.h>
 #    endif
 
 #    define PATH_SEP '/'

@@ -82,23 +82,24 @@
     (!strgrpmatch(                                                           \
     s, p, NiL, 0, STR_ICASE | STR_MAXIMAL | STR_LEFT | STR_RIGHT))
 
-#define SPAM_advertisement 0x1 /* Advertisement: found		*/
+#define SPAM_advertisement 0x1           /* Advertisement: found		*/
 #define SPAM_authentication_outsider 0x2 /* Authentication: outsider	*/
-#define SPAM_authentication_protocol 0x4 /* Authentication: protocol bad     \
-                                          */
-#define SPAM_authentication_warning 0x8 /* Authentication: warning	*/
+#define SPAM_authentication_protocol                                         \
+    0x4                                     /* Authentication: protocol bad  \
+                                             */
+#define SPAM_authentication_warning 0x8     /* Authentication: warning	*/
 #define SPAM_content_multipart_related 0x10 /* multipart/related		*/
-#define SPAM_content_text_html 0x20 /* text/html			*/
-#define SPAM_delay_spam 0x40 /* hop delay looks like spam	*/
-#define SPAM_external_spam 0x80 /* external spam checker hit	*/
-#define SPAM_from_forged 0x100 /* From: forged			*/
-#define SPAM_from_spam 0x200 /* From: spam			*/
-#define SPAM_message_id_spam 0x400 /* Message-id: spam		*/
-#define SPAM_mime_autoconverted 0x800 /* Mime: autoconverted		*/
-#define SPAM_received_forged 0x1000 /* Received: forged		*/
-#define SPAM_received_unknown 0x2000 /* Received: unknown		*/
-#define SPAM_subject_spam 0x4000 /* Subject: spam		*/
-#define SPAM_to_spam 0x8000 /* To: spam			*/
+#define SPAM_content_text_html 0x20         /* text/html			*/
+#define SPAM_delay_spam 0x40                /* hop delay looks like spam	*/
+#define SPAM_external_spam 0x80             /* external spam checker hit	*/
+#define SPAM_from_forged 0x100              /* From: forged			*/
+#define SPAM_from_spam 0x200                /* From: spam			*/
+#define SPAM_message_id_spam 0x400          /* Message-id: spam		*/
+#define SPAM_mime_autoconverted 0x800       /* Mime: autoconverted		*/
+#define SPAM_received_forged 0x1000         /* Received: forged		*/
+#define SPAM_received_unknown 0x2000        /* Received: unknown		*/
+#define SPAM_subject_spam 0x4000            /* Subject: spam		*/
+#define SPAM_to_spam 0x8000                 /* To: spam			*/
 
 #define SPAM_DEFAULT                                                         \
     (SPAM_advertisement | SPAM_delay_spam | SPAM_external_spam               \

@@ -50,17 +50,17 @@ typedef void *(*Ireresize_f)(void *, void *, size_t);
 struct Iredisc_s
 {
     unsigned long version; /* discipline version		*/
-    Error_f errorf; /* error function		*/
-    Ireresize_f resizef; /* alloc/free function		*/
-    void *resizehandle; /* resizef handle		*/
+    Error_f errorf;        /* error function		*/
+    Ireresize_f resizef;   /* alloc/free function		*/
+    void *resizehandle;    /* resizef handle		*/
 };
 
 struct Ire_s /* RE handle			*/
 {
-    const char *id; /* interface id			*/
-    int element; /* element size			*/
-    int dots; /* element dots			*/
-    int tuple; /* tuple size			*/
+    const char *id;      /* interface id			*/
+    int element;         /* element size			*/
+    int dots;            /* element dots			*/
+    int tuple;           /* tuple size			*/
     unsigned long group; /* embedded group mark		*/
 #    ifdef _IRE_PRIVATE_
     _IRE_PRIVATE_

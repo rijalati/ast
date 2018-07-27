@@ -49,11 +49,11 @@ static int DoGlob _ANSI_ARGS_((Tcl_Interp * interp, char *dir, char *rem));
 static int DoGlob(interp, dir, rem)
 Tcl_Interp *interp; /* Interpreter to use for error
                      * reporting (e.g. unmatched brace). */
-char *dir; /* Name of a directory at which to
-            * start glob expansion.  This name
-            * is fixed: it doesn't contain any
-            * globbing chars. */
-char *rem; /* Path to glob-expand. */
+char *dir;          /* Name of a directory at which to
+                     * start glob expansion.  This name
+                     * is fixed: it doesn't contain any
+                     * globbing chars. */
+char *rem;          /* Path to glob-expand. */
 {
     /*
      * When this procedure is entered, the name to be globbed may
@@ -308,12 +308,12 @@ done:
  */
 
 char *Tcl_TildeSubst(interp, name, bufferPtr)
-Tcl_Interp *interp; /* Interpreter in which to store error
-                     * message (if necessary). */
-char *name; /* File name, which may begin with "~/"
-             * (to indicate current user's home directory)
-             * or "~<user>/" (to indicate any user's
-             * home directory). */
+Tcl_Interp *interp;     /* Interpreter in which to store error
+                         * message (if necessary). */
+char *name;             /* File name, which may begin with "~/"
+                         * (to indicate current user's home directory)
+                         * or "~<user>/" (to indicate any user's
+                         * home directory). */
 Tcl_DString *bufferPtr; /* May be used to hold result.  Must not hold
                          * anything at the time of the call, and need
                          * not even be initialized. */
@@ -394,8 +394,8 @@ Tcl_DString *bufferPtr; /* May be used to hold result.  Must not hold
 /* ARGSUSED */
 int Tcl_GlobCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int i, result, noComplain, firstArg;
 

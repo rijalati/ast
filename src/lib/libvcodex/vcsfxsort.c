@@ -162,7 +162,7 @@ chkone2one(Vcinx_t *list, Vcinx_t size)
     if (!(chk = ( Vcchar_t * )calloc(size, 1)))
         return 0;
     for (i = 0; i < size; ++i) /* see if list[] is one-to-one */
-    { /**/
+    {                          /**/
         DEBUG_ASSERT(list[i] >= 0 && list[i] < size);
         chk[list[i]] += 1;
         /**/ DEBUG_ASSERT(chk[list[i]] <= 1);
@@ -234,7 +234,7 @@ Vcinx_t *grp;
     {
         for (j = 0; j < 256; ++j, ++g)
             *g = (n += *g); /* next area to be allocated */
-        if (i == *ends) /* sort the last suffix now */
+        if (i == *ends)     /* sort the last suffix now */
         {
             inv[sfx->nstr - 1] = n;
             idx[n++] = sfx->nstr - 1;
@@ -510,7 +510,7 @@ static void
 sfxcsort(Vcsfx_t *sfx, Vcinx_t y, Vcinx_t *grp)
 #else
 static void sfxcsort(sfx, y, grp) Vcsfx_t *sfx;
-Vcinx_t y; /* common first byte	*/
+Vcinx_t y;    /* common first byte	*/
 Vcinx_t *grp; /* bounds of xy-groups	*/
 #endif
 {
@@ -530,10 +530,10 @@ Vcinx_t *grp; /* bounds of xy-groups	*/
         l = GMIN(grp, x, y);
         r = GMAX(grp, x, y, endc);
         if (l < r && l < (r = inv[idx[l]]))
-            k += 1; /* nontrivial sortable group */
+            k += 1;      /* nontrivial sortable group */
         else if (x != y) /* already sorted */
             l = r = -1;
-        else if (l > r) /* empty yy-group */
+        else if (l > r)       /* empty yy-group */
             l = r = omax + 1; /* run first loop below only */
         /*else; non-empty yy-group, run both loops below */
 
@@ -571,7 +571,7 @@ sfxosort(Vcsfx_t *sfx, Vcinx_t x, Vcinx_t *grp, int dir)
 static int sfxosort(sfx, x, grp, dir) Vcsfx_t *sfx;
 Vcinx_t x; /* common header byte	*/
 Vcinx_t *grp;
-int dir; /* itoh-tanaka sort dir	*/
+int dir;                                     /* itoh-tanaka sort dir	*/
 #endif
 {
     Vcinx_t l, r, k, i, y, z;
@@ -649,14 +649,14 @@ Vcsfx_t *
 vcsfxsort(const Void_t *astr, ssize_t nstr)
 #else
 Vcsfx_t *vcsfxsort(astr, nstr) Void_t *astr; /* string to be sorted	*/
-ssize_t nstr; /* length of string	*/
+ssize_t nstr;                                /* length of string	*/
 #endif
 {
     Vcinx_t l, r, x, y, endc;
     Vcinx_t grp[256 * 256 + 1];
-    Vcchar_t *str; /* the addressable astr	*/
+    Vcchar_t *str;      /* the addressable astr	*/
     Vcinx_t *idx, *inv; /* index and rank	*/
-    Vcsfx_t *sfx; /* suffix array structure	*/
+    Vcsfx_t *sfx;       /* suffix array structure	*/
     int error = 1;
 
     if (!(str = ( Vcchar_t * )astr) || nstr <= 0)
@@ -673,7 +673,7 @@ ssize_t nstr; /* length of string	*/
     sfx->str = str;
     sfx->nstr = ( Vcinx_t )nstr;
     idx[sfx->nstr] = inv[sfx->nstr] = sfx->nstr; /* the infinite eos byte */
-    if (sfx->nstr <= 1) /* the easy sorting case */
+    if (sfx->nstr <= 1)                          /* the easy sorting case */
     {
         idx[0] = inv[0] = 0;
         return sfx;

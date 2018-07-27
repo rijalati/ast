@@ -75,28 +75,28 @@ main(int argc, char **argv)
 
 typedef struct /* open dbm info		*/
 {
-    DBM *dbm; /* dbm stream pointer		*/
+    DBM *dbm;  /* dbm stream pointer		*/
     dev_t dev; /* device			*/
     ino_t ino; /* inode			*/
-    int ref; /* reference count		*/
+    int ref;   /* reference count		*/
 } Db_t;
 
 typedef struct /* connection info		*/
 {
-    long blkptr; /* dbm_blkptr from last next	*/
-    int keyptr; /* dbm_keyptr from last next	*/
+    long blkptr;  /* dbm_blkptr from last next	*/
+    int keyptr;   /* dbm_keyptr from last next	*/
     int readonly; /* readonly open		*/
-    int scan; /* scan in progress		*/
-    Db_t *db; /* open dbm info		*/
+    int scan;     /* scan in progress		*/
+    Db_t *db;     /* open dbm info		*/
 } Con_t;
 
 typedef struct /* server state			*/
 {
-    int active; /* number active connections	*/
-    int conmax; /* max number connections	*/
+    int active;  /* number active connections	*/
+    int conmax;  /* max number connections	*/
     int dormant; /* inactivity check		*/
-    Con_t *con; /* connections			*/
-    Db_t *dbs; /* open dbs			*/
+    Con_t *con;  /* connections			*/
+    Db_t *dbs;   /* open dbs			*/
 } State_t;
 
 /*

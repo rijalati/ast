@@ -55,13 +55,13 @@ static int FileWritePPM _ANSI_ARGS_((Tcl_Interp * interp,
                                      Tk_PhotoImageBlock *blockPtr));
 
 Tk_PhotoImageFormat tkImgFmtPPM = {
-    "PPM", /* name */
+    "PPM",        /* name */
     FileMatchPPM, /* fileMatchProc */
-    NULL, /* stringMatchProc */
-    FileReadPPM, /* fileReadProc */
-    NULL, /* stringReadProc */
+    NULL,         /* stringMatchProc */
+    FileReadPPM,  /* fileReadProc */
+    NULL,         /* stringReadProc */
     FileWritePPM, /* fileWriteProc */
-    NULL, /* stringWriteProc */
+    NULL,         /* stringWriteProc */
 };
 
 /*
@@ -90,9 +90,9 @@ _ANSI_ARGS_((FILE * f, int *widthPtr, int *heightPtr, int *maxIntensityPtr));
  */
 
 static int FileMatchPPM(f, fileName, formatString, widthPtr, heightPtr)
-FILE *f; /* The image file, open for reading. */
-char *fileName; /* The name of the image file. */
-char *formatString; /* User-specified format string, or NULL. */
+FILE *f;                   /* The image file, open for reading. */
+char *fileName;            /* The name of the image file. */
+char *formatString;        /* User-specified format string, or NULL. */
 int *widthPtr, *heightPtr; /* The dimensions of the image are
                             * returned here if the file is a valid
                             * raw PPM file. */
@@ -134,16 +134,16 @@ static int FileReadPPM(interp,
                        srcX,
                        srcY) Tcl_Interp *interp; /* Interpreter to use for
                                                     reporting errors. */
-FILE *f; /* The image file, open for reading. */
-char *fileName; /* The name of the image file. */
-char *formatString; /* User-specified format string, or NULL. */
+FILE *f;                    /* The image file, open for reading. */
+char *fileName;             /* The name of the image file. */
+char *formatString;         /* User-specified format string, or NULL. */
 Tk_PhotoHandle imageHandle; /* The photo image to write into. */
-int destX, destY; /* Coordinates of top-left pixel in
-                   * photo image to be written to. */
-int width, height; /* Dimensions of block of photo image to
-                    * be written to. */
-int srcX, srcY; /* Coordinates of top-left pixel to be used
-                 * in image being read. */
+int destX, destY;           /* Coordinates of top-left pixel in
+                             * photo image to be written to. */
+int width, height;          /* Dimensions of block of photo image to
+                             * be written to. */
+int srcX, srcY;             /* Coordinates of top-left pixel to be used
+                             * in image being read. */
 {
     int fileWidth, fileHeight, maxIntensity;
     int nLines, nBytes, h, type, count;
@@ -385,11 +385,11 @@ writeerror:
  */
 
 static int ReadPPMFileHeader(f, widthPtr, heightPtr, maxIntensityPtr)
-FILE *f; /* Image file to read the header from */
+FILE *f;                   /* Image file to read the header from */
 int *widthPtr, *heightPtr; /* The dimensions of the image are
                             * returned here. */
-int *maxIntensityPtr; /* The maximum intensity value for
-                       * the image is stored here. */
+int *maxIntensityPtr;      /* The maximum intensity value for
+                            * the image is stored here. */
 {
 #define BUFFER_SIZE 1000
     char buffer[BUFFER_SIZE];

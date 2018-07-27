@@ -64,7 +64,7 @@ extern "C"
 #        define MD_NEW_ARR(ptr, elem_type, nelem)                            \
             (ptr) = new (elem_type)[(nelem)]
 #    endif /* (__GNUC__ >= 3) && (__GNUC_MINOR__ >= 4) */
-#endif /* MD_NEW_ARR */
+#endif     /* MD_NEW_ARR */
 
 #ifndef MD_DELETE
 #    define MD_DELETE(ptr) delete (ptr)

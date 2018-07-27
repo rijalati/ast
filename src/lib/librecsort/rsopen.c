@@ -49,10 +49,10 @@ rsinit(reg Rs_t *rs, Rsmethod_t *meth, ssize_t c_max, int type, Rskey_t *key)
 #else
 int rsinit(rs, meth, c_max, type, key) Rs_t *rs; /* handle from rsnew()
                                                   */
-Rsmethod_t *meth; /* sorting method			*/
+Rsmethod_t *meth;                                /* sorting method			*/
 ssize_t c_max; /* process about this much per chain	*/
-int type; /* sort controls			*/
-Rskey_t *key; /* key coder state			*/
+int type;      /* sort controls			*/
+Rskey_t *key;  /* key coder state			*/
 #endif
 {
     Rsdisc_t *disc;
@@ -99,9 +99,9 @@ rsopen(Rsdisc_t *disc, Rsmethod_t *meth, ssize_t c_max, int type)
 #else
 Rs_t *rsopen(disc, meth, c_max, type) Rsdisc_t *disc; /* discipline describing
                                                          record types	*/
-Rsmethod_t *meth; /* sorting method			*/
+Rsmethod_t *meth;                                     /* sorting method			*/
 ssize_t c_max; /* process about this much per chain	*/
-int type; /* sort controls			*/
+int type;      /* sort controls			*/
 #endif
 {
     reg Rs_t *rs;

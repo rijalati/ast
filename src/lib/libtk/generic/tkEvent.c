@@ -31,12 +31,12 @@
 
 typedef struct InProgress
 {
-    XEvent *eventPtr; /* Event currently being handled. */
-    TkWindow *winPtr; /* Window for event.  Gets set to None if
-                       * window is deleted while event is being
-                       * handled. */
+    XEvent *eventPtr;            /* Event currently being handled. */
+    TkWindow *winPtr;            /* Window for event.  Gets set to None if
+                                  * window is deleted while event is being
+                                  * handled. */
     TkEventHandler *nextHandler; /* Next handler in search. */
-    struct InProgress *nextPtr; /* Next higher nested search. */
+    struct InProgress *nextPtr;  /* Next higher nested search. */
 } InProgress;
 
 static InProgress *pendingPtr = NULL;
@@ -51,9 +51,9 @@ static InProgress *pendingPtr = NULL;
 
 typedef struct GenericHandler
 {
-    Tk_GenericProc *proc; /* Procedure to dispatch on all X events. */
+    Tk_GenericProc *proc;  /* Procedure to dispatch on all X events. */
     ClientData clientData; /* Client data to pass to procedure. */
-    int deleteFlag; /* Flag to set when this handler is deleted. */
+    int deleteFlag;        /* Flag to set when this handler is deleted. */
     struct GenericHandler *nextPtr;
     /* Next handler in list of all generic
      * handlers, or NULL for end of list. */
@@ -84,7 +84,7 @@ static int genericHandlersActive = 0;
 typedef struct TkWindowEvent
 {
     Tcl_Event header; /* Standard information for all events. */
-    XEvent event; /* The X event. */
+    XEvent event;     /* The X event. */
 } TkWindowEvent;
 
 /*
@@ -94,45 +94,45 @@ typedef struct TkWindowEvent
 static unsigned long eventMasks[TK_LASTEVENT] = {
     0,
     0,
-    KeyPressMask, /* KeyPress */
-    KeyReleaseMask, /* KeyRelease */
-    ButtonPressMask, /* ButtonPress */
+    KeyPressMask,      /* KeyPress */
+    KeyReleaseMask,    /* KeyRelease */
+    ButtonPressMask,   /* ButtonPress */
     ButtonReleaseMask, /* ButtonRelease */
     PointerMotionMask | PointerMotionHintMask | ButtonMotionMask
     | Button1MotionMask | Button2MotionMask | Button3MotionMask
     | Button4MotionMask | Button5MotionMask,
     /* MotionNotify */
-    EnterWindowMask, /* EnterNotify */
-    LeaveWindowMask, /* LeaveNotify */
-    FocusChangeMask, /* FocusIn */
-    FocusChangeMask, /* FocusOut */
-    KeymapStateMask, /* KeymapNotify */
-    ExposureMask, /* Expose */
-    ExposureMask, /* GraphicsExpose */
-    ExposureMask, /* NoExpose */
-    VisibilityChangeMask, /* VisibilityNotify */
-    SubstructureNotifyMask, /* CreateNotify */
-    StructureNotifyMask, /* DestroyNotify */
-    StructureNotifyMask, /* UnmapNotify */
-    StructureNotifyMask, /* MapNotify */
+    EnterWindowMask,          /* EnterNotify */
+    LeaveWindowMask,          /* LeaveNotify */
+    FocusChangeMask,          /* FocusIn */
+    FocusChangeMask,          /* FocusOut */
+    KeymapStateMask,          /* KeymapNotify */
+    ExposureMask,             /* Expose */
+    ExposureMask,             /* GraphicsExpose */
+    ExposureMask,             /* NoExpose */
+    VisibilityChangeMask,     /* VisibilityNotify */
+    SubstructureNotifyMask,   /* CreateNotify */
+    StructureNotifyMask,      /* DestroyNotify */
+    StructureNotifyMask,      /* UnmapNotify */
+    StructureNotifyMask,      /* MapNotify */
     SubstructureRedirectMask, /* MapRequest */
-    StructureNotifyMask, /* ReparentNotify */
-    StructureNotifyMask, /* ConfigureNotify */
+    StructureNotifyMask,      /* ReparentNotify */
+    StructureNotifyMask,      /* ConfigureNotify */
     SubstructureRedirectMask, /* ConfigureRequest */
-    StructureNotifyMask, /* GravityNotify */
-    ResizeRedirectMask, /* ResizeRequest */
-    StructureNotifyMask, /* CirculateNotify */
+    StructureNotifyMask,      /* GravityNotify */
+    ResizeRedirectMask,       /* ResizeRequest */
+    StructureNotifyMask,      /* CirculateNotify */
     SubstructureRedirectMask, /* CirculateRequest */
-    PropertyChangeMask, /* PropertyNotify */
-    0, /* SelectionClear */
-    0, /* SelectionRequest */
-    0, /* SelectionNotify */
-    ColormapChangeMask, /* ColormapNotify */
-    0, /* ClientMessage */
-    0, /* Mapping Notify */
-    VirtualEventMask, /* VirtualEvents */
-    ActivateMask, /* ActivateNotify */
-    ActivateMask /* DeactivateNotify */
+    PropertyChangeMask,       /* PropertyNotify */
+    0,                        /* SelectionClear */
+    0,                        /* SelectionRequest */
+    0,                        /* SelectionNotify */
+    ColormapChangeMask,       /* ColormapNotify */
+    0,                        /* ClientMessage */
+    0,                        /* Mapping Notify */
+    VirtualEventMask,         /* VirtualEvents */
+    ActivateMask,             /* ActivateNotify */
+    ActivateMask              /* DeactivateNotify */
 };
 
 /*
@@ -174,12 +174,12 @@ static int WindowEventProc _ANSI_ARGS_((Tcl_Event * evPtr, int flags));
  */
 
 void Tk_CreateEventHandler(token, mask, proc, clientData)
-Tk_Window token; /* Token for window in which to
-                  * create handler. */
-unsigned long mask; /* Events for which proc should
-                     * be called. */
-Tk_EventProc *proc; /* Procedure to call for each
-                     * selected event */
+Tk_Window token;       /* Token for window in which to
+                        * create handler. */
+unsigned long mask;    /* Events for which proc should
+                        * be called. */
+Tk_EventProc *proc;    /* Procedure to call for each
+                        * selected event */
 ClientData clientData; /* Arbitrary data to pass to proc. */
 {
     TkEventHandler *handlerPtr;
@@ -262,7 +262,7 @@ ClientData clientData; /* Arbitrary data to pass to proc. */
  */
 
 void Tk_DeleteEventHandler(token, mask, proc, clientData)
-Tk_Window token; /* Same as corresponding arguments passed */
+Tk_Window token;    /* Same as corresponding arguments passed */
 unsigned long mask; /* previously to Tk_CreateEventHandler. */
 Tk_EventProc *proc;
 ClientData clientData;
@@ -345,7 +345,7 @@ ClientData clientData;
  */
 
 void Tk_CreateGenericHandler(proc, clientData)
-Tk_GenericProc *proc; /* Procedure to call on every event. */
+Tk_GenericProc *proc;  /* Procedure to call on every event. */
 ClientData clientData; /* One-word value to pass to proc. */
 {
     GenericHandler *handlerPtr;
@@ -875,9 +875,9 @@ Time TkCurrentTime(dispPtr) TkDisplay *dispPtr; /* Display for which the time
  */
 
 Tk_RestrictProc *Tk_RestrictEvents(proc, arg, prevArgPtr)
-Tk_RestrictProc *proc; /* Procedure to call for each incoming
-                        * event. */
-ClientData arg; /* Arbitrary argument to pass to proc. */
+Tk_RestrictProc *proc;  /* Procedure to call for each incoming
+                         * event. */
+ClientData arg;         /* Arbitrary argument to pass to proc. */
 ClientData *prevArgPtr; /* Place to store information about previous
                          * argument. */
 {
@@ -1011,7 +1011,7 @@ Tcl_QueuePosition position; /* Where to put it on the queue:
  */
 
 void TkQueueEventForAllChildren(tkwin, eventPtr)
-Tk_Window tkwin; /* Window to which event is sent. */
+Tk_Window tkwin;  /* Window to which event is sent. */
 XEvent *eventPtr; /* The event to be sent. */
 {
     TkWindow *winPtr, *childPtr;

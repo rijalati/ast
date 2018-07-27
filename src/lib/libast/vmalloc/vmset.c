@@ -39,8 +39,8 @@ int
 vmset(Vmalloc_t *vm, int flags, int on)
 #    else
 int vmset(vm, flags, on) Vmalloc_t *vm; /* region being worked on		*/
-int flags; /* flags must be in VM_FLAGS		*/
-int on; /* >0 if turning on, else turning off	*/
+int flags;                              /* flags must be in VM_FLAGS		*/
+int on;                                 /* >0 if turning on, else turning off	*/
 #    endif
 {
     int mode, newm;

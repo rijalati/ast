@@ -30,8 +30,8 @@
 #    define N_PROC 64
 #endif
 
-#define N_OBJ (N_PROC * 64 * 1024) /* #objects to insert	*/
-#define SEARCH 4 /* #searches while inserting	*/
+#define N_OBJ (N_PROC * 64 * 1024)      /* #objects to insert	*/
+#define SEARCH 4                        /* #searches while inserting	*/
 #define PROGRESS (N_OBJ / (N_PROC * 4)) /* amount done	*/
 
 #define FORMAT "%09d" /* 9-digit numbers with zero-filled	*/
@@ -43,12 +43,12 @@ typedef struct _obj_s
 {
     Dtlink_t link;
     unsigned int flag; /* INSERT/DELETE state		*/
-    char str[12]; /* string representation	*/
+    char str[12];      /* string representation	*/
 } Obj_t;
 
 typedef struct _proc_s
 {
-    Obj_t *obj; /* list of objects to add	*/
+    Obj_t *obj;   /* list of objects to add	*/
     ssize_t objn; /* number of objects in list	*/
 } Proc_t;
 
@@ -68,9 +68,9 @@ typedef struct _disc_s
     ssize_t size;
 } Disc_t;
 
-static Disc_t *Disc; /* shared discipline structure 	*/
-static Obj_t *Obj; /* shared object list		*/
-static Proc_t Proc[N_PROC]; /* process workloads	*/
+static Disc_t *Disc;          /* shared discipline structure 	*/
+static Obj_t *Obj;            /* shared object list		*/
+static Proc_t Proc[N_PROC];   /* process workloads	*/
 static int Pnum = N_PROC + 1; /* start as parent	*/
 
 static int Icount; /* # insertions done		*/
@@ -234,9 +234,10 @@ tmain()
     /* get shared memory */
     if ((k = 4 * N_OBJ * sizeof(Void_t *)) < 64 * 1024 * 1024)
         k = 64 * 1024 * 1024;
-    z = sizeof(State_t) /* insert/delete states */ + sizeof(Disc_t) /* discipline
-                                                                     */
-        + N_OBJ * sizeof(Obj_t) /*  Obj  */ + k; /* table memory */
+    z
+    = sizeof(State_t) /* insert/delete states */ + sizeof(Disc_t) /* discipline
+                                                                   */
+      + N_OBJ * sizeof(Obj_t) /*  Obj  */ + k; /* table memory */
     State
     = ( State_t * )mmap(0, z, PROT_READ | PROT_WRITE, MAP_SHARED, zerof, 0);
     if (!State || State == ( State_t * )(-1))

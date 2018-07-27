@@ -27,9 +27,9 @@
 #include <codex.h>
 #include <vclib.h>
 
-#define VCSF_BUFSIZE (256 * 1024) /* decoding buffer	*/
-#define VCSF_BUFMIN (64 * 1024) /* surely affordable!	*/
-#define VCSF_WSIZE (4 * 1024 * 1024) /* dflt encoding window	*/
+#define VCSF_BUFSIZE (256 * 1024)        /* decoding buffer	*/
+#define VCSF_BUFMIN (64 * 1024)          /* surely affordable!	*/
+#define VCSF_WSIZE (4 * 1024 * 1024)     /* dflt encoding window	*/
 #define VCSF_SLACK (16 * sizeof(size_t)) /* for extra coding	*/
 #define VCSFDTSZ(sz) ((((sz) / 1024) + 2) * 1024)
 
@@ -41,11 +41,11 @@
 /* these bits are in state->flags and must be outside VC_FLAGS	*/
 #define VCSF_DONEHEAD 0001000 /* header was already output	*/
 #define VCSF_KEEPSFDC 0002000 /* do not free the Sfdc struct	*/
-#define VCSF_VCDIFF 0004000 /* output RFC3284 VCDIFF header	*/
-#define VCSF_PLAIN 0010000 /* no header to be output	*/
-#define VCSF_TRANS 0020000 /* set transform on VC_DECODE	*/
-#define VCSF_FREE 0040000 /* free sfdt on disc pop	*/
-#define VCSF_OPEN 0100000 /* open for business		*/
+#define VCSF_VCDIFF 0004000   /* output RFC3284 VCDIFF header	*/
+#define VCSF_PLAIN 0010000    /* no header to be output	*/
+#define VCSF_TRANS 0020000    /* set transform on VC_DECODE	*/
+#define VCSF_FREE 0040000     /* free sfdt on disc pop	*/
+#define VCSF_OPEN 0100000     /* open for business		*/
 
 typedef struct State_s
 {
@@ -55,12 +55,12 @@ typedef struct State_s
 
     char *transform; /* transform string		*/
 
-    Sfoff_t pos; /* current stream position	*/
+    Sfoff_t pos;     /* current stream position	*/
     Vcwdisc_t vcwdc; /* windowing discipline		*/
     Vcwindow_t *vcw; /* to match delta-comp windows 	*/
 
     Vcdisc_t vcdc; /* encoding/decoding discipline	*/
-    Vcodex_t *vc; /* Vcodex handle for de/coding	*/
+    Vcodex_t *vc;  /* Vcodex handle for de/coding	*/
 
     Vcio_t *io; /* to write integers, etc.	*/
 
@@ -90,7 +90,7 @@ vcodex_sync(Codex_t *);
 typedef struct _old_s /* to map an old method number to a transform */
 {
     const char *name; /* new method name	*/
-    int mtid; /* old method number	*/
+    int mtid;         /* old method number	*/
     Vcmethod_t *meth; /* corresponding method	*/
 } Old_t;
 
@@ -125,7 +125,7 @@ hdrvcdx(Vcchar_t **datap, ssize_t dtsz, Vcchar_t *code, ssize_t cdsz)
             if (old[k].mtid == id)
                 break;
         if (k >= elementsof(old)) /* not matching any transform */
-            return dtsz; /* must be new header format */
+            return dtsz;          /* must be new header format */
 
         if (!old[k].meth
             && !(old[k].meth = vcgetmeth(( char * )old[k].name, 1)))
@@ -145,7 +145,7 @@ hdrvcdx(Vcchar_t **datap, ssize_t dtsz, Vcchar_t *code, ssize_t cdsz)
     }
 
     if (vciomore(&io) > 0) /* too many transforms */
-        return dtsz; /* must be new header */
+        return dtsz;       /* must be new header */
 
     /* construct new header in reverse order */
     vcioinit(&io, code, cdsz);
@@ -713,7 +713,7 @@ vcodex_done(Codex_t *p)
         }
         if (!(state->flags & VCSF_PLAIN))
             vcioputc(&io, VC_EOF); /* write the eof marker */
-        sz = vciosize(&io); /* output to stream */
+        sz = vciosize(&io);        /* output to stream */
         if (sz > 0
             && (wz = sfwr(p->sp, state->base, sz, NIL(Sfdisc_t *))) < sz)
             r = VCSFERROR(state, "Error in writing coded data");
@@ -941,7 +941,7 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
         }
     }
     else /* VC_DECODE */
-    { /* make output buffer */
+    {    /* make output buffer */
         if ((state->bssz = wsize) <= 0)
             state->bssz = VCSF_BUFSIZE;
         else if (state->bssz < VCSF_BUFMIN)
@@ -1191,7 +1191,7 @@ vcodex_write(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *disc)
 
             if (state->next > state->data) /* not done yet */
             {
-                w = 0; /* so for(;;) won't add to sz, dt */
+                w = 0;    /* so for(;;) won't add to sz, dt */
                 continue; /* back to flushing */
             }
             else

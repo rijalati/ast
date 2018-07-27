@@ -135,66 +135,66 @@ typedef struct /* unique file identifier	*/
 
 typedef struct /* Fileid_t visit		*/
 {
-    Dtlink_t link; /* table link			*/
-    Fileid_t id; /* file id			*/
+    Dtlink_t link;     /* table link			*/
+    Fileid_t id;       /* file id			*/
     Extype_t value[1]; /* visit values			*/
 } Visit_t;
 
 typedef struct Local_s /* local struct			*/
 {
     struct Local_s *next; /* next in free list		*/
-    Extype_t value[1]; /* member values		*/
+    Extype_t value[1];    /* member values		*/
 } Local_t;
 
 typedef struct Snapshot_s /* snapshot state		*/
 {
-    Sfio_t *sp; /* previous snapshot stream	*/
+    Sfio_t *sp;  /* previous snapshot stream	*/
     Sfio_t *tmp; /* tmp string stream		*/
-    char *prev; /* previous snapshot record	*/
+    char *prev;  /* previous snapshot record	*/
     struct
     {
         char *path; /* path format			*/
         char *easy; /* easy format			*/
         char *hard; /* hard format			*/
-        int delim; /* format delimiter char	*/
+        int delim;  /* format delimiter char	*/
     } format;
 } Snapshot_t;
 
 typedef struct /* program state		*/
 {
-    int act; /* leaf node ACT_*		*/
-    int actII; /* real action for intermediate	*/
-    Exnode_t *action; /* action expression		*/
-    int args; /* command arg count		*/
-    Cmdarg_t *cmd; /* command arg state		*/
-    int cmdflags; /* cmdopen() flags		*/
-    int compiled; /* excomp() complete		*/
-    int errexit; /* exit tw when cmd exit > this	*/
-    int errors; /* error count			*/
-    Exdisc_t expr; /* expr discipline		*/
-    Find_t *find; /* fast find handle		*/
-    int finderror; /* fast find generation error	*/
-    int ftwflags; /* tree walk flags		*/
-    Dt_t *fstab; /* fs type hash table		*/
-    int icase; /* ignore case in sort		*/
-    int ignore; /* ignore cmd and dir errors	*/
-    int info; /* ftw.info checked by user	*/
-    int intermediate; /* generate intermediate dirs	*/
-    Local_t *local; /* local struct free list	*/
-    int localfs; /* restrict to local fs mounts	*/
-    int localmem; /* ftw.local member count	*/
-    Magic_t *magic; /* magic tests			*/
-    Magicdisc_t magicdisc; /* magic discipline		*/
-    char *pattern; /* fast find pattern		*/
-    Expr_t *program; /* compiled expressions		*/
-    int reverse; /* reverse sort sense		*/
-    Exnode_t *select; /* select expression		*/
-    int separator; /* xargs list separator		*/
-    Snapshot_t snapshot; /* snapshot state		*/
+    int act;                       /* leaf node ACT_*		*/
+    int actII;                     /* real action for intermediate	*/
+    Exnode_t *action;              /* action expression		*/
+    int args;                      /* command arg count		*/
+    Cmdarg_t *cmd;                 /* command arg state		*/
+    int cmdflags;                  /* cmdopen() flags		*/
+    int compiled;                  /* excomp() complete		*/
+    int errexit;                   /* exit tw when cmd exit > this	*/
+    int errors;                    /* error count			*/
+    Exdisc_t expr;                 /* expr discipline		*/
+    Find_t *find;                  /* fast find handle		*/
+    int finderror;                 /* fast find generation error	*/
+    int ftwflags;                  /* tree walk flags		*/
+    Dt_t *fstab;                   /* fs type hash table		*/
+    int icase;                     /* ignore case in sort		*/
+    int ignore;                    /* ignore cmd and dir errors	*/
+    int info;                      /* ftw.info checked by user	*/
+    int intermediate;              /* generate intermediate dirs	*/
+    Local_t *local;                /* local struct free list	*/
+    int localfs;                   /* restrict to local fs mounts	*/
+    int localmem;                  /* ftw.local member count	*/
+    Magic_t *magic;                /* magic tests			*/
+    Magicdisc_t magicdisc;         /* magic discipline		*/
+    char *pattern;                 /* fast find pattern		*/
+    Expr_t *program;               /* compiled expressions		*/
+    int reverse;                   /* reverse sort sense		*/
+    Exnode_t *select;              /* select expression		*/
+    int separator;                 /* xargs list separator		*/
+    Snapshot_t snapshot;           /* snapshot state		*/
     int (*sort)(Ftw_t *, Ftw_t *); /* sorter	*/
-    Exnode_t *sortkey; /* sort key list		*/
-    Dt_t *vistab; /* visit hash table		*/
-    int visitmem; /* visit member count		*/
+    Exnode_t *sortkey;             /* sort key list		*/
+    Dt_t *vistab;                  /* visit hash table		*/
+    int visitmem;                  /* visit member count		*/
 } State_t;
 
 extern State_t state;

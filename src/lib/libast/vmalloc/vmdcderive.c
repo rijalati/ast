@@ -28,7 +28,7 @@
 typedef struct _drvdisc_s
 {
     Vmdisc_t disc;
-    int type; /* 1: Vcheap, 0: vm, -1: static	*/
+    int type;      /* 1: Vcheap, 0: vm, -1: static	*/
     Vmalloc_t *vm; /* region being derived from	*/
 } Drvdisc_t;
 
@@ -43,9 +43,9 @@ drvgetmem(Vmalloc_t *vm,
 static Void_t *
 drvgetmem(vm, caddr, csize, nsize, disc) Vmalloc_t *vm; /* region doing
                                                            allocation from 	*/
-Void_t *caddr; /* current low address			*/
-size_t csize; /* current size				*/
-size_t nsize; /* new size				*/
+Void_t *caddr;  /* current low address			*/
+size_t csize;   /* current size				*/
+size_t nsize;   /* new size				*/
 Vmdisc_t *disc; /* discipline structure			*/
 #endif
 {

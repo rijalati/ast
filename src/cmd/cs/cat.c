@@ -47,18 +47,18 @@ typedef struct /* open file id key		*/
 typedef struct /* open file info		*/
 {
     HASH_HEADER;
-    int fd; /* O_APPEND fd			*/
-    int flags; /* CAT_* flags			*/
+    int fd;        /* O_APPEND fd			*/
+    int flags;     /* CAT_* flags			*/
     int reference; /* user reference count		*/
 } File_t;
 
 typedef struct /* server state			*/
 {
-    Hash_table_t *files; /* Fid_t hash			*/
-    int active; /* # open connections		*/
-    int dormant; /* dormant timeout check	*/
+    Hash_table_t *files;    /* Fid_t hash			*/
+    int active;             /* # open connections		*/
+    int dormant;            /* dormant timeout check	*/
     char buf[MSG_SIZE_BUF]; /* io buffer			*/
-    File_t *cat[1]; /* user file reference		*/
+    File_t *cat[1];         /* user file reference		*/
 } State_t;
 
 /*

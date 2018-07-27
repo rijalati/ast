@@ -26,7 +26,7 @@
 */
 
 /* the below macros define the coding of record lengths */
-#define MAXSIZE (1 << 16) /* max allowed record size	*/
+#define MAXSIZE (1 << 16)                      /* max allowed record size	*/
 #define GETSIZE(dt) (((dt)[0] << 8) + (dt)[1]) /* get AMA size	*/
 #define PUTSIZE(dt, v)                                                       \
     (((dt)[0] = (((v) >> 8) & 0377)), ((dt)[1] = (( v )&0377)))

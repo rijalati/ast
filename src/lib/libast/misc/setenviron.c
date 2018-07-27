@@ -43,9 +43,9 @@ char *
 setenviron(const char *akey)
 {
 #undef setenviron
-    static char **envv; /* recorded environ		*/
-    static char **next; /* next free slot		*/
-    static char **last; /* last free slot (0)		*/
+    static char **envv;    /* recorded environ		*/
+    static char **next;    /* next free slot		*/
+    static char **last;    /* last free slot (0)		*/
     static char ok[] = ""; /* delete/optimization ok return*/
 
     char *key = ( char * )akey;

@@ -26,10 +26,10 @@
 typedef struct
 {
     Tcl_Interp *interp; /* Interpreter in which to invoke command. */
-    int cmdLength; /* # of non-NULL bytes in command. */
-    char command[4]; /* Command to invoke.  Actual space is
-                      * allocated as large as necessary.  This
-                      * must be the last entry in the structure. */
+    int cmdLength;      /* # of non-NULL bytes in command. */
+    char command[4];    /* Command to invoke.  Actual space is
+                         * allocated as large as necessary.  This
+                         * must be the last entry in the structure. */
 } CommandInfo;
 
 /*
@@ -41,9 +41,9 @@ typedef struct
 typedef struct LostCommand
 {
     Tcl_Interp *interp; /* Interpreter in which to invoke command. */
-    char command[4]; /* Command to invoke.  Actual space is
-                      * allocated as large as necessary.  This
-                      * must be the last entry in the structure. */
+    char command[4];    /* Command to invoke.  Actual space is
+                         * allocated as large as necessary.  This
+                         * must be the last entry in the structure. */
 } LostCommand;
 
 /*
@@ -113,19 +113,19 @@ static int SelGetProc _ANSI_ARGS_((ClientData clientData,
  */
 
 void Tk_CreateSelHandler(tkwin, selection, target, proc, clientData, format)
-Tk_Window tkwin; /* Token for window. */
-Atom selection; /* Selection to be handled. */
-Atom target; /* The kind of selection conversions
-              * that can be handled by proc,
-              * e.g. TARGETS or STRING. */
+Tk_Window tkwin;        /* Token for window. */
+Atom selection;         /* Selection to be handled. */
+Atom target;            /* The kind of selection conversions
+                         * that can be handled by proc,
+                         * e.g. TARGETS or STRING. */
 Tk_SelectionProc *proc; /* Procedure to invoke to convert
                          * selection to type "target". */
-ClientData clientData; /* Value to pass to proc. */
-Atom format; /* Format in which the selection
-              * information should be returned to
-              * the requestor. XA_STRING is best by
-              * far, but anything listed in the ICCCM
-              * will be tolerated (blech). */
+ClientData clientData;  /* Value to pass to proc. */
+Atom format;            /* Format in which the selection
+                         * information should be returned to
+                         * the requestor. XA_STRING is best by
+                         * far, but anything listed in the ICCCM
+                         * will be tolerated (blech). */
 {
     TkSelHandler *selPtr;
     TkWindow *winPtr = ( TkWindow * )tkwin;
@@ -203,8 +203,8 @@ void Tk_DeleteSelHandler(tkwin,
                          target) Tk_Window tkwin; /* Token for window. */
 Atom selection; /* The selection whose handler
                  * is to be removed. */
-Atom target; /* The target whose selection
-              * handler is to be removed. */
+Atom target;    /* The target whose selection
+                 * handler is to be removed. */
 {
     TkWindow *winPtr = ( TkWindow * )tkwin;
     TkSelHandler *selPtr, *prevPtr;
@@ -288,9 +288,9 @@ void Tk_OwnSelection(tkwin,
                      proc,
                      clientData) Tk_Window tkwin; /* Window to become new
                                                    * selection owner. */
-Atom selection; /* Selection that window should own. */
-Tk_LostSelProc *proc; /* Procedure to call when selection
-                       * is taken away from tkwin. */
+Atom selection;        /* Selection that window should own. */
+Tk_LostSelProc *proc;  /* Procedure to call when selection
+                        * is taken away from tkwin. */
 ClientData clientData; /* Arbitrary one-word argument to
                         * pass to proc. */
 {
@@ -502,16 +502,16 @@ Atom selection; /* Selection to be cancelled. */
  */
 
 int Tk_GetSelection(interp, tkwin, selection, target, proc, clientData)
-Tcl_Interp *interp; /* Interpreter to use for reporting
-                     * errors. */
-Tk_Window tkwin; /* Window on whose behalf to retrieve
-                  * the selection (determines display
-                  * from which to retrieve). */
-Atom selection; /* Selection to retrieve. */
-Atom target; /* Desired form in which selection
-              * is to be returned. */
-Tk_GetSelProc *proc; /* Procedure to call to process the
-                      * selection, once it has been retrieved. */
+Tcl_Interp *interp;    /* Interpreter to use for reporting
+                        * errors. */
+Tk_Window tkwin;       /* Window on whose behalf to retrieve
+                        * the selection (determines display
+                        * from which to retrieve). */
+Atom selection;        /* Selection to retrieve. */
+Atom target;           /* Desired form in which selection
+                        * is to be returned. */
+Tk_GetSelProc *proc;   /* Procedure to call to process the
+                        * selection, once it has been retrieved. */
 ClientData clientData; /* Arbitrary value to pass to proc. */
 {
     TkWindow *winPtr = ( TkWindow * )tkwin;
@@ -643,9 +643,9 @@ cantget:
 int Tk_SelectionCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     char *path = NULL;
@@ -1268,9 +1268,9 @@ XEvent *eventPtr; /* X SelectionClear event. */
 static int SelGetProc(clientData, interp, portion)
 ClientData clientData; /* Dynamic string holding partially
                         * assembled selection. */
-Tcl_Interp *interp; /* Interpreter used for error
-                     * reporting (not used). */
-char *portion; /* New information to be appended. */
+Tcl_Interp *interp;    /* Interpreter used for error
+                        * reporting (not used). */
+char *portion;         /* New information to be appended. */
 {
     Tcl_DStringAppend(( Tcl_DString * )clientData, portion, -1);
     return TCL_OK;
@@ -1298,10 +1298,10 @@ char *portion; /* New information to be appended. */
 
 static int HandleTclCommand(clientData, offset, buffer, maxBytes)
 ClientData clientData; /* Information about command to execute. */
-int offset; /* Return selection bytes starting at this
-             * offset. */
-char *buffer; /* Place to store converted selection. */
-int maxBytes; /* Maximum # of bytes to store at buffer. */
+int offset;            /* Return selection bytes starting at this
+                        * offset. */
+char *buffer;          /* Place to store converted selection. */
+int maxBytes;          /* Maximum # of bytes to store at buffer. */
 {
     CommandInfo *cmdInfoPtr = ( CommandInfo * )clientData;
     int spaceNeeded, length;
@@ -1397,11 +1397,11 @@ int maxBytes; /* Maximum # of bytes to store at buffer. */
 
 int TkSelDefaultSelection(infoPtr, target, buffer, maxBytes, typePtr)
 TkSelectionInfo *infoPtr; /* Info about selection being retrieved. */
-Atom target; /* Desired form of selection. */
-char *buffer; /* Place to put selection characters. */
-int maxBytes; /* Maximum # of bytes to store at buffer. */
-Atom *typePtr; /* Store here the type of the selection,
-                * for use in converting to proper X format. */
+Atom target;              /* Desired form of selection. */
+char *buffer;             /* Place to put selection characters. */
+int maxBytes;             /* Maximum # of bytes to store at buffer. */
+Atom *typePtr;            /* Store here the type of the selection,
+                           * for use in converting to proper X format. */
 {
     TkWindow *winPtr = ( TkWindow * )infoPtr->owner;
     TkDisplay *dispPtr = winPtr->dispPtr;

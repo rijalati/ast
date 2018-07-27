@@ -97,7 +97,7 @@ _STUB_vmdebug()
 #    define DBSETBAD(d) (DBLN(d) > 0 ? (DBLN(d) = -DBLN(d)) : -1)
 #    define DBISBAD(d) (DBLN(d) <= 0)
 
-#    define DB_MAGIC 0x99 /* the magic byte: 10011001	*/
+#    define DB_MAGIC 0x99      /* the magic byte: 10011001	*/
 #    define DB_MARK 0xdbdbdbdb /* tell a busy Vmdebug block	*/
 
 /* compute the bounds of the magic areas */
@@ -180,12 +180,12 @@ dbwarn(Vmalloc_t *vm,
 #    else
 static void dbwarn(vm, data, where, file, line, func, type)
 Vmalloc_t *vm; /* region holding the block	*/
-Void_t *data; /* data block			*/
-int where; /* byte that was corrupted	*/
-char *file; /* file where call originates	*/
-int line; /* line number of call		*/
-Void_t *func; /* function called from		*/
-int type; /* operation being done		*/
+Void_t *data;  /* data block			*/
+int where;     /* byte that was corrupted	*/
+char *file;    /* file where call originates	*/
+int line;      /* line number of call		*/
+Void_t *func;  /* function called from		*/
+int type;      /* operation being done		*/
 #    endif
 {
     char buf[1024], *bufp, *endbuf, *s;
@@ -311,8 +311,8 @@ static void
 dbsetinfo(data, size, file, line) Vmuchar_t *data; /* real address not the one
                                                       from Vmbest	*/
 size_t size; /* the actual requested size		*/
-char *file; /* file where the request came from	*/
-int line; /* and line number			*/
+char *file;  /* file where the request came from	*/
+int line;    /* and line number			*/
 #    endif
 {
     Vmuchar_t *begp, *endp;
@@ -498,11 +498,12 @@ int local;
 static Void_t *
 dbresize(Vmalloc_t *vm, Void_t *addr, size_t size, int type, int local)
 #    else
-static Void_t *dbresize(vm, addr, size, type, local) Vmalloc_t *vm; /* region
-                                                                       allocating
-                                                                       from	*/
-Void_t *addr; /* old block of data		*/
-size_t size; /* new size			*/
+static Void_t *
+dbresize(vm, addr, size, type, local) Vmalloc_t *vm; /* region
+                                                        allocating
+                                                        from	*/
+Void_t *addr;                                        /* old block of data		*/
+size_t size;                                         /* new size			*/
 int type; /* !=0 for movable, >0 for copy	*/
 int local;
 #    endif

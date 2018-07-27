@@ -61,7 +61,7 @@ static ssize_t rdhuffman(freq) Freq_t freq;
     {
         for (w = 0, k = 0; k < 256; ++k)
         {
-            w += freq[k] * cdsz[k]; /* cost for all bytes k */
+            w += freq[k] * cdsz[k];    /* cost for all bytes k */
             w += vcsizeu(cdsz[k]) * 8; /* cost of k's code */
         }
         return w;
@@ -69,11 +69,11 @@ static ssize_t rdhuffman(freq) Freq_t freq;
 }
 
 /* types and algorithms to detect field and record separators	*/
-#define TYPN 8 /* max # different fldn's allowed 	*/
+#define TYPN 8         /* max # different fldn's allowed 	*/
 typedef struct _fsep_s /* structure of each candidate fsep	*/
 {
-    ssize_t cdsz; /* coding size			*/
-    ssize_t typn; /* #types of fields		*/
+    ssize_t cdsz;      /* coding size			*/
+    ssize_t typn;      /* #types of fields		*/
     ssize_t typ[TYPN]; /* known distinct fldn's 	*/
     ssize_t rec[TYPN]; /* corresponding record cnts	*/
 } Fsep_t;
@@ -112,9 +112,9 @@ rdsepar(Vcrdformat_t *rdf, Vcchar_t *data, ssize_t dtsz, int rs)
 #else
 static int rdsepar(rdf, data, dtsz, rs) Vcrdformat_t *rdf; /* computed format
                                                               data	*/
-Vcchar_t *data; /* training data	*/
-ssize_t dtsz; /* training data size	*/
-int rs; /* record separator 	*/
+Vcchar_t *data;                                            /* training data	*/
+ssize_t dtsz;                                         /* training data size	*/
+int rs;                                               /* record separator 	*/
 #endif
 {
     ssize_t k, z, fn, recn, size, print;
@@ -303,9 +303,9 @@ static void
 colfreq(Freq_t *colf, Vcchar_t *data, ssize_t nc, ssize_t nr)
 #else
 static void colfreq(colf, data, nc, nr) Freq_t *colf; /* byte frequencies	*/
-Vcchar_t *data; /* raw data 		*/
-ssize_t nc; /* number of columns	*/
-ssize_t nr; /* number of rows	*/
+Vcchar_t *data;                                       /* raw data 		*/
+ssize_t nc;                                           /* number of columns	*/
+ssize_t nr;                                           /* number of rows	*/
 #endif
 {
     ssize_t r, c;
@@ -322,8 +322,8 @@ fldfreq(Freq_t *fldf, ssize_t *fldz, ssize_t nf, Freq_t *colf)
 #else
 static void fldfreq(fldf, fldz, nf, colf) Freq_t *fldf; /* field frequencies
                                                          */
-ssize_t *fldz; /* field lengths	*/
-ssize_t nf; /* number of fields	*/
+ssize_t *fldz;                                          /* field lengths	*/
+ssize_t nf;                                             /* number of fields	*/
 Freq_t *colf; /* column frequencies	*/
 #endif
 {
@@ -372,9 +372,9 @@ fldmark(ssize_t *mark, Vcchar_t *data, ssize_t nc, ssize_t nr, Freq_t *colf)
 static void fldmark(mark, data, nc, nr, colf) ssize_t *mark; /* array of marks
                                                               */
 Vcchar_t *data; /* overall data		*/
-ssize_t nc; /* number of columns	*/
-ssize_t nr; /* number of records	*/
-Freq_t *colf; /* column frequencies	*/
+ssize_t nc;     /* number of columns	*/
+ssize_t nr;     /* number of records	*/
+Freq_t *colf;   /* column frequencies	*/
 #endif
 {
     ssize_t c, r, k, mf, mb, lb, rb;
@@ -465,9 +465,9 @@ fldpartition(ssize_t *fldz, ssize_t *mark, ssize_t nc, ssize_t algn)
 #else
 static ssize_t fldpartition(fldz, mark, nc, algn) ssize_t *fldz; /* field
                                                                     sizes	*/
-ssize_t *mark; /* column marks	*/
-ssize_t nc; /* #columns	*/
-ssize_t algn; /* alignment	*/
+ssize_t *mark;                                 /* column marks	*/
+ssize_t nc;                                    /* #columns	*/
+ssize_t algn;                                  /* alignment	*/
 #endif
 {
     ssize_t c, k, kk, nf;
@@ -519,8 +519,8 @@ ssize_t
 fldcost(ssize_t *fldz, ssize_t nf, Freq_t *colf)
 #else
 ssize_t fldcost(fldz, nf, colf) ssize_t *fldz; /* field lengths	*/
-ssize_t nf; /* number of fields	*/
-Freq_t *colf; /* column frequencies	*/
+ssize_t nf;                                    /* number of fields	*/
+Freq_t *colf;                                  /* column frequencies	*/
 #endif
 {
     ssize_t k, c, endc, f, cost;
@@ -543,7 +543,7 @@ typedef struct _seg_s Seg_t;
 struct _seg_s
 {
     ssize_t wght; /* weight of segment		*/
-    Seg_t *next; /* next seg in best partition	*/
+    Seg_t *next;  /* next seg in best partition	*/
 };
 
 #if __STD_C
@@ -551,7 +551,7 @@ static ssize_t
 fldgrouping(ssize_t *fldz, ssize_t nf, Freq_t *colf)
 #else
 static ssize_t fldgrouping(fldz, nf, colf) ssize_t *fldz; /* field lengths 	*/
-ssize_t nf; /* number of fields	*/
+ssize_t nf;   /* number of fields	*/
 Freq_t *colf; /* column frequencies	*/
 #endif
 {
@@ -659,7 +659,7 @@ int merge;
     tmpz[0] = nc; /* cost of coding as a single field */
     allc = fldcost(tmpz, 1, colf);
 
-    fldc = -1; /* compute field partition and cost */
+    fldc = -1;                         /* compute field partition and cost */
     fldmark(mark, data, nc, nr, colf); /* field marking */
     if (algn > 0 && (nc % algn) == 0)
     {
@@ -715,8 +715,8 @@ vcrdformat(Vcchar_t *data, ssize_t dtsz, int rsep, ssize_t algn, int merge)
 Vcrdformat_t *
 vcrdformat(data, dtsz, rsep, algn, merge) Vcchar_t *data; /* data to compute
                                                              format 	*/
-ssize_t dtsz; /* size of data			*/
-int rsep; /* known record separator	*/
+ssize_t dtsz;                                             /* size of data			*/
+int rsep;     /* known record separator	*/
 ssize_t algn; /* alignment for fixed fields	*/
 int merge;
 #endif

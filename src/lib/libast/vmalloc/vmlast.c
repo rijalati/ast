@@ -44,9 +44,9 @@ typedef struct _vmlast_s
 {
     Vmdata_t vmdt;
     unsigned int lock;
-    Block_t *blk; /* allocate from this	*/
+    Block_t *blk;    /* allocate from this	*/
     Vmuchar_t *data; /* start of free memory	*/
-    ssize_t size; /* size of free memory	*/
+    ssize_t size;    /* size of free memory	*/
     Vmuchar_t *last; /* last allocated block */
 } Vmlast_t;
 
@@ -282,7 +282,7 @@ int local;
     if ((data = ( Vmuchar_t * )KPVALLOC(vm, size + align, lastalloc)))
     {
         if ((algn = (size_t)(VMLONG(data) % align)) != 0)
-        { /* move forward for required alignment */
+        {                         /* move forward for required alignment */
             data += align - algn; /**/
             DEBUG_ASSERT((VMLONG(data) % align) == 0);
             last->last = data;

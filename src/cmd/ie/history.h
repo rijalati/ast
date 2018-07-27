@@ -33,23 +33,23 @@
 #define HIS_DFLT 128 /* default size of history list */
 #define HISMAX (sizeof(int) * IOBSIZE)
 #define HISBIG (0100000 - 1024) /* 1K less than maximum short */
-#define HISLINE 16 /* estimate of average sized history line */
-#define MAXLINE 258 /* longest history line permitted */
+#define HISLINE 16              /* estimate of average sized history line */
+#define MAXLINE 258             /* longest history line permitted */
 
-#define H_UNDO 0201 /* invalidate previous command */
+#define H_UNDO 0201  /* invalidate previous command */
 #define H_CMDNO 0202 /* next 3 bytes give command number */
-#define H_VERSION 1 /* history file format version no. */
+#define H_VERSION 1  /* history file format version no. */
 
 struct history
 {
     struct fileblk *fixfp; /* file descriptor for history file */
-    int fixfd; /* file number for history file */
-    char *fixname; /* name of history file */
-    off_t fixcnt; /* offset into history file */
-    int fixind; /* current command number index */
-    int fixmax; /* number of accessible history lines */
-    int fixflush; /* set if flushed outside of hflush() */
-    off_t fixcmds[1]; /* byte offset for recent commands */
+    int fixfd;             /* file number for history file */
+    char *fixname;         /* name of history file */
+    off_t fixcnt;          /* offset into history file */
+    int fixind;            /* current command number index */
+    int fixmax;            /* number of accessible history lines */
+    int fixflush;          /* set if flushed outside of hflush() */
+    off_t fixcmds[1];      /* byte offset for recent commands */
 };
 
 typedef struct
@@ -84,7 +84,7 @@ ed_movstr(const char *, char *);
 extern char *
 ed_movstr();
 #    endif /* PROTO */
-#endif /* KSHELL */
+#endif     /* KSHELL */
 
 /* the following are readonly */
 extern const char hist_fname[];
@@ -149,4 +149,4 @@ hist_word();
 extern histloc
 hist_locate();
 #    endif /* ESH */
-#endif /* PROTO */
+#endif     /* PROTO */

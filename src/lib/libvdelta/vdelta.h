@@ -38,8 +38,8 @@
 #            else
 #                define __STD_C 0
 #            endif /*__cplusplus*/
-#        endif /*__STDC__*/
-#    endif /*__STD_C*/
+#        endif     /*__STDC__*/
+#    endif         /*__STD_C*/
 
 /* For C++, extern symbols must be protected against name mangling */
 #    ifndef _BEGIN_EXTERNS_
@@ -81,7 +81,7 @@
 #            define _ADR_ /* cannot export whole structs - data access via   \
                              ptrs	*/
 #            define _PTR_ *
-#        else /* library code or a normal system			*/
+#        else              /* library code or a normal system			*/
 #            define _ADR_ &/* exporting whole struct is ok				*/
 #            define _PTR_
 #        endif
@@ -94,9 +94,9 @@ typedef struct _vddisc_s Vddisc_t;
 typedef int(*Vdio_f) _ARG_(( Void_t *, int, long, Vddisc_t * ));
 struct _vddisc_s
 {
-    long size; /* total data size	*/
-    Void_t *data; /* data array		*/
-    Vdio_f readf; /* to read data		*/
+    long size;     /* total data size	*/
+    Void_t *data;  /* data array		*/
+    Vdio_f readf;  /* to read data		*/
     Vdio_f writef; /* to write data	*/
 };
 

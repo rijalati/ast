@@ -43,18 +43,18 @@
          && (((y) % 100) || !((((y) < 1900) ? ((y) + 1900) : (y)) % 400)))
 
 #    define TM_ADJUST (1 << 0) /* local doesn't do leap secs	*/
-#    define TM_LEAP (1 << 1) /* do leap seconds		*/
-#    define TM_UTC (1 << 2) /* universal coordinated ref	*/
+#    define TM_LEAP (1 << 1)   /* do leap seconds		*/
+#    define TM_UTC (1 << 2)    /* universal coordinated ref	*/
 
-#    define TM_PEDANTIC (1 << 3) /* pedantic date parse		*/
+#    define TM_PEDANTIC (1 << 3)  /* pedantic date parse		*/
 #    define TM_DATESTYLE (1 << 4) /* date(1) style mmddHHMMccyy	*/
 #    define TM_SUBSECOND (1 << 5) /* <something>%S => ...%S.%P	*/
 
-#    define TM_DST (-60) /* default minutes for DST	*/
+#    define TM_DST (-60)           /* default minutes for DST	*/
 #    define TM_LOCALZONE (25 * 60) /* use local time zone offset	*/
-#    define TM_UTCZONE (26 * 60) /* UTC "time zone"		*/
-#    define TM_MAXLEAP 1 /* max leap secs per leap	*/
-#    define TM_WINDOW 69 /* century windowing guard year	*/
+#    define TM_UTCZONE (26 * 60)   /* UTC "time zone"		*/
+#    define TM_MAXLEAP 1           /* max leap secs per leap	*/
+#    define TM_WINDOW 69           /* century windowing guard year	*/
 
 /*
  * these indices must agree with tm_dform[]
@@ -102,37 +102,37 @@
 typedef struct /* leap second info		*/
 {
     time_t time; /* the leap second event	*/
-    int total; /* inclusive total since epoch	*/
+    int total;   /* inclusive total since epoch	*/
 } Tm_leap_t;
 
 typedef struct /* time zone info		*/
 {
-    char *type; /* type name			*/
+    char *type;     /* type name			*/
     char *standard; /* standard time name		*/
     char *daylight; /* daylight or summertime name	*/
-    short west; /* minutes west of GMT		*/
-    short dst; /* add to tz.west for DST	*/
+    short west;     /* minutes west of GMT		*/
+    short dst;      /* add to tz.west for DST	*/
 } Tm_zone_t;
 
 typedef struct /* tm library readonly data	*/
 {
-    char **format; /* default TM_* format strings	*/
+    char **format;      /* default TM_* format strings	*/
     unsigned char *lex; /* format lex type classes	*/
-    char *digit; /* output digits		*/
-    short *days; /* days in month i		*/
-    short *sum; /* days in months before i	*/
-    Tm_leap_t *leap; /* leap second table		*/
-    Tm_zone_t *zone; /* alternate timezone table	*/
+    char *digit;        /* output digits		*/
+    short *days;        /* days in month i		*/
+    short *sum;         /* days in months before i	*/
+    Tm_leap_t *leap;    /* leap second table		*/
+    Tm_zone_t *zone;    /* alternate timezone table	*/
 } Tm_data_t;
 
 typedef struct /* tm library global info	*/
 {
-    char *deformat; /* TM_DEFAULT override		*/
-    int flags; /* flags			*/
-    char **format; /* current format strings	*/
-    Tm_zone_t *date; /* timezone from last tmdate()	*/
+    char *deformat;   /* TM_DEFAULT override		*/
+    int flags;        /* flags			*/
+    char **format;    /* current format strings	*/
+    Tm_zone_t *date;  /* timezone from last tmdate()	*/
     Tm_zone_t *local; /* local timezone		*/
-    Tm_zone_t *zone; /* current timezone		*/
+    Tm_zone_t *zone;  /* current timezone		*/
 } Tm_info_t;
 
 typedef struct Tm_s

@@ -122,8 +122,8 @@ help(void)
     H("    a	STR_LEFT|STR_RIGHT	implicit ^...$\n");
     H("    i	STR_ICASE		ignore case\n");
     H("    l	STR_LEFT		implicit ^...\n");
-    H(
-    "    m	~STR_MAXIMAL		minimal match (default is STR_MAXIMAL)\n");
+    H("    m	~STR_MAXIMAL		minimal match (default is "
+      "STR_MAXIMAL)\n");
     H("    r	STR_RIGHT		implicit ...$\n");
     H("    u	standard unspecified behavior -- errors not counted\n");
     H(

@@ -182,7 +182,7 @@ Tcl_ConvertElement(char *src, char *dst, int flags)
  */
 
 char *Tcl_Merge(argc, argv) int argc; /* How many strings to merge. */
-char **argv; /* Array of string values. */
+char **argv;                          /* Array of string values. */
 {
 #define LOCAL_SIZE 20
     int localFlags[LOCAL_SIZE], *flagPtr;

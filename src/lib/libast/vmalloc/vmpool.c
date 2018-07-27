@@ -40,7 +40,7 @@ _STUB_vmpool()
 typedef struct _pool_s
 {
     struct _pool_s *next; /* linked list		*/
-    unsigned int foo; /* free indicator	*/
+    unsigned int foo;     /* free indicator	*/
 } Pool_t;
 
 typedef struct _vmpool_s

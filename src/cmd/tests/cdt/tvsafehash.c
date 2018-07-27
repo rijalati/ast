@@ -39,7 +39,7 @@
 #endif
 
 #define N_CONCUR ((N_PROC / 2) * 2) /* #players, must be even	*/
-#define N_OBJ 20000 /* total number of objects	*/
+#define N_OBJ 20000                 /* total number of objects	*/
 #define MEMSIZE (N_OBJ * 2 * sizeof(Obj_t) + sizeof(Void_t *) * 1024 * 1024)
 
 #define CDT_DATA 1 /* data section of dictionary	*/
@@ -53,15 +53,15 @@ typedef struct _cdtdata_s
 typedef struct obj_s
 {
     Dtlink_t link; /* dictionary holder		*/
-    int dval; /* decimal value		*/
-    int accn; /* # of times accessed		*/
+    int dval;      /* decimal value		*/
+    int accn;      /* # of times accessed		*/
 } Obj_t;
 
 /* Cdt discipline to allocate memory from a vmalloc region */
 typedef struct _mmdisc_s
 {
     Dtdisc_t disc; /* cdt discipline		*/
-    char *store; /* backing store file name	*/
+    char *store;   /* backing store file name	*/
     Vmalloc_t *vm; /* shm vmalloc region		*/
 } Mmdisc_t;
 
@@ -112,7 +112,7 @@ mmevent(Dt_t *dt, int type, Void_t *data, Dtdisc_t *disc)
             return 0; /* data area existed */
     }
     else if (type == DT_CLOSE) /* starting to close dictionary */
-        return 1; /* make sure no objects get deleted */
+        return 1;              /* make sure no objects get deleted */
     else if (type
              == DT_ENDCLOSE) /* at end of closing, close the memory region */
     {

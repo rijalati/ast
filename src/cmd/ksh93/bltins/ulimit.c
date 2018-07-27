@@ -197,7 +197,7 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
                 i = -1;
                 if ((i = vlimit(n, i)) < 0)
                     errormsg(SH_DICT, ERROR_system(1), e_number, limit);
-#    endif /* _lib_getrlimit */
+#    endif     /* _lib_getrlimit */
             }
             if (label)
             {
@@ -228,4 +228,4 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
     }
     return (0);
 }
-#endif /* _no_ulimit */
+#endif         /* _no_ulimit */

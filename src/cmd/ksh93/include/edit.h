@@ -79,50 +79,50 @@ typedef struct Histmatch
 
 typedef struct edit
 {
-    struct termios e_ttyparm; /* initial tty parameters */
+    struct termios e_ttyparm;  /* initial tty parameters */
     struct termios e_nttyparm; /* raw tty parameters */
-    int e_raw; /* set when in raw mode or alt mode */
+    int e_raw;                 /* set when in raw mode or alt mode */
     int e_intr;
     int e_kill;
     int e_erase;
     int e_werase;
     int e_eof;
     int e_lnext;
-    int e_fd; /* file descriptor */
+    int e_fd;       /* file descriptor */
     int e_ttyspeed; /* line speed, also indicates tty parms are valid */
     sigjmp_buf e_env;
     int e_fchar;
-    int e_plen; /* length of prompt string */
-    char e_crlf; /* zero if cannot return to beginning of line */
-    char e_nocrnl; /* don't put a new-line with ^L */
-    char e_keytrap; /* set when in keytrap */
-    int e_llimit; /* line length limit */
-    int e_hline; /* current history line number */
-    int e_hloff; /* line number offset for command */
-    int e_hismin; /* minimum history line number */
-    int e_hismax; /* maximum history line number */
-    int e_cur; /* current line position */
-    int e_eol; /* end-of-line position */
-    int e_pcur; /* current physical line position */
-    int e_peol; /* end of physical line position */
-    int e_mode; /* edit mode */
+    int e_plen;      /* length of prompt string */
+    char e_crlf;     /* zero if cannot return to beginning of line */
+    char e_nocrnl;   /* don't put a new-line with ^L */
+    char e_keytrap;  /* set when in keytrap */
+    int e_llimit;    /* line length limit */
+    int e_hline;     /* current history line number */
+    int e_hloff;     /* line number offset for command */
+    int e_hismin;    /* minimum history line number */
+    int e_hismax;    /* maximum history line number */
+    int e_cur;       /* current line position */
+    int e_eol;       /* end-of-line position */
+    int e_pcur;      /* current physical line position */
+    int e_peol;      /* end of physical line position */
+    int e_mode;      /* edit mode */
     int e_lookahead; /* index in look-ahead buffer */
     int e_repeat;
     int e_saved;
-    int e_fcol; /* first column */
-    int e_ucol; /* column for undo */
-    int e_wsize; /* width of display window */
-    char *e_outbase; /* pointer to start of output buffer */
-    char *e_outptr; /* pointer to position in output buffer */
-    char *e_outlast; /* pointer to end of output buffer */
-    genchar *e_inbuf; /* pointer to input buffer */
-    char *e_prompt; /* pointer to buffer containing the prompt */
-    genchar *e_ubuf; /* pointer to the undo buffer */
-    genchar *e_killbuf; /* pointer to delete buffer */
+    int e_fcol;                /* first column */
+    int e_ucol;                /* column for undo */
+    int e_wsize;               /* width of display window */
+    char *e_outbase;           /* pointer to start of output buffer */
+    char *e_outptr;            /* pointer to position in output buffer */
+    char *e_outlast;           /* pointer to end of output buffer */
+    genchar *e_inbuf;          /* pointer to input buffer */
+    char *e_prompt;            /* pointer to buffer containing the prompt */
+    genchar *e_ubuf;           /* pointer to the undo buffer */
+    genchar *e_killbuf;        /* pointer to delete buffer */
     char e_search[SEARCHSIZE]; /* search string */
-    genchar *e_Ubuf; /* temporary workspace buffer */
-    genchar *e_physbuf; /* temporary workspace buffer */
-    int e_lbuf[LOOKAHEAD]; /* pointer to look-ahead buffer */
+    genchar *e_Ubuf;           /* temporary workspace buffer */
+    genchar *e_physbuf;        /* temporary workspace buffer */
+    int e_lbuf[LOOKAHEAD];     /* pointer to look-ahead buffer */
     int e_tabcount;
 #    ifdef _hdr_utime
     ino_t e_tty_ino;
@@ -133,31 +133,31 @@ typedef struct edit
     int e_curchar;
     int e_cursize;
 #    endif
-    int *e_globals; /* global variables */
+    int *e_globals;    /* global variables */
     genchar *e_window; /* display window  image */
-    char e_inmacro; /* processing macro expansion */
+    char e_inmacro;    /* processing macro expansion */
 #    if KSHELL
     char e_vi_insert[2]; /* for sh_keytrap */
-    int32_t e_col; /* for sh_keytrap */
+    int32_t e_col;       /* for sh_keytrap */
 #    else
     char e_prbuff[PRSIZE]; /* prompt buffer */
-#    endif /* KSHELL */
+#    endif                    /* KSHELL */
     struct termios e_savetty; /* saved terminal state */
-    int e_savefd; /* file descriptor for saved terminal state */
-    char e_macro[4]; /* macro buffer */
-    void *e_vi; /* vi specific data */
-    void *e_emacs; /* emacs specific data */
-    Shell_t *sh; /* interpreter pointer */
-    char *e_stkptr; /* saved stack pointer */
-    int e_stkoff; /* saved stack offset */
-    char **e_clist; /* completion list after <ESC>= */
-    int e_nlist; /* number of elements on completion list */
-    int e_multiline; /* allow multiple lines for editing */
-    int e_winsz; /* columns in window */
-    Edpos_t e_curpos; /* cursor line and column */
-    Namval_t *e_default; /* variable containing default value */
-    Namval_t *e_term; /* TERM variable */
-    char e_termname[80]; /* terminal name */
+    int e_savefd;             /* file descriptor for saved terminal state */
+    char e_macro[4];          /* macro buffer */
+    void *e_vi;               /* vi specific data */
+    void *e_emacs;            /* emacs specific data */
+    Shell_t *sh;              /* interpreter pointer */
+    char *e_stkptr;           /* saved stack pointer */
+    int e_stkoff;             /* saved stack offset */
+    char **e_clist;           /* completion list after <ESC>= */
+    int e_nlist;              /* number of elements on completion list */
+    int e_multiline;          /* allow multiple lines for editing */
+    int e_winsz;              /* columns in window */
+    Edpos_t e_curpos;         /* cursor line and column */
+    Namval_t *e_default;      /* variable containing default value */
+    Namval_t *e_term;         /* TERM variable */
+    char e_termname[80];      /* terminal name */
 #    if SHOPT_EDPREDICT
     Histmatch_t **hlist;
     Histmatch_t *hfirst;
@@ -196,12 +196,12 @@ struct Complete
 #    define FAST 2
 #    define SLOW 1
 #    define ESC cntl('[')
-#    define UEOF -2 /* user eof char synonym */
-#    define UINTR -3 /* user intr char synonym */
-#    define UERASE -4 /* user erase char synonym */
-#    define UKILL -5 /* user kill char synonym */
+#    define UEOF -2    /* user eof char synonym */
+#    define UINTR -3   /* user intr char synonym */
+#    define UERASE -4  /* user erase char synonym */
+#    define UKILL -5   /* user kill char synonym */
 #    define UWERASE -6 /* user word erase char synonym */
-#    define ULNEXT -7 /* user next literal char synonym */
+#    define ULNEXT -7  /* user next literal char synonym */
 
 #    if ('a' == 97) /* ASCII? */
 #        define cntl(x) (x & 037)
@@ -258,7 +258,7 @@ extern char opt_flag;
 #        else
 #            define read(fd, buff, n) rEAd(fd, buff, n)
 #        endif /* SYSCALL */
-#    endif /* KSHELL */
+#    endif     /* KSHELL */
 
 extern void
 ed_crlf(Edit_t *);
@@ -330,19 +330,19 @@ extern const char e_version[];
 
 /* flags */
 
-#    define HIST_EVENT 0x1 /* event designator seen */
-#    define HIST_QUESTION 0x2 /* question mark event designator */
-#    define HIST_HASH 0x4 /* hash event designator */
-#    define HIST_WORDDSGN 0x8 /* word designator seen */
+#    define HIST_EVENT 0x1       /* event designator seen */
+#    define HIST_QUESTION 0x2    /* question mark event designator */
+#    define HIST_HASH 0x4        /* hash event designator */
+#    define HIST_WORDDSGN 0x8    /* word designator seen */
 #    define HIST_QUICKSUBST 0x10 /* quick substition designator seen */
 #    define HIST_SUBSTITUTE 0x20 /* for substition loop */
-#    define HIST_NEWLINE 0x40 /* newline in squashed white space */
+#    define HIST_NEWLINE 0x40    /* newline in squashed white space */
 
 /* modifier flags */
 
-#    define HIST_PRINT 0x100 /* print new command */
-#    define HIST_QUOTE 0x200 /* quote resulting history line */
-#    define HIST_QUOTE_BR 0x400 /* quote every word on space break */
+#    define HIST_PRINT 0x100       /* print new command */
+#    define HIST_QUOTE 0x200       /* quote resulting history line */
+#    define HIST_QUOTE_BR 0x400    /* quote every word on space break */
 #    define HIST_GLOBALSUBST 0x800 /* apply substition globally */
 
 #    define HIST_ERROR 0x1000 /* an error ocurred */

@@ -121,14 +121,14 @@ _sfcvt(Void_t *vp,
        int format)
 #else
 char *_sfcvt(vp, buf, size, n_digit, decpt, sign, len, format)
-Void_t *vp; /* pointer to value to convert	*/
-char *buf; /* conversion goes here		*/
+Void_t *vp;  /* pointer to value to convert	*/
+char *buf;   /* conversion goes here		*/
 size_t size; /* size of buf			*/
 int n_digit; /* number of digits wanted	*/
-int *decpt; /* to return decimal point	*/
-int *sign; /* to return sign		*/
-int *len; /* return string length		*/
-int format; /* conversion format		*/
+int *decpt;  /* to return decimal point	*/
+int *sign;   /* to return sign		*/
+int *len;    /* return string length		*/
+int format;  /* conversion format		*/
 #endif
 {
     reg char *sp;

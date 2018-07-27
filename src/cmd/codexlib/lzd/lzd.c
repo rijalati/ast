@@ -16,10 +16,10 @@
 #define MEMERR 2
 #define IOERR 1
 #define MAXBITS 13
-#define CLEAR 256 /* clear code */
-#define Z_EOF 257 /* end of file marker */
+#define CLEAR 256      /* clear code */
+#define Z_EOF 257      /* end of file marker */
 #define FIRST_FREE 258 /* first free code */
-#define MAXMAX 8192 /* max code + 1 */
+#define MAXMAX 8192    /* max code + 1 */
 #define SPARE 4
 
 typedef struct Table_s

@@ -40,7 +40,7 @@ NoN(seekdir)
 void
 seekdir(DIR *dirp, long loc)
 {
-    off_t base; /* file location of block */
+    off_t base;   /* file location of block */
     off_t offset; /* offset within block */
 
     if (telldir(dirp) != loc)

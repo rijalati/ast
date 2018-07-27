@@ -9,7 +9,7 @@ b_TkshInfoCmd(int argc, char *argv[], Shbltin_t *context);
 
 typedef struct
 {
-    char *name; /* Name of command. */
+    char *name;        /* Name of command. */
     Tcl_CmdProc *proc; /* Procedure that executes command. */
 } CmdInfo;
 

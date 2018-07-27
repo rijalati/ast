@@ -22,14 +22,14 @@
 
 typedef struct FileHashKey
 {
-    int type; /* File handle type. */
+    int type;            /* File handle type. */
     ClientData osHandle; /* Platform specific OS file handle. */
 } FileHashKey;
 
 typedef struct FileHandle
 {
-    FileHashKey key; /* Hash key for a given file. */
-    ClientData data; /* Platform specific notifier data. */
+    FileHashKey key;        /* Hash key for a given file. */
+    ClientData data;        /* Platform specific notifier data. */
     Tcl_FileFreeProc *proc; /* Callback to invoke when file is freed. */
 } FileHandle;
 
@@ -38,7 +38,7 @@ typedef struct FileHandle
  */
 
 static Tcl_HashTable fileTable; /* Hash table containing file handles. */
-static int initialized = 0; /* 1 if this module has been initialized. */
+static int initialized = 0;     /* 1 if this module has been initialized. */
 
 /*
  * Static procedures used in this file:

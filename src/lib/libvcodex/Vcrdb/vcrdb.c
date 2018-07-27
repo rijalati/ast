@@ -45,7 +45,7 @@ writefile(Vcchar_t *data, ssize_t size)
 /* coded length > 0.		*/
 #define RDB_DOT (0000002) /* x.y... format 		*/
 
-#define RDB_PAD (0000010) /* pad field to full length	*/
+#define RDB_PAD (0000010)   /* pad field to full length	*/
 #define RDB_WHOLE (0000020) /* keep table whole		*/
 #define RDB_PLAIN (0000040) /* no field transformation	*/
 
@@ -54,42 +54,42 @@ writefile(Vcchar_t *data, ssize_t size)
 #    define RDB_BDV (0002000) /* test Binh's data sorting	*/
 #endif
 
-#define RDB_FSEP (0010000) /* setting field separator	*/
-#define RDB_RSEP (0020000) /* setting record separator	*/
+#define RDB_FSEP (0010000)   /* setting field separator	*/
+#define RDB_RSEP (0020000)   /* setting record separator	*/
 #define RDB_SCHEMA (0040000) /* defining a schema		*/
-#define RDB_ALIGN (0100000) /* alignment for fields	*/
+#define RDB_ALIGN (0100000)  /* alignment for fields	*/
 
 
 #define RDB_HEADER (0100000) /* should be coded in header	*/
 
-#define RDB_DOTCHAR ('.') /* the dot character		*/
+#define RDB_DOTCHAR ('.')   /* the dot character		*/
 #define RDB_SLASHCHAR ('/') /* the slash character		*/
 
 typedef struct _rdbfield_s
 {
     Vccontext_t *ctxt; /* field ctxt in 2nd-ary coder	*/
-    int type; /* field type in unrdb()	*/
-    Vcchar_t *data; /* data after transformation	*/
-    ssize_t dtsz; /* size of data			*/
+    int type;          /* field type in unrdb()	*/
+    Vcchar_t *data;    /* data after transformation	*/
+    ssize_t dtsz;      /* size of data			*/
 } Rdbfield_t;
 
 typedef struct _rdbctxt_s /* training context data */
 {
-    Vccontext_t ctxt; /* inheritance from Vccontext_t	*/
+    Vccontext_t ctxt;   /* inheritance from Vccontext_t	*/
     Vccontext_t *tctxt; /* table ctxt in 2nd-ary coder	*/
-    Vcrdinfo_t info; /* table characteristics	*/
-    Vcrdplan_t *plan; /* transform plan for context	*/
-    Rdbfield_t *fld; /* data for fields		*/
-    ssize_t algn; /* field alignment, if any	*/
-    ssize_t rawz; /* before compression		*/
-    ssize_t cmpz; /* after compression		*/
+    Vcrdinfo_t info;    /* table characteristics	*/
+    Vcrdplan_t *plan;   /* transform plan for context	*/
+    Rdbfield_t *fld;    /* data for fields		*/
+    ssize_t algn;       /* field alignment, if any	*/
+    ssize_t rawz;       /* before compression		*/
+    ssize_t cmpz;       /* after compression		*/
 } Rdbctxt_t;
 
 typedef struct _rdb_s
 {
     Rdbctxt_t *ctxt; /* data for default context 	*/
-    Vcodex_t *vcw; /* to weight transformed data	*/
-    int type; /* type of transformation	*/
+    Vcodex_t *vcw;   /* to weight transformed data	*/
+    int type;        /* type of transformation	*/
 } Rdb_t;
 
 /* function to get field length from the context structure */
@@ -277,7 +277,7 @@ Void_t **out;
           : 0;
         cmpz += vcsizeu(rc->plan->pred[f]) + /* predictor of field */
                 vcsizeu(z)
-                + /* field length if fixed-length field, 0 otherwise */
+                +  /* field length if fixed-length field, 0 otherwise */
                 1; /* indicator RDB_SLASH, RDB_PAD, ... */
 
         if (rdb->type & RDB_WHOLE) /* code whole table as one */
@@ -377,10 +377,10 @@ Void_t **out;
         cmpz += vcsizeu(whsz) + whsz;
     }
 
-    cmpz += vcsizeu(size) + /* size of original data */
+    cmpz += vcsizeu(size) +      /* size of original data */
             vcsizeu(tbl->recn) + /* number of records */
             vcsizeu(tbl->fldn) + /* number of fields */
-            vcsizeu(recz); /* >0 if fixed fields */
+            vcsizeu(recz);       /* >0 if fixed fields */
 
     if (recz > 0) /* schematic data */
     {
@@ -389,7 +389,7 @@ Void_t **out;
     }
     else /* variable fields */
     {
-        cmpz += 1 + 1 + /* fsep and rsep */
+        cmpz += 1 + 1 +     /* fsep and rsep */
                 1 + 1 + 10; /* dot, slash and digits */
     }
 
@@ -397,10 +397,10 @@ Void_t **out;
         GOTO(done);
     vcioinit(&io, output, cmpz);
 
-    vcioputu(&io, size); /* size of raw data	*/
+    vcioputu(&io, size);      /* size of raw data	*/
     vcioputu(&io, tbl->recn); /* # of records	*/
     vcioputu(&io, tbl->fldn); /* # of fields	*/
-    vcioputu(&io, recz); /* if >0: record size	*/
+    vcioputu(&io, recz);      /* if >0: record size	*/
 
     if (recz > 0) /* schematic data */
     {

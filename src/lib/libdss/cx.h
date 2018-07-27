@@ -38,16 +38,16 @@
 
 /* Cx_t.flags */
 
-#    define CX_DEBUG (1 << 0) /* debug trace		*/
-#    define CX_QUIET (1 << 1) /* no non-fatal messages*/
-#    define CX_REGRESS (1 << 2) /* regression output	*/
-#    define CX_TRACE (1 << 3) /* algorithm trace	*/
+#    define CX_DEBUG (1 << 0)    /* debug trace		*/
+#    define CX_QUIET (1 << 1)    /* no non-fatal messages*/
+#    define CX_REGRESS (1 << 2)  /* regression output	*/
+#    define CX_TRACE (1 << 3)    /* algorithm trace	*/
 #    define CX_VALIDATE (1 << 4) /* validate constraints	*/
-#    define CX_VERBOSE (1 << 5) /* verbose feedback	*/
+#    define CX_VERBOSE (1 << 5)  /* verbose feedback	*/
 
 #    define CX_BALANCED (1 << 6) /* cx input () balanced	*/
-#    define CX_INCLUDE (1 << 7) /* include cxpush()	*/
-#    define CX_FLAGS (1L << 8) /* first caller flag	*/
+#    define CX_INCLUDE (1 << 7)  /* include cxpush()	*/
+#    define CX_FLAGS (1L << 8)   /* first caller flag	*/
 
 /* _CX_HEADER_.flags */
 
@@ -274,17 +274,17 @@ typedef struct Cxvariable_s Cxvariable_t;
 
 struct Cxop_s /* callout/recode op		*/
 {
-    int code; /* op code			*/
+    int code;        /* op code			*/
     Cxtype_t *type1; /* operand 1 type		*/
     Cxtype_t *type2; /* operand 2 type		*/
 };
 
 #    define _CX_HEADER_                                                      \
-        const char *name; /* key name			*/                                   \
+        const char *name;        /* key name			*/                            \
         const char *description; /* description			*/
 
 #    define _CX_HEADER_LINK_                                                 \
-        Dtlink_t link; /* dictionary link		*/                                \
+        Dtlink_t link;  /* dictionary link		*/                               \
         uint16_t flags; /* cx header flags		*/                               \
         uint16_t index; /* member index			*/
 
@@ -329,24 +329,24 @@ typedef struct Cxcodeheader_s /* code key dict element header	*/
 
 typedef struct Cxbuffer_s /* buffer type			*/
 {
-    void *data; /* data pointer			*/
-    uint32_t size; /* data size			*/
+    void *data;        /* data pointer			*/
+    uint32_t size;     /* data size			*/
     uint32_t elements; /* sizeof() elements		*/
 } Cxbuffer_t;
 
 typedef struct Cxstring_s /* string type			*/
 {
-    char *data; /* data pointer			*/
+    char *data;  /* data pointer			*/
     size_t size; /* data size			*/
 } Cxstring_t;
 
 typedef union Cxvalue_u /* fundamental types		*/
 {
-    Cxbuffer_t buffer; /* sized buffer			*/
-    Cxnumber_t number; /* long/double number		*/
-    void *pointer; /* generic pointer		*/
-    Cxstring_t string; /* 0-terminated string		*/
-    Cxtype_t *type; /* type				*/
+    Cxbuffer_t buffer;      /* sized buffer			*/
+    Cxnumber_t number;      /* long/double number		*/
+    void *pointer;          /* generic pointer		*/
+    Cxstring_t string;      /* 0-terminated string		*/
+    Cxtype_t *type;         /* type				*/
     Cxvariable_t *variable; /* variable reference		*/
 } Cxvalue_t;
 
@@ -405,18 +405,18 @@ typedef int (
 
 struct Cxoperand_s /* expression operand		*/
 {
-    Cxtype_t *type; /* type				*/
-    int refs; /* reference count		*/
+    Cxtype_t *type;  /* type				*/
+    int refs;        /* reference count		*/
     Cxvalue_t value; /* value			*/
 };
 
 struct Cxitem_s /* map item			*/
 {
-    Cxitem_t *next; /* next item			*/
-    const char *name; /* item name			*/
-    Cxunsigned_t mask; /* local mask			*/
+    Cxitem_t *next;     /* next item			*/
+    const char *name;   /* item name			*/
+    Cxunsigned_t mask;  /* local mask			*/
     Cxunsigned_t value; /* item value			*/
-    Cxmap_t *map; /* optional map on value match	*/
+    Cxmap_t *map;       /* optional map on value match	*/
 #    ifdef _CX_ITEM_PRIVATE_
     _CX_ITEM_PRIVATE_
 #    endif
@@ -425,11 +425,11 @@ struct Cxitem_s /* map item			*/
 struct Cxedit_s /* edit list element		*/
 {
     _CX_NAME_HEADER_
-    Cxedit_t *next; /* next in list			*/
-    Cxinit_f initf; /* called at cxaddedit()	*/
+    Cxedit_t *next;       /* next in list			*/
+    Cxinit_f initf;       /* called at cxaddedit()	*/
     Cxnum2str_f num2strf; /* num=>str function		*/
     Cxstr2num_f str2numf; /* str=>num function		*/
-    void *data; /* private data			*/
+    void *data;           /* private data			*/
 #    ifdef _CX_EDIT_PRIVATE_
     _CX_EDIT_PRIVATE_
 #    endif
@@ -437,39 +437,39 @@ struct Cxedit_s /* edit list element		*/
 
 struct Cxpart_s /* map part			*/
 {
-    Cxpart_t *next; /* next part			*/
+    Cxpart_t *next;     /* next part			*/
     Cxunsigned_t shift; /* local shift			*/
-    Cxunsigned_t mask; /* local mask			*/
-    Cxitem_t *item; /* item list			*/
-    Cxflags_t flags; /* flags			*/
-    Cxtype_t *type; /* item value type		*/
-    Cxedit_t *num2str; /* num=>str edit list		*/
-    Cxedit_t *str2num; /* str=>num edit list		*/
-    Cxedit_t *edit; /* str=>str edit list		*/
+    Cxunsigned_t mask;  /* local mask			*/
+    Cxitem_t *item;     /* item list			*/
+    Cxflags_t flags;    /* flags			*/
+    Cxtype_t *type;     /* item value type		*/
+    Cxedit_t *num2str;  /* num=>str edit list		*/
+    Cxedit_t *str2num;  /* str=>num edit list		*/
+    Cxedit_t *edit;     /* str=>str edit list		*/
 };
 
 struct Cxmap_s /* str<=>num map		*/
 {
     _CX_NAME_HEADER_
     Cxunsigned_t shift; /* global shift			*/
-    Cxunsigned_t mask; /* global mask			*/
-    Cxpart_t *part; /* part list			*/
-    Dt_t *str2num; /* str=>num dict		*/
-    Dt_t *num2str; /* pure value num=>str dict	*/
-    Cxmap_t *map; /* indirect reference		*/
+    Cxunsigned_t mask;  /* global mask			*/
+    Cxpart_t *part;     /* part list			*/
+    Dt_t *str2num;      /* str=>num dict		*/
+    Dt_t *num2str;      /* pure value num=>str dict	*/
+    Cxmap_t *map;       /* indirect reference		*/
 };
 
 struct Cxconstraint_s /* value constraints		*/
 {
     _CX_NAME_HEADER_
-    Cxinit_f initf; /* called at cxaddconstraint()	*/
+    Cxinit_f initf;             /* called at cxaddconstraint()	*/
     Cxconstraint_f constraintf; /* external constraint function	*/
-    Cxvalue_t *def; /* default value		*/
-    Cxvalue_t *min; /* numeric minimum		*/
-    Cxvalue_t *max; /* numeric maximum		*/
-    const char *expression; /* expression on ``.''		*/
-    const char *pattern; /* string match pattern		*/
-    void *data; /* private data			*/
+    Cxvalue_t *def;             /* default value		*/
+    Cxvalue_t *min;             /* numeric minimum		*/
+    Cxvalue_t *max;             /* numeric maximum		*/
+    const char *expression;     /* expression on ``.''		*/
+    const char *pattern;        /* string match pattern		*/
+    void *data;                 /* private data			*/
 #    ifdef _CX_CONSTRAINT_PRIVATE_
     _CX_CONSTRAINT_PRIVATE_
 #    endif
@@ -477,59 +477,59 @@ struct Cxconstraint_s /* value constraints		*/
 
 struct Cxformat_s /* format info			*/
 {
-    const char *description; /* external details description	*/
-    char *details; /* default external details	*/
-    unsigned short flags; /* flags			*/
-    short width; /* width in bytes		*/
-    short print; /* print width hint		*/
-    short base; /* base				*/
-    short fill; /* fill character		*/
-    short code; /* code set			*/
-    short delimiter; /* delimiter			*/
-    short escape; /* escape			*/
-    short quotebegin; /* quotebegin			*/
-    short quoteend; /* quoteend			*/
-    short fixedpoint; /* fixed point width		*/
-    short unused; /* not used			*/
-    Cxmap_t *map; /* str<=>num map		*/
+    const char *description;    /* external details description	*/
+    char *details;              /* default external details	*/
+    unsigned short flags;       /* flags			*/
+    short width;                /* width in bytes		*/
+    short print;                /* print width hint		*/
+    short base;                 /* base				*/
+    short fill;                 /* fill character		*/
+    short code;                 /* code set			*/
+    short delimiter;            /* delimiter			*/
+    short escape;               /* escape			*/
+    short quotebegin;           /* quotebegin			*/
+    short quoteend;             /* quoteend			*/
+    short fixedpoint;           /* fixed point width		*/
+    short unused;               /* not used			*/
+    Cxmap_t *map;               /* str<=>num map		*/
     Cxconstraint_t *constraint; /* value constraints		*/
 };
 
 struct Cxreference_s /* member reference		*/
 {
-    Cxreference_t *next; /* submember			*/
+    Cxreference_t *next;    /* submember			*/
     Cxvariable_t *variable; /* member variable		*/
-    Cxmember_t *member; /* member info			*/
+    Cxmember_t *member;     /* member info			*/
 };
 
 struct Cxarray_s /* array info			*/
 {
     Cxvariable_t *variable; /* variable size value		*/
-    size_t size; /* fixed or max size		*/
-    short delimiter; /* value delimiter		*/
+    size_t size;            /* fixed or max size		*/
+    short delimiter;        /* value delimiter		*/
 };
 
 struct Cxstructure_s /* structure info		*/
 {
-    Cxvariable_t *parent; /* parent structure		*/
+    Cxvariable_t *parent;  /* parent structure		*/
     Cxvariable_t *members; /* member list (children)	*/
-    Cxvariable_t *next; /* next member (sibling)	*/
-    size_t size; /* size				*/
-    int level; /* structure level		*/
+    Cxvariable_t *next;    /* next member (sibling)	*/
+    size_t size;           /* size				*/
+    int level;             /* structure level		*/
 };
 
 struct Cxvariable_s /* variable info		*/
 {
     _CX_LIST_HEADER_
-    Cxfunction_f function; /* pointer if function		*/
-    Cxtype_t *type; /* value type			*/
-    const char *prototype; /* (proto)type name		*/
-    unsigned long index; /* caller defined index		*/
-    Cxformat_t format; /* format info			*/
-    void *data; /* caller defined data		*/
+    Cxfunction_f function;    /* pointer if function		*/
+    Cxtype_t *type;           /* value type			*/
+    const char *prototype;    /* (proto)type name		*/
+    unsigned long index;      /* caller defined index		*/
+    Cxformat_t format;        /* format info			*/
+    void *data;               /* caller defined data		*/
     Cxreference_t *reference; /* member reference list	*/
-    Cxtype_t *member; /* member type			*/
-    Cxarray_t *array; /* array info			*/
+    Cxtype_t *member;         /* member type			*/
+    Cxarray_t *array;         /* array info			*/
     Cxstructure_t *structure; /* structure info		*/
 };
 
@@ -545,27 +545,27 @@ struct Cxmember_s /* type member info		*/
 {
     Cxcallout_f getf; /* get member value		*/
     Cxcallout_f setf; /* set member value		*/
-    Dt_t *members; /* Cxvariable_t member dict	*/
-    Cxflags_t flags; /* CX_* member flags		*/
+    Dt_t *members;    /* Cxvariable_t member dict	*/
+    Cxflags_t flags;  /* CX_* member flags		*/
 };
 
 struct Cxtype_s /* type info			*/
 {
     _CX_NAME_HEADER_
-    Cxtype_t *base; /* base type			*/
-    Cxinit_f initf; /* called at cxaddtype()	*/
-    Cxexternal_f externalf; /* internal => external		*/
-    Cxinternal_f internalf; /* external => internal		*/
+    Cxtype_t *base;                /* base type			*/
+    Cxinit_f initf;                /* called at cxaddtype()	*/
+    Cxexternal_f externalf;        /* internal => external		*/
+    Cxinternal_f internalf;        /* external => internal		*/
     unsigned short representation; /* fundamental type index	*/
-    unsigned short index; /* caller defined index		*/
-    unsigned short size; /* sizeof() size in bytes	*/
-    unsigned short element; /* element size in bytes	*/
-    Cxformat_t format; /* format defaults		*/
-    Cxmatch_t *match; /* match info			*/
-    Cxmember_t *member; /* member info			*/
-    Cxtype_t **generic; /* generic implementation table	*/
-    Cxtype_t *fundamental; /* fundamental type		*/
-    void *data; /* private data			*/
+    unsigned short index;          /* caller defined index		*/
+    unsigned short size;           /* sizeof() size in bytes	*/
+    unsigned short element;        /* element size in bytes	*/
+    Cxformat_t format;             /* format defaults		*/
+    Cxmatch_t *match;              /* match info			*/
+    Cxmember_t *member;            /* member info			*/
+    Cxtype_t **generic;            /* generic implementation table	*/
+    Cxtype_t *fundamental;         /* fundamental type		*/
+    void *data;                    /* private data			*/
 };
 
 typedef struct Cxcallout_s /* op code callout		*/
@@ -582,33 +582,33 @@ typedef struct Cxrecode_s /* recode callout		*/
 
 struct Cxinstruction_s /* parsed instruction		*/
 {
-    int op; /* op code			*/
-    int pp; /* stack push(>0) pop(<0) count	*/
-    Cxtype_t *type; /* return type			*/
-    Cxvalue_t data; /* optional data		*/
+    int op;              /* op code			*/
+    int pp;              /* stack push(>0) pop(<0) count	*/
+    Cxtype_t *type;      /* return type			*/
+    Cxvalue_t data;      /* optional data		*/
     Cxcallout_f callout; /* callout function		*/
 };
 
 struct Cxdisc_s /* user discipline		*/
 {
-    unsigned long version; /* interface version		*/
-    Error_f errorf; /* error function		*/
-    Cxload_f loadf; /* library load function	*/
+    unsigned long version;  /* interface version		*/
+    Error_f errorf;         /* error function		*/
+    Cxload_f loadf;         /* library load function	*/
     Cxlocation_f locationf; /* input location function	*/
-    const char *ps1; /* primary prompt		*/
-    const char *ps2; /* secondary prompt		*/
-    const char *map; /* map file			*/
+    const char *ps1;        /* primary prompt		*/
+    const char *ps2;        /* secondary prompt		*/
+    const char *map;        /* map file			*/
 };
 
 struct Cxquery_s /* query			*/
 {
     _CX_NAME_HEADER_
-    Cxquery_f beg; /* called before first eval	*/
-    Cxquery_f sel; /* select current data		*/
-    Cxquery_f act; /* act on selected data		*/
-    Cxquery_f end; /* called after last eval	*/
+    Cxquery_f beg;      /* called before first eval	*/
+    Cxquery_f sel;      /* select current data		*/
+    Cxquery_f act;      /* act on selected data		*/
+    Cxquery_f end;      /* called after last eval	*/
     const char *method; /* caller specific method match	*/
-    Cxquery_f ref; /* compile-time reference	*/
+    Cxquery_f ref;      /* compile-time reference	*/
 #    ifdef _CX_QUERY_PRIVATE_
     _CX_QUERY_PRIVATE_
 #    endif
@@ -620,16 +620,16 @@ typedef struct Cxmeth_s Cxmeth_t;
 struct Cxlib_s /* Cxdisc_t.loadf library info	*/
 {
     _CX_NAME_HEADER_
-    const char **libraries; /* library list			*/
-    Cxmeth_t *meth; /* caller method		*/
-    Cxtype_t *types; /* type table			*/
-    Cxcallout_t *callouts; /* callout table		*/
-    Cxrecode_t *recodes; /* recode table			*/
-    Cxmap_t **maps; /* map table			*/
-    Cxquery_t *queries; /* query table			*/
+    const char **libraries;      /* library list			*/
+    Cxmeth_t *meth;              /* caller method		*/
+    Cxtype_t *types;             /* type table			*/
+    Cxcallout_t *callouts;       /* callout table		*/
+    Cxrecode_t *recodes;         /* recode table			*/
+    Cxmap_t **maps;              /* map table			*/
+    Cxquery_t *queries;          /* query table			*/
     Cxconstraint_t *constraints; /* constraint table		*/
-    Cxedit_t *edits; /* edit table			*/
-    Cxvariable_t *functions; /* function table		*/
+    Cxedit_t *edits;             /* edit table			*/
+    Cxvariable_t *functions;     /* function table		*/
 
     void *pad[7]; /* pad for future expansion	*/
 
@@ -640,17 +640,17 @@ struct Cxlib_s /* Cxdisc_t.loadf library info	*/
 
 struct Cxexpr_s /* compiled expression node	*/
 {
-    Cxexpr_t *parent; /* parent			*/
-    Cxexpr_t *group; /* group			*/
-    Cxexpr_t *next; /* next sibling			*/
-    Cxexpr_t *pass; /* pass branch			*/
-    Cxexpr_t *fail; /* fail branch			*/
-    Cxquery_t *query; /* query callouts		*/
-    const char *file; /* output file			*/
-    Sfio_t *op; /* output stream for file	*/
-    void *data; /* query private data		*/
-    char **argv; /* query argv			*/
-    Cxunsigned_t queried; /* # records queried		*/
+    Cxexpr_t *parent;      /* parent			*/
+    Cxexpr_t *group;       /* group			*/
+    Cxexpr_t *next;        /* next sibling			*/
+    Cxexpr_t *pass;        /* pass branch			*/
+    Cxexpr_t *fail;        /* fail branch			*/
+    Cxquery_t *query;      /* query callouts		*/
+    const char *file;      /* output file			*/
+    Sfio_t *op;            /* output stream for file	*/
+    void *data;            /* query private data		*/
+    char **argv;           /* query argv			*/
+    Cxunsigned_t queried;  /* # records queried		*/
     Cxunsigned_t selected; /* # records selected		*/
 #    ifdef _CX_EXPR_PRIVATE_
     _CX_EXPR_PRIVATE_
@@ -659,23 +659,23 @@ struct Cxexpr_s /* compiled expression node	*/
 
 struct Cxstate_s /* cx library global state	*/
 {
-    Dt_t *libraries; /* Dsslib_t dictionary (ouch)	*/
-    Dt_t *methods; /* Cxnameheader_t dictionary	*/
-    Dt_t *types; /* Cxtype_t dictionary		*/
-    Dt_t *callouts; /* Cxcallout_t dictionary	*/
-    Dt_t *recodes; /* Cxrecode_t dictionary	*/
-    Dt_t *maps; /* Cxmap_t dictionary		*/
-    Dt_t *queries; /* Cxquery_t dictionary		*/
-    Dt_t *constraints; /* Cxconstraint_t dictionary	*/
-    Dt_t *edits; /* Cxedit_t dictionary		*/
-    Dt_t *variables; /* Cxvariable_t dictionary	*/
-    Cxtype_t *type_bool; /* bool fundamental type	*/
-    Cxtype_t *type_buffer; /* buffer fundamental type	*/
-    Cxtype_t *type_number; /* number fundamental type	*/
+    Dt_t *libraries;          /* Dsslib_t dictionary (ouch)	*/
+    Dt_t *methods;            /* Cxnameheader_t dictionary	*/
+    Dt_t *types;              /* Cxtype_t dictionary		*/
+    Dt_t *callouts;           /* Cxcallout_t dictionary	*/
+    Dt_t *recodes;            /* Cxrecode_t dictionary	*/
+    Dt_t *maps;               /* Cxmap_t dictionary		*/
+    Dt_t *queries;            /* Cxquery_t dictionary		*/
+    Dt_t *constraints;        /* Cxconstraint_t dictionary	*/
+    Dt_t *edits;              /* Cxedit_t dictionary		*/
+    Dt_t *variables;          /* Cxvariable_t dictionary	*/
+    Cxtype_t *type_bool;      /* bool fundamental type	*/
+    Cxtype_t *type_buffer;    /* buffer fundamental type	*/
+    Cxtype_t *type_number;    /* number fundamental type	*/
     Cxtype_t *type_reference; /* reference fundamental type	*/
-    Cxtype_t *type_string; /* string fundamental type	*/
-    Cxtype_t *type_type_t; /* type				*/
-    Cxtype_t *type_void; /* void fundamental type	*/
+    Cxtype_t *type_string;    /* string fundamental type	*/
+    Cxtype_t *type_type_t;    /* type				*/
+    Cxtype_t *type_void;      /* void fundamental type	*/
 #    ifdef _CX_STATE_PRIVATE_
     _CX_STATE_PRIVATE_
 #    endif
@@ -683,29 +683,29 @@ struct Cxstate_s /* cx library global state	*/
 
 struct Cx_s /* interface handle		*/
 {
-    const char *id; /* interface id			*/
-    Vmalloc_t *vm; /* handle memory		*/
-    Vmalloc_t *em; /* eval memory			*/
-    Vmalloc_t *rm; /* record memory		*/
-    Cxflags_t flags; /* CX_* flags			*/
-    Cxflags_t test; /* test mask			*/
-    int eof; /* input at eof			*/
-    int error; /* error occurred		*/
-    int interactive; /* interactive input		*/
-    Cxstate_t *state; /* global state			*/
-    Cxdisc_t *disc; /* user discipline		*/
-    Sfio_t *buf; /* tmp buffer stream		*/
-    void *caller; /* caller defined handle	*/
-    Dt_t *variables; /* sorted variable symbol table	*/
-    Dt_t *fields; /* order variable field list	*/
-    Dt_t *types; /* Cxtype_t dictionary		*/
-    Dt_t *callouts; /* Cxcallout_t dictionary	*/
-    Dt_t *recodes; /* Cxrecode_t dictionary	*/
-    Dt_t *maps; /* Cxmap_t dictionary		*/
-    Dt_t *queries; /* Cxquery_t dictionary		*/
-    Dt_t *constraints; /* Cxconstraint_t dictionary	*/
-    Dt_t *edits; /* Cxedit_t dictionary		*/
-    Cx_t *scope; /* next scope			*/
+    const char *id;       /* interface id			*/
+    Vmalloc_t *vm;        /* handle memory		*/
+    Vmalloc_t *em;        /* eval memory			*/
+    Vmalloc_t *rm;        /* record memory		*/
+    Cxflags_t flags;      /* CX_* flags			*/
+    Cxflags_t test;       /* test mask			*/
+    int eof;              /* input at eof			*/
+    int error;            /* error occurred		*/
+    int interactive;      /* interactive input		*/
+    Cxstate_t *state;     /* global state			*/
+    Cxdisc_t *disc;       /* user discipline		*/
+    Sfio_t *buf;          /* tmp buffer stream		*/
+    void *caller;         /* caller defined handle	*/
+    Dt_t *variables;      /* sorted variable symbol table	*/
+    Dt_t *fields;         /* order variable field list	*/
+    Dt_t *types;          /* Cxtype_t dictionary		*/
+    Dt_t *callouts;       /* Cxcallout_t dictionary	*/
+    Dt_t *recodes;        /* Cxrecode_t dictionary	*/
+    Dt_t *maps;           /* Cxmap_t dictionary		*/
+    Dt_t *queries;        /* Cxquery_t dictionary		*/
+    Dt_t *constraints;    /* Cxconstraint_t dictionary	*/
+    Dt_t *edits;          /* Cxedit_t dictionary		*/
+    Cx_t *scope;          /* next scope			*/
     unsigned char *ctype; /* ctype table			*/
 #    ifdef _CX_PRIVATE_
     _CX_PRIVATE_

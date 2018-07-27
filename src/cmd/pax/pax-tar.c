@@ -43,7 +43,7 @@ typedef struct Tar_s
 {
     Tarheader_t header;
     Tarheader_t last[16]; /* last n headers		*/
-    int lastindex; /* last[] index			*/
+    int lastindex;        /* last[] index			*/
 } Tar_t;
 
 /*

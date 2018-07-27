@@ -139,9 +139,9 @@
 
 #define GCC_VERSION (__GNUC__ * 100 + __GNUC_MINOR__)
 
-#ifdef _MSC_VER /*  Visual Studio */
-#    include <intrin.h> /*  For Visual 2005 */
-#    if LZ4_ARCH64 /*  64-bit */
+#ifdef _MSC_VER                              /*  Visual Studio */
+#    include <intrin.h>                      /*  For Visual 2005 */
+#    if LZ4_ARCH64                           /*  64-bit */
 #        pragma intrinsic(_BitScanForward64) /*  For Visual 2005 */
 #        pragma intrinsic(_BitScanReverse64) /*  For Visual 2005 */
 #    else

@@ -48,10 +48,10 @@ vcqsort(Void_t *list,
 #else
 void vcqsort(list, n, size, sortf, disc) Void_t *list; /* list of objects to
                                                           be sorted	*/
-ssize_t n; /* number of objects in list[]	*/
-ssize_t size; /* size in byte of each object	*/
+ssize_t n;           /* number of objects in list[]	*/
+ssize_t size;        /* size in byte of each object	*/
 Vccompare_f comparf; /* comparison function		*/
-Void_t *disc; /* adjunct struct for sortf()	*/
+Void_t *disc;        /* adjunct struct for sortf()	*/
 #endif
 {
     ssize_t l, r;

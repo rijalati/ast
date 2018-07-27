@@ -90,7 +90,7 @@ const struct shtable2 shtab_signals[] = {
     VAL(SIGCLD, SH_SIGFAULT),
     S("Death of Child"),
 #    endif /* SIGCLD */
-#endif /* SIGCHLD */
+#endif     /* SIGCHLD */
 #ifdef SIGCONT
     "CONT",
     VAL(SIGCONT, SH_SIGIGNORE),
@@ -231,7 +231,7 @@ const struct shtable2 shtab_signals[] = {
     VAL(SIGPIPE, SH_SIGDONE),
     "",
 #    endif /* JOBS */
-#endif /* SIGPIPE */
+#endif     /* SIGPIPE */
 #ifdef SIGPOLL
     "POLL",
     VAL(SIGPOLL, SH_SIGDONE),
@@ -320,7 +320,7 @@ const struct shtable2 shtab_signals[] = {
     VAL(SIGTINT, 0),
     "",
 #    endif /* JOBS */
-#endif /* SIGTINT */
+#endif     /* SIGTINT */
 #ifdef SIGTRAP
     "TRAP",
     VAL(SIGTRAP, SH_SIGDONE),

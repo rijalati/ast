@@ -35,8 +35,8 @@
 #        else
 #            define MAP_ANON 0
 #        endif /*MAP_ANONYMOUS*/
-#    endif /*MAP_ANON*/
-#endif /*_mem_mmap_anon*/
+#    endif     /*MAP_ANON*/
+#endif         /*_mem_mmap_anon*/
 
 /* Heuristic to suggest an address usable for mapping shared memory
 **
@@ -185,7 +185,7 @@ _vmboundaries(void)
     }
 
     if ((min + memz) >= max) /* no mappable region of memory */
-    { /**/
+    {                        /**/
         DEBUG_MESSAGE("vmmaddress: No mappable memory region found");
         goto done;
     }
@@ -214,7 +214,7 @@ _vmboundaries(void)
     _Vmmemmin = min;
     _Vmmemmax = max;
 
-    _Vmmemaddr = max - z; /* address usable by vmmaddress() */
+    _Vmmemaddr = max - z;          /* address usable by vmmaddress() */
     _Vmmemsbrk = NIL(Vmuchar_t *); /* address usable for sbrk() simulation */
 
 #    if _mem_mmap_anon /* see if we can simulate sbrk(): memory grows from   \
@@ -249,7 +249,7 @@ _vmboundaries(void)
 #        if !VMCHKMEM
             _Vmmemsbrk
             = NIL(Vmuchar_t *); /* no memory checking, must use sbrk() */
-#        endif /*VMCHKMEM*/
+#        endif                  /*VMCHKMEM*/
         }
     }
 #    endif /*_mem_mmap_anon_*/

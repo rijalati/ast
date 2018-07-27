@@ -25,55 +25,55 @@
 
 typedef struct
 {
-    Tk_Window tkwin; /* Window that embodies the frame.  NULL
-                      * means that the window has been destroyed
-                      * but the data structures haven't yet been
-                      * cleaned up. */
-    Display *display; /* Display containing widget.  Used, among
-                       * other things, so that resources can be
-                       * freed even after tkwin has gone away. */
-    Tcl_Interp *interp; /* Interpreter associated with widget.  Used
-                         * to delete widget command. */
+    Tk_Window tkwin;       /* Window that embodies the frame.  NULL
+                            * means that the window has been destroyed
+                            * but the data structures haven't yet been
+                            * cleaned up. */
+    Display *display;      /* Display containing widget.  Used, among
+                            * other things, so that resources can be
+                            * freed even after tkwin has gone away. */
+    Tcl_Interp *interp;    /* Interpreter associated with widget.  Used
+                            * to delete widget command. */
     Tcl_Command widgetCmd; /* Token for frame's widget command. */
-    char *className; /* Class name for widget (from configuration
-                      * option).  Malloc-ed. */
-    int mask; /* Either FRAME or TOPLEVEL;  used to select
-               * which configuration options are valid for
-               * widget. */
-    char *screenName; /* Screen on which widget is created.  Non-null
-                       * only for top-levels.  Malloc-ed, may be
-                       * NULL. */
-    char *visualName; /* Textual description of visual for window,
-                       * from -visual option.  Malloc-ed, may be
-                       * NULL. */
-    char *colormapName; /* Textual description of colormap for window,
-                         * from -colormap option.  Malloc-ed, may be
-                         * NULL. */
-    Colormap colormap; /* If not None, identifies a colormap
-                        * allocated for this window, which must be
-                        * freed when the window is deleted. */
-    Tk_3DBorder border; /* Structure used to draw 3-D border and
-                         * background.  NULL means no background
-                         * or border. */
-    int borderWidth; /* Width of 3-D border (if any). */
-    int relief; /* 3-d effect: TK_RELIEF_RAISED etc. */
-    int highlightWidth; /* Width in pixels of highlight to draw
-                         * around widget when it has the focus.
-                         * 0 means don't draw a highlight. */
+    char *className;       /* Class name for widget (from configuration
+                            * option).  Malloc-ed. */
+    int mask;              /* Either FRAME or TOPLEVEL;  used to select
+                            * which configuration options are valid for
+                            * widget. */
+    char *screenName;      /* Screen on which widget is created.  Non-null
+                            * only for top-levels.  Malloc-ed, may be
+                            * NULL. */
+    char *visualName;      /* Textual description of visual for window,
+                            * from -visual option.  Malloc-ed, may be
+                            * NULL. */
+    char *colormapName;    /* Textual description of colormap for window,
+                            * from -colormap option.  Malloc-ed, may be
+                            * NULL. */
+    Colormap colormap;     /* If not None, identifies a colormap
+                            * allocated for this window, which must be
+                            * freed when the window is deleted. */
+    Tk_3DBorder border;    /* Structure used to draw 3-D border and
+                            * background.  NULL means no background
+                            * or border. */
+    int borderWidth;       /* Width of 3-D border (if any). */
+    int relief;            /* 3-d effect: TK_RELIEF_RAISED etc. */
+    int highlightWidth;    /* Width in pixels of highlight to draw
+                            * around widget when it has the focus.
+                            * 0 means don't draw a highlight. */
     XColor *highlightBgColorPtr;
     /* Color for drawing traversal highlight
      * area when highlight is off. */
     XColor *highlightColorPtr; /* Color for drawing traversal highlight. */
-    int width; /* Width to request for window.  <= 0 means
-                * don't request any size. */
-    int height; /* Height to request for window.  <= 0 means
-                 * don't request any size. */
-    Tk_Cursor cursor; /* Current cursor for window, or None. */
-    char *takeFocus; /* Value of -takefocus option;  not used in
-                      * the C code, but used by keyboard traversal
-                      * scripts.  Malloc'ed, but may be NULL. */
-    int flags; /* Various flags;  see below for
-                * definitions. */
+    int width;                 /* Width to request for window.  <= 0 means
+                                * don't request any size. */
+    int height;                /* Height to request for window.  <= 0 means
+                                * don't request any size. */
+    Tk_Cursor cursor;          /* Current cursor for window, or None. */
+    char *takeFocus;           /* Value of -takefocus option;  not used in
+                                * the C code, but used by keyboard traversal
+                                * scripts.  Malloc'ed, but may be NULL. */
+    int flags;                 /* Various flags;  see below for
+                                * definitions. */
 } Frame;
 
 /*
@@ -270,9 +270,9 @@ static void MapFrame _ANSI_ARGS_((ClientData clientData));
 int Tk_FrameCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     return TkCreateFrame(clientData, interp, argc, argv, 0, ( char * )NULL);
 }
@@ -280,9 +280,9 @@ char **argv; /* Argument strings. */
 int Tk_ToplevelCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     return TkCreateFrame(clientData, interp, argc, argv, 1, ( char * )NULL);
 }
@@ -310,14 +310,14 @@ int TkCreateFrame(clientData, interp, argc, argv, toplevel, appName)
 ClientData clientData; /* Main window associated with interpreter.
                         * If we're called by Tk_Init to create a
                         * new application, then this is NULL. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
-int toplevel; /* Non-zero means create a toplevel window,
-               * zero means create a frame. */
-char *appName; /* Should only be non-NULL if clientData is
-                * NULL:  gives the base name to use for the
-                * new application. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
+int toplevel;          /* Non-zero means create a toplevel window,
+                        * zero means create a frame. */
+char *appName;         /* Should only be non-NULL if clientData is
+                        * NULL:  gives the base name to use for the
+                        * new application. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     Frame *framePtr;
@@ -534,9 +534,9 @@ error:
 
 static int FrameWidgetCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about frame widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Frame *framePtr = ( Frame * )clientData;
     int result = TCL_OK;
@@ -702,11 +702,11 @@ static void DestroyFrame(memPtr) char *memPtr; /* Info about frame widget. */
 
 static int ConfigureFrame(interp, framePtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Frame *framePtr; /* Information about widget;  may or may
-                  * not already have values for some fields. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Frame *framePtr;    /* Information about widget;  may or may
+                     * not already have values for some fields. */
+int argc;           /* Number of valid entries in argv. */
+char **argv;        /* Arguments. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     if (Tk_ConfigureWidget(interp,
                            framePtr->tkwin,
@@ -827,7 +827,7 @@ ClientData clientData; /* Information about widget. */
 
 static void FrameEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
-XEvent *eventPtr; /* Information about event. */
+XEvent *eventPtr;      /* Information about event. */
 {
     Frame *framePtr = ( Frame * )clientData;
 

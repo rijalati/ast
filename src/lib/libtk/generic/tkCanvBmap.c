@@ -21,17 +21,17 @@
 
 typedef struct BitmapItem
 {
-    Tk_Item header; /* Generic stuff that's the same for all
-                     * types.  MUST BE FIRST IN STRUCTURE. */
-    double x, y; /* Coordinates of positioning point for
-                  * bitmap. */
+    Tk_Item header;   /* Generic stuff that's the same for all
+                       * types.  MUST BE FIRST IN STRUCTURE. */
+    double x, y;      /* Coordinates of positioning point for
+                       * bitmap. */
     Tk_Anchor anchor; /* Where to anchor bitmap relative to
                        * (x,y). */
-    Pixmap bitmap; /* Bitmap to display in window. */
-    XColor *fgColor; /* Foreground color to use for bitmap. */
-    XColor *bgColor; /* Background color to use for bitmap. */
-    GC gc; /* Graphics context to use for drawing
-            * bitmap on screen. */
+    Pixmap bitmap;    /* Bitmap to display in window. */
+    XColor *fgColor;  /* Foreground color to use for bitmap. */
+    XColor *bgColor;  /* Background color to use for bitmap. */
+    GC gc;            /* Graphics context to use for drawing
+                       * bitmap on screen. */
 } BitmapItem;
 
 /*
@@ -141,26 +141,26 @@ static void TranslateBitmap _ANSI_ARGS_(
  */
 
 Tk_ItemType tkBitmapType = {
-    "bitmap", /* name */
-    sizeof(BitmapItem), /* itemSize */
-    CreateBitmap, /* createProc */
-    configSpecs, /* configSpecs */
-    ConfigureBitmap, /* configureProc */
-    BitmapCoords, /* coordProc */
-    DeleteBitmap, /* deleteProc */
-    DisplayBitmap, /* displayProc */
-    0, /* alwaysRedraw */
-    BitmapToPoint, /* pointProc */
-    BitmapToArea, /* areaProc */
-    BitmapToPostscript, /* postscriptProc */
-    ScaleBitmap, /* scaleProc */
-    TranslateBitmap, /* translateProc */
-    ( Tk_ItemIndexProc * )NULL, /* indexProc */
-    ( Tk_ItemCursorProc * )NULL, /* icursorProc */
+    "bitmap",                       /* name */
+    sizeof(BitmapItem),             /* itemSize */
+    CreateBitmap,                   /* createProc */
+    configSpecs,                    /* configSpecs */
+    ConfigureBitmap,                /* configureProc */
+    BitmapCoords,                   /* coordProc */
+    DeleteBitmap,                   /* deleteProc */
+    DisplayBitmap,                  /* displayProc */
+    0,                              /* alwaysRedraw */
+    BitmapToPoint,                  /* pointProc */
+    BitmapToArea,                   /* areaProc */
+    BitmapToPostscript,             /* postscriptProc */
+    ScaleBitmap,                    /* scaleProc */
+    TranslateBitmap,                /* translateProc */
+    ( Tk_ItemIndexProc * )NULL,     /* indexProc */
+    ( Tk_ItemCursorProc * )NULL,    /* icursorProc */
     ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL, /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL, /* dTextProc */
-    ( Tk_ItemType * )NULL /* nextPtr */
+    ( Tk_ItemInsertProc * )NULL,    /* insertProc */
+    ( Tk_ItemDCharsProc * )NULL,    /* dTextProc */
+    ( Tk_ItemType * )NULL           /* nextPtr */
 };
 
 /*
@@ -185,11 +185,11 @@ Tk_ItemType tkBitmapType = {
 
 static int CreateBitmap(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Canvas canvas; /* Canvas to hold new item. */
-Tk_Item *itemPtr; /* Record to hold new item;  header
-                   * has been initialized by caller. */
-int argc; /* Number of arguments in argv. */
-char **argv; /* Arguments describing rectangle. */
+Tk_Canvas canvas;   /* Canvas to hold new item. */
+Tk_Item *itemPtr;   /* Record to hold new item;  header
+                     * has been initialized by caller. */
+int argc;           /* Number of arguments in argv. */
+char **argv;        /* Arguments describing rectangle. */
 {
     BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
 
@@ -254,13 +254,13 @@ char **argv; /* Arguments describing rectangle. */
 
 static int BitmapCoords(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item whose coordinates are to be
-                   * read or modified. */
-int argc; /* Number of coordinates supplied in
-           * argv. */
-char **argv; /* Array of coordinates: x1, y1,
-              * x2, y2, ... */
+Tk_Canvas canvas;   /* Canvas containing item. */
+Tk_Item *itemPtr;   /* Item whose coordinates are to be
+                     * read or modified. */
+int argc;           /* Number of coordinates supplied in
+                     * argv. */
+char **argv;        /* Array of coordinates: x1, y1,
+                     * x2, y2, ... */
 {
     BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
     char x[TCL_DOUBLE_SPACE], y[TCL_DOUBLE_SPACE];
@@ -310,11 +310,11 @@ char **argv; /* Array of coordinates: x1, y1,
 
 static int ConfigureBitmap(interp, canvas, itemPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing itemPtr. */
-Tk_Item *itemPtr; /* Bitmap item to reconfigure. */
-int argc; /* Number of elements in argv.  */
-char **argv; /* Arguments describing things to configure. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Tk_Canvas canvas;   /* Canvas containing itemPtr. */
+Tk_Item *itemPtr;   /* Bitmap item to reconfigure. */
+int argc;           /* Number of elements in argv.  */
+char **argv;        /* Arguments describing things to configure. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
     XGCValues gcValues;
@@ -513,11 +513,11 @@ BitmapItem *bmapPtr; /* Item whose bbox is to be
 
 static void
 DisplayBitmap(canvas, itemPtr, display, drawable, x, y, width, height)
-Tk_Canvas canvas; /* Canvas that contains item. */
-Tk_Item *itemPtr; /* Item to be displayed. */
-Display *display; /* Display on which to draw item. */
-Drawable drawable; /* Pixmap or window in which to draw
-                    * item. */
+Tk_Canvas canvas;        /* Canvas that contains item. */
+Tk_Item *itemPtr;        /* Item to be displayed. */
+Display *display;        /* Display on which to draw item. */
+Drawable drawable;       /* Pixmap or window in which to draw
+                          * item. */
 int x, y, width, height; /* Describes region of canvas that
                           * must be redisplayed (not used). */
 {
@@ -689,9 +689,9 @@ static int
 BitmapToArea(canvas, itemPtr, rectPtr) Tk_Canvas canvas; /* Canvas containing
                                                             item. */
 Tk_Item *itemPtr; /* Item to check against rectangle. */
-double *rectPtr; /* Pointer to array of four coordinates
-                  * (x1, y1, x2, y2) describing rectangular
-                  * area.  */
+double *rectPtr;  /* Pointer to array of four coordinates
+                   * (x1, y1, x2, y2) describing rectangular
+                   * area.  */
 {
     BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
 
@@ -734,11 +734,11 @@ double *rectPtr; /* Pointer to array of four coordinates
  */
 
 static void ScaleBitmap(canvas, itemPtr, originX, originY, scaleX, scaleY)
-Tk_Canvas canvas; /* Canvas containing rectangle. */
-Tk_Item *itemPtr; /* Rectangle to be scaled. */
+Tk_Canvas canvas;        /* Canvas containing rectangle. */
+Tk_Item *itemPtr;        /* Rectangle to be scaled. */
 double originX, originY; /* Origin about which to scale item. */
-double scaleX; /* Amount to scale in X direction. */
-double scaleY; /* Amount to scale in Y direction. */
+double scaleX;           /* Amount to scale in X direction. */
+double scaleY;           /* Amount to scale in Y direction. */
 {
     BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
 
@@ -766,8 +766,8 @@ double scaleY; /* Amount to scale in Y direction. */
  */
 
 static void TranslateBitmap(canvas, itemPtr, deltaX, deltaY)
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item that is being moved. */
+Tk_Canvas canvas;      /* Canvas containing item. */
+Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
@@ -802,12 +802,12 @@ double deltaX, deltaY; /* Amount by which item is to be
 static int BitmapToPostscript(interp, canvas, itemPtr, prepass)
 Tcl_Interp *interp; /* Leave Postscript or error message
                      * here. */
-Tk_Canvas canvas; /* Information about overall canvas. */
-Tk_Item *itemPtr; /* Item for which Postscript is
-                   * wanted. */
-int prepass; /* 1 means this is a prepass to
-              * collect font information;  0 means
-              * final Postscript is being created. */
+Tk_Canvas canvas;   /* Information about overall canvas. */
+Tk_Item *itemPtr;   /* Item for which Postscript is
+                     * wanted. */
+int prepass;        /* 1 means this is a prepass to
+                     * collect font information;  0 means
+                     * final Postscript is being created. */
 {
     BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
     double x, y;

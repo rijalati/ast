@@ -38,7 +38,7 @@
 #            ifndef CNSUSP
 #                define CNSUSP CNSWTCH
 #            endif /* CNSUSP */
-#        endif /* sgi */
+#        endif     /* sgi */
 #        ifdef _NEXT_SOURCE
 #            define _lib_tcgetattr 1
 #            define _lib_tcgetpgrp 1
@@ -50,7 +50,7 @@
 #        else
 #            undef _sys_termios
 #        endif /* _sys_termios */
-#    endif /* _hdr_termios */
+#    endif     /* _hdr_termios */
 
 #    ifdef _hdr_termios
 #        undef _hdr_sgtty
@@ -87,8 +87,8 @@
 #                else
 #                    undef SHOPT_OLDTERMIO
 #                endif /* _sys_termio */
-#            endif /* _hdr_termio */
-#        endif /* SHOPT_OLDTERMIO */
+#            endif     /* _hdr_termio */
+#        endif         /* SHOPT_OLDTERMIO */
 #    else
 #        define cfgetospeed(tp) ((tp)->c_cflag & CBAUD)
 #        undef SHOPT_OLDTERMIO
@@ -99,7 +99,7 @@
 #                include <sys/termio.h>
 #                define _hdr_termio 1
 #            endif /* _sys_termio */
-#        endif /* _hdr_termio */
+#        endif     /* _hdr_termio */
 #        ifdef _hdr_termio
 #            define termios termio
 #            undef TIOCGETC
@@ -116,7 +116,7 @@
 #                    ifdef _sys_nttyio
 #                        include <sys/nttyio.h>
 #                    endif /* _sys_nttyio */
-#                endif /* LPENDIN */
+#                endif     /* LPENDIN */
 #                define termios sgttyb
 #                ifdef TIOCSETN
 #                    undef TCSETAW
@@ -128,8 +128,8 @@
 #                    define tcgetattr(fd, tty) gtty(fd, tty)
 #                    define tcsetattr(fd, action, tty) stty(fd, tty)
 #                endif /* TIOCGETP */
-#            endif /* _hdr_sgtty */
-#        endif /* hdr_termio */
+#            endif     /* _hdr_sgtty */
+#        endif         /* hdr_termio */
 
 #        ifndef TCSANOW
 #            ifdef TCSETAW
@@ -147,43 +147,43 @@
 #                    define TCSADRAIN TIOCSETN
 #                    define TCSAFLUSH TIOCSETP
 #                endif /* TIOCSETN */
-#            endif /* TCSETAW */
-#        endif /* TCSANOW */
-#    endif /* _hdr_termios */
+#            endif     /* TCSETAW */
+#        endif         /* TCSANOW */
+#    endif             /* _hdr_termios */
 
 /* set ECHOCTL if driver can echo control charaters as ^c */
 #    ifdef LCTLECH
 #        ifndef ECHOCTL
 #            define ECHOCTL LCTLECH
 #        endif /* !ECHOCTL */
-#    endif /* LCTLECH */
+#    endif     /* LCTLECH */
 #    ifdef LNEW_CTLECH
 #        ifndef ECHOCTL
 #            define ECHOCTL LNEW_CTLECH
 #        endif /* !ECHOCTL */
-#    endif /* LNEW_CTLECH */
+#    endif     /* LNEW_CTLECH */
 #    ifdef LNEW_PENDIN
 #        ifndef PENDIN
 #            define PENDIN LNEW_PENDIN
 #        endif /* !PENDIN */
-#    endif /* LNEW_PENDIN */
+#    endif     /* LNEW_PENDIN */
 #    ifndef ECHOCTL
 #        ifndef VEOL
 #            define RAWONLY 1
 #        endif /* !VEOL */
-#    endif /* !ECHOCTL */
+#    endif     /* !ECHOCTL */
 
 #    ifdef _sys_filio
 #        ifndef FIONREAD
 #            include <sys/filio.h>
 #        endif /* FIONREAD */
-#    endif /* _sys_filio */
+#    endif     /* _sys_filio */
 /* set FIORDCHK if you can check for characters in input queue */
 #    ifdef FIONREAD
 #        ifndef FIORDCHK
 #            define FIORDCHK FIONREAD
 #        endif /* !FIORDCHK */
-#    endif /* FIONREAD */
+#    endif     /* FIONREAD */
 
 extern int
 tty_alt(int);

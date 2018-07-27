@@ -51,21 +51,21 @@
  * values used in typeflag field
  */
 
-#    define REGTYPE '0' /* regular file			*/
-#    define AREGTYPE 0 /* alternate REGTYPE		*/
-#    define LNKTYPE '1' /* hard link			*/
-#    define SYMTYPE '2' /* soft link			*/
-#    define CHRTYPE '3' /* character special		*/
-#    define BLKTYPE '4' /* block special		*/
-#    define DIRTYPE '5' /* directory			*/
+#    define REGTYPE '0'  /* regular file			*/
+#    define AREGTYPE 0   /* alternate REGTYPE		*/
+#    define LNKTYPE '1'  /* hard link			*/
+#    define SYMTYPE '2'  /* soft link			*/
+#    define CHRTYPE '3'  /* character special		*/
+#    define BLKTYPE '4'  /* block special		*/
+#    define DIRTYPE '5'  /* directory			*/
 #    define FIFOTYPE '6' /* FIFO special			*/
 #    define CONTTYPE '7' /* reserved			*/
-#    define SOKTYPE '8' /* socket			*/
-#    define EXTTYPE 'x' /* extended header		*/
-#    define GLBTYPE 'g' /* global extended header	*/
+#    define SOKTYPE '8'  /* socket			*/
+#    define EXTTYPE 'x'  /* extended header		*/
+#    define GLBTYPE 'g'  /* global extended header	*/
 #    define LLNKTYPE 'K' /* long link path		*/
 #    define LREGTYPE 'L' /* long file path		*/
-#    define VERTYPE 'V' /* version			*/
+#    define VERTYPE 'V'  /* version			*/
 
 /*
  * bits used in mode field
@@ -79,15 +79,15 @@
  * file permissions
  */
 
-#    define TUREAD 00400 /* read by owner		*/
+#    define TUREAD 00400  /* read by owner		*/
 #    define TUWRITE 00200 /* write by owner		*/
-#    define TUEXEC 00100 /* execute by owner		*/
-#    define TGREAD 00040 /* read by group		*/
+#    define TUEXEC 00100  /* execute by owner		*/
+#    define TGREAD 00040  /* read by group		*/
 #    define TGWRITE 00020 /* execute by group		*/
-#    define TGEXEC 00010 /* write by group		*/
-#    define TOREAD 00004 /* read by other		*/
+#    define TGEXEC 00010  /* write by group		*/
+#    define TOREAD 00004  /* read by other		*/
 #    define TOWRITE 00002 /* write by other		*/
-#    define TOEXEC 00001 /* execute by other		*/
+#    define TOEXEC 00001  /* execute by other		*/
 
 struct header
 {

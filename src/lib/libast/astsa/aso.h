@@ -22,9 +22,9 @@
 #ifndef _ASO_H
 #define _ASO_H 1
 
-#define ASO_UNLOCK 0 /* unlock if key matches  		*/
-#define ASO_TRYLOCK 1 /* matched key means successful attempt	*/
-#define ASO_LOCK 2 /* matched key first, then spin-lock	*/
+#define ASO_UNLOCK 0   /* unlock if key matches  		*/
+#define ASO_TRYLOCK 1  /* matched key means successful attempt	*/
+#define ASO_LOCK 2     /* matched key first, then spin-lock	*/
 #define ASO_SPINLOCK 3 /* no matching of key before locking	*/
 
 #define asogetint(p) (*(p))

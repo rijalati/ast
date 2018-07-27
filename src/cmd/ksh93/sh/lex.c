@@ -46,7 +46,7 @@ Shell_t sh = { 1 };
 #include "test.h"
 
 #define TEST_RE 3
-#define SYNBAD 3 /* exit value for syntax errors */
+#define SYNBAD 3      /* exit value for syntax errors */
 #define STACK_ARRAY 3 /* size of depth match stack growth */
 
 #if _lib_iswblank < 0 /* set in lexstates.h to enable this code */
@@ -72,13 +72,13 @@ local_iswblank(wchar_t wc)
  */
 struct lexstate
 {
-    char incase; /* 1 for case pattern, 2 after case */
-    char intest; /* 1 inside [[...]] */
-    char testop1; /* 1 when unary test op legal */
-    char testop2; /* 1 when binary test op legal */
-    char reservok; /* >0 for reserved word legal */
-    char skipword; /* next word can't be reserved */
-    char last_quote; /* last multi-line quote character */
+    char incase;      /* 1 for case pattern, 2 after case */
+    char intest;      /* 1 inside [[...]] */
+    char testop1;     /* 1 when unary test op legal */
+    char testop2;     /* 1 when binary test op legal */
+    char reservok;    /* >0 for reserved word legal */
+    char skipword;    /* next word can't be reserved */
+    char last_quote;  /* last multi-line quote character */
     char nestedbrace; /* ${var op {...}} */
 };
 

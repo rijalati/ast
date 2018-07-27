@@ -132,15 +132,15 @@ static const char usage[]
 #define ROTATE(p, l, r, t)                                                   \
     ((t) = (p)->l, (p)->l = (t)->r, (t)->r = (p), (p) = (t))
 
-#define RULE_active 0x0001 /* active target		*/
-#define RULE_dontcare 0x0002 /* ok if not found		*/
-#define RULE_error 0x0004 /* not found or not generated	*/
-#define RULE_exists 0x0008 /* target file exists		*/
+#define RULE_active 0x0001    /* active target		*/
+#define RULE_dontcare 0x0002  /* ok if not found		*/
+#define RULE_error 0x0004     /* not found or not generated	*/
+#define RULE_exists 0x0008    /* target file exists		*/
 #define RULE_generated 0x0010 /* generated target		*/
-#define RULE_ignore 0x0020 /* ignore time			*/
-#define RULE_implicit 0x0040 /* implicit prerequisite	*/
-#define RULE_made 0x0080 /* already made			*/
-#define RULE_virtual 0x0100 /* not a file			*/
+#define RULE_ignore 0x0020    /* ignore time			*/
+#define RULE_implicit 0x0040  /* implicit prerequisite	*/
+#define RULE_made 0x0080      /* already made			*/
+#define RULE_virtual 0x0100   /* not a file			*/
 
 #define STREAM_KEEP 0x0001 /* don't fclose() on pop()	*/
 #define STREAM_MUST 0x0002 /* push() file must exist	*/
@@ -164,17 +164,17 @@ typedef FILE Stdio_t;
 typedef struct Buf_s /* buffer stream		*/
 {
     struct Buf_s *old; /* next dropped buffer		*/
-    char *end; /* 1 past end of buffer		*/
-    char *nxt; /* next char to add		*/
-    char *buf; /* buffer space			*/
+    char *end;         /* 1 past end of buffer		*/
+    char *nxt;         /* next char to add		*/
+    char *buf;         /* buffer space			*/
 } Buf_t;
 
 typedef struct Dict_item_s /* dictionary item		*/
 {
-    struct Dict_item_s *left; /* left child			*/
+    struct Dict_item_s *left;  /* left child			*/
     struct Dict_item_s *right; /* right child			*/
-    void *value; /* user defined value		*/
-    char name[1]; /* 0 terminated name		*/
+    void *value;               /* user defined value		*/
+    char name[1];              /* 0 terminated name		*/
 } Dict_item_t;
 
 typedef struct Dict_s /* dictionary handle		*/
@@ -190,28 +190,28 @@ typedef struct List_s /* Rule_t list			*/
 
 typedef struct Rule_s /* rule item			*/
 {
-    char *name; /* unbound name			*/
-    char *path; /* bound path			*/
-    List_t *prereqs; /* prerequisites		*/
+    char *name;          /* unbound name			*/
+    char *path;          /* bound path			*/
+    List_t *prereqs;     /* prerequisites		*/
     struct Rule_s *leaf; /* recursion leaf alias		*/
-    int flags; /* RULE_* flags			*/
-    int making; /* currently make()ing		*/
-    unsigned long time; /* modification time		*/
+    int flags;           /* RULE_* flags			*/
+    int making;          /* currently make()ing		*/
+    unsigned long time;  /* modification time		*/
 } Rule_t;
 
 typedef struct Stream_s /* input file stream stack	*/
 {
-    Stdio_t *fp; /* read stream			*/
-    char *file; /* stream path			*/
+    Stdio_t *fp;        /* read stream			*/
+    char *file;         /* stream path			*/
     unsigned long line; /* stream line			*/
-    int flags; /* stream flags			*/
+    int flags;          /* stream flags			*/
 } Stream_t;
 
 typedef struct View_s /* viewpath level		*/
 {
     struct View_s *next; /* next level in viewpath	*/
-    int node; /* viewpath node path length	*/
-    char dir[1]; /* viewpath level dir prefix	*/
+    int node;            /* viewpath node path length	*/
+    char dir[1];         /* viewpath level dir prefix	*/
 } View_t;
 
 static struct /* program state		*/
@@ -220,36 +220,36 @@ static struct /* program state		*/
     Buf_t *old; /* dropped buffers		*/
     Buf_t *opt; /* option buffer		*/
 
-    Dict_t *leaf; /* recursion leaf dictionary	*/
-    Dict_t *libs; /* library dictionary		*/
+    Dict_t *leaf;  /* recursion leaf dictionary	*/
+    Dict_t *libs;  /* library dictionary		*/
     Dict_t *rules; /* rule dictionary		*/
-    Dict_t *vars; /* variable dictionary		*/
+    Dict_t *vars;  /* variable dictionary		*/
 
     View_t *view; /* viewpath levels		*/
 
     char *directory; /* work in this directory	*/
-    char *id; /* command name			*/
-    char *file; /* first input file		*/
-    char *pwd; /* current directory		*/
-    char *recurse; /* recursion pattern		*/
-    char *shell; /* ${SHELL}			*/
+    char *id;        /* command name			*/
+    char *file;      /* first input file		*/
+    char *pwd;       /* current directory		*/
+    char *recurse;   /* recursion pattern		*/
+    char *shell;     /* ${SHELL}			*/
 
-    int active; /* targets currently active	*/
-    int debug; /* negative of debug level	*/
-    int errors; /* some error(s) occurred	*/
-    int exec; /* execute actions		*/
-    int explain; /* explain actions		*/
-    int force; /* all targets out of date	*/
-    int ignore; /* ignore command errors	*/
-    int indent; /* debug indent			*/
+    int active;    /* targets currently active	*/
+    int debug;     /* negative of debug level	*/
+    int errors;    /* some error(s) occurred	*/
+    int exec;      /* execute actions		*/
+    int explain;   /* explain actions		*/
+    int force;     /* all targets out of date	*/
+    int ignore;    /* ignore command errors	*/
+    int indent;    /* debug indent			*/
     int keepgoing; /* do siblings on error		*/
-    int never; /* never execute		*/
-    int peek; /* next line already in input	*/
-    int probed; /* probe already done		*/
-    int verified; /* don't bother with verify()	*/
+    int never;     /* never execute		*/
+    int peek;      /* next line already in input	*/
+    int probed;    /* probe already done		*/
+    int verified;  /* don't bother with verify()	*/
 
     Stream_t streams[4]; /* input file stream stack	*/
-    Stream_t *sp; /* input stream stack pointer	*/
+    Stream_t *sp;        /* input stream stack pointer	*/
 
     char input[8 * CHUNK]; /* input buffer			*/
 } state;

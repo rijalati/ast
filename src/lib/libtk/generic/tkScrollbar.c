@@ -25,73 +25,73 @@
 
 typedef struct
 {
-    Tk_Window tkwin; /* Window that embodies the scrollbar.  NULL
-                      * means that the window has been destroyed
-                      * but the data structures haven't yet been
-                      * cleaned up.*/
-    Display *display; /* Display containing widget.  Used, among
-                       * other things, so that resources can be
-                       * freed even after tkwin has gone away. */
-    Tcl_Interp *interp; /* Interpreter associated with scrollbar. */
+    Tk_Window tkwin;       /* Window that embodies the scrollbar.  NULL
+                            * means that the window has been destroyed
+                            * but the data structures haven't yet been
+                            * cleaned up.*/
+    Display *display;      /* Display containing widget.  Used, among
+                            * other things, so that resources can be
+                            * freed even after tkwin has gone away. */
+    Tcl_Interp *interp;    /* Interpreter associated with scrollbar. */
     Tcl_Command widgetCmd; /* Token for scrollbar's widget command. */
-    Tk_Uid orientUid; /* Orientation for window ("vertical" or
-                       * "horizontal"). */
-    int vertical; /* Non-zero means vertical orientation
-                   * requested, zero means horizontal. */
-    int width; /* Desired narrow dimension of scrollbar,
-                * in pixels. */
-    char *command; /* Command prefix to use when invoking
-                    * scrolling commands.  NULL means don't
-                    * invoke commands.  Malloc'ed. */
-    int commandSize; /* Number of non-NULL bytes in command. */
-    int repeatDelay; /* How long to wait before auto-repeating
-                      * on scrolling actions (in ms). */
-    int repeatInterval; /* Interval between autorepeats (in ms). */
-    int jump; /* Value of -jump option. */
+    Tk_Uid orientUid;      /* Orientation for window ("vertical" or
+                            * "horizontal"). */
+    int vertical;          /* Non-zero means vertical orientation
+                            * requested, zero means horizontal. */
+    int width;             /* Desired narrow dimension of scrollbar,
+                            * in pixels. */
+    char *command;         /* Command prefix to use when invoking
+                            * scrolling commands.  NULL means don't
+                            * invoke commands.  Malloc'ed. */
+    int commandSize;       /* Number of non-NULL bytes in command. */
+    int repeatDelay;       /* How long to wait before auto-repeating
+                            * on scrolling actions (in ms). */
+    int repeatInterval;    /* Interval between autorepeats (in ms). */
+    int jump;              /* Value of -jump option. */
 
     /*
      * Information used when displaying widget:
      */
 
-    int borderWidth; /* Width of 3-D borders. */
-    Tk_3DBorder bgBorder; /* Used for drawing background (all flat
-                           * surfaces except for trough). */
+    int borderWidth;          /* Width of 3-D borders. */
+    Tk_3DBorder bgBorder;     /* Used for drawing background (all flat
+                               * surfaces except for trough). */
     Tk_3DBorder activeBorder; /* For drawing backgrounds when active (i.e.
                                * when mouse is positioned over element). */
-    XColor *troughColorPtr; /* Color for drawing trough. */
-    GC troughGC; /* For drawing trough. */
-    GC copyGC; /* Used for copying from pixmap onto screen. */
-    int relief; /* Indicates whether window as a whole is
-                 * raised, sunken, or flat. */
-    int highlightWidth; /* Width in pixels of highlight to draw
-                         * around widget when it has the focus.
-                         * <= 0 means don't draw a highlight. */
+    XColor *troughColorPtr;   /* Color for drawing trough. */
+    GC troughGC;              /* For drawing trough. */
+    GC copyGC;                /* Used for copying from pixmap onto screen. */
+    int relief;               /* Indicates whether window as a whole is
+                               * raised, sunken, or flat. */
+    int highlightWidth;       /* Width in pixels of highlight to draw
+                               * around widget when it has the focus.
+                               * <= 0 means don't draw a highlight. */
     XColor *highlightBgColorPtr;
     /* Color for drawing traversal highlight
      * area when highlight is off. */
     XColor *highlightColorPtr; /* Color for drawing traversal highlight. */
-    int inset; /* Total width of all borders, including
-                * traversal highlight and 3-D border.
-                * Indicates how much interior stuff must
-                * be offset from outside edges to leave
-                * room for borders. */
-    int elementBorderWidth; /* Width of border to draw around elements
-                             * inside scrollbar (arrows and slider).
-                             * -1 means use borderWidth. */
-    int arrowLength; /* Length of arrows along long dimension of
-                      * scrollbar, including space for a small gap
-                      * between the arrow and the slider.
-                      * Recomputed on window size changes. */
-    int sliderFirst; /* Pixel coordinate of top or left edge
-                      * of slider area, including border. */
-    int sliderLast; /* Coordinate of pixel just after bottom
-                     * or right edge of slider area, including
-                     * border. */
-    int activeField; /* Names field to be displayed in active
-                      * colors, such as TOP_ARROW, or 0 for
-                      * no field. */
-    int activeRelief; /* Value of -activeRelief option: relief
-                       * to use for active element. */
+    int inset;                 /* Total width of all borders, including
+                                * traversal highlight and 3-D border.
+                                * Indicates how much interior stuff must
+                                * be offset from outside edges to leave
+                                * room for borders. */
+    int elementBorderWidth;    /* Width of border to draw around elements
+                                * inside scrollbar (arrows and slider).
+                                * -1 means use borderWidth. */
+    int arrowLength;           /* Length of arrows along long dimension of
+                                * scrollbar, including space for a small gap
+                                * between the arrow and the slider.
+                                * Recomputed on window size changes. */
+    int sliderFirst;           /* Pixel coordinate of top or left edge
+                                * of slider area, including border. */
+    int sliderLast;            /* Coordinate of pixel just after bottom
+                                * or right edge of slider area, including
+                                * border. */
+    int activeField;           /* Names field to be displayed in active
+                                * colors, such as TOP_ARROW, or 0 for
+                                * no field. */
+    int activeRelief;          /* Value of -activeRelief option: relief
+                                * to use for active element. */
 
     /*
      * Information describing the application related to the scrollbar.
@@ -104,36 +104,36 @@ typedef struct
      * flag is 0.
      */
 
-    int totalUnits; /* Total dimension of application, in
-                     * units.  Valid only if the NEW_STYLE_COMMANDS
-                     * flag isn't set. */
-    int windowUnits; /* Maximum number of units that can be
-                      * displayed in the window at once.  Valid
-                      * only if the NEW_STYLE_COMMANDS flag isn't
-                      * set. */
-    int firstUnit; /* Number of last unit visible in
-                    * application's window.  Valid only if the
-                    * NEW_STYLE_COMMANDS flag isn't set. */
-    int lastUnit; /* Index of last unit visible in window.
-                   * Valid only if the NEW_STYLE_COMMANDS
-                   * flag isn't set. */
+    int totalUnits;       /* Total dimension of application, in
+                           * units.  Valid only if the NEW_STYLE_COMMANDS
+                           * flag isn't set. */
+    int windowUnits;      /* Maximum number of units that can be
+                           * displayed in the window at once.  Valid
+                           * only if the NEW_STYLE_COMMANDS flag isn't
+                           * set. */
+    int firstUnit;        /* Number of last unit visible in
+                           * application's window.  Valid only if the
+                           * NEW_STYLE_COMMANDS flag isn't set. */
+    int lastUnit;         /* Index of last unit visible in window.
+                           * Valid only if the NEW_STYLE_COMMANDS
+                           * flag isn't set. */
     double firstFraction; /* Position of first visible thing in window,
                            * specified as a fraction between 0 and
                            * 1.0. */
-    double lastFraction; /* Position of last visible thing in window,
-                          * specified as a fraction between 0 and
-                          * 1.0. */
+    double lastFraction;  /* Position of last visible thing in window,
+                           * specified as a fraction between 0 and
+                           * 1.0. */
 
     /*
      * Miscellaneous information:
      */
 
     Tk_Cursor cursor; /* Current cursor for window, or None. */
-    char *takeFocus; /* Value of -takefocus option;  not used in
-                      * the C code, but used by keyboard traversal
-                      * scripts.  Malloc'ed, but may be NULL. */
-    int flags; /* Various flags;  see below for
-                * definitions. */
+    char *takeFocus;  /* Value of -takefocus option;  not used in
+                       * the C code, but used by keyboard traversal
+                       * scripts.  Malloc'ed, but may be NULL. */
+    int flags;        /* Various flags;  see below for
+                       * definitions. */
 } Scrollbar;
 
 /*
@@ -386,9 +386,9 @@ _ANSI_ARGS_((ClientData clientData, Tcl_Interp *, int argc, char **argv));
 int Tk_ScrollbarCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     Scrollbar *scrollPtr;
@@ -500,9 +500,9 @@ error:
 static int ScrollbarWidgetCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about scrollbar
                         * widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Scrollbar *scrollPtr = ( Scrollbar * )clientData;
     int result = TCL_OK;
@@ -965,14 +965,14 @@ static void DestroyScrollbar(memPtr) char *memPtr; /* Info about scrollbar
  */
 
 static int ConfigureScrollbar(interp, scrollPtr, argc, argv, flags)
-Tcl_Interp *interp; /* Used for error reporting. */
+Tcl_Interp *interp;   /* Used for error reporting. */
 Scrollbar *scrollPtr; /* Information about widget;  may or
                        * may not already have values for
                        * some fields. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Flags to pass to
-            * Tk_ConfigureWidget. */
+int argc;             /* Number of valid entries in argv. */
+char **argv;          /* Arguments. */
+int flags;            /* Flags to pass to
+                       * Tk_ConfigureWidget. */
 {
     size_t length;
     XGCValues gcValues;
@@ -1306,7 +1306,7 @@ done:
 
 static void ScrollbarEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
-XEvent *eventPtr; /* Information about event. */
+XEvent *eventPtr;      /* Information about event. */
 {
     Scrollbar *scrollPtr = ( Scrollbar * )clientData;
 

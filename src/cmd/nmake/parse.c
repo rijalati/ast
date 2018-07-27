@@ -40,40 +40,40 @@
 #define PS1 "make> " /* primary query prompt		*/
 #define PS2 ">>>>> " /* secondary query prompt	*/
 
-#define OP_ASSERT (1 << 0) /* assertion statement		*/
-#define OP_ASSIGN (1 << 1) /* assignment statement		*/
-#define OP_EMPTY (1 << 2) /* no operator found		*/
+#define OP_ASSERT (1 << 0)          /* assertion statement		*/
+#define OP_ASSIGN (1 << 1)          /* assignment statement		*/
+#define OP_EMPTY (1 << 2)           /* no operator found		*/
 #define OP_STATEMENT ((1 << 3) - 1) /* statement type mask		*/
 
-#define OP_ACTION (1 << 3) /* operator takes action	*/
-#define OP_APPEND (1 << 4) /* append assignment		*/
+#define OP_ACTION (1 << 3)    /* operator takes action	*/
+#define OP_APPEND (1 << 4)    /* append assignment		*/
 #define OP_AUXILIARY (1 << 5) /* auxiliary assignment		*/
-#define OP_EXPAND (1 << 6) /* expand lhs and rhs		*/
-#define OP_STATE (1 << 7) /* state assignment		*/
+#define OP_EXPAND (1 << 6)    /* expand lhs and rhs		*/
+#define OP_STATE (1 << 7)     /* state assignment		*/
 
-#define CON_kept (1 << 0) /* already kept part of block	*/
-#define CON_skip (1 << 1) /* skip this part of block	*/
+#define CON_kept (1 << 0)  /* already kept part of block	*/
+#define CON_skip (1 << 1)  /* skip this part of block	*/
 #define CON_stash (1 << 2) /* file loop body lines stashed	*/
 
-#define CON_if (1 << 3) /* if block			*/
-#define CON_elif (1 << 4) /* not used in flags		*/
-#define CON_else (1 << 5) /* had else			*/
-#define CON_end (1 << 6) /* not used in flags		*/
-#define CON_for (1 << 7) /* for loop block		*/
+#define CON_if (1 << 3)    /* if block			*/
+#define CON_elif (1 << 4)  /* not used in flags		*/
+#define CON_else (1 << 5)  /* had else			*/
+#define CON_end (1 << 6)   /* not used in flags		*/
+#define CON_for (1 << 7)   /* for loop block		*/
 #define CON_while (1 << 8) /* while loop block		*/
-#define CON_eval (1 << 9) /* eval block			*/
+#define CON_eval (1 << 9)  /* eval block			*/
 
-#define CON_break (1 << 10) /* loop break			*/
+#define CON_break (1 << 10)    /* loop break			*/
 #define CON_continue (2 << 10) /* loop continue		*/
-#define CON_error (3 << 10) /* error message output		*/
-#define CON_exit (4 << 10) /* exit				*/
-#define CON_let (5 << 10) /* let expression		*/
-#define CON_local (6 << 10) /* local var declaration	*/
-#define CON_print (7 << 10) /* standard output message	*/
-#define CON_read (8 << 10) /* read				*/
-#define CON_return (9 << 10) /* return			*/
-#define CON_rules (10 << 10) /* rules			*/
-#define CON_set (11 << 10) /* set options			*/
+#define CON_error (3 << 10)    /* error message output		*/
+#define CON_exit (4 << 10)     /* exit				*/
+#define CON_let (5 << 10)      /* let expression		*/
+#define CON_local (6 << 10)    /* local var declaration	*/
+#define CON_print (7 << 10)    /* standard output message	*/
+#define CON_read (8 << 10)     /* read				*/
+#define CON_return (9 << 10)   /* return			*/
+#define CON_rules (10 << 10)   /* rules			*/
+#define CON_set (11 << 10)     /* set options			*/
 
 #define PUSHLOCAL(p)                                                         \
     do                                                                       \
@@ -111,10 +111,10 @@ typedef struct Local_s Local_t;
 struct Local_s /* local variable state		*/
 {
     Hash_bucket_t *bucket; /* table.var hash bucket	*/
-    Var_t *oldv; /* old variable value		*/
-    Var_t newv; /* new variable info		*/
-    Local_t *next; /* next in list			*/
-    int line; /* declaration line number	*/
+    Var_t *oldv;           /* old variable value		*/
+    Var_t newv;            /* new variable info		*/
+    Local_t *next;         /* next in list			*/
+    int line;              /* declaration line number	*/
 };
 
 typedef struct Control_s /* flow control block stack	*/
@@ -122,7 +122,7 @@ typedef struct Control_s /* flow control block stack	*/
     int flags; /* block flags			*/
     union
     {
-        char *buffer; /* loop body buffer		*/
+        char *buffer;  /* loop body buffer		*/
         size_t offset; /* loop body ip offset		*/
     } body;
     int line; /* loop line number		*/
@@ -131,11 +131,11 @@ typedef struct Control_s /* flow control block stack	*/
         struct
         {
             char *test; /* while loop test		*/
-            int free; /* free test			*/
+            int free;   /* free test			*/
         } w;
         struct
         {
-            Var_t *var; /* for loop variable		*/
+            Var_t *var;  /* for loop variable		*/
             char **args; /* for loop arg vector		*/
             Sfio_t *tmp; /* for loop arg tmp		*/
             Sfio_t *vec; /* for loop args tmp		*/
@@ -145,29 +145,29 @@ typedef struct Control_s /* flow control block stack	*/
 
 typedef struct Parseinfo_s /* recursive parse state stack	*/
 {
-    Control_t *cp; /* control block pointer	*/
+    Control_t *cp;    /* control block pointer	*/
     Control_t *block; /* control block lo water	*/
 
     /* the rest are implicitly initialized */
 
-    int argc; /* local argc			*/
-    char *name; /* current level input name	*/
-    char *here; /* <<? termination string	*/
-    Sfio_t *fp; /* input file pointer		*/
-    Sfio_t *ip; /* readline write string	*/
-    Sfio_t *scoped; /* scoped options/assignments	*/
-    char *bp; /* input buffer pointer		*/
-    char *stashget; /* loop body stash get		*/
-    char *pushback; /* line pushback pointer	*/
-    Local_t *local; /* local variables		*/
-    int checkhere; /* <<? offset			*/
-    int line; /* prev level input line number	*/
-    int splice; /* splice line			*/
-    short indent; /* active indentation level	*/
-    unsigned char eval; /* eval block level		*/
-    unsigned char status; /* action return status		*/
-    unsigned int newline : 1; /* \n at *bp replaced by 0	*/
-    unsigned int prompt : 1; /* interactive input with prompt*/
+    int argc;                  /* local argc			*/
+    char *name;                /* current level input name	*/
+    char *here;                /* <<? termination string	*/
+    Sfio_t *fp;                /* input file pointer		*/
+    Sfio_t *ip;                /* readline write string	*/
+    Sfio_t *scoped;            /* scoped options/assignments	*/
+    char *bp;                  /* input buffer pointer		*/
+    char *stashget;            /* loop body stash get		*/
+    char *pushback;            /* line pushback pointer	*/
+    Local_t *local;            /* local variables		*/
+    int checkhere;             /* <<? offset			*/
+    int line;                  /* prev level input line number	*/
+    int splice;                /* splice line			*/
+    short indent;              /* active indentation level	*/
+    unsigned char eval;        /* eval block level		*/
+    unsigned char status;      /* action return status		*/
+    unsigned int newline : 1;  /* \n at *bp replaced by 0	*/
+    unsigned int prompt : 1;   /* interactive input with prompt*/
     unsigned int stashput : 1; /* put lines in stash		*/
 } Parseinfo_t;
 
@@ -2287,7 +2287,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
     struct /* prereq attributes	*/
     {
         Rule_t rule; /* rule attributes	*/
-        int op; /* assertion op		*/
+        int op;      /* assertion op		*/
     } * att, clr, set;
 
     if (opr)

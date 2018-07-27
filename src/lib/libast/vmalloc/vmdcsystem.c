@@ -87,8 +87,8 @@ static Vmemory_f _Vmemoryf = 0;
 #        else
 #            define MAP_ANON 0
 #        endif /*MAP_ANONYMOUS*/
-#    endif /*MAP_ANON*/
-#endif /*_mem_mmap_anon || _mem_mmap_zero*/
+#    endif     /*MAP_ANON*/
+#endif         /*_mem_mmap_anon || _mem_mmap_zero*/
 
 /*
  * hint at "transparent huge pages" (=largepages) if
@@ -183,7 +183,7 @@ sbrkmem(Vmalloc_t *vm,
     if ((csize % _Vmpagesize) != 0)
         return NIL(Void_t *); /* bad call! */
     else if ((nsize = ROUND(nsize, _Vmpagesize)) == csize)
-        return caddr; /* nothing to do */
+        return caddr;       /* nothing to do */
     else if (nsize < csize) /* no memory reduction */
         return NIL(Void_t *);
 
@@ -233,7 +233,7 @@ safebrkmem(Vmalloc_t *vm,
     if ((csize % _Vmpagesize) != 0)
         return NIL(Void_t *); /* bad call! */
     else if ((nsize = ROUND(nsize, _Vmpagesize)) == csize)
-        return caddr; /* nothing to do */
+        return caddr;       /* nothing to do */
     else if (nsize < csize) /* no memory reduction */
         return NIL(Void_t *);
 
@@ -343,7 +343,7 @@ mmapanonmem(Vmalloc_t *vm,
 #        define OPEN_MAX 64
 #    endif
 #    define FD_PRIVATE (3 * OPEN_MAX / 4) /* private file descriptor	*/
-#    define FD_NONE (-2) /* no mapping with file desc	*/
+#    define FD_NONE (-2)                  /* no mapping with file desc	*/
 
 /* this is called after an initial successful call of mmapzeromeminit() */
 static Void_t *
@@ -565,7 +565,7 @@ getmemory(Vmalloc_t *vm,
             return Vmheap;
         }
         else /* we won the right to initialize Vmheap below */
-        { /**/
+        {    /**/
             DEBUG_ASSERT(status == 0);
             /**/ DEBUG_ASSERT(Init == HEAPINIT);
             _vmoptions(3);
@@ -644,8 +644,8 @@ getmemory(Vmalloc_t *vm,
         0 /* method ID	*/
         },
         NIL(char *), /* file	name	*/
-        0, /* line number	*/
-        0, /* function	*/
+        0,           /* line number	*/
+        0,           /* function	*/
         ( Vmdisc_t * )(&_Vmdcsystem),
         NIL(Vmdata_t *), /* see heapinit	*/
     };

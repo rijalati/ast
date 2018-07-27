@@ -79,16 +79,16 @@ static const char usage[]
 typedef struct State_s /* program state		*/
 {
     Shbltin_t *context; /* builtin context		*/
-    int clobber; /* clear out file data first	*/
-    int directory; /* rmdir(dir) not unlink(dir)	*/
-    int force; /* force actions		*/
-    int fs3d; /* 3d enabled			*/
-    int interactive; /* prompt for approval		*/
-    int recursive; /* remove subtrees too		*/
-    int terminal; /* attached to terminal		*/
-    int uid; /* caller uid			*/
-    int unconditional; /* enable dir rwx on preorder	*/
-    int verbose; /* display each file		*/
+    int clobber;        /* clear out file data first	*/
+    int directory;      /* rmdir(dir) not unlink(dir)	*/
+    int force;          /* force actions		*/
+    int fs3d;           /* 3d enabled			*/
+    int interactive;    /* prompt for approval		*/
+    int recursive;      /* remove subtrees too		*/
+    int terminal;       /* attached to terminal		*/
+    int uid;            /* caller uid			*/
+    int unconditional;  /* enable dir rwx on preorder	*/
+    int verbose;        /* display each file		*/
 #if _lib_fsync
     char buf[SF_BUFSIZE]; /* clobber buffer		*/
 #endif

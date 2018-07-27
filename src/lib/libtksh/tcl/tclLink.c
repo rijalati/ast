@@ -27,20 +27,20 @@
 typedef struct Link
 {
     Tcl_Interp *interp; /* Interpreter containing Tcl variable. */
-    char *varName; /* Name of variable (must be global).  This
-                    * is needed during trace callbacks, since
-                    * the actual variable may be aliased at
-                    * that time via upvar. */
-    char *addr; /* Location of C variable. */
-    int type; /* Type of link (TCL_LINK_INT, etc.). */
+    char *varName;      /* Name of variable (must be global).  This
+                         * is needed during trace callbacks, since
+                         * the actual variable may be aliased at
+                         * that time via upvar. */
+    char *addr;         /* Location of C variable. */
+    int type;           /* Type of link (TCL_LINK_INT, etc.). */
     union
     {
         int i;
         double d;
     } lastValue; /* Last known value of C variable;  used to
                   * avoid string conversions. */
-    int flags; /* Miscellaneous one-bit values;  see below
-                * for definitions. */
+    int flags;   /* Miscellaneous one-bit values;  see below
+                  * for definitions. */
 } Link;
 
 /*
@@ -89,12 +89,12 @@ static char *StringValue _ANSI_ARGS_((Link * linkPtr, char *buffer));
 
 int Tcl_LinkVar(interp, varName, addr, type)
 Tcl_Interp *interp; /* Interpreter in which varName exists. */
-char *varName; /* Name of a global variable in interp. */
-char *addr; /* Address of a C variable to be linked
-             * to varName. */
-int type; /* Type of C variable: TCL_LINK_INT, etc.
-           * Also may have TCL_LINK_READ_ONLY
-           * OR'ed in. */
+char *varName;      /* Name of a global variable in interp. */
+char *addr;         /* Address of a C variable to be linked
+                     * to varName. */
+int type;           /* Type of C variable: TCL_LINK_INT, etc.
+                     * Also may have TCL_LINK_READ_ONLY
+                     * OR'ed in. */
 {
     Link *linkPtr;
     char buffer[TCL_DOUBLE_SPACE];
@@ -200,7 +200,7 @@ char *varName; /* Global variable in interp to unlink. */
 
 void Tcl_UpdateLinkedVar(interp, varName)
 Tcl_Interp *interp; /* Interpreter containing variable. */
-char *varName; /* Name of global variable that is linked. */
+char *varName;      /* Name of global variable that is linked. */
 {
     Link *linkPtr;
     char buffer[TCL_DOUBLE_SPACE];
@@ -242,10 +242,10 @@ char *varName; /* Name of global variable that is linked. */
 
 static char *LinkTraceProc(clientData, interp, name1, name2, flags)
 ClientData clientData; /* Contains information about the link. */
-Tcl_Interp *interp; /* Interpreter containing Tcl variable. */
-char *name1; /* First part of variable name. */
-char *name2; /* Second part of variable name. */
-int flags; /* Miscellaneous additional information. */
+Tcl_Interp *interp;    /* Interpreter containing Tcl variable. */
+char *name1;           /* First part of variable name. */
+char *name2;           /* Second part of variable name. */
+int flags;             /* Miscellaneous additional information. */
 {
     Link *linkPtr = ( Link * )clientData;
     int changed;

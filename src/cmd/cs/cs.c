@@ -139,7 +139,7 @@ static const char usage[]
 
 static struct
 {
-    int list; /* list flags			*/
+    int list;    /* list flags			*/
     char *local; /* csname(0)			*/
 } state;
 

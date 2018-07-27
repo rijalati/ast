@@ -143,7 +143,7 @@ sfpopen(Sfio_t *f, const char *command, const char *mode)
 #else
 Sfio_t *sfpopen(f, command, mode) Sfio_t *f;
 char *command; /* command to execute */
-char *mode; /* mode of the stream */
+char *mode;    /* mode of the stream */
 #endif
 {
 #if _PACKAGE_ast

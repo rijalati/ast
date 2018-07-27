@@ -29,14 +29,14 @@ typedef char Element;
 /* for suffix trees, a tree node looks like this */
 typedef struct _ts_
 {
-    Element *_label; /* substring labeling the edge */
-    long int _length; /* the length of the string */
-    struct _ts_ *_child; /* list of children */
+    Element *_label;       /* substring labeling the edge */
+    long int _length;      /* the length of the string */
+    struct _ts_ *_child;   /* list of children */
     struct _ts_ *_sibling; /* link for the child list */
     union
-    { /* these two fields are mutual exclusive */
+    {                       /* these two fields are mutual exclusive */
         struct _ts_ *_link; /* sub-link */
-        Element *_suffix; /* suffix */
+        Element *_suffix;   /* suffix */
     } _uls_;
 } Suftree;
 

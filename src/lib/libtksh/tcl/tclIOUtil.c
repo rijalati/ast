@@ -32,8 +32,8 @@ _ANSI_ARGS_(( Tcl_File, Tcl_File, Tcl_File, int, int * ));
 
 typedef struct Detached
 {
-    int pid; /* Id of process that's been detached
-              * but isn't known to have exited. */
+    int pid;                  /* Id of process that's been detached
+                               * but isn't known to have exited. */
     struct Detached *nextPtr; /* Next in list of all detached
                                * processes. */
 } Detached;
@@ -195,11 +195,11 @@ FileForRedirect(interp, spec, atOK, arg, nextArg, flags, skipPtr, closePtr,
 int TclGetOpenMode(interp, string, seekFlagPtr)
 Tcl_Interp *interp; /* Interpreter to use for error
                      * reporting - may be NULL. */
-char *string; /* Mode string, e.g. "r+" or
-               * "RDONLY CREAT". */
-int *seekFlagPtr; /* Set this to 1 if the caller
-                   * should seek to EOF during the
-                   * opening of the file. */
+char *string;       /* Mode string, e.g. "r+" or
+                     * "RDONLY CREAT". */
+int *seekFlagPtr;   /* Set this to 1 if the caller
+                     * should seek to EOF during the
+                     * opening of the file. */
 {
     int mode, modeArgc, c, i, gotRW;
     char **modeArgv, *flag;
@@ -805,7 +805,7 @@ TclCreatePipeline(interp, argc, argv, pidArrayPtr, inPipePtr,
     Tcl_AppendResult(interp,
 	    "command pipelines not supported on Macintosh OS", NULL);
     return -1;
-#    else /* !MAC_TCL */
+#    else  /* !MAC_TCL */
     int *pidPtr = NULL;		/* Points to malloc-ed array holding all
 				 * the pids of child processes. */
     int numPids = 0;		/* Actual number of processes that exist
@@ -1390,10 +1390,10 @@ char *Tcl_PosixError(interp) Tcl_Interp *interp; /* Interpreter whose
 Tcl_Channel Tcl_OpenCommandChannel(interp, argc, argv, flags)
 Tcl_Interp *interp; /* Interpreter for error reporting. Can
                      * NOT be NULL. */
-int argc; /* How many arguments. */
-char **argv; /* Array of arguments for command pipe. */
-int flags; /* Or'ed combination of TCL_STDIN, TCL_STDOUT,
-            * TCL_STDERR, and TCL_ENFORCE_MODE. */
+int argc;           /* How many arguments. */
+char **argv;        /* Array of arguments for command pipe. */
+int flags;          /* Or'ed combination of TCL_STDIN, TCL_STDOUT,
+                     * TCL_STDERR, and TCL_ENFORCE_MODE. */
 {
     Tcl_File *inPipePtr, *outPipePtr, *errFilePtr;
     Tcl_File inPipe, outPipe, errFile;

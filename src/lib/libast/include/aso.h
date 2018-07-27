@@ -34,9 +34,9 @@
  */
 
 /* types of locking operations done by asolock() */
-#    define ASO_UNLOCK (0001) /* unlock a lock locked with a key	*/
+#    define ASO_UNLOCK (0001)  /* unlock a lock locked with a key	*/
 #    define ASO_TRYLOCK (0002) /* try-locking, if failed, return	*/
-#    define ASO_LOCK (0004) /* spin-locking, never fail!		*/
+#    define ASO_LOCK (0004)    /* spin-locking, never fail!		*/
 
 /* usable in a spin-loop to acquire resource */
 #    define asospinrest() asorelax(1 << 18)

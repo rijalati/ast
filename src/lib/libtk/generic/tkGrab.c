@@ -88,7 +88,7 @@
 
 typedef struct
 {
-    Display *display; /* Display from which to discard events. */
+    Display *display;    /* Display from which to discard events. */
     unsigned int serial; /* Serial number with which to compare. */
 } GrabInfo;
 
@@ -118,13 +118,13 @@ typedef struct
 
 typedef struct NewGrabWinEvent
 {
-    Tcl_Event header; /* Standard information for all Tcl events. */
+    Tcl_Event header;   /* Standard information for all Tcl events. */
     TkDisplay *dispPtr; /* Display whose grab window is to change. */
-    Window grabWindow; /* New grab window for display.  This is
-                        * recorded instead of a (TkWindow *) because
-                        * it will allow us to detect cases where
-                        * the window is destroyed before this event
-                        * is processed. */
+    Window grabWindow;  /* New grab window for display.  This is
+                         * recorded instead of a (TkWindow *) because
+                         * it will allow us to detect cases where
+                         * the window is destroyed before this event
+                         * is processed. */
 } NewGrabWinEvent;
 
 /*
@@ -187,9 +187,9 @@ static void ReleaseButtonGrab _ANSI_ARGS_((TkDisplay * dispPtr));
 int Tk_GrabCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     int globalGrab, c;
     Tk_Window tkwin;
@@ -409,11 +409,11 @@ int Tk_Grab(interp, tkwin, grabGlobal) Tcl_Interp *interp; /* Used for error
                                                               reporting. */
 Tk_Window tkwin; /* Window on whose behalf the pointer
                   * is to be grabbed. */
-int grabGlobal; /* Non-zero means issue a grab to the
-                 * server so that no other application
-                 * gets mouse or keyboard events.
-                 * Zero means the grab only applies
-                 * within this application. */
+int grabGlobal;  /* Non-zero means issue a grab to the
+                  * server so that no other application
+                  * gets mouse or keyboard events.
+                  * Zero means the grab only applies
+                  * within this application. */
 {
     int grabResult, numTries;
     TkWindow *winPtr = ( TkWindow * )tkwin;
@@ -746,8 +746,8 @@ ReleaseButtonGrab(dispPtr) TkDisplay *dispPtr; /* Display whose button grab is
 
 int TkPointerEvent(eventPtr,
                    winPtr) XEvent *eventPtr; /* Pointer to the event. */
-TkWindow *winPtr; /* Tk's information for window
-                   * where event was reported. */
+TkWindow *winPtr;                            /* Tk's information for window
+                                              * where event was reported. */
 {
     TkWindow *winPtr2;
     TkDisplay *dispPtr = winPtr->dispPtr;
@@ -1086,25 +1086,25 @@ TkWindow *winPtr; /* New target window for event. */
 
 void
 TkInOutEvents(eventPtr, sourcePtr, destPtr, leaveType, enterType, position)
-XEvent *eventPtr; /* A template X event.  Must have all fields
-                   * properly set except for type, window,
-                   * subwindow, x, y, detail, and same_screen
-                   * (Not all of these fields are valid for
-                   * FocusIn/FocusOut events;  x_root and y_root
-                   * must be valid for Enter/Leave events, even
-                   * though x and y needn't be valid). */
-TkWindow *sourcePtr; /* Window that used to have the pointer or
-                      * focus (NULL means it was not in a window
-                      * managed by this process). */
-TkWindow *destPtr; /* Window that is to end up with the pointer
-                    * or focus (NULL means it's not one managed
-                    * by this process). */
-int leaveType; /* Type of events to generate for windows
-                * being left (LeaveNotify or FocusOut).  0
-                * means don't generate leave events. */
-int enterType; /* Type of events to generate for windows
-                * being entered (EnterNotify or FocusIn).  0
-                * means don't generate enter events. */
+XEvent *eventPtr;           /* A template X event.  Must have all fields
+                             * properly set except for type, window,
+                             * subwindow, x, y, detail, and same_screen
+                             * (Not all of these fields are valid for
+                             * FocusIn/FocusOut events;  x_root and y_root
+                             * must be valid for Enter/Leave events, even
+                             * though x and y needn't be valid). */
+TkWindow *sourcePtr;        /* Window that used to have the pointer or
+                             * focus (NULL means it was not in a window
+                             * managed by this process). */
+TkWindow *destPtr;          /* Window that is to end up with the pointer
+                             * or focus (NULL means it's not one managed
+                             * by this process). */
+int leaveType;              /* Type of events to generate for windows
+                             * being left (LeaveNotify or FocusOut).  0
+                             * means don't generate leave events. */
+int enterType;              /* Type of events to generate for windows
+                             * being entered (EnterNotify or FocusIn).  0
+                             * means don't generate enter events. */
 Tcl_QueuePosition position; /* Position at which events are added to
                              * the system event queue. */
 {
@@ -1272,17 +1272,17 @@ static void MovePointer2(sourcePtr, destPtr, mode, leaveEvents, enterEvents)
 TkWindow *sourcePtr; /* Window currently containing pointer (NULL
                       * means it's not one managed by this
                       * process). */
-TkWindow *destPtr; /* Window that is to end up containing the
-                    * pointer (NULL means it's not one managed
-                    * by this process). */
-int mode; /* Mode for enter/leave events, such as
-           * NotifyNormal or NotifyUngrab. */
-int leaveEvents; /* Non-zero means generate leave events for the
-                  * windows being left.  Zero means don't
-                  * generate leave events. */
-int enterEvents; /* Non-zero means generate enter events for the
-                  * windows being entered.  Zero means don't
-                  * generate enter events. */
+TkWindow *destPtr;   /* Window that is to end up containing the
+                      * pointer (NULL means it's not one managed
+                      * by this process). */
+int mode;            /* Mode for enter/leave events, such as
+                      * NotifyNormal or NotifyUngrab. */
+int leaveEvents;     /* Non-zero means generate leave events for the
+                      * windows being left.  Zero means don't
+                      * generate leave events. */
+int enterEvents;     /* Non-zero means generate enter events for the
+                      * windows being entered.  Zero means don't
+                      * generate enter events. */
 {
     XEvent event;
     Window dummy1, dummy2;
@@ -1498,8 +1498,8 @@ XEvent *eventPtr;
  */
 
 static void QueueGrabWindowChange(dispPtr, grabWinPtr)
-TkDisplay *dispPtr; /* Display on which to change the grab
-                     * window. */
+TkDisplay *dispPtr;   /* Display on which to change the grab
+                       * window. */
 TkWindow *grabWinPtr; /* Window that is to become the new grab
                        * window (may be NULL). */
 {
@@ -1582,10 +1582,10 @@ int flags; /* Flags argument to Tk_DoOneEvent: indicates
 static TkWindow *FindCommonAncestor(winPtr1, winPtr2, countPtr1, countPtr2)
 TkWindow *winPtr1; /* First window.   May be NULL. */
 TkWindow *winPtr2; /* Second window.  May be NULL. */
-int *countPtr1; /* Store nesting level of winPtr1 within
-                 * common ancestor here. */
-int *countPtr2; /* Store nesting level of winPtr2 within
-                 * common ancestor here. */
+int *countPtr1;    /* Store nesting level of winPtr1 within
+                    * common ancestor here. */
+int *countPtr2;    /* Store nesting level of winPtr2 within
+                    * common ancestor here. */
 {
     TkWindow *winPtr;
     TkWindow *ancestorPtr;

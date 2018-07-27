@@ -50,9 +50,9 @@ Sfio_t *
 _sfopenat(int cwd, Sfio_t *f, const char *file, const char *mode)
 #else
 Sfio_t *_sfopenat(cwd, f, file, mode) int cwd; /* cwd fd */
-Sfio_t *f; /* old stream structure */
-char *file; /* file/string to be opened */
-char *mode; /* mode of the stream */
+Sfio_t *f;                                     /* old stream structure */
+char *file;                                    /* file/string to be opened */
+char *mode;                                    /* mode of the stream */
 #endif
 {
     int fd, oldfd, oflags, fflags, sflags;
@@ -221,8 +221,8 @@ Sfio_t *
 _sfopen(Sfio_t *f, const char *file, const char *mode)
 #else
 Sfio_t *_sfopen(f, file, mode) Sfio_t *f; /* old stream structure */
-char *file; /* file/string to be opened */
-char *mode; /* mode of the stream */
+char *file;                               /* file/string to be opened */
+char *mode;                               /* mode of the stream */
 #endif
 {
     return _sfopenat(AT_FDCWD, f, file, mode);

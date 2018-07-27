@@ -69,22 +69,22 @@ __EXTERN__(Sfio_t, _Stak_data);
 
 struct frame
 {
-    char *prev; /* address of previous frame */
-    char *end; /* address of end this frame */
+    char *prev;     /* address of previous frame */
+    char *end;      /* address of end this frame */
     char **aliases; /* address aliases */
-    int nalias; /* number of aliases */
+    int nalias;     /* number of aliases */
 };
 
 struct stk
 {
     _stk_overflow_ stkoverflow; /* called when malloc fails */
-    short stkref; /* reference count; */
-    short stkflags; /* stack attributes */
-    char *stkbase; /* beginning of current stack frame */
-    char *stkend; /* end of current stack frame */
+    short stkref;               /* reference count; */
+    short stkflags;             /* stack attributes */
+    char *stkbase;              /* beginning of current stack frame */
+    char *stkend;               /* end of current stack frame */
 };
 
-static size_t init; /* 1 when initialized */
+static size_t init;        /* 1 when initialized */
 static struct stk *stkcur; /* pointer to current stk */
 static char *
 stkgrow(Sfio_t *, size_t);

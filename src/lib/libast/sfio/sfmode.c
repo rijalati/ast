@@ -354,7 +354,7 @@ int type;
         f->endb = f->data;
     }
     else
-    { /* restore read data */
+    {                           /* restore read data */
         if (p->ndata > f->size) /* may lose data!!! */
             p->ndata = f->size;
         if (p->ndata > 0)
@@ -382,8 +382,8 @@ _sfmode(reg Sfio_t *f, reg int wanted, reg int local)
 #else
 int _sfmode(f, wanted, local) reg Sfio_t *f; /* change r/w mode and sync file
                                                 pointer for this stream */
-reg int wanted; /* desired mode */
-reg int local; /* a local call */
+reg int wanted;                              /* desired mode */
+reg int local;                               /* a local call */
 #endif
 {
     reg int n;

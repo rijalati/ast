@@ -35,8 +35,8 @@ static int StoreStatData _ANSI_ARGS_((Tcl_Interp * interp,
 /* ARGSUSED */
 int Tcl_FileCmd1(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     char *p, *fileName;
     int c, statOp, result;
@@ -481,9 +481,9 @@ done:
  */
 
 static int StoreStatData(interp, varName, statPtr)
-Tcl_Interp *interp; /* Interpreter for error reports. */
-char *varName; /* Name of associative array variable
-                * in which to store stat results. */
+Tcl_Interp *interp;   /* Interpreter for error reports. */
+char *varName;        /* Name of associative array variable
+                       * in which to store stat results. */
 struct stat *statPtr; /* Pointer to buffer containing
                        * stat data to store in varName. */
 {
@@ -646,8 +646,8 @@ SplitUnixPath(char *path, Tcl_DString *bufPtr);
 void Tcl_SplitPath(path, argcPtr, argvPtr) char *path; /* Pointer to string
                                                           containing a path.
                                                         */
-int *argcPtr; /* Pointer to location to fill in with
-               * the number of elements in the path. */
+int *argcPtr;    /* Pointer to location to fill in with
+                  * the number of elements in the path. */
 char ***argvPtr; /* Pointer to place to store pointer to array
                   * of pointers to path elements. */
 {
@@ -793,8 +793,8 @@ Tksh_CreatePipeline(Tcl_Interp *interp,
 
 int Tcl_ExecCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Interp *iPtr = ( Interp * )interp;
     int oldInterpType = iPtr->interpType, result = TCL_ERROR;
@@ -831,8 +831,8 @@ Tksh_CreatePipeline(Tcl_Interp *interp,
                     char *argv[],
                     Tcl_DString *buffer)
 {
-    int cmdCount; /* Count of number of distinct commands
-                   * found in argc/argv. */
+    int cmdCount;       /* Count of number of distinct commands
+                         * found in argc/argv. */
     char *input = NULL; /* If non-null, then this points to a
                          * string containing input data (specified
                          * via <<) to be piped to the first process

@@ -82,8 +82,8 @@ dtmemory(Dt_t *dt, Void_t *addr, size_t size, Dtdisc_t *disc)
 #else
 static Void_t *dtmemory(dt, addr, size, disc) Dt_t *dt; /* dictionary
                                                          */
-Void_t *addr; /* address to be manipulate	*/
-size_t size; /* size to obtain		*/
+Void_t *addr;   /* address to be manipulate	*/
+size_t size;    /* size to obtain		*/
 Dtdisc_t *disc; /* discipline			*/
 #endif
 {

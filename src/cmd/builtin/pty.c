@@ -444,17 +444,17 @@ match(char *pattern, char *text, int must)
 typedef struct Master_s
 {
     Vmalloc_t *vm; /* allocation region			*/
-    char *ignore; /* ignore master lines matching this re	*/
-    char *peek; /* peek buffer pointer			*/
-    char *cur; /* current line				*/
-    char *nxt; /* next line				*/
-    char *end; /* end of lines				*/
-    char *max; /* end of buf				*/
-    char *buf; /* current buffer			*/
-    char *prompt; /* peek prompt				*/
-    int cursor; /* cursor in buf, 0 if fresh line	*/
-    int line; /* prompt line number			*/
-    int restore; /* previous line save char		*/
+    char *ignore;  /* ignore master lines matching this re	*/
+    char *peek;    /* peek buffer pointer			*/
+    char *cur;     /* current line				*/
+    char *nxt;     /* next line				*/
+    char *end;     /* end of lines				*/
+    char *max;     /* end of buf				*/
+    char *buf;     /* current buffer			*/
+    char *prompt;  /* peek prompt				*/
+    int cursor;    /* cursor in buf, 0 if fresh line	*/
+    int line;      /* prompt line number			*/
+    int restore;   /* previous line save char		*/
 } Master_t;
 
 /*

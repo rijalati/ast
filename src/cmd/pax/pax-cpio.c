@@ -87,7 +87,7 @@ typedef struct Cpio_s
     int trailer;
 #if CPIO_EXTENDED
     char opsbuf[PATH_MAX]; /* extended ops buffer		*/
-    char *ops; /* opsbuf output pointer	*/
+    char *ops;             /* opsbuf output pointer	*/
 #endif
 } Cpio_t;
 

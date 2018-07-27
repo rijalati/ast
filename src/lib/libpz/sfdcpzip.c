@@ -31,16 +31,16 @@
 #define GZ_MAGIC_2 0x8b /* 2nd gzip magic char		*/
 #define LZ_MAGIC_2 0x9d /* 2nd lzw magic char		*/
 
-#define PZ_GZ_MAGOFF 10 /* compressed magic offset	*/
+#define PZ_GZ_MAGOFF 10    /* compressed magic offset	*/
 #define PZ_GZ_MAGIC_1 0x92 /* 1st compressed magic char	*/
 #define PZ_GZ_MAGIC_2 0x17 /* 2nd compressed magic char	*/
 
 typedef struct
 {
     Sfdisc_t sfdisc; /* sfio discipline		*/
-    Pzdisc_t disc; /* pzip discipline		*/
-    Pz_t *pz; /* pz handle			*/
-    Sfio_t *io; /* real pzwrite stream		*/
+    Pzdisc_t disc;   /* pzip discipline		*/
+    Pz_t *pz;        /* pz handle			*/
+    Sfio_t *io;      /* real pzwrite stream		*/
 } Sfpzip_t;
 
 /*

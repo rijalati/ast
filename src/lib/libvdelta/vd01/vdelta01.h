@@ -32,8 +32,8 @@
 #            else
 #                define __STD_C 0
 #            endif /*__cplusplus*/
-#        endif /*__STDC__*/
-#    endif /*__STD_C*/
+#        endif     /*__STDC__*/
+#    endif         /*__STD_C*/
 
 #    ifndef _BEGIN_EXTERNS_
 #        if __cplusplus
@@ -74,9 +74,9 @@ typedef struct _vddisc_s Vddisc_t;
 typedef int(*Vdio_f) _ARG_(( Void_t *, int, long, Vddisc_t * ));
 struct _vddisc_s
 {
-    long size; /* total data size	*/
-    Void_t *data; /* data array		*/
-    Vdio_f readf; /* to read data		*/
+    long size;     /* total data size	*/
+    Void_t *data;  /* data array		*/
+    Vdio_f readf;  /* to read data		*/
     Vdio_f writef; /* to write data	*/
 };
 

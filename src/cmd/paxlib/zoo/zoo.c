@@ -43,8 +43,8 @@ typedef struct Ar_s
     unsigned int index;
     unsigned long checksum;
 
-    unsigned long head; /* next member header offset	*/
-    unsigned long data; /* current member data offset	*/
+    unsigned long head;   /* next member header offset	*/
+    unsigned long data;   /* current member data offset	*/
     unsigned char majver; /* major version		*/
     unsigned char minver; /* minor version		*/
 } Ar_t;

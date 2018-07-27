@@ -98,7 +98,7 @@ hist_free();
 static int hist_version;
 static struct history *wasopen;
 static off_t hist_marker; /* offset of last command marker */
-static char htrim; /* set while in hist_trim */
+static char htrim;        /* set while in hist_trim */
 static const unsigned char hist_stamp[2] = { H_UNDO, H_VERSION };
 
 #define HIST_RECENT 600
@@ -1165,7 +1165,7 @@ int fb;
 #        ifdef FIOCLEX
         ioctl(fb, FIOCLEX, NULL);
 #        endif /* FIOCLEX */
-#    endif /* F_SETFD */
+#    endif     /* F_SETFD */
     }
     return (fb);
 }

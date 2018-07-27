@@ -35,17 +35,17 @@
 typedef struct _merge_s
 {
     Rsobj_t obj[MG_CACHE]; /* records			*/
-    int cpos; /* current cache position	*/
-    int cend; /* end of cached records	*/
-    ssize_t match; /* # incoming singletons/equiv	*/
-    Sfio_t *f; /* input stream			*/
-    int pos; /* stream position for tiebreak	*/
-    int eof; /* have reached eof		*/
-    int flags; /* stream flags			*/
-    uchar *rsrv; /* reserved data begin		*/
-    uchar *cur; /* reserved data current	*/
-    uchar *endrsrv; /* reserved data end		*/
-    Vmalloc_t *vm; /* space for keys		*/
+    int cpos;              /* current cache position	*/
+    int cend;              /* end of cached records	*/
+    ssize_t match;         /* # incoming singletons/equiv	*/
+    Sfio_t *f;             /* input stream			*/
+    int pos;               /* stream position for tiebreak	*/
+    int eof;               /* have reached eof		*/
+    int flags;             /* stream flags			*/
+    uchar *rsrv;           /* reserved data begin		*/
+    uchar *cur;            /* reserved data current	*/
+    uchar *endrsrv;        /* reserved data end		*/
+    Vmalloc_t *vm;         /* space for keys		*/
     struct _merge_s *equi; /* equivalence class chain	*/
 } Merge_t;
 
@@ -471,7 +471,7 @@ static Merge_t *
 mgopen(Rs_t *rs, Sfio_t *f, int pos)
 #else
 static Merge_t *mgopen(rs, f, pos) Rs_t *rs; /* sorting context				*/
-Sfio_t *f; /* input stream					*/
+Sfio_t *f;                                   /* input stream					*/
 int pos; /* stream position for resolving equal records	*/
 #endif
 {
@@ -1029,7 +1029,7 @@ mgwrite(reg Rs_t *rs, reg Merge_t *mg, reg int n)
 #else
 static int mgwrite(rs, mg, n) reg Rs_t *rs;
 reg Merge_t *mg; /* stream being output		*/
-reg int n; /* total in equivalence class	*/
+reg int n;       /* total in equivalence class	*/
 #endif
 {
     reg Rsobj_t *obj;
@@ -1123,10 +1123,10 @@ int
 rsmerge(Rs_t *rs, Sfio_t *f, Sfio_t **files, int n, int type)
 #else
 int rsmerge(rs, f, files, n, type) Rs_t *rs; /* sorting context		*/
-Sfio_t *f; /* output stream		*/
-Sfio_t **files; /* streams to be merged		*/
-int n; /* number of such streams	*/
-int type; /* RS_ITEXT|RS_OTEXT		*/
+Sfio_t *f;                                   /* output stream		*/
+Sfio_t **files;                              /* streams to be merged		*/
+int n;                                       /* number of such streams	*/
+int type;                                    /* RS_ITEXT|RS_OTEXT		*/
 #endif
 {
     reg Rsobj_t *obj, *o, *t, *endobj;

@@ -47,8 +47,8 @@
 #        define LONG_MAX (( long )(~(( unsigned long )0)) >> 1)
 #    endif
 
-#    define INSIZE PROCSIZE /* default insize		*/
-#    define OUTSIZE (64 * 1024) /* default outsize		*/
+#    define INSIZE PROCSIZE            /* default insize		*/
+#    define OUTSIZE (64 * 1024)        /* default outsize		*/
 #    define PROCSIZE (4 * 1024 * 1024) /* default procsize		*/
 
 #    define MAXFIELD INT_MAX
@@ -62,50 +62,50 @@ typedef struct Position_s /* field position		*/
 } Position_t;
 
 #    define _RSKEYFIELD_PRIVATE_                                             \
-        unsigned char aflag; /* accumulate dups here		*/                     \
-        unsigned char bflag; /* skip initial blanks		*/                      \
-        unsigned char eflag; /* skip trailing blanks		*/                     \
+        unsigned char aflag;    /* accumulate dups here		*/                  \
+        unsigned char bflag;    /* skip initial blanks		*/                   \
+        unsigned char eflag;    /* skip trailing blanks		*/                  \
         unsigned char standard; /* 1:-k 0:+pos-pos		*/                       \
-        int binary; /* binary data			*/                                      \
-        int code; /* coder ccode or conversion	*/                            \
-        int index; /* field definition index	*/                              \
-        int freetrans; /* free trans on close		*/                            \
-        unsigned char *trans; /* translation table		*/                       \
-        unsigned char *keep; /* deletion table		*/                           \
-        void *data; /* coder specific data		*/                               \
-        Position_t begin; /* key begins here		*/                             \
-        Position_t end; /* and ends here		*/
+        int binary;             /* binary data			*/                          \
+        int code;               /* coder ccode or conversion	*/              \
+        int index;              /* field definition index	*/                 \
+        int freetrans;          /* free trans on close		*/                   \
+        unsigned char *trans;   /* translation table		*/                     \
+        unsigned char *keep;    /* deletion table		*/                        \
+        void *data;             /* coder specific data		*/                   \
+        Position_t begin;       /* key begins here		*/                       \
+        Position_t end;         /* and ends here		*/
 
 typedef struct
 {
     unsigned char ident[UCHAR_MAX + 1]; /* identity transform	*/
-    unsigned char fold[UCHAR_MAX + 1]; /* fold case		*/
+    unsigned char fold[UCHAR_MAX + 1];  /* fold case		*/
 
-    unsigned char all[UCHAR_MAX + 1]; /* all significant	*/
-    unsigned char dict[UCHAR_MAX + 1]; /* dictionary order	*/
+    unsigned char all[UCHAR_MAX + 1];   /* all significant	*/
+    unsigned char dict[UCHAR_MAX + 1];  /* dictionary order	*/
     unsigned char print[UCHAR_MAX + 1]; /* printable significant*/
 } State_t;
 
 #    define _RSKEY_PRIVATE_                                                  \
-        State_t *state; /* readonly state		*/                                \
+        State_t *state;     /* readonly state		*/                            \
         Rsdisc_t *disctail; /* rslib() disc stack tail	*/                    \
         struct                                                               \
         {                                                                    \
-            Rskeyfield_t global; /* global field info		*/                    \
-            Rskeyfield_t *prev; /* previous field list tail	*/               \
-            int index; /* last field index		*/                               \
-            int maxfield; /* max field position		*/                          \
+            Rskeyfield_t global;       /* global field info		*/              \
+            Rskeyfield_t *prev;        /* previous field list tail	*/        \
+            int index;                 /* last field index		*/               \
+            int maxfield;              /* max field position		*/             \
             unsigned char **positions; /* field start positions	*/           \
-        } field; /* key field info		*/                                       \
+        } field;                       /* key field info		*/                 \
         struct                                                               \
         {                                                                    \
             Rskeyfield_t *head; /* accumulate list head		*/                  \
             Rskeyfield_t *tail; /* accumulate list tail		*/                  \
-        } accumulate; /* accumulate field info	*/                            \
+        } accumulate;           /* accumulate field info	*/                  \
         unsigned char *xfrmbuf; /* strxfrm buffer		*/                        \
-        unsigned int xfrmsiz; /* strxfrm buffer size		*/                     \
-        unsigned long shuffle; /* shuffle seed			*/                          \
-        unsigned char coded; /* coded keys specified		*/
+        unsigned int xfrmsiz;   /* strxfrm buffer size		*/                   \
+        unsigned long shuffle;  /* shuffle seed			*/                         \
+        unsigned char coded;    /* coded keys specified		*/
 
 #    include "rshdr.h"
 

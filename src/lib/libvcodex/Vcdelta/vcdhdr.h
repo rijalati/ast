@@ -28,10 +28,10 @@
 /* assumed max sizes for various instruction types. The current Vcdiff
    implementation only allows add+copy and copy+add instructions.
 */
-#define VCD_ADDMAX 256 /* absolute max for a single ADD	*/
+#define VCD_ADDMAX 256  /* absolute max for a single ADD	*/
 #define VCD_COPYMAX 256 /* absolute max for a single COPY	*/
-#define VCD_ADDCOPY 16 /* absolute max for a merged ADD	*/
-#define VCD_COPYADD 16 /* absolute max for a merged COPY	*/
+#define VCD_ADDCOPY 16  /* absolute max for a merged ADD	*/
+#define VCD_COPYADD 16  /* absolute max for a merged COPY	*/
 
 typedef struct _vcdiff_s Vcdiff_t;
 
@@ -44,12 +44,12 @@ typedef struct _vcdindex_s Vcdindex_t;
 /* Tables used to compute merged ADD+COPY and COPY+ADD instructions.  */
 struct _vcdsize_s
 {
-    ssize_t add; /* max single ADD size	*/
-    ssize_t copy[VCD_ADDR]; /* max single COPY size	*/
-    ssize_t add1[VCD_ADDR]; /* max ADD size in A+C	*/
+    ssize_t add;             /* max single ADD size	*/
+    ssize_t copy[VCD_ADDR];  /* max single COPY size	*/
+    ssize_t add1[VCD_ADDR];  /* max ADD size in A+C	*/
     ssize_t copy2[VCD_ADDR]; /* max COPY size in A+C	*/
     ssize_t copy1[VCD_ADDR]; /* max COPY size in C+A	*/
-    ssize_t add2[VCD_ADDR]; /* max ADD size in C+A	*/
+    ssize_t add2[VCD_ADDR];  /* max ADD size in C+A	*/
 };
 struct _vcdindex_s
 {
@@ -62,10 +62,10 @@ struct _vcdindex_s
 /* address caches to code COPY addresses */
 struct _vcdcache_s
 {
-    ssize_t s_near; /* size of near cache		*/
+    ssize_t s_near;  /* size of near cache		*/
     ssize_t *c_near; /* near address cache		*/
-    ssize_t n; /* index in near cache		*/
-    ssize_t s_same; /* size of same cache		*/
+    ssize_t n;       /* index in near cache		*/
+    ssize_t s_same;  /* size of same cache		*/
     ssize_t *c_same; /* exact match cache		*/
 };
 
@@ -84,7 +84,7 @@ struct _vcdiff_s
 
     Vcdcache_t *cache; /* address caches		*/
     Vcdtable_t *table; /* code table for compression	*/
-    Vcdsave_t *save; /* saved instruction		*/
+    Vcdsave_t *save;   /* saved instruction		*/
 
     Vcdsize_t *size;
     Vcdindex_t *index;

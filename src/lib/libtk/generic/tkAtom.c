@@ -121,7 +121,7 @@ static void AtomInit _ANSI_ARGS_((TkDisplay * dispPtr));
 Atom Tk_InternAtom(tkwin,
                    name) Tk_Window tkwin; /* Window token;  map name to atom
                                            * for this window's display. */
-char *name; /* Name to turn into atom. */
+char *name;                               /* Name to turn into atom. */
 {
     TkDisplay *dispPtr;
     Tcl_HashEntry *hPtr;

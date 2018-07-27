@@ -41,36 +41,36 @@
 #define GO '{' /* group nest open		*/
 #define OG '}' /* group nest close		*/
 
-#define OPT_WIDTH 80 /* default help text width	*/
+#define OPT_WIDTH 80  /* default help text width	*/
 #define OPT_MARGIN 10 /* default help text margin	*/
-#define OPT_USAGE 7 /* usage continuation indent	*/
+#define OPT_USAGE 7   /* usage continuation indent	*/
 
-#define OPT_flag 0x001 /* flag ( 0 or 1 )		*/
-#define OPT_hidden 0x002 /* remaining are hidden		*/
+#define OPT_flag 0x001       /* flag ( 0 or 1 )		*/
+#define OPT_hidden 0x002     /* remaining are hidden		*/
 #define OPT_ignorecase 0x004 /* arg match ignores case	*/
-#define OPT_invert 0x008 /* flag inverts long sense	*/
-#define OPT_listof 0x010 /* arg is ' ' or ',' list	*/
-#define OPT_number 0x020 /* arg is strtonll() number	*/
-#define OPT_oneof 0x040 /* arg may be set once		*/
-#define OPT_optional 0x080 /* arg is optional		*/
-#define OPT_string 0x100 /* arg is string		*/
+#define OPT_invert 0x008     /* flag inverts long sense	*/
+#define OPT_listof 0x010     /* arg is ' ' or ',' list	*/
+#define OPT_number 0x020     /* arg is strtonll() number	*/
+#define OPT_oneof 0x040      /* arg may be set once		*/
+#define OPT_optional 0x080   /* arg is optional		*/
+#define OPT_string 0x100     /* arg is string		*/
 
-#define OPT_preformat 0001 /* output preformat string	*/
+#define OPT_preformat 0001   /* output preformat string	*/
 #define OPT_proprietary 0002 /* proprietary docs		*/
 
 #define OPT_TYPE (OPT_flag | OPT_number | OPT_string)
 
-#define STYLE_posix 0 /* posix getopt usage		*/
-#define STYLE_short 1 /* [default] short usage	*/
-#define STYLE_long 2 /* long usage			*/
-#define STYLE_match 3 /* long description of matches	*/
+#define STYLE_posix 0   /* posix getopt usage		*/
+#define STYLE_short 1   /* [default] short usage	*/
+#define STYLE_long 2    /* long usage			*/
+#define STYLE_match 3   /* long description of matches	*/
 #define STYLE_options 4 /* short and long descriptions	*/
-#define STYLE_man 5 /* pretty details		*/
-#define STYLE_html 6 /* html details			*/
-#define STYLE_nroff 7 /* nroff details		*/
-#define STYLE_api 8 /* program details		*/
-#define STYLE_keys 9 /* translation key strings	*/
-#define STYLE_usage 10 /* escaped usage string		*/
+#define STYLE_man 5     /* pretty details		*/
+#define STYLE_html 6    /* html details			*/
+#define STYLE_nroff 7   /* nroff details		*/
+#define STYLE_api 8     /* program details		*/
+#define STYLE_keys 9    /* translation key strings	*/
+#define STYLE_usage 10  /* escaped usage string		*/
 
 #define FONT_BOLD 1
 #define FONT_ITALIC 2
@@ -94,9 +94,9 @@ typedef struct Attr_s
 typedef struct Help_s
 {
     const char *match; /* builtin help match name	*/
-    const char *name; /* builtin help name		*/
-    int style; /* STYLE_*			*/
-    const char *text; /* --? text			*/
+    const char *name;  /* builtin help name		*/
+    int style;         /* STYLE_*			*/
+    const char *text;  /* --? text			*/
     unsigned int size; /* strlen text			*/
 } Help_t;
 
@@ -109,7 +109,7 @@ typedef struct Font_s
 
 typedef struct List_s
 {
-    int type; /* { - + : }			*/
+    int type;         /* { - + : }			*/
     const char *name; /* list name			*/
     const char *text; /* help text			*/
 } List_t;
@@ -117,29 +117,29 @@ typedef struct List_s
 typedef struct Msg_s
 {
     const char *text; /* default message text		*/
-    Dtlink_t link; /* cdt link			*/
+    Dtlink_t link;    /* cdt link			*/
 } Msg_t;
 
 typedef struct Save_s
 {
     Dtlink_t link; /* cdt link			*/
-    char text[1]; /* saved text text		*/
+    char text[1];  /* saved text text		*/
 } Save_t;
 
 typedef struct Push_s
 {
     struct Push_s *next; /* next string			*/
-    char *ob; /* next char in old string	*/
-    char *oe; /* end of old string		*/
-    char *nb; /* next char in new string	*/
-    char *ne; /* end of new string		*/
-    int ch; /* localize() translation	*/
+    char *ob;            /* next char in old string	*/
+    char *oe;            /* end of old string		*/
+    char *nb;            /* next char in new string	*/
+    char *ne;            /* end of new string		*/
+    int ch;              /* localize() translation	*/
 } Push_t;
 
 typedef struct Tag_s
 {
     unsigned char level; /* indent level			*/
-    unsigned char id; /* TAG_* id			*/
+    unsigned char id;    /* TAG_* id			*/
 } Tag_t;
 
 typedef struct Indent_s

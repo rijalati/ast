@@ -54,7 +54,7 @@ objprint(Void_t *arg)
 Dtdisc_t Disc = { 0, 0, 0, 0, 0, objcmp, objhash, 0, 0 };
 
 #define N_OBJ 10000 /* total number of elements	*/
-#define R_OBJ 10 /* repetition: N_OBJ%R_OBJ == 0	*/
+#define R_OBJ 10    /* repetition: N_OBJ%R_OBJ == 0	*/
 static Obj_t Obj[N_OBJ];
 
 tmain()

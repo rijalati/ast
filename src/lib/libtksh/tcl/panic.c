@@ -93,8 +93,8 @@ _ANSI_ARGS_(TCL_VARARGS(char *, format));
 
 /* VARARGS ARGSUSED */
 void panic(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) char
-*format; /* Format string, suitable for passing to
-          * fprintf. */
+*format;                  /* Format string, suitable for passing to
+                           * fprintf. */
 char *arg1, *arg2, *arg3; /* Additional arguments (variable in number)
                            * to pass to fprintf. */
 char *arg4, *arg5, *arg6, *arg7, *arg8;

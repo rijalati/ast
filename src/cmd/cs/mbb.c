@@ -78,8 +78,8 @@ static const char usage[]
 
 typedef struct Log_s
 {
-    char name[2]; /* file name		*/
-    Sfio_t *sp; /* r/w stream		*/
+    char name[2];   /* file name		*/
+    Sfio_t *sp;     /* r/w stream		*/
     Sfoff_t offset; /* next write offset	*/
     size_t blocked; /* blocked connections	*/
 } Log_t;

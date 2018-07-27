@@ -38,22 +38,22 @@
 
 typedef struct Slt_s
 {
-    unsigned char *mapin; /* input map			*/
-    unsigned char *mapout; /* output map			*/
+    unsigned char *mapin;   /* input map			*/
+    unsigned char *mapout;  /* output map			*/
     char id[NAME_SIZE + 1]; /* name id			*/
-    char volume[64]; /* volume id			*/
-    char format[7]; /* format id			*/
+    char volume[64];        /* volume id			*/
+    char format[7];         /* format id			*/
     char implementation[8]; /* implementation id		*/
-    char owner[15]; /* owner id			*/
-    char standards[20]; /* standards id			*/
-    int done; /* label read done		*/
-    int ibm; /* ibm format			*/
-    int peek; /* buf (size peek) already read	*/
-    int section; /* inside section		*/
-    int sequence; /* sequence number		*/
-    int vol; /* emit volume prologue		*/
-    char buf[LABEL_MAX]; /* header buffer		*/
-    char last[5]; /* last label			*/
+    char owner[15];         /* owner id			*/
+    char standards[20];     /* standards id			*/
+    int done;               /* label read done		*/
+    int ibm;                /* ibm format			*/
+    int peek;               /* buf (size peek) already read	*/
+    int section;            /* inside section		*/
+    int sequence;           /* sequence number		*/
+    int vol;                /* emit volume prologue		*/
+    char buf[LABEL_MAX];    /* header buffer		*/
+    char last[5];           /* last label			*/
 } Slt_t;
 
 /*

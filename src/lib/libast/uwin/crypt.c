@@ -958,7 +958,7 @@ static C_block CF6464[64 / CHUNKBITS][1 << CHUNKBITS];
 
 /* ==================================== */
 
-static C_block constdatablock; /* encryption constant */
+static C_block constdatablock;               /* encryption constant */
 static char cryptresult[1 + 4 + 4 + 11 + 1]; /* encrypted result */
 
 /*
@@ -978,11 +978,11 @@ init_perm(C_block perm[64 / CHUNKBITS][1 << CHUNKBITS],
     int i, j, k, l;
 
     for (k = 0; k < chars_out * 8; k++)
-    { /* each output bit position */
+    {                 /* each output bit position */
         l = p[k] - 1; /* where this bit comes from */
         if (l < 0)
-            continue; /* output bit is always 0 */
-        i = l >> LGCHUNKBITS; /* which chunk this bit comes from */
+            continue;                   /* output bit is always 0 */
+        i = l >> LGCHUNKBITS;           /* which chunk this bit comes from */
         l = 1 << (l & (CHUNKBITS - 1)); /* mask for this bit */
         for (j = 0; j < (1 << CHUNKBITS); j++)
         { /* each chunk value */
@@ -1203,7 +1203,7 @@ des_cipher(const char *in, char *out, long salt, int num_iter)
     TO_SIX_BIT(salt, L0); /* convert to 4*(6+2) format */
 
 #    if defined(vax) || defined(pdp11)
-    salt = ~salt; /* "x &~ y" is faster than "x & y". */
+    salt = ~salt;         /* "x &~ y" is faster than "x & y". */
 #        define SALT (~salt)
 #    else
 #        define SALT salt
@@ -1230,7 +1230,7 @@ des_cipher(const char *in, char *out, long salt, int num_iter)
     R1 = (R1 >> 1) & 0x55555555L;
     L1 = R0 | R1; /* L1 is the odd-numbered input bits */
     STORE(L, L0, L1, B);
-    PERM3264(L, L0, L1, B.b, ( C_block * )IE3264); /* even bits */
+    PERM3264(L, L0, L1, B.b, ( C_block * )IE3264);     /* even bits */
     PERM3264(R, R0, R1, B.b + 4, ( C_block * )IE3264); /* odd bits */
 
     if (num_iter >= 0)

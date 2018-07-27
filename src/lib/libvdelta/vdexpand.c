@@ -27,7 +27,7 @@
 typedef struct _table_s
 {
     uchar *delta; /* delta string			*/
-    uchar *tar; /* target data			*/
+    uchar *tar;   /* target data			*/
     int n_tar;
     K_UDECL(quick, recent, rhere); /* address caches		*/
 } Table_t;

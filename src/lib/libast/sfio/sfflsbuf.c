@@ -33,7 +33,7 @@ _sfflsbuf(Sfio_t *f, int c)
 #else
 int _sfflsbuf(f, c) Sfio_t *f; /* write out the buffered content of this
                                   stream */
-int c; /* if c>=0, c is also written out */
+int c;                         /* if c>=0, c is also written out */
 #endif
 {
     ssize_t n, w, written;
@@ -111,8 +111,8 @@ int c; /* if c>=0, c is also written out */
         else if (w == 0)
         {
             if (written > 0) /* some buffer was cleared */
-                break; /* do normal exit below */
-            else /* nothing was done, returning failure */
+                break;       /* do normal exit below */
+            else             /* nothing was done, returning failure */
             {
                 SFOPEN(f, local);
                 SFMTXRETURN(f, -1);

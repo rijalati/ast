@@ -24,11 +24,11 @@
 **	Written by Kiem-Phong Vo.
 */
 
-#define PF_MINSIZE (16) /* minimum block size		*/
+#define PF_MINSIZE (16)               /* minimum block size		*/
 #define PF_DFLTSIZE (16 * PF_MINSIZE) /* default block size		*/
-#define PF_MAXSIZE (64 * PF_MINSIZE) /* maximum block size		*/
+#define PF_MAXSIZE (64 * PF_MINSIZE)  /* maximum block size		*/
 
-#define PFMERGE(bz) (16 * (bz)) /* merge if overlapped by this	*/
+#define PFMERGE(bz) (16 * (bz))          /* merge if overlapped by this	*/
 #define PFSMALL(n, bz) ((n) <= 3 * (bz)) /* window too small to use	*/
 
 #define PF_COEF (( Vchash_t )17) /* linear congruential hash 	*/
@@ -69,7 +69,7 @@ struct _pffile_s
     Vcchar_t *bloom; /* Bloom filtering of unmatches	*/
     size_t bmask;
 
-    Sfio_t *sf; /* stream matching against	*/
+    Sfio_t *sf;   /* stream matching against	*/
     Sfoff_t sfsz; /* max file size		*/
     ssize_t maxo; /* max object with signature	*/
 
@@ -88,9 +88,9 @@ struct _prefix_s
     ssize_t blksz; /* block size for signatures	*/
     Vchash_t coef; /* high coefficient of hashf	*/
     Vchash_t *key; /* temp space for data keys	*/
-    ssize_t nkey; /* current size of key[]	*/
-    Sfoff_t keyb; /* base of calculated keys	*/
-    Sfoff_t here; /* data processed to here	*/
+    ssize_t nkey;  /* current size of key[]	*/
+    Sfoff_t keyb;  /* base of calculated keys	*/
+    Sfoff_t here;  /* data processed to here	*/
 };
 
 /* functions to set and test bits from a Bloom filter */
@@ -408,7 +408,7 @@ pfmatch(Vcwindow_t *vcw, Void_t *data, size_t dtsz, Sfoff_t here)
 #else
 static Vcwmatch_t *pfmatch(vcw, data, dtsz, here) Vcwindow_t *vcw;
 Void_t *data; /* target data to be matched	*/
-size_t dtsz; /* data size			*/
+size_t dtsz;  /* data size			*/
 Sfoff_t here; /* current target position	*/
 #endif
 {
@@ -559,7 +559,7 @@ int type;
         else
         {
             sz = PF_DFLTSIZE;
-#define PF_MINBLKCNT (8 * 1024) /* aim for at least this many	*/
+#define PF_MINBLKCNT (8 * 1024)         /* aim for at least this many	*/
 #define PF_MAXBLKCNT (16 * 1024 * 1024) /* likewise for upper bound	*/
             while (sz < PF_MAXSIZE && maxsz / sz > PF_MAXBLKCNT)
                 sz += PF_MINSIZE;

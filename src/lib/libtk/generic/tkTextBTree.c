@@ -24,10 +24,10 @@
 
 typedef struct Summary
 {
-    TkTextTag *tagPtr; /* Handle for tag. */
-    int toggleCount; /* Number of transitions into or
-                      * out of this tag that occur in
-                      * the subtree rooted at this node. */
+    TkTextTag *tagPtr;       /* Handle for tag. */
+    int toggleCount;         /* Number of transitions into or
+                              * out of this tag that occur in
+                              * the subtree rooted at this node. */
     struct Summary *nextPtr; /* Next in list of all tags for same
                               * node, or NULL if at end of list. */
 } Summary;
@@ -40,23 +40,23 @@ typedef struct Node
 {
     struct Node *parentPtr; /* Pointer to parent node, or NULL if
                              * this is the root. */
-    struct Node *nextPtr; /* Next in list of siblings with the
-                           * same parent node, or NULL for end
-                           * of list. */
-    Summary *summaryPtr; /* First in malloc-ed list of info
-                          * about tags in this subtree (NULL if
-                          * no tag info in the subtree). */
-    int level; /* Level of this node in the B-tree.
-                * 0 refers to the bottom of the tree
-                * (children are lines, not nodes). */
+    struct Node *nextPtr;   /* Next in list of siblings with the
+                             * same parent node, or NULL for end
+                             * of list. */
+    Summary *summaryPtr;    /* First in malloc-ed list of info
+                             * about tags in this subtree (NULL if
+                             * no tag info in the subtree). */
+    int level;              /* Level of this node in the B-tree.
+                             * 0 refers to the bottom of the tree
+                             * (children are lines, not nodes). */
     union
-    { /* First in linked list of children. */
+    {                         /* First in linked list of children. */
         struct Node *nodePtr; /* Used if level > 0. */
-        TkTextLine *linePtr; /* Used if level == 0. */
+        TkTextLine *linePtr;  /* Used if level == 0. */
     } children;
     int numChildren; /* Number of children of this node. */
-    int numLines; /* Total number of lines (leaves) in
-                   * the subtree rooted here. */
+    int numLines;    /* Total number of lines (leaves) in
+                      * the subtree rooted here. */
 } Node;
 
 /*
@@ -74,7 +74,7 @@ typedef struct Node
 
 typedef struct BTree
 {
-    Node *rootPtr; /* Pointer to root of B-tree. */
+    Node *rootPtr;   /* Pointer to root of B-tree. */
     TkText *textPtr; /* Used to find tagTable in consistency
                       * checking code */
 } BTree;
@@ -86,15 +86,15 @@ typedef struct BTree
 
 typedef struct TagInfo
 {
-    int numTags; /* Number of tags for which there
-                  * is currently information in
-                  * tags and counts. */
-    int arraySize; /* Number of entries allocated for
-                    * tags and counts. */
+    int numTags;         /* Number of tags for which there
+                          * is currently information in
+                          * tags and counts. */
+    int arraySize;       /* Number of entries allocated for
+                          * tags and counts. */
     TkTextTag **tagPtrs; /* Array of tags seen so far.
                           * Malloc-ed. */
-    int *counts; /* Toggle count (so far) for each
-                  * entry in tags.  Malloc-ed. */
+    int *counts;         /* Toggle count (so far) for each
+                          * entry in tags.  Malloc-ed. */
 } TagInfo;
 
 /*
@@ -156,14 +156,14 @@ static TkTextSegment *FindTagStart _ANSI_ARGS_((TkTextBTree tree,
  */
 
 Tk_SegType tkTextCharType = {
-    "character", /* name */
-    0, /* leftGravity */
-    CharSplitProc, /* splitProc */
-    CharDeleteProc, /* deleteProc */
-    CharCleanupProc, /* cleanupProc */
+    "character",                    /* name */
+    0,                              /* leftGravity */
+    CharSplitProc,                  /* splitProc */
+    CharDeleteProc,                 /* deleteProc */
+    CharCleanupProc,                /* cleanupProc */
     ( Tk_SegLineChangeProc * )NULL, /* lineChangeProc */
-    TkTextCharLayoutProc, /* layoutProc */
-    CharCheckProc /* checkProc */
+    TkTextCharLayoutProc,           /* layoutProc */
+    CharCheckProc                   /* checkProc */
 };
 
 /*
@@ -172,14 +172,14 @@ Tk_SegType tkTextCharType = {
  */
 
 Tk_SegType tkTextToggleOnType = {
-    "toggleOn", /* name */
-    0, /* leftGravity */
-    ( Tk_SegSplitProc * )NULL, /* splitProc */
-    ToggleDeleteProc, /* deleteProc */
-    ToggleCleanupProc, /* cleanupProc */
-    ToggleLineChangeProc, /* lineChangeProc */
+    "toggleOn",                 /* name */
+    0,                          /* leftGravity */
+    ( Tk_SegSplitProc * )NULL,  /* splitProc */
+    ToggleDeleteProc,           /* deleteProc */
+    ToggleCleanupProc,          /* cleanupProc */
+    ToggleLineChangeProc,       /* lineChangeProc */
     ( Tk_SegLayoutProc * )NULL, /* layoutProc */
-    ToggleCheckProc /* checkProc */
+    ToggleCheckProc             /* checkProc */
 };
 
 /*
@@ -188,14 +188,14 @@ Tk_SegType tkTextToggleOnType = {
  */
 
 Tk_SegType tkTextToggleOffType = {
-    "toggleOff", /* name */
-    1, /* leftGravity */
-    ( Tk_SegSplitProc * )NULL, /* splitProc */
-    ToggleDeleteProc, /* deleteProc */
-    ToggleCleanupProc, /* cleanupProc */
-    ToggleLineChangeProc, /* lineChangeProc */
+    "toggleOff",                /* name */
+    1,                          /* leftGravity */
+    ( Tk_SegSplitProc * )NULL,  /* splitProc */
+    ToggleDeleteProc,           /* deleteProc */
+    ToggleCleanupProc,          /* cleanupProc */
+    ToggleLineChangeProc,       /* lineChangeProc */
     ( Tk_SegLayoutProc * )NULL, /* layoutProc */
-    ToggleCheckProc /* checkProc */
+    ToggleCheckProc             /* checkProc */
 };
 
 /*
@@ -398,25 +398,25 @@ TkTextIndex *indexPtr; /* Indicates where to insert text.
                         * index is no longer valid because
                         * of changes to the segment
                         * structure. */
-char *string; /* Pointer to bytes to insert (may
-               * contain newlines, must be null-
-               * terminated). */
+char *string;          /* Pointer to bytes to insert (may
+                        * contain newlines, must be null-
+                        * terminated). */
 {
     Node *nodePtr;
     TkTextSegment *prevPtr; /* The segment just before the first
                              * new segment (NULL means new segment
                              * is at beginning of line). */
-    TkTextSegment *curPtr; /* Current segment;  new characters
-                            * are inserted just after this one.
-                            * NULL means insert at beginning of
-                            * line. */
-    TkTextLine *linePtr; /* Current line (new segments are
-                          * added to this line). */
+    TkTextSegment *curPtr;  /* Current segment;  new characters
+                             * are inserted just after this one.
+                             * NULL means insert at beginning of
+                             * line. */
+    TkTextLine *linePtr;    /* Current line (new segments are
+                             * added to this line). */
     TkTextSegment *segPtr;
     TkTextLine *newLinePtr;
-    int chunkSize; /* # characters in current chunk. */
-    char *eol; /* Pointer to character just after last
-                * one in current chunk. */
+    int chunkSize;         /* # characters in current chunk. */
+    char *eol;             /* Pointer to character just after last
+                            * one in current chunk. */
     int changeToLineCount; /* Counts change to total number of
                             * lines in file. */
 
@@ -1195,10 +1195,10 @@ TkTextIndex *indexPtr; /* Where to add segment:  it gets linked
 
 /* ARGSUSED */
 void TkBTreeUnlinkSegment(tree, segPtr, linePtr)
-TkTextBTree tree; /* Tree containing segment. */
+TkTextBTree tree;      /* Tree containing segment. */
 TkTextSegment *segPtr; /* Segment to be unlinked. */
-TkTextLine *linePtr; /* Line that currently contains
-                      * segment. */
+TkTextLine *linePtr;   /* Line that currently contains
+                        * segment. */
 {
     TkTextSegment *prevPtr;
 
@@ -1245,10 +1245,10 @@ TkTextIndex *index1Ptr; /* Indicates first character in
                          * range. */
 TkTextIndex *index2Ptr; /* Indicates character just after the
                          * last one in range. */
-TkTextTag *tagPtr; /* Tag to add or remove. */
-int add; /* One means add tag to the given
-          * range of characters;  zero means
-          * remove the tag from the range. */
+TkTextTag *tagPtr;      /* Tag to add or remove. */
+int add;                /* One means add tag to the given
+                         * range of characters;  zero means
+                         * remove the tag from the range. */
 {
     TkTextSegment *segPtr, *prevPtr;
     TkTextSearch search;
@@ -1410,8 +1410,8 @@ static void ChangeNodeToggleCount(nodePtr,
                                                          * count for a tag
                                                          * must be changed. */
 TkTextTag *tagPtr; /* Information about tag. */
-int delta; /* Amount to add to current toggle
-            * count for tag (may be negative). */
+int delta;         /* Amount to add to current toggle
+                    * count for tag (may be negative). */
 {
     Summary *summaryPtr, *prevPtr;
     Node *node2Ptr;
@@ -1613,8 +1613,8 @@ int delta; /* Amount to add to current toggle
  */
 
 static TkTextSegment *FindTagStart(tree, tagPtr, indexPtr)
-TkTextBTree tree; /* Tree to search within */
-TkTextTag *tagPtr; /* Tag to search for. */
+TkTextBTree tree;      /* Tree to search within */
+TkTextTag *tagPtr;     /* Tag to search for. */
 TkTextIndex *indexPtr; /* Return - index information */
 {
     Node *nodePtr;
@@ -1700,8 +1700,8 @@ TkTextIndex *indexPtr; /* Return - index information */
  */
 
 static TkTextSegment *FindTagEnd(tree, tagPtr, indexPtr)
-TkTextBTree tree; /* Tree to search within */
-TkTextTag *tagPtr; /* Tag to search for. */
+TkTextBTree tree;      /* Tree to search within */
+TkTextTag *tagPtr;     /* Tag to search for. */
 TkTextIndex *indexPtr; /* Return - index information */
 {
     Node *nodePtr, *lastNodePtr;
@@ -1799,19 +1799,19 @@ TkTextIndex *indexPtr; /* Return - index information */
  */
 
 void TkBTreeStartSearch(index1Ptr, index2Ptr, tagPtr, searchPtr)
-TkTextIndex *index1Ptr; /* Search starts here.  Tag toggles
-                         * at this position will not be
-                         * returned. */
-TkTextIndex *index2Ptr; /* Search stops here.  Tag toggles
-                         * at this position *will* be
-                         * returned. */
-TkTextTag *tagPtr; /* Tag to search for.  NULL means
-                    * search for any tag. */
+TkTextIndex *index1Ptr;  /* Search starts here.  Tag toggles
+                          * at this position will not be
+                          * returned. */
+TkTextIndex *index2Ptr;  /* Search stops here.  Tag toggles
+                          * at this position *will* be
+                          * returned. */
+TkTextTag *tagPtr;       /* Tag to search for.  NULL means
+                          * search for any tag. */
 TkTextSearch *searchPtr; /* Where to store information about
                           * search's progress. */
 {
     int offset;
-    TkTextIndex index0; /* First index of the tag */
+    TkTextIndex index0;     /* First index of the tag */
     TkTextSegment *seg0Ptr; /* First segment of the tag */
 
     /*
@@ -1901,20 +1901,20 @@ TkTextSearch *searchPtr; /* Where to store information about
  */
 
 void TkBTreeStartSearchBack(index1Ptr, index2Ptr, tagPtr, searchPtr)
-TkTextIndex *index1Ptr; /* Search starts here.  Tag toggles
-                         * at this position will not be
-                         * returned. */
-TkTextIndex *index2Ptr; /* Search stops here.  Tag toggles
-                         * at this position *will* be
-                         * returned. */
-TkTextTag *tagPtr; /* Tag to search for.  NULL means
-                    * search for any tag. */
+TkTextIndex *index1Ptr;  /* Search starts here.  Tag toggles
+                          * at this position will not be
+                          * returned. */
+TkTextIndex *index2Ptr;  /* Search stops here.  Tag toggles
+                          * at this position *will* be
+                          * returned. */
+TkTextTag *tagPtr;       /* Tag to search for.  NULL means
+                          * search for any tag. */
 TkTextSearch *searchPtr; /* Where to store information about
                           * search's progress. */
 {
     int offset;
-    TkTextIndex index0; /* Last index of the tag */
-    TkTextIndex backOne; /* One character before starting index */
+    TkTextIndex index0;     /* Last index of the tag */
+    TkTextIndex backOne;    /* One character before starting index */
     TkTextSegment *seg0Ptr; /* Last segment of the tag */
 
     /*
@@ -2438,7 +2438,7 @@ int TkBTreeCharTagged(indexPtr,
                       tagPtr) TkTextIndex *indexPtr; /* Indicates a character
                                                       * position at which to
                                                       * check for a tag. */
-TkTextTag *tagPtr; /* Tag of interest. */
+TkTextTag *tagPtr;                                   /* Tag of interest. */
 {
     Node *nodePtr;
     TkTextLine *siblingLinePtr;
@@ -2563,8 +2563,8 @@ TkTextTag *tagPtr; /* Tag of interest. */
 TkTextTag **TkBTreeGetTags(indexPtr, numTagsPtr)
 TkTextIndex *indexPtr; /* Indicates a particular position in
                         * the B-tree. */
-int *numTagsPtr; /* Store number of tags found at this
-                  * location. */
+int *numTagsPtr;       /* Store number of tags found at this
+                        * location. */
 {
     Node *nodePtr;
     TkTextLine *siblingLinePtr;
@@ -2688,7 +2688,7 @@ int *numTagsPtr; /* Store number of tags found at this
 
 static void IncCount(tagPtr, inc, tagInfoPtr) TkTextTag *tagPtr; /* Handle for
                                                                     tag. */
-int inc; /* Amount by which to increment tag count. */
+int inc;             /* Amount by which to increment tag count. */
 TagInfo *tagInfoPtr; /* Holds cumulative information about tags;
                       * increment count here. */
 {
@@ -3594,8 +3594,8 @@ int TkBTreeNumLines(tree) TkTextBTree tree; /* Information about tree. */
 
 static TkTextSegment *CharSplitProc(segPtr, index)
 TkTextSegment *segPtr; /* Pointer to segment to split. */
-int index; /* Position within segment at which
-            * to split. */
+int index;             /* Position within segment at which
+                        * to split. */
 {
     TkTextSegment *newPtr1, *newPtr2;
 
@@ -3636,8 +3636,8 @@ int index; /* Position within segment at which
 static TkTextSegment *CharCleanupProc(segPtr, linePtr)
 TkTextSegment *segPtr; /* Pointer to first of two adjacent
                         * segments to join. */
-TkTextLine *linePtr; /* Line containing segments (not
-                      * used). */
+TkTextLine *linePtr;   /* Line containing segments (not
+                        * used). */
 {
     TkTextSegment *segPtr2, *newPtr;
 
@@ -3677,10 +3677,10 @@ TkTextLine *linePtr; /* Line containing segments (not
 /* ARGSUSED */
 static int CharDeleteProc(segPtr, linePtr, treeGone)
 TkTextSegment *segPtr; /* Segment to delete. */
-TkTextLine *linePtr; /* Line containing segment. */
-int treeGone; /* Non-zero means the entire tree is
-               * being deleted, so everything must
-               * get cleaned up. */
+TkTextLine *linePtr;   /* Line containing segment. */
+int treeGone;          /* Non-zero means the entire tree is
+                        * being deleted, so everything must
+                        * get cleaned up. */
 {
     ckfree(( char * )segPtr);
     return 0;
@@ -3763,10 +3763,10 @@ TkTextLine *linePtr; /* Line containing segment. */
 
 static int ToggleDeleteProc(segPtr, linePtr, treeGone)
 TkTextSegment *segPtr; /* Segment to check. */
-TkTextLine *linePtr; /* Line containing segment. */
-int treeGone; /* Non-zero means the entire tree is
-               * being deleted, so everything must
-               * get cleaned up. */
+TkTextLine *linePtr;   /* Line containing segment. */
+int treeGone;          /* Non-zero means the entire tree is
+                        * being deleted, so everything must
+                        * get cleaned up. */
 {
     if (treeGone)
     {
@@ -3816,7 +3816,7 @@ int treeGone; /* Non-zero means the entire tree is
 
 static TkTextSegment *ToggleCleanupProc(segPtr, linePtr)
 TkTextSegment *segPtr; /* Segment to check. */
-TkTextLine *linePtr; /* Line that now contains segment. */
+TkTextLine *linePtr;   /* Line that now contains segment. */
 {
     TkTextSegment *segPtr2, *prevPtr;
     int counts;

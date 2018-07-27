@@ -30,7 +30,7 @@
 static __thread unsigned int _AsoThreadId; /* thread local ID		*/
 
 static unsigned int _AsoThreadCount = 0; /* known thread count	*/
-static unsigned int _AsoKey = 0; /* key to construct thread ids	*/
+static unsigned int _AsoKey = 0;         /* key to construct thread ids	*/
 
 #define HIGHBIT (~((~(( unsigned int )0)) >> 1))
 #define PRIME 17109811

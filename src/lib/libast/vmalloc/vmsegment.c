@@ -84,15 +84,15 @@ static isfree(Vmdata_t *vmdt, Block_t *blk)
     }
     return 0;
 }
-#    endif /*DEBUG*/
+#    endif                 /*DEBUG*/
 
 /* Free blocks are kept in a singly linked list. Atomic ops are used to set
-*pointers
-** to reduce the chance of longjmp() leaving the list in an incomplete state.
-*/
+ *pointers
+ ** to reduce the chance of longjmp() leaving the list in an incomplete state.
+ */
 #    define INSERT_BLOCK 0 /* insert a block at head of free list	*/
 #    define DELETE_BLOCK 1 /* delete a specific block		*/
-#    define DELETE_ENDB 2 /* delete the end block of a segment	*/
+#    define DELETE_ENDB 2  /* delete the end block of a segment	*/
 
 /* lock-less type op for arg on free list */
 static Block_t *
@@ -141,7 +141,7 @@ vmclrlock(int all)
 
     threadid = all ? 0 : asothreadid();
 
-    if (threadid) /* release sbrklock */
+    if (threadid)                             /* release sbrklock */
         asocasint(&_Vmsbrklock, threadid, 0); /* only if done by thread */
     else
         while (_Vmsbrklock != 0) /* or in all cases */
@@ -380,7 +380,7 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
         if (asocasint(&seg->iffy, 0, 1) == 0)
         { /* a longjmp() below will make seg not further extendible */
             if ((sz = blk ? BDSZ(blk) : 0) < size) /* try extending segment */
-            { /**/
+            {                                      /**/
                 DEBUG_ASSERT((blk && SEG(blk) == seg) || (!blk));
 
                 /* amount of new memory to request */
@@ -394,9 +394,10 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
                 }
 
                 /* Be careful with editing the below section of code. It was
-                *written to
-                ** allow longjmp() while keeping the memory layout consistent.
-                */
+                 *written to
+                 ** allow longjmp() while keeping the memory layout
+                 *consistent.
+                 */
                 base = ( Vmuchar_t * )(*disc->memoryf)(
                 vm, seg->base, seg->size, segsz, disc);
                 if (base == seg->base) /* successful extension */
@@ -409,12 +410,12 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
                         vmdt->segmax = base + segsz;
 
                     /* Next, construct the new end block. Note that the old
-                    *end block
-                    ** is still intact so that a test for next free block that
-                    *touches
-                    ** it will continue to fail if an unfortunate longjmp()
-                    *occurs.
-                    */
+                     *end block
+                     ** is still intact so that a test for next free block
+                     *that touches
+                     ** it will continue to fail if an unfortunate longjmp()
+                     *occurs.
+                     */
                     endb = seg->endb; /* current end block */
                     np = ( Block_t * )(( Vmuchar_t * )endb
                                        + sz); /* new end block */
@@ -424,7 +425,7 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
 
                     /* now we can construct the new block */
                     if (blk) /* existing block got extended */
-                    { /**/
+                    {        /**/
                         DEBUG_ASSERT(NEXT(blk) == endb);
                         SIZE(blk) += sz;
                     }
@@ -607,24 +608,24 @@ _vmlcm(ssize_t one, ssize_t two)
 
 /* Externally visible names to all modules but local to library */
 Vmextern_t _Vmextern = {
-    _vmseginit, /* _Vmseginit	*/
+    _vmseginit,  /* _Vmseginit	*/
     _vmsegalloc, /* _Vmsegalloc	*/
-    _vmsegfree, /* _Vmsegfree	*/
-    _vmstrcpy, /* _Vmstrcpy	*/
-    _vmitoa, /* _Vmitoa	*/
-    _vmlcm, /* _Vmlcm	*/
+    _vmsegfree,  /* _Vmsegfree	*/
+    _vmstrcpy,   /* _Vmstrcpy	*/
+    _vmitoa,     /* _Vmitoa	*/
+    _vmlcm,      /* _Vmlcm	*/
     NIL(void(*) _ARG_(
     (Vmalloc_t *, Vmuchar_t *, Vmuchar_t *, size_t, size_t))), /* _Vmtrace	*/
-    NIL(int(*) _ARG_((Vmuchar_t *, size_t))), /* _Vmchkmem	*/
-    0, /* _Vmmemmin	*/
-    0, /* _Vmmemmax	*/
-    0, /* _Vmmemaddr	*/
-    0, /* _Vmmemsbrk	*/
-    0, /* _Vmhold	*/
-    0, /* _Vmpagesize	*/
+    NIL(int(*) _ARG_((Vmuchar_t *, size_t))),                  /* _Vmchkmem	*/
+    0,                                                         /* _Vmmemmin	*/
+    0,                                                         /* _Vmmemmax	*/
+    0,          /* _Vmmemaddr	*/
+    0,          /* _Vmmemsbrk	*/
+    0,          /* _Vmhold	*/
+    0,          /* _Vmpagesize	*/
     VM_SEGSIZE, /* _Vmsegsize	*/
-    0, /* _Vmsbrklock	*/
-    0 /* _Vmassert	*/
+    0,          /* _Vmsbrklock	*/
+    0           /* _Vmassert	*/
 };
 
 #endif

@@ -59,44 +59,44 @@ static const char usage[]
 #include <error.h>
 #include <mam.h>
 
-#define LONGLINE 72 /* too long output line length	*/
+#define LONGLINE 72  /* too long output line length	*/
 #define MAXNAME 1024 /* max rule name		*/
 
 #define message                                                              \
     if (error_info.trace < 0)                                                \
     error
 
-#define A_ancestor (A_LAST << 1) /* ancestor directory		*/
-#define A_command (A_LAST << 2) /* command target		*/
-#define A_directory (A_LAST << 3) /* source directory		*/
-#define A_implict (A_LAST << 4) /* metarules can handle it	*/
+#define A_ancestor (A_LAST << 1)   /* ancestor directory		*/
+#define A_command (A_LAST << 2)    /* command target		*/
+#define A_directory (A_LAST << 3)  /* source directory		*/
+#define A_implict (A_LAST << 4)    /* metarules can handle it	*/
 #define A_listprereq (A_LAST << 5) /* prereqs listed		*/
-#define A_listtarg (A_LAST << 6) /* listed as target		*/
-#define A_omit (A_LAST << 7) /* omit prereq			*/
+#define A_listtarg (A_LAST << 6)   /* listed as target		*/
+#define A_omit (A_LAST << 7)       /* omit prereq			*/
 
 #define V_state (V_LAST << 1) /* state var			*/
 
 struct local /* local rule info		*/
 {
-    char *base; /* base name			*/
+    char *base;             /* base name			*/
     struct rule *directory; /* directory prefix		*/
-    char *suffix; /* suffix			*/
-    char *target; /* target name if != base	*/
+    char *suffix;           /* suffix			*/
+    char *target;           /* target name if != base	*/
 };
 
 static struct /* program state		*/
 {
-    int ancestor; /* ancestor dir .. count	*/
-    struct mam *mam; /* make abstract machine info	*/
+    int ancestor;       /* ancestor dir .. count	*/
+    struct mam *mam;    /* make abstract machine info	*/
     struct block *omit; /* dir prefixes to omit		*/
 
     struct
     {
-        struct rule *source; /* .SOURCE			*/
+        struct rule *source;   /* .SOURCE			*/
         struct rule *source_a; /* .SOURCE.a			*/
         struct rule *source_h; /* .SOURCE.h			*/
-        struct rule *sources; /* .MAM.SOURCES.		*/
-    } atom; /* special atoms		*/
+        struct rule *sources;  /* .MAM.SOURCES.		*/
+    } atom;                    /* special atoms		*/
 } state;
 
 /*

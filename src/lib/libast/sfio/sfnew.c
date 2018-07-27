@@ -36,8 +36,8 @@ Sfio_t *sfnew(oldf, buf, size, file, flags) Sfio_t *oldf; /* old stream to be
                                                              reused */
 Void_t *buf; /* a buffer to read/write, if NULL, will be allocated */
 size_t size; /* buffer size if buf is given or desired buffer size */
-int file; /* file descriptor to read/write from */
-int flags; /* type of file stream */
+int file;    /* file descriptor to read/write from */
+int flags;   /* type of file stream */
 #endif
 {
     reg Sfio_t *f;

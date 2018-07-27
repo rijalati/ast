@@ -42,10 +42,10 @@
 
 /* types related to the interval handle */
 typedef unsigned char *Ivpoint_t; /* interval point		*/
-typedef struct Iv_s Iv_t; /* handle structure		*/
+typedef struct Iv_s Iv_t;         /* handle structure		*/
 typedef struct Ivdisc_s Ivdisc_t; /* interval discipline		*/
 typedef struct Ivmeth_s Ivmeth_t; /* interval method		*/
-typedef struct Ivseg_s Ivseg_t; /* a segment of data		*/
+typedef struct Ivseg_s Ivseg_t;   /* a segment of data		*/
 
 typedef void (*Ivfree_f)(Iv_t *, void *);
 
@@ -62,9 +62,9 @@ struct Ivseg_s
 struct Ivdisc_s
 {
     uint32_t version; /* api version				*/
-    void *unmatched; /* data for unmatched addresses		*/
-    Error_f errorf; /* error handling function		*/
-    Ivfree_f freef; /* for each Ivseg_t.data on ivclose()	*/
+    void *unmatched;  /* data for unmatched addresses		*/
+    Error_f errorf;   /* error handling function		*/
+    Ivfree_f freef;   /* for each Ivseg_t.data on ivclose()	*/
 };
 
 struct Ivmeth_s

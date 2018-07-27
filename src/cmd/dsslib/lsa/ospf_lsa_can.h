@@ -54,33 +54,33 @@ extern "C"
     /* Canonical structure for storing LSA records */
     typedef struct _ospf_lsa_can_t
     {
-        uint32_t sec; /* Timestamp - sec part */
-        uint32_t micro_sec; /* Timestamp - microsec part */
-        ipaddr_t src_ip_addr; /* Source IP addr */
-        ipaddr_t dest_ip_addr; /* Dest IP addr */
-        uint32_t rec_len; /* Length of total record (octects) */
-        rtid_t lsu_rtid; /* Rtr id of LSU pkt */
-        areaid_t lsu_areaid; /* Area id of LSU pkt */
-        uint32_t lsu_no_lsas; /* No of LSAs */
-        uint32_t lsu_lsa_no; /* No of this LSA in the pkt */
-        ipaddr_t lsa_id; /* LSA id */
-        rtid_t lsa_advrt; /* LSA advertising rtr */
-        seq_t lsa_seq; /* LSA seq no */
-        uint32_t lsa_data_size; /* Size of 'lsa_data' (bytes) */
-        uint16_t lsu_len; /* Length of LSU pkt */
-        uint16_t lsu_cksum; /* Checksum of LSU pkt */
-        uint16_t lsu_authtype; /* Auth type of LSU pkt */
-        uint16_t lsa_age; /* LSA age */
-        uint16_t lsa_cksum; /* LSA cksum */
-        uint16_t lsa_len; /* LSA length */
-        uint8_t lsu_version; /* Version of LSU pkt */
-        uint8_t lsa_options; /* LSA options */
-        uint8_t lsa_type; /* LSA type: LST_xxx */
-        uint8_t lsa_inst_type; /* LSA inst type: LSA_INST_xxxx */
-        uint8_t lsa_attr; /* Misc. LSA attributes */
+        uint32_t sec;             /* Timestamp - sec part */
+        uint32_t micro_sec;       /* Timestamp - microsec part */
+        ipaddr_t src_ip_addr;     /* Source IP addr */
+        ipaddr_t dest_ip_addr;    /* Dest IP addr */
+        uint32_t rec_len;         /* Length of total record (octects) */
+        rtid_t lsu_rtid;          /* Rtr id of LSU pkt */
+        areaid_t lsu_areaid;      /* Area id of LSU pkt */
+        uint32_t lsu_no_lsas;     /* No of LSAs */
+        uint32_t lsu_lsa_no;      /* No of this LSA in the pkt */
+        ipaddr_t lsa_id;          /* LSA id */
+        rtid_t lsa_advrt;         /* LSA advertising rtr */
+        seq_t lsa_seq;            /* LSA seq no */
+        uint32_t lsa_data_size;   /* Size of 'lsa_data' (bytes) */
+        uint16_t lsu_len;         /* Length of LSU pkt */
+        uint16_t lsu_cksum;       /* Checksum of LSU pkt */
+        uint16_t lsu_authtype;    /* Auth type of LSU pkt */
+        uint16_t lsa_age;         /* LSA age */
+        uint16_t lsa_cksum;       /* LSA cksum */
+        uint16_t lsa_len;         /* LSA length */
+        uint8_t lsu_version;      /* Version of LSU pkt */
+        uint8_t lsa_options;      /* LSA options */
+        uint8_t lsa_type;         /* LSA type: LST_xxx */
+        uint8_t lsa_inst_type;    /* LSA inst type: LSA_INST_xxxx */
+        uint8_t lsa_attr;         /* Misc. LSA attributes */
         ospf_pkt_auth_t lsu_auth; /* Auth info of LSU pkt - nw order */
-        uint8_t *lsa_data_p; /* LSA data -- as sequence of bytes as
-                                received on wire */
+        uint8_t *lsa_data_p;      /* LSA data -- as sequence of bytes as
+                                     received on wire */
     } ospf_lsa_can_t;
 
     /* Various types for LSA formats */

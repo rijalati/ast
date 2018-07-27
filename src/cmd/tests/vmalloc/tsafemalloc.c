@@ -26,7 +26,7 @@
 #define N_EMPHE 10000 /* max #allocs for emphemeral threads	*/
 
 static size_t Nalloc = 10000; /* total number of allocations		*/
-static size_t Life = 10; /* expected life before free or realloc	*/
+static size_t Life = 10;      /* expected life before free or realloc	*/
 
 static size_t Smalllo = 10;
 static size_t Smallhi = 500;
@@ -36,9 +36,9 @@ static size_t Largelo = 1000; /* low end of size range		*/
 static size_t Largehi = 5000; /* high end of size range		*/
 static size_t Largelf = 1000; /* life of an allocated piece		*/
 
-static size_t Empperiod = 0; /* period to make emphemeral threads	*/
+static size_t Empperiod = 0;  /* period to make emphemeral threads	*/
 static size_t Empcount = 100; /* #allocations on each invovation	*/
-static Void_t **Emp; /* array of allocated blocks		*/
+static Void_t **Emp;          /* array of allocated blocks		*/
 
 static size_t Maxbusy = 0; /* size of max busy space at any time	*/
 static size_t Curbusy = 0; /* size of busy space at current time	*/

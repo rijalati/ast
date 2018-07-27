@@ -36,7 +36,7 @@ mirror(Vcwindow_t *vcw, Void_t *data, size_t size, Sfoff_t here)
 #else
 static Vcwmatch_t *mirror(vcw, data, size, here) Vcwindow_t *vcw;
 Void_t *data; /* target data to be matched	*/
-size_t size; /* data size			*/
+size_t size;  /* data size			*/
 Sfoff_t here; /* current target position	*/
 #endif
 {

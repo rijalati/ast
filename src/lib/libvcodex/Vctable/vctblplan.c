@@ -38,10 +38,10 @@ typedef struct _plnode_s
 {
     Grnode_t node; /* graph node structure		*/
     Dtlink_t link; /* for top-sort of tree nodes	*/
-    ssize_t wght; /* weight of node 		*/
-    ssize_t wadj; /* adjusted wght by prediction 	*/
-    int repc; /* best representative byte	*/
-    ssize_t repn; /* length of best run		*/
+    ssize_t wght;  /* weight of node 		*/
+    ssize_t wadj;  /* adjusted wght by prediction 	*/
+    int repc;      /* best representative byte	*/
+    ssize_t repn;  /* length of best run		*/
     ssize_t *srti; /* sorted row indices 		*/
 } Plnode_t;
 
@@ -61,10 +61,10 @@ rlEntropy(Vcchar_t *pdt,
 static ssize_t
 rlEntropy(pdt, pnd, dt, n, repc, repn) Vcchar_t *pdt; /* primary predictor
                                                          data	*/
-Plnode_t *pnd; /* primary node			*/
-Vcchar_t *dt; /* the data to be transformed	*/
-ssize_t n; /* length of data		*/
-int *repc; /* most frequent character	*/
+Plnode_t *pnd;                                        /* primary node			*/
+Vcchar_t *dt;  /* the data to be transformed	*/
+ssize_t n;     /* length of data		*/
+int *repc;     /* most frequent character	*/
 ssize_t *repn; /* and its frequency		*/
 #endif
 {
@@ -123,10 +123,10 @@ cdEntropy(Vcchar_t *pdt,
 static ssize_t
 cdEntropy(pdt, pnd, dt, n, repc, repn) Vcchar_t *pdt; /* primary predictor
                                                          data	*/
-Plnode_t *pnd; /* primary node			*/
-Vcchar_t *dt; /* the data to be transformed	*/
-ssize_t n; /* length of data		*/
-int *repc; /* most frequent character	*/
+Plnode_t *pnd;                                        /* primary node			*/
+Vcchar_t *dt;  /* the data to be transformed	*/
+ssize_t n;     /* length of data		*/
+int *repc;     /* most frequent character	*/
 ssize_t *repn; /* and its frequency		*/
 #endif
 {
@@ -211,9 +211,9 @@ rlTwo(Vcchar_t *pd1,
 #else
 static ssize_t rlTwo(pd1, pd2, dt, n, map) Vcchar_t *pd1; /* data of first
                                                              predictor	*/
-Vcchar_t *pd2; /* data of second predictor	*/
-Vcchar_t *dt; /* data to be predicted		*/
-ssize_t n; /* length of data		*/
+Vcchar_t *pd2;          /* data of second predictor	*/
+Vcchar_t *dt;           /* data to be predicted		*/
+ssize_t n;              /* length of data		*/
 Vcchar_t map[256][256]; /* to count runs	*/
 #endif
 {
@@ -294,9 +294,9 @@ vctblmakeplan(const Void_t *train, size_t dtsz, size_t ncols, int flags)
 #else
 Vctblplan_t *
 vctblmakeplan(train, dtsz, ncols, flags) Void_t *train; /* training data	*/
-size_t dtsz; /* length of data	*/
+size_t dtsz;                                            /* length of data	*/
 size_t ncols; /* number of columns	*/
-int flags; /* control flags	*/
+int flags;    /* control flags	*/
 #endif
 {
     ssize_t n, p, w, nrows, bckt[256];

@@ -125,7 +125,7 @@ c;
         p = z * (p1 + z * p2);
 #    if defined(vax) || defined(tahoe)
         q = z * (q1 + z * (q2 + z * q3));
-#    else /* defined(vax)||defined(tahoe) */
+#    else  /* defined(vax)||defined(tahoe) */
         q = z * (q1 + z * q2);
 #    endif /* defined(vax)||defined(tahoe) */
         xp = x * p;

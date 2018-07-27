@@ -42,38 +42,38 @@
 
 typedef struct
 {
-    Dtlink_t link; /* dictionary link		*/
-    Dt_t *messages; /* message dictionary handle	*/
-    nl_catd cat; /* message catalog handle	*/
-    int debug; /* special debug locale		*/
-    const char *locale; /* message catalog locale	*/
+    Dtlink_t link;       /* dictionary link		*/
+    Dt_t *messages;      /* message dictionary handle	*/
+    nl_catd cat;         /* message catalog handle	*/
+    int debug;           /* special debug locale		*/
+    const char *locale;  /* message catalog locale	*/
     const char *nlspath; /* message catalog NLSPATH	*/
-    char name[1]; /* catalog name			*/
+    char name[1];        /* catalog name			*/
 } Catalog_t;
 
 typedef struct
 {
-    Dtlink_t link; /* dictionary link		*/
+    Dtlink_t link;  /* dictionary link		*/
     Catalog_t *cat; /* current catalog pointer	*/
-    int set; /* set number			*/
-    int seq; /* sequence number		*/
-    char text[1]; /* message text			*/
+    int set;        /* set number			*/
+    int seq;        /* sequence number		*/
+    char text[1];   /* message text			*/
 } Message_t;
 
 typedef struct
 {
     Sfio_t *sp; /* temp string stream		*/
-    int off; /* string base offset		*/
+    int off;    /* string base offset		*/
 } Temp_t;
 
 typedef struct
 {
     Dtdisc_t message_disc; /* message dict discipline	*/
     Dtdisc_t catalog_disc; /* catalog dict discipline	*/
-    Dt_t *catalogs; /* catalog dictionary handle	*/
-    Sfio_t *tmp; /* temporary string stream	*/
-    int error; /* no dictionaries!		*/
-    char null[1]; /* null string			*/
+    Dt_t *catalogs;        /* catalog dictionary handle	*/
+    Sfio_t *tmp;           /* temporary string stream	*/
+    int error;             /* no dictionaries!		*/
+    char null[1];          /* null string			*/
 } State_t;
 
 static State_t state = {

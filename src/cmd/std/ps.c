@@ -177,73 +177,73 @@ static const char usage[]
 
 typedef struct Key_s /* format key			*/
 {
-    char *name; /* key name			*/
-    char *head; /* heading name			*/
-    char *desc; /* description			*/
-    unsigned long field; /* pss field			*/
-    short index; /* index			*/
-    short width; /* field width			*/
-    unsigned long maxval; /* max value if !=0		*/
-    unsigned char hex; /* optional hex output		*/
+    char *name;            /* key name			*/
+    char *head;            /* heading name			*/
+    char *desc;            /* description			*/
+    unsigned long field;   /* pss field			*/
+    short index;           /* index			*/
+    short width;           /* field width			*/
+    unsigned long maxval;  /* max value if !=0		*/
+    unsigned char hex;     /* optional hex output		*/
     unsigned char already; /* already specified		*/
-    short cancel; /* cancel this if specified	*/
-    short prec; /* field precision		*/
-    short disable; /* macro being expanded		*/
-    unsigned char skip; /* skip this			*/
-    char *macro; /* macro value			*/
-    const char *sep; /* next field separator		*/
-    Dtlink_t hashed; /* hash link			*/
-    struct Key_s *next; /* format link			*/
+    short cancel;          /* cancel this if specified	*/
+    short prec;            /* field precision		*/
+    short disable;         /* macro being expanded		*/
+    unsigned char skip;    /* skip this			*/
+    char *macro;           /* macro value			*/
+    const char *sep;       /* next field separator		*/
+    Dtlink_t hashed;       /* hash link			*/
+    struct Key_s *next;    /* format link			*/
 } Key_t;
 
 typedef struct List_s /* pid list			*/
 {
     struct List_s *next; /* next in list			*/
-    char **argv; /* , separated string vector	*/
-    int argc; /* elementsof(argv)		*/
+    char **argv;         /* , separated string vector	*/
+    int argc;            /* elementsof(argv)		*/
 } List_t;
 
 typedef struct Ps_s /* process state		*/
 {
-    Dtlink_t hashed; /* pid hash link		*/
-    Dtlink_t sorted; /* sorted link			*/
-    Pssent_t *ps; /* ps info			*/
-    struct Ps_s *children; /* child list			*/
+    Dtlink_t hashed;        /* pid hash link		*/
+    Dtlink_t sorted;        /* sorted link			*/
+    Pssent_t *ps;           /* ps info			*/
+    struct Ps_s *children;  /* child list			*/
     struct Ps_s *lastchild; /* end of children		*/
-    struct Ps_s *sibling; /* sibling list			*/
-    struct Ps_s *root; /* (partial) root list		*/
-    char *user; /* user name			*/
-    Pss_id_t pid; /* pid				*/
-    int level; /* process tree level		*/
-    int seen; /* already seen on chain	*/
-    int shown; /* list state			*/
+    struct Ps_s *sibling;   /* sibling list			*/
+    struct Ps_s *root;      /* (partial) root list		*/
+    char *user;             /* user name			*/
+    Pss_id_t pid;           /* pid				*/
+    int level;              /* process tree level		*/
+    int seen;               /* already seen on chain	*/
+    int shown;              /* list state			*/
 } Ps_t;
 
 typedef struct State_s /* program state		*/
 {
-    int children; /* recursively list all children*/
-    int escape; /* escape { command args }	*/
-    int heading; /* output heading		*/
-    int parents; /* recursively list all parents	*/
-    int tree; /* list proc tree		*/
-    int hex; /* output optional hex key form	*/
-    int width; /* output width			*/
+    int children;      /* recursively list all children*/
+    int escape;        /* escape { command args }	*/
+    int heading;       /* output heading		*/
+    int parents;       /* recursively list all parents	*/
+    int tree;          /* list proc tree		*/
+    int hex;           /* output optional hex key form	*/
+    int width;         /* output width			*/
     unsigned long now; /* current time			*/
-    Key_t *fields; /* format field list		*/
-    List_t *pids; /* pid vectors			*/
-    char *format; /* sfkeyprintf() format		*/
-    Key_t *lastfield; /* end of format list		*/
-    Dt_t *keys; /* format keys			*/
-    Dt_t *bypid; /* procs by pid			*/
-    Dt_t *byorder; /* procs by pid			*/
-    Ps_t *pp; /* next proc info slot		*/
-    Pss_t *pss; /* ps stream			*/
+    Key_t *fields;     /* format field list		*/
+    List_t *pids;      /* pid vectors			*/
+    char *format;      /* sfkeyprintf() format		*/
+    Key_t *lastfield;  /* end of format list		*/
+    Dt_t *keys;        /* format keys			*/
+    Dt_t *bypid;       /* procs by pid			*/
+    Dt_t *byorder;     /* procs by pid			*/
+    Ps_t *pp;          /* next proc info slot		*/
+    Pss_t *pss;        /* ps stream			*/
     Pssdisc_t pssdisc; /* ps stream discipline		*/
-    Sfio_t *mac; /* temporary string stream	*/
-    Sfio_t *tmp; /* temporary string stream	*/
-    Sfio_t *wrk; /* temporary string stream	*/
+    Sfio_t *mac;       /* temporary string stream	*/
+    Sfio_t *tmp;       /* temporary string stream	*/
+    Sfio_t *wrk;       /* temporary string stream	*/
     char branch[1024]; /* process tree branch		*/
-    char buf[1024]; /* work buffer			*/
+    char buf[1024];    /* work buffer			*/
 } State_t;
 
 static Key_t keys[] = {

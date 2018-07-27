@@ -151,29 +151,29 @@ extern int opterr;
 
 #define shquote shellquote /* netbsd has one in <stdlib.h>! */
 
-#define ESCAPE '~' /* Default escape for sending */
-#define NMLSIZE 1024 /* max names in a message list */
-#define PATHSIZE MAXPATHLEN /* Size of pathnames throughout */
-#define LINESIZE (32 * STRINGLEN) /* max readable line width */
-#define HEADSIZE 128 /* maximum header line length */
-#define LASTSIZE 256 /* max saved cmd line size */
+#define ESCAPE '~'                   /* Default escape for sending */
+#define NMLSIZE 1024                 /* max names in a message list */
+#define PATHSIZE MAXPATHLEN          /* Size of pathnames throughout */
+#define LINESIZE (32 * STRINGLEN)    /* max readable line width */
+#define HEADSIZE 128                 /* maximum header line length */
+#define LASTSIZE 256                 /* max saved cmd line size */
 #define STRINGSIZE (( unsigned )128) /* Dynamic allocation units */
 #define MAILMODE (S_IRUSR | S_IWUSR) /* private mail file mode */
-#define METAFILE "%#&+/" /* `Metafile' prefix */
-#define REGDEP 2 /* Maximum regret depth. */
-#define STRINGLEN 1024 /* Maximum length of string token */
-#define MARGIN 72 /* Right line margin */
-#define REFLEN (12 * MARGIN) /* Maximum length or References: */
+#define METAFILE "%#&+/"             /* `Metafile' prefix */
+#define REGDEP 2                     /* Maximum regret depth. */
+#define STRINGLEN 1024               /* Maximum length of string token */
+#define MARGIN 72                    /* Right line margin */
+#define REFLEN (12 * MARGIN)         /* Maximum length or References: */
 
 typedef struct msg
 {
-    int m_index; /* command address vector index */
-    short m_flag; /* flags, see below */
+    int m_index;    /* command address vector index */
+    short m_flag;   /* flags, see below */
     short m_offset; /* offset in block of message */
-    long m_block; /* block number of this message */
-    off_t m_size; /* Bytes in the message */
-    off_t m_lines; /* Lines in the message */
-    void *m_info; /* Folder type specific info */
+    long m_block;   /* block number of this message */
+    off_t m_size;   /* Bytes in the message */
+    off_t m_lines;  /* Lines in the message */
+    void *m_info;   /* Folder type specific info */
 } Msg_t;
 
 /*
@@ -182,28 +182,28 @@ typedef struct msg
 
 #define FFILE 1 /* File folder */
 #define FIMAP 2 /* IMAP folder */
-#define FMH 3 /* MH folder */
+#define FMH 3   /* MH folder */
 
 /*
  * Command flag bits.
  */
 
-#define MBOX (1 << 0) /* send this to mbox, regardless */
-#define MDELETE (1 << 1) /* entry has been deleted */
-#define MINIT (1 << 2) /* folder specific init mark */
-#define MMARK (1 << 3) /* message is marked! */
-#define MNEW (1 << 4) /* message has never been seen */
-#define MNONE (1 << 5) /* never matches */
-#define MODIFY (1 << 6) /* message has been modified */
+#define MBOX (1 << 0)      /* send this to mbox, regardless */
+#define MDELETE (1 << 1)   /* entry has been deleted */
+#define MINIT (1 << 2)     /* folder specific init mark */
+#define MMARK (1 << 3)     /* message is marked! */
+#define MNEW (1 << 4)      /* message has never been seen */
+#define MNONE (1 << 5)     /* never matches */
+#define MODIFY (1 << 6)    /* message has been modified */
 #define MPRESERVE (1 << 7) /* keep entry in sys mailbox */
-#define MREAD (1 << 8) /* message has been read sometime */
-#define MSAVE (1 << 9) /* entry has been saved */
-#define MSCAN (1 << 10) /* entry has been scanned */
-#define MSPAM (1 << 11) /* message is probably spam */
-#define MSTATUS (1 << 12) /* message status has changed */
-#define MTOUCH (1 << 13) /* entry has been noticed */
-#define MUSED (1 << 14) /* entry is used, but this bit isn't */
-#define MZOMBIE (1 << 15) /* deleted but still there */
+#define MREAD (1 << 8)     /* message has been read sometime */
+#define MSAVE (1 << 9)     /* entry has been saved */
+#define MSCAN (1 << 10)    /* entry has been scanned */
+#define MSPAM (1 << 11)    /* message is probably spam */
+#define MSTATUS (1 << 12)  /* message status has changed */
+#define MTOUCH (1 << 13)   /* entry has been noticed */
+#define MUSED (1 << 14)    /* entry is used, but this bit isn't */
+#define MZOMBIE (1 << 15)  /* deleted but still there */
 
 /*
  * Given a file address, determine the block number it represents.
@@ -221,12 +221,12 @@ typedef int (*Cmd_f)(void *);
 
 struct cmd
 {
-    const char *c_name; /* Name of command */
-    Cmd_f c_func; /* Implementor of the command */
+    const char *c_name;      /* Name of command */
+    Cmd_f c_func;            /* Implementor of the command */
     unsigned long c_argtype; /* Type of arglist (see below) */
     unsigned long c_msgflag; /* Required flags of messages */
-    size_t c_msgmask; /* Relevant flags of messages */
-    const char *c_help; /* Command help text */
+    size_t c_msgmask;        /* Relevant flags of messages */
+    const char *c_help;      /* Command help text */
 };
 
 /*
@@ -249,7 +249,7 @@ struct esc
 struct lab
 {
     const char *name; /* Header label name */
-    long type; /* G* type */
+    long type;        /* G* type */
 };
 
 /*
@@ -258,18 +258,18 @@ struct lab
 
 struct parse
 {
-    struct msg *mp; /* Parsing this message */
-    struct header *hp; /* Matched headers here */
-    Dt_t **ignore; /* Ignore these headers */
-    FILE *fp; /* Message io */
-    long count; /* Remaining message size */
-    char *name; /* Header name */
-    char *data; /* Header data */
-    char *separator; /* Header name separator position */
-    int length; /* Total header length */
+    struct msg *mp;      /* Parsing this message */
+    struct header *hp;   /* Matched headers here */
+    Dt_t **ignore;       /* Ignore these headers */
+    FILE *fp;            /* Message io */
+    long count;          /* Remaining message size */
+    char *name;          /* Header name */
+    char *data;          /* Header data */
+    char *separator;     /* Header name separator position */
+    int length;          /* Total header length */
     unsigned long flags; /* G* flags */
-    unsigned long type; /* Matched header type */
-    char buf[LINESIZE]; /* Work buffer */
+    unsigned long type;  /* Matched header type */
+    char buf[LINESIZE];  /* Work buffer */
 };
 
 /*
@@ -279,23 +279,23 @@ struct parse
 #define MSGLIST 0 /* Message list type */
 #define STRLIST 1 /* A pure string */
 #define RAWLIST 2 /* Shell string list */
-#define NOLIST 3 /* Just plain 0 */
+#define NOLIST 3  /* Just plain 0 */
 #define NDMLIST 4 /* Message list, no defaults */
 
 #define LISTMASK 07 /* Mask list type from argument type */
 
-#define A (1 << 4) /* Var alias */
-#define C (1 << 5) /* Is a conditional command, Cmd line var set */
-#define D (1 << 6) /* Var unset default to initial value */
-#define E (1 << 7) /* Var init from environ */
-#define I (1 << 8) /* Interactive command, Var is integer */
-#define L (1 << 9) /* Append line values */
-#define M (1 << 10) /* Valid from send mode */
-#define N (1 << 11) /* Var null value means off */
-#define P (1 << 12) /* Autoprint dot after command */
-#define R (1 << 13) /* Cannot call from collect, Readonly var */
-#define S (1 << 14) /* Var cannot change while sourcing */
-#define W (1 << 15) /* Invalid for readonly */
+#define A (1 << 4)   /* Var alias */
+#define C (1 << 5)   /* Is a conditional command, Cmd line var set */
+#define D (1 << 6)   /* Var unset default to initial value */
+#define E (1 << 7)   /* Var init from environ */
+#define I (1 << 8)   /* Interactive command, Var is integer */
+#define L (1 << 9)   /* Append line values */
+#define M (1 << 10)  /* Valid from send mode */
+#define N (1 << 11)  /* Var null value means off */
+#define P (1 << 12)  /* Autoprint dot after command */
+#define R (1 << 13)  /* Cannot call from collect, Readonly var */
+#define S (1 << 14)  /* Var cannot change while sourcing */
+#define W (1 << 15)  /* Invalid for readonly */
 #define Z (1L << 16) /* Is a transparent command */
 
 /*
@@ -303,20 +303,20 @@ struct parse
  */
 
 #define MMNORM (MDELETE | MSAVE) /* Look at both save and delete bits */
-#define MMNDEL MDELETE /* Look only at deleted bit */
+#define MMNDEL MDELETE           /* Look only at deleted bit */
 
 /*
  * note() type bits.
  */
 
-#define DEBUG (1 << 0) /* debug trace */
-#define ERROR (1 << 1) /* stderr message */
-#define FATAL (1 << 2) /* message and exit(1) */
+#define DEBUG (1 << 0)    /* debug trace */
+#define ERROR (1 << 1)    /* stderr message */
+#define FATAL (1 << 2)    /* message and exit(1) */
 #define IDENTIFY (1 << 3) /* prefix with command name */
-#define PANIC (1 << 4) /* message and abort() */
-#define PROMPT (1 << 5) /* no trailing newline */
-#define SYSTEM (1 << 6) /* append errno message */
-#define WARNING (1 << 7) /* warning prefix */
+#define PANIC (1 << 4)    /* message and abort() */
+#define PROMPT (1 << 5)   /* no trailing newline */
+#define SYSTEM (1 << 6)   /* append errno message */
+#define WARNING (1 << 7)  /* warning prefix */
 
 /*
  * Structure used to return a break down of a head
@@ -334,42 +334,42 @@ struct headline
  * Name extraction and name dictionary node flags.
  */
 
-#define GALIAS (1 << 0) /* Alias name */
-#define GALTERNATE (1 << 1) /* Alternate name */
-#define GBCC (1 << 2) /* Grab Bcc: line */
-#define GCC (1 << 3) /* Grab Cc: line */
-#define GCOMMA (1 << 4) /* Comma separated */
-#define GCOMPARE (1 << 5) /* For comparison */
-#define GDISPLAY (1 << 6) /* For display */
-#define GDONE (1 << 7) /* Done with it */
-#define GFIRST (1 << 8) /* First recipient */
-#define GFROM (1 << 9) /* Don't skip initial `From ' */
+#define GALIAS (1 << 0)        /* Alias name */
+#define GALTERNATE (1 << 1)    /* Alternate name */
+#define GBCC (1 << 2)          /* Grab Bcc: line */
+#define GCC (1 << 3)           /* Grab Cc: line */
+#define GCOMMA (1 << 4)        /* Comma separated */
+#define GCOMPARE (1 << 5)      /* For comparison */
+#define GDISPLAY (1 << 6)      /* For display */
+#define GDONE (1 << 7)         /* Done with it */
+#define GFIRST (1 << 8)        /* First recipient */
+#define GFROM (1 << 9)         /* Don't skip initial `From ' */
 #define GINTERPOLATE (1 << 10) /* Check headers for interpolate() */
-#define GLAST (1 << 11) /* Get last instance */
-#define GMAP (1 << 12) /* Already mapped */
-#define GMESSAGEID (1 << 13) /* Grab Message-ID: line */
-#define GMETOO (1 << 14) /* Send to state.var.user too */
-#define GMIME (1L << 15) /* Check MIME content headers */
-#define GMISC (1L << 16) /* Grab miscellaneous headers */
-#define GNEWS (1L << 17) /* For newsgroup article id */
-#define GNL (1L << 18) /* Print blank line after headers */
+#define GLAST (1 << 11)        /* Get last instance */
+#define GMAP (1 << 12)         /* Already mapped */
+#define GMESSAGEID (1 << 13)   /* Grab Message-ID: line */
+#define GMETOO (1 << 14)       /* Send to state.var.user too */
+#define GMIME (1L << 15)       /* Check MIME content headers */
+#define GMISC (1L << 16)       /* Grab miscellaneous headers */
+#define GNEWS (1L << 17)       /* For newsgroup article id */
+#define GNL (1L << 18)         /* Print blank line after headers */
 #define GREFERENCES (1L << 19) /* Grab References: line */
-#define GREPLY (1L << 20) /* For reply to sender */
-#define GRULE (1L << 21) /* Ouput rule if GNL */
-#define GSEND (1L << 22) /* Get it ready to send */
-#define GSENDER (1L << 23) /* Get state.var.sender address only */
-#define GSTACK (1L << 24) /* savestr() unmapped names */
-#define GSTATUS (1L << 25) /* Grab Status: line */
-#define GSUB (1L << 26) /* Grab Subject: line */
-#define GTO (1L << 27) /* Grab To: line */
-#define GUSER (1L << 28) /* Stop if ${user}@ */
+#define GREPLY (1L << 20)      /* For reply to sender */
+#define GRULE (1L << 21)       /* Ouput rule if GNL */
+#define GSEND (1L << 22)       /* Get it ready to send */
+#define GSENDER (1L << 23)     /* Get state.var.sender address only */
+#define GSTACK (1L << 24)      /* savestr() unmapped names */
+#define GSTATUS (1L << 25)     /* Grab Status: line */
+#define GSUB (1L << 26)        /* Grab Subject: line */
+#define GTO (1L << 27)         /* Grab To: line */
+#define GUSER (1L << 28)       /* Stop if ${user}@ */
 
 #define GCOMPOSE (GEDIT | GSTATUS) /* Composable headers */
-#define GEDIT (GSTD | GMISC) /* Editable headers */
-#define GEXTERN (GEDIT & ~GBCC) /* External headers */
-#define GMASK (GNAME | GDONE) /* Active mask */
-#define GNAME (GBCC | GCC | GTO) /* Name fields */
-#define GSTD (GNAME | GSUB) /* Standard headers */
+#define GEDIT (GSTD | GMISC)       /* Editable headers */
+#define GEXTERN (GEDIT & ~GBCC)    /* External headers */
+#define GMASK (GNAME | GDONE)      /* Active mask */
+#define GNAME (GBCC | GCC | GTO)   /* Name fields */
+#define GSTD (GNAME | GSUB)        /* Standard headers */
 
 /*
  * Structure of a variable node.
@@ -479,66 +479,66 @@ struct bound
 struct header
 {
     unsigned long h_flags; /* Active fields */
-    Dt_t *h_names; /* Recipients */
-    char **h_options; /* Mailer options */
-    char *h_subject; /* Subject string */
-    char *h_first; /* First recipient */
-    char *h_messageid; /* Parent message-id */
-    char *h_references; /* References */
+    Dt_t *h_names;         /* Recipients */
+    char **h_options;      /* Mailer options */
+    char *h_subject;       /* Subject string */
+    char *h_first;         /* First recipient */
+    char *h_messageid;     /* Parent message-id */
+    char *h_references;    /* References */
     struct
     {
         struct list *head;
         struct list *tail;
-    } h_misc; /* Miscellaneous headers */
+    } h_misc;              /* Miscellaneous headers */
     unsigned long h_clear; /* Clear these on change */
 };
 
 struct dict
 {
-    Dtdisc_t disc; /* Object discipline */
+    Dtdisc_t disc;       /* Object discipline */
     unsigned long flags; /* Member node flags */
-    Dt_t *next; /* Next STACK dict */
+    Dt_t *next;          /* Next STACK dict */
 };
 
 struct match
 {
     struct match *next; /* next in list */
-    int length; /* string length */
-    int beg; /* begin character match */
-    int mid; /* mid character match */
-    int end; /* end character match */
-    char string[1]; /* match string */
+    int length;         /* string length */
+    int beg;            /* begin character match */
+    int mid;            /* mid character match */
+    int end;            /* end character match */
+    char string[1];     /* match string */
 };
 
 struct linematch
 {
-    int minline; /* minimum line size */
+    int minline;            /* minimum line size */
     unsigned char beg[256]; /* begin character match */
     unsigned char mid[256]; /* mid character match */
     unsigned char end[256]; /* end character match */
-    struct match *match; /* exact match list */
-    struct match *last; /* last match list item */
+    struct match *match;    /* exact match list */
+    struct match *last;     /* last match list item */
 };
 
 struct sendand
 {
     struct sendand *next; /* next in and list */
-    char *head; /* head	*/
-    char *pattern; /* match pattern */
-    unsigned long flags; /* grab*() flags */
+    char *head;           /* head	*/
+    char *pattern;        /* match pattern */
+    unsigned long flags;  /* grab*() flags */
 };
 
 struct sendor
 {
-    struct sendor *next; /* next in or list */
+    struct sendor *next;    /* next in or list */
     struct sendand sendand; /* and list */
 };
 
 struct sender
 {
-    struct sender *next; /* next in list */
+    struct sender *next;  /* next in list */
     struct sendor sendor; /* or list */
-    char address[1]; /* sender address override */
+    char address[1];      /* sender address override */
 };
 
 /*
@@ -560,7 +560,7 @@ struct sender
 
 #define dictflags(p) ((( struct dict * )(*(p))->disc)->flags)
 
-#define HIT (1 << 0) /* Global table flag */
+#define HIT (1 << 0)    /* Global table flag */
 #define IGNORE (1 << 1) /* Global table flag */
 #define RETAIN (1 << 2) /* Global table flag */
 
@@ -579,17 +579,17 @@ struct sender
  * Token values returned by the scanner used for argument lists.
  */
 
-#define TEOL 0 /* End of the command line */
+#define TEOL 0    /* End of the command line */
 #define TNUMBER 1 /* A message number */
-#define TDASH 2 /* A simple dash */
+#define TDASH 2   /* A simple dash */
 #define TSTRING 3 /* A string (possibly containing -) */
-#define TDOT 4 /* A "." */
-#define TUP 5 /* An "^" */
+#define TDOT 4    /* A "." */
+#define TUP 5     /* An "^" */
 #define TDOLLAR 6 /* A "$" */
-#define TSTAR 7 /* A "*" */
-#define TOPEN 8 /* An '(' */
-#define TCLOSE 9 /* A ')' */
-#define TPLUS 10 /* A '+' */
+#define TSTAR 7   /* A "*" */
+#define TOPEN 8   /* An '(' */
+#define TCLOSE 9  /* A ')' */
+#define TPLUS 10  /* A '+' */
 #define TERROR 11 /* A lexical error */
 
 /*
@@ -598,7 +598,7 @@ struct sender
  */
 
 #define RECEIVE (-1) /* Execute in receive mode only */
-#define SEND (1) /* Execute in send mode only */
+#define SEND (1)     /* Execute in send mode only */
 
 /*
  * Kludges to handle the change from setexit / reset to setjmp / longjmp
@@ -630,97 +630,97 @@ struct sender
 #define NSPACE 25 /* Total number of string spaces */
 struct strings
 {
-    char *s_topfree; /* Beginning of this area */
-    char *s_nextfree; /* Next alloctable place here */
+    char *s_topfree;      /* Beginning of this area */
+    char *s_nextfree;     /* Next alloctable place here */
     unsigned int s_nleft; /* Number of bytes left here */
 };
 
 typedef struct
 {
-    const char *version; /* Version string */
-    const char *license; /* License text */
-    char *on; /* Variable on value */
+    const char *version;      /* Version string */
+    const char *license;      /* License text */
+    char *on;                 /* Variable on value */
     const struct cmd *cmdtab; /* Command table */
-    int cmdnum; /* Number of commands */
+    int cmdnum;               /* Number of commands */
     const struct esc *esctab; /* Escape command table */
-    int escnum; /* Number of escape commands */
+    int escnum;               /* Number of escape commands */
     const struct var *vartab; /* Variable table */
-    int varnum; /* Number of variables */
+    int varnum;               /* Number of variables */
     const struct lab *hdrtab; /* Header label table */
-    int hdrnum; /* Number of header labels */
+    int hdrnum;               /* Number of header labels */
     unsigned long askheaders; /* Ask for these headers */
 
     /* the rest are implicitly initialized */
 
-    int clobber; /* Last command had ! */
-    int cmdline; /* Currently reading cmd line options */
-    int colmod; /* Mark bit */
-    int cond; /* Current state of conditional exc. */
-    int edit; /* Indicates editing a file */
-    int incorporating; /* Executing incorporate command */
-    int folder; /* Folder type */
-    int hung; /* Op hung til alarm */
-    int loading; /* Loading user definitions */
-    int mode; /* SEND or RECEIVE */
-    int noreset; /* String resets suspended */
-    int onstack; /* salloc() != malloc() */
-    int readonly; /* Will be unable to rewrite file */
+    int clobber;          /* Last command had ! */
+    int cmdline;          /* Currently reading cmd line options */
+    int colmod;           /* Mark bit */
+    int cond;             /* Current state of conditional exc. */
+    int edit;             /* Indicates editing a file */
+    int incorporating;    /* Executing incorporate command */
+    int folder;           /* Folder type */
+    int hung;             /* Op hung til alarm */
+    int loading;          /* Loading user definitions */
+    int mode;             /* SEND or RECEIVE */
+    int noreset;          /* String resets suspended */
+    int onstack;          /* salloc() != malloc() */
+    int readonly;         /* Will be unable to rewrite file */
     int realscreenheight; /* Real screen height */
-    int sawcom; /* Set after first command */
-    int screenheight; /* Screen height, or best guess */
-    int screenwidth; /* Screen width, or best guess */
-    int scroll; /* Current scroll size */
-    int senderr; /* An error while checking */
-    int sourcing; /* Currently reading variant file */
-    int startup; /* Listing startup headers */
-    int stopreset; /* Reset on stop */
+    int sawcom;           /* Set after first command */
+    int screenheight;     /* Screen height, or best guess */
+    int screenwidth;      /* Screen width, or best guess */
+    int scroll;           /* Current scroll size */
+    int senderr;          /* An error while checking */
+    int sourcing;         /* Currently reading variant file */
+    int startup;          /* Listing startup headers */
+    int stopreset;        /* Reset on stop */
 
-    FILE *input; /* Current command input file */
-    off_t mailsize; /* Size of system mailbox */
-    int lexnumber; /* Number of TNUMBER from scan() */
-    char lexstring[STRINGLEN]; /* String from TSTRING, scan() */
-    int regretp; /* Pointer to TOS of regret tokens */
-    int regretstack[REGDEP]; /* Stack of regretted tokens */
+    FILE *input;                /* Current command input file */
+    off_t mailsize;             /* Size of system mailbox */
+    int lexnumber;              /* Number of TNUMBER from scan() */
+    char lexstring[STRINGLEN];  /* String from TSTRING, scan() */
+    int regretp;                /* Pointer to TOS of regret tokens */
+    int regretstack[REGDEP];    /* Stack of regretted tokens */
     char *string_stack[REGDEP]; /* Stack of regretted strings */
-    int numberstack[REGDEP]; /* Stack of regretted numbers */
-    char number[16]; /* Temp variable number string */
-    char counts[32]; /* Temp counts number string */
+    int numberstack[REGDEP];    /* Stack of regretted numbers */
+    char number[16];            /* Temp variable number string */
+    char counts[32];            /* Temp counts number string */
 
-    unsigned long trace; /* Trace bits */
-    unsigned long editheaders; /* These headers in edit template */
-    struct child *children; /* Child list */
-    struct cmd *cmd; /* Current command table entry */
-    struct file *files; /* fileopen() list */
+    unsigned long trace;         /* Trace bits */
+    unsigned long editheaders;   /* These headers in edit template */
+    struct child *children;      /* Child list */
+    struct cmd *cmd;             /* Current command table entry */
+    struct file *files;          /* fileopen() list */
     struct linematch *bodymatch; /* compiled state.var.spambody */
-    struct sender *sender; /* compiled state.var.sender */
-    struct stat openstat; /* fileopen stat */
-    Dt_t *ignore; /* Ignored fields */
-    Dt_t *saveignore; /* Ignored fields on save to folder */
-    Dt_t *ignoreall; /* Special: ignore all headers */
-    Dt_t *aliases; /* aliases */
-    Dt_t *userid; /* User name -> id map */
-    Dt_t *stacked; /* STACK dict list */
+    struct sender *sender;       /* compiled state.var.sender */
+    struct stat openstat;        /* fileopen stat */
+    Dt_t *ignore;                /* Ignored fields */
+    Dt_t *saveignore;            /* Ignored fields on save to folder */
+    Dt_t *ignoreall;             /* Special: ignore all headers */
+    Dt_t *aliases;               /* aliases */
+    Dt_t *userid;                /* User name -> id map */
+    Dt_t *stacked;               /* STACK dict list */
 
     struct strings stringdope[NSPACE];
 
     struct
     {
-        sig_t sigint; /* Previous SIGINT value */
-        sig_t sighup; /* Previous SIGHUP value */
+        sig_t sigint;  /* Previous SIGINT value */
+        sig_t sighup;  /* Previous SIGHUP value */
         sig_t sigtstp; /* Previous SIGTSTP value */
         sig_t sigttou; /* Previous SIGTTOU value */
         sig_t sigttin; /* Previous SIGTTIN value */
-        FILE *fp; /* File for saving away */
-        int hadintr; /* Have seen one SIGINT so far */
-        jmp_buf work; /* To get back to work */
-        int working; /* Whether to long jump */
+        FILE *fp;      /* File for saving away */
+        int hadintr;   /* Have seen one SIGINT so far */
+        jmp_buf work;  /* To get back to work */
+        int working;   /* Whether to long jump */
         jmp_buf abort; /* To end collection with error */
     } collect;
 
     struct
     {
-        jmp_buf header; /* Printing headers */
-        jmp_buf sr; /* set/reset longjmp buffer */
+        jmp_buf header;  /* Printing headers */
+        jmp_buf sr;      /* set/reset longjmp buffer */
         jmp_buf sigpipe; /* SIGPIPE longjmp buffer */
     } jump;
 
@@ -732,31 +732,31 @@ typedef struct
 
     struct
     {
-        int count; /* Count of messages read in */
-        int inbox; /* Current folder mh state.var.inbox */
-        Imapcontext_t imap; /* imap message format */
+        int count;           /* Count of messages read in */
+        int inbox;           /* Current folder mh state.var.inbox */
+        Imapcontext_t imap;  /* imap message format */
         struct mhcontext mh; /* mh message format */
-        int size; /* Max messages in vector */
-        int *vec; /* Current message vector */
-        FILE *ap; /* Actual file pointer */
-        FILE *ip; /* Input temp file buffer */
-        FILE *op; /* Output temp file buffer */
-        struct msg *active; /* ip points to this message */
+        int size;            /* Max messages in vector */
+        int *vec;            /* Current message vector */
+        FILE *ap;            /* Actual file pointer */
+        FILE *ip;            /* Input temp file buffer */
+        FILE *op;            /* Output temp file buffer */
+        struct msg *active;  /* ip points to this message */
         struct msg *context; /* Folder read context */
-        struct msg *dot; /* Pointer to current message */
-        struct msg *list; /* The actual message structure */
+        struct msg *dot;     /* Pointer to current message */
+        struct msg *list;    /* The actual message structure */
     } msg;
 
     struct
     {
         char pwd[2][PATHSIZE]; /* pwd and oldpwd paths */
-        char mail[PATHSIZE]; /* Name of current file */
-        char path[PATHSIZE]; /* Very temporary fixed path buffer */
-        char prev[PATHSIZE]; /* Name of previous file */
-        Sfio_t *buf; /* Very temporary name buffer */
-        Sfio_t *move; /* Very temporary name buffer */
-        Sfio_t *part; /* Very temporary name buffer */
-        Sfio_t *temp; /* Very temporary name buffer */
+        char mail[PATHSIZE];   /* Name of current file */
+        char path[PATHSIZE];   /* Very temporary fixed path buffer */
+        char prev[PATHSIZE];   /* Name of previous file */
+        Sfio_t *buf;           /* Very temporary name buffer */
+        Sfio_t *move;          /* Very temporary name buffer */
+        Sfio_t *part;          /* Very temporary name buffer */
+        Sfio_t *temp;          /* Very temporary name buffer */
     } path;
 
     struct
@@ -765,7 +765,7 @@ typedef struct
         struct
         {
             FILE *input; /* Saved state.input */
-            int cond; /* Saved state.cond */
+            int cond;    /* Saved state.cond */
             int loading; /* Saved state.loading */
         } stack[NOFILE];
     } source;

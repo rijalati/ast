@@ -47,7 +47,7 @@ typedef struct _file_s File_t;
 struct _file_s
 {
     File_t *next; /* link list		*/
-    Sfio_t *f; /* associated stream	*/
+    Sfio_t *f;    /* associated stream	*/
     char name[1]; /* temp file name	*/
 };
 
@@ -298,7 +298,7 @@ static int _tmpfd(f) Sfio_t *f;
     }
     if (fd >= 0)
         _rmtmp(f, file);
-#endif /* _PACKAGE_ast */
+#endif     /* _PACKAGE_ast */
     return fd;
 }
 

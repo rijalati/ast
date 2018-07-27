@@ -50,7 +50,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
     Sfio_t *outfile;
     char *fname;
     int range[2], incr, index2, indx = -1;
-    char *edit = 0; /* name of editor */
+    char *edit = 0;    /* name of editor */
     char *replace = 0; /* replace old=new */
     int lflag = 0, nflag = 0, rflag = 0;
 #if SHOPT_HISTEXPAND

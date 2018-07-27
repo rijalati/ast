@@ -24,37 +24,37 @@
 
 typedef struct
 {
-    Screen *screen; /* Screen on which the border will be used. */
-    Visual *visual; /* Visual for all windows and pixmaps using
-                     * the border. */
-    int depth; /* Number of bits per pixel of drawables where
-                * the border will be used. */
-    Colormap colormap; /* Colormap out of which pixels are
-                        * allocated. */
-    int refCount; /* Number of different users of
-                   * this border.  */
-    XColor *bgColorPtr; /* Background color (intensity
-                         * between lightColorPtr and
-                         * darkColorPtr). */
-    XColor *darkColorPtr; /* Color for darker areas (must free when
-                           * deleting structure). NULL means shadows
-                           * haven't been allocated yet.*/
-    XColor *lightColorPtr; /* Color used for lighter areas of border
-                            * (must free this when deleting structure).
-                            * NULL means shadows haven't been allocated
-                            * yet. */
-    Pixmap shadow; /* Stipple pattern to use for drawing
-                    * shadows areas.  Used for displays with
-                    * <= 64 colors or where colormap has filled
-                    * up. */
-    GC bgGC; /* Used (if necessary) to draw areas in
-              * the background color. */
-    GC darkGC; /* Used to draw darker parts of the
-                * border. None means the shadow colors
-                * haven't been allocated yet.*/
-    GC lightGC; /* Used to draw lighter parts of
-                 * the border. None means the shadow colors
-                 * haven't been allocated yet. */
+    Screen *screen;         /* Screen on which the border will be used. */
+    Visual *visual;         /* Visual for all windows and pixmaps using
+                             * the border. */
+    int depth;              /* Number of bits per pixel of drawables where
+                             * the border will be used. */
+    Colormap colormap;      /* Colormap out of which pixels are
+                             * allocated. */
+    int refCount;           /* Number of different users of
+                             * this border.  */
+    XColor *bgColorPtr;     /* Background color (intensity
+                             * between lightColorPtr and
+                             * darkColorPtr). */
+    XColor *darkColorPtr;   /* Color for darker areas (must free when
+                             * deleting structure). NULL means shadows
+                             * haven't been allocated yet.*/
+    XColor *lightColorPtr;  /* Color used for lighter areas of border
+                             * (must free this when deleting structure).
+                             * NULL means shadows haven't been allocated
+                             * yet. */
+    Pixmap shadow;          /* Stipple pattern to use for drawing
+                             * shadows areas.  Used for displays with
+                             * <= 64 colors or where colormap has filled
+                             * up. */
+    GC bgGC;                /* Used (if necessary) to draw areas in
+                             * the background color. */
+    GC darkGC;              /* Used to draw darker parts of the
+                             * border. None means the shadow colors
+                             * haven't been allocated yet.*/
+    GC lightGC;             /* Used to draw lighter parts of
+                             * the border. None means the shadow colors
+                             * haven't been allocated yet. */
     Tcl_HashEntry *hashPtr; /* Entry in borderTable (needed in
                              * order to delete structure). */
 } Border;
@@ -67,10 +67,10 @@ typedef struct
 static Tcl_HashTable borderTable;
 typedef struct
 {
-    Tk_Uid colorName; /* Color for border. */
+    Tk_Uid colorName;  /* Color for border. */
     Colormap colormap; /* Colormap used for allocating border
                         * colors. */
-    Screen *screen; /* Screen on which border will be drawn. */
+    Screen *screen;    /* Screen on which border will be drawn. */
 } BorderKey;
 
 /*
@@ -119,10 +119,10 @@ _ANSI_ARGS_((XPoint * p1Ptr, XPoint *p2Ptr, int distance, XPoint *p3Ptr));
 
 Tk_3DBorder Tk_Get3DBorder(interp, tkwin, colorName)
 Tcl_Interp *interp; /* Place to store an error message. */
-Tk_Window tkwin; /* Token for window in which border will
-                  * be drawn. */
-Tk_Uid colorName; /* String giving name of color
-                   * for window background. */
+Tk_Window tkwin;    /* Token for window in which border will
+                     * be drawn. */
+Tk_Uid colorName;   /* String giving name of color
+                     * for window background. */
 {
     BorderKey key;
     Tcl_HashEntry *hashPtr;
@@ -231,16 +231,16 @@ void Tk_3DVerticalBevel(tkwin,
                         leftBevel,
                         relief) Tk_Window tkwin; /* Window for which border
                                                     was allocated. */
-Drawable drawable; /* X window or pixmap in which to draw. */
-Tk_3DBorder border; /* Token for border to draw. */
+Drawable drawable;       /* X window or pixmap in which to draw. */
+Tk_3DBorder border;      /* Token for border to draw. */
 int x, y, width, height; /* Area of vertical bevel. */
-int leftBevel; /* Non-zero means this bevel forms the
-                * left side of the object;  0 means it
-                * forms the right side. */
-int relief; /* Kind of bevel to draw.  For example,
-             * TK_RELIEF_RAISED means interior of
-             * object should appear higher than
-             * exterior. */
+int leftBevel;           /* Non-zero means this bevel forms the
+                          * left side of the object;  0 means it
+                          * forms the right side. */
+int relief;              /* Kind of bevel to draw.  For example,
+                          * TK_RELIEF_RAISED means interior of
+                          * object should appear higher than
+                          * exterior. */
 {
     Border *borderPtr = ( Border * )border;
     GC left, right;
@@ -340,27 +340,27 @@ void Tk_3DHorizontalBevel(tkwin,
                           topBevel,
                           relief) Tk_Window tkwin; /* Window for which border
                                                       was allocated. */
-Drawable drawable; /* X window or pixmap in which to draw. */
-Tk_3DBorder border; /* Token for border to draw. */
+Drawable drawable;       /* X window or pixmap in which to draw. */
+Tk_3DBorder border;      /* Token for border to draw. */
 int x, y, width, height; /* Bounding box of area of bevel.  Height
                           * gives width of border. */
-int leftIn, rightIn; /* Describes whether the left and right
-                      * edges of the bevel angle in or out as
-                      * they go down.  For example, if "leftIn"
-                      * is true, the left side of the bevel
-                      * looks like this:
-                      *	___________
-                      *	 __________
-                      *	  _________
-                      *	   ________
-                      */
-int topBevel; /* Non-zero means this bevel forms the
-               * top side of the object;  0 means it
-               * forms the bottom side. */
-int relief; /* Kind of bevel to draw.  For example,
-             * TK_RELIEF_RAISED means interior of
-             * object should appear higher than
-             * exterior. */
+int leftIn, rightIn;     /* Describes whether the left and right
+                          * edges of the bevel angle in or out as
+                          * they go down.  For example, if "leftIn"
+                          * is true, the left side of the bevel
+                          * looks like this:
+                          *	___________
+                          *	 __________
+                          *	  _________
+                          *	   ________
+                          */
+int topBevel;            /* Non-zero means this bevel forms the
+                          * top side of the object;  0 means it
+                          * forms the bottom side. */
+int relief;              /* Kind of bevel to draw.  For example,
+                          * TK_RELIEF_RAISED means interior of
+                          * object should appear higher than
+                          * exterior. */
 {
     Border *borderPtr = ( Border * )border;
     Display *display = Tk_Display(tkwin);
@@ -481,14 +481,14 @@ void Tk_Draw3DRectangle(tkwin,
                         borderWidth,
                         relief) Tk_Window tkwin; /* Window for which border
                                                     was allocated. */
-Drawable drawable; /* X window or pixmap in which to draw. */
-Tk_3DBorder border; /* Token for border to draw. */
+Drawable drawable;       /* X window or pixmap in which to draw. */
+Tk_3DBorder border;      /* Token for border to draw. */
 int x, y, width, height; /* Outside area of region in
                           * which border will be drawn. */
-int borderWidth; /* Desired width for border, in
-                  * pixels. */
-int relief; /* Type of relief: TK_RELIEF_RAISED,
-             * TK_RELIEF_SUNKEN, TK_RELIEF_GROOVE, etc. */
+int borderWidth;         /* Desired width for border, in
+                          * pixels. */
+int relief;              /* Type of relief: TK_RELIEF_RAISED,
+                          * TK_RELIEF_SUNKEN, TK_RELIEF_GROOVE, etc. */
 {
     if (width < 2 * borderWidth)
     {
@@ -592,9 +592,9 @@ GC Tk_3DBorderGC(tkwin, border, which) Tk_Window tkwin; /* Window for which
                                                            border was
                                                            allocated. */
 Tk_3DBorder border; /* Border whose GC is wanted. */
-int which; /* Selects one of the border's 3 GC's:
-            * TK_3D_FLAT_GC, TK_3D_LIGHT_GC, or
-            * TK_3D_DARK_GC. */
+int which;          /* Selects one of the border's 3 GC's:
+                     * TK_3D_FLAT_GC, TK_3D_LIGHT_GC, or
+                     * TK_3D_DARK_GC. */
 {
     Border *borderPtr = ( Border * )border;
 
@@ -703,7 +703,7 @@ void Tk_Free3DBorder(border) Tk_3DBorder border; /* Token for border to be
  */
 
 void Tk_SetBackgroundFromBorder(tkwin, border)
-Tk_Window tkwin; /* Window whose background is to be set. */
+Tk_Window tkwin;    /* Window whose background is to be set. */
 Tk_3DBorder border; /* Token for border. */
 {
     Border *borderPtr = ( Border * )border;
@@ -732,7 +732,7 @@ Tk_3DBorder border; /* Token for border. */
 
 int Tk_GetRelief(interp, name, reliefPtr) Tcl_Interp *interp; /* For error
                                                                  messages. */
-char *name; /* Name of a relief type. */
+char *name;     /* Name of a relief type. */
 int *reliefPtr; /* Where to store converted relief. */
 {
     char c;
@@ -850,19 +850,19 @@ void Tk_Draw3DPolygon(tkwin,
                       borderWidth,
                       leftRelief) Tk_Window tkwin; /* Window for which border
                                                       was allocated. */
-Drawable drawable; /* X window or pixmap in which to draw. */
+Drawable drawable;  /* X window or pixmap in which to draw. */
 Tk_3DBorder border; /* Token for border to draw. */
-XPoint *pointPtr; /* Array of points describing
-                   * polygon.  All points must be
-                   * absolute (CoordModeOrigin). */
-int numPoints; /* Number of points at *pointPtr. */
-int borderWidth; /* Width of border, measured in
-                  * pixels to the left of the polygon's
-                  * trajectory.   May be negative. */
-int leftRelief; /* TK_RELIEF_RAISED or
-                 * TK_RELIEF_SUNKEN: indicates how
-                 * stuff to left of trajectory looks
-                 * relative to stuff on right. */
+XPoint *pointPtr;   /* Array of points describing
+                     * polygon.  All points must be
+                     * absolute (CoordModeOrigin). */
+int numPoints;      /* Number of points at *pointPtr. */
+int borderWidth;    /* Width of border, measured in
+                     * pixels to the left of the polygon's
+                     * trajectory.   May be negative. */
+int leftRelief;     /* TK_RELIEF_RAISED or
+                     * TK_RELIEF_SUNKEN: indicates how
+                     * stuff to left of trajectory looks
+                     * relative to stuff on right. */
 {
     XPoint poly[4], b1, b2, newB1, newB2;
     XPoint perp, c, shift1, shift2; /* Used for handling parallel lines. */
@@ -1093,13 +1093,13 @@ void Tk_Fill3DRectangle(tkwin,
                         borderWidth,
                         relief) Tk_Window tkwin; /* Window for which border
                                                     was allocated. */
-Drawable drawable; /* X window or pixmap in which to draw. */
-Tk_3DBorder border; /* Token for border to draw. */
+Drawable drawable;       /* X window or pixmap in which to draw. */
+Tk_3DBorder border;      /* Token for border to draw. */
 int x, y, width, height; /* Outside area of rectangular region. */
-int borderWidth; /* Desired width for border, in
-                  * pixels. Border will be *inside* region. */
-int relief; /* Indicates 3D effect: TK_RELIEF_FLAT,
-             * TK_RELIEF_RAISED, or TK_RELIEF_SUNKEN. */
+int borderWidth;         /* Desired width for border, in
+                          * pixels. Border will be *inside* region. */
+int relief;              /* Indicates 3D effect: TK_RELIEF_FLAT,
+                          * TK_RELIEF_RAISED, or TK_RELIEF_SUNKEN. */
 {
     Border *borderPtr = ( Border * )border;
 
@@ -1141,19 +1141,19 @@ void Tk_Fill3DPolygon(tkwin,
                       borderWidth,
                       leftRelief) Tk_Window tkwin; /* Window for which border
                                                       was allocated. */
-Drawable drawable; /* X window or pixmap in which to draw. */
+Drawable drawable;  /* X window or pixmap in which to draw. */
 Tk_3DBorder border; /* Token for border to draw. */
-XPoint *pointPtr; /* Array of points describing
-                   * polygon.  All points must be
-                   * absolute (CoordModeOrigin). */
-int numPoints; /* Number of points at *pointPtr. */
-int borderWidth; /* Width of border, measured in
-                  * pixels to the left of the polygon's
-                  * trajectory.   May be negative. */
-int leftRelief; /* Indicates 3D effect of left side of
-                 * trajectory relative to right:
-                 * TK_RELIEF_FLAT, TK_RELIEF_RAISED,
-                 * or TK_RELIEF_SUNKEN. */
+XPoint *pointPtr;   /* Array of points describing
+                     * polygon.  All points must be
+                     * absolute (CoordModeOrigin). */
+int numPoints;      /* Number of points at *pointPtr. */
+int borderWidth;    /* Width of border, measured in
+                     * pixels to the left of the polygon's
+                     * trajectory.   May be negative. */
+int leftRelief;     /* Indicates 3D effect of left side of
+                     * trajectory relative to right:
+                     * TK_RELIEF_FLAT, TK_RELIEF_RAISED,
+                     * or TK_RELIEF_SUNKEN. */
 {
     Border *borderPtr = ( Border * )border;
 
@@ -1216,13 +1216,13 @@ static void ShiftLine(p1Ptr,
                       p2Ptr,
                       distance,
                       p3Ptr) XPoint *p1Ptr; /* First point on line. */
-XPoint *p2Ptr; /* Second point on line. */
-int distance; /* New line is to be this many
-               * units to the left of original
-               * line, when looking from p1 to
-               * p2.  May be negative. */
-XPoint *p3Ptr; /* Store coords of point on new
-                * line here. */
+XPoint *p2Ptr;                              /* Second point on line. */
+int distance;                               /* New line is to be this many
+                                             * units to the left of original
+                                             * line, when looking from p1 to
+                                             * p2.  May be negative. */
+XPoint *p3Ptr;                              /* Store coords of point on new
+                                             * line here. */
 {
     int dx, dy, dxNeg, dyNeg;
 
@@ -1325,7 +1325,7 @@ Intersect(a1Ptr, a2Ptr, b1Ptr, b2Ptr, iPtr) XPoint *a1Ptr; /* First point of
 XPoint *a2Ptr; /* Second point of first line. */
 XPoint *b1Ptr; /* First point of second line. */
 XPoint *b2Ptr; /* Second point of second line. */
-XPoint *iPtr; /* Filled in with intersection point. */
+XPoint *iPtr;  /* Filled in with intersection point. */
 {
     int dxadyb, dxbdya, dxadxb, dyadyb, p, q;
 

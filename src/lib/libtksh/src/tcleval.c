@@ -126,20 +126,20 @@ char *cmd; /* Pointer to TCL command to interpret. */
     int argc;
     int argSize = NUM_ARGS;
 
-    char *src; /* Points to current character
-                * in cmd. */
+    char *src;     /* Points to current character
+                    * in cmd. */
     char termChar; /* Return when this character is found
                     * (either ']' or '\0').  Zero means
                     * that newlines terminate commands. */
-    int flags; /* Interp->evalFlags value when the
-                * procedure was called. */
-    int result; /* Return value. */
+    int flags;     /* Interp->evalFlags value when the
+                    * procedure was called. */
+    int result;    /* Return value. */
     Interp *iPtr = ( Interp * )interp;
-    char *termPtr; /* Contains character just after the
-                    * last one in the command. */
-    char *cmdStart; /* Points to first non-blank char. in
-                     * command (used in calling trace
-                     * procedures). */
+    char *termPtr;       /* Contains character just after the
+                          * last one in the command. */
+    char *cmdStart;      /* Points to first non-blank char. in
+                          * command (used in calling trace
+                          * procedures). */
     char *ellipsis = ""; /* Used in setting errorInfo variable;
                           * set to "..." to indicate that not
                           * all of offending command is included

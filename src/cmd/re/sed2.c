@@ -83,7 +83,7 @@ selected(unsigned char *pc, Text *data)
 {
     int active;
     word *ipc = ( word * )pc; /* points to address words */
-    word *q = instr(pc); /* points to instruction word */
+    word *q = instr(pc);      /* points to instruction word */
     int neg = !!(*q & NEG);
     switch (q - ipc)
     {
@@ -93,7 +93,7 @@ selected(unsigned char *pc, Text *data)
         return neg ^ (sel1(ipc[0], data) == 1);
     case 2:
         error(ERROR_PANIC | 4, IBUG, 1);
-    case 3: /* 2 address */
+    case 3:  /* 2 address */
         q--; /* points to activity indicator */
         active = !(*q & INACT);
         if ((*q & AMASK) < recno)

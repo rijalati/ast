@@ -138,26 +138,26 @@ parse_subst(Shell_t *shp, const char *s, struct subst *sb)
 int
 hist_expand(Shell_t *shp, const char *ln, char **xp)
 {
-    int off, /* stack offset */
-    q, /* quotation flags */
-    p, /* flag */
-    c, /* current char */
-    flag = 0; /* HIST_* flags */
-    Sfoff_t n, /* history line number, counter, etc. */
-    i, /* counter */
-    w[2]; /* word range */
-    char *sp, /* stack pointer */
-    *cp, /* current char in ln */
-    *str, /* search string */
-    *evp, /* event/word designator string, for error msgs */
-    *cc = 0, /* copy of current line up to cp; temp ptr */
-    hc[3], /* default histchars */
-    *qc = "\'\"`"; /* quote characters */
+    int off,         /* stack offset */
+    q,               /* quotation flags */
+    p,               /* flag */
+    c,               /* current char */
+    flag = 0;        /* HIST_* flags */
+    Sfoff_t n,       /* history line number, counter, etc. */
+    i,               /* counter */
+    w[2];            /* word range */
+    char *sp,        /* stack pointer */
+    *cp,             /* current char in ln */
+    *str,            /* search string */
+    *evp,            /* event/word designator string, for error msgs */
+    *cc = 0,         /* copy of current line up to cp; temp ptr */
+    hc[3],           /* default histchars */
+    *qc = "\'\"`";   /* quote characters */
     Sfio_t *ref = 0, /* line referenced by event designator */
-    *tmp = 0, /* temporary line buffer */
-    *tmp2 = 0; /* temporary line buffer */
-    Histloc_t hl; /* history location */
-    static Namval_t *np = 0; /* histchars variable */
+    *tmp = 0,        /* temporary line buffer */
+    *tmp2 = 0;       /* temporary line buffer */
+    Histloc_t hl;    /* history location */
+    static Namval_t *np = 0;           /* histchars variable */
     static struct subst sb = { 0, 0 }; /* substition strings */
     static Sfio_t *wm = 0; /* word match from !?string? event designator */
 
@@ -247,9 +247,9 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
             n = stktell(shp->stk); /* terminate string and dup */
             sfputc(shp->stk, '\0');
             cc = strdup(stkptr(shp->stk, 0));
-            stkseek(shp->stk, n); /* remove null byte again */
+            stkseek(shp->stk, n);       /* remove null byte again */
             ref = sfopen(ref, cc, "s"); /* open as file */
-            n = 0; /* skip history file referencing */
+            n = 0;                      /* skip history file referencing */
             break;
         case '-': /* back reference by number */
             if (!isdigit(*(cp + 1)))
@@ -341,7 +341,7 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
         if (*(evp = cp) == ':')
             cp++;
 
-        w[0] = 0; /* -1 means last word, -2 means match from !?string? */
+        w[0] = 0;  /* -1 means last word, -2 means match from !?string? */
         w[1] = -1; /* -1 means last word, -2 means suppress last word */
 
         if (flag & HIST_QUICKSUBST) /* shortcut substitution */

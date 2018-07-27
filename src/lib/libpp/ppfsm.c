@@ -87,9 +87,9 @@
 
 struct fsminit /* fsm initialization row	*/
 {
-    int state; /* if in this state		*/
+    int state;           /* if in this state		*/
     unsigned char ch[4]; /* and see one of these		*/
-    int nextstate; /* enter this state if <TERMINAL*/
+    int nextstate;       /* enter this state if <TERMINAL*/
 };
 
 static struct fsminit fsminit[] = {

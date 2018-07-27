@@ -109,39 +109,39 @@ typedef union Ssop_u Ssop_t;
 struct Ssdisc_s /* user discipline		*/
 {
     unsigned long version; /* interface version		*/
-    int code; /* default data codeset		*/
-    Error_f errorf; /* error function		*/
+    int code;              /* default data codeset		*/
+    Error_f errorf;        /* error function		*/
 };
 
 struct Ssfield_s
 {
-    Ssfield_t *next; /* next in list			*/
-    size_t offset; /* source record offset		*/
-    size_t size; /* size in bytes		*/
-    char *value; /* optional default value	*/
-    unsigned char type; /* optional type		*/
+    Ssfield_t *next;       /* next in list			*/
+    size_t offset;         /* source record offset		*/
+    size_t size;           /* size in bytes		*/
+    char *value;           /* optional default value	*/
+    unsigned char type;    /* optional type		*/
     unsigned char reverse; /* reverse order		*/
 };
 
 union Ssop_u /* expression operand		*/
 {
     Ssfield_t *field; /* field			*/
-    Ssexpr_t *expr; /* expression			*/
+    Ssexpr_t *expr;   /* expression			*/
 };
 
 struct Ssexpr_s /* expression node		*/
 {
-    Ssop_t left; /* left operand			*/
-    Ssop_t right; /* right operand		*/
+    Ssop_t left;      /* left operand			*/
+    Ssop_t right;     /* right operand		*/
     unsigned char op; /* operation			*/
 };
 
 struct Ssgroup_s /* file group circular list	*/
 {
     Ssgroup_t *next; /* next in group (circular)	*/
-    char *id; /* id name			*/
-    char *name; /* file name			*/
-    Sfio_t *io; /* file stream			*/
+    char *id;        /* id name			*/
+    char *name;      /* file name			*/
+    Sfio_t *io;      /* file stream			*/
 #    ifdef _SS_GROUP_PRIVATE_
     _SS_GROUP_PRIVATE_
 #    endif
@@ -149,12 +149,12 @@ struct Ssgroup_s /* file group circular list	*/
 
 struct Ssfile_s /* file info			*/
 {
-    Ssfile_t *next; /* next file group		*/
-    Ssgroup_t *group; /* file group			*/
-    Ssexpr_t *expr; /* include/omit			*/
-    Ssfield_t *out; /* output fields		*/
-    size_t size; /* output record size		*/
-    Recfmt_t format; /* output record format		*/
+    Ssfile_t *next;     /* next file group		*/
+    Ssgroup_t *group;   /* file group			*/
+    Ssexpr_t *expr;     /* include/omit			*/
+    Ssfield_t *out;     /* output fields		*/
+    size_t size;        /* output record size		*/
+    Recfmt_t format;    /* output record format		*/
     unsigned char omit; /* expr is omit			*/
     unsigned char save; /* include if omitted by others	*/
 #    ifdef _SS_FILE_PRIVATE_
@@ -164,33 +164,33 @@ struct Ssfile_s /* file info			*/
 
 struct Ss_s /* handle state			*/
 {
-    Ssfile_t *file; /* file list -- at least one	*/
-    Ssfield_t *in; /* input record fields		*/
-    Ssfield_t *sort; /* optional sort fields		*/
-    Ssfield_t *sum; /* optional sum fields		*/
-    Ssdisc_t *disc; /* user discipline		*/
-    Vmalloc_t *vm; /* handle memory region		*/
-    Sscount_t skip; /* skip this many records	*/
-    Sscount_t stop; /* stop after this many records	*/
-    size_t size; /* input record fixed size	*/
-    size_t insize; /* in record size		*/
-    Recfmt_t format; /* input record format		*/
-    char *suffix; /* input file suffix		*/
-    Ssexpr_t *expr; /* global include/omit		*/
-    void *exitstate; /* user exit state		*/
-    Ssexit_f initexit; /* RS_OPEN exit			*/
-    Ssexit_f doneexit; /* RS_POP exit			*/
-    Ssexit_f readexit; /* RS_READ exit			*/
-    Ssexit_f summaryexit; /* RS_SUMMARY exit		*/
-    Ssexit_f writeexit; /* RS_WRITE exit		*/
+    Ssfile_t *file;          /* file list -- at least one	*/
+    Ssfield_t *in;           /* input record fields		*/
+    Ssfield_t *sort;         /* optional sort fields		*/
+    Ssfield_t *sum;          /* optional sum fields		*/
+    Ssdisc_t *disc;          /* user discipline		*/
+    Vmalloc_t *vm;           /* handle memory region		*/
+    Sscount_t skip;          /* skip this many records	*/
+    Sscount_t stop;          /* stop after this many records	*/
+    size_t size;             /* input record fixed size	*/
+    size_t insize;           /* in record size		*/
+    Recfmt_t format;         /* input record format		*/
+    char *suffix;            /* input file suffix		*/
+    Ssexpr_t *expr;          /* global include/omit		*/
+    void *exitstate;         /* user exit state		*/
+    Ssexit_f initexit;       /* RS_OPEN exit			*/
+    Ssexit_f doneexit;       /* RS_POP exit			*/
+    Ssexit_f readexit;       /* RS_READ exit			*/
+    Ssexit_f summaryexit;    /* RS_SUMMARY exit		*/
+    Ssexit_f writeexit;      /* RS_WRITE exit		*/
     Ssintercept_f intercept; /* Ssexit_f intercept		*/
-    unsigned char copy; /* copy (no sort)		*/
-    unsigned char mark; /* mark output files with %size	*/
-    unsigned char merge; /* merge (no sort)		*/
-    unsigned char omit; /* expr is omit			*/
-    unsigned char stable; /* stable sort: 'Y'|'N'|default	*/
-    unsigned char type; /* input record type		*/
-    unsigned char uniq; /* drop dup records		*/
+    unsigned char copy;      /* copy (no sort)		*/
+    unsigned char mark;      /* mark output files with %size	*/
+    unsigned char merge;     /* merge (no sort)		*/
+    unsigned char omit;      /* expr is omit			*/
+    unsigned char stable;    /* stable sort: 'Y'|'N'|default	*/
+    unsigned char type;      /* input record type		*/
+    unsigned char uniq;      /* drop dup records		*/
 #    ifdef _SS_PRIVATE_
     _SS_PRIVATE_
 #    endif

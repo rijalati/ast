@@ -56,8 +56,8 @@ sfseek(Sfio_t *f, Sfoff_t p, int type)
 #else
 Sfoff_t sfseek(f, p, type) Sfio_t *f; /* seek to a new location in this stream
                                        */
-Sfoff_t p; /* place to seek to */
-int type; /* 0: from org, 1: from here, 2: from end */
+Sfoff_t p;                            /* place to seek to */
+int type;                             /* 0: from org, 1: from here, 2: from end */
 #endif
 {
     Sfoff_t r, s;

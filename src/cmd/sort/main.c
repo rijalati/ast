@@ -248,16 +248,16 @@ static const char usage[]
 #include <vmalloc.h>
 #include <wait.h>
 
-#define INMIN (1024) /* min input buffer size	*/
-#define INBRK (64 * INMIN) /* default heap increment	*/
+#define INMIN (1024)         /* min input buffer size	*/
+#define INBRK (64 * INMIN)   /* default heap increment	*/
 #define INMAX (1024 * INBRK) /* max input buffer size	*/
-#define INREC (16 * INMIN) /* record begin chunk size	*/
+#define INREC (16 * INMIN)   /* record begin chunk size	*/
 
-#define TEST_dump 0x80000000 /* dump the state before sort	*/
-#define TEST_io 0x40000000 /* dump io files		*/
-#define TEST_keys 0x20000000 /* dump keys			*/
-#define TEST_read 0x10000000 /* force sfread()		*/
-#define TEST_show 0x08000000 /* show but don't do		*/
+#define TEST_dump 0x80000000    /* dump the state before sort	*/
+#define TEST_io 0x40000000      /* dump io files		*/
+#define TEST_keys 0x20000000    /* dump keys			*/
+#define TEST_read 0x10000000    /* force sfread()		*/
+#define TEST_show 0x08000000    /* show but don't do		*/
 #define TEST_reserve 0x04000000 /* force sfreserve()		*/
 
 #define pathstdin(s)                                                         \
@@ -269,48 +269,48 @@ static const char usage[]
 typedef struct Part_s
 {
     Sfdisc_t disc; /* sfio discipline		*/
-    off_t offset; /* file offset			*/
-    off_t size; /* total size at offset		*/
-    off_t remain; /* read size remaining		*/
+    off_t offset;  /* file offset			*/
+    off_t size;    /* total size at offset		*/
+    off_t remain;  /* read size remaining		*/
 } Part_t;
 
 typedef struct Job_s
 {
-    off_t offset; /* file part offset		*/
-    off_t size; /* file part size		*/
-    size_t chunk; /* file part chunk		*/
+    off_t offset;      /* file part offset		*/
+    off_t size;        /* file part size		*/
+    size_t chunk;      /* file part chunk		*/
     int intermediates; /* number of intermediate files	*/
 } Job_t;
 
 typedef struct Sort_s
 {
-    Rskeydisc_t disc; /* rskey discipline		*/
-    Rs_t *rec; /* rsopen() context		*/
-    Rskey_t *key; /* rskeyopen() context		*/
+    Rskeydisc_t disc;   /* rskey discipline		*/
+    Rs_t *rec;          /* rsopen() context		*/
+    Rskey_t *key;       /* rskeyopen() context		*/
     Rsdefkey_f defkeyf; /* real defkeyf if TEST_keys	*/
-    Sfio_t *tp; /* TEST_keys tmp stream		*/
-    Sfio_t *op; /* output stream		*/
-    Job_t *jobs; /* multi-proc job table		*/
-    char *overwrite; /* -o input overwrite tmp file	*/
-    char *buf; /* input buffer			*/
-    Sfio_t *opened; /* fileopen() peek stream	*/
-    size_t cur; /* input buffer index		*/
-    size_t hit; /* input buffer index overflow	*/
-    size_t end; /* max input buffer index	*/
-    size_t bufsize; /* input reserve buffer size	*/
-    off_t total; /* total size of single file	*/
+    Sfio_t *tp;         /* TEST_keys tmp stream		*/
+    Sfio_t *op;         /* output stream		*/
+    Job_t *jobs;        /* multi-proc job table		*/
+    char *overwrite;    /* -o input overwrite tmp file	*/
+    char *buf;          /* input buffer			*/
+    Sfio_t *opened;     /* fileopen() peek stream	*/
+    size_t cur;         /* input buffer index		*/
+    size_t hit;         /* input buffer index overflow	*/
+    size_t end;         /* max input buffer index	*/
+    size_t bufsize;     /* input reserve buffer size	*/
+    off_t total;        /* total size of single file	*/
     unsigned long test; /* test bit mask		*/
-    int child; /* in child process		*/
-    int chunk; /* chunk the input (no merge)	*/
-    int hadstdin; /* already has - on input	*/
-    int map; /* sfreserve() input		*/
-    int mfiles; /* multi-stage files[] count	*/
-    int nfiles; /* files[] count		*/
-    int xfiles; /* max files[] count		*/
-    int preserve; /* rename() tmp output to input	*/
-    int single; /* one input file		*/
-    int verbose; /* trace main actions		*/
-    int zip; /* sfdcgzip SF_* flags		*/
+    int child;          /* in child process		*/
+    int chunk;          /* chunk the input (no merge)	*/
+    int hadstdin;       /* already has - on input	*/
+    int map;            /* sfreserve() input		*/
+    int mfiles;         /* multi-stage files[] count	*/
+    int nfiles;         /* files[] count		*/
+    int xfiles;         /* max files[] count		*/
+    int preserve;       /* rename() tmp output to input	*/
+    int single;         /* one input file		*/
+    int verbose;        /* trace main actions		*/
+    int zip;            /* sfdcgzip SF_* flags		*/
     Sfio_t *files[OPEN_MAX > 68 ? 64 : (OPEN_MAX - 4)];
 } Sort_t;
 

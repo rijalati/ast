@@ -39,7 +39,7 @@
 #    ifdef _sys_ioctl
 #        include <sys/ioctl.h>
 #    endif /* _sys_ioctl */
-#endif /* TIOCLBIC */
+#endif     /* TIOCLBIC */
 
 #undef read
 
@@ -58,7 +58,7 @@ static int editfd;
 static int output = 0;
 static char beenhere;
 
-#if 0 /* almost always false.  Makes a good block comment */
+#if 0  /* almost always false.  Makes a good block comment */
  **********************************************************************
  * There are two scenarios here.
  *

@@ -207,11 +207,11 @@
  * global initialization -- external engine names are defined in initrule()
  */
 
-Internal_t internal; /* internal rules and vars	*/
-State_t state; /* program state		*/
-Tables_t table; /* hash table info		*/
-char null[] = ""; /* null string			*/
-char tmpname[MAXNAME]; /* temporary name buffer	*/
+Internal_t internal;         /* internal rules and vars	*/
+State_t state;               /* program state		*/
+Tables_t table;              /* hash table info		*/
+char null[] = "";            /* null string			*/
+char tmpname[MAXNAME];       /* temporary name buffer	*/
 short ctypes[UCHAR_MAX + 1]; /* istype() character types	*/
 
 /*

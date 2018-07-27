@@ -27,7 +27,7 @@
 */
 
 /* these bits should be outside the scope of DT_METHODS */
-#define H_FIXED 0100000 /* table size is fixed	*/
+#define H_FIXED 0100000   /* table size is fixed	*/
 #define H_FLATTEN 0200000 /* table was flattened	*/
 
 #define HLOAD(n) (n) /* load one-to-one	*/
@@ -38,9 +38,9 @@ typedef struct _dthash_s
     Dtdata_t data;
     int type;
     unsigned int walk; /* on-going walks	*/
-    Dtlink_t *here; /* fingered object	*/
-    Dtlink_t **htbl; /* hash table slots 	*/
-    ssize_t tblz; /* size of hash table 	*/
+    Dtlink_t *here;    /* fingered object	*/
+    Dtlink_t **htbl;   /* hash table slots 	*/
+    ssize_t tblz;      /* size of hash table 	*/
 } Dthash_t;
 
 /* make/resize hash table */
@@ -62,7 +62,7 @@ htable(Dt_t *dt)
             if (n < 0) /* fix table size */
             {
                 hash->type |= H_FIXED;
-                n = -n; /* desired table size */
+                n = -n;              /* desired table size */
                 if (hash->tblz >= n) /* table size is fixed now */
                     return 0;
             }
@@ -205,7 +205,7 @@ hflatten(Dt_t *dt, int type)
             if (!lnk) /* something is seriously wrong */
                 return NIL(Void_t *);
 
-            *tbl = head; /* head of list for this slot */
+            *tbl = head;       /* head of list for this slot */
             head = lnk->_rght; /* head of next list */
             lnk->_rght = NIL(Dtlink_t *);
         }

@@ -28,12 +28,12 @@
 */
 
 #define VCH_MAXWEIGHT 2178308.0 /* fibonacci(32)-1		*/
-#define VCH_MAXLENGHTH 32 /* max length of any code	*/
+#define VCH_MAXLENGHTH 32       /* max length of any code	*/
 
 /* node in a kind-of-flattened Huffman tree */
 typedef struct _vchtree_s
 {
-    ssize_t freq; /* frequency of a symbol	*/
+    ssize_t freq;            /* frequency of a symbol	*/
     struct _vchtree_s *next; /* link for the sorted lists	*/
     struct _vchtree_s *link; /* subtree linkage		*/
 } Vchtree_t;
@@ -63,9 +63,9 @@ ssize_t
 vchsize(ssize_t nsym, ssize_t *freq, ssize_t *size, int *runb)
 #else
 ssize_t vchsize(nsym, freq, size, runb) ssize_t nsym; /* alphabet size	*/
-ssize_t *freq; /* code frequencies	*/
+ssize_t *freq;                                        /* code frequencies	*/
 ssize_t *size; /* computed code sizes	*/
-int *runb; /* the run byte if any	*/
+int *runb;     /* the run byte if any	*/
 #endif
 {
     ssize_t k, c, notz, max, min;

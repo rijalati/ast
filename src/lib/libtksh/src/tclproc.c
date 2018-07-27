@@ -30,8 +30,8 @@ static void ProcDeleteProc _ANSI_ARGS_((ClientData clientData));
 /* ARGSUSED */
 int Tcl_ProcCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Interp *iPtr = ( Interp * )interp;
     Proc *procPtr;
@@ -237,11 +237,11 @@ static Namval_t savnv;
 static int InterpProc(clientData, interp, argc, argv)
 ClientData clientData; /* Record describing procedure to be
                         * interpreted. */
-Tcl_Interp *interp; /* Interpreter in which procedure was
-                     * invoked. */
-int argc; /* Count of number of arguments to this
-           * procedure. */
-char **argv; /* Argument values. */
+Tcl_Interp *interp;    /* Interpreter in which procedure was
+                        * invoked. */
+int argc;              /* Count of number of arguments to this
+                        * procedure. */
+char **argv;           /* Argument values. */
 {
     Proc *procPtr = ( Proc * )clientData;
     struct InterpProcArgs iargs;

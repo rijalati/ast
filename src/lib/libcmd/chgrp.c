@@ -127,22 +127,22 @@ __STDPP__directive pragma pp : hide lchown
 typedef struct Map_s /* uid/gid map			*/
 {
     Dtlink_t link; /* dictionary link		*/
-    Key_t key; /* key				*/
-    Key_t to; /* map to these			*/
+    Key_t key;     /* key				*/
+    Key_t to;      /* map to these			*/
 } Map_t;
 
 #define NOID (-1)
 
-#define OPT_CHOWN 0x0001 /* chown			*/
-#define OPT_FORCE 0x0002 /* ignore errors		*/
-#define OPT_GID 0x0004 /* have gid			*/
-#define OPT_LCHOWN 0x0008 /* lchown			*/
-#define OPT_NUMERIC 0x0010 /* favor numeric ids		*/
-#define OPT_SHOW 0x0020 /* show but don't do		*/
-#define OPT_TEST 0x0040 /* canonicalize output		*/
-#define OPT_UID 0x0080 /* have uid			*/
+#define OPT_CHOWN 0x0001    /* chown			*/
+#define OPT_FORCE 0x0002    /* ignore errors		*/
+#define OPT_GID 0x0004      /* have gid			*/
+#define OPT_LCHOWN 0x0008   /* lchown			*/
+#define OPT_NUMERIC 0x0010  /* favor numeric ids		*/
+#define OPT_SHOW 0x0020     /* show but don't do		*/
+#define OPT_TEST 0x0040     /* canonicalize output		*/
+#define OPT_UID 0x0080      /* have uid			*/
 #define OPT_UNMAPPED 0x0100 /* unmapped file diagnostic	*/
-#define OPT_VERBOSE 0x0200 /* have uid			*/
+#define OPT_VERBOSE 0x0200  /* have uid			*/
 
 extern int
 lchown(const char *, uid_t, gid_t);

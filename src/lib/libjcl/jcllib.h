@@ -52,9 +52,9 @@ typedef struct Rc_s Rc_t;
 
 struct Dir_s /* directory list element	*/
 {
-    Dir_t *next; /* next in list			*/
+    Dir_t *next;         /* next in list			*/
     unsigned long flags; /* {JCL_JOB,JCL_PGM,JCL_PROC}	*/
-    char dir[1]; /* directory path		*/
+    char dir[1];         /* directory path		*/
 };
 
 struct Dirlist_s /* directory list head/tail	*/

@@ -58,13 +58,13 @@
 typedef struct
 {
     XFontStruct *fontStructPtr; /* X information about font. */
-    Display *display; /* Display to which font belongs. */
-    int refCount; /* Number of active uses of this font. */
-    char *types; /* Malloc'ed array giving types of all
-                  * chars in the font (may be NULL). */
-    unsigned char *widths; /* Malloc'ed array giving widths of all
-                            * chars in the font (may be NULL). */
-    int tabWidth; /* Width of tabs in this font. */
+    Display *display;           /* Display to which font belongs. */
+    int refCount;               /* Number of active uses of this font. */
+    char *types;                /* Malloc'ed array giving types of all
+                                 * chars in the font (may be NULL). */
+    unsigned char *widths;      /* Malloc'ed array giving widths of all
+                                 * chars in the font (may be NULL). */
+    int tabWidth;               /* Width of tabs in this font. */
     Tcl_HashEntry *nameHashPtr; /* Entry in name-based hash table (needed
                                  * when deleting this structure). */
 } TkFont;
@@ -77,7 +77,7 @@ typedef struct
 static Tcl_HashTable nameTable;
 typedef struct
 {
-    Tk_Uid name; /* Name of font. */
+    Tk_Uid name;      /* Name of font. */
     Display *display; /* Display for which font is valid. */
 } NameKey;
 
@@ -148,9 +148,9 @@ static void SetFontMetrics _ANSI_ARGS_((TkFont * fontPtr));
 XFontStruct *Tk_GetFontStruct(interp, tkwin, name)
 Tcl_Interp *interp; /* Place to leave error message if
                      * font can't be found. */
-Tk_Window tkwin; /* Window in which font will be used. */
-Tk_Uid name; /* Name of font (in form suitable for
-              * passing to XLoadQueryFont). */
+Tk_Window tkwin;    /* Window in which font will be used. */
+Tk_Uid name;        /* Name of font (in form suitable for
+                     * passing to XLoadQueryFont). */
 {
     NameKey nameKey;
     Tcl_HashEntry *nameHashPtr, *fontHashPtr;
@@ -509,40 +509,40 @@ int TkMeasureChars(fontStructPtr,
                    flags,
                    nextXPtr)
 XFontStruct *fontStructPtr; /* Font in which to draw characters. */
-char *source; /* Characters to be displayed.  Need not
-               * be NULL-terminated. */
-int maxChars; /* Maximum # of characters to consider from
-               * source. */
-int startX; /* X-position at which first character will
-             * be drawn. */
-int maxX; /* Don't consider any character that would
-           * cross this x-position. */
-int tabOrigin; /* X-location that serves as "origin" for
-                * tab stops. */
-int flags; /* Various flag bits OR-ed together.
-            * TK_WHOLE_WORDS means stop on a word boundary
-            * (just before a space character) if
-            * possible.  TK_AT_LEAST_ONE means always
-            * return a value of at least one, even
-            * if the character doesn't fit.
-            * TK_PARTIAL_OK means it's OK to display only
-            * a part of the last character in the line.
-            * TK_NEWLINES_NOT_SPECIAL means that newlines
-            * are treated just like other control chars:
-            * they don't terminate the line.
-            * TK_IGNORE_TABS means give all tabs zero
-            * width. */
-int *nextXPtr; /* Return x-position of terminating
-                * character here. */
+char *source;               /* Characters to be displayed.  Need not
+                             * be NULL-terminated. */
+int maxChars;               /* Maximum # of characters to consider from
+                             * source. */
+int startX;                 /* X-position at which first character will
+                             * be drawn. */
+int maxX;                   /* Don't consider any character that would
+                             * cross this x-position. */
+int tabOrigin;              /* X-location that serves as "origin" for
+                             * tab stops. */
+int flags;                  /* Various flag bits OR-ed together.
+                             * TK_WHOLE_WORDS means stop on a word boundary
+                             * (just before a space character) if
+                             * possible.  TK_AT_LEAST_ONE means always
+                             * return a value of at least one, even
+                             * if the character doesn't fit.
+                             * TK_PARTIAL_OK means it's OK to display only
+                             * a part of the last character in the line.
+                             * TK_NEWLINES_NOT_SPECIAL means that newlines
+                             * are treated just like other control chars:
+                             * they don't terminate the line.
+                             * TK_IGNORE_TABS means give all tabs zero
+                             * width. */
+int *nextXPtr;              /* Return x-position of terminating
+                             * character here. */
 {
     TkFont *fontPtr;
     char *p; /* Current character. */
     int c;
     char *term; /* Pointer to most recent character that
                  * may legally be a terminating character. */
-    int termX; /* X-position just after term. */
-    int curX; /* X-position corresponding to p. */
-    int newX; /* X-position corresponding to p+1. */
+    int termX;  /* X-position just after term. */
+    int curX;   /* X-position corresponding to p. */
+    int newX;   /* X-position corresponding to p+1. */
     int type;
     int rem;
 
@@ -706,30 +706,30 @@ void TkDisplayChars(display,
                     y,
                     tabOrigin,
                     flags) Display *display; /* Display on which to draw. */
-Drawable drawable; /* Window or pixmap in which to draw. */
-GC gc; /* Graphics context for actually drawing
-        * characters. */
+Drawable drawable;          /* Window or pixmap in which to draw. */
+GC gc;                      /* Graphics context for actually drawing
+                             * characters. */
 XFontStruct *fontStructPtr; /* Font used in GC;  must have been allocated
                              * by Tk_GetFontStruct.  Used to compute sizes
                              * of tabs, etc. */
-char *string; /* Characters to be displayed. */
-int numChars; /* Number of characters to display from
-               * string. */
-int x, y; /* Coordinates at which to draw string. */
-int tabOrigin; /* X-location that serves as "origin" for
-                * tab stops. */
-int flags; /* Flags to control display.  Only
-            * TK_NEWLINES_NOT_SPECIAL and TK_IGNORE_TABS
-            * are supported right now.  See
-            * TkMeasureChars for information about it. */
+char *string;               /* Characters to be displayed. */
+int numChars;               /* Number of characters to display from
+                             * string. */
+int x, y;                   /* Coordinates at which to draw string. */
+int tabOrigin;              /* X-location that serves as "origin" for
+                             * tab stops. */
+int flags;                  /* Flags to control display.  Only
+                             * TK_NEWLINES_NOT_SPECIAL and TK_IGNORE_TABS
+                             * are supported right now.  See
+                             * TkMeasureChars for information about it. */
 {
     TkFont *fontPtr;
     char *p; /* Current character being scanned. */
     int c;
     int type;
     char *start; /* First character waiting to be displayed. */
-    int startX; /* X-coordinate corresponding to start. */
-    int curX; /* X-coordinate corresponding to p. */
+    int startX;  /* X-coordinate corresponding to start. */
+    int curX;    /* X-coordinate corresponding to p. */
     char replace[10];
     int rem;
 
@@ -880,21 +880,21 @@ void TkUnderlineChars(display,
                       firstChar,
                       lastChar) Display *display; /* Display on which to draw.
                                                    */
-Drawable drawable; /* Window or pixmap in which to draw. */
-GC gc; /* Graphics context for actually drawing
-        * underline. */
+Drawable drawable;          /* Window or pixmap in which to draw. */
+GC gc;                      /* Graphics context for actually drawing
+                             * underline. */
 XFontStruct *fontStructPtr; /* Font used in GC;  must have been allocated
                              * by Tk_GetFontStruct.  Used to character
                              * dimensions, etc. */
-char *string; /* String containing characters to be
-               * underlined. */
-int x, y; /* Coordinates at which first character of
-           * string is drawn. */
-int tabOrigin; /* X-location that serves as "origin" for
-                * tab stops. */
-int flags; /* Flags that were passed to TkDisplayChars. */
-int firstChar; /* Index of first character to underline. */
-int lastChar; /* Index of last character to underline. */
+char *string;               /* String containing characters to be
+                             * underlined. */
+int x, y;                   /* Coordinates at which first character of
+                             * string is drawn. */
+int tabOrigin;              /* X-location that serves as "origin" for
+                             * tab stops. */
+int flags;                  /* Flags that were passed to TkDisplayChars. */
+int firstChar;              /* Index of first character to underline. */
+int lastChar;               /* Index of last character to underline. */
 {
     int xUnder, yUnder, width, height;
     unsigned long value;
@@ -977,15 +977,15 @@ void TkComputeTextGeometry(fontStructPtr,
                            widthPtr,
                            heightPtr)
 XFontStruct *fontStructPtr; /* Font that will be used to display text. */
-char *string; /* String whose dimensions are to be
-               * computed. */
-int numChars; /* Number of characters to consider from
-               * string. */
-int wrapLength; /* Longest permissible line length, in
-                 * pixels.  <= 0 means no automatic wrapping:
-                 * just let lines get as long as needed. */
-int *widthPtr; /* Store width of string here. */
-int *heightPtr; /* Store height of string here. */
+char *string;               /* String whose dimensions are to be
+                             * computed. */
+int numChars;               /* Number of characters to consider from
+                             * string. */
+int wrapLength;             /* Longest permissible line length, in
+                             * pixels.  <= 0 means no automatic wrapping:
+                             * just let lines get as long as needed. */
+int *widthPtr;              /* Store width of string here. */
+int *heightPtr;             /* Store height of string here. */
 {
     int thisWidth, maxWidth, numLines;
     char *p;
@@ -1057,22 +1057,22 @@ void TkDisplayText(display,
                    underline,
                    gc) Display *display; /* X display to use for drawing text.
                                           */
-Drawable drawable; /* Window or pixmap in which to draw the
-                    * text. */
+Drawable drawable;          /* Window or pixmap in which to draw the
+                             * text. */
 XFontStruct *fontStructPtr; /* Font that determines geometry of text
                              * (should be same as font in gc). */
-char *string; /* String to display;  may contain embedded
-               * newlines. */
-int numChars; /* Number of characters to use from string. */
-int x, y; /* Pixel coordinates within drawable of
-           * upper left corner of display area. */
-int length; /* Line length in pixels;  used to compute
-             * word wrap points and also for
-             * justification.   Must be > 0. */
-Tk_Justify justify; /* How to justify lines. */
-int underline; /* Index of character to underline, or < 0
-                * for no underlining. */
-GC gc; /* Graphics context to use for drawing text. */
+char *string;               /* String to display;  may contain embedded
+                             * newlines. */
+int numChars;               /* Number of characters to use from string. */
+int x, y;                   /* Pixel coordinates within drawable of
+                             * upper left corner of display area. */
+int length;                 /* Line length in pixels;  used to compute
+                             * word wrap points and also for
+                             * justification.   Must be > 0. */
+Tk_Justify justify;         /* How to justify lines. */
+int underline;              /* Index of character to underline, or < 0
+                             * for no underlining. */
+GC gc;                      /* Graphics context to use for drawing text. */
 {
     char *p;
     int charsThisLine, lengthThisLine, xThisLine;

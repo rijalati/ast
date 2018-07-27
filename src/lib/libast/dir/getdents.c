@@ -79,7 +79,7 @@ getdents(int fd, void *buf, size_t siz)
 #    else
 #        if _lib_dirread
     {
-        char *sp; /* system */
+        char *sp;          /* system */
         struct dirent *up; /* user */
         char *u;
         int n;

@@ -71,7 +71,7 @@ struct Ptprefix_s
 struct Ptdisc_s /* user discipline		*/
 {
     unsigned long version; /* interface version		*/
-    Error_f errorf; /* error function		*/
+    Error_f errorf;        /* error function		*/
 };
 
 struct Pt_s

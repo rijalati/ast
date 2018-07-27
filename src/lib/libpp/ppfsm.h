@@ -28,10 +28,10 @@
 #ifndef _PPFSM_H
 #    define _PPFSM_H
 
-#    define BITSTATE 16 /* bitsof(state)		*/
+#    define BITSTATE 16  /* bitsof(state)		*/
 #    define BITNONTERM 7 /* bitsof(non-terminal-state)	*/
-#    define BITTERM 7 /* bitsof(terminal-state)	*/
-#    define NMAC 19 /* number of MAC states		*/
+#    define BITTERM 7    /* bitsof(terminal-state)	*/
+#    define NMAC 19      /* number of MAC states		*/
 
 #    define SPLICE (1 << BITTERM)
 

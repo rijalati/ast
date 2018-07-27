@@ -34,7 +34,7 @@
 
 /* Instruction codes */
 #define VCS_ISIZE (1 << 3) /* size of instruction space	*/
-#define VCS_UNTR 0 /* untransformed data		*/
+#define VCS_UNTR 0         /* untransformed data		*/
 #define VCS_HERE 1
 #define VCS_SELF 2
 #define VCS_KBEGIN 3 /* start of cached addresses	*/
@@ -47,9 +47,9 @@
     (memset((si)->cache, 0, sizeof((si)->cache)), (si)->cpos = 0)
 
 #define VCS_REVERSE (1 << 3) /* reverse matching was done	*/
-#define VCS_MAP (1 << 4) /* data was mapped for matching	*/
-#define VCS_DIFF (1 << 5) /* differencing approx matches	*/
-#define VCS_MMIN (1 << 14) /* setting min matching size	*/
+#define VCS_MAP (1 << 4)     /* data was mapped for matching	*/
+#define VCS_DIFF (1 << 5)    /* differencing approx matches	*/
+#define VCS_MMIN (1 << 14)   /* setting min matching size	*/
 
 #define VCS_MATCH 19 /* min size of exact matches	*/
 
@@ -58,19 +58,19 @@
 
 typedef struct _sieve_s
 {
-    Vclzparse_t vcpa; /* data to pass to parser	*/
+    Vclzparse_t vcpa;         /* data to pass to parser	*/
     ssize_t cache[VCS_KSIZE]; /* cached addresses	*/
-    ssize_t cpos; /* current cache replacement	*/
-    Vcio_t *untr; /* to write untransformed data	*/
-    Vcio_t *diff; /* to write transformed data	*/
-    Vcio_t *inst; /* to write control bytes	*/
-    Vcio_t *unsz; /* to write sizes of unmatched	*/
-    Vcio_t *dfsz; /* to write sizes of matched	*/
-    Vcio_t *addr; /* to write match addresses	*/
-    Vcodex_t *vch; /* Huffman coder		*/
-    ssize_t mmin; /* min size of any exact match	*/
-    int type; /* REVERSE|MAP|DIFF		*/
-    Vcchar_t *cmap; /* byte map, if any		*/
+    ssize_t cpos;             /* current cache replacement	*/
+    Vcio_t *untr;             /* to write untransformed data	*/
+    Vcio_t *diff;             /* to write transformed data	*/
+    Vcio_t *inst;             /* to write control bytes	*/
+    Vcio_t *unsz;             /* to write sizes of unmatched	*/
+    Vcio_t *dfsz;             /* to write sizes of matched	*/
+    Vcio_t *addr;             /* to write match addresses	*/
+    Vcodex_t *vch;            /* Huffman coder		*/
+    ssize_t mmin;             /* min size of any exact match	*/
+    int type;                 /* REVERSE|MAP|DIFF		*/
+    Vcchar_t *cmap;           /* byte map, if any		*/
 } Sieve_t;
 
 static Vcmtarg_t _Siargs[]
@@ -95,7 +95,7 @@ static ssize_t address(si, addr, size, here, inst) Sieve_t *si;
 ssize_t addr; /* address to code or decode	*/
 ssize_t size; /* size of matched segment	*/
 ssize_t here; /* current target data position	*/
-int *inst; /* instruction type		*/
+int *inst;    /* instruction type		*/
 #endif
 {
     ssize_t ad, a, k;
@@ -141,9 +141,9 @@ static ssize_t
 putinst(Vclzparse_t *vcpa, int type, Vclzmatch_t *mtch, ssize_t n)
 #else
 static ssize_t putinst(vcpa, type, mtch, n) Vclzparse_t *vcpa;
-int type; /* type of instruction		*/
+int type;          /* type of instruction		*/
 Vclzmatch_t *mtch; /* list of matched fragments	*/
-ssize_t n; /* number of fragments		*/
+ssize_t n;         /* number of fragments		*/
 #endif
 {
     ssize_t size, z, sz, addr;
@@ -217,7 +217,7 @@ ssize_t n; /* number of fragments		*/
         /**/ DEBUG_PRINT(9, (ty & VCS_DIFF) ? "#frags %d\n" : "\n", n);
 
         if (ty & VCS_DIFF) /* transforming data by differencing */
-        { /* corresponding source and target data */
+        {                  /* corresponding source and target data */
             if (mtch->mpos >= si->vcpa.nsrc)
                 ms = si->vcpa.tar + (mtch->mpos - si->vcpa.nsrc);
             else
@@ -403,15 +403,15 @@ Void_t **del;
     DEBUG_PRINT(2, "addr=%d\n", naddr);
 
     /* size of header */
-    hd = vcsizeu(ntar) + /* original data size		*/
+    hd = vcsizeu(ntar) +     /* original data size		*/
          vcsizeu(si->mmin) + /* min length of exact matches	*/
-         sizeof(Vcchar_t) + /* byte telling cmp-ed sections	*/
-         vcsizeu(nuntr) + /* size of untransformed data	*/
-         vcsizeu(ndiff) + /* size of transformed data	*/
-         vcsizeu(ninst) + /* size of control bytes		*/
-         vcsizeu(nunsz) + /* size of unmatched data		*/
-         vcsizeu(ndfsz) + /* size of diff-ed data		*/
-         vcsizeu(naddr); /* size of addr of matched data	*/
+         sizeof(Vcchar_t) +  /* byte telling cmp-ed sections	*/
+         vcsizeu(nuntr) +    /* size of untransformed data	*/
+         vcsizeu(ndiff) +    /* size of transformed data	*/
+         vcsizeu(ninst) +    /* size of control bytes		*/
+         vcsizeu(nunsz) +    /* size of unmatched data		*/
+         vcsizeu(ndfsz) +    /* size of diff-ed data		*/
+         vcsizeu(naddr);     /* size of addr of matched data	*/
 
     sz = hd + nuntr + ndiff + ninst + nunsz + ndfsz + naddr;
     /**/ DEBUG_PRINT(2, "source=%d, ", si->vcpa.nsrc);

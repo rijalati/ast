@@ -20,47 +20,47 @@
 
 typedef struct LineItem
 {
-    Tk_Item header; /* Generic stuff that's the same for all
-                     * types.  MUST BE FIRST IN STRUCTURE. */
-    Tk_Canvas canvas; /* Canvas containing item.  Needed for
-                       * parsing arrow shapes. */
-    int numPoints; /* Number of points in line (always >= 2). */
-    double *coordPtr; /* Pointer to malloc-ed array containing
-                       * x- and y-coords of all points in line.
-                       * X-coords are even-valued indices, y-coords
-                       * are corresponding odd-valued indices. If
-                       * the line has arrowheads then the first
-                       * and last points have been adjusted to refer
-                       * to the necks of the arrowheads rather than
-                       * their tips.  The actual endpoints are
-                       * stored in the *firstArrowPtr and
-                       * *lastArrowPtr, if they exist. */
-    int width; /* Width of line. */
-    XColor *fg; /* Foreground color for line. */
-    Pixmap fillStipple; /* Stipple bitmap for filling line. */
-    int capStyle; /* Cap style for line. */
-    int joinStyle; /* Join style for line. */
-    GC gc; /* Graphics context for filling line. */
-    GC arrowGC; /* Graphics context for drawing arrowheads. */
-    Tk_Uid arrow; /* Indicates whether or not to draw arrowheads:
-                   * "none", "first", "last", or "both". */
-    float arrowShapeA; /* Distance from tip of arrowhead to center. */
-    float arrowShapeB; /* Distance from tip of arrowhead to trailing
-                        * point, measured along shaft. */
-    float arrowShapeC; /* Distance of trailing points from outside
-                        * edge of shaft. */
+    Tk_Item header;        /* Generic stuff that's the same for all
+                            * types.  MUST BE FIRST IN STRUCTURE. */
+    Tk_Canvas canvas;      /* Canvas containing item.  Needed for
+                            * parsing arrow shapes. */
+    int numPoints;         /* Number of points in line (always >= 2). */
+    double *coordPtr;      /* Pointer to malloc-ed array containing
+                            * x- and y-coords of all points in line.
+                            * X-coords are even-valued indices, y-coords
+                            * are corresponding odd-valued indices. If
+                            * the line has arrowheads then the first
+                            * and last points have been adjusted to refer
+                            * to the necks of the arrowheads rather than
+                            * their tips.  The actual endpoints are
+                            * stored in the *firstArrowPtr and
+                            * *lastArrowPtr, if they exist. */
+    int width;             /* Width of line. */
+    XColor *fg;            /* Foreground color for line. */
+    Pixmap fillStipple;    /* Stipple bitmap for filling line. */
+    int capStyle;          /* Cap style for line. */
+    int joinStyle;         /* Join style for line. */
+    GC gc;                 /* Graphics context for filling line. */
+    GC arrowGC;            /* Graphics context for drawing arrowheads. */
+    Tk_Uid arrow;          /* Indicates whether or not to draw arrowheads:
+                            * "none", "first", "last", or "both". */
+    float arrowShapeA;     /* Distance from tip of arrowhead to center. */
+    float arrowShapeB;     /* Distance from tip of arrowhead to trailing
+                            * point, measured along shaft. */
+    float arrowShapeC;     /* Distance of trailing points from outside
+                            * edge of shaft. */
     double *firstArrowPtr; /* Points to array of PTS_IN_ARROW points
                             * describing polygon for arrowhead at first
                             * point in line.  First point of arrowhead
                             * is tip.  Malloc'ed.  NULL means no arrowhead
                             * at first point. */
-    double *lastArrowPtr; /* Points to polygon for arrowhead at last
-                           * point in line (PTS_IN_ARROW points, first
-                           * of which is tip).  Malloc'ed.  NULL means
-                           * no arrowhead at last point. */
-    int smooth; /* Non-zero means draw line smoothed (i.e.
-                 * with Bezier splines). */
-    int splineSteps; /* Number of steps in each spline segment. */
+    double *lastArrowPtr;  /* Points to polygon for arrowhead at last
+                            * point in line (PTS_IN_ARROW points, first
+                            * of which is tip).  Malloc'ed.  NULL means
+                            * no arrowhead at last point. */
+    int smooth;            /* Non-zero means draw line smoothed (i.e.
+                            * with Bezier splines). */
+    int splineSteps;       /* Number of steps in each spline segment. */
 } LineItem;
 
 /*
@@ -229,26 +229,26 @@ static Tk_ConfigSpec configSpecs[] = { { TK_CONFIG_UID,
  */
 
 Tk_ItemType tkLineType = {
-    "line", /* name */
-    sizeof(LineItem), /* itemSize */
-    CreateLine, /* createProc */
-    configSpecs, /* configSpecs */
-    ConfigureLine, /* configureProc */
-    LineCoords, /* coordProc */
-    DeleteLine, /* deleteProc */
-    DisplayLine, /* displayProc */
-    0, /* alwaysRedraw */
-    LineToPoint, /* pointProc */
-    LineToArea, /* areaProc */
-    LineToPostscript, /* postscriptProc */
-    ScaleLine, /* scaleProc */
-    TranslateLine, /* translateProc */
-    ( Tk_ItemIndexProc * )NULL, /* indexProc */
-    ( Tk_ItemCursorProc * )NULL, /* icursorProc */
+    "line",                         /* name */
+    sizeof(LineItem),               /* itemSize */
+    CreateLine,                     /* createProc */
+    configSpecs,                    /* configSpecs */
+    ConfigureLine,                  /* configureProc */
+    LineCoords,                     /* coordProc */
+    DeleteLine,                     /* deleteProc */
+    DisplayLine,                    /* displayProc */
+    0,                              /* alwaysRedraw */
+    LineToPoint,                    /* pointProc */
+    LineToArea,                     /* areaProc */
+    LineToPostscript,               /* postscriptProc */
+    ScaleLine,                      /* scaleProc */
+    TranslateLine,                  /* translateProc */
+    ( Tk_ItemIndexProc * )NULL,     /* indexProc */
+    ( Tk_ItemCursorProc * )NULL,    /* icursorProc */
     ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL, /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL, /* dTextProc */
-    ( Tk_ItemType * )NULL /* nextPtr */
+    ( Tk_ItemInsertProc * )NULL,    /* insertProc */
+    ( Tk_ItemDCharsProc * )NULL,    /* dTextProc */
+    ( Tk_ItemType * )NULL           /* nextPtr */
 };
 
 /*
@@ -290,11 +290,11 @@ static Tk_Uid bothUid = NULL;
 
 static int CreateLine(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Canvas canvas; /* Canvas to hold new item. */
-Tk_Item *itemPtr; /* Record to hold new item;  header
-                   * has been initialized by caller. */
-int argc; /* Number of arguments in argv. */
-char **argv; /* Arguments describing line. */
+Tk_Canvas canvas;   /* Canvas to hold new item. */
+Tk_Item *itemPtr;   /* Record to hold new item;  header
+                     * has been initialized by caller. */
+int argc;           /* Number of arguments in argv. */
+char **argv;        /* Arguments describing line. */
 {
     LineItem *linePtr = ( LineItem * )itemPtr;
     int i;
@@ -393,13 +393,13 @@ error:
 
 static int LineCoords(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item whose coordinates are to be
-                   * read or modified. */
-int argc; /* Number of coordinates supplied in
-           * argv. */
-char **argv; /* Array of coordinates: x1, y1,
-              * x2, y2, ... */
+Tk_Canvas canvas;   /* Canvas containing item. */
+Tk_Item *itemPtr;   /* Item whose coordinates are to be
+                     * read or modified. */
+int argc;           /* Number of coordinates supplied in
+                     * argv. */
+char **argv;        /* Array of coordinates: x1, y1,
+                     * x2, y2, ... */
 {
     LineItem *linePtr = ( LineItem * )itemPtr;
     char buffer[TCL_DOUBLE_SPACE];
@@ -515,11 +515,11 @@ char **argv; /* Array of coordinates: x1, y1,
 
 static int ConfigureLine(interp, canvas, itemPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing itemPtr. */
-Tk_Item *itemPtr; /* Line item to reconfigure. */
-int argc; /* Number of elements in argv.  */
-char **argv; /* Arguments describing things to configure. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Tk_Canvas canvas;   /* Canvas containing itemPtr. */
+Tk_Item *itemPtr;   /* Line item to reconfigure. */
+int argc;           /* Number of elements in argv.  */
+char **argv;        /* Arguments describing things to configure. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     LineItem *linePtr = ( LineItem * )itemPtr;
     XGCValues gcValues;
@@ -839,11 +839,11 @@ LineItem *linePtr; /* Item whose bbos is to be
 
 static void
 DisplayLine(canvas, itemPtr, display, drawable, x, y, width, height)
-Tk_Canvas canvas; /* Canvas that contains item. */
-Tk_Item *itemPtr; /* Item to be displayed. */
-Display *display; /* Display on which to draw item. */
-Drawable drawable; /* Pixmap or window in which to draw
-                    * item. */
+Tk_Canvas canvas;        /* Canvas that contains item. */
+Tk_Item *itemPtr;        /* Item to be displayed. */
+Display *display;        /* Display on which to draw item. */
+Drawable drawable;       /* Pixmap or window in which to draw
+                          * item. */
 int x, y, width, height; /* Describes region of canvas that
                           * must be redisplayed (not used). */
 {
@@ -1359,11 +1359,11 @@ done:
  */
 
 static void ScaleLine(canvas, itemPtr, originX, originY, scaleX, scaleY)
-Tk_Canvas canvas; /* Canvas containing line. */
-Tk_Item *itemPtr; /* Line to be scaled. */
+Tk_Canvas canvas;        /* Canvas containing line. */
+Tk_Item *itemPtr;        /* Line to be scaled. */
 double originX, originY; /* Origin about which to scale rect. */
-double scaleX; /* Amount to scale in X direction. */
-double scaleY; /* Amount to scale in Y direction. */
+double scaleX;           /* Amount to scale in X direction. */
+double scaleY;           /* Amount to scale in Y direction. */
 {
     LineItem *linePtr = ( LineItem * )itemPtr;
     double *coordPtr;
@@ -1423,8 +1423,8 @@ double scaleY; /* Amount to scale in Y direction. */
  */
 
 static void TranslateLine(canvas, itemPtr, deltaX, deltaY)
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item that is being moved. */
+Tk_Canvas canvas;      /* Canvas containing item. */
+Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
@@ -1481,13 +1481,13 @@ double deltaX, deltaY; /* Amount by which item is to be
 /* ARGSUSED */
 static int ParseArrowShape(clientData, interp, tkwin, value, recordPtr, offset)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Window tkwin; /* Not used. */
-char *value; /* Textual specification of arrow shape. */
-char *recordPtr; /* Pointer to item record in which to
-                  * store arrow information. */
-int offset; /* Offset of shape information in widget
-             * record. */
+Tcl_Interp *interp;    /* Used for error reporting. */
+Tk_Window tkwin;       /* Not used. */
+char *value;           /* Textual specification of arrow shape. */
+char *recordPtr;       /* Pointer to item record in which to
+                        * store arrow information. */
+int offset;            /* Offset of shape information in widget
+                        * record. */
 {
     LineItem *linePtr = ( LineItem * )recordPtr;
     double a, b, c;
@@ -1550,11 +1550,11 @@ int offset; /* Offset of shape information in widget
 
 /* ARGSUSED */
 static char *PrintArrowShape(clientData, tkwin, recordPtr, offset, freeProcPtr)
-ClientData clientData; /* Not used. */
-Tk_Window tkwin; /* Window associated with linePtr's widget. */
-char *recordPtr; /* Pointer to item record containing current
-                  * shape information. */
-int offset; /* Offset of arrow information in record. */
+ClientData clientData;      /* Not used. */
+Tk_Window tkwin;            /* Window associated with linePtr's widget. */
+char *recordPtr;            /* Pointer to item record containing current
+                             * shape information. */
+int offset;                 /* Offset of arrow information in record. */
 Tcl_FreeProc **freeProcPtr; /* Store address of procedure to call to
                              * free string here. */
 {
@@ -1598,16 +1598,16 @@ ConfigureArrows(canvas,
                 linePtr) Tk_Canvas canvas; /* Canvas in which arrows will be
                                             * displayed (interp and tkwin
                                             * fields are needed). */
-LineItem *linePtr; /* Item to configure for arrows. */
+LineItem *linePtr;                         /* Item to configure for arrows. */
 {
     double *poly, *coordPtr;
     double dx, dy, length, sinTheta, cosTheta, temp;
-    double fracHeight; /* Line width as fraction of
-                        * arrowhead width. */
-    double backup; /* Distance to backup end points
-                    * so the line ends in the middle
-                    * of the arrowhead. */
-    double vertX, vertY; /* Position of arrowhead vertex. */
+    double fracHeight;             /* Line width as fraction of
+                                    * arrowhead width. */
+    double backup;                 /* Distance to backup end points
+                                    * so the line ends in the middle
+                                    * of the arrowhead. */
+    double vertX, vertY;           /* Position of arrowhead vertex. */
     double shapeA, shapeB, shapeC; /* Adjusted coordinates (see
                                     * explanation below). */
 
@@ -1747,12 +1747,12 @@ LineItem *linePtr; /* Item to configure for arrows. */
 static int LineToPostscript(interp, canvas, itemPtr, prepass)
 Tcl_Interp *interp; /* Leave Postscript or error message
                      * here. */
-Tk_Canvas canvas; /* Information about overall canvas. */
-Tk_Item *itemPtr; /* Item for which Postscript is
-                   * wanted. */
-int prepass; /* 1 means this is a prepass to
-              * collect font information;  0 means
-              * final Postscript is being created. */
+Tk_Canvas canvas;   /* Information about overall canvas. */
+Tk_Item *itemPtr;   /* Item for which Postscript is
+                     * wanted. */
+int prepass;        /* 1 means this is a prepass to
+                     * collect font information;  0 means
+                     * final Postscript is being created. */
 {
     LineItem *linePtr = ( LineItem * )itemPtr;
     char buffer[200];
@@ -1916,11 +1916,11 @@ int prepass; /* 1 means this is a prepass to
 static int ArrowheadPostscript(interp, canvas, linePtr, arrowPtr)
 Tcl_Interp *interp; /* Leave Postscript or error message
                      * here. */
-Tk_Canvas canvas; /* Information about overall canvas. */
-LineItem *linePtr; /* Line item for which Postscript is
-                    * being generated. */
-double *arrowPtr; /* Pointer to first of five points
-                   * describing arrowhead polygon. */
+Tk_Canvas canvas;   /* Information about overall canvas. */
+LineItem *linePtr;  /* Line item for which Postscript is
+                     * being generated. */
+double *arrowPtr;   /* Pointer to first of five points
+                     * describing arrowhead polygon. */
 {
     Tk_CanvasPsPath(interp, canvas, arrowPtr, PTS_IN_ARROW);
     if (linePtr->fillStipple != None)

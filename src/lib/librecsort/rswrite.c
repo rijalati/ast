@@ -85,8 +85,8 @@ int
 rswrite(Rs_t *rs, Sfio_t *f, int type)
 #else
 int rswrite(rs, f, type) Rs_t *rs; /* sorting context	*/
-Sfio_t *f; /* stream to write to	*/
-int type; /* RS_TEXT 		*/
+Sfio_t *f;                         /* stream to write to	*/
+int type;                          /* RS_TEXT 		*/
 #endif
 {
     reg Rsobj_t *r, *e, *o;

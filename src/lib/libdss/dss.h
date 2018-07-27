@@ -70,28 +70,28 @@
 #    include <error.h>
 #    include <vmalloc.h>
 
-#    define DSS_DEBUG CX_DEBUG /* debug trace		*/
-#    define DSS_QUIET CX_QUIET /* no non-fatal messages*/
-#    define DSS_REGRESS CX_REGRESS /* regression output	*/
-#    define DSS_TRACE CX_TRACE /* algorithm trace	*/
+#    define DSS_DEBUG CX_DEBUG       /* debug trace		*/
+#    define DSS_QUIET CX_QUIET       /* no non-fatal messages*/
+#    define DSS_REGRESS CX_REGRESS   /* regression output	*/
+#    define DSS_TRACE CX_TRACE       /* algorithm trace	*/
 #    define DSS_VALIDATE CX_VALIDATE /* validate constraints	*/
-#    define DSS_VERBOSE CX_VERBOSE /* verbose feedback	*/
+#    define DSS_VERBOSE CX_VERBOSE   /* verbose feedback	*/
 
 #    define DSS_CX_FLAGS (CX_FLAGS - 1)
 
 #    define DSS_APPEND (CX_FLAGS << 0) /* DSS_FILE_APPEND	*/
-#    define DSS_BASE (CX_FLAGS << 1) /* base method		*/
-#    define DSS_FORCE (CX_FLAGS << 2) /* populate all fields	*/
-#    define DSS_WRITE (CX_FLAGS << 3) /* {write} referenced	*/
+#    define DSS_BASE (CX_FLAGS << 1)   /* base method		*/
+#    define DSS_FORCE (CX_FLAGS << 2)  /* populate all fields	*/
+#    define DSS_WRITE (CX_FLAGS << 3)  /* {write} referenced	*/
 
-#    define DSS_METH_FLAGS (CX_FLAGS << 4) /* first method flag	*/
+#    define DSS_METH_FLAGS (CX_FLAGS << 4)  /* first method flag	*/
 #    define DSS_FLAGS (DSS_METH_FLAGS << 8) /* first caller flag	*/
 
-#    define DSS_FILE_READ (1 << 0) /* read mode		*/
-#    define DSS_FILE_WRITE (1 << 1) /* write mode		*/
+#    define DSS_FILE_READ (1 << 0)   /* read mode		*/
+#    define DSS_FILE_WRITE (1 << 1)  /* write mode		*/
 #    define DSS_FILE_APPEND (1 << 2) /* append (no header)	*/
-#    define DSS_FILE_KEEP (1 << 3) /* keep stream on close	*/
-#    define DSS_FILE_ERROR (1 << 4) /* an error occurred	*/
+#    define DSS_FILE_KEEP (1 << 3)   /* keep stream on close	*/
+#    define DSS_FILE_ERROR (1 << 4)  /* an error occurred	*/
 
 struct Dss_s;
 typedef struct Dss_s Dss_t;
@@ -112,8 +112,8 @@ typedef Cxexpr_t Dssexpr_t;
 
 struct Dssoptdisc_s /* dssopt*() optget() disc	*/
 {
-    Optdisc_t optdisc; /* optget disc			*/
-    Dssdisc_t *disc; /* dss disc			*/
+    Optdisc_t optdisc;  /* optget disc			*/
+    Dssdisc_t *disc;    /* dss disc			*/
     Cxheader_t *header; /* current item header		*/
 };
 
@@ -135,24 +135,24 @@ struct Dssformat_s /* file format method		*/
 
 struct Dssrecord_s /* record info			*/
 {
-    Dssfile_t *file; /* file handle if not cloned	*/
-    void *data; /* actual data			*/
-    size_t size; /* total data size		*/
+    Dssfile_t *file;  /* file handle if not cloned	*/
+    void *data;       /* actual data			*/
+    size_t size;      /* total data size		*/
     Dssflags_t flags; /* DSS_RECORD_* flags		*/
 };
 
 struct Dssfile_s /* typed file handle		*/
 {
-    Sfoff_t offset; /* current record offset	*/
-    size_t count; /* current record count		*/
-    size_t length; /* current record length	*/
-    Dss_t *dss; /* dss handle			*/
-    Dssflags_t flags; /* DSS_FILE_* flags		*/
-    Sfio_t *io; /* io stream			*/
-    char *path; /* original path		*/
+    Sfoff_t offset;      /* current record offset	*/
+    size_t count;        /* current record count		*/
+    size_t length;       /* current record length	*/
+    Dss_t *dss;          /* dss handle			*/
+    Dssflags_t flags;    /* DSS_FILE_* flags		*/
+    Sfio_t *io;          /* io stream			*/
+    char *path;          /* original path		*/
     Dssformat_t *format; /* file format			*/
-    void *caller; /* caller defined handle	*/
-    Vmalloc_t *vm; /* per file vm			*/
+    void *caller;        /* caller defined handle	*/
+    Vmalloc_t *vm;       /* per file vm			*/
 #    ifdef _DSS_FILE_PRIVATE_
     _DSS_FILE_PRIVATE_
 #    endif
@@ -169,9 +169,9 @@ struct Dssmeth_s /* method			*/
     int (*openf)(Dss_t *, Dssdisc_t *);
     int (*closef)(Dss_t *, Dssdisc_t *);
     const char *compress; /* preferred compression	*/
-    const char *print; /* default {print} format	*/
-    Cx_t *cx; /* expression handle		*/
-    Dt_t *formats; /* method format table		*/
+    const char *print;    /* default {print} format	*/
+    Cx_t *cx;             /* expression handle		*/
+    Dt_t *formats;        /* method format table		*/
 #    ifdef _DSS_METH_PRIVATE_
     _DSS_METH_PRIVATE_
 #    endif
@@ -179,9 +179,9 @@ struct Dssmeth_s /* method			*/
 
 struct Dssstate_s /* global state			*/
 {
-    Dss_t *dss; /* most recent dssopen()	*/
+    Dss_t *dss;      /* most recent dssopen()	*/
     Dssmeth_t *meth; /* most recent dssmeth()	*/
-    Cxstate_t *cx; /* cx global state		*/
+    Cxstate_t *cx;   /* cx global state		*/
 #    ifdef _DSS_STATE_PRIVATE_
     _DSS_STATE_PRIVATE_
 #    endif
@@ -189,16 +189,16 @@ struct Dssstate_s /* global state			*/
 
 struct Dss_s /* dss handle			*/
 {
-    const char *id; /* interface id			*/
-    Dssmeth_t *meth; /* method			*/
-    Dssdisc_t *disc; /* discipline			*/
-    Vmalloc_t *vm; /* per handle vm		*/
-    Dssflags_t flags; /* dssopen() flags		*/
-    Dssflags_t test; /* dssopen() test mask		*/
-    Cx_t *cx; /* expression handle		*/
-    void *data; /* method data			*/
+    const char *id;      /* interface id			*/
+    Dssmeth_t *meth;     /* method			*/
+    Dssdisc_t *disc;     /* discipline			*/
+    Vmalloc_t *vm;       /* per handle vm		*/
+    Dssflags_t flags;    /* dssopen() flags		*/
+    Dssflags_t test;     /* dssopen() test mask		*/
+    Cx_t *cx;            /* expression handle		*/
+    void *data;          /* method data			*/
     Dssformat_t *format; /* first input file format	*/
-    Dssstate_t *state; /* global state			*/
+    Dssstate_t *state;   /* global state			*/
 #    ifdef _DSS_PRIVATE_
     _DSS_PRIVATE_
 #    endif

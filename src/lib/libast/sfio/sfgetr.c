@@ -32,7 +32,7 @@ char *
 sfgetr(Sfio_t *f, int rc, int type)
 #else
 char *sfgetr(f, rc, type) Sfio_t *f; /* stream to read from	*/
-int rc; /* record separator	*/
+int rc;                              /* record separator	*/
 int type;
 #endif
 {

@@ -47,10 +47,10 @@
 #    define FMT_EXP_NONL 0x200 /* skip \n			*/
 
 #    define STR_MAXIMAL 01 /* maximal match		*/
-#    define STR_LEFT 02 /* implicit left anchor		*/
-#    define STR_RIGHT 04 /* implicit right anchor	*/
-#    define STR_ICASE 010 /* ignore case			*/
-#    define STR_GROUP 020 /* (|&) inside [@|&](...) only	*/
+#    define STR_LEFT 02    /* implicit left anchor		*/
+#    define STR_RIGHT 04   /* implicit right anchor	*/
+#    define STR_ICASE 010  /* ignore case			*/
+#    define STR_GROUP 020  /* (|&) inside [@|&](...) only	*/
 
 typedef int (*Error_f)(void *, void *, int, ...);
 typedef int (*Qsortcmp_f)(const void *, const void *);

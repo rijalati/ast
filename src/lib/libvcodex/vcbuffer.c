@@ -30,8 +30,8 @@ _vcbuffer(Vcodex_t *vc, Vcchar_t *trunc, ssize_t size, ssize_t head)
 #else
 Vcchar_t *_vcbuffer(vc, trunc, size, head) Vcodex_t *vc;
 Vcchar_t *trunc; /* if != NULL, a buffer to be truncated	*/
-ssize_t size; /* the size needed for buffered data 	*/
-ssize_t head; /* head room in front of buffer 	*/
+ssize_t size;    /* the size needed for buffered data 	*/
+ssize_t head;    /* head room in front of buffer 	*/
 #endif
 {
     Vcbuffer_t *b, *n;
@@ -45,7 +45,7 @@ ssize_t head; /* head room in front of buffer 	*/
         return NIL(Vcchar_t *);
 
     if (trunc) /* truncating a buffer */
-    { /* find the buffer */
+    {          /* find the buffer */
         for (; vc; vc = vc->coder)
         {
             for (n = NIL(Vcbuffer_t *), b = vc->list; b; n = b, b = b->next)
@@ -60,7 +60,7 @@ ssize_t head; /* head room in front of buffer 	*/
                 vc->list = b->next;
 
             if (size < 0) /* just free the buffer */
-            { /**/
+            {             /**/
                 DEBUG_SET(Busy, Busy - b->size);
                 /**/ DEBUG_PRINT(2, "free: file=%s ", b->file);
                 /**/ DEBUG_PRINT(2, "line=%d ", b->line);

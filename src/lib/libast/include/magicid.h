@@ -36,9 +36,9 @@ typedef uint32_t Magicid_data_t;
 
 typedef struct Magicid_s
 {
-    Magicid_data_t magic; /* magic number			*/
-    char name[8]; /* generic data/application name*/
-    char type[12]; /* specific data type		*/
+    Magicid_data_t magic;   /* magic number			*/
+    char name[8];           /* generic data/application name*/
+    char type[12];          /* specific data type		*/
     Magicid_data_t version; /* YYYYMMDD or 0xWWXXYYZZ	*/
     Magicid_data_t size;
 } Magicid_t;

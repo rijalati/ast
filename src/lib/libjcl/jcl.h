@@ -140,12 +140,12 @@ typedef int (*Jcloptset_f)(Jcl_t *, int, Jcldisc_t *);
 struct Jcldisc_s
 {
     unsigned long version; /* interface version	*/
-    Error_f errorf; /* error function	*/
-    const char *usage; /* option usage		*/
-    Jcloptset_f optsetf; /* option function	*/
-    time_t date; /* system date		*/
-    time_t odate; /* original date	*/
-    time_t rdate; /* current run date	*/
+    Error_f errorf;        /* error function	*/
+    const char *usage;     /* option usage		*/
+    Jcloptset_f optsetf;   /* option function	*/
+    time_t date;           /* system date		*/
+    time_t odate;          /* original date	*/
+    time_t rdate;          /* current run date	*/
 };
 
 struct Jclcat_s

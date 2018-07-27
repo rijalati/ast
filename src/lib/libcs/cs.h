@@ -46,54 +46,55 @@
 
 #    define CS_NEVER (-1L) /* no timeout			*/
 
-#    define CS_EXACT 0x0001 /* csread() exact amount	*/
-#    define CS_LIMIT 0x0002 /* csread() amount limit	*/
-#    define CS_LINE 0x0004 /* csread() one or more lines	*/
+#    define CS_EXACT 0x0001   /* csread() exact amount	*/
+#    define CS_LIMIT 0x0002   /* csread() amount limit	*/
+#    define CS_LINE 0x0004    /* csread() one or more lines	*/
 #    define CS_RESTART 0x1000 /* restart on interrupt		*/
 
-#    define CS_PORT_NORMAL 0x00000000 /* alloc normal port	*/
-#    define CS_PORT_MIN 0x00000001 /* min real port	*/
-#    define CS_PORT_MAX 0x0000ffff /* max real port	*/
-#    define CS_PORT_INVALID 0xffffffff /* invalid port		*/
+#    define CS_PORT_NORMAL 0x00000000   /* alloc normal port	*/
+#    define CS_PORT_MIN 0x00000001      /* min real port	*/
+#    define CS_PORT_MAX 0x0000ffff      /* max real port	*/
+#    define CS_PORT_INVALID 0xffffffff  /* invalid port		*/
 #    define CS_PORT_RESERVED 0xfffffffe /* alloc reserved port	*/
 
 #    define CS_NORMAL CS_PORT_NORMAL
 #    define CS_RESERVED CS_PORT_RESERVED
 
-#    define CS_HOST_GATEWAY "ftp" /* local net gateway host	*/
-#    define CS_HOST_LOCAL "local" /* local host			*/
-#    define CS_HOST_PROXY "proxy" /* local net proxy host		*/
-#    define CS_HOST_SHARE "share" /* any local net host		*/
+#    define CS_HOST_GATEWAY "ftp"     /* local net gateway host	*/
+#    define CS_HOST_LOCAL "local"     /* local host			*/
+#    define CS_HOST_PROXY "proxy"     /* local net proxy host		*/
+#    define CS_HOST_SHARE "share"     /* any local net host		*/
 #    define CS_HOST_UNKNOWN "unknown" /* unknown host			*/
 
-#    define CS_STAT_DAEMON "lib/ssd" /* system stat daemon rel name	*/
+#    define CS_STAT_DAEMON "lib/ssd"   /* system stat daemon rel name	*/
 #    define CS_STAT_DIR "share/lib/ss" /* system stat dir rel path	*/
-#    define CS_STAT_DOWN (3 * CS_STAT_FREQ) /* assumed down after . secs     \
-                                             */
-#    define CS_STAT_FREQ 50 /* avg update frequency in secs	*/
+#    define CS_STAT_DOWN                                                     \
+        (3 * CS_STAT_FREQ)                /* assumed down after . secs       \
+                                           */
+#    define CS_STAT_FREQ 50               /* avg update frequency in secs	*/
 #    define CS_STAT_IGNORE (24 * 60 * 60) /* ignore user after . idle	*/
 
-#    define CS_SVC_ACCESS "access" /* local host access		*/
-#    define CS_SVC_DIR "lib/cs" /* service directory		*/
+#    define CS_SVC_ACCESS "access"  /* local host access		*/
+#    define CS_SVC_DIR "lib/cs"     /* service directory		*/
 #    define CS_SVC_DORMANT (5 * 60) /* min dormant secs		*/
-#    define CS_SVC_HOSTS "hosts" /* hosts that can run service	*/
-#    define CS_SVC_INFO "local" /* local host info		*/
-#    define CS_SVC_REMOTE "remote" /* remote gateway info		*/
-#    define CS_SVC_SUFFIX ".svc" /* service daemon suffix	*/
+#    define CS_SVC_HOSTS "hosts"    /* hosts that can run service	*/
+#    define CS_SVC_INFO "local"     /* local host info		*/
+#    define CS_SVC_REMOTE "remote"  /* remote gateway info		*/
+#    define CS_SVC_SUFFIX ".svc"    /* service daemon suffix	*/
 
-#    define CS_MNT_MAX 14 /* max mount file name length	*/
+#    define CS_MNT_MAX 14   /* max mount file name length	*/
 #    define CS_NAME_MAX 256 /* misc name max length		*/
 
 #    define CS_MNT_TAIL "-cs.mnt" /* mount file name tail		*/
 
-#    define CS_MNT_AUTH 'A' /* client authentication	*/
-#    define CS_MNT_LOCK 'X' /* mount lock			*/
-#    define CS_MNT_LOG 'L' /* error log			*/
-#    define CS_MNT_OLDLOG 'O' /* previous error log		*/
-#    define CS_MNT_OTHER '#' /* no auth suffix		*/
+#    define CS_MNT_AUTH 'A'    /* client authentication	*/
+#    define CS_MNT_LOCK 'X'    /* mount lock			*/
+#    define CS_MNT_LOG 'L'     /* error log			*/
+#    define CS_MNT_OLDLOG 'O'  /* previous error log		*/
+#    define CS_MNT_OTHER '#'   /* no auth suffix		*/
 #    define CS_MNT_PROCESS 'P' /* process id			*/
-#    define CS_MNT_STREAM 'S' /* connect stream		*/
-#    define CS_MNT_TMP 'Z' /* temporary			*/
+#    define CS_MNT_STREAM 'S'  /* connect stream		*/
+#    define CS_MNT_TMP 'Z'     /* temporary			*/
 
 #    define CS_REMOTE_CONTROL "cs"
 #    define CS_REMOTE_DEBUG 'd'
@@ -113,18 +114,18 @@
 
 #    define CS_FD_ALLOCATE (-2) /* csfd() table alloc		*/
 
-#    define CS_OPEN_READ 0 /* initiate and open for read	*/
+#    define CS_OPEN_READ 0   /* initiate and open for read	*/
 #    define CS_OPEN_CREATE 1 /* create			*/
 
-#    define CS_OPEN_AGENT (1 << 1) /* initiate, no authenticate	*/
-#    define CS_OPEN_LOCAL (1 << 2) /* CS_OPEN_READ local affinity	*/
-#    define CS_OPEN_MOUNT (1 << 3) /* no open, mount namespace only*/
-#    define CS_OPEN_NOW (1 << 4) /* non blocking open		*/
+#    define CS_OPEN_AGENT (1 << 1)  /* initiate, no authenticate	*/
+#    define CS_OPEN_LOCAL (1 << 2)  /* CS_OPEN_READ local affinity	*/
+#    define CS_OPEN_MOUNT (1 << 3)  /* no open, mount namespace only*/
+#    define CS_OPEN_NOW (1 << 4)    /* non blocking open		*/
 #    define CS_OPEN_REMOTE (1 << 5) /* force CS_ADDR_REMOTE		*/
-#    define CS_OPEN_SHARE (1 << 6) /* share affinity		*/
-#    define CS_OPEN_SLAVE (1 << 7) /* no daemon fork() on create	*/
-#    define CS_OPEN_TEST (1 << 8) /* open for read, no initiate	*/
-#    define CS_OPEN_TRUST (1 << 9) /* trusted service		*/
+#    define CS_OPEN_SHARE (1 << 6)  /* share affinity		*/
+#    define CS_OPEN_SLAVE (1 << 7)  /* no daemon fork() on create	*/
+#    define CS_OPEN_TEST (1 << 8)   /* open for read, no initiate	*/
+#    define CS_OPEN_TRUST (1 << 9)  /* trusted service		*/
 
 #    define CS_PATH_NAME (1 << 0) /* cspath addr name vs. n.n.n.n	*/
 
@@ -137,21 +138,21 @@
  * cs.flags -- CS_<function>_<flags>
  */
 
-#    define CS_ADDR_FULL (1 << 0) /* retain fully qualified names	*/
-#    define CS_ADDR_LOCAL (1 << 1) /* local host			*/
-#    define CS_ADDR_NOW (1 << 2) /* for CS_OPEN_NOW		*/
+#    define CS_ADDR_FULL (1 << 0)    /* retain fully qualified names	*/
+#    define CS_ADDR_LOCAL (1 << 1)   /* local host			*/
+#    define CS_ADDR_NOW (1 << 2)     /* for CS_OPEN_NOW		*/
 #    define CS_ADDR_NUMERIC (1 << 3) /* n.n.n.n addr			*/
-#    define CS_ADDR_REMOTE (1 << 4) /* remote host			*/
-#    define CS_ADDR_SHARE (1 << 5) /* share host			*/
-#    define CS_ADDR_TEST (1 << 6) /* share host			*/
-#    define CS_ADDR_TRUST (1 << 7) /* for CS_OPEN_TRUST		*/
+#    define CS_ADDR_REMOTE (1 << 4)  /* remote host			*/
+#    define CS_ADDR_SHARE (1 << 5)   /* share host			*/
+#    define CS_ADDR_TEST (1 << 6)    /* share host			*/
+#    define CS_ADDR_TRUST (1 << 7)   /* for CS_OPEN_TRUST		*/
 #    define CS_DAEMON_SLAVE (1 << 8) /* no daemon fork()		*/
 #    define CS_PIPE_BLOCKED (1 << 9) /* SIGPIPE blocked		*/
-#    define CS_TEST (1 << 10) /* enable test			*/
+#    define CS_TEST (1 << 10)        /* enable test			*/
 
 #    define CS_CLIENT_ARGV (1 << 0) /* just process argv		*/
-#    define CS_CLIENT_RAW (1 << 1) /* tty raw mode input		*/
-#    define CS_CLIENT_SEP (1 << 2) /* argv ':' line sep		*/
+#    define CS_CLIENT_RAW (1 << 1)  /* tty raw mode input		*/
+#    define CS_CLIENT_SEP (1 << 2)  /* argv ':' line sep		*/
 
 typedef struct
 {
@@ -169,11 +170,11 @@ typedef struct
 typedef struct
 {
     unsigned long idle; /* min user idle secs		*/
-    long up; /* up (down<0) time in secs	*/
-    int load; /* load average			*/
-    int pctsys; /* % time for sys		*/
-    int pctusr; /* % time for usr		*/
-    int users; /* # interesting users		*/
+    long up;            /* up (down<0) time in secs	*/
+    int load;           /* load average			*/
+    int pctsys;         /* % time for sys		*/
+    int pctusr;         /* % time for usr		*/
+    int users;          /* # interesting users		*/
 } Csstat_t;
 
 struct Cs_s;
@@ -185,24 +186,24 @@ typedef struct Csdisc_s Csdisc_t;
 struct Csdisc_s /* user discipline		*/
 {
     unsigned long version; /* CS_VERSION			*/
-    unsigned long flags; /* CS_* flags			*/
-    Error_f errorf; /* error message handler	*/
+    unsigned long flags;   /* CS_* flags			*/
+    Error_f errorf;        /* error message handler	*/
 };
 
 struct Cs_s /* thread state			*/
 {
-    char *id; /* library id			*/
-    Csdisc_t *disc; /* discipline from csalloc()	*/
-    unsigned long addr; /* addr from csbind()		*/
-    unsigned long port; /* port from csbind()		*/
-    unsigned long time; /* time updated by CSTIME()	*/
-    unsigned long flags; /* misc flags			*/
-    char *control; /* CS_MNT_* in cs.mount		*/
-    char *cs; /* service connect stream	*/
-    char type[8]; /* csopen() stream type		*/
+    char *id;               /* library id			*/
+    Csdisc_t *disc;         /* discipline from csalloc()	*/
+    unsigned long addr;     /* addr from csbind()		*/
+    unsigned long port;     /* port from csbind()		*/
+    unsigned long time;     /* time updated by CSTIME()	*/
+    unsigned long flags;    /* misc flags			*/
+    char *control;          /* CS_MNT_* in cs.mount		*/
+    char *cs;               /* service connect stream	*/
+    char type[8];           /* csopen() stream type		*/
     char qual[CS_NAME_MAX]; /* csopen() qualifier		*/
     char host[CS_NAME_MAX]; /* csaddr() real host		*/
-    char mount[PATH_MAX]; /* current mount path		*/
+    char mount[PATH_MAX];   /* current mount path		*/
     char user[CS_NAME_MAX]; /* csaddr() user		*/
 
 #    ifdef _CS_PRIVATE_

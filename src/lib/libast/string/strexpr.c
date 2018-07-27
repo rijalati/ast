@@ -49,8 +49,8 @@
 typedef struct /* expression handle		*/
 {
     char *nextchr; /* next expression char		*/
-    char *errchr; /* next char after error	*/
-    char *errmsg; /* error message text		*/
+    char *errchr;  /* next char after error	*/
+    char *errmsg;  /* error message text		*/
     long (*convert)(const char *, char **, void *);
     void *handle; /* user convert handle		*/
 } Expr_t;

@@ -73,22 +73,22 @@ static char *FormatConfigValue _ANSI_ARGS_((Tcl_Interp * interp,
  */
 
 int Tk_ConfigureWidget(interp, tkwin, specs, argc, argv, widgRec, flags)
-Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Window tkwin; /* Window containing widget (needed to
-                  * set up X resources). */
+Tcl_Interp *interp;   /* Interpreter for error reporting. */
+Tk_Window tkwin;      /* Window containing widget (needed to
+                       * set up X resources). */
 Tk_ConfigSpec *specs; /* Describes legal options. */
-int argc; /* Number of elements in argv. */
-char **argv; /* Command-line options. */
-char *widgRec; /* Record whose fields are to be
-                * modified.  Values must be properly
-                * initialized. */
-int flags; /* Used to specify additional flags
-            * that must be present in config specs
-            * for them to be considered.  Also,
-            * may have TK_CONFIG_ARGV_ONLY set. */
+int argc;             /* Number of elements in argv. */
+char **argv;          /* Command-line options. */
+char *widgRec;        /* Record whose fields are to be
+                       * modified.  Values must be properly
+                       * initialized. */
+int flags;            /* Used to specify additional flags
+                       * that must be present in config specs
+                       * for them to be considered.  Also,
+                       * may have TK_CONFIG_ARGV_ONLY set. */
 {
     Tk_ConfigSpec *specPtr;
-    Tk_Uid value; /* Value of option from database. */
+    Tk_Uid value;  /* Value of option from database. */
     int needFlags; /* Specs must contain this set of flags
                     * or else they are not considered. */
     int hateFlags; /* If a spec contains any bits here, it's
@@ -258,18 +258,18 @@ int flags; /* Used to specify additional flags
 
 static Tk_ConfigSpec *
 FindConfigSpec(interp, specs, argvName, needFlags, hateFlags)
-Tcl_Interp *interp; /* Used for reporting errors. */
+Tcl_Interp *interp;   /* Used for reporting errors. */
 Tk_ConfigSpec *specs; /* Pointer to table of configuration
                        * specifications for a widget. */
-char *argvName; /* Name (suitable for use in a "config"
-                 * command) identifying particular option. */
-int needFlags; /* Flags that must be present in matching
-                * entry. */
-int hateFlags; /* Flags that must NOT be present in
-                * matching entry. */
+char *argvName;       /* Name (suitable for use in a "config"
+                       * command) identifying particular option. */
+int needFlags;        /* Flags that must be present in matching
+                       * entry. */
+int hateFlags;        /* Flags that must NOT be present in
+                       * matching entry. */
 {
     Tk_ConfigSpec *specPtr;
-    char c; /* First character of current argument. */
+    char c;                  /* First character of current argument. */
     Tk_ConfigSpec *matchPtr; /* Matching spec, or NULL. */
     size_t length;
 
@@ -365,16 +365,16 @@ gotMatch:
  */
 
 static int DoConfig(interp, tkwin, specPtr, value, valueIsUid, widgRec)
-Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Window tkwin; /* Window containing widget (needed to
-                  * set up X resources). */
+Tcl_Interp *interp;     /* Interpreter for error reporting. */
+Tk_Window tkwin;        /* Window containing widget (needed to
+                         * set up X resources). */
 Tk_ConfigSpec *specPtr; /* Specifier to apply. */
-char *value; /* Value to use to fill in widgRec. */
-int valueIsUid; /* Non-zero means value is a Tk_Uid;
-                 * zero means it's an ordinary string. */
-char *widgRec; /* Record whose fields are to be
-                * modified.  Values must be properly
-                * initialized. */
+char *value;            /* Value to use to fill in widgRec. */
+int valueIsUid;         /* Non-zero means value is a Tk_Uid;
+                         * zero means it's an ordinary string. */
+char *widgRec;          /* Record whose fields are to be
+                         * modified.  Values must be properly
+                         * initialized. */
 {
     char *ptr;
     Tk_Uid uid;
@@ -695,17 +695,17 @@ char *widgRec; /* Record whose fields are to be
  */
 
 int Tk_ConfigureInfo(interp, tkwin, specs, widgRec, argvName, flags)
-Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Window tkwin; /* Window corresponding to widgRec. */
+Tcl_Interp *interp;   /* Interpreter for error reporting. */
+Tk_Window tkwin;      /* Window corresponding to widgRec. */
 Tk_ConfigSpec *specs; /* Describes legal options. */
-char *widgRec; /* Record whose fields contain current
-                * values for options. */
-char *argvName; /* If non-NULL, indicates a single option
-                 * whose info is to be returned.  Otherwise
-                 * info is returned for all options. */
-int flags; /* Used to specify additional flags
-            * that must be present in config specs
-            * for them to be considered. */
+char *widgRec;        /* Record whose fields contain current
+                       * values for options. */
+char *argvName;       /* If non-NULL, indicates a single option
+                       * whose info is to be returned.  Otherwise
+                       * info is returned for all options. */
+int flags;            /* Used to specify additional flags
+                       * that must be present in config specs
+                       * for them to be considered. */
 {
     Tk_ConfigSpec *specPtr;
     int needFlags, hateFlags;
@@ -788,13 +788,13 @@ int flags; /* Used to specify additional flags
  */
 
 static char *FormatConfigInfo(interp, tkwin, specPtr, widgRec)
-Tcl_Interp *interp; /* Interpreter to use for things
-                     * like floating-point precision. */
-Tk_Window tkwin; /* Window corresponding to widget. */
+Tcl_Interp *interp;     /* Interpreter to use for things
+                         * like floating-point precision. */
+Tk_Window tkwin;        /* Window corresponding to widget. */
 Tk_ConfigSpec *specPtr; /* Pointer to information describing
                          * option. */
-char *widgRec; /* Pointer to record holding current
-                * values of info for widget. */
+char *widgRec;          /* Pointer to record holding current
+                         * values of info for widget. */
 {
     char *argv[6], *result;
     char buffer[200];
@@ -865,14 +865,14 @@ char *widgRec; /* Pointer to record holding current
 
 static char *
 FormatConfigValue(interp, tkwin, specPtr, widgRec, buffer, freeProcPtr)
-Tcl_Interp *interp; /* Interpreter for use in real conversions. */
-Tk_Window tkwin; /* Window corresponding to widget. */
-Tk_ConfigSpec *specPtr; /* Pointer to information describing option.
-                         * Must not point to a synonym option. */
-char *widgRec; /* Pointer to record holding current
-                * values of info for widget. */
-char *buffer; /* Static buffer to use for small values.
-               * Must have at least 200 bytes of storage. */
+Tcl_Interp *interp;         /* Interpreter for use in real conversions. */
+Tk_Window tkwin;            /* Window corresponding to widget. */
+Tk_ConfigSpec *specPtr;     /* Pointer to information describing option.
+                             * Must not point to a synonym option. */
+char *widgRec;              /* Pointer to record holding current
+                             * values of info for widget. */
+char *buffer;               /* Static buffer to use for small values.
+                             * Must have at least 200 bytes of storage. */
 Tcl_FreeProc **freeProcPtr; /* Pointer to word to fill in with address
                              * of procedure to free the result, or NULL
                              * if result is static. */
@@ -1033,16 +1033,16 @@ Tcl_FreeProc **freeProcPtr; /* Pointer to word to fill in with address
  */
 
 int Tk_ConfigureValue(interp, tkwin, specs, widgRec, argvName, flags)
-Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Window tkwin; /* Window corresponding to widgRec. */
+Tcl_Interp *interp;   /* Interpreter for error reporting. */
+Tk_Window tkwin;      /* Window corresponding to widgRec. */
 Tk_ConfigSpec *specs; /* Describes legal options. */
-char *widgRec; /* Record whose fields contain current
-                * values for options. */
-char *argvName; /* Gives the command-line name for the
-                 * option whose value is to be returned. */
-int flags; /* Used to specify additional flags
-            * that must be present in config specs
-            * for them to be considered. */
+char *widgRec;        /* Record whose fields contain current
+                       * values for options. */
+char *argvName;       /* Gives the command-line name for the
+                       * option whose value is to be returned. */
+int flags;            /* Used to specify additional flags
+                       * that must be present in config specs
+                       * for them to be considered. */
 {
     Tk_ConfigSpec *specPtr;
     int needFlags, hateFlags;
@@ -1087,13 +1087,13 @@ int flags; /* Used to specify additional flags
 /* ARGSUSED */
 void Tk_FreeOptions(specs, widgRec, display, needFlags)
 Tk_ConfigSpec *specs; /* Describes legal options. */
-char *widgRec; /* Record whose fields contain current
-                * values for options. */
-Display *display; /* X display; needed for freeing some
-                   * resources. */
-int needFlags; /* Used to specify additional flags
-                * that must be present in config specs
-                * for them to be considered. */
+char *widgRec;        /* Record whose fields contain current
+                       * values for options. */
+Display *display;     /* X display; needed for freeing some
+                       * resources. */
+int needFlags;        /* Used to specify additional flags
+                       * that must be present in config specs
+                       * for them to be considered. */
 {
     Tk_ConfigSpec *specPtr;
     char *ptr;

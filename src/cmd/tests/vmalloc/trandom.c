@@ -34,8 +34,8 @@ static Obj_t Obj[N_OBJ], *List[N_OBJ + 1];
 
 #define Z_HUGE 5000 /* huge block size increment	*/
 #define Z_BIG 10000 /* size range of large objects	*/
-#define Z_MED 1000 /* size range of medium objects	*/
-#define Z_TINY 10 /* size range of small objects	*/
+#define Z_MED 1000  /* size range of medium objects	*/
+#define Z_TINY 10   /* size range of small objects	*/
 
 #define ALLOCSIZE()                                                          \
     (RAND() % 100 == 0                                                       \
@@ -44,8 +44,8 @@ static Obj_t Obj[N_OBJ], *List[N_OBJ + 1];
 
 /* when to resize or free */
 #define TM_BIG 1000 /* life range of a big block 	*/
-#define TM_MED 10 /* life range of a medium block	*/
-#define TM_TINY 5 /* life range of a tiny block	*/
+#define TM_MED 10   /* life range of a medium block	*/
+#define TM_TINY 5   /* life range of a tiny block	*/
 #define TMRANGE(zz) (zz >= Z_BIG ? TM_BIG : zz >= Z_MED ? TM_MED : TM_TINY)
 #define TIME(nk, kk, zz)                                                     \
     ((nk = kk + (RAND() % TMRANGE(zz)) + 1),                                 \

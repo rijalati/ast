@@ -31,7 +31,7 @@
 
 typedef struct Ast_global_s
 {
-    char *id; /* lib id			*/
+    char *id;         /* lib id			*/
     uint32_t version; /* YYYYMMDD			*/
 
     uintmax_t serial; /* total #instantiations	*/

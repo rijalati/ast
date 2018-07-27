@@ -28,7 +28,7 @@ struct Huff_s
     uch b; /* number of bits in this code or subcode */
     union
     {
-        ush n; /* literal, length base, or distance base */
+        ush n;     /* literal, length base, or distance base */
         Huff_t *t; /* pointer to next level of table */
     } v;
 };

@@ -59,10 +59,10 @@ typedef struct ParseValue
 {
     char *buffer; /* Address of first character in
                    * output buffer. */
-    char *next; /* Place to store next character in
-                 * output buffer. */
-    char *end; /* Address of the last usable character
-                * in the buffer. */
+    char *next;   /* Place to store next character in
+                   * output buffer. */
+    char *end;    /* Address of the last usable character
+                   * in the buffer. */
     void (*expandProc)(struct ParseValue *pvPtr, int needed);
     /* Procedure to call when space runs out;
      * it will make more space. */
@@ -152,14 +152,14 @@ typedef struct Arg
 {
     struct Arg *nextPtr; /* Next argument for this procedure,
                           * or NULL if this is the last argument. */
-    char *defValue; /* Pointer to arg's default value, or NULL
-                     * if no default value. */
-    char name[4]; /* Name of argument starts here.  The name
-                   * is followed by space for the default,
-                   * if there is one.  The actual size of this
-                   * field will be as large as necessary to
-                   * hold both name and default value.  THIS
-                   * MUST BE THE LAST FIELD IN THE STRUCTURE!! */
+    char *defValue;      /* Pointer to arg's default value, or NULL
+                          * if no default value. */
+    char name[4];        /* Name of argument starts here.  The name
+                          * is followed by space for the default,
+                          * if there is one.  The actual size of this
+                          * field will be as large as necessary to
+                          * hold both name and default value.  THIS
+                          * MUST BE THE LAST FIELD IN THE STRUCTURE!! */
 } Arg;
 
 /*
@@ -172,15 +172,15 @@ typedef struct Proc
 {
     struct Interp *iPtr; /* Interpreter for which this command
                           * is defined. */
-    int refCount; /* Reference count:  1 if still present
-                   * in command table plus 1 for each call
-                   * to the procedure that is currently
-                   * active.  This structure can be freed
-                   * when refCount becomes zero. */
-    char *command; /* Command that constitutes the body of
-                    * the procedure (dynamically allocated). */
-    Arg *argPtr; /* Pointer to first of procedure's formal
-                  * arguments, or NULL if none. */
+    int refCount;        /* Reference count:  1 if still present
+                          * in command table plus 1 for each call
+                          * to the procedure that is currently
+                          * active.  This structure can be freed
+                          * when refCount becomes zero. */
+    char *command;       /* Command that constitutes the body of
+                          * the procedure (dynamically allocated). */
+    Arg *argPtr;         /* Pointer to first of procedure's formal
+                          * arguments, or NULL if none. */
 } Proc;
 
 extern Proc *
@@ -213,17 +213,17 @@ Tcl_TclEvalFile(Tcl_Interp *interp, char *fileName);
 
 typedef struct TclEventSource
 {
-    Tcl_EventSetupProc *setupProc; /* This procedure is called by
-                                    * Tcl_DoOneEvent to set up information
-                                    * for the wait operation, such as
-                                    * files to wait for or maximum
-                                    * timeout. */
-    Tcl_EventCheckProc *checkProc; /* This procedure is called by
-                                    * Tcl_DoOneEvent after its wait
-                                    * operation to see what events
-                                    * are ready and queue them. */
-    ClientData clientData; /* Arbitrary one-word argument to pass
-                            * to setupProc and checkProc. */
+    Tcl_EventSetupProc *setupProc;  /* This procedure is called by
+                                     * Tcl_DoOneEvent to set up information
+                                     * for the wait operation, such as
+                                     * files to wait for or maximum
+                                     * timeout. */
+    Tcl_EventCheckProc *checkProc;  /* This procedure is called by
+                                     * Tcl_DoOneEvent after its wait
+                                     * operation to see what events
+                                     * are ready and queue them. */
+    ClientData clientData;          /* Arbitrary one-word argument to pass
+                                     * to setupProc and checkProc. */
     struct TclEventSource *nextPtr; /* Next in list of all event sources
                                      * defined for applicaton. */
 } TclEventSource;
@@ -350,18 +350,18 @@ TkshCreateInterp(Tcl_Interp *interp, void *data);
 
 typedef struct Trace
 {
-    int level; /* Only trace commands at nesting level
-                * less than or equal to this. */
+    int level;              /* Only trace commands at nesting level
+                             * less than or equal to this. */
     Tcl_CmdTraceProc *proc; /* Procedure to call to trace command. */
-    ClientData clientData; /* Arbitrary value to pass to proc. */
-    struct Trace *nextPtr; /* Next in list of traces for this interp. */
+    ClientData clientData;  /* Arbitrary value to pass to proc. */
+    struct Trace *nextPtr;  /* Next in list of traces for this interp. */
 } Trace;
 
 
 typedef struct AssocData
 {
     Tcl_InterpDeleteProc *proc; /* Proc to call when deleting. */
-    ClientData clientData; /* Value to pass to proc. */
+    ClientData clientData;      /* Value to pass to proc. */
 } AssocData;
 
 #endif /* __TKSHLIB_H_ */

@@ -76,8 +76,8 @@ static int signals[] = /* signals to catch		*/
 
 static struct Trap_s
 {
-    int *caught; /* caught signals		*/
-    Alarms_t *alarms; /* sorted alarm list		*/
+    int *caught;          /* caught signals		*/
+    Alarms_t *alarms;     /* sorted alarm list		*/
     Alarms_t *freealarms; /* free alarm list		*/
 } trap;
 

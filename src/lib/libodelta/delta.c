@@ -40,9 +40,9 @@
 /* structure of a delta instruction */
 typedef struct _m_
 {
-    int type; /* DELTA_MOVE or DELTA_ADD */
-    long size; /* size of the block being moved or added */
-    long addr; /* offset where the block starts */
+    int type;         /* DELTA_MOVE or DELTA_ADD */
+    long size;        /* size of the block being moved or added */
+    long addr;        /* offset where the block starts */
     struct _m_ *last; /* doubly linked list for easy insert/delete */
     struct _m_ *next;
 } Move;

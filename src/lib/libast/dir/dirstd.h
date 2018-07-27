@@ -39,9 +39,9 @@ typedef struct
 
 struct dirent
 {
-    long d_fileno; /* entry serial number		*/
-    int d_reclen; /* entry length			*/
-    int d_namlen; /* entry name length		*/
+    long d_fileno;  /* entry serial number		*/
+    int d_reclen;   /* entry length			*/
+    int d_namlen;   /* entry name length		*/
     char d_name[1]; /* entry name			*/
 };
 

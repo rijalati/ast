@@ -38,8 +38,8 @@ typedef struct _vchtrie_s
 {
     short *node; /* data or next trie base to look up	*/
     short *size; /* >0: code sizes, 0: internal nodes 	*/
-    short ntop; /* # of bits to index top trie level	*/
-    short trsz; /* allocated memory for the trie	*/
+    short ntop;  /* # of bits to index top trie level	*/
+    short trsz;  /* allocated memory for the trie	*/
     short next;
 } Vchtrie_t;
 
@@ -52,9 +52,9 @@ _BEGIN_EXTERNS_
 #        define extern extern __IMPORT__
 #    endif
 
-extern Vcmethod_t *Vchuffman; /* Huffman compression		*/
+extern Vcmethod_t *Vchuffman;   /* Huffman compression		*/
 extern Vcmethod_t *Vchuffgroup; /* Huffman with grouping	*/
-extern Vcmethod_t *Vchuffpart; /* Huffman with partitioning	*/
+extern Vcmethod_t *Vchuffpart;  /* Huffman with partitioning	*/
 
 #    undef extern
 

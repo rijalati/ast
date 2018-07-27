@@ -73,11 +73,11 @@ typedef struct ______mstats Mstats_t;
 #    endif /*_UWIN*/
 
 /* If this code is to be used as native malloc then we won't have to worry
-*about
-** freeing/resizing data allocated by some other malloc. As such, vmregion()
-*can
-** be redefined to be Vmregion to bypass a superfluous computation.
-*/
+ *about
+ ** freeing/resizing data allocated by some other malloc. As such, vmregion()
+ *can
+ ** be redefined to be Vmregion to bypass a superfluous computation.
+ */
 #    if VM_NATIVE
 #        define vmregion(d) Vmregion
 #    endif
@@ -160,7 +160,7 @@ typedef struct ______mstats Mstats_t;
 #        define CREAT_MODE 0644
 #    endif
 
-static Vmulong_t _Vmdbtime = 0; /* clock counting malloc/free/realloc	*/
+static Vmulong_t _Vmdbtime = 0;  /* clock counting malloc/free/realloc	*/
 static Vmulong_t _Vmdbstart = 0; /* start checking when time passes this	*/
 static Vmulong_t _Vmdbcheck = 0; /* check region periodically with this	*/
 

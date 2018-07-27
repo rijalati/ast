@@ -257,8 +257,8 @@ static const char usage[] =
 #            endif
 
 #            ifndef STDC
-#                ifndef const /* cannot use !defined(STDC) &&                \
-                                 !defined(const) on Mac */
+#                ifndef const     /* cannot use !defined(STDC) &&            \
+                                     !defined(const) on Mac */
 #                    define const /* note: need a more gentle solution here  \
                                    */
 #                endif
@@ -401,7 +401,7 @@ static const char usage[] =
 #            if !defined(__MACTYPES__)
 typedef unsigned char Byte; /* 8 bits */
 #            endif
-typedef unsigned int uInt; /* 16 bits or more */
+typedef unsigned int uInt;   /* 16 bits or more */
 typedef unsigned long uLong; /* 32 bits or more */
 
 #            ifdef SMALL_MEDIUM
@@ -427,7 +427,7 @@ typedef Byte *voidp;
 
 #            if HAVE_UNISTD_H
 #                include <sys/types.h> /* for off_t */
-#                include <unistd.h> /* for SEEK_* and off_t */
+#                include <unistd.h>    /* for SEEK_* and off_t */
 #                ifdef VMS
 #                    include <unixio.h> /* for off_t */
 #                endif
@@ -436,8 +436,9 @@ typedef Byte *voidp;
 #            ifndef SEEK_SET
 #                define SEEK_SET 0 /* Seek from beginning of file.  */
 #                define SEEK_CUR 1 /* Seek from current position.  */
-#                define SEEK_END 2 /* Set file pointer to EOF plus "offset"  \
-                                    */
+#                define SEEK_END                                             \
+                    2 /* Set file pointer to EOF plus "offset"               \
+                       */
 #            endif
 #            ifndef z_off_t
 #                define z_off_t long
@@ -516,22 +517,22 @@ struct internal_state;
 typedef struct z_stream_s
 {
     Bytef *next_in; /* next input byte */
-    uInt avail_in; /* number of bytes available at next_in */
+    uInt avail_in;  /* number of bytes available at next_in */
     uLong total_in; /* total nb of input bytes read so far */
 
     Bytef *next_out; /* next output byte should be put there */
-    uInt avail_out; /* remaining free space at next_out */
+    uInt avail_out;  /* remaining free space at next_out */
     uLong total_out; /* total nb of bytes output so far */
 
     char *msg; /* last error message, NULL if no error */
     struct internal_state FAR *state; /* not visible by applications */
 
     alloc_func zalloc; /* used to allocate the internal state */
-    free_func zfree; /* used to free the internal state */
-    voidpf opaque; /* private data object passed to zalloc and zfree */
+    free_func zfree;   /* used to free the internal state */
+    voidpf opaque;     /* private data object passed to zalloc and zfree */
 
-    int data_type; /* best guess about the data type: binary or text */
-    uLong adler; /* adler32 value of the uncompressed data */
+    int data_type;  /* best guess about the data type: binary or text */
+    uLong adler;    /* adler32 value of the uncompressed data */
     uLong reserved; /* reserved for future use */
 } z_stream;
 
@@ -576,8 +577,9 @@ typedef z_stream FAR *z_streamp;
 
 #        define Z_BINARY 0
 #        define Z_TEXT 1
-#        define Z_ASCII Z_TEXT /* for compatibility with 1.2.2 and earlier   \
-                                */
+#        define Z_ASCII                                                      \
+            Z_TEXT /* for compatibility with 1.2.2 and earlier               \
+                    */
 #        define Z_UNKNOWN 2
 /* Possible values of the data_type field (though see inflate()) */
 
@@ -1407,8 +1409,8 @@ typedef struct static_tree_desc_s static_tree_desc;
 
 typedef struct tree_desc_s
 {
-    ct_data *dyn_tree; /* the dynamic tree */
-    int max_code; /* largest code with non zero frequency */
+    ct_data *dyn_tree;           /* the dynamic tree */
+    int max_code;                /* largest code with non zero frequency */
     static_tree_desc *stat_desc; /* the corresponding static tree */
 } FAR tree_desc;
 
@@ -1422,17 +1424,17 @@ typedef unsigned IPos;
 
 typedef struct internal_state
 {
-    z_streamp strm; /* pointer back to this zlib stream */
-    int status; /* as the name implies */
-    Bytef *pending_buf; /* output still pending */
+    z_streamp strm;       /* pointer back to this zlib stream */
+    int status;           /* as the name implies */
+    Bytef *pending_buf;   /* output still pending */
     ulg pending_buf_size; /* size of pending_buf */
-    Bytef *pending_out; /* next pending byte to output to the stream */
-    uInt pending; /* nb of bytes in the pending buffer */
-    int wrap; /* bit 0 true for zlib, bit 1 true for gzip */
-    gz_headerp gzhead; /* gzip header information to write */
-    uInt gzindex; /* where in extra, name, or comment */
-    Byte method; /* STORED (for zip only) or DEFLATED */
-    int last_flush; /* value of flush param for previous deflate call */
+    Bytef *pending_out;   /* next pending byte to output to the stream */
+    uInt pending;         /* nb of bytes in the pending buffer */
+    int wrap;             /* bit 0 true for zlib, bit 1 true for gzip */
+    gz_headerp gzhead;    /* gzip header information to write */
+    uInt gzindex;         /* where in extra, name, or comment */
+    Byte method;          /* STORED (for zip only) or DEFLATED */
+    int last_flush;       /* value of flush param for previous deflate call */
 
     /* used by deflate.c: */
 
@@ -1463,7 +1465,7 @@ typedef struct internal_state
 
     Posf *head; /* Heads of the hash chains or NIL. */
 
-    uInt ins_h; /* hash index of string to be inserted */
+    uInt ins_h;     /* hash index of string to be inserted */
     uInt hash_size; /* number of elements in hash table */
     uInt hash_bits; /* log2(hash_size) */
     uInt hash_mask; /* hash_size-1 */
@@ -1480,12 +1482,12 @@ typedef struct internal_state
      * negative when the window is moved backwards.
      */
 
-    uInt match_length; /* length of best match */
-    IPos prev_match; /* previous match */
+    uInt match_length;   /* length of best match */
+    IPos prev_match;     /* previous match */
     int match_available; /* set if previous match exists */
-    uInt strstart; /* start of string to insert */
-    uInt match_start; /* start of matching string */
-    uInt lookahead; /* number of valid bytes ahead in window */
+    uInt strstart;       /* start of string to insert */
+    uInt match_start;    /* start of matching string */
+    uInt lookahead;      /* number of valid bytes ahead in window */
 
     uInt prev_length;
     /* Length of the best match at previous step. Matches not greater than
@@ -1509,7 +1511,7 @@ typedef struct internal_state
      * max_insert_length is used only for compression levels <= 3.
      */
 
-    int level; /* compression level (1..9) */
+    int level;    /* compression level (1..9) */
     int strategy; /* favor or force Huffman coding*/
 
     uInt good_match;
@@ -1519,21 +1521,21 @@ typedef struct internal_state
 
     /* used by trees.c: */
     /* Didn't use ct_data typedef below to supress compiler warning */
-    struct ct_data_s dyn_ltree[HEAP_SIZE]; /* literal and length tree */
+    struct ct_data_s dyn_ltree[HEAP_SIZE];       /* literal and length tree */
     struct ct_data_s dyn_dtree[2 * D_CODES + 1]; /* distance tree */
-    struct ct_data_s bl_tree[2 * BL_CODES + 1]; /* Huffman tree for bit
-                                                   lengths */
+    struct ct_data_s bl_tree[2 * BL_CODES + 1];  /* Huffman tree for bit
+                                                    lengths */
 
-    struct tree_desc_s l_desc; /* desc. for literal tree */
-    struct tree_desc_s d_desc; /* desc. for distance tree */
+    struct tree_desc_s l_desc;  /* desc. for literal tree */
+    struct tree_desc_s d_desc;  /* desc. for distance tree */
     struct tree_desc_s bl_desc; /* desc. for bit length tree */
 
     ush bl_count[MAX_BITS + 1];
     /* number of codes at each bit length for an optimal tree */
 
     int heap[2 * L_CODES + 1]; /* heap used to build the Huffman trees */
-    int heap_len; /* number of elements in the heap */
-    int heap_max; /* element of largest frequency */
+    int heap_len;              /* number of elements in the heap */
+    int heap_max;              /* element of largest frequency */
     /* The sons of heap[n] are heap[2*n] and heap[2*n+1]. heap[0] is not used.
      * The same heap array is used to build all trees.
      */
@@ -1572,14 +1574,14 @@ typedef struct internal_state
      * array would be necessary.
      */
 
-    ulg opt_len; /* bit length of current block with optimal trees */
-    ulg static_len; /* bit length of current block with static trees */
-    uInt matches; /* number of string matches in current block */
+    ulg opt_len;      /* bit length of current block with optimal trees */
+    ulg static_len;   /* bit length of current block with static trees */
+    uInt matches;     /* number of string matches in current block */
     int last_eob_len; /* bit length of EOB code for last block */
 
 #        ifdef Z_DEBUG
     ulg compressed_len; /* total bit length of compressed file mod 2^32 */
-    ulg bits_sent; /* bit length of compressed data sent mod 2^32 */
+    ulg bits_sent;      /* bit length of compressed data sent mod 2^32 */
 #        endif
 
     ush bi_buf;
@@ -1672,7 +1674,7 @@ extern const uch _dist_code[];
 
 typedef struct
 {
-    unsigned char op; /* operation, extra bits, table bits */
+    unsigned char op;   /* operation, extra bits, table bits */
     unsigned char bits; /* bits in this part of the code */
     unsigned short val; /* offset in table or code value */
 } code;
@@ -1709,36 +1711,36 @@ typedef enum
 /* Possible inflate modes between inflate() calls */
 typedef enum
 {
-    HEAD, /* i: waiting for magic header */
-    FLAGS, /* i: waiting for method and flags (gzip) */
-    TIME, /* i: waiting for modification time (gzip) */
-    OS, /* i: waiting for extra flags and operating system (gzip) */
-    EXLEN, /* i: waiting for extra length (gzip) */
-    EXTRA, /* i: waiting for extra bytes (gzip) */
-    NAME, /* i: waiting for end of file name (gzip) */
-    COMMENT, /* i: waiting for end of comment (gzip) */
-    HCRC, /* i: waiting for header crc (gzip) */
-    DICTID, /* i: waiting for dictionary check value */
-    DICT, /* waiting for inflateSetDictionary() call */
-    TYPE, /* i: waiting for type bits, including last-flag bit */
-    TYPEDO, /* i: same, but skip check to exit inflate on new block */
-    STORED, /* i: waiting for stored size (length and complement) */
-    COPY, /* i/o: waiting for input or output to copy stored block */
-    TABLE, /* i: waiting for dynamic block table lengths */
-    LENLENS, /* i: waiting for code length code lengths */
+    HEAD,     /* i: waiting for magic header */
+    FLAGS,    /* i: waiting for method and flags (gzip) */
+    TIME,     /* i: waiting for modification time (gzip) */
+    OS,       /* i: waiting for extra flags and operating system (gzip) */
+    EXLEN,    /* i: waiting for extra length (gzip) */
+    EXTRA,    /* i: waiting for extra bytes (gzip) */
+    NAME,     /* i: waiting for end of file name (gzip) */
+    COMMENT,  /* i: waiting for end of comment (gzip) */
+    HCRC,     /* i: waiting for header crc (gzip) */
+    DICTID,   /* i: waiting for dictionary check value */
+    DICT,     /* waiting for inflateSetDictionary() call */
+    TYPE,     /* i: waiting for type bits, including last-flag bit */
+    TYPEDO,   /* i: same, but skip check to exit inflate on new block */
+    STORED,   /* i: waiting for stored size (length and complement) */
+    COPY,     /* i/o: waiting for input or output to copy stored block */
+    TABLE,    /* i: waiting for dynamic block table lengths */
+    LENLENS,  /* i: waiting for code length code lengths */
     CODELENS, /* i: waiting for length/lit and distance code lengths */
-    LEN, /* i: waiting for length/lit code */
-    LENEXT, /* i: waiting for length extra bits */
-    DIST, /* i: waiting for distance code */
-    DISTEXT, /* i: waiting for distance extra bits */
-    MATCH, /* o: waiting for output space to copy string */
-    LIT, /* o: waiting for output space to write literal */
-    CHECK, /* i: waiting for 32-bit check value */
-    LENGTH, /* i: waiting for 32-bit length (gzip) */
-    DONE, /* finished check, done -- remain here until reset */
-    BAD, /* got a data error -- remain here until reset */
-    MEM, /* got an inflate() memory error -- remain here until reset */
-    SYNC /* looking for synchronization bytes to restart inflate() */
+    LEN,      /* i: waiting for length/lit code */
+    LENEXT,   /* i: waiting for length extra bits */
+    DIST,     /* i: waiting for distance code */
+    DISTEXT,  /* i: waiting for distance extra bits */
+    MATCH,    /* o: waiting for output space to copy string */
+    LIT,      /* o: waiting for output space to write literal */
+    CHECK,    /* i: waiting for 32-bit check value */
+    LENGTH,   /* i: waiting for 32-bit length (gzip) */
+    DONE,     /* finished check, done -- remain here until reset */
+    BAD,      /* got a data error -- remain here until reset */
+    MEM,      /* got an inflate() memory error -- remain here until reset */
+    SYNC      /* looking for synchronization bytes to restart inflate() */
 } inflate_mode;
 
 /*
@@ -1767,43 +1769,43 @@ typedef enum
 /* state maintained between inflate() calls.  Approximately 7K bytes. */
 struct inflate_state
 {
-    inflate_mode mode; /* current inflate mode */
-    int last; /* true if processing last block */
-    int wrap; /* bit 0 true for zlib, bit 1 true for gzip */
-    int havedict; /* true if dictionary provided */
-    int flags; /* gzip header method and flags (0 if zlib) */
-    unsigned dmax; /* zlib header max distance (INFLATE_STRICT) */
+    inflate_mode mode;   /* current inflate mode */
+    int last;            /* true if processing last block */
+    int wrap;            /* bit 0 true for zlib, bit 1 true for gzip */
+    int havedict;        /* true if dictionary provided */
+    int flags;           /* gzip header method and flags (0 if zlib) */
+    unsigned dmax;       /* zlib header max distance (INFLATE_STRICT) */
     unsigned long check; /* protected copy of check value */
     unsigned long total; /* protected copy of output count */
-    gz_headerp head; /* where to save gzip header information */
+    gz_headerp head;     /* where to save gzip header information */
     /* sliding window */
-    unsigned wbits; /* log base 2 of requested window size */
-    unsigned wsize; /* window size or zero if not using window */
-    unsigned whave; /* valid bytes in the window */
-    unsigned write; /* window write index */
+    unsigned wbits;            /* log base 2 of requested window size */
+    unsigned wsize;            /* window size or zero if not using window */
+    unsigned whave;            /* valid bytes in the window */
+    unsigned write;            /* window write index */
     unsigned char FAR *window; /* allocated sliding window, if needed */
     /* bit accumulator */
     unsigned long hold; /* input bit accumulator */
-    unsigned bits; /* number of bits in "in" */
+    unsigned bits;      /* number of bits in "in" */
     /* for string and stored block copying */
     unsigned length; /* literal or length of data to copy */
     unsigned offset; /* distance back to copy string from */
     /* for table and code decoding */
     unsigned extra; /* extra bits needed */
     /* fixed and dynamic code tables */
-    code const FAR *lencode; /* starting table for length/literal codes */
+    code const FAR *lencode;  /* starting table for length/literal codes */
     code const FAR *distcode; /* starting table for distance codes */
-    unsigned lenbits; /* index bits for lencode */
-    unsigned distbits; /* index bits for distcode */
+    unsigned lenbits;         /* index bits for lencode */
+    unsigned distbits;        /* index bits for distcode */
     /* dynamic table building */
-    unsigned ncode; /* number of code length code lengths */
-    unsigned nlen; /* number of length code lengths */
-    unsigned ndist; /* number of distance code lengths */
-    unsigned have; /* number of code lengths in lens[] */
-    code FAR *next; /* next available space in codes[] */
+    unsigned ncode;           /* number of code length code lengths */
+    unsigned nlen;            /* number of length code lengths */
+    unsigned ndist;           /* number of distance code lengths */
+    unsigned have;            /* number of code lengths in lens[] */
+    code FAR *next;           /* next available space in codes[] */
     unsigned short lens[320]; /* temporary storage for code lengths */
     unsigned short work[288]; /* work area for code table building */
-    code codes[ENOUGH]; /* space for code tables */
+    code codes[ENOUGH];       /* space for code tables */
 };
 #    endif /* _INFLATE_H */
 
@@ -1840,26 +1842,26 @@ code FAR *FAR *table;
 unsigned FAR *bits;
 unsigned short FAR *work;
 {
-    unsigned len; /* a code's length in bits */
-    unsigned sym; /* index of code symbols */
+    unsigned len;      /* a code's length in bits */
+    unsigned sym;      /* index of code symbols */
     unsigned min, max; /* minimum and maximum code lengths */
-    unsigned root; /* number of index bits for root table */
-    unsigned curr; /* number of index bits for current table */
-    unsigned drop; /* code bits to drop for sub-table */
-    int left; /* number of prefix codes available */
-    unsigned used; /* code entries in table used */
-    unsigned huff; /* Huffman code */
-    unsigned incr; /* for incrementing code, index */
-    unsigned fill; /* index for replicating entries */
-    unsigned low; /* low bits for current root entry */
-    unsigned mask; /* mask for low root bits */
-    code this; /* table entry for duplication */
-    code FAR *next; /* next available space in table */
-    const unsigned short FAR *base; /* base value table to use */
+    unsigned root;     /* number of index bits for root table */
+    unsigned curr;     /* number of index bits for current table */
+    unsigned drop;     /* code bits to drop for sub-table */
+    int left;          /* number of prefix codes available */
+    unsigned used;     /* code entries in table used */
+    unsigned huff;     /* Huffman code */
+    unsigned incr;     /* for incrementing code, index */
+    unsigned fill;     /* index for replicating entries */
+    unsigned low;      /* low bits for current root entry */
+    unsigned mask;     /* mask for low root bits */
+    code this;         /* table entry for duplication */
+    code FAR *next;    /* next available space in table */
+    const unsigned short FAR *base;  /* base value table to use */
     const unsigned short FAR *extra; /* extra bits table to use */
-    int end; /* use base and extra for symbol > end */
+    int end;                         /* use base and extra for symbol > end */
     unsigned short count[MAXBITS + 1]; /* number of codes of each length */
-    unsigned short offs[MAXBITS + 1]; /* offsets in table for each length */
+    unsigned short offs[MAXBITS + 1];  /* offsets in table for each length */
     static const unsigned short lbase[31]
     = { /* Length codes 257..285 base */
         3,  4,  5,  6,  7,  8,  9,  10,  11,  13,  15,  17,  19,  23, 27, 31,
@@ -1927,7 +1929,7 @@ unsigned short FAR *work;
     if (root > max)
         root = max;
     if (max == 0)
-    { /* no symbols to code at all */
+    {                                  /* no symbols to code at all */
         this.op = ( unsigned char )64; /* invalid code marker */
         this.bits = ( unsigned char )1;
         this.val = ( unsigned short )0;
@@ -2017,15 +2019,15 @@ unsigned short FAR *work;
     }
 
     /* initialize state for loop */
-    huff = 0; /* starting code */
-    sym = 0; /* starting code symbol */
-    len = min; /* starting code length */
-    next = *table; /* current table to fill in */
-    curr = root; /* current table index bits */
-    drop = 0; /* current bits to drop from code for index */
+    huff = 0;               /* starting code */
+    sym = 0;                /* starting code symbol */
+    len = min;              /* starting code length */
+    next = *table;          /* current table to fill in */
+    curr = root;            /* current table index bits */
+    drop = 0;               /* current bits to drop from code for index */
     low = ( unsigned )(-1); /* trigger new sub-table when len > root */
     used = (( unsigned int )1) << root; /* use root table entries */
-    mask = used - 1; /* mask for comparing low */
+    mask = used - 1;                    /* mask for comparing low */
 
     /* check available table space */
     if (type == LENS && used >= ENOUGH - MAXD)
@@ -2226,29 +2228,29 @@ void inflate_fast(strm, start) z_streamp strm;
 unsigned start; /* inflate()'s starting value for strm->avail_out */
 {
     struct inflate_state FAR *state;
-    unsigned char FAR *in; /* local strm->next_in */
+    unsigned char FAR *in;   /* local strm->next_in */
     unsigned char FAR *last; /* while in < last, enough input available */
-    unsigned char FAR *out; /* local strm->next_out */
-    unsigned char FAR *beg; /* inflate()'s initial strm->next_out */
-    unsigned char FAR *end; /* while out < end, enough space available */
+    unsigned char FAR *out;  /* local strm->next_out */
+    unsigned char FAR *beg;  /* inflate()'s initial strm->next_out */
+    unsigned char FAR *end;  /* while out < end, enough space available */
 #        ifdef INFLATE_STRICT
     unsigned dmax; /* maximum distance from zlib header */
 #        endif
-    unsigned wsize; /* window size or zero if not using window */
-    unsigned whave; /* valid bytes in the window */
-    unsigned write; /* window write index */
+    unsigned wsize;            /* window size or zero if not using window */
+    unsigned whave;            /* valid bytes in the window */
+    unsigned write;            /* window write index */
     unsigned char FAR *window; /* allocated sliding window, if wsize != 0 */
-    unsigned long hold; /* local strm->hold */
-    unsigned bits; /* local strm->bits */
-    code const FAR *lcode; /* local strm->lencode */
-    code const FAR *dcode; /* local strm->distcode */
-    unsigned lmask; /* mask for first level of length codes */
-    unsigned dmask; /* mask for first level of distance codes */
-    code this; /* retrieved table entry */
-    unsigned op; /* code bits, operation, extra bits, or */
+    unsigned long hold;        /* local strm->hold */
+    unsigned bits;             /* local strm->bits */
+    code const FAR *lcode;     /* local strm->lencode */
+    code const FAR *dcode;     /* local strm->distcode */
+    unsigned lmask;            /* mask for first level of length codes */
+    unsigned dmask;            /* mask for first level of distance codes */
+    code this;                 /* retrieved table entry */
+    unsigned op;               /* code bits, operation, extra bits, or */
     /*  window position, window bytes to copy */
-    unsigned len; /* match length, unused bytes */
-    unsigned dist; /* match distance */
+    unsigned len;            /* match length, unused bytes */
+    unsigned dist;           /* match distance */
     unsigned char FAR *from; /* where to copy match from */
 
     /* copy state to local variables */
@@ -2355,7 +2357,7 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
                 Tracevv((stderr, "inflate:         distance %u\n", dist));
                 op = ( unsigned )(out - beg); /* max distance in output */
                 if (dist > op)
-                { /* see if copy from window */
+                {                   /* see if copy from window */
                     op = dist - op; /* distance back in window */
                     if (op > whave)
                     {
@@ -3058,17 +3060,17 @@ int flush;
 {
     struct inflate_state FAR *state;
     unsigned char FAR *next; /* next input */
-    unsigned char FAR *put; /* next output */
-    unsigned have, left; /* available input and output */
-    unsigned long hold; /* bit buffer */
-    unsigned bits; /* bits in bit buffer */
-    unsigned in, out; /* save starting available input and output */
-    unsigned copy; /* number of stored or match bytes to copy */
+    unsigned char FAR *put;  /* next output */
+    unsigned have, left;     /* available input and output */
+    unsigned long hold;      /* bit buffer */
+    unsigned bits;           /* bits in bit buffer */
+    unsigned in, out;        /* save starting available input and output */
+    unsigned copy;           /* number of stored or match bytes to copy */
     unsigned char FAR *from; /* where to copy match bytes from */
-    code this; /* current decoding table entry */
-    code last; /* parent table entry */
-    unsigned len; /* length to copy for repeats, bits to drop */
-    int ret; /* return code */
+    code this;               /* current decoding table entry */
+    code last;               /* parent table entry */
+    unsigned len;            /* length to copy for repeats, bits to drop */
+    int ret;                 /* return code */
 #        ifdef GUNZIP
     unsigned char hbuf[4]; /* buffer for gzip header crc calculation */
 #        endif
@@ -3882,9 +3884,9 @@ unsigned len;
 
 int ZEXPORT inflateSync(strm) z_streamp strm;
 {
-    unsigned len; /* number of bytes to look at or looked at */
+    unsigned len;          /* number of bytes to look at or looked at */
     unsigned long in, out; /* temporary to save total_in and total_out */
-    unsigned char buf[4]; /* to restore bit buffer to byte string */
+    unsigned char buf[4];  /* to restore bit buffer to byte string */
     struct inflate_state FAR *state;
 
     /* check parameters */
@@ -4041,37 +4043,37 @@ extern void   free   OF((voidpf ptr));
 static int const gz_magic[2] = { 0x1f, 0x8b }; /* gzip magic header */
 
 /* gzip flag byte */
-#        define ASCII_FLAG 0x01 /* bit 0 set: file probably ascii text */
-#        define HEAD_CRC 0x02 /* bit 1 set: header CRC present */
+#        define ASCII_FLAG 0x01  /* bit 0 set: file probably ascii text */
+#        define HEAD_CRC 0x02    /* bit 1 set: header CRC present */
 #        define EXTRA_FIELD 0x04 /* bit 2 set: extra field present */
-#        define ORIG_NAME 0x08 /* bit 3 set: original file name present */
-#        define COMMENT 0x10 /* bit 4 set: file comment present */
-#        define RESERVED 0xE0 /* bits 5..7: reserved */
+#        define ORIG_NAME 0x08   /* bit 3 set: original file name present */
+#        define COMMENT 0x10     /* bit 4 set: file comment present */
+#        define RESERVED 0xE0    /* bits 5..7: reserved */
 
 typedef struct gz_stream
 {
     z_stream stream;
-    int z_err; /* error code for last stream operation */
-    int z_eof; /* set if end of input file */
-    FILE *file; /* .gz file */
-    Byte *inbuf; /* input buffer */
-    Byte *outbuf; /* output buffer */
-    uLong crc; /* crc32 of uncompressed data */
-    char *msg; /* error message */
-    char *path; /* path name for debugging only */
+    int z_err;       /* error code for last stream operation */
+    int z_eof;       /* set if end of input file */
+    FILE *file;      /* .gz file */
+    Byte *inbuf;     /* input buffer */
+    Byte *outbuf;    /* output buffer */
+    uLong crc;       /* crc32 of uncompressed data */
+    char *msg;       /* error message */
+    char *path;      /* path name for debugging only */
     int transparent; /* 1 if input file is not a .gz file */
 #        if _PACKAGE_ast
-    int fatal; /* fatal stream error => all other ops fail */
-    int nocrc; /* 1 to skip 'r' crc checks */
-    int noclose; /* 1 to skip destroy fclose */
+    int fatal;    /* fatal stream error => all other ops fail */
+    int nocrc;    /* 1 to skip 'r' crc checks */
+    int noclose;  /* 1 to skip destroy fclose */
     int verified; /* 2-byte magic read and verified ('v') */
 #        endif
-    char mode; /* 'w' or 'r' */
+    char mode;     /* 'w' or 'r' */
     z_off_t start; /* start of compressed data in file (header skipped) */
-    z_off_t in; /* bytes into deflate or inflate */
-    z_off_t out; /* bytes out of deflate or inflate */
-    int back; /* one character push-back */
-    int last; /* true if push-back is last character */
+    z_off_t in;    /* bytes into deflate or inflate */
+    z_off_t out;   /* bytes out of deflate or inflate */
+    int back;      /* one character push-back */
+    int last;      /* true if push-back is last character */
 } gz_stream;
 
 
@@ -4314,7 +4316,7 @@ local int get_byte(s) gz_stream *s;
 local void check_header(s) gz_stream *s;
 {
     int method; /* method byte */
-    int flags; /* flags byte */
+    int flags;  /* flags byte */
     uInt len;
     int c;
 
@@ -4693,18 +4695,18 @@ local uLong getLong(s) gz_stream *s;
  * values used in typeflag field
  */
 
-#    define REGTYPE '0' /* regular file			*/
-#    define AREGTYPE 0 /* alternate REGTYPE		*/
-#    define LNKTYPE '1' /* hard link			*/
-#    define SYMTYPE '2' /* soft link			*/
-#    define CHRTYPE '3' /* character special		*/
-#    define BLKTYPE '4' /* block special		*/
-#    define DIRTYPE '5' /* directory			*/
+#    define REGTYPE '0'  /* regular file			*/
+#    define AREGTYPE 0   /* alternate REGTYPE		*/
+#    define LNKTYPE '1'  /* hard link			*/
+#    define SYMTYPE '2'  /* soft link			*/
+#    define CHRTYPE '3'  /* character special		*/
+#    define BLKTYPE '4'  /* block special		*/
+#    define DIRTYPE '5'  /* directory			*/
 #    define FIFOTYPE '6' /* FIFO special			*/
 #    define CONTTYPE '7' /* reserved			*/
-#    define SOKTYPE '8' /* socket -- reserved		*/
-#    define VERTYPE 'V' /* version -- reserved		*/
-#    define EXTTYPE 'x' /* extended header -- reserved	*/
+#    define SOKTYPE '8'  /* socket -- reserved		*/
+#    define VERTYPE 'V'  /* version -- reserved		*/
+#    define EXTTYPE 'x'  /* extended header -- reserved	*/
 
 /*
  * bits used in mode field
@@ -4718,15 +4720,15 @@ local uLong getLong(s) gz_stream *s;
  * file permissions
  */
 
-#    define TUREAD 00400 /* read by owner		*/
+#    define TUREAD 00400  /* read by owner		*/
 #    define TUWRITE 00200 /* write by owner		*/
-#    define TUEXEC 00100 /* execute by owner		*/
-#    define TGREAD 00040 /* read by group		*/
+#    define TUEXEC 00100  /* execute by owner		*/
+#    define TGREAD 00040  /* read by group		*/
 #    define TGWRITE 00020 /* execute by group		*/
-#    define TGEXEC 00010 /* write by group		*/
-#    define TOREAD 00004 /* read by other		*/
+#    define TGEXEC 00010  /* write by group		*/
+#    define TOREAD 00004  /* read by other		*/
 #    define TOWRITE 00002 /* write by other		*/
-#    define TOEXEC 00001 /* execute by other		*/
+#    define TOEXEC 00001  /* execute by other		*/
 
 #    define TAR_SUMASK ((1L << (TCKSLEN - 1) * 3) - 1)
 

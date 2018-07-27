@@ -250,7 +250,7 @@ char *TclGetCwd(interp) Tcl_Interp *interp; /* If non NULL, used for error
 
 Tcl_File TclOpenFile(fname,
                      mode) char *fname; /* The name of the file to open. */
-int mode; /* In what mode to open the file? */
+int mode;                               /* In what mode to open the file? */
 {
     int fd;
 
@@ -328,9 +328,9 @@ int TclReadFile(file,
                 shouldBlock,
                 buf,
                 toRead) Tcl_File file; /* The file to read from. */
-int shouldBlock; /* Not used. */
-char *buf; /* The buffer to store input in. */
-int toRead; /* Number of characters to read. */
+int shouldBlock;                       /* Not used. */
+char *buf;                             /* The buffer to store input in. */
+int toRead;                            /* Number of characters to read. */
 {
     int type, fd;
 
@@ -364,9 +364,9 @@ int TclWriteFile(file,
                  shouldBlock,
                  buf,
                  toWrite) Tcl_File file; /* The file to write to. */
-int shouldBlock; /* Not used. */
-char *buf; /* Where output is stored. */
-int toWrite; /* Number of characters to write. */
+int shouldBlock;                         /* Not used. */
+char *buf;                               /* Where output is stored. */
+int toWrite;                             /* Number of characters to write. */
 {
     int type, fd;
 
@@ -398,7 +398,7 @@ int toWrite; /* Number of characters to write. */
 
 int TclSeekFile(file, offset, whence) Tcl_File file; /* The file to seek on.
                                                       */
-int offset; /* How far to seek? */
+int offset;                                          /* How far to seek? */
 int whence; /* And from where to seek? */
 {
     int type, fd;

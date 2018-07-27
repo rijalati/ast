@@ -22,10 +22,10 @@
 
 typedef struct PkgAvail
 {
-    char *version; /* Version string; malloc'ed. */
-    char *script; /* Script to invoke to provide this version
-                   * of the package.  Malloc'ed and protected
-                   * by Tcl_Preserve and Tcl_Release. */
+    char *version;            /* Version string; malloc'ed. */
+    char *script;             /* Script to invoke to provide this version
+                               * of the package.  Malloc'ed and protected
+                               * by Tcl_Preserve and Tcl_Release. */
     struct PkgAvail *nextPtr; /* Next in list of available versions of
                                * the same package. */
 } PkgAvail;
@@ -39,10 +39,10 @@ typedef struct PkgAvail
 
 typedef struct Package
 {
-    char *version; /* Version that has been supplied in this
-                    * interpreter via "package provide"
-                    * (malloc'ed).  NULL means the package doesn't
-                    * exist in this interpreter yet. */
+    char *version;      /* Version that has been supplied in this
+                         * interpreter via "package provide"
+                         * (malloc'ed).  NULL means the package doesn't
+                         * exist in this interpreter yet. */
     PkgAvail *availPtr; /* First in list of all available versions
                          * of this package. */
 } Package;
@@ -81,8 +81,8 @@ static Package *FindPackage _ANSI_ARGS_((Tcl_Interp * interp, char *name));
 int Tcl_PkgProvide(interp, name, version)
 Tcl_Interp *interp; /* Interpreter in which package is now
                      * available. */
-char *name; /* Name of package. */
-char *version; /* Version string for package. */
+char *name;         /* Name of package. */
+char *version;      /* Version string for package. */
 {
     Package *pkgPtr;
 
@@ -140,13 +140,13 @@ char *version; /* Version string for package. */
 char *Tcl_PkgRequire(interp, name, version, exact)
 Tcl_Interp *interp; /* Interpreter in which package is now
                      * available. */
-char *name; /* Name of desired package. */
-char *version; /* Version string for desired version;
-                * NULL means use the latest version
-                * available. */
-int exact; /* Non-zero means that only the particular
-            * version given is acceptable. Zero means
-            * use the latest compatible version. */
+char *name;         /* Name of desired package. */
+char *version;      /* Version string for desired version;
+                     * NULL means use the latest version
+                     * available. */
+int exact;          /* Non-zero means that only the particular
+                     * version given is acceptable. Zero means
+                     * use the latest compatible version. */
 {
     Package *pkgPtr;
     PkgAvail *availPtr, *bestPtr;
@@ -321,8 +321,8 @@ int exact; /* Non-zero means that only the particular
 int Tcl_PackageCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used.
                                                                  */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Interp *iPtr = ( Interp * )interp;
     size_t length;
@@ -666,7 +666,7 @@ char **argv; /* Argument strings. */
 
 static Package *FindPackage(interp, name)
 Tcl_Interp *interp; /* Interpreter to use for package lookup. */
-char *name; /* Name of package to fine. */
+char *name;         /* Name of package to fine. */
 {
     Interp *iPtr = ( Interp * )interp;
     Tcl_HashEntry *hPtr;
@@ -813,8 +813,8 @@ error:
  */
 
 static int ComparePkgVersions(v1, v2, satPtr) char *v1,
-*v2; /* Versions strings, of form 2.1.3 (any
-      * number of version numbers). */
+*v2;         /* Versions strings, of form 2.1.3 (any
+              * number of version numbers). */
 int *satPtr; /* If non-null, the word pointed to is
               * filled in with a 0/1 value.  1 means
               * v1 "satisfies" v2:  v1 is greater than

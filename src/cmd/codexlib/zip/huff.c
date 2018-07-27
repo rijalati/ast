@@ -35,17 +35,17 @@
  */
 
 /* If BMAX needs to be larger than 16, then h and x[] should be ulg. */
-#define BMAX 16 /* maximum bit length of any code (16 for explode) */
+#define BMAX 16   /* maximum bit length of any code (16 for explode) */
 #define N_MAX 288 /* maximum number of codes in any set */
 
 int
-huff(ulg *b, /* code lengths in bits (all assumed <= BMAX) */
-     ulg n, /* number of codes (assumed <= N_MAX) */
-     ulg s, /* number of simple-valued codes (0..s-1) */
-     ush *d, /* list of base values for non-simple codes */
-     ush *e, /* list of extra bits for non-simple codes */
-     Huff_t **t, /* result: starting table */
-     int *m, /* maximum lookup bits, returns actual */
+huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
+     ulg n,         /* number of codes (assumed <= N_MAX) */
+     ulg s,         /* number of simple-valued codes (0..s-1) */
+     ush *d,        /* list of base values for non-simple codes */
+     ush *e,        /* list of extra bits for non-simple codes */
+     Huff_t **t,    /* result: starting table */
+     int *m,        /* maximum lookup bits, returns actual */
      Vmalloc_t *vm) /* memory pool */
 /* Given a list of code lengths and a maximum table size, make a set of
    tables to decode that set of codes.	Return zero on success, one if
@@ -56,27 +56,27 @@ huff(ulg *b, /* code lengths in bits (all assumed <= BMAX) */
    so that no bits beyond that code are fetched when that code is
    decoded. */
 {
-    ulg a; /* counter for codes of length k */
-    ulg c[BMAX + 1]; /* bit length count table */
-    ulg el; /* length of EOB code (value 256) */
-    ulg f; /* i repeats in table every f entries */
-    int g; /* maximum code length */
-    int h; /* table level */
-    ulg i; /* counter, current code */
-    ulg j; /* counter */
-    int k; /* number of bits in current code */
+    ulg a;            /* counter for codes of length k */
+    ulg c[BMAX + 1];  /* bit length count table */
+    ulg el;           /* length of EOB code (value 256) */
+    ulg f;            /* i repeats in table every f entries */
+    int g;            /* maximum code length */
+    int h;            /* table level */
+    ulg i;            /* counter, current code */
+    ulg j;            /* counter */
+    int k;            /* number of bits in current code */
     int lx[BMAX + 1]; /* memory for l[-1..BMAX-1] */
-    int *l = lx + 1; /* stack of bits per table */
-    ulg *p; /* pointer into c[], b[], or v[] */
-    Huff_t *q; /* points to current table */
-    Huff_t r; /* table entry for structure assignment */
-    Huff_t *u[BMAX]; /* table stack */
-    ulg v[N_MAX]; /* values in order of bit length */
-    int w; /* bits before this table == (l * h) */
-    ulg x[BMAX + 1]; /* bit offsets, then code stack */
-    ulg *xp; /* pointer into x */
-    int y; /* number of dummy codes added */
-    ulg z; /* number of entries in current table */
+    int *l = lx + 1;  /* stack of bits per table */
+    ulg *p;           /* pointer into c[], b[], or v[] */
+    Huff_t *q;        /* points to current table */
+    Huff_t r;         /* table entry for structure assignment */
+    Huff_t *u[BMAX];  /* table stack */
+    ulg v[N_MAX];     /* values in order of bit length */
+    int w;            /* bits before this table == (l * h) */
+    ulg x[BMAX + 1];  /* bit offsets, then code stack */
+    ulg *xp;          /* pointer into x */
+    int y;            /* number of dummy codes added */
+    ulg z;            /* number of entries in current table */
 
     /* Generate counts for each bit length */
     el = n > 256 ? b[256] : BMAX; /* set length of EOB code, if any */
@@ -86,7 +86,7 @@ huff(ulg *b, /* code lengths in bits (all assumed <= BMAX) */
     do
     {
         c[*p]++; /* assume all entries <= BMAX */
-        p++; /* Can't combine with above line (Solaris bug) */
+        p++;     /* Can't combine with above line (Solaris bug) */
     } while (--i);
     if (c[0] == n) /* null input--all zero length codes */
     {
@@ -136,13 +136,13 @@ huff(ulg *b, /* code lengths in bits (all assumed <= BMAX) */
     n = x[g]; /* set n to length of v */
 
     /* Generate the Huffman codes and for each, make the table entries */
-    x[0] = i = 0; /* first Huffman code is zero */
-    p = v; /* grab values in bit order */
-    h = -1; /* no tables yet--level -1 */
-    w = l[-1] = 0; /* no bits decoded yet */
+    x[0] = i = 0;            /* first Huffman code is zero */
+    p = v;                   /* grab values in bit order */
+    h = -1;                  /* no tables yet--level -1 */
+    w = l[-1] = 0;           /* no bits decoded yet */
     u[0] = ( Huff_t * )NULL; /* just to keep compilers happy */
-    q = ( Huff_t * )NULL; /* ditto */
-    z = 0; /* ditto */
+    q = ( Huff_t * )NULL;    /* ditto */
+    z = 0;                   /* ditto */
 
     /* go through the bit lengths (k already is bits in shortest code) */
     for (; k <= g; k++)
@@ -159,20 +159,20 @@ huff(ulg *b, /* code lengths in bits (all assumed <= BMAX) */
                 /* compute minimum size table less than or equal to *m bits */
                 z = (z = g - w) > ( ulg )*m ? *m : z; /* upper limit */
                 if ((f = 1 << (j = k - w)) > a + 1) /* try a k-w bit table */
-                { /* too few codes for k-w bit table */
+                {               /* too few codes for k-w bit table */
                     f -= a + 1; /* deduct codes from patterns left */
                     xp = c + k;
                     while (++j < z) /* try smaller tables up to z bits */
                     {
                         if ((f <<= 1) <= *++xp)
                             break; /* enough codes to use up j bits */
-                        f -= *xp; /* else deduct codes from patterns */
+                        f -= *xp;  /* else deduct codes from patterns */
                     }
                 }
                 if (( ulg )w + j > el && ( ulg )w < el)
                     j = el - w; /* make EOB code end at table */
-                z = 1 << j; /* table entries for j-bit table */
-                l[h] = j; /* set table size in stack */
+                z = 1 << j;     /* table entries for j-bit table */
+                l[h] = j;       /* set table size in stack */
 
                 /* allocate and link in new table */
                 q = ( Huff_t * )vmalloc(vm, (z + 1) * sizeof(Huff_t));
@@ -190,9 +190,9 @@ huff(ulg *b, /* code lengths in bits (all assumed <= BMAX) */
                 {
                     x[h] = i; /* save pattern for backing up */
                     r.b
-                    = ( uch )l[h - 1]; /* bits to dump before this table */
+                    = ( uch )l[h - 1];   /* bits to dump before this table */
                     r.e = (uch)(16 + j); /* bits in this table */
-                    r.v.t = q; /* pointer to this table */
+                    r.v.t = q;           /* pointer to this table */
                     j = (i & ((1 << w) - 1)) >> (w - l[h - 1]);
                     u[h - 1][j] = r; /* connect to last table */
                 }

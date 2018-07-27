@@ -38,7 +38,7 @@ char *TkAlignImageData(image,
                        bitOrder) XImage *image; /* Image to be aligned. */
 int alignment; /* Number of bytes to which the data should
                 * be aligned (e.g. 2 or 4) */
-int bitOrder; /* Desired bit order: LSBFirst or MSBFirst. */
+int bitOrder;  /* Desired bit order: LSBFirst or MSBFirst. */
 {
     long dataWidth;
     char *data, *srcPtr, *destPtr;

@@ -71,7 +71,7 @@ Void_t **out;
             if (edt[-1] == '\n')
                 break;
         vc->undone = size - (edt - dt); /* size of partial line */
-        dsz = edt - dt; /* size of data to be processed */
+        dsz = edt - dt;                 /* size of data to be processed */
     }
 
     /* find an appropriate head amount to strip */

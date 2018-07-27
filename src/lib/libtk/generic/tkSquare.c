@@ -25,32 +25,32 @@
 
 typedef struct
 {
-    Tk_Window tkwin; /* Window that embodies the square.  NULL
-                      * means window has been deleted but
-                      * widget record hasn't been cleaned up yet. */
-    Display *display; /* X's token for the window's display. */
-    Tcl_Interp *interp; /* Interpreter associated with widget. */
+    Tk_Window tkwin;       /* Window that embodies the square.  NULL
+                            * means window has been deleted but
+                            * widget record hasn't been cleaned up yet. */
+    Display *display;      /* X's token for the window's display. */
+    Tcl_Interp *interp;    /* Interpreter associated with widget. */
     Tcl_Command widgetCmd; /* Token for square's widget command. */
-    int x, y; /* Position of square's upper-left corner
-               * within widget. */
-    int size; /* Width and height of square. */
+    int x, y;              /* Position of square's upper-left corner
+                            * within widget. */
+    int size;              /* Width and height of square. */
 
     /*
      * Information used when displaying widget:
      */
 
-    int borderWidth; /* Width of 3-D border around whole widget. */
+    int borderWidth;      /* Width of 3-D border around whole widget. */
     Tk_3DBorder bgBorder; /* Used for drawing background. */
     Tk_3DBorder fgBorder; /* For drawing square. */
-    int relief; /* Indicates whether window as a whole is
-                 * raised, sunken, or flat. */
-    GC gc; /* Graphics context for copying from
-            * off-screen pixmap onto screen. */
-    int doubleBuffer; /* Non-zero means double-buffer redisplay
-                       * with pixmap;  zero means draw straight
-                       * onto the display. */
-    int updatePending; /* Non-zero means a call to SquareDisplay
-                        * has already been scheduled. */
+    int relief;           /* Indicates whether window as a whole is
+                           * raised, sunken, or flat. */
+    GC gc;                /* Graphics context for copying from
+                           * off-screen pixmap onto screen. */
+    int doubleBuffer;     /* Non-zero means double-buffer redisplay
+                           * with pixmap;  zero means draw straight
+                           * onto the display. */
+    int updatePending;    /* Non-zero means a call to SquareDisplay
+                           * has already been scheduled. */
 } Square;
 
 /*
@@ -172,9 +172,9 @@ _ANSI_ARGS_((ClientData clientData, Tcl_Interp *, int argc, char **argv));
 int SquareCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window main = ( Tk_Window )clientData;
     Square *squarePtr;
@@ -255,9 +255,9 @@ char **argv; /* Argument strings. */
 
 static int SquareWidgetCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about square widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Square *squarePtr = ( Square * )clientData;
     int result = TCL_OK;
@@ -422,11 +422,11 @@ error:
 
 static int SquareConfigure(interp, squarePtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Square *squarePtr; /* Information about widget. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Flags to pass to
-            * Tk_ConfigureWidget. */
+Square *squarePtr;  /* Information about widget. */
+int argc;           /* Number of valid entries in argv. */
+char **argv;        /* Arguments. */
+int flags;          /* Flags to pass to
+                     * Tk_ConfigureWidget. */
 {
     if (Tk_ConfigureWidget(interp,
                            squarePtr->tkwin,
@@ -491,7 +491,7 @@ int flags; /* Flags to pass to
 
 static void SquareEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
-XEvent *eventPtr; /* Information about event. */
+XEvent *eventPtr;      /* Information about event. */
 {
     Square *squarePtr = ( Square * )clientData;
 

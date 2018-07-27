@@ -24,7 +24,7 @@
 typedef struct ConsoleInfo
 {
     Tcl_Interp *consoleInterp; /* Interpreter for the console. */
-    Tcl_Interp *interp; /* Interpreter to send console commands. */
+    Tcl_Interp *interp;        /* Interpreter to send console commands. */
 } ConsoleInfo;
 
 static Tcl_Interp *gStdoutInterp = NULL;
@@ -57,17 +57,17 @@ static Tcl_File ConsoleFile _ANSI_ARGS_((ClientData instanceData,
  */
 
 static Tcl_ChannelType consoleChannelType = {
-    "console", /* Type name. */
-    NULL, /* Always non-blocking.*/
-    ConsoleClose, /* Close proc. */
-    ConsoleInput, /* Input proc. */
+    "console",     /* Type name. */
+    NULL,          /* Always non-blocking.*/
+    ConsoleClose,  /* Close proc. */
+    ConsoleInput,  /* Input proc. */
     ConsoleOutput, /* Output proc. */
-    NULL, /* Seek proc. */
-    NULL, /* Set option proc. */
-    NULL, /* Get option proc. */
-    ConsoleWatch, /* Watch for events on console. */
-    ConsoleReady, /* Are events present? */
-    ConsoleFile, /* Get a Tcl_File from the device. */
+    NULL,          /* Seek proc. */
+    NULL,          /* Set option proc. */
+    NULL,          /* Get option proc. */
+    ConsoleWatch,  /* Watch for events on console. */
+    ConsoleReady,  /* Are events present? */
+    ConsoleFile,   /* Get a Tcl_File from the device. */
 };
 
 /*
@@ -227,9 +227,9 @@ error:
 
 static int ConsoleOutput(instanceData, buf, toWrite, errorCode)
 ClientData instanceData; /* Indicates which device to use. */
-char *buf; /* The data buffer. */
-int toWrite; /* How many bytes to write? */
-int *errorCode; /* Where to store error code. */
+char *buf;               /* The data buffer. */
+int toWrite;             /* How many bytes to write? */
+int *errorCode;          /* Where to store error code. */
 {
     *errorCode = 0;
     Tcl_SetErrno(0);
@@ -261,10 +261,10 @@ int *errorCode; /* Where to store error code. */
 /* ARGSUSED */
 static int ConsoleInput(instanceData, buf, bufSize, errorCode)
 ClientData instanceData; /* Unused. */
-char *buf; /* Where to store data read. */
-int bufSize; /* How much space is available
-              * in the buffer? */
-int *errorCode; /* Where to store error code. */
+char *buf;               /* Where to store data read. */
+int bufSize;             /* How much space is available
+                          * in the buffer? */
+int *errorCode;          /* Where to store error code. */
 {
     return 0; /* Always return EOF. */
 }
@@ -288,7 +288,7 @@ int *errorCode; /* Where to store error code. */
 /* ARGSUSED */
 static int ConsoleClose(instanceData,
                         interp) ClientData instanceData; /* Unused. */
-Tcl_Interp *interp; /* Unused. */
+Tcl_Interp *interp;                                      /* Unused. */
 {
     return 0;
 }
@@ -344,10 +344,10 @@ int mask; /* OR-ed combination of
 static int ConsoleReady(instanceData,
                         mask) ClientData instanceData; /* Device ID for the
                                                           channel. */
-int mask; /* OR-ed combination of
-           * TCL_READABLE, TCL_WRITABLE and
-           * TCL_EXCEPTION, for the events
-           * we are interested in. */
+int mask;                                              /* OR-ed combination of
+                                                        * TCL_READABLE, TCL_WRITABLE and
+                                                        * TCL_EXCEPTION, for the events
+                                                        * we are interested in. */
 {
     return 0;
 }
@@ -373,9 +373,9 @@ int mask; /* OR-ed combination of
 /* ARGSUSED */
 static Tcl_File ConsoleFile(instanceData, direction)
 ClientData instanceData; /* Device ID for the channel. */
-int direction; /* TCL_READABLE or TCL_WRITABLE
-                * to indicate which direction of
-                * the channel is being requested. */
+int direction;           /* TCL_READABLE or TCL_WRITABLE
+                          * to indicate which direction of
+                          * the channel is being requested. */
 {
     return ( Tcl_File )NULL;
 }
@@ -399,9 +399,9 @@ int direction; /* TCL_READABLE or TCL_WRITABLE
 
 static int ConsoleCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     ConsoleInfo *info = ( ConsoleInfo * )clientData;
     char c;
@@ -480,9 +480,9 @@ char **argv; /* Argument strings. */
 
 static int InterpreterCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     ConsoleInfo *info = ( ConsoleInfo * )clientData;
     char c;
@@ -608,10 +608,10 @@ XEvent *eventPtr;
 
 void TkConsolePrint(interp, devId, buffer, size)
 Tcl_Interp *interp; /* Main interpreter. */
-int devId; /* TCL_STDOUT for stdout, TCL_STDERR for
-            * stderr. */
-char *buffer; /* Text buffer. */
-long size; /* Size of text buffer. */
+int devId;          /* TCL_STDOUT for stdout, TCL_STDERR for
+                     * stderr. */
+char *buffer;       /* Text buffer. */
+long size;          /* Size of text buffer. */
 {
     Tcl_DString command, output;
     Tcl_CmdInfo cmdInfo;

@@ -62,14 +62,14 @@ static const char usage[]
 #define LONGLINE 72 /* too long output line length	*/
 
 #define A_listprereq (A_LAST << 1) /* prereqs listed		*/
-#define A_listtarg (A_LAST << 2) /* listed as target		*/
+#define A_listtarg (A_LAST << 2)   /* listed as target		*/
 
 struct state /* program state		*/
 {
-    int graph; /* output dependency graph info	*/
-    int header; /* header supplied		*/
-    int heredoc; /* last value had <<		*/
-    struct mam *mam; /* make abstract machine info	*/
+    int graph;          /* output dependency graph info	*/
+    int header;         /* header supplied		*/
+    int heredoc;        /* last value had <<		*/
+    struct mam *mam;    /* make abstract machine info	*/
     struct block *omit; /* dir prefixes to omit		*/
 };
 

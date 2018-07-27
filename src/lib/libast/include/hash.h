@@ -33,23 +33,23 @@
 #    define _HASH_H
 
 #    define HASH_ALLOCATE (1L << 0) /* allocate new key names	*/
-#    define HASH_FIXED (1L << 1) /* fixed table size		*/
-#    define HASH_HASHED (1L << 6) /* key names already hashed	*/
-#    define HASH_RESIZE (1L << 2) /* table has been resized	*/
+#    define HASH_FIXED (1L << 1)    /* fixed table size		*/
+#    define HASH_HASHED (1L << 6)   /* key names already hashed	*/
+#    define HASH_RESIZE (1L << 2)   /* table has been resized	*/
 #    define HASH_SCANNING (1L << 3) /* currently scanning scope	*/
-#    define HASH_SCOPE (1L << 4) /* push scope / create in bot	*/
-#    define HASH_STATIC (1L << 5) /* static table allocation	*/
+#    define HASH_SCOPE (1L << 4)    /* push scope / create in bot	*/
+#    define HASH_STATIC (1L << 5)   /* static table allocation	*/
 
 #    define HASH_CREATE (1L << 8) /* create bucket if not found	*/
 #    define HASH_DELETE (1L << 9) /* delete bucket if found	*/
-#    define HASH_LOOKUP 0 /* default op			*/
+#    define HASH_LOOKUP 0         /* default op			*/
 #    define HASH_RENAME (1L << 7) /* rename bucket if found	*/
 
-#    define HASH_BUCKET (1L << 11) /* name is installed bucket	*/
+#    define HASH_BUCKET (1L << 11)  /* name is installed bucket	*/
 #    define HASH_INSTALL (1L << 12) /* install allocated bucket	*/
 #    define HASH_NOSCOPE (1L << 13) /* top scope only		*/
-#    define HASH_OPAQUE (1L << 14) /* opaque bucket		*/
-#    define HASH_VALUE (1L << 15) /* value bucket field used	*/
+#    define HASH_OPAQUE (1L << 14)  /* opaque bucket		*/
+#    define HASH_VALUE (1L << 15)   /* value bucket field used	*/
 
 #    define HASH_SIZE(n) ((( long )(n)) << 16) /* fixed bucket size		*/
 #    define HASH_SIZEOF(f)                                                   \
@@ -58,16 +58,19 @@
 #    define HASH_DELETED                                                     \
         (( unsigned long )1                                                  \
          << (8 * sizeof(int) - 1)) /* deleted placeholder	*/
-#    define HASH_KEEP (1L << (8 * sizeof(int) - 2)) /* no free on bucket     \
-                                                     */
-#    define HASH_HIDDEN (1L << (8 * sizeof(int) - 3)) /* hidden by scope     \
-                                                       */
-#    define HASH_HIDES                                                       \
-        (1L << (8 * sizeof(int) - 4)) /* hides lower scope	*/
+#    define HASH_KEEP                                                        \
+        (1L << (8 * sizeof(int) - 2)) /* no free on bucket                   \
+                                       */
+#    define HASH_HIDDEN                                                      \
+        (1L << (8 * sizeof(int) - 3))                /* hidden by scope      \
+                                                      */
+#    define HASH_HIDES (1L << (8 * sizeof(int) - 4)) /* hides lower scope    \
+                                                      */
 #    define HASH_OPAQUED                                                     \
         (1L << (8 * sizeof(int) - 5)) /* opaqued placeholder	*/
-#    define HASH_FREENAME (1L << (8 * sizeof(int) - 6)) /* free bucket name  \
-                                                         */
+#    define HASH_FREENAME                                                    \
+        (1L << (8 * sizeof(int) - 6)) /* free bucket name                    \
+                                       */
 
 #    define HASH_RESET (HASH_RESIZE | HASH_SCOPE | HASH_STATIC | HASH_VALUE)
 #    define HASH_INTERNAL                                                    \
@@ -145,13 +148,13 @@ typedef struct Hash_bucket Hash_bucket_t;
 typedef struct Hash_root Hash_root_t;
 typedef struct Hash_table Hash_table_t;
 
-#    define HASH_HEADER /* common bucket header		*/                          \
+#    define HASH_HEADER      /* common bucket header		*/                     \
         Hash_bucket_t *next; /* next in collision chain	*/                   \
-        unsigned int hash; /* hash flags and value		*/                       \
-        char *name /* key name			*/
+        unsigned int hash;   /* hash flags and value		*/                     \
+        char *name           /* key name			*/
 
 #    define HASH_DEFAULT /* HASH_VALUE bucket elements	*/                    \
-        char *value /* key value			*/
+        char *value      /* key value			*/
 
 typedef struct /* bucket header		*/
 {
@@ -174,7 +177,7 @@ typedef struct /* hash scan bucket position	*/
 
 typedef struct /* last lookup cache		*/
 {
-    Hash_table_t *table; /* last lookup table		*/
+    Hash_table_t *table;   /* last lookup table		*/
     Hash_bucket_t *bucket; /* last lookup bucket		*/
 #    ifdef _HASH_LAST_PRIVATE_
     _HASH_LAST_PRIVATE_
@@ -183,11 +186,11 @@ typedef struct /* last lookup cache		*/
 
 struct Hash_root /* root hash table information	*/
 {
-    int accesses; /* number of accesses		*/
-    int collisions; /* number of collisions		*/
-    int flags; /* flags: see HASH_[A-Z]*	*/
+    int accesses;     /* number of accesses		*/
+    int collisions;   /* number of collisions		*/
+    int flags;        /* flags: see HASH_[A-Z]*	*/
     Hash_last_t last; /* last lookup cache		*/
-    void *context; /* user defined context		*/
+    void *context;    /* user defined context		*/
 #    ifdef _HASH_ROOT_PRIVATE_
     _HASH_ROOT_PRIVATE_
 #    endif
@@ -195,12 +198,12 @@ struct Hash_root /* root hash table information	*/
 
 struct Hash_table /* hash table information	*/
 {
-    Hash_root_t *root; /* root hash table information	*/
-    int size; /* table size			*/
-    int buckets; /* active bucket count		*/
-    char *name; /* table name			*/
+    Hash_root_t *root;   /* root hash table information	*/
+    int size;            /* table size			*/
+    int buckets;         /* active bucket count		*/
+    char *name;          /* table name			*/
     Hash_table_t *scope; /* scope covered table		*/
-    short flags; /* flags: see HASH_[A-Z]*	*/
+    short flags;         /* flags: see HASH_[A-Z]*	*/
 #    ifdef _HASH_TABLE_PRIVATE_
     _HASH_TABLE_PRIVATE_
 #    endif

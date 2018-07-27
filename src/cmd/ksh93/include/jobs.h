@@ -83,59 +83,59 @@ extern int tty_ld, ntty_ld;
 
 struct process
 {
-    struct process *p_nxtjob; /* next job structure */
+    struct process *p_nxtjob;  /* next job structure */
     struct process *p_nxtproc; /* next process in current job */
-    Shell_t *p_shp; /* shell that posted the job */
-    char *p_curdir; /* current direcory at job start */
+    Shell_t *p_shp;            /* shell that posted the job */
+    char *p_curdir;            /* current direcory at job start */
 #    if SHOPT_COSHELL
     Cojob_t *p_cojob; /* coshell job */
-#    endif /* SHOPT_COSHELL */
-    int *p_exitval; /* place to store the exitval */
+#    endif            /* SHOPT_COSHELL */
+    int *p_exitval;   /* place to store the exitval */
     int p_wstat;
-    pid_t p_pid; /* process id */
-    pid_t p_pgrp; /* process group */
-    pid_t p_fgrp; /* process group when stopped */
-    short p_job; /* job number of process */
-    unsigned short p_exit; /* exit value or signal number */
+    pid_t p_pid;              /* process id */
+    pid_t p_pgrp;             /* process group */
+    pid_t p_fgrp;             /* process group when stopped */
+    short p_job;              /* job number of process */
+    unsigned short p_exit;    /* exit value or signal number */
     unsigned short p_exitmin; /* minimum exit value for xargs */
-    unsigned short p_flag; /* flags - see below */
-    long p_env; /* subshell environment number */
+    unsigned short p_flag;    /* flags - see below */
+    long p_env;               /* subshell environment number */
 #    ifdef JOBS
-    off_t p_name; /* history file offset for command */
+    off_t p_name;          /* history file offset for command */
     struct termios p_stty; /* terminal state for job */
-#    endif /* JOBS */
+#    endif                 /* JOBS */
 };
 
 struct jobs
 {
     struct process *pwlist; /* head of process list */
-    int *exitval; /* pipe exit values */
-    pid_t curpgid; /* current process gid id */
-    pid_t parent; /* set by fork() */
-    pid_t mypid; /* process id of shell */
-    pid_t mypgid; /* process group id of shell */
-    pid_t mytgid; /* terminal group id of shell */
-    pid_t lastpost; /* last job posted */
+    int *exitval;           /* pipe exit values */
+    pid_t curpgid;          /* current process gid id */
+    pid_t parent;           /* set by fork() */
+    pid_t mypid;            /* process id of shell */
+    pid_t mypgid;           /* process group id of shell */
+    pid_t mytgid;           /* terminal group id of shell */
+    pid_t lastpost;         /* last job posted */
     int curjobid;
     unsigned int in_critical; /* >0 => in critical region */
-    int savesig; /* active signal */
-    int numpost; /* number of posted jobs */
-    int numbjob; /* number of background jobs */
-    short fd; /* tty descriptor number */
-    short maxjob; /* must reap after maxjob if > 0 */
+    int savesig;              /* active signal */
+    int numpost;              /* number of posted jobs */
+    int numbjob;              /* number of background jobs */
+    short fd;                 /* tty descriptor number */
+    short maxjob;             /* must reap after maxjob if > 0 */
 #    ifdef JOBS
-    int suspend; /* suspend character */
-    int linedisc; /* line dicipline */
-#    endif /* JOBS */
-    char jobcontrol; /* turned on for real job control */
-    char waitsafe; /* wait will not block */
-    char waitall; /* wait for all jobs in pipe */
-    char toclear; /* job table needs clearing */
-    int asol; /* used for asolock */
+    int suspend;             /* suspend character */
+    int linedisc;            /* line dicipline */
+#    endif                   /* JOBS */
+    char jobcontrol;         /* turned on for real job control */
+    char waitsafe;           /* wait will not block */
+    char waitall;            /* wait for all jobs in pipe */
+    char toclear;            /* job table needs clearing */
+    int asol;                /* used for asolock */
     unsigned char *freejobs; /* free jobs numbers */
 #    if SHOPT_COSHELL
     struct cosh *colist; /* coshell job list */
-#    endif /* SHOPT_COSHELL */
+#    endif               /* SHOPT_COSHELL */
 };
 
 /* flags for joblist */
@@ -218,7 +218,7 @@ extern const char e_no_start[];
 extern const char e_newtty[];
 extern const char e_oldtty[];
 #        endif /* NTTYDISC */
-#    endif /* JOBS */
+#    endif     /* JOBS */
 
 /*
  * The following are defined in jobs.c

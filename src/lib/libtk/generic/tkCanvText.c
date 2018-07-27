@@ -26,21 +26,21 @@ typedef struct TextLine
     char *firstChar; /* Pointer to the first character in this
                       * line (in the "text" field of enclosing
                       * text item). */
-    int numChars; /* Number of characters displayed in this
-                   * line. */
-    int totalChars; /* Total number of characters included as
-                     * part of this line (may include an extra
-                     * space character at the end that isn't
-                     * displayed). */
-    int x, y; /* Origin at which to draw line on screen
-               * (in integer pixel units, but in canvas
-               * coordinates, not screen coordinates). */
-    int x1, y1; /* Upper-left pixel that is part of text
-                 * line on screen (again, in integer canvas
-                 * pixel units). */
-    int x2, y2; /* Lower-left pixel that is part of text
-                 * line on screen (again, in integer canvas
-                 * pixel units). */
+    int numChars;    /* Number of characters displayed in this
+                      * line. */
+    int totalChars;  /* Total number of characters included as
+                      * part of this line (may include an extra
+                      * space character at the end that isn't
+                      * displayed). */
+    int x, y;        /* Origin at which to draw line on screen
+                      * (in integer pixel units, but in canvas
+                      * coordinates, not screen coordinates). */
+    int x1, y1;      /* Upper-left pixel that is part of text
+                      * line on screen (again, in integer canvas
+                      * pixel units). */
+    int x2, y2;      /* Lower-left pixel that is part of text
+                      * line on screen (again, in integer canvas
+                      * pixel units). */
 } TextLine;
 
 /*
@@ -57,30 +57,30 @@ typedef struct TextItem
      * insertion cursor.  The structure is owned
      * by (and shared with) the generic canvas
      * code. */
-    char *text; /* Text for item (malloc-ed). */
-    int numChars; /* Number of non-NULL characters in text. */
-    double x, y; /* Positioning point for text. */
-    Tk_Anchor anchor; /* Where to anchor text relative to (x,y). */
-    int width; /* Width of lines for word-wrap, pixels.
-                * Zero means no word-wrap. */
-    Tk_Justify justify; /* Justification mode for text. */
-    int rightEdge; /* Pixel just to right of right edge of
-                    * area of text item.  Used for selecting
-                    * up to end of line. */
+    char *text;           /* Text for item (malloc-ed). */
+    int numChars;         /* Number of non-NULL characters in text. */
+    double x, y;          /* Positioning point for text. */
+    Tk_Anchor anchor;     /* Where to anchor text relative to (x,y). */
+    int width;            /* Width of lines for word-wrap, pixels.
+                           * Zero means no word-wrap. */
+    Tk_Justify justify;   /* Justification mode for text. */
+    int rightEdge;        /* Pixel just to right of right edge of
+                           * area of text item.  Used for selecting
+                           * up to end of line. */
     XFontStruct *fontPtr; /* Font for drawing text. */
-    XColor *color; /* Color for text. */
-    Pixmap stipple; /* Stipple bitmap for text, or None. */
-    GC gc; /* Graphics context for drawing text. */
-    TextLine *linePtr; /* Pointer to array of structures describing
-                        * individual lines of text item (malloc-ed). */
-    int numLines; /* Number of structs at *linePtr. */
-    int insertPos; /* Insertion cursor is displayed just to left
-                    * of character with this index. */
-    GC cursorOffGC; /* If not None, this gives a graphics context
-                     * to use to draw the insertion cursor when
-                     * it's off.  Usedif the selection and
-                     * insertion cursor colors are the same.  */
-    GC selTextGC; /* Graphics context for selected text. */
+    XColor *color;        /* Color for text. */
+    Pixmap stipple;       /* Stipple bitmap for text, or None. */
+    GC gc;                /* Graphics context for drawing text. */
+    TextLine *linePtr;    /* Pointer to array of structures describing
+                           * individual lines of text item (malloc-ed). */
+    int numLines;         /* Number of structs at *linePtr. */
+    int insertPos;        /* Insertion cursor is displayed just to left
+                           * of character with this index. */
+    GC cursorOffGC;       /* If not None, this gives a graphics context
+                           * to use to draw the insertion cursor when
+                           * it's off.  Usedif the selection and
+                           * insertion cursor colors are the same.  */
+    GC selTextGC;         /* Graphics context for selected text. */
 } TextItem;
 
 /*
@@ -227,25 +227,25 @@ static void TranslateText _ANSI_ARGS_(
  */
 
 Tk_ItemType tkTextType = {
-    "text", /* name */
-    sizeof(TextItem), /* itemSize */
-    CreateText, /* createProc */
-    configSpecs, /* configSpecs */
-    ConfigureText, /* configureProc */
-    TextCoords, /* coordProc */
-    DeleteText, /* deleteProc */
-    DisplayText, /* displayProc */
-    0, /* alwaysRedraw */
-    TextToPoint, /* pointProc */
-    TextToArea, /* areaProc */
-    TextToPostscript, /* postscriptProc */
-    ScaleText, /* scaleProc */
-    TranslateText, /* translateProc */
-    GetTextIndex, /* indexProc */
-    SetTextCursor, /* icursorProc */
-    GetSelText, /* selectionProc */
-    TextInsert, /* insertProc */
-    TextDeleteChars, /* dTextProc */
+    "text",               /* name */
+    sizeof(TextItem),     /* itemSize */
+    CreateText,           /* createProc */
+    configSpecs,          /* configSpecs */
+    ConfigureText,        /* configureProc */
+    TextCoords,           /* coordProc */
+    DeleteText,           /* deleteProc */
+    DisplayText,          /* displayProc */
+    0,                    /* alwaysRedraw */
+    TextToPoint,          /* pointProc */
+    TextToArea,           /* areaProc */
+    TextToPostscript,     /* postscriptProc */
+    ScaleText,            /* scaleProc */
+    TranslateText,        /* translateProc */
+    GetTextIndex,         /* indexProc */
+    SetTextCursor,        /* icursorProc */
+    GetSelText,           /* selectionProc */
+    TextInsert,           /* insertProc */
+    TextDeleteChars,      /* dTextProc */
     ( Tk_ItemType * )NULL /* nextPtr */
 };
 
@@ -271,11 +271,11 @@ Tk_ItemType tkTextType = {
 
 static int CreateText(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Canvas canvas; /* Canvas to hold new item. */
-Tk_Item *itemPtr; /* Record to hold new item;  header
-                   * has been initialized by caller. */
-int argc; /* Number of arguments in argv. */
-char **argv; /* Arguments describing rectangle. */
+Tk_Canvas canvas;   /* Canvas to hold new item. */
+Tk_Item *itemPtr;   /* Record to hold new item;  header
+                     * has been initialized by caller. */
+int argc;           /* Number of arguments in argv. */
+char **argv;        /* Arguments describing rectangle. */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
 
@@ -352,13 +352,13 @@ char **argv; /* Arguments describing rectangle. */
 
 static int TextCoords(interp, canvas, itemPtr, argc, argv)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item whose coordinates are to be
-                   * read or modified. */
-int argc; /* Number of coordinates supplied in
-           * argv. */
-char **argv; /* Array of coordinates: x1, y1,
-              * x2, y2, ... */
+Tk_Canvas canvas;   /* Canvas containing item. */
+Tk_Item *itemPtr;   /* Item whose coordinates are to be
+                     * read or modified. */
+int argc;           /* Number of coordinates supplied in
+                     * argv. */
+char **argv;        /* Array of coordinates: x1, y1,
+                     * x2, y2, ... */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
     char x[TCL_DOUBLE_SPACE], y[TCL_DOUBLE_SPACE];
@@ -409,11 +409,11 @@ char **argv; /* Array of coordinates: x1, y1,
 
 static int ConfigureText(interp, canvas, itemPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Canvas canvas; /* Canvas containing itemPtr. */
-Tk_Item *itemPtr; /* Rectangle item to reconfigure. */
-int argc; /* Number of elements in argv.  */
-char **argv; /* Arguments describing things to configure. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Tk_Canvas canvas;   /* Canvas containing itemPtr. */
+Tk_Item *itemPtr;   /* Rectangle item to reconfigure. */
+int argc;           /* Number of elements in argv.  */
+char **argv;        /* Arguments describing things to configure. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
     XGCValues gcValues;
@@ -835,11 +835,11 @@ TextItem *textPtr; /* Item whose bbos is to be
 
 static void
 DisplayText(canvas, itemPtr, display, drawable, x, y, width, height)
-Tk_Canvas canvas; /* Canvas that contains item. */
-Tk_Item *itemPtr; /* Item to be displayed. */
-Display *display; /* Display on which to draw item. */
-Drawable drawable; /* Pixmap or window in which to draw
-                    * item. */
+Tk_Canvas canvas;        /* Canvas that contains item. */
+Tk_Item *itemPtr;        /* Item to be displayed. */
+Display *display;        /* Display on which to draw item. */
+Drawable drawable;       /* Pixmap or window in which to draw
+                          * item. */
 int x, y, width, height; /* Describes region of canvas that
                           * must be redisplayed (not used). */
 {
@@ -1108,9 +1108,9 @@ int x, y, width, height; /* Describes region of canvas that
 static void TextInsert(canvas, itemPtr, beforeThis, string)
 Tk_Canvas canvas; /* Canvas containing text item. */
 Tk_Item *itemPtr; /* Text item to be modified. */
-int beforeThis; /* Index of character before which text is
-                 * to be inserted. */
-char *string; /* New characters to be inserted. */
+int beforeThis;   /* Index of character before which text is
+                   * to be inserted. */
+char *string;     /* New characters to be inserted. */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
     int length;
@@ -1188,8 +1188,8 @@ char *string; /* New characters to be inserted. */
 static void TextDeleteChars(canvas, itemPtr, first, last)
 Tk_Canvas canvas; /* Canvas containing itemPtr. */
 Tk_Item *itemPtr; /* Item in which to delete characters. */
-int first; /* Index of first character to delete. */
-int last; /* Index of last character to delete. */
+int first;        /* Index of first character to delete. */
+int last;         /* Index of last character to delete. */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
     int count;
@@ -1384,9 +1384,9 @@ static int
 TextToArea(canvas, itemPtr, rectPtr) Tk_Canvas canvas; /* Canvas containing
                                                           itemPtr. */
 Tk_Item *itemPtr; /* Item to check against rectangle. */
-double *rectPtr; /* Pointer to array of four coordinates
-                  * (x1, y1, x2, y2) describing rectangular
-                  * area.  */
+double *rectPtr;  /* Pointer to array of four coordinates
+                   * (x1, y1, x2, y2) describing rectangular
+                   * area.  */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
     TextLine *linePtr;
@@ -1447,11 +1447,11 @@ double *rectPtr; /* Pointer to array of four coordinates
 
 /* ARGSUSED */
 static void ScaleText(canvas, itemPtr, originX, originY, scaleX, scaleY)
-Tk_Canvas canvas; /* Canvas containing rectangle. */
-Tk_Item *itemPtr; /* Rectangle to be scaled. */
+Tk_Canvas canvas;        /* Canvas containing rectangle. */
+Tk_Item *itemPtr;        /* Rectangle to be scaled. */
 double originX, originY; /* Origin about which to scale rect. */
-double scaleX; /* Amount to scale in X direction. */
-double scaleY; /* Amount to scale in Y direction. */
+double scaleX;           /* Amount to scale in X direction. */
+double scaleY;           /* Amount to scale in Y direction. */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
 
@@ -1481,8 +1481,8 @@ double scaleY; /* Amount to scale in Y direction. */
  */
 
 static void TranslateText(canvas, itemPtr, deltaX, deltaY)
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item that is being moved. */
+Tk_Canvas canvas;      /* Canvas containing item. */
+Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
@@ -1515,12 +1515,12 @@ double deltaX, deltaY; /* Amount by which item is to be
 
 static int GetTextIndex(interp, canvas, itemPtr, string, indexPtr)
 Tcl_Interp *interp; /* Used for error reporting. */
-Tk_Canvas canvas; /* Canvas containing item. */
-Tk_Item *itemPtr; /* Item for which the index is being
-                   * specified. */
-char *string; /* Specification of a particular character
-               * in itemPtr's text. */
-int *indexPtr; /* Where to store converted index. */
+Tk_Canvas canvas;   /* Canvas containing item. */
+Tk_Item *itemPtr;   /* Item for which the index is being
+                     * specified. */
+char *string;       /* Specification of a particular character
+                     * in itemPtr's text. */
+int *indexPtr;      /* Where to store converted index. */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
     size_t length;
@@ -1672,8 +1672,8 @@ SetTextCursor(canvas, itemPtr, index) Tk_Canvas canvas; /* Record describing
                                                            canvas widget. */
 Tk_Item *itemPtr; /* Text item in which cursor position
                    * is to be set. */
-int index; /* Index of character just before which
-            * cursor is to be positioned. */
+int index;        /* Index of character just before which
+                   * cursor is to be positioned. */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
 
@@ -1715,13 +1715,13 @@ int index; /* Index of character just before which
 static int GetSelText(canvas, itemPtr, offset, buffer, maxBytes)
 Tk_Canvas canvas; /* Canvas containing selection. */
 Tk_Item *itemPtr; /* Text item containing selection. */
-int offset; /* Offset within selection of first
-             * character to be returned. */
-char *buffer; /* Location in which to place
-               * selection. */
-int maxBytes; /* Maximum number of bytes to place
-               * at buffer, not including terminating
-               * NULL character. */
+int offset;       /* Offset within selection of first
+                   * character to be returned. */
+char *buffer;     /* Location in which to place
+                   * selection. */
+int maxBytes;     /* Maximum number of bytes to place
+                   * at buffer, not including terminating
+                   * NULL character. */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
     int count;
@@ -1771,19 +1771,19 @@ int maxBytes; /* Maximum number of bytes to place
 static int TextToPostscript(interp, canvas, itemPtr, prepass)
 Tcl_Interp *interp; /* Leave Postscript or error message
                      * here. */
-Tk_Canvas canvas; /* Information about overall canvas. */
-Tk_Item *itemPtr; /* Item for which Postscript is
-                   * wanted. */
-int prepass; /* 1 means this is a prepass to
-              * collect font information;  0 means
-              * final Postscript is being created. */
+Tk_Canvas canvas;   /* Information about overall canvas. */
+Tk_Item *itemPtr;   /* Item for which Postscript is
+                     * wanted. */
+int prepass;        /* 1 means this is a prepass to
+                     * collect font information;  0 means
+                     * final Postscript is being created. */
 {
     TextItem *textPtr = ( TextItem * )itemPtr;
     TextLine *linePtr;
     int i;
     char *xoffset = NULL, *yoffset = NULL; /* Initializations needed */
-    char *justify = NULL; /* only to stop compiler
-                           * warnings. */
+    char *justify = NULL;                  /* only to stop compiler
+                                            * warnings. */
     char buffer[500];
 
     if (textPtr->color == NULL)
@@ -1898,8 +1898,8 @@ int prepass; /* 1 means this is a prepass to
 
 static void LineToPostscript(interp, string, numChars)
 Tcl_Interp *interp; /* Interp whose result is to be appended to. */
-char *string; /* String to Postscript-ify. */
-int numChars; /* Number of characters in the string. */
+char *string;       /* String to Postscript-ify. */
+int numChars;       /* Number of characters in the string. */
 {
 #define BUFFER_SIZE 100
     char buffer[BUFFER_SIZE + 5];

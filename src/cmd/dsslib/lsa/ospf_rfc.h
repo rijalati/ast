@@ -114,26 +114,26 @@ extern "C"
      */
     typedef struct _ospf_pkt_hdr_t
     {
-        uint8_t pkt_hdr_version; /* Version */
-        uint8_t pkt_hdr_type; /* Type of packet. C.f. OSPF_PKT_xxx */
-        uint16_t pkt_hdr_len; /* Total lengh of packet */
-        uint32_t pkt_hdr_rtid; /* The router ID */
-        uint32_t pkt_hdr_area; /* The area */
-        uint16_t pkt_hdr_checksum; /* Checksum */
-        uint16_t pkt_hdr_authtype; /* Authentication type: OSPF_AUTH_xxx */
+        uint8_t pkt_hdr_version;      /* Version */
+        uint8_t pkt_hdr_type;         /* Type of packet. C.f. OSPF_PKT_xxx */
+        uint16_t pkt_hdr_len;         /* Total lengh of packet */
+        uint32_t pkt_hdr_rtid;        /* The router ID */
+        uint32_t pkt_hdr_area;        /* The area */
+        uint16_t pkt_hdr_checksum;    /* Checksum */
+        uint16_t pkt_hdr_authtype;    /* Authentication type: OSPF_AUTH_xxx */
         ospf_pkt_auth_t pkt_hdr_auth; /* Authentication Data */
     } ospf_pkt_hdr_t;
 
 /*
  * OSPF Options bits.
  */
-#define OSPF_OPTIONS_T 0x01 /* TOS */
-#define OSPF_OPTIONS_E 0x02 /* Not a stub area */
+#define OSPF_OPTIONS_T 0x01  /* TOS */
+#define OSPF_OPTIONS_E 0x02  /* Not a stub area */
 #define OSPF_OPTIONS_MC 0x04 /* MOSPF RFC 1584 */
 #define OSPF_OPTIONS_NP 0x08 /* NSSA option RFC 1587 */
 #define OSPF_OPTIONS_EA 0x10 /* Extern Attr LSA */
 #define OSPF_OPTIONS_DC 0x20 /* Demand Circuts RFC 1793 */
-#define OSPF_OPTIONS_O 0x40 /* Opaque LSA RFC 2370 */
+#define OSPF_OPTIONS_O 0x40  /* Opaque LSA RFC 2370 */
 
 /*
  * DD packet flags.
@@ -148,11 +148,11 @@ extern "C"
 /*
  * Constants defined in RFC 2328.
  */
-#define LSA_MAX_AGE 3600 /* Appendix B */
-#define LSA_MAX_AGE_DIFF 900 /* Appendix B */
-#define LS_INFINITY 0xffffff /* Appendix B */
+#define LSA_MAX_AGE 3600              /* Appendix B */
+#define LSA_MAX_AGE_DIFF 900          /* Appendix B */
+#define LS_INFINITY 0xffffff          /* Appendix B */
 #define INTRA_AREA_LS_INFINITY 0xffff /* Appendix B */
-#define MAX_OSPF_PKT_SIZE 65535 /* Appendix A.1 */
+#define MAX_OSPF_PKT_SIZE 65535       /* Appendix A.1 */
 #define BACKBONE_AREA_ID 0
 
     /*
@@ -245,7 +245,7 @@ extern "C"
 #define LSRLT_TRANS 2
 #define LSRLT_STUB 3
 #define LSRLT_VLINK 4
-#define LSRLT_RTR 5 /* Fake link type, from net to rtr */
+#define LSRLT_RTR 5     /* Fake link type, from net to rtr */
 #define LSRLT_RTRSTUB 6 /* Fake link type, from net to rtr */
 
 #define LSRTR_BITS_B 1
@@ -341,9 +341,9 @@ extern "C"
 /* Opaque types assigned by IANA */
 #    define OPQ_TYPE_TE 1 /* Traffic Engineering */
 #    define OPQ_TYPE_SYC_OPT_TOP                                             \
-        2 /* Sycamore Optical Topology Descriptions */
+        2                    /* Sycamore Optical Topology Descriptions */
 #    define OPQ_TYPE_GRACE 3 /* Grace LSA */
-#    define OPQ_TYPE_RI 4 /* Router Information */
+#    define OPQ_TYPE_RI 4    /* Router Information */
 #    define OPQ_TYPE_L1VPN 5 /* L1VPN LSA */
 
     /* Types for type and length of TE TLVs */
@@ -352,23 +352,25 @@ extern "C"
 
 /* Types for top-level TLVs of TE (RFC 3630) */
 #    define OPQ_TE_TYPE_RTR_ADDR 1 /* Router address */
-#    define OPQ_TE_TYPE_LINK 2 /* Link */
+#    define OPQ_TE_TYPE_LINK 2     /* Link */
 
     /* Types for fixed length top-level TLVs of TE (RFC 3630) */
     typedef uint32_t opq_te_rtr_addr_t;
 
 /* Types for sub-TLVs of link TLV (RFC 3630) */
-#    define OPQ_TE_LINK_TYPE_TYPE 1 /* Link type */
-#    define OPQ_TE_LINK_TYPE_LINK_ID 2 /* Link ID */
+#    define OPQ_TE_LINK_TYPE_TYPE 1         /* Link type */
+#    define OPQ_TE_LINK_TYPE_LINK_ID 2      /* Link ID */
 #    define OPQ_TE_LINK_TYPE_LO_INTF_ADDR 3 /* Local interface IP address */
-#    define OPQ_TE_LINK_TYPE_RM_INTF_ADDR 4 /* Remote interface IP address   \
-                                             */
+#    define OPQ_TE_LINK_TYPE_RM_INTF_ADDR                                    \
+        4                                /* Remote interface IP address      \
+                                          */
 #    define OPQ_TE_LINK_TYPE_TE_METRIC 5 /* TE metric */
-#    define OPQ_TE_LINK_TYPE_MAX_BW 6 /* Max bandwidth */
-#    define OPQ_TE_LINK_TYPE_MAX_RESRV_BW 7 /* Maximum reservable bandwidth  \
-                                             */
+#    define OPQ_TE_LINK_TYPE_MAX_BW 6    /* Max bandwidth */
+#    define OPQ_TE_LINK_TYPE_MAX_RESRV_BW                                    \
+        7                                 /* Maximum reservable bandwidth    \
+                                           */
 #    define OPQ_TE_LINK_TYPE_UNRESRV_BW 8 /* Unreserved bandwidth */
-#    define OPQ_TE_LINK_TYPE_ADMIN_GRP 9 /* Administrative group */
+#    define OPQ_TE_LINK_TYPE_ADMIN_GRP 9  /* Administrative group */
 
     /* Types for value fields of TE link sub-TLVs (RFC 3630) */
     typedef uint8_t opq_te_link_type_t;
@@ -415,7 +417,7 @@ extern "C"
     ((MTU2PKT(mtu) - sizeof(ospf_pkt_hdr_t)) / sizeof(ospf_lsa_hdr_t))
 
 #define OSPF_PKT_MAXLEN MTU2PKT(MTU_BIGGEST) /* The bigest MTU */
-#define MAXLSALENGHT MTU2LSA(MTU_SMALLEST) /* Why not? */
+#define MAXLSALENGHT MTU2LSA(MTU_SMALLEST)   /* Why not? */
 
     /* A generic LSA */
     typedef struct _ospf_lsa_t
@@ -546,14 +548,14 @@ extern "C"
     typedef struct _ospf_hello_pkt_t
     {
         ospf_pkt_hdr_t pkt_hello_hdr; /* normal header */
-        uint32_t pkt_hello_mask; /* Newtwork mask */
-        uint16_t pkt_hello_int; /* Hello interval */
-        uint8_t pkt_hello_options; /* Options */
-        uint8_t pkt_hello_pri; /* Router priority */
-        uint32_t pkt_hello_dead_int; /* Rourter dead interval */
-        uint32_t pkt_hello_dr; /* Router's idea of the DR */
-        uint32_t pkt_hello_bdr; /* Router's idea of the BDR */
-        uint32_t pkt_hello_ngb[1]; /* All neighbours */
+        uint32_t pkt_hello_mask;      /* Newtwork mask */
+        uint16_t pkt_hello_int;       /* Hello interval */
+        uint8_t pkt_hello_options;    /* Options */
+        uint8_t pkt_hello_pri;        /* Router priority */
+        uint32_t pkt_hello_dead_int;  /* Rourter dead interval */
+        uint32_t pkt_hello_dr;        /* Router's idea of the DR */
+        uint32_t pkt_hello_bdr;       /* Router's idea of the BDR */
+        uint32_t pkt_hello_ngb[1];    /* All neighbours */
     } ospf_hello_pkt_t;
 
 #define pkt_hello_rtid pkt_hello_hdr.pkt_hdr_rtid
@@ -565,10 +567,10 @@ extern "C"
     typedef struct _ospf_dd_pkt_t
     {
         ospf_pkt_hdr_t pkt_dd_hdr; /* normal header */
-        uint16_t pkt_dd_junk; /* Must be 0 */
-        uint8_t pkt_dd_options; /* Router capability options */
-        uint8_t pkt_dd_flags; /* Master/slave/init/more... */
-        seq_t pkt_dd_seq; /* Sequence number */
+        uint16_t pkt_dd_junk;      /* Must be 0 */
+        uint8_t pkt_dd_options;    /* Router capability options */
+        uint8_t pkt_dd_flags;      /* Master/slave/init/more... */
+        seq_t pkt_dd_seq;          /* Sequence number */
     } ospf_dd_pkt_t;
 
 #define pkt_dd_len pkt_dd_hdr.pkt_hdr_len
@@ -588,7 +590,7 @@ extern "C"
 
     typedef struct _ospf_lsr_pkt_t
     {
-        ospf_pkt_hdr_t pkt_lsr_hdr; /* normal header */
+        ospf_pkt_hdr_t pkt_lsr_hdr;      /* normal header */
         ospf_lsr_data_t pkt_lsr_data[1]; /* The request */
     } ospf_lsr_pkt_t;
 
@@ -601,7 +603,7 @@ extern "C"
     typedef struct _ospf_lsu_pkt_t
     {
         ospf_pkt_hdr_t pkt_lsu_hdr; /* normal header */
-        uint32_t pkt_lsu_no_lsas; /* # of LSA */
+        uint32_t pkt_lsu_no_lsas;   /* # of LSA */
         ospf_lsa_t pkt_lsu_lsa[1];
     } ospf_lsu_pkt_t;
 

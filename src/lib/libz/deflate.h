@@ -82,8 +82,8 @@ typedef struct static_tree_desc_s static_tree_desc;
 
 typedef struct tree_desc_s
 {
-    ct_data *dyn_tree; /* the dynamic tree */
-    int max_code; /* largest code with non zero frequency */
+    ct_data *dyn_tree;           /* the dynamic tree */
+    int max_code;                /* largest code with non zero frequency */
     static_tree_desc *stat_desc; /* the corresponding static tree */
 } FAR tree_desc;
 
@@ -97,17 +97,17 @@ typedef unsigned IPos;
 
 typedef struct internal_state
 {
-    z_streamp strm; /* pointer back to this zlib stream */
-    int status; /* as the name implies */
-    Bytef *pending_buf; /* output still pending */
+    z_streamp strm;       /* pointer back to this zlib stream */
+    int status;           /* as the name implies */
+    Bytef *pending_buf;   /* output still pending */
     ulg pending_buf_size; /* size of pending_buf */
-    Bytef *pending_out; /* next pending byte to output to the stream */
-    uInt pending; /* nb of bytes in the pending buffer */
-    int wrap; /* bit 0 true for zlib, bit 1 true for gzip */
-    gz_headerp gzhead; /* gzip header information to write */
-    uInt gzindex; /* where in extra, name, or comment */
-    Byte method; /* STORED (for zip only) or DEFLATED */
-    int last_flush; /* value of flush param for previous deflate call */
+    Bytef *pending_out;   /* next pending byte to output to the stream */
+    uInt pending;         /* nb of bytes in the pending buffer */
+    int wrap;             /* bit 0 true for zlib, bit 1 true for gzip */
+    gz_headerp gzhead;    /* gzip header information to write */
+    uInt gzindex;         /* where in extra, name, or comment */
+    Byte method;          /* STORED (for zip only) or DEFLATED */
+    int last_flush;       /* value of flush param for previous deflate call */
 
     /* used by deflate.c: */
 
@@ -138,7 +138,7 @@ typedef struct internal_state
 
     Posf *head; /* Heads of the hash chains or NIL. */
 
-    uInt ins_h; /* hash index of string to be inserted */
+    uInt ins_h;     /* hash index of string to be inserted */
     uInt hash_size; /* number of elements in hash table */
     uInt hash_bits; /* log2(hash_size) */
     uInt hash_mask; /* hash_size-1 */
@@ -155,12 +155,12 @@ typedef struct internal_state
      * negative when the window is moved backwards.
      */
 
-    uInt match_length; /* length of best match */
-    IPos prev_match; /* previous match */
+    uInt match_length;   /* length of best match */
+    IPos prev_match;     /* previous match */
     int match_available; /* set if previous match exists */
-    uInt strstart; /* start of string to insert */
-    uInt match_start; /* start of matching string */
-    uInt lookahead; /* number of valid bytes ahead in window */
+    uInt strstart;       /* start of string to insert */
+    uInt match_start;    /* start of matching string */
+    uInt lookahead;      /* number of valid bytes ahead in window */
 
     uInt prev_length;
     /* Length of the best match at previous step. Matches not greater than
@@ -184,7 +184,7 @@ typedef struct internal_state
      * max_insert_length is used only for compression levels <= 3.
      */
 
-    int level; /* compression level (1..9) */
+    int level;    /* compression level (1..9) */
     int strategy; /* favor or force Huffman coding*/
 
     uInt good_match;
@@ -194,21 +194,21 @@ typedef struct internal_state
 
     /* used by trees.c: */
     /* Didn't use ct_data typedef below to supress compiler warning */
-    struct ct_data_s dyn_ltree[HEAP_SIZE]; /* literal and length tree */
+    struct ct_data_s dyn_ltree[HEAP_SIZE];       /* literal and length tree */
     struct ct_data_s dyn_dtree[2 * D_CODES + 1]; /* distance tree */
-    struct ct_data_s bl_tree[2 * BL_CODES + 1]; /* Huffman tree for bit
-                                                   lengths */
+    struct ct_data_s bl_tree[2 * BL_CODES + 1];  /* Huffman tree for bit
+                                                    lengths */
 
-    struct tree_desc_s l_desc; /* desc. for literal tree */
-    struct tree_desc_s d_desc; /* desc. for distance tree */
+    struct tree_desc_s l_desc;  /* desc. for literal tree */
+    struct tree_desc_s d_desc;  /* desc. for distance tree */
     struct tree_desc_s bl_desc; /* desc. for bit length tree */
 
     ush bl_count[MAX_BITS + 1];
     /* number of codes at each bit length for an optimal tree */
 
     int heap[2 * L_CODES + 1]; /* heap used to build the Huffman trees */
-    int heap_len; /* number of elements in the heap */
-    int heap_max; /* element of largest frequency */
+    int heap_len;              /* number of elements in the heap */
+    int heap_max;              /* element of largest frequency */
     /* The sons of heap[n] are heap[2*n] and heap[2*n+1]. heap[0] is not used.
      * The same heap array is used to build all trees.
      */
@@ -247,14 +247,14 @@ typedef struct internal_state
      * array would be necessary.
      */
 
-    ulg opt_len; /* bit length of current block with optimal trees */
-    ulg static_len; /* bit length of current block with static trees */
-    uInt matches; /* number of string matches in current block */
+    ulg opt_len;      /* bit length of current block with optimal trees */
+    ulg static_len;   /* bit length of current block with static trees */
+    uInt matches;     /* number of string matches in current block */
     int last_eob_len; /* bit length of EOB code for last block */
 
 #ifdef DEBUG
     ulg compressed_len; /* total bit length of compressed file mod 2^32 */
-    ulg bits_sent; /* bit length of compressed data sent mod 2^32 */
+    ulg bits_sent;      /* bit length of compressed data sent mod 2^32 */
 #endif
 
     ush bi_buf;

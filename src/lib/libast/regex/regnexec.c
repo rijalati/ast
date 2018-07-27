@@ -137,9 +137,9 @@ rexname(Rex_t *rex)
 
 #define NONE 0 /* no parse found			*/
 #define GOOD 1 /* some parse was found			*/
-#define CUT 2 /* no match and no backtrack		*/
+#define CUT 2  /* no match and no backtrack		*/
 #define BEST 3 /* an unbeatable parse was found	*/
-#define BAD 4 /* error ocurred			*/
+#define BAD 4  /* error ocurred			*/
 
 /*
  * REG_SHELL_DOT test
@@ -157,9 +157,9 @@ rexname(Rex_t *rex)
 typedef struct
 {
     unsigned char *p; /* where in string		*/
-    size_t length; /* length in string		*/
-    short serial; /* preorder subpattern number	*/
-    short be; /* which end of pair		*/
+    size_t length;    /* length in string		*/
+    short serial;     /* preorder subpattern number	*/
+    short be;         /* which end of pair		*/
 } Pos_t;
 
 /* ===== begin library support ===== */

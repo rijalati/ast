@@ -49,28 +49,28 @@ _sfoncef()
 
 /* global variables used internally to the package */
 Sfextern_t _Sfextern = {
-    0, /* _Sfpage	*/
-    { NIL(Sfpool_t *), 0, 0, 0, NIL(Sfio_t **) }, /* _Sfpool	*/
-    NIL(int(*) _ARG_(( Sfio_t *, int ))), /* _Sfpmove	*/
+    0,                                               /* _Sfpage	*/
+    { NIL(Sfpool_t *), 0, 0, 0, NIL(Sfio_t **) },    /* _Sfpool	*/
+    NIL(int(*) _ARG_(( Sfio_t *, int ))),            /* _Sfpmove	*/
     NIL(Sfio_t *( * )_ARG_(( Sfio_t *, Sfio_t * ))), /* _Sfstack	*/
-    NIL(void(*) _ARG_(( Sfio_t *, int, void * ))), /* _Sfnotify	*/
-    NIL(int(*) _ARG_(( Sfio_t * ))), /* _Sfstdsync	*/
-    { NIL(Sfread_f), /* _Sfudisc	*/
+    NIL(void(*) _ARG_(( Sfio_t *, int, void * ))),   /* _Sfnotify	*/
+    NIL(int(*) _ARG_(( Sfio_t * ))),                 /* _Sfstdsync	*/
+    { NIL(Sfread_f),                                 /* _Sfudisc	*/
       NIL(Sfwrite_f),
       NIL(Sfseek_f),
       NIL(Sfexcept_f),
       NIL(Sfdisc_t *) },
     NIL(void(*) _ARG_(( void ))), /* _Sfcleanup	*/
-    0, /* _Sfexiting	*/
-    0, /* _Sfdone	*/
-    &Sfonce, /* _Sfonce	*/
-    _sfoncef, /* _Sfoncef	*/
-    &Sfmutex, /* _Sfmutex	*/
-    SF_MAXM_DEFAULT, /* _Sfmaxm	*/
-    SF_TEST_DEFAULT /* _Sftest	*/
+    0,                            /* _Sfexiting	*/
+    0,                            /* _Sfdone	*/
+    &Sfonce,                      /* _Sfonce	*/
+    _sfoncef,                     /* _Sfoncef	*/
+    &Sfmutex,                     /* _Sfmutex	*/
+    SF_MAXM_DEFAULT,              /* _Sfmaxm	*/
+    SF_TEST_DEFAULT               /* _Sftest	*/
 };
 
-ssize_t _Sfi = -1; /* value for a few fast macro functions	*/
+ssize_t _Sfi = -1;   /* value for a few fast macro functions	*/
 ssize_t _Sfmaxr = 0; /* default (unlimited) max record size	*/
 
 #if vt_threaded

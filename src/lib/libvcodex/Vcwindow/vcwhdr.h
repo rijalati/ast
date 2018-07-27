@@ -34,7 +34,7 @@
 /* used in counting frequencies. 	*/
 #define NGINDEX(g) (g & (NG_FREQ - 1))
 
-#define NG_NSEG (1 << 7) /* default # of segments per window	*/
+#define NG_NSEG (1 << 7)  /* default # of segments per window	*/
 #define NG_SIZE (1 << 10) /* segment size to sum n-gram values	*/
 #define NG_BITS (1 << 20) /* # of bits used per n-gram value	*/
 #define NGVALUE(g) (g & (NG_BITS - 1))
@@ -48,14 +48,14 @@ typedef struct _vcwfile_s
 {
     Sfio_t *file; /* the file to be searched for windows	*/
     Sfoff_t size; /* extent of file			*/
-    int done; /* 0: undone, -1: error, 1: ok		*/
+    int done;     /* 0: undone, -1: error, 1: ok		*/
 
     Grint_t *work; /* signatures of a window to be matched	*/
     int nwork;
 
-    Grint_t *sig; /* signatures of each file index	*/
+    Grint_t *sig;   /* signatures of each file index	*/
     Grint_t **ssig; /* sorted signatures			*/
-    int nsig; /* number of signatures			*/
+    int nsig;       /* number of signatures			*/
 
     int nidx; /* indices of where to search		*/
     int idx[8];

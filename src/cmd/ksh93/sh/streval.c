@@ -49,8 +49,8 @@
 /*
  * The following are used with tokenbits() macro
  */
-#define T_OP 0x3f /* mask for operator number */
-#define T_BINARY 0x40 /* binary operators */
+#define T_OP 0x3f      /* mask for operator number */
+#define T_BINARY 0x40  /* binary operators */
 #define T_NOFLOAT 0x80 /* non floating point operator */
 #define A_LVALUE (2 * MAXPREC + 2)
 
@@ -73,16 +73,16 @@ static int level;
 struct vars /* vars stacked per invocation */
 {
     Shell_t *shp;
-    const char *expr; /* current expression */
+    const char *expr;    /* current expression */
     const char *nextchr; /* next char in current expression */
-    const char *errchr; /* next char after error	*/
-    const char *errstr; /* error string			*/
-    struct lval errmsg; /* error message text		*/
-    int offset; /* offset for pushchr macro	*/
-    int staksize; /* current stack size needed	*/
-    int stakmaxsize; /* maximum stack size needed	*/
+    const char *errchr;  /* next char after error	*/
+    const char *errstr;  /* error string			*/
+    struct lval errmsg;  /* error message text		*/
+    int offset;          /* offset for pushchr macro	*/
+    int staksize;        /* current stack size needed	*/
+    int stakmaxsize;     /* maximum stack size needed	*/
     unsigned char paren; /* parenthesis level		*/
-    char infun; /* incremented by comma inside function	*/
+    char infun;          /* incremented by comma inside function	*/
     int emode;
     Sfdouble_t (*convert)(const char **, struct lval *, int, Sfdouble_t);
 };

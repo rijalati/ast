@@ -31,7 +31,7 @@
 
 #    include <ast.h>
 
-#    define HUFFLEV 32 /* maximum number of bits per code */
+#    define HUFFLEV 32   /* maximum number of bits per code */
 #    define HUFFMAG1 037 /* ascii <US> */
 #    define HUFFMAG2 036 /* ascii <RS> */
 

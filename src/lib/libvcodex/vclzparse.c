@@ -30,7 +30,7 @@
 #define MAXPAIR 256 /* max # of extended matching pairs	*/
 typedef struct _pair_s
 {
-    ssize_t size; /* # of pairs found	*/
+    ssize_t size;              /* # of pairs found	*/
     Vclzmatch_t mtch[MAXPAIR]; /* storage for pairs	*/
 } Pair_t;
 #define NEXTPAIR(pr)                                                         \
@@ -45,11 +45,11 @@ typedef struct _obj_s
 typedef struct _hash_s
 {
     Vchash_t mask; /* mask to get hash table index	*/
-    Obj_t **htab; /* hash table of size (mask+1)	*/
-    Obj_t *src; /* objects representing source	*/
-    Obj_t *tar; /* objects representing target	*/
+    Obj_t **htab;  /* hash table of size (mask+1)	*/
+    Obj_t *src;    /* objects representing source	*/
+    Obj_t *tar;    /* objects representing target	*/
     Vchash_t coef; /* max polynomial coefficient	*/
-    ssize_t poly; /* number of polynomial terms 	*/
+    ssize_t poly;  /* number of polynomial terms 	*/
 } Hash_t;
 #define ENTRY(hs, ky) ((hs)->htab + ((ssize_t)((ky) & (hs)->mask)))
 #define INSERT(e, ob) ((ob)->next = *(e), *(e) = (ob))
@@ -154,9 +154,9 @@ int type;
 
     if ((m = mt->mpos - vcpa->nsrc) >= 0)
     {
-        mstr = vcpa->tar; /* matching in target data */
-        mbeg = vcpa->nsrc; /* origin of data */
-        ms = mstr + m; /* start of match */
+        mstr = vcpa->tar;   /* matching in target data */
+        mbeg = vcpa->nsrc;  /* origin of data */
+        ms = mstr + m;      /* start of match */
         n = vcpa->ntar - m; /* amount of matchable */
     }
     else
@@ -270,9 +270,9 @@ ssize_t prune; /* prune target by this amount	*/
         DEBUG_ASSERT(fkhash(hs, ks, 0) == fk);
         /**/ DEBUG_ASSERT(!cmap || fkhash(hs, ks, cmap) == fm);
 
-        fpos = rpos = NIL(Obj_t *); /* match position */
+        fpos = rpos = NIL(Obj_t *);   /* match position */
         flen = rlen = vcpa->mmin - 1; /* match length */
-        ftyp = rtyp = 0; /* match type */
+        ftyp = rtyp = 0;              /* match type */
 
         /* forward: matching twice for plain and mapped data */
         for (tp = 0; tp <= VCLZ_MAP; tp += VCLZ_MAP)

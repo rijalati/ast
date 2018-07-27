@@ -42,13 +42,13 @@ sfpkrd(int fd, Void_t *argbuf, size_t n, int rc, long tm, int action)
 #else
 ssize_t sfpkrd(fd, argbuf, n, rc, tm, action) int fd; /* file descriptor */
 Void_t *argbuf; /* buffer to read data */
-size_t n; /* buffer size */
-int rc; /* record character */
-long tm; /* time-out */
-int action; /* >0: peeking, if rc>=0, get action records,
-           <0: no peeking, if rc>=0, get -action records,
-           =0: no peeking, if rc>=0, must get a single record
-        */
+size_t n;       /* buffer size */
+int rc;         /* record character */
+long tm;        /* time-out */
+int action;     /* >0: peeking, if rc>=0, get action records,
+               <0: no peeking, if rc>=0, get -action records,
+               =0: no peeking, if rc>=0, must get a single record
+            */
 #endif
 {
     reg ssize_t r;
@@ -202,7 +202,7 @@ int action; /* >0: peeking, if rc>=0, get action records,
             if (r == -2)
             {
 #if !_lib_poll && !_lib_select /* both poll and select can't be used */
-#    ifdef FIONREAD /* quick and dirty check for availability */
+#    ifdef FIONREAD            /* quick and dirty check for availability */
                 long nsec = tm < 0 ? 0 : (tm + 999) / 1000;
                 while (nsec > 0 && r < 0)
                 {
@@ -328,7 +328,7 @@ int action; /* >0: peeking, if rc>=0, get action records,
         if (tm >= 0 || action > 0)
             return -1;
         else /* get here means: tm < 0 && action <= 0 && rc >= 0 */
-        { /* number of records read at a time */
+        {    /* number of records read at a time */
             if ((action = action ? -action : 1) > ( int )n)
                 action = n;
             r = 0;

@@ -20,11 +20,11 @@
 
 typedef struct ScrollInfo
 {
-    int done; /* Flag is 0 until filtering is done. */
+    int done;         /* Flag is 0 until filtering is done. */
     Display *display; /* Display to filter. */
-    Window window; /* Window to filter. */
-    TkRegion region; /* Region into which damage is accumulated. */
-    int dx, dy; /* Amount by which window was shifted. */
+    Window window;    /* Window to filter. */
+    TkRegion region;  /* Region into which damage is accumulated. */
+    int dx, dy;       /* Amount by which window was shifted. */
 } ScrollInfo;
 
 /*
@@ -55,11 +55,11 @@ static Tk_RestrictAction ScrollRestrictProc _ANSI_ARGS_((ClientData arg,
  */
 
 int TkScrollWindow(tkwin, gc, x, y, width, height, dx, dy, damageRgn)
-Tk_Window tkwin; /* The window to be scrolled. */
-GC gc; /* GC for window to be scrolled. */
+Tk_Window tkwin;         /* The window to be scrolled. */
+GC gc;                   /* GC for window to be scrolled. */
 int x, y, width, height; /* Position rectangle to be scrolled. */
-int dx, dy; /* Distance rectangle should be moved. */
-TkRegion damageRgn; /* Region to accumulate damage in. */
+int dx, dy;              /* Distance rectangle should be moved. */
+TkRegion damageRgn;      /* Region to accumulate damage in. */
 {
     Tk_RestrictProc *oldProc;
     ClientData oldArg, dummy;

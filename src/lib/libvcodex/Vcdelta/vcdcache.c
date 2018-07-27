@@ -110,8 +110,8 @@ ssize_t
 vcdkasetaddr(Vcdcache_t *ka, ssize_t addr, ssize_t here, ssize_t *mode)
 #else
 ssize_t vcdkasetaddr(ka, addr, here, mode) Vcdcache_t *ka;
-ssize_t addr; /* matching address to be encoded	*/
-ssize_t here; /* current location			*/
+ssize_t addr;  /* matching address to be encoded	*/
+ssize_t here;  /* current location			*/
 ssize_t *mode; /* to return the coded address		*/
 #endif
 {

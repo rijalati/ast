@@ -114,7 +114,7 @@ double __log__L(z) double z;
        + z
          * (L2
             + z * (L3 + z * (L4 + z * (L5 + z * (L6 + z * (L7 + z * L8))))))));
-#    else /* defined(vax)||defined(tahoe) */
+#    else  /* defined(vax)||defined(tahoe) */
     return (
     z * (L1 + z * (L2 + z * (L3 + z * (L4 + z * (L5 + z * (L6 + z * L7)))))));
 #    endif /* defined(vax)||defined(tahoe) */

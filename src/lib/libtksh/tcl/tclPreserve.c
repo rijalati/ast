@@ -25,21 +25,21 @@
 
 typedef struct
 {
-    ClientData clientData; /* Address of preserved block. */
-    int refCount; /* Number of Tcl_Preserve calls in effect
-                   * for block. */
-    int mustFree; /* Non-zero means Tcl_EventuallyFree was
-                   * called while a Tcl_Preserve call was in
-                   * effect, so the structure must be freed
-                   * when refCount becomes zero. */
+    ClientData clientData;  /* Address of preserved block. */
+    int refCount;           /* Number of Tcl_Preserve calls in effect
+                             * for block. */
+    int mustFree;           /* Non-zero means Tcl_EventuallyFree was
+                             * called while a Tcl_Preserve call was in
+                             * effect, so the structure must be freed
+                             * when refCount becomes zero. */
     Tcl_FreeProc *freeProc; /* Procedure to call to free. */
 } Reference;
 
 static Reference *refArray; /* First in array of references. */
-static int spaceAvl = 0; /* Total number of structures available
-                          * at *firstRefPtr. */
-static int inUse = 0; /* Count of structures currently in use
-                       * in refArray. */
+static int spaceAvl = 0;    /* Total number of structures available
+                             * at *firstRefPtr. */
+static int inUse = 0;       /* Count of structures currently in use
+                             * in refArray. */
 #define INITIAL_SIZE 2
 
 /*
@@ -253,7 +253,7 @@ void Tcl_Release(clientData) ClientData clientData; /* Pointer to malloc'ed
  */
 
 void Tcl_EventuallyFree(clientData, freeProc)
-ClientData clientData; /* Pointer to malloc'ed block of memory. */
+ClientData clientData;  /* Pointer to malloc'ed block of memory. */
 Tcl_FreeProc *freeProc; /* Procedure to actually do free. */
 {
     Reference *refPtr;

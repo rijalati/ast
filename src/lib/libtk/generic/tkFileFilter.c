@@ -78,10 +78,10 @@ FileFilterList *flistPtr; /* The structure to be initialized. */
  *----------------------------------------------------------------------
  */
 int TkGetFileFilters(interp, flistPtr, string, isWindows)
-Tcl_Interp *interp; /* Interpreter to use for error reporting. */
+Tcl_Interp *interp;       /* Interpreter to use for error reporting. */
 FileFilterList *flistPtr; /* Stores the list of file filters. */
-char *string; /* Value of the -filetypes option. */
-int isWindows; /* True if we are running on Windows. */
+char *string;             /* Value of the -filetypes option. */
+int isWindows;            /* True if we are running on Windows. */
 {
     int listArgc;
     char **listArgv = NULL;
@@ -218,14 +218,14 @@ FileFilterList *flistPtr; /* List of file filters to free */
  */
 
 static int AddClause(interp, filterPtr, patternsStr, ostypesStr, isWindows)
-Tcl_Interp *interp; /* Interpreter to use for error reporting. */
+Tcl_Interp *interp;    /* Interpreter to use for error reporting. */
 FileFilter *filterPtr; /* Stores the new filter clause */
-char *patternsStr; /* A TCL list of glob patterns. */
-char *ostypesStr; /* A TCL list of Mac OSType strings. */
-int isWindows; /* True if we are running on Windows; False
-                * if we are running on the Mac; Glob
-                * patterns need to be processed differently
-                * on these two platforms */
+char *patternsStr;     /* A TCL list of glob patterns. */
+char *ostypesStr;      /* A TCL list of Mac OSType strings. */
+int isWindows;         /* True if we are running on Windows; False
+                        * if we are running on the Mac; Glob
+                        * patterns need to be processed differently
+                        * on these two platforms */
 {
     char **globList = NULL;
     int globCount;
@@ -404,9 +404,9 @@ done:
 static FileFilter *GetFilter(flistPtr, name)
 FileFilterList *flistPtr; /* The FileFilterList that contains the
                            * newly created filter */
-char *name; /* Name of the filter. It is usually displayed
-             * in the "File Types" listbox in the file
-             * dialogs. */
+char *name;               /* Name of the filter. It is usually displayed
+                           * in the "File Types" listbox in the file
+                           * dialogs. */
 {
     FileFilter *filterPtr;
 

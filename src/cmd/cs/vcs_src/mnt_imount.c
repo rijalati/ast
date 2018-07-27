@@ -77,21 +77,21 @@ struct command_t
     }
 
 struct command_t COMMAND[CMD_MAX] = {
-    ENTRY("mount", im_mount, im_mount_help), /* 0 */
-    ENTRY("umount", im_umount, im_umount_help), /* 1 */
-    ENTRY("list", im_list, im_list_help), /* 2 */
-    ENTRY("connect", im_vcs_main, im_vcs_help), /* 3 */
-    ENTRY("kill", im_vcs_main, im_vcs_help), /* 4 */
+    ENTRY("mount", im_mount, im_mount_help),     /* 0 */
+    ENTRY("umount", im_umount, im_umount_help),  /* 1 */
+    ENTRY("list", im_list, im_list_help),        /* 2 */
+    ENTRY("connect", im_vcs_main, im_vcs_help),  /* 3 */
+    ENTRY("kill", im_vcs_main, im_vcs_help),     /* 4 */
     ENTRY("reset", im_restart, im_restart_help), /* 5 */
-    ENTRY("version", im_vcs_main, im_vcs_help), /* 6 */
-    ENTRY("rm", im_touch, im_touch_help), /* 7 */
-    ENTRY("log", im_vcs_main, im_vcs_help), /* 8 */
-    ENTRY("cs", im_vcs_main, im_vcs_help), /* 9 */
-    ENTRY("!", im_system, NULL), /* 10 */
-    ENTRY("sh", im_system, NULL), /* 11 */
-    ENTRY("help", im_help, im_help_help), /* 12 */
-    ENTRY("quit", im_bye, NULL), /* 13 */
-    ENTRY("exit", im_bye, NULL), /* 14 */
+    ENTRY("version", im_vcs_main, im_vcs_help),  /* 6 */
+    ENTRY("rm", im_touch, im_touch_help),        /* 7 */
+    ENTRY("log", im_vcs_main, im_vcs_help),      /* 8 */
+    ENTRY("cs", im_vcs_main, im_vcs_help),       /* 9 */
+    ENTRY("!", im_system, NULL),                 /* 10 */
+    ENTRY("sh", im_system, NULL),                /* 11 */
+    ENTRY("help", im_help, im_help_help),        /* 12 */
+    ENTRY("quit", im_bye, NULL),                 /* 13 */
+    ENTRY("exit", im_bye, NULL),                 /* 14 */
 };
 
 #define cmdeq(s, i, l)                                                       \
@@ -100,8 +100,8 @@ struct command_t COMMAND[CMD_MAX] = {
 
 struct istate_t istate = {
     "/dev/tcp/local/vcs/user", /* default cs server */
-    -1, /* fd */
-    NULL, /* hash table */
+    -1,                        /* fd */
+    NULL,                      /* hash table */
 };
 
 main(argc, argv) int argc;

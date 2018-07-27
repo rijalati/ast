@@ -31,8 +31,8 @@ int
 _sfputm(Sfio_t *f, Sfulong_t v, Sfulong_t m)
 #else
 int _sfputm(f, v, m) Sfio_t *f; /* write a portable ulong to this stream */
-Sfulong_t v; /* the unsigned value to be written */
-Sfulong_t m; /* the max value of the range */
+Sfulong_t v;                    /* the unsigned value to be written */
+Sfulong_t m;                    /* the max value of the range */
 #endif
 {
 #define N_ARRAY (2 * sizeof(Sfulong_t))

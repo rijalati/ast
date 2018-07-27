@@ -13,11 +13,11 @@
 #include "tkshlib.h"
 typedef struct Command
 {
-    Tcl_HashEntry *hPtr; /* Pointer to the hash table entry in
-                          * interp->commandTable that refers to
-                          * this command.  Used to get a command's
-                          * name from its Tcl_Command handle. */
-    Tcl_CmdProc *proc; /* Procedure to process command. */
+    Tcl_HashEntry *hPtr;   /* Pointer to the hash table entry in
+                            * interp->commandTable that refers to
+                            * this command.  Used to get a command's
+                            * name from its Tcl_Command handle. */
+    Tcl_CmdProc *proc;     /* Procedure to process command. */
     ClientData clientData; /* Arbitrary value to pass to proc. */
     Tcl_CmdDeleteProc *deleteProc;
     /* Procedure to invoke when deleting
@@ -33,7 +33,7 @@ typedef struct MathFunc
     int numArgs; /* Number of arguments for function. */
     Tcl_ValueType argTypes[MAX_MATH_ARGS];
     /* Acceptable types for each argument. */
-    Tcl_MathProc *proc; /* Procedure that implements this function. */
+    Tcl_MathProc *proc;    /* Procedure that implements this function. */
     ClientData clientData; /* Additional argument to pass to the function
                             * when invoking it. */
 } MathFunc;
@@ -69,10 +69,10 @@ typedef struct regexp
 {
     char *startp[NSUBEXP];
     char *endp[NSUBEXP];
-    char regstart; /* Internal use only. */
-    char reganch; /* Internal use only. */
-    char *regmust; /* Internal use only. */
-    int regmlen; /* Internal use only. */
+    char regstart;   /* Internal use only. */
+    char reganch;    /* Internal use only. */
+    char *regmust;   /* Internal use only. */
+    int regmlen;     /* Internal use only. */
     char program[1]; /* Unwarranted chumminess with compiler. */
 } regexp;
 

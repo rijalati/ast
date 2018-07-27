@@ -35,8 +35,8 @@ Sfoff_t
 sfmove(Sfio_t *fr, Sfio_t *fw, Sfoff_t n, reg int rc)
 #else
 Sfoff_t sfmove(fr, fw, n, rc) Sfio_t *fr; /* moving data from this stream */
-Sfio_t *fw; /* moving data to this stream */
-Sfoff_t n; /* number of bytes/records to move. <0 for unbounded move */
+Sfio_t *fw;                               /* moving data to this stream */
+Sfoff_t n;  /* number of bytes/records to move. <0 for unbounded move */
 reg int rc; /* record separator */
 #endif
 {
@@ -47,7 +47,7 @@ reg int rc; /* record separator */
     Sfoff_t n_move, sk, cur;
     uchar *rbuf = NIL(uchar *);
     ssize_t rsize = 0;
-    SFMTXDECL(fr); /* declare a shadow stream variable for from stream */
+    SFMTXDECL(fr);  /* declare a shadow stream variable for from stream */
     SFMTXDECL2(fw); /* declare a shadow stream variable for to stream */
 
     SFMTXENTER(fr, ( Sfoff_t )0);

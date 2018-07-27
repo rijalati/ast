@@ -24,7 +24,7 @@
 #endif
 
 #define N_STEP 1000 /* #working steps	*/
-#define N_REP 1000 /* #repeats per step	*/
+#define N_REP 1000  /* #repeats per step	*/
 
 static unsigned int *Lock; /* Asolock */
 
@@ -39,7 +39,7 @@ workload(unsigned int pid)
 {
     int k, r;
 
-    asoincint(Active); /* indicate that we are active */
+    asoincint(Active);       /* indicate that we are active */
     while (*Active < N_PROC) /* wait for all to be ready */
         asorelax(1);
 

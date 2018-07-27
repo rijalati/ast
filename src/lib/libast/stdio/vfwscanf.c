@@ -26,8 +26,8 @@
 typedef struct
 {
     Sfdisc_t sfdisc; /* sfio discipline		*/
-    Sfio_t *f; /* original wide stream		*/
-    char fmt[1]; /* mb fmt			*/
+    Sfio_t *f;       /* original wide stream		*/
+    char fmt[1];     /* mb fmt			*/
 } Wide_t;
 
 /*

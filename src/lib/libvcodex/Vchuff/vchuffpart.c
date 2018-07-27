@@ -26,15 +26,15 @@
 
 #define PT_NBIT (3.00) /* est. # of bits per code for table 	*/
 #define PT_NONE (1.00) /* est. # of bits per nonappearing byte	*/
-#define PT_MIN (512) /* minimum part size for part()	*/
-#define PT_DIV (3) /* factor for subdividing a part	*/
+#define PT_MIN (512)   /* minimum part size for part()	*/
+#define PT_DIV (3)     /* factor for subdividing a part	*/
 #define PTMINSZ(sz) ((sz / PT_DIV) < PT_MIN ? PT_MIN : (sz / PT_DIV))
 
 typedef struct _part_s
 {
     Vcodex_t *vch; /* Huffman coder handle			*/
-    size_t ctab; /* est. cost to encode a Huffman table	*/
-    Vcio_t *io; /* where to write out compressed data	*/
+    size_t ctab;   /* est. cost to encode a Huffman table	*/
+    Vcio_t *io;    /* where to write out compressed data	*/
 } Part_t;
 
 /* compute the byte frequencies and encoding cost of a string */
@@ -66,8 +66,8 @@ eupdate(double e, ssize_t *freq, ssize_t *fr, int add)
 #else
 static double eupdate(e, freq, fr, add) double e; /* current entropy value	*/
 ssize_t *freq; /* current frequency array	*/
-ssize_t *fr; /* the one adding/robbing it	*/
-int add; /* 1/0 for adding/subtracting	*/
+ssize_t *fr;   /* the one adding/robbing it	*/
+int add;       /* 1/0 for adding/subtracting	*/
 #endif
 {
     int b;
@@ -92,8 +92,8 @@ static int
 addpart(Part_t *pt, Void_t *data, size_t size, ssize_t *freq)
 #else
 static int addpart(pt, data, size, freq) Part_t *pt;
-Void_t *data; /* data to compress	*/
-size_t size; /* size of data		*/
+Void_t *data;  /* data to compress	*/
+size_t size;   /* size of data		*/
 ssize_t *freq; /* frequency of bytes	*/
 #endif
 {
@@ -117,9 +117,9 @@ part(Part_t *pt, Vcchar_t *data, size_t size, ssize_t *rfreq, double re)
 static int part(pt, data, size, pos, rfreq, re) Part_t *pt; /* partition
                                                                handle		*/
 Vcchar_t *data; /* dataset to be partitioned	*/
-size_t size; /* size of data			*/
+size_t size;    /* size of data			*/
 ssize_t *rfreq; /* frequencies of all bytes	*/
-double re; /* entropy of this dataset	*/
+double re;      /* entropy of this dataset	*/
 #endif
 {
     double le, lc, rc, cost;
@@ -174,7 +174,7 @@ pthuff(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
 static ssize_t pthuff(vc, data, size, out) Vcodex_t *vc; /* Vcodex handle
                                                           */
 Void_t *data; /* target data to be compressed	*/
-size_t size; /* data size			*/
+size_t size;  /* data size			*/
 Void_t **out; /* to return output buffer 	*/
 #endif
 {
@@ -232,7 +232,7 @@ ptunhuff(Vcodex_t *vc, const Void_t *orig, size_t size, Void_t **out)
 static ssize_t ptunhuff(vc, orig, size, out) Vcodex_t *vc; /* Vcodex handle
                                                             */
 Void_t *orig; /* target data to be matched	*/
-size_t size; /* data size			*/
+size_t size;  /* data size			*/
 Void_t **out; /* to return output buffer 	*/
 #endif
 {

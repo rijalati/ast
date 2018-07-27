@@ -39,14 +39,14 @@
 #include <ast.h>
 #include <error.h>
 
-#define R_FLAG 1 /* raw mode */
-#define S_FLAG 2 /* save in history file */
-#define A_FLAG 4 /* read into array */
-#define N_FLAG 8 /* fixed size read at most */
+#define R_FLAG 1     /* raw mode */
+#define S_FLAG 2     /* save in history file */
+#define A_FLAG 4     /* read into array */
+#define N_FLAG 8     /* fixed size read at most */
 #define NN_FLAG 0x10 /* fixed size read exact */
-#define V_FLAG 0x20 /* use default value */
-#define C_FLAG 0x40 /* read into compound variable */
-#define D_FLAG 8 /* must be number of bits for all flags */
+#define V_FLAG 0x20  /* use default value */
+#define C_FLAG 0x40  /* read into compound variable */
+#define D_FLAG 8     /* must be number of bits for all flags */
 #define SS_FLAG 0x80 /* read .csv format file */
 
 struct read_save

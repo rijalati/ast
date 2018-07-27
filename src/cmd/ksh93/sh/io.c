@@ -58,7 +58,7 @@
 #    ifndef O_NONBLOCK
 #        define O_NONBLOCK FNDELAY
 #    endif /* !O_NONBLOCK */
-#endif /* FNDELAY */
+#endif     /* FNDELAY */
 
 #ifndef O_SERVICE
 #    define O_SERVICE O_NOCTTY
@@ -121,10 +121,10 @@ static int (*fdnotify)(int, int);
 
 struct fdsave
 {
-    int orig_fd; /* original file descriptor */
-    int save_fd; /* saved file descriptor */
+    int orig_fd;  /* original file descriptor */
+    int save_fd;  /* saved file descriptor */
     int subshell; /* saved for subshell */
-    char *tname; /* name used with >; */
+    char *tname;  /* name used with >; */
 };
 
 struct Iodisc
@@ -1154,7 +1154,7 @@ sh_redirect(Shell_t *shp, struct ionod *iop, int flag)
     char *fname;
     int fd, iof;
     const char *message = e_open;
-    int o_mode; /* mode flag for open */
+    int o_mode;           /* mode flag for open */
     static char io_op[7]; /* used for -x trace info */
     int trunc = 0, clexec = 0, fn, traceon;
     int r, indx = shp->topfd, perm = -1;
@@ -2202,7 +2202,7 @@ slowexcept(Sfio_t *iop, int type, void *data, Sfdisc_t *handle)
             return (1);
         }
 #    endif /* O_NDELAY */
-#endif /* !FNDELAY */
+#endif     /* !FNDELAY */
 #ifdef O_NONBLOCK
         if (errno == EAGAIN)
         {
@@ -2797,7 +2797,7 @@ subexcept(Sfio_t *sp, int mode, void *data, Sfdisc_t *handle)
     return (-1);
 }
 
-#define NROW 15 /* number of rows before going to multi-columns */
+#define NROW 15  /* number of rows before going to multi-columns */
 #define LBLSIZ 3 /* size of label field and interfield spacing */
 /*
  * print a list of arguments in columns

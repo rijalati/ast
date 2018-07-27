@@ -91,17 +91,17 @@ read_lsag_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc);
  * Type object for file types containing LSAG lsa logs.
  */
 Dssformat_t lsag_lsa_format = {
-    FORMAT_NAME, /* name */
+    FORMAT_NAME,            /* name */
     "OSPF LSAG LSA format", /* description */
     CXH,
     identf_lsag_lsa_file, /* identf */
-    open_lsag_lsa_file, /* openf */
-    read_lsag_lsa_rec, /* readf */
-    NULL, /* writef */
-    NULL, /* seekf */
-    close_lsag_lsa_file, /* closef */
-    NULL, /* savef */
-    NULL, /* dropf */
+    open_lsag_lsa_file,   /* openf */
+    read_lsag_lsa_rec,    /* readf */
+    NULL,                 /* writef */
+    NULL,                 /* seekf */
+    close_lsag_lsa_file,  /* closef */
+    NULL,                 /* savef */
+    NULL,                 /* dropf */
     /* private stuff */
     OSPF_LSAG_LSA_NEXT /* next */
 };

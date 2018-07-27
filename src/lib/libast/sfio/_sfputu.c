@@ -31,7 +31,7 @@ int
 _sfputu(Sfio_t *f, Sfulong_t v)
 #else
 int _sfputu(f, v) Sfio_t *f; /* write a portable ulong to this stream */
-Sfulong_t v; /* the unsigned value to be written */
+Sfulong_t v;                 /* the unsigned value to be written */
 #endif
 {
 #define N_ARRAY (2 * sizeof(Sfulong_t))

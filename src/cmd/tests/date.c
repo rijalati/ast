@@ -352,9 +352,8 @@ main(int argc, char **argv)
                     t_now = tmdate(ans, &e, &t_now);
                     if (*e)
                         bad("invalid NOW", ans, NiL);
-                    sfprintf(sfstdout,
-                             "NOTE	base date is %s\n",
-                             fmttime(NiL, t_now));
+                    sfprintf(
+                    sfstdout, "NOTE	base date is %s\n", fmttime(NiL, t_now));
                 }
                 else
                     bad("unknown SET variable", fmt, NiL);

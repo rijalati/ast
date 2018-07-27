@@ -24,7 +24,7 @@
 #    ifndef DYNAMIC_CRC_TABLE
 #        define DYNAMIC_CRC_TABLE
 #    endif /* !DYNAMIC_CRC_TABLE */
-#endif /* MAKECRCH */
+#endif     /* MAKECRCH */
 
 #include "zutil.h" /* for ZLIB_STDC and FAR definitions */
 
@@ -49,7 +49,7 @@ typedef unsigned short u4;
 #            endif
 #        endif
 #    endif /* ZLIB_STDC */
-#endif /* !NOBYFOUR */
+#endif     /* !NOBYFOUR */
 
 /* Definitions for doing the crc four data bytes at a time. */
 #ifdef BYFOUR
@@ -433,7 +433,7 @@ z_off_t len2;
     int n;
     unsigned long row;
     unsigned long even[GF2_DIM]; /* even-power-of-two zeros operator */
-    unsigned long odd[GF2_DIM]; /* odd-power-of-two zeros operator */
+    unsigned long odd[GF2_DIM];  /* odd-power-of-two zeros operator */
 
     /* degenerate case */
     if (len2 == 0)

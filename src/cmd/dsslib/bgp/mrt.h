@@ -32,11 +32,11 @@
 #define GROUP_MESSAGE 1
 
 #define MRT_I_AM_DEAD 3
-#define MRT_BGP 5 /* DEPRECATED */
-#define MRT_RIP 6 /* NOT IMPLEMENTED */
-#define MRT_IDRP 7 /* DEPRECATED */
-#define MRT_RIPNG 8 /* NOT IMPLEMENTED */
-#define MRT_BGP4PLUS 9 /* DEPRECATED */
+#define MRT_BGP 5          /* DEPRECATED */
+#define MRT_RIP 6          /* NOT IMPLEMENTED */
+#define MRT_IDRP 7         /* DEPRECATED */
+#define MRT_RIPNG 8        /* NOT IMPLEMENTED */
+#define MRT_BGP4PLUS 9     /* DEPRECATED */
 #define MRT_BGP4PLUS_01 10 /* DEPRECATED */
 #define MRT_OSPFv2 11
 #define MRT_TABLE_DUMP 12

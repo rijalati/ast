@@ -92,17 +92,17 @@ read_pmcoa_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc);
  * Type object for file types containing PMC OSPF agent LSA logs.
  */
 Dssformat_t pmcoa_lsa_format = {
-    FORMAT_NAME, /* name */
+    FORMAT_NAME,                 /* name */
     "PMC OSPF AGENT LSA format", /* description */
     CXH,
     identf_pmcoa_lsa_file, /* identf */
-    open_pmcoa_lsa_file, /* openf */
-    read_pmcoa_lsa_rec, /* readf */
-    NULL, /* writef */
-    NULL, /* seekf */
-    close_pmcoa_lsa_file, /* closef */
-    NULL, /* savef */
-    NULL, /* dropf */
+    open_pmcoa_lsa_file,   /* openf */
+    read_pmcoa_lsa_rec,    /* readf */
+    NULL,                  /* writef */
+    NULL,                  /* seekf */
+    close_pmcoa_lsa_file,  /* closef */
+    NULL,                  /* savef */
+    NULL,                  /* dropf */
     /* private stuff */
     OSPF_PMCOA_LSA_NEXT /* next */
 };

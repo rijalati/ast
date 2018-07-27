@@ -184,7 +184,7 @@ ssize_t
 _vcioput2(Vcio_t *io, Vcint_t v, Vcchar_t a, Vcchar_t z)
 #else
 ssize_t _vcioput2(io, v, a, z) Vcio_t *io;
-Vcint_t v; /* value to encode	*/
+Vcint_t v;  /* value to encode	*/
 Vcchar_t a; /* 1st coding letter	*/
 Vcchar_t z; /* 2nd coding letter	*/
 #endif
@@ -422,7 +422,7 @@ static ssize_t _Nbits4[16] = {
     4, /* 12: 1100	*/
     4, /* 13: 1101	*/
     4, /* 14: 1110	*/
-    4 /* 15: 1111	*/
+    4  /* 15: 1111	*/
 };
 #define NBITS4(v) _Nbits4[v]
 #define NBITS8(v) ((v) > 0xf ? (((v) >>= 4), (NBITS4(v) + 4)) : NBITS4(v))
@@ -571,9 +571,9 @@ ssize_t nlist;
             vciofilb(io, b, n, s);
 
             p += (b >> (VC_BITSIZE - s)); /* slot to look into */
-            if (size[p] > 0) /* length is found */
+            if (size[p] > 0)              /* length is found */
             {
-                s = ( int )node[p] + 1; /* get the actual length */
+                s = ( int )node[p] + 1;      /* get the actual length */
                 vciodelb(io, b, n, size[p]); /* consume bits */
 
                 for (v = 0, d = 0;;)
@@ -752,9 +752,9 @@ vcintcode(Vcint_t v, Vcint_t near, Vcint_t min, Vcint_t max, int type)
 Vcint_t vcintcode(v, near, min, max, type) Vcint_t v; /* value to be de/coded
                                                        */
 Vcint_t near; /* like to be near this	*/
-Vcint_t min; /* range is [min,max)	*/
-Vcint_t max; /* excluded max value	*/
-int type; /* VC_ENCODE/VC_DECODE	*/
+Vcint_t min;  /* range is [min,max)	*/
+Vcint_t max;  /* excluded max value	*/
+int type;     /* VC_ENCODE/VC_DECODE	*/
 #endif
 {
     Vcint_t a, n;
@@ -845,8 +845,8 @@ char *
 vcstrcode(char *s, char *a, ssize_t z)
 #else
 char *vcstrcode(s, a, z) char *s; /* string to be made portable	*/
-char *a; /* space to store asciized data	*/
-ssize_t z; /* size of 'a'			*/
+char *a;                          /* space to store asciized data	*/
+ssize_t z;                        /* size of 'a'			*/
 #endif
 {
     ssize_t c;
@@ -978,8 +978,8 @@ ssize_t
 vcstr2list(char *str, int comma, ssize_t **listp)
 #else
 ssize_t vcstr2list(str, comma, listp) char *str; /* string to be parsed	*/
-int comma; /* value separator	*/
-ssize_t **listp; /* to return list	*/
+int comma;                                       /* value separator	*/
+ssize_t **listp;                                 /* to return list	*/
 #endif
 {
     ssize_t n, k, *list;

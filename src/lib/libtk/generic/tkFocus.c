@@ -22,10 +22,10 @@
 
 typedef struct TkFocusInfo
 {
-    TkWindow *topLevelPtr; /* Information about top-level window. */
-    TkWindow *focusWinPtr; /* The next time the focus comes to this
-                            * top-level, it will be given to this
-                            * window. */
+    TkWindow *topLevelPtr;       /* Information about top-level window. */
+    TkWindow *focusWinPtr;       /* The next time the focus comes to this
+                                  * top-level, it will be given to this
+                                  * window. */
     struct TkFocusInfo *nextPtr; /* Next in list of all focus records for
                                   * a given application. */
 } FocusInfo;
@@ -73,9 +73,9 @@ static void SetFocus _ANSI_ARGS_((TkWindow * winPtr, int force));
 int Tk_FocusCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     TkWindow *winPtr = ( TkWindow * )clientData;
@@ -758,8 +758,8 @@ void TkFocusDeadWindow(winPtr) TkWindow *winPtr; /* Information about the
 static void GenerateFocusEvents(sourcePtr, destPtr)
 TkWindow *sourcePtr; /* Window that used to have the focus (may
                       * be NULL). */
-TkWindow *destPtr; /* New window to have the focus (may be
-                    * NULL). */
+TkWindow *destPtr;   /* New window to have the focus (may be
+                      * NULL). */
 
 {
     XEvent event;

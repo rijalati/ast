@@ -45,9 +45,9 @@ typedef struct _vcalias_s Vcalias_t;
 struct _vcalias_s
 {
     Vcalias_t *next;
-    char *name; /* name of the alias			*/
+    char *name;  /* name of the alias			*/
     char *value; /* what it should expand to		*/
-    char *suff; /* optional file name suffix		*/
+    char *suff;  /* optional file name suffix		*/
 };
 
 static char *Dfltalias[]
@@ -86,7 +86,7 @@ static Vcalias_t *Fname;
 static void
 zipalias(char *s)
 #else
-static Vcalias_t *zipalias(s) char *s; /* spec of new aliases	*/
+static Vcalias_t *zipalias(s) char *s;         /* spec of new aliases	*/
 #endif
 {
     Vcalias_t *al, **list;
@@ -179,7 +179,7 @@ static Vcalias_t *zipalias(s) char *s; /* spec of new aliases	*/
 void
 vcaddalias(char **dflt)
 #else
-void vcaddalias(dflt) char **dflt; /* list of default aliases */
+void vcaddalias(dflt) char **dflt;             /* list of default aliases */
 #endif
 {
     ssize_t z;
@@ -228,8 +228,8 @@ char *
 vcgetalias(char *spec, char *meth, ssize_t mtsz)
 #else
 char *vcgetalias(spec, meth, mtsz) char *spec; /* name.arg1.arg2...	*/
-char *meth; /* buffer for methods	*/
-ssize_t mtsz; /* buffer size		*/
+char *meth;                                    /* buffer for methods	*/
+ssize_t mtsz;                                  /* buffer size		*/
 #endif
 {
     char *args, *rest, name[1024];
@@ -290,9 +290,9 @@ ssize_t mtsz; /* buffer size		*/
 int
 vcgetfname(char *name, char **meth, char **suff)
 #else
-int vcgetfname(name, meth, suff) char *name; /* file name to match		*/
-char **meth; /* method pointer address	*/
-char **suff; /* suffix pointer address	*/
+int vcgetfname(name, meth, suff) char *name;   /* file name to match		*/
+char **meth;                                   /* method pointer address	*/
+char **suff;                                   /* suffix pointer address	*/
 #endif
 {
     Vcalias_t *al;
@@ -327,8 +327,8 @@ char **suff; /* suffix pointer address	*/
 int
 vcgetsuff(char *meth, char **suff)
 #else
-int vcgetsuff(meth, suff) char *meth; /* method name to match		*/
-char **suff; /* suffix pointer address	*/
+int vcgetsuff(meth, suff) char *meth;          /* method name to match		*/
+char **suff;                                   /* suffix pointer address	*/
 #endif
 {
     Vcalias_t *al;

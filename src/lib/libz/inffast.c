@@ -69,29 +69,29 @@ void inflate_fast(strm, start) z_streamp strm;
 unsigned start; /* inflate()'s starting value for strm->avail_out */
 {
     struct inflate_state FAR *state;
-    unsigned char FAR *in; /* local strm->next_in */
+    unsigned char FAR *in;   /* local strm->next_in */
     unsigned char FAR *last; /* while in < last, enough input available */
-    unsigned char FAR *out; /* local strm->next_out */
-    unsigned char FAR *beg; /* inflate()'s initial strm->next_out */
-    unsigned char FAR *end; /* while out < end, enough space available */
+    unsigned char FAR *out;  /* local strm->next_out */
+    unsigned char FAR *beg;  /* inflate()'s initial strm->next_out */
+    unsigned char FAR *end;  /* while out < end, enough space available */
 #    ifdef INFLATE_STRICT
     unsigned dmax; /* maximum distance from zlib header */
 #    endif
-    unsigned wsize; /* window size or zero if not using window */
-    unsigned whave; /* valid bytes in the window */
-    unsigned write; /* window write index */
+    unsigned wsize;            /* window size or zero if not using window */
+    unsigned whave;            /* valid bytes in the window */
+    unsigned write;            /* window write index */
     unsigned char FAR *window; /* allocated sliding window, if wsize != 0 */
-    unsigned long hold; /* local strm->hold */
-    unsigned bits; /* local strm->bits */
-    code const FAR *lcode; /* local strm->lencode */
-    code const FAR *dcode; /* local strm->distcode */
-    unsigned lmask; /* mask for first level of length codes */
-    unsigned dmask; /* mask for first level of distance codes */
-    code this; /* retrieved table entry */
-    unsigned op; /* code bits, operation, extra bits, or */
+    unsigned long hold;        /* local strm->hold */
+    unsigned bits;             /* local strm->bits */
+    code const FAR *lcode;     /* local strm->lencode */
+    code const FAR *dcode;     /* local strm->distcode */
+    unsigned lmask;            /* mask for first level of length codes */
+    unsigned dmask;            /* mask for first level of distance codes */
+    code this;                 /* retrieved table entry */
+    unsigned op;               /* code bits, operation, extra bits, or */
     /*  window position, window bytes to copy */
-    unsigned len; /* match length, unused bytes */
-    unsigned dist; /* match distance */
+    unsigned len;            /* match length, unused bytes */
+    unsigned dist;           /* match distance */
     unsigned char FAR *from; /* where to copy match from */
 
     /* copy state to local variables */
@@ -198,7 +198,7 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
                 Tracevv((stderr, "inflate:         distance %u\n", dist));
                 op = ( unsigned )(out - beg); /* max distance in output */
                 if (dist > op)
-                { /* see if copy from window */
+                {                   /* see if copy from window */
                     op = dist - op; /* distance back in window */
                     if (op > whave)
                     {

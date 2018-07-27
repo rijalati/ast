@@ -81,19 +81,19 @@ int TclFindElement(interp, list, elementPtr, nextPtr, sizePtr, bracePtr)
 Tcl_Interp *interp; /* Interpreter to use for error reporting.
                      * If NULL, then no error message is left
                      * after errors. */
-char *list; /* String containing Tcl list with zero
-             * or more elements (possibly in braces). */
-char **elementPtr; /* Fill in with location of first significant
-                    * character in first element of list. */
-char **nextPtr; /* Fill in with location of character just
-                 * after all white space following end of
-                 * argument (i.e. next argument or end of
-                 * list). */
-int *sizePtr; /* If non-zero, fill in with size of
-               * element. */
-int *bracePtr; /* If non-zero fill in with non-zero/zero
-                * to indicate that arg was/wasn't
-                * in braces. */
+char *list;         /* String containing Tcl list with zero
+                     * or more elements (possibly in braces). */
+char **elementPtr;  /* Fill in with location of first significant
+                     * character in first element of list. */
+char **nextPtr;     /* Fill in with location of character just
+                     * after all white space following end of
+                     * argument (i.e. next argument or end of
+                     * list). */
+int *sizePtr;       /* If non-zero, fill in with size of
+                     * element. */
+int *bracePtr;      /* If non-zero fill in with non-zero/zero
+                     * to indicate that arg was/wasn't
+                     * in braces. */
 {
     char *p;
     int openBraces = 0;
@@ -321,8 +321,8 @@ done:
 void TclCopyAndCollapse(count, src, dst) int count; /* Total number of
                                                      * characters to copy
                                                      * from src. */
-char *src; /* Copy from here... */
-char *dst; /* ... to here. */
+char *src;                                          /* Copy from here... */
+char *dst;                                          /* ... to here. */
 {
     char c;
     int numRead;
@@ -378,11 +378,11 @@ char *dst; /* ... to here. */
 int Tcl_TclSplitList(interp, list, argcPtr, argvPtr)
 Tcl_Interp *interp; /* Interpreter to use for error reporting.
                      * If NULL, then no error message is left. */
-char *list; /* Pointer to string with list structure. */
-int *argcPtr; /* Pointer to location to fill in with
-               * the number of elements in the list. */
-char ***argvPtr; /* Pointer to place to store pointer to array
-                  * of pointers to list elements. */
+char *list;         /* Pointer to string with list structure. */
+int *argcPtr;       /* Pointer to location to fill in with
+                     * the number of elements in the list. */
+char ***argvPtr;    /* Pointer to place to store pointer to array
+                     * of pointers to list elements. */
 {
     char **argv;
     char *p;
@@ -742,7 +742,7 @@ int flags; /* Flags produced by Tcl_ScanElement. */
  */
 
 char *Tcl_TclMerge(argc, argv) int argc; /* How many strings to merge. */
-char **argv; /* Array of string values. */
+char **argv;                             /* Array of string values. */
 {
 #define LOCAL_SIZE 20
     int localFlags[LOCAL_SIZE], *flagPtr;
@@ -818,7 +818,7 @@ char **argv; /* Array of string values. */
  */
 
 char *Tcl_Concat(argc, argv) int argc; /* Number of strings to concatenate. */
-char **argv; /* Array of strings to concatenate. */
+char **argv;                           /* Array of strings to concatenate. */
 {
     int totalSize, i;
     char *p;
@@ -1055,10 +1055,10 @@ char *pattern; /* Pattern, which may contain
  */
 
 void Tcl_SetResult(interp, string, freeProc)
-Tcl_Interp *interp; /* Interpreter with which to associate the
-                     * return value. */
-char *string; /* Value to be returned.  If NULL,
-               * the result is set to an empty string. */
+Tcl_Interp *interp;     /* Interpreter with which to associate the
+                         * return value. */
+char *string;           /* Value to be returned.  If NULL,
+                         * the result is set to an empty string. */
 Tcl_FreeProc *freeProc; /* Gives information about the string:
                          * TCL_STATIC, TCL_VOLATILE, or the address
                          * of a Tcl_FreeProc such as free. */
@@ -1445,8 +1445,8 @@ TCL_VARARGS_DEF(Tcl_Interp *, arg1)
 
 int TclGetListIndex(interp, string, indexPtr)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-char *string; /* String containing list index. */
-int *indexPtr; /* Where to store index. */
+char *string;       /* String containing list index. */
+int *indexPtr;      /* Where to store index. */
 {
     if (isdigit(UCHAR(*string)) || (*string == '-'))
     {
@@ -1599,13 +1599,13 @@ char *string; /* String for which to produce
 
 int Tcl_RegExpExec(interp, re, string, start)
 Tcl_Interp *interp; /* Interpreter to use for error reporting. */
-Tcl_RegExp re; /* Compiled regular expression;  must have
-                * been returned by previous call to
-                * Tcl_RegExpCompile. */
-char *string; /* String against which to match re. */
-char *start; /* If string is part of a larger string,
-              * this identifies beginning of larger
-              * string, so that "^" won't match. */
+Tcl_RegExp re;      /* Compiled regular expression;  must have
+                     * been returned by previous call to
+                     * Tcl_RegExpCompile. */
+char *string;       /* String against which to match re. */
+char *start;        /* If string is part of a larger string,
+                     * this identifies beginning of larger
+                     * string, so that "^" won't match. */
 {
     int match;
 
@@ -1644,16 +1644,16 @@ char *start; /* If string is part of a larger string,
  */
 
 void Tcl_RegExpRange(re, index, startPtr, endPtr)
-Tcl_RegExp re; /* Compiled regular expression that has
-                * been passed to Tcl_RegExpExec. */
-int index; /* 0 means give the range of the entire
-            * match, > 0 means give the range of
-            * a matching subrange.  Must be no greater
-            * than NSUBEXP. */
+Tcl_RegExp re;   /* Compiled regular expression that has
+                  * been passed to Tcl_RegExpExec. */
+int index;       /* 0 means give the range of the entire
+                  * match, > 0 means give the range of
+                  * a matching subrange.  Must be no greater
+                  * than NSUBEXP. */
 char **startPtr; /* Store address of first character in
                   * (sub-) range here. */
-char **endPtr; /* Store address of character just after last
-                * in (sub-) range here. */
+char **endPtr;   /* Store address of character just after last
+                  * in (sub-) range here. */
 {
     regexp *regexpPtr = ( regexp * )re;
 
@@ -1689,9 +1689,9 @@ char **endPtr; /* Store address of character just after last
 
 int Tcl_RegExpMatch(interp, string, pattern)
 Tcl_Interp *interp; /* Used for error reporting. */
-char *string; /* String. */
-char *pattern; /* Regular expression to match against
-                * string. */
+char *string;       /* String. */
+char *pattern;      /* Regular expression to match against
+                     * string. */
 {
     Tcl_RegExp re;
 
@@ -1755,9 +1755,9 @@ char *Tcl_DStringAppend(dsPtr,
 char *string; /* String to append.  If length is
                * -1 then this must be
                * null-terminated. */
-int length; /* Number of characters from string
-             * to append.  If < 0, then append all
-             * of string, up to null at end. */
+int length;   /* Number of characters from string
+               * to append.  If < 0, then append all
+               * of string, up to null at end. */
 {
     int newSize;
     char *newString, *dst, *end;
@@ -1825,8 +1825,8 @@ int length; /* Number of characters from string
 char *Tcl_DStringAppendElement(dsPtr, string)
 Tcl_DString *dsPtr; /* Structure describing dynamic
                      * string. */
-char *string; /* String to append.  Must be
-               * null-terminated. */
+char *string;       /* String to append.  Must be
+                     * null-terminated. */
 {
     int newSize, flags;
     char *dst, *newString;
@@ -2150,10 +2150,10 @@ void Tcl_DStringEndSublist(dsPtr) Tcl_DString *dsPtr; /* Dynamic string. */
 void Tcl_PrintDouble(interp, value, dst)
 Tcl_Interp *interp; /* Interpreter whose tcl_precision
                      * variable controls printing. */
-double value; /* Value to print as string. */
-char *dst; /* Where to store converted value;
-            * must have at least TCL_DOUBLE_SPACE
-            * characters. */
+double value;       /* Value to print as string. */
+char *dst;          /* Where to store converted value;
+                     * must have at least TCL_DOUBLE_SPACE
+                     * characters. */
 {
     char *p;
     sprintf(dst, (( Interp * )interp)->pdFormat, value);
@@ -2199,10 +2199,10 @@ char *dst; /* Where to store converted value;
 /* ARGSUSED */
 char *TclPrecTraceProc(clientData, interp, name1, name2, flags)
 ClientData clientData; /* Not used. */
-Tcl_Interp *interp; /* Interpreter containing variable. */
-char *name1; /* Name of variable. */
-char *name2; /* Second part of variable name. */
-int flags; /* Information about what happened. */
+Tcl_Interp *interp;    /* Interpreter containing variable. */
+char *name1;           /* Name of variable. */
+char *name2;           /* Second part of variable name. */
+int flags;             /* Information about what happened. */
 {
     Interp *iPtr = ( Interp * )interp;
     char *value, *end;

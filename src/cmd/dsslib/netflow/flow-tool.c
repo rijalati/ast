@@ -48,44 +48,44 @@
 
 typedef struct ft1header
 {
-    u_int8 magic1; /* 0xCF */
-    u_int8 magic2; /* 0x10 (cisco flow) */
+    u_int8 magic1;     /* 0xCF */
+    u_int8 magic2;     /* 0x10 (cisco flow) */
     u_int8 byte_order; /* 1 for little endian (VAX) */
     /* 2 for big endian (Motorolla) */
-    u_int8 s_version; /* flow stream format version 1 or 2 */
+    u_int8 s_version;  /* flow stream format version 1 or 2 */
     u_int16 d_version; /* 1 or 5  - stream version 1 */
     /* 1,5,7,8 - stream version 2 */
-    u_int32 start; /* start time of flow capture */
-    u_int32 end; /* end time of flow capture */
-    u_int32 flags; /* FT_HEADER_FLAG_* */
-    u_int32 rotation; /* rotation schedule */
-    u_int32 nflows; /* # of flows */
-    u_int32 pdu_drops; /* # of dropped pdu's detected */
+    u_int32 start;          /* start time of flow capture */
+    u_int32 end;            /* end time of flow capture */
+    u_int32 flags;          /* FT_HEADER_FLAG_* */
+    u_int32 rotation;       /* rotation schedule */
+    u_int32 nflows;         /* # of flows */
+    u_int32 pdu_drops;      /* # of dropped pdu's detected */
     u_int32 pdu_misordered; /* # of detected misordered packets */
-    char hostname[68]; /* 0 terminated name of capture device */
-    char comments[256]; /* 0 terminated ascii comments */
+    char hostname[68];      /* 0 terminated name of capture device */
+    char comments[256];     /* 0 terminated ascii comments */
 } Hdr_t;
 
 typedef struct fts3rec_v1
 {
-    u_int32 unix_secs; /* Current seconds since 0000 UTC 1970 */
+    u_int32 unix_secs;  /* Current seconds since 0000 UTC 1970 */
     u_int32 unix_nsecs; /* Residual nanoseconds since 0000 UTC 1970 */
-    u_int32 sysUpTime; /* Current time in millisecs since router booted */
-    u_int32 exaddr; /* Exporter IP address */
-    u_int32 srcaddr; /* Source IP Address */
-    u_int32 dstaddr; /* Destination IP Address */
-    u_int32 nexthop; /* Next hop router's IP Address */
-    u_int16 input; /* Input interface index */
-    u_int16 output; /* Output interface index */
-    u_int32 dPkts; /* Packets sent in Duration */
-    u_int32 dOctets; /* Octets sent in Duration. */
-    u_int32 First; /* SysUptime at start of flow */
-    u_int32 Last; /* and of last packet of flow */
-    u_int16 srcport; /* TCP/UDP source port number or equivalent */
-    u_int16 dstport; /* TCP/UDP destination port number or equiv */
-    u_int8 prot; /* IP protocol, e.g., 6=TCP, 17=UDP, ... */
-    u_int8 tos; /* IP Type-of-Service */
-    u_int8 tcp_flags; /* OR of TCP header bits */
+    u_int32 sysUpTime;  /* Current time in millisecs since router booted */
+    u_int32 exaddr;     /* Exporter IP address */
+    u_int32 srcaddr;    /* Source IP Address */
+    u_int32 dstaddr;    /* Destination IP Address */
+    u_int32 nexthop;    /* Next hop router's IP Address */
+    u_int16 input;      /* Input interface index */
+    u_int16 output;     /* Output interface index */
+    u_int32 dPkts;      /* Packets sent in Duration */
+    u_int32 dOctets;    /* Octets sent in Duration. */
+    u_int32 First;      /* SysUptime at start of flow */
+    u_int32 Last;       /* and of last packet of flow */
+    u_int16 srcport;    /* TCP/UDP source port number or equivalent */
+    u_int16 dstport;    /* TCP/UDP destination port number or equiv */
+    u_int8 prot;        /* IP protocol, e.g., 6=TCP, 17=UDP, ... */
+    u_int8 tos;         /* IP Type-of-Service */
+    u_int8 tcp_flags;   /* OR of TCP header bits */
     u_int8 pad;
     u_int32 reserved;
 } Rec_1_t;
@@ -96,94 +96,94 @@ typedef struct fts3rec_v1
  */
 typedef struct fts3rec_v5
 {
-    u_int32 unix_secs; /* Current seconds since 0000 UTC 1970 */
+    u_int32 unix_secs;  /* Current seconds since 0000 UTC 1970 */
     u_int32 unix_nsecs; /* Residual nanoseconds since 0000 UTC 1970 */
-    u_int32 sysUpTime; /* Current time in millisecs since router booted */
-    u_int32 exaddr; /* Exporter IP address */
-    u_int32 srcaddr; /* Source IP Address */
-    u_int32 dstaddr; /* Destination IP Address */
-    u_int32 nexthop; /* Next hop router's IP Address */
-    u_int16 input; /* Input interface index */
-    u_int16 output; /* Output interface index */
-    u_int32 dPkts; /* Packets sent in Duration */
-    u_int32 dOctets; /* Octets sent in Duration. */
-    u_int32 First; /* SysUptime at start of flow */
-    u_int32 Last; /* and of last packet of flow */
-    u_int16 srcport; /* TCP/UDP source port number or equivalent */
-    u_int16 dstport; /* TCP/UDP destination port number or equiv */
-    u_int8 prot; /* IP protocol, e.g., 6=TCP, 17=UDP, ... */
-    u_int8 tos; /* IP Type-of-Service */
-    u_int8 tcp_flags; /* OR of TCP header bits */
+    u_int32 sysUpTime;  /* Current time in millisecs since router booted */
+    u_int32 exaddr;     /* Exporter IP address */
+    u_int32 srcaddr;    /* Source IP Address */
+    u_int32 dstaddr;    /* Destination IP Address */
+    u_int32 nexthop;    /* Next hop router's IP Address */
+    u_int16 input;      /* Input interface index */
+    u_int16 output;     /* Output interface index */
+    u_int32 dPkts;      /* Packets sent in Duration */
+    u_int32 dOctets;    /* Octets sent in Duration. */
+    u_int32 First;      /* SysUptime at start of flow */
+    u_int32 Last;       /* and of last packet of flow */
+    u_int16 srcport;    /* TCP/UDP source port number or equivalent */
+    u_int16 dstport;    /* TCP/UDP destination port number or equiv */
+    u_int8 prot;        /* IP protocol, e.g., 6=TCP, 17=UDP, ... */
+    u_int8 tos;         /* IP Type-of-Service */
+    u_int8 tcp_flags;   /* OR of TCP header bits */
     u_int8 pad;
     u_int8 engine_type; /* Type of flow switching engine (RP,VIP,etc.) */
-    u_int8 engine_id; /* Slot number of the flow switching engine */
-    u_int8 src_mask; /* mask length of source address */
-    u_int8 dst_mask; /* mask length of destination address */
-    u_int16 src_as; /* AS of source address */
-    u_int16 dst_as; /* AS of destination address */
+    u_int8 engine_id;   /* Slot number of the flow switching engine */
+    u_int8 src_mask;    /* mask length of source address */
+    u_int8 dst_mask;    /* mask length of destination address */
+    u_int16 src_as;     /* AS of source address */
+    u_int16 dst_as;     /* AS of destination address */
 } Rec_5_t;
 
 typedef struct fts3rec_v6
 {
-    u_int32 unix_secs; /* Current seconds since 0000 UTC 1970 */
+    u_int32 unix_secs;  /* Current seconds since 0000 UTC 1970 */
     u_int32 unix_nsecs; /* Residual nanoseconds since 0000 UTC 1970 */
-    u_int32 sysUpTime; /* Current time in millisecs since router booted */
-    u_int32 exaddr; /* Exporter IP address */
-    u_int32 srcaddr; /* Source IP Address */
-    u_int32 dstaddr; /* Destination IP Address */
-    u_int32 nexthop; /* Next hop router's IP Address */
-    u_int16 input; /* Input interface index */
-    u_int16 output; /* Output interface index */
-    u_int32 dPkts; /* Packets sent in Duration */
-    u_int32 dOctets; /* Octets sent in Duration. */
-    u_int32 First; /* SysUptime at start of flow */
-    u_int32 Last; /* and of last packet of flow */
-    u_int16 srcport; /* TCP/UDP source port number or equivalent */
-    u_int16 dstport; /* TCP/UDP destination port number or equiv */
-    u_int8 prot; /* IP protocol, e.g., 6=TCP, 17=UDP, ... */
-    u_int8 tos; /* IP Type-of-Service */
-    u_int8 tcp_flags; /* OR of TCP header bits */
+    u_int32 sysUpTime;  /* Current time in millisecs since router booted */
+    u_int32 exaddr;     /* Exporter IP address */
+    u_int32 srcaddr;    /* Source IP Address */
+    u_int32 dstaddr;    /* Destination IP Address */
+    u_int32 nexthop;    /* Next hop router's IP Address */
+    u_int16 input;      /* Input interface index */
+    u_int16 output;     /* Output interface index */
+    u_int32 dPkts;      /* Packets sent in Duration */
+    u_int32 dOctets;    /* Octets sent in Duration. */
+    u_int32 First;      /* SysUptime at start of flow */
+    u_int32 Last;       /* and of last packet of flow */
+    u_int16 srcport;    /* TCP/UDP source port number or equivalent */
+    u_int16 dstport;    /* TCP/UDP destination port number or equiv */
+    u_int8 prot;        /* IP protocol, e.g., 6=TCP, 17=UDP, ... */
+    u_int8 tos;         /* IP Type-of-Service */
+    u_int8 tcp_flags;   /* OR of TCP header bits */
     u_int8 pad;
     u_int8 engine_type; /* Type of flow switching engine (RP,VIP,etc.) */
-    u_int8 engine_id; /* Slot number of the flow switching engine */
-    u_int8 src_mask; /* mask length of source address */
-    u_int8 dst_mask; /* mask length of destination address */
-    u_int16 src_as; /* AS of source address */
-    u_int16 dst_as; /* AS of destination address */
-    u_int8 in_encaps; /* size in bytes of the input encapsulation */
-    u_int8 out_encaps; /* size in bytes of the output encapsulation */
+    u_int8 engine_id;   /* Slot number of the flow switching engine */
+    u_int8 src_mask;    /* mask length of source address */
+    u_int8 dst_mask;    /* mask length of destination address */
+    u_int16 src_as;     /* AS of source address */
+    u_int16 dst_as;     /* AS of destination address */
+    u_int8 in_encaps;   /* size in bytes of the input encapsulation */
+    u_int8 out_encaps;  /* size in bytes of the output encapsulation */
     u_int16 pad2;
     u_int32 peer_nexthop; /* IP address of the next hop within the peer */
 } Rec_6_t;
 
 typedef struct fts3rec_v7
 {
-    u_int32 unix_secs; /* Current seconds since 0000 UTC 1970 */
+    u_int32 unix_secs;  /* Current seconds since 0000 UTC 1970 */
     u_int32 unix_nsecs; /* Residual nanoseconds since 0000 UTC 1970 */
-    u_int32 sysUpTime; /* Current time in millisecs since router booted */
-    u_int32 exaddr; /* Exporter IP address */
-    u_int32 srcaddr; /* Source IP Address */
-    u_int32 dstaddr; /* Destination IP Address */
-    u_int32 nexthop; /* Next hop router's IP Address */
-    u_int16 input; /* Input interface index */
-    u_int16 output; /* Output interface index */
-    u_int32 dPkts; /* Packets sent in Duration */
-    u_int32 dOctets; /* Octets sent in Duration. */
-    u_int32 First; /* SysUptime at start of flow */
-    u_int32 Last; /* and of last packet of flow */
-    u_int16 srcport; /* TCP/UDP source port number or equivalent */
-    u_int16 dstport; /* TCP/UDP destination port number or equiv */
-    u_int8 prot; /* IP protocol, e.g., 6=TCP, 17=UDP, ... */
-    u_int8 tos; /* IP Type-of-Service */
-    u_int8 tcp_flags; /* OR of TCP header bits */
-    u_int8 flags; /* Reason flow discarded, etc */
+    u_int32 sysUpTime;  /* Current time in millisecs since router booted */
+    u_int32 exaddr;     /* Exporter IP address */
+    u_int32 srcaddr;    /* Source IP Address */
+    u_int32 dstaddr;    /* Destination IP Address */
+    u_int32 nexthop;    /* Next hop router's IP Address */
+    u_int16 input;      /* Input interface index */
+    u_int16 output;     /* Output interface index */
+    u_int32 dPkts;      /* Packets sent in Duration */
+    u_int32 dOctets;    /* Octets sent in Duration. */
+    u_int32 First;      /* SysUptime at start of flow */
+    u_int32 Last;       /* and of last packet of flow */
+    u_int16 srcport;    /* TCP/UDP source port number or equivalent */
+    u_int16 dstport;    /* TCP/UDP destination port number or equiv */
+    u_int8 prot;        /* IP protocol, e.g., 6=TCP, 17=UDP, ... */
+    u_int8 tos;         /* IP Type-of-Service */
+    u_int8 tcp_flags;   /* OR of TCP header bits */
+    u_int8 flags;       /* Reason flow discarded, etc */
     u_int8 engine_type; /* Type of flow switching engine (RP,VIP,etc.) */
-    u_int8 engine_id; /* Slot number of the flow switching engine */
-    u_int8 src_mask; /* mask length of source address */
-    u_int8 dst_mask; /* mask length of destination address */
-    u_int16 src_as; /* AS of source address */
-    u_int16 dst_as; /* AS of destination address */
-    u_int32 router_sc; /* ID of router shortcut by switch */
+    u_int8 engine_id;   /* Slot number of the flow switching engine */
+    u_int8 src_mask;    /* mask length of source address */
+    u_int8 dst_mask;    /* mask length of destination address */
+    u_int16 src_as;     /* AS of source address */
+    u_int16 dst_as;     /* AS of destination address */
+    u_int32 router_sc;  /* ID of router shortcut by switch */
 } Rec_7_t;
 
 typedef struct State_s

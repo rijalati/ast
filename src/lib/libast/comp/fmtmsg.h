@@ -27,7 +27,7 @@
 #ifndef _FMTMSG_H
 #    define _FMTMSG_H
 
-#    define MM_VERB_ENV "MSGVERB" /* keyword filter env var	*/
+#    define MM_VERB_ENV "MSGVERB"       /* keyword filter env var	*/
 #    define MM_SEVERITY_ENV "SEV_LEVEL" /* alternate severity env var	*/
 
 /* max component length */
@@ -43,31 +43,31 @@
 
 /* classification source */
 
-#    define MM_APPL 0x00000010L /* application			*/
-#    define MM_UTIL 0x00000020L /* utility			*/
+#    define MM_APPL 0x00000010L  /* application			*/
+#    define MM_UTIL 0x00000020L  /* utility			*/
 #    define MM_OPSYS 0x00000040L /* kernel			*/
 
 /* classification display */
 
-#    define MM_PRINT 0x00000100L /* stderr			*/
+#    define MM_PRINT 0x00000100L   /* stderr			*/
 #    define MM_CONSOLE 0x00000200L /* console			*/
 
 /* classification status */
 
 #    define MM_RECOVER 0x00001000L /* recoverable			*/
-#    define MM_NRECOV 0x00002000L /* non-recoverable		*/
+#    define MM_NRECOV 0x00002000L  /* non-recoverable		*/
 
 /* severity */
 
-#    define MM_NOSEV 0x0 /* no severity			*/
-#    define MM_HALT 0x1 /* severe fault			*/
-#    define MM_ERROR 0x2 /* fault			*/
+#    define MM_NOSEV 0x0   /* no severity			*/
+#    define MM_HALT 0x1    /* severe fault			*/
+#    define MM_ERROR 0x2   /* fault			*/
 #    define MM_WARNING 0x4 /* could be a problem		*/
-#    define MM_INFO 0x8 /* not an error (noise?)	*/
+#    define MM_INFO 0x8    /* not an error (noise?)	*/
 
 /* fmtmsg return value */
 
-#    define MM_OK 0 /* succeeded			*/
+#    define MM_OK 0    /* succeeded			*/
 #    define MM_NOTOK 3 /* failed completely		*/
 #    define MM_NOMSG 1 /* stderr message failed	*/
 #    define MM_NOCON 2 /* console message failed	*/
@@ -75,8 +75,8 @@
 /* null argument values -- 0 just doesn't get any respect */
 
 #    define MM_NULLLBL ( char * )0 /* label			*/
-#    define MM_NULLSEV 0 /* severity			*/
-#    define MM_NULLMC 0L /* class			*/
+#    define MM_NULLSEV 0           /* severity			*/
+#    define MM_NULLMC 0L           /* class			*/
 #    define MM_NULLTXT ( char * )0 /* text				*/
 #    define MM_NULLACT ( char * )0 /* action			*/
 #    define MM_NULLTAG ( char * )0 /* tag				*/

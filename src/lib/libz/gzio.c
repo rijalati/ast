@@ -60,37 +60,37 @@ extern void free OF((voidpf ptr));
 static int const gz_magic[2] = { 0x1f, 0x8b }; /* gzip magic header */
 
 /* gzip flag byte */
-#define ASCII_FLAG 0x01 /* bit 0 set: file probably ascii text */
-#define HEAD_CRC 0x02 /* bit 1 set: header CRC present */
+#define ASCII_FLAG 0x01  /* bit 0 set: file probably ascii text */
+#define HEAD_CRC 0x02    /* bit 1 set: header CRC present */
 #define EXTRA_FIELD 0x04 /* bit 2 set: extra field present */
-#define ORIG_NAME 0x08 /* bit 3 set: original file name present */
-#define COMMENT 0x10 /* bit 4 set: file comment present */
-#define RESERVED 0xE0 /* bits 5..7: reserved */
+#define ORIG_NAME 0x08   /* bit 3 set: original file name present */
+#define COMMENT 0x10     /* bit 4 set: file comment present */
+#define RESERVED 0xE0    /* bits 5..7: reserved */
 
 typedef struct gz_stream
 {
     z_stream stream;
-    int z_err; /* error code for last stream operation */
-    int z_eof; /* set if end of input file */
-    FILE *file; /* .gz file */
-    Byte *inbuf; /* input buffer */
-    Byte *outbuf; /* output buffer */
-    uLong crc; /* crc32 of uncompressed data */
-    char *msg; /* error message */
-    char *path; /* path name for debugging only */
+    int z_err;       /* error code for last stream operation */
+    int z_eof;       /* set if end of input file */
+    FILE *file;      /* .gz file */
+    Byte *inbuf;     /* input buffer */
+    Byte *outbuf;    /* output buffer */
+    uLong crc;       /* crc32 of uncompressed data */
+    char *msg;       /* error message */
+    char *path;      /* path name for debugging only */
     int transparent; /* 1 if input file is not a .gz file */
 #if _PACKAGE_ast
-    int fatal; /* fatal stream error => all other ops fail */
-    int nocrc; /* 1 to skip 'r' crc checks */
-    int noclose; /* 1 to skip destroy fclose */
+    int fatal;    /* fatal stream error => all other ops fail */
+    int nocrc;    /* 1 to skip 'r' crc checks */
+    int noclose;  /* 1 to skip destroy fclose */
     int verified; /* 2-byte magic read and verified ('v') */
 #endif
-    char mode; /* 'w' or 'r' */
+    char mode;     /* 'w' or 'r' */
     z_off_t start; /* start of compressed data in file (header skipped) */
-    z_off_t in; /* bytes into deflate or inflate */
-    z_off_t out; /* bytes out of deflate or inflate */
-    int back; /* one character push-back */
-    int last; /* true if push-back is last character */
+    z_off_t in;    /* bytes into deflate or inflate */
+    z_off_t out;   /* bytes out of deflate or inflate */
+    int back;      /* one character push-back */
+    int last;      /* true if push-back is last character */
 } gz_stream;
 
 
@@ -410,7 +410,7 @@ local int get_byte(s) gz_stream *s;
 local void check_header(s) gz_stream *s;
 {
     int method; /* method byte */
-    int flags; /* flags byte */
+    int flags;  /* flags byte */
     uInt len;
     int c;
 

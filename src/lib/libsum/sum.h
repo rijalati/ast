@@ -31,14 +31,14 @@
 
 #    include <ast.h>
 
-#    define SUM_SIZE (1 << 0) /* print size too		*/
-#    define SUM_SCALE (1 << 1) /* traditional size scale	*/
-#    define SUM_TOTAL (1 << 2) /* print totals since sumopen	*/
-#    define SUM_LEGACY (1 << 3) /* legacy field widths		*/
+#    define SUM_SIZE (1 << 0)      /* print size too		*/
+#    define SUM_SCALE (1 << 1)     /* traditional size scale	*/
+#    define SUM_TOTAL (1 << 2)     /* print totals since sumopen	*/
+#    define SUM_LEGACY (1 << 3)    /* legacy field widths		*/
 #    define SUM_INDICATOR (1 << 4) /* text=' ' binary='*' indicator*/
 
 #    define _SUM_PUBLIC_                                                     \
-        const char *name; /* method name			*/                                \
+        const char *name;   /* method name			*/                              \
         unsigned int flags; /* SUM_* flag defaults		*/
 
 typedef struct Sumdata_s

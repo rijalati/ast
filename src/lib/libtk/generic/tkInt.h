@@ -44,12 +44,12 @@ typedef struct TkStressedCmap TkStressedCmap;
 
 typedef struct TkCursor
 {
-    Tk_Cursor cursor; /* System specific identifier for cursor. */
-    int refCount; /* Number of active uses of cursor. */
+    Tk_Cursor cursor;          /* System specific identifier for cursor. */
+    int refCount;              /* Number of active uses of cursor. */
     Tcl_HashTable *otherTable; /* Second table (other than idTable) used
                                 * to index this entry. */
-    Tcl_HashEntry *hashPtr; /* Entry in otherTable for this structure
-                             * (needed when deleting). */
+    Tcl_HashEntry *hashPtr;    /* Entry in otherTable for this structure
+                                * (needed when deleting). */
 } TkCursor;
 
 /*
@@ -59,29 +59,29 @@ typedef struct TkCursor
 
 typedef struct TkDisplay
 {
-    Display *display; /* Xlib's info about display. */
+    Display *display;          /* Xlib's info about display. */
     struct TkDisplay *nextPtr; /* Next in list of all displays. */
-    char *name; /* Name of display (with any screen
-                 * identifier removed).  Malloc-ed. */
-    Time lastEventTime; /* Time of last event received for this
-                         * display. */
+    char *name;                /* Name of display (with any screen
+                                * identifier removed).  Malloc-ed. */
+    Time lastEventTime;        /* Time of last event received for this
+                                * display. */
 
     /*
      * Information used primarily by tkBind.c:
      */
 
-    int bindInfoStale; /* Non-zero means the variables in this
-                        * part of the structure are potentially
-                        * incorrect and should be recomputed. */
+    int bindInfoStale;        /* Non-zero means the variables in this
+                               * part of the structure are potentially
+                               * incorrect and should be recomputed. */
     unsigned int modeModMask; /* Has one bit set to indicate the modifier
                                * corresponding to "mode shift".  If no
                                * such modifier, than this is zero. */
     unsigned int metaModMask; /* Has one bit set to indicate the modifier
                                * corresponding to the "Meta" key.  If no
                                * such modifier, then this is zero. */
-    unsigned int altModMask; /* Has one bit set to indicate the modifier
-                              * corresponding to the "Meta" key.  If no
-                              * such modifier, then this is zero. */
+    unsigned int altModMask;  /* Has one bit set to indicate the modifier
+                               * corresponding to the "Meta" key.  If no
+                               * such modifier, then this is zero. */
     enum
     {
         LU_IGNORE,
@@ -89,8 +89,8 @@ typedef struct TkDisplay
         LU_SHIFT
     } lockUsage;
     /* Indicates how to interpret lock modifier. */
-    int numModKeyCodes; /* Number of entries in modKeyCodes array
-                         * below. */
+    int numModKeyCodes;   /* Number of entries in modKeyCodes array
+                           * below. */
     KeyCode *modKeyCodes; /* Pointer to an array giving keycodes for
                            * all of the keys that have modifiers
                            * associated with them.  Malloc'ed, but
@@ -113,15 +113,15 @@ typedef struct TkDisplay
      * Information used by tkSend.c only:
      */
 
-    Tk_Window commTkwin; /* Window used for communication
-                          * between interpreters during "send"
-                          * commands.  NULL means send info hasn't
-                          * been initialized yet. */
-    Atom commProperty; /* X's name for comm property. */
+    Tk_Window commTkwin;   /* Window used for communication
+                            * between interpreters during "send"
+                            * commands.  NULL means send info hasn't
+                            * been initialized yet. */
+    Atom commProperty;     /* X's name for comm property. */
     Atom registryProperty; /* X's name for property containing
                             * registry of interpreter names. */
-    Atom appNameProperty; /* X's name for property used to hold the
-                           * application name on each comm window. */
+    Atom appNameProperty;  /* X's name for property used to hold the
+                            * application name on each comm window. */
 
     /*
      * Information used by tkSelect.c and tkClipboard.c only:
@@ -132,23 +132,23 @@ typedef struct TkDisplay
      * records.  Each entry contains information
      * about the current owner of a particular
      * selection on this display. */
-    Atom multipleAtom; /* Atom for MULTIPLE.  None means
-                        * selection stuff isn't initialized. */
-    Atom incrAtom; /* Atom for INCR. */
-    Atom targetsAtom; /* Atom for TARGETS. */
-    Atom timestampAtom; /* Atom for TIMESTAMP. */
-    Atom textAtom; /* Atom for TEXT. */
+    Atom multipleAtom;     /* Atom for MULTIPLE.  None means
+                            * selection stuff isn't initialized. */
+    Atom incrAtom;         /* Atom for INCR. */
+    Atom targetsAtom;      /* Atom for TARGETS. */
+    Atom timestampAtom;    /* Atom for TIMESTAMP. */
+    Atom textAtom;         /* Atom for TEXT. */
     Atom compoundTextAtom; /* Atom for COMPOUND_TEXT. */
-    Atom applicationAtom; /* Atom for TK_APPLICATION. */
-    Atom windowAtom; /* Atom for TK_WINDOW. */
-    Atom clipboardAtom; /* Atom for CLIPBOARD. */
+    Atom applicationAtom;  /* Atom for TK_APPLICATION. */
+    Atom windowAtom;       /* Atom for TK_WINDOW. */
+    Atom clipboardAtom;    /* Atom for CLIPBOARD. */
 
     Tk_Window clipWindow; /* Window used for clipboard ownership and to
                            * retrieve selections between processes. NULL
                            * means clipboard info hasn't been
                            * initialized. */
-    int clipboardActive; /* 1 means we currently own the clipboard
-                          * selection, 0 means we don't. */
+    int clipboardActive;  /* 1 means we currently own the clipboard
+                           * selection, 0 means we don't. */
     struct TkMainInfo *clipboardAppPtr;
     /* Last application that owned clipboard. */
     struct TkClipboardTarget *clipTargetPtr;
@@ -161,8 +161,8 @@ typedef struct TkDisplay
      * Information used by tkAtom.c only:
      */
 
-    int atomInit; /* 0 means stuff below hasn't been
-                   * initialized yet. */
+    int atomInit;            /* 0 means stuff below hasn't been
+                              * initialized yet. */
     Tcl_HashTable nameTable; /* Maps from names to Atom's. */
     Tcl_HashTable atomTable; /* Maps from Atom's back to names. */
 
@@ -296,8 +296,8 @@ typedef struct TkDisplay
      */
 
 #ifdef TK_USE_INPUT_METHODS
-    XIM inputMethod; /* Input method for this display */
-#endif /* TK_USE_INPUT_METHODS */
+    XIM inputMethod;        /* Input method for this display */
+#endif                      /* TK_USE_INPUT_METHODS */
     Tcl_HashTable winTable; /* Maps from X window ids to TkWindow ptrs. */
 } TkDisplay;
 
@@ -309,28 +309,28 @@ typedef struct TkDisplay
 
 typedef struct TkErrorHandler
 {
-    TkDisplay *dispPtr; /* Display to which handler applies. */
+    TkDisplay *dispPtr;         /* Display to which handler applies. */
     unsigned long firstRequest; /* Only errors with serial numbers
                                  * >= to this are considered. */
-    unsigned long lastRequest; /* Only errors with serial numbers
-                                * <= to this are considered.  This
-                                * field is filled in when XUnhandle
-                                * is called.  -1 means XUnhandle
-                                * hasn't been called yet. */
-    int error; /* Consider only errors with this
-                * error_code (-1 means consider
-                * all errors). */
-    int request; /* Consider only errors with this
-                  * major request code (-1 means
-                  * consider all major codes). */
-    int minorCode; /* Consider only errors with this
-                    * minor request code (-1 means
-                    * consider all minor codes). */
-    Tk_ErrorProc *errorProc; /* Procedure to invoke when a matching
-                              * error occurs.  NULL means just ignore
-                              * errors. */
-    ClientData clientData; /* Arbitrary value to pass to
-                            * errorProc. */
+    unsigned long lastRequest;  /* Only errors with serial numbers
+                                 * <= to this are considered.  This
+                                 * field is filled in when XUnhandle
+                                 * is called.  -1 means XUnhandle
+                                 * hasn't been called yet. */
+    int error;                  /* Consider only errors with this
+                                 * error_code (-1 means consider
+                                 * all errors). */
+    int request;                /* Consider only errors with this
+                                 * major request code (-1 means
+                                 * consider all major codes). */
+    int minorCode;              /* Consider only errors with this
+                                 * minor request code (-1 means
+                                 * consider all minor codes). */
+    Tk_ErrorProc *errorProc;    /* Procedure to invoke when a matching
+                                 * error occurs.  NULL means just ignore
+                                 * errors. */
+    ClientData clientData;      /* Arbitrary value to pass to
+                                 * errorProc. */
     struct TkErrorHandler *nextPtr;
     /* Pointer to next older handler for
      * this display, or NULL for end of
@@ -345,10 +345,10 @@ typedef struct TkErrorHandler
 
 typedef struct TkEventHandler
 {
-    unsigned long mask; /* Events for which to invoke
-                         * proc. */
-    Tk_EventProc *proc; /* Procedure to invoke when an event
-                         * in mask occurs. */
+    unsigned long mask;    /* Events for which to invoke
+                            * proc. */
+    Tk_EventProc *proc;    /* Procedure to invoke when an event
+                            * in mask occurs. */
     ClientData clientData; /* Argument to pass to proc. */
     struct TkEventHandler *nextPtr;
     /* Next in list of handlers
@@ -365,15 +365,15 @@ typedef struct TkEventHandler
 
 typedef struct TkMainInfo
 {
-    int refCount; /* Number of windows whose "mainPtr" fields
-                   * point here.  When this becomes zero, can
-                   * free up the structure (the reference
-                   * count is zero because windows can get
-                   * deleted in almost any order;  the main
-                   * window isn't necessarily the last one
-                   * deleted). */
+    int refCount;            /* Number of windows whose "mainPtr" fields
+                              * point here.  When this becomes zero, can
+                              * free up the structure (the reference
+                              * count is zero because windows can get
+                              * deleted in almost any order;  the main
+                              * window isn't necessarily the last one
+                              * deleted). */
     struct TkWindow *winPtr; /* Pointer to main window. */
-    Tcl_Interp *interp; /* Interpreter associated with application. */
+    Tcl_Interp *interp;      /* Interpreter associated with application. */
     Tcl_HashTable nameTable; /* Hash table mapping path names to TkWindow
                               * structs for all windows related to this
                               * main window.  Managed by tkWindow.c. */
@@ -399,10 +399,10 @@ typedef struct TkMainInfo
     /* Top level of option hierarchy for this
      * main window.  NULL means uninitialized.
      * Managed by tkOption.c. */
-    Tcl_HashTable imageTable; /* Maps from image names to Tk_ImageMaster
-                               * structures.  Managed by tkImage.c. */
-    int strictMotif; /* This is linked to the tk_strictMotif
-                      * global variable. */
+    Tcl_HashTable imageTable;   /* Maps from image names to Tk_ImageMaster
+                                 * structures.  Managed by tkImage.c. */
+    int strictMotif;            /* This is linked to the tk_strictMotif
+                                 * global variable. */
     struct TkMainInfo *nextPtr; /* Next in list of all main windows managed by
                                  * this process. */
 } TkMainInfo;
@@ -425,17 +425,17 @@ typedef struct TkWindow
      * Structural information:
      */
 
-    Display *display; /* Display containing window. */
-    TkDisplay *dispPtr; /* Tk's information about display
-                         * for window. */
-    int screenNum; /* Index of screen for window, among all
-                    * those for dispPtr. */
-    Visual *visual; /* Visual to use for window.  If not default,
-                     * MUST be set before X window is created. */
-    int depth; /* Number of bits/pixel. */
-    Window window; /* X's id for window.   NULL means window
-                    * hasn't actually been created yet, or it's
-                    * been deleted. */
+    Display *display;           /* Display containing window. */
+    TkDisplay *dispPtr;         /* Tk's information about display
+                                 * for window. */
+    int screenNum;              /* Index of screen for window, among all
+                                 * those for dispPtr. */
+    Visual *visual;             /* Visual to use for window.  If not default,
+                                 * MUST be set before X window is created. */
+    int depth;                  /* Number of bits/pixel. */
+    Window window;              /* X's id for window.   NULL means window
+                                 * hasn't actually been created yet, or it's
+                                 * been deleted. */
     struct TkWindow *childList; /* First in list of child windows,
                                  * or NULL if no children. */
     struct TkWindow *lastChildPtr;
@@ -446,30 +446,30 @@ typedef struct TkWindow
                                  * means either this is the main window, or
                                  * the window's parent has already been
                                  * deleted. */
-    struct TkWindow *nextPtr; /* Next in list of children with
-                               * same parent (NULL if end of
-                               * list). */
-    TkMainInfo *mainPtr; /* Information shared by all windows
-                          * associated with a particular main
-                          * window.  NULL means this window is
-                          * a rogue that isn't associated with
-                          * any application (at present, this
-                          * only happens for the dummy windows
-                          * used for "send" communication).  */
+    struct TkWindow *nextPtr;   /* Next in list of children with
+                                 * same parent (NULL if end of
+                                 * list). */
+    TkMainInfo *mainPtr;        /* Information shared by all windows
+                                 * associated with a particular main
+                                 * window.  NULL means this window is
+                                 * a rogue that isn't associated with
+                                 * any application (at present, this
+                                 * only happens for the dummy windows
+                                 * used for "send" communication).  */
 
     /*
      * Name and type information for the window:
      */
 
-    char *pathName; /* Path name of window (concatenation
-                     * of all names between this window and
-                     * its top-level ancestor).  This is a
-                     * pointer into an entry in
-                     * mainPtr->nameTable.  NULL means that
-                     * the window hasn't been completely
-                     * created yet. */
-    Tk_Uid nameUid; /* Name of the window within its parent
-                     * (unique within the parent). */
+    char *pathName;  /* Path name of window (concatenation
+                      * of all names between this window and
+                      * its top-level ancestor).  This is a
+                      * pointer into an entry in
+                      * mainPtr->nameTable.  NULL means that
+                      * the window hasn't been completely
+                      * created yet. */
+    Tk_Uid nameUid;  /* Name of the window within its parent
+                      * (unique within the parent). */
     Tk_Uid classUid; /* Class of the window.  NULL means window
                       * hasn't been given a class yet. */
 
@@ -481,13 +481,13 @@ typedef struct TkWindow
      * hasn't yet been created.
      */
 
-    XWindowChanges changes; /* Geometry and other info about
-                             * window. */
+    XWindowChanges changes;    /* Geometry and other info about
+                                * window. */
     unsigned int dirtyChanges; /* Bits indicate fields of "changes"
                                 * that are dirty. */
     XSetWindowAttributes atts; /* Current attributes of window. */
-    unsigned long dirtyAtts; /* Bits indicate fields of "atts"
-                              * that are dirty. */
+    unsigned long dirtyAtts;   /* Bits indicate fields of "atts"
+                                * that are dirty. */
 
     unsigned int flags; /* Various flag values:  these are all
                          * defined in tk.h (confusing, but they're
@@ -502,7 +502,7 @@ typedef struct TkWindow
                                   * NULL if none. */
 #ifdef TK_USE_INPUT_METHODS
     XIC inputContext; /* Input context (for input methods). */
-#endif /* TK_USE_INPUT_METHODS */
+#endif                /* TK_USE_INPUT_METHODS */
 
     /*
      * Information used for event bindings (see "bind" and "bindtags"
@@ -512,7 +512,7 @@ typedef struct TkWindow
     ClientData *tagPtr; /* Points to array of tags used for bindings
                          * on this window.  Each tag is a Tk_Uid.
                          * Malloc'ed.  NULL means no tags. */
-    int numTags; /* Number of tags at *tagPtr. */
+    int numTags;        /* Number of tags at *tagPtr. */
 
     /*
      * Information used by tkOption.c to manage options for the
@@ -537,9 +537,9 @@ typedef struct TkWindow
      * Information used by tkGeometry.c for geometry management.
      */
 
-    Tk_GeomMgr *geomMgrPtr; /* Information about geometry manager for
-                             * this window. */
-    ClientData geomData; /* Argument for geometry manager procedures. */
+    Tk_GeomMgr *geomMgrPtr;  /* Information about geometry manager for
+                              * this window. */
+    ClientData geomData;     /* Argument for geometry manager procedures. */
     int reqWidth, reqHeight; /* Arguments from last call to
                               * Tk_GeometryRequest, or 0's if
                               * Tk_GeometryRequest hasn't been
@@ -573,7 +573,7 @@ typedef struct TkWindow
 
 typedef struct TkStateMap
 {
-    int numKey; /* Integer representation of a value. */
+    int numKey;   /* Integer representation of a value. */
     char *strKey; /* String representation of a value. */
 } TkStateMap;
 

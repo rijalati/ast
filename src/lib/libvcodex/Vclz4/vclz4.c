@@ -34,7 +34,7 @@
 typedef struct _lz4_s
 {
     int clevel; /* compression level		*/
-    int type; /* type of transformation	*/
+    int type;   /* type of transformation	*/
 } Lz4_t;
 
 static Vcmtarg_t _Lz4args[]

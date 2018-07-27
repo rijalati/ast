@@ -45,8 +45,8 @@ struct _vcxmethod_s
 struct _vcx_s
 {
     Vcxmethod_t *meth; /* encryption/checksum method	*/
-    Void_t *data; /* encryption/checksum states	*/
-    ssize_t keyz; /* encryption/checksum key size	*/
+    Void_t *data;      /* encryption/checksum states	*/
+    ssize_t keyz;      /* encryption/checksum key size	*/
     Vcchar_t key[128]; /* key data, up to 1024 bits	*/
 };
 
@@ -75,7 +75,7 @@ extern Vcxmethod_t *Vcxaes128; /* AES-128 encryptor, 128-bit key	*/
 extern Vcxmethod_t *Vcxaes192; /* AES-192 encryptor, 192-bit key	*/
 extern Vcxmethod_t *Vcxaes256; /* AES-256 encryptor, 256-bit key	*/
 
-extern Vcmethod_t *Vcsum; /* Vcodex checksumming transform	*/
+extern Vcmethod_t *Vcsum;   /* Vcodex checksumming transform	*/
 extern Vcmethod_t *Vccrypt; /* Vcodex encryption transform		*/
 _END_EXTERNS_
 

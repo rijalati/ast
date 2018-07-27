@@ -38,13 +38,13 @@
 
 typedef struct
 {
-    int facility; /* openlog facility		*/
-    int fd; /* log to this fd		*/
-    int flags; /* openlog flags		*/
+    int facility;      /* openlog facility		*/
+    int fd;            /* log to this fd		*/
+    int flags;         /* openlog flags		*/
     unsigned int mask; /* setlogmask mask		*/
-    int attempt; /* logfile attempt state	*/
-    char ident[64]; /* openlog ident		*/
-    char host[64]; /* openlog host name		*/
+    int attempt;       /* logfile attempt state	*/
+    char ident[64];    /* openlog ident		*/
+    char host[64];     /* openlog host name		*/
 } Syslog_state_t;
 
 extern Syslog_state_t log;

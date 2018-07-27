@@ -29,10 +29,10 @@
 
 typedef struct _filter_s
 {
-    Sfdisc_t disc; /* discipline structure	*/
+    Sfdisc_t disc;  /* discipline structure	*/
     Sfio_t *filter; /* the filter stream	*/
-    char *next; /* data unwritten 	*/
-    char *endb; /* end of data		*/
+    char *next;     /* data unwritten 	*/
+    char *endb;     /* end of data		*/
     char raw[4096]; /* raw data buffer	*/
 } Filter_t;
 
@@ -43,8 +43,8 @@ filterread(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
 #else
 static ssize_t filterread(f, buf, n, disc) Sfio_t *f; /* stream reading from
                                                        */
-Void_t *buf; /* buffer to read into */
-size_t n; /* number of bytes requested */
+Void_t *buf;    /* buffer to read into */
+size_t n;       /* number of bytes requested */
 Sfdisc_t *disc; /* discipline */
 #endif
 {
@@ -108,8 +108,8 @@ static ssize_t
 filterwrite(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *disc)
 #else
 static ssize_t filterwrite(f, buf, n, disc) Sfio_t *f; /* stream writing to */
-Void_t *buf; /* buffer to write into */
-size_t n; /* number of bytes requested */
+Void_t *buf;    /* buffer to write into */
+size_t n;       /* number of bytes requested */
 Sfdisc_t *disc; /* discipline */
 #endif
 {
@@ -159,7 +159,7 @@ int
 sfdcfilter(Sfio_t *f, const char *cmd)
 #else
 int sfdcfilter(f, cmd) Sfio_t *f; /* stream to filter data	*/
-char *cmd; /* program to run as a filter	*/
+char *cmd;                        /* program to run as a filter	*/
 #endif
 {
     reg Filter_t *fi;

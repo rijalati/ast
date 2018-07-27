@@ -125,7 +125,7 @@ extern double expm1(x) double x;
     int k;
 #    if defined(vax) || defined(tahoe)
     static prec = 56;
-#    else /* defined(vax)||defined(tahoe) */
+#    else  /* defined(vax)||defined(tahoe) */
     static prec = 53;
 #    endif /* defined(vax)||defined(tahoe) */
 

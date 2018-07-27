@@ -52,8 +52,8 @@ char *argv[];
 int Tksh_LlengthCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used.
                                                                   */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     int listArgc;
     char **listArgv;
@@ -103,8 +103,8 @@ char **argv; /* Argument strings. */
 int Tksh_RenameCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used.
                                                                  */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Namval_t *namval;
     TkshCommandData *commandData;
@@ -313,8 +313,8 @@ void *data;
 /* ARGSUSED */
 int Tksh_InfoCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Interp *iPtr = ( Interp * )interp;
     size_t length;
@@ -1032,8 +1032,8 @@ char **argv; /* Argument strings. */
 int Tksh_SourceCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used.
                                                                  */
 Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     return Tcl_TclEvalFile(interp, (argc >= 2) ? argv[1] : NULL);
 }

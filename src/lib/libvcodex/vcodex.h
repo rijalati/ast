@@ -26,11 +26,11 @@
 */
 
 #    define VC_VERSION 20130423L /* ILU-NDV			*/
-#    define VC_ID "vcodex" /* package identification	*/
-#    define VC_LIB "vcodex_lib" /* function name		*/
+#    define VC_ID "vcodex"       /* package identification	*/
+#    define VC_LIB "vcodex_lib"  /* function name		*/
 
 #    define VC_ALIASES "lib/vcodex/aliases" /* sibling on $PATH	*/
-#    define VC_ZIPRC ".vcziprc" /* per-user alias	*/
+#    define VC_ZIPRC ".vcziprc"             /* per-user alias	*/
 
 #    if _PACKAGE_ast
 #        include <ast_std.h>
@@ -52,10 +52,10 @@
 
 #    include <cdt.h> /* container data types		*/
 
-#    if !_SFIO_H /* emulate Sfio features */
+#    if !_SFIO_H              /* emulate Sfio features */
 #        define Sfoff_t off_t /* file offset type	*/
-#        define Sfio_t FILE /* stream structure	*/
-#        define Sfdisc_t int /* Sfio discipline	*/
+#        define Sfio_t FILE   /* stream structure	*/
+#        define Sfdisc_t int  /* Sfio discipline	*/
 
 #        define sfstderr stderr /* standard streams	*/
 #        define sfstdout stdout
@@ -146,31 +146,31 @@ typedef struct _vcio_s
     Vcchar_t *data; /* the data buffer		*/
     Vcchar_t *next; /* current position in buffer	*/
     Vcchar_t *endb; /* end of buffer or data in it	*/
-    Vcbit_t bits; /* buffer usable for bit-coding	*/
-    ssize_t nbits; /* # of bits cached in "bits"	*/
+    Vcbit_t bits;   /* buffer usable for bit-coding	*/
+    ssize_t nbits;  /* # of bits cached in "bits"	*/
 } Vcio_t;
 
 /* Discipline structure: what application supplies */
 struct _vcdisc_s
 {
-    Void_t *data; /* data, key string, etc.	*/
-    ssize_t size; /* size of data or just an int	*/
+    Void_t *data;     /* data, key string, etc.	*/
+    ssize_t size;     /* size of data or just an int	*/
     Vcevent_f eventf; /* call-back function on events	*/
 };
 
 /* Arguments to a method */
 struct _vcmtarg_s
 {
-    char *name; /* argument name - alphanumeric	*/
-    char *desc; /* short description of arg	*/
+    char *name;   /* argument name - alphanumeric	*/
+    char *desc;   /* short description of arg	*/
     Void_t *data; /* predefined data, if any	*/
 };
 
 /* structure to extract/restore a handle by its private code */
 struct _vcmtcode_s
 {
-    Vcchar_t *data; /* the encoding data for handle	*/
-    ssize_t size; /* the data size		*/
+    Vcchar_t *data;  /* the encoding data for handle	*/
+    ssize_t size;    /* the data size		*/
     Vcodex_t *coder; /* the reconstructed coder	*/
 };
 
@@ -180,12 +180,12 @@ struct _vcmethod_s
     Vcapply_f encodef; /* function to encode		*/
     Vcapply_f decodef; /* function to decode		*/
     int(*eventf) _ARG_(( Vcodex_t *, int, Void_t * ));
-    char *name; /* string name, 0-terminated	*/
-    char *desc; /* description, 0-terminated	*/
-    char *about; /* [-name?value]...0-terminated	*/
+    char *name;      /* string name, 0-terminated	*/
+    char *desc;      /* description, 0-terminated	*/
+    char *about;     /* [-name?value]...0-terminated	*/
     Vcmtarg_t *args; /* list of possible arguments	*/
-    ssize_t window; /* suggested window size	*/
-    int type; /* flags telling type of method	*/
+    ssize_t window;  /* suggested window size	*/
+    int type;        /* flags telling type of method	*/
 };
 
 /* Method writers: note that this should be first in any context type */
@@ -197,17 +197,17 @@ struct _vccontext_s
 /* Vcodex_t handle structure: to keep states */
 struct _vcodex_s
 {
-    Vcapply_f applyf; /* function to process data	*/
-    Vcdisc_t *disc; /* supplied discipline 		*/
-    Vcmethod_t *meth; /* selected coding method 	*/
-    Vcodex_t *coder; /* continuation coder		*/
-    size_t undone; /* left-over after vcapply()	*/
+    Vcapply_f applyf;   /* function to process data	*/
+    Vcdisc_t *disc;     /* supplied discipline 		*/
+    Vcmethod_t *meth;   /* selected coding method 	*/
+    Vcodex_t *coder;    /* continuation coder		*/
+    size_t undone;      /* left-over after vcapply()	*/
     unsigned int flags; /* bits to control operations	*/
-    Vccontext_t *ctxt; /* list of contexts		*/
-    Void_t *data; /* private method data		*/
-    ssize_t head; /* required buffer head size	*/
-    char *file; /* file with allocation request	*/
-    int line; /* line number in file		*/
+    Vccontext_t *ctxt;  /* list of contexts		*/
+    Void_t *data;       /* private method data		*/
+    ssize_t head;       /* required buffer head size	*/
+    char *file;         /* file with allocation request	*/
+    int line;           /* line number in file		*/
 #    if _AST_ERRORF_H
     Error_f errorf; /* error/trace function		*/
 #    endif
@@ -217,32 +217,32 @@ struct _vcodex_s
 };
 
 /* flags passable to vcopen() */
-#    define VC_FLAGS 007777 /* all supported flags		*/
-#    define VC_ENCODE 000001 /* handle for encoding data	*/
-#    define VC_DECODE 000002 /* handle to decode data	*/
-#    define VC_OPTIONAL 000004 /* decode if magic header	*/
+#    define VC_FLAGS 007777      /* all supported flags		*/
+#    define VC_ENCODE 000001     /* handle for encoding data	*/
+#    define VC_DECODE 000002     /* handle to decode data	*/
+#    define VC_OPTIONAL 000004   /* decode if magic header	*/
 #    define VC_CLOSECODER 000010 /* 2nd-ary coders to be closed	*/
 
 /* event types passable to discipline event handlers */
 #    define VC_OPENING 1 /* opening event		*/
 #    define VC_CLOSING 2 /* closing event		*/
-#    define VC_DISC 3 /* changing discipline		*/
-#    define VC_DATA 4 /* on getting data for method	*/
+#    define VC_DISC 3    /* changing discipline		*/
+#    define VC_DATA 4    /* on getting data for method	*/
 
 /* event types to be processed by method event handlers */
 #    define VC_INITCONTEXT 101 /* setting/creating a context	*/
 #    define VC_FREECONTEXT 102 /* freeing one or all contexts	*/
-#    define VC_FREEBUFFER 103 /* free all associated buffers	*/
-#    define VC_SETMTARG 104 /* set argument(s) to a method	*/
-#    define VC_EXTRACT 105 /* extract code for handle	*/
-#    define VC_RESTORE 106 /* restoring a handle from code	*/
+#    define VC_FREEBUFFER 103  /* free all associated buffers	*/
+#    define VC_SETMTARG 104    /* set argument(s) to a method	*/
+#    define VC_EXTRACT 105     /* extract code for handle	*/
+#    define VC_RESTORE 106     /* restoring a handle from code	*/
 
 /* flags defining certain method attributes */
 #    define VC_MTSOURCE 000001 /* use source data (Vcdelta)	*/
 
 /* separators for arguments */
-#    define VC_ARGSEP '.' /* separator for method args	*/
-#    define VC_METHSEP ',' /* separator for methods	*/
+#    define VC_ARGSEP '.'     /* separator for method args	*/
+#    define VC_METHSEP ','    /* separator for methods	*/
 #    define VC_METHALTSEP '^' /* alternate VC_METHSEP		*/
 
 /* function to initialize a discipline structure */
@@ -298,7 +298,7 @@ vcgetmtarg _ARG_(( char *, char *, ssize_t, Vcmtarg_t *, Vcmtarg_t ** ));
 extern int vcsetmtarg _ARG_(( Vcodex_t *, char *, Void_t *, int ));
 
 extern char *vcsubstring _ARG_(( char *, int, char *, ssize_t, int ));
-extern double vclog _ARG_((size_t)); /* fast log2 */
+extern double vclog _ARG_((size_t));  /* fast log2 */
 extern size_t vclogi _ARG_((size_t)); /* integer part of log2 */
 extern ssize_t
 vcbcktsort _ARG_(( ssize_t *, ssize_t *, ssize_t, Vcchar_t *, ssize_t * ));
@@ -523,9 +523,9 @@ typedef Vcuint32_t Vchash_t; /* 32-bit hash value	*/
 struct _vcbuffer_s /* type of a buffer */
 {
     Vcbuffer_t *next;
-    size_t size; /* total buffer size	*/
-    char *file; /* file allocating it	*/
-    int line; /* line number in file	*/
+    size_t size;          /* total buffer size	*/
+    char *file;           /* file allocating it	*/
+    int line;             /* line number in file	*/
     unsigned char buf[1]; /* actual data buffer	*/
 };
 
@@ -554,10 +554,10 @@ typedef int32_t Vcinx_t;
 
 typedef struct _vcsfx_s
 {
-    Vcinx_t *idx; /* the sorted suffix array		*/
-    Vcinx_t *inv; /* the inverted indices/ranks		*/
+    Vcinx_t *idx;  /* the sorted suffix array		*/
+    Vcinx_t *inv;  /* the inverted indices/ranks		*/
     Vcchar_t *str; /* the source string			*/
-    Vcinx_t nstr; /* input size				*/
+    Vcinx_t nstr;  /* input size				*/
 } Vcsfx_t;
 
 _BEGIN_EXTERNS_
@@ -591,7 +591,7 @@ _END_EXTERNS_
 */
 
 #    define VCLZ_REVERSE 0001 /* use/do reverse matching 	*/
-#    define VCLZ_MAP 0002 /* matching by mapping bytes	*/
+#    define VCLZ_MAP 0002     /* matching by mapping bytes	*/
 
 typedef struct _vclzparse_s Vclzparse_t;
 typedef struct _vclzmatch_s Vclzmatch_t;
@@ -609,13 +609,13 @@ struct _vclzmatch_s
 struct _vclzparse_s
 {
     Vclzparse_f parsef; /* function to process parsed segments	*/
-    Vcchar_t *src; /* source string, if any, to learn from	*/
+    Vcchar_t *src;      /* source string, if any, to learn from	*/
     ssize_t nsrc;
     Vcchar_t *tar; /* target string to be parsed		*/
     ssize_t ntar;
-    ssize_t mmin; /* minimum acceptable match length	*/
+    ssize_t mmin;   /* minimum acceptable match length	*/
     Vcchar_t *cmap; /* character map for matching		*/
-    int type; /* VCP_REVERSE, VCP_MAP			*/
+    int type;       /* VCP_REVERSE, VCP_MAP			*/
 };
 
 _BEGIN_EXTERNS_
@@ -650,9 +650,9 @@ _END_EXTERNS_
 ** we keep them for compatibility.
 */
 #    define VCD_COMPRESSOR (1 << 0) /* using a secondary compressor	*/
-#    define VCD_CODETABLE (1 << 1) /* alternative code table	*/
+#    define VCD_CODETABLE (1 << 1)  /* alternative code table	*/
 #    define VC_EXTRAHEADER (1 << 2) /* application-defined header	*/
-#    define VC_CHECKSUM (1 << 3) /* window has a checksum	*/
+#    define VC_CHECKSUM (1 << 3)    /* window has a checksum	*/
 #    define VC_INITS (0xf)
 
 /* Bits in the window control byte. Again, the first two bits are for
@@ -660,9 +660,9 @@ _END_EXTERNS_
 */
 #    define VCD_SOURCEFILE (1 << 0) /* match window in source file	*/
 #    define VCD_TARGETFILE (1 << 1) /* match window in target file	*/
-#    define VC_RAW (1 << 2) /* data was left uncoded	*/
-#    define VC_INDEX (1 << 3) /* index of subsequent blocks	*/
-#    define VC_EOF (1 << 7) /* end-of-file			*/
+#    define VC_RAW (1 << 2)         /* data was left uncoded	*/
+#    define VC_INDEX (1 << 3)       /* index of subsequent blocks	*/
+#    define VC_EOF (1 << 7)         /* end-of-file			*/
 
 
 /*************************************************************************

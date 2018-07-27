@@ -39,10 +39,10 @@ vcopen(Vcdisc_t *disc,
 Vcodex_t *
 vcopen(disc, meth, init, coder, flags) Vcdisc_t *disc; /* discipline to
                                                           describe data	*/
-Vcmethod_t *meth; /* method to process given data	*/
-Void_t *init; /* method initialization params	*/
-Vcodex_t *coder; /* continuation processor	*/
-int flags; /* control flags		*/
+Vcmethod_t *meth;                        /* method to process given data	*/
+Void_t *init;                            /* method initialization params	*/
+Vcodex_t *coder;                         /* continuation processor	*/
+int flags;                               /* control flags		*/
 #endif
 {
     Vcodex_t *vc = ( Vcodex_t * )Version; /* stop compiler warning */
@@ -90,7 +90,7 @@ typedef struct _meth_s
 {
     struct _meth_s *next;
     Vcmethod_t *vcmt; /* actual Vcodex method	*/
-    char args[1]; /* initialization data	*/
+    char args[1];     /* initialization data	*/
 } Meth_t;
 
 typedef struct Stack_s
@@ -104,7 +104,7 @@ Vcodex_t *
 vcmake(char *spec, int type)
 #else
 Vcodex_t *vcmake(spec, type) char *spec; /* method specification	*/
-int type; /* VC_ENCODE, VC_DECODE	*/
+int type;                                /* VC_ENCODE, VC_DECODE	*/
 #endif
 {
     Meth_t *list, *mt;

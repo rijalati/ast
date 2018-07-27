@@ -23,7 +23,7 @@
 
 typedef struct
 {
-    TkCursor info; /* Generic cursor info used by tkCursor.c */
+    TkCursor info;    /* Generic cursor info used by tkCursor.c */
     Display *display; /* Display for which cursor is valid. */
 } TkUnixCursor;
 
@@ -144,9 +144,9 @@ static struct CursorName
 
 TkCursor *TkGetCursorByName(interp, tkwin, string)
 Tcl_Interp *interp; /* Interpreter to use for error reporting. */
-Tk_Window tkwin; /* Window in which cursor will be used. */
-Tk_Uid string; /* Description of cursor.  See manual entry
-                * for details on legal syntax. */
+Tk_Window tkwin;    /* Window in which cursor will be used. */
+Tk_Uid string;      /* Description of cursor.  See manual entry
+                     * for details on legal syntax. */
 {
     TkUnixCursor *cursorPtr = NULL;
     Cursor cursor = None;
@@ -418,12 +418,12 @@ xHot,
 yHot,
 fgColor,
 bgColor) Tk_Window tkwin; /* Window in which cursor will be used. */
-char *source; /* Bitmap data for cursor shape. */
-char *mask; /* Bitmap data for cursor mask. */
-int width, height; /* Dimensions of cursor. */
-int xHot, yHot; /* Location of hot-spot in cursor. */
-XColor fgColor; /* Foreground color for cursor. */
-XColor bgColor; /* Background color for cursor. */
+char *source;             /* Bitmap data for cursor shape. */
+char *mask;               /* Bitmap data for cursor mask. */
+int width, height;        /* Dimensions of cursor. */
+int xHot, yHot;           /* Location of hot-spot in cursor. */
+XColor fgColor;           /* Foreground color for cursor. */
+XColor bgColor;           /* Background color for cursor. */
 {
     Cursor cursor;
     Pixmap sourcePixmap, maskPixmap;

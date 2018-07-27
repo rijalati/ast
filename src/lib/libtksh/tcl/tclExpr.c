@@ -55,9 +55,9 @@ int errno;
 
 typedef struct
 {
-    long intValue; /* Integer value, if any. */
+    long intValue;      /* Integer value, if any. */
     double doubleValue; /* Floating-point value, if any. */
-    ParseValue pv; /* Used to hold a string value, if any. */
+    ParseValue pv;      /* Used to hold a string value, if any. */
     char staticSpace[STATIC_STRING_SPACE];
     /* Storage for small strings;  large ones
      * are malloc-ed. */
@@ -82,12 +82,12 @@ typedef struct
 {
     char *originalExpr; /* The entire expression, as originally
                          * passed to Tcl_ExprString et al. */
-    char *expr; /* Position to the next character to be
-                 * scanned from the expression string. */
-    int token; /* Type of the last token to be parsed from
-                * expr.  See below for definitions.
-                * Corresponds to the characters just
-                * before expr. */
+    char *expr;         /* Position to the next character to be
+                         * scanned from the expression string. */
+    int token;          /* Type of the last token to be parsed from
+                         * expr.  See below for definitions.
+                         * Corresponds to the characters just
+                         * before expr. */
 } ExprInfo;
 
 /*
@@ -143,19 +143,19 @@ typedef struct
 
 static int precTable[] = {
     0,  0,  0,  0, 0, 0, 0, 0, 12, 12, 12, /* MULT, DIVIDE, MOD */
-    11, 11, /* PLUS, MINUS */
-    10, 10, /* LEFT_SHIFT, RIGHT_SHIFT */
-    9,  9,  9,  9, /* LESS, GREATER, LEQ, GEQ */
-    8,  8, /* EQUAL, NEQ */
-    7, /* BIT_AND */
-    6, /* BIT_XOR */
-    5, /* BIT_OR */
-    4, /* AND */
-    3, /* OR */
-    2, /* QUESTY */
-    1, /* COLON */
-    13, 13, 13, 13 /* UNARY_MINUS, UNARY_PLUS, NOT,
-                    * BIT_NOT */
+    11, 11,                                /* PLUS, MINUS */
+    10, 10,                                /* LEFT_SHIFT, RIGHT_SHIFT */
+    9,  9,  9,  9,                         /* LESS, GREATER, LEQ, GEQ */
+    8,  8,                                 /* EQUAL, NEQ */
+    7,                                     /* BIT_AND */
+    6,                                     /* BIT_XOR */
+    5,                                     /* BIT_OR */
+    4,                                     /* AND */
+    3,                                     /* OR */
+    2,                                     /* QUESTY */
+    1,                                     /* COLON */
+    13, 13, 13, 13                         /* UNARY_MINUS, UNARY_PLUS, NOT,
+                                            * BIT_NOT */
 };
 
 /*
@@ -280,11 +280,11 @@ local_floor(double x)
 
 typedef struct
 {
-    char *name; /* Name of function. */
+    char *name;  /* Name of function. */
     int numArgs; /* Number of arguments for function. */
     Tcl_ValueType argTypes[MAX_MATH_ARGS];
     /* Acceptable types for each argument. */
-    Tcl_MathProc *proc; /* Procedure that implements this function. */
+    Tcl_MathProc *proc;    /* Procedure that implements this function. */
     ClientData clientData; /* Additional argument to pass to the function
                             * when invoking it. */
 } BuiltinFunc;
@@ -355,9 +355,9 @@ static BuiltinFunc funcTable[] = {
 
 static int ExprParseString(interp, string, valuePtr)
 Tcl_Interp *interp; /* Where to store error message. */
-char *string; /* String to turn into value. */
-Value *valuePtr; /* Where to store value information.
-                  * Caller must have initialized pv field. */
+char *string;       /* String to turn into value. */
+Value *valuePtr;    /* Where to store value information.
+                     * Caller must have initialized pv field. */
 {
     char *term, *p, *start;
 
@@ -488,10 +488,10 @@ static int ExprLex(interp,
                    valuePtr) Tcl_Interp *interp; /* Interpreter to use for
                                                   * error reporting. */
 ExprInfo *infoPtr; /* Describes the state of the parse. */
-Value *valuePtr; /* Where to store value, if that is
-                  * what's parsed from string.  Caller
-                  * must have initialized pv field
-                  * correctly. */
+Value *valuePtr;   /* Where to store value, if that is
+                    * what's parsed from string.  Caller
+                    * must have initialized pv field
+                    * correctly. */
 {
     char *p;
     char *var, *term;
@@ -791,28 +791,28 @@ Value *valuePtr; /* Where to store value, if that is
 static int ExprGetValue(interp, infoPtr, prec, valuePtr)
 Tcl_Interp *interp; /* Interpreter to use for error
                      * reporting. */
-ExprInfo *infoPtr; /* Describes the state of the parse
-                    * just before the value (i.e. ExprLex
-                    * will be called to get first token
-                    * of value). */
-int prec; /* Treat any un-parenthesized operator
-           * with precedence <= this as the end
-           * of the expression. */
-Value *valuePtr; /* Where to store the value of the
-                  * expression.   Caller must have
-                  * initialized pv field. */
+ExprInfo *infoPtr;  /* Describes the state of the parse
+                     * just before the value (i.e. ExprLex
+                     * will be called to get first token
+                     * of value). */
+int prec;           /* Treat any un-parenthesized operator
+                     * with precedence <= this as the end
+                     * of the expression. */
+Value *valuePtr;    /* Where to store the value of the
+                     * expression.   Caller must have
+                     * initialized pv field. */
 {
     Interp *iPtr = ( Interp * )interp;
     Value value2; /* Second operand for current
                    * operator.  */
     int operator; /* Current operator (either unary
                    * or binary). */
-    int badType; /* Type of offending argument;  used
-                  * for error messages. */
-    int gotOp; /* Non-zero means already lexed the
-                * operator (while picking up value
-                * for unary operator).  Don't lex
-                * again. */
+    int badType;  /* Type of offending argument;  used
+                   * for error messages. */
+    int gotOp;    /* Non-zero means already lexed the
+                   * operator (while picking up value
+                   * for unary operator).  Don't lex
+                   * again. */
     int result;
 
     /*
@@ -1597,9 +1597,9 @@ Value *valuePtr; /* Value to be converted. */
 static int ExprTopLevel(interp, string, valuePtr)
 Tcl_Interp *interp; /* Context in which to evaluate the
                      * expression. */
-char *string; /* Expression to evaluate. */
-Value *valuePtr; /* Where to store result.  Should
-                  * not be initialized by caller. */
+char *string;       /* Expression to evaluate. */
+Value *valuePtr;    /* Where to store result.  Should
+                     * not be initialized by caller. */
 {
     ExprInfo info;
     int result;
@@ -1682,7 +1682,7 @@ int Tcl_ExprLong(interp, string, ptr) Tcl_Interp *interp; /* Context in which
                                                            * to evaluate the
                                                            * expression. */
 char *string; /* Expression to evaluate. */
-long *ptr; /* Where to store result. */
+long *ptr;    /* Where to store result. */
 {
     Value value;
     int result;
@@ -1715,8 +1715,8 @@ int Tcl_ExprDouble(interp,
                    string,
                    ptr) Tcl_Interp *interp; /* Context in which to evaluate
                                              * the expression. */
-char *string; /* Expression to evaluate. */
-double *ptr; /* Where to store result. */
+char *string;                               /* Expression to evaluate. */
+double *ptr;                                /* Where to store result. */
 {
     Value value;
     int result;
@@ -1749,8 +1749,8 @@ int Tcl_ExprBoolean(interp,
                     string,
                     ptr) Tcl_Interp *interp; /* Context in which to evaluate
                                               * the expression. */
-char *string; /* Expression to evaluate. */
-int *ptr; /* Where to store 0/1 result. */
+char *string;                                /* Expression to evaluate. */
+int *ptr;                                    /* Where to store 0/1 result. */
 {
     Value value;
     int result;
@@ -1800,7 +1800,7 @@ int *ptr; /* Where to store 0/1 result. */
 int Tcl_ExprString(interp,
                    string) Tcl_Interp *interp; /* Context in which to evaluate
                                                 * the expression. */
-char *string; /* Expression to evaluate. */
+char *string;                                  /* Expression to evaluate. */
 {
     Value value;
     int result;
@@ -1856,17 +1856,17 @@ char *string; /* Expression to evaluate. */
  */
 
 void Tcl_CreateMathFunc(interp, name, numArgs, argTypes, proc, clientData)
-Tcl_Interp *interp; /* Interpreter in which function is
-                     * to be available. */
-char *name; /* Name of function (e.g. "sin"). */
-int numArgs; /* Nnumber of arguments required by
-              * function. */
+Tcl_Interp *interp;      /* Interpreter in which function is
+                          * to be available. */
+char *name;              /* Name of function (e.g. "sin"). */
+int numArgs;             /* Nnumber of arguments required by
+                          * function. */
 Tcl_ValueType *argTypes; /* Array of types acceptable for
                           * each argument. */
-Tcl_MathProc *proc; /* Procedure that implements the
-                     * math function. */
-ClientData clientData; /* Additional value to pass to the
-                        * function. */
+Tcl_MathProc *proc;      /* Procedure that implements the
+                          * math function. */
+ClientData clientData;   /* Additional value to pass to the
+                          * function. */
 {
     Interp *iPtr = ( Interp * )interp;
     Tcl_HashEntry *hPtr;
@@ -1918,19 +1918,19 @@ ClientData clientData; /* Additional value to pass to the
 static int ExprMathFunc(interp, infoPtr, valuePtr)
 Tcl_Interp *interp; /* Interpreter to use for error
                      * reporting. */
-ExprInfo *infoPtr; /* Describes the state of the parse.
-                    * infoPtr->expr must point to the
-                    * first character of the function's
-                    * name. */
-Value *valuePtr; /* Where to store value, if that is
-                  * what's parsed from string.  Caller
-                  * must have initialized pv field
-                  * correctly. */
+ExprInfo *infoPtr;  /* Describes the state of the parse.
+                     * infoPtr->expr must point to the
+                     * first character of the function's
+                     * name. */
+Value *valuePtr;    /* Where to store value, if that is
+                     * what's parsed from string.  Caller
+                     * must have initialized pv field
+                     * correctly. */
 {
     Interp *iPtr = ( Interp * )interp;
-    MathFunc *mathFuncPtr; /* Info about math function. */
+    MathFunc *mathFuncPtr;         /* Info about math function. */
     Tcl_Value args[MAX_MATH_ARGS]; /* Arguments for function call. */
-    Tcl_Value funcResult; /* Result of function call. */
+    Tcl_Value funcResult;          /* Result of function call. */
     Tcl_HashEntry *hPtr;
     char *p, *funcName, savedChar;
     int i, result;

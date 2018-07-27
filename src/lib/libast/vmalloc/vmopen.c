@@ -46,9 +46,9 @@ _vmopen(Vmalloc_t *vmo, Vmdisc_t *disc, Vmethod_t *meth, int mode)
 #    else
 Vmalloc_t *_vmopen(vmo, disc, meth, mode) Vmalloc_t *vmo; /* from previous
                                                              vmopen if != 0	*/
-Vmdisc_t *disc; /* discipline to get segments	*/
+Vmdisc_t *disc;  /* discipline to get segments	*/
 Vmethod_t *meth; /* method to manage space	*/
-int mode; /* type of region		*/
+int mode;        /* type of region		*/
 #    endif
 {
     Vmalloc_t *vm, *vmp, vmproto;
@@ -262,7 +262,7 @@ vmopen(Vmdisc_t *disc, Vmethod_t *meth, int mode)
 Vmalloc_t *vmopen(vm, disc, meth, mode) Vmdisc_t *disc; /* discipline to get
                                                            segments	*/
 Vmethod_t *meth; /* method to manage space	*/
-int mode; /* type of region		*/
+int mode;        /* type of region		*/
 #    endif
 {
     return _vmopen(NIL(Vmalloc_t *), disc, meth, mode);

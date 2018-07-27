@@ -71,7 +71,7 @@ Tk_Window tkwin; /* Token for window;  this selects a
 
 char *TkGetDefaultScreenName(interp, screenName)
 Tcl_Interp *interp; /* Interp used to find environment variables. */
-char *screenName; /* Screen name from command line, or NULL. */
+char *screenName;   /* Screen name from command line, or NULL. */
 {
     if ((screenName == NULL) || (screenName[0] == '\0'))
     {

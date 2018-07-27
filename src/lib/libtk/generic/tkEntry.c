@@ -24,24 +24,24 @@
 
 typedef struct
 {
-    Tk_Window tkwin; /* Window that embodies the entry. NULL
-                      * means that the window has been destroyed
-                      * but the data structures haven't yet been
-                      * cleaned up.*/
-    Display *display; /* Display containing widget.  Used, among
-                       * other things, so that resources can be
-                       * freed even after tkwin has gone away. */
-    Tcl_Interp *interp; /* Interpreter associated with entry. */
+    Tk_Window tkwin;       /* Window that embodies the entry. NULL
+                            * means that the window has been destroyed
+                            * but the data structures haven't yet been
+                            * cleaned up.*/
+    Display *display;      /* Display containing widget.  Used, among
+                            * other things, so that resources can be
+                            * freed even after tkwin has gone away. */
+    Tcl_Interp *interp;    /* Interpreter associated with entry. */
     Tcl_Command widgetCmd; /* Token for entry's widget command. */
-    int numChars; /* Number of non-NULL characters in
-                   * string (may be 0). */
-    char *string; /* Pointer to storage for string;
-                   * NULL-terminated;  malloc-ed. */
-    char *textVarName; /* Name of variable (malloc'ed) or NULL.
-                        * If non-NULL, entry's string tracks the
-                        * contents of this variable and vice versa. */
-    Tk_Uid state; /* Normal or disabled.  Entry is read-only
-                   * when disabled. */
+    int numChars;          /* Number of non-NULL characters in
+                            * string (may be 0). */
+    char *string;          /* Pointer to storage for string;
+                            * NULL-terminated;  malloc-ed. */
+    char *textVarName;     /* Name of variable (malloc'ed) or NULL.
+                            * If non-NULL, entry's string tracks the
+                            * contents of this variable and vice versa. */
+    Tk_Uid state;          /* Normal or disabled.  Entry is read-only
+                            * when disabled. */
 
     /*
      * Information used when displaying widget:
@@ -49,24 +49,24 @@ typedef struct
 
     Tk_3DBorder normalBorder; /* Used for drawing border around whole
                                * window, plus used for background. */
-    int borderWidth; /* Width of 3-D border around window. */
-    int relief; /* 3-D effect: TK_RELIEF_RAISED, etc. */
-    XFontStruct *fontPtr; /* Information about text font, or NULL. */
-    XColor *fgColorPtr; /* Text color in normal mode. */
-    GC textGC; /* For drawing normal text. */
-    Tk_3DBorder selBorder; /* Border and background for selected
-                            * characters. */
-    int selBorderWidth; /* Width of border around selection. */
-    XColor *selFgColorPtr; /* Foreground color for selected text. */
-    GC selTextGC; /* For drawing selected text. */
+    int borderWidth;          /* Width of 3-D border around window. */
+    int relief;               /* 3-D effect: TK_RELIEF_RAISED, etc. */
+    XFontStruct *fontPtr;     /* Information about text font, or NULL. */
+    XColor *fgColorPtr;       /* Text color in normal mode. */
+    GC textGC;                /* For drawing normal text. */
+    Tk_3DBorder selBorder;    /* Border and background for selected
+                               * characters. */
+    int selBorderWidth;       /* Width of border around selection. */
+    XColor *selFgColorPtr;    /* Foreground color for selected text. */
+    GC selTextGC;             /* For drawing selected text. */
     Tk_3DBorder insertBorder; /* Used to draw vertical bar for insertion
                                * cursor. */
-    int insertWidth; /* Total width of insert cursor. */
-    int insertBorderWidth; /* Width of 3-D border around insert cursor. */
-    int insertOnTime; /* Number of milliseconds cursor should spend
-                       * in "on" state for each blink. */
-    int insertOffTime; /* Number of milliseconds cursor should spend
-                        * in "off" state for each blink. */
+    int insertWidth;          /* Total width of insert cursor. */
+    int insertBorderWidth;    /* Width of 3-D border around insert cursor. */
+    int insertOnTime;         /* Number of milliseconds cursor should spend
+                               * in "on" state for each blink. */
+    int insertOffTime;        /* Number of milliseconds cursor should spend
+                               * in "off" state for each blink. */
     Tcl_TimerToken insertBlinkHandler;
     /* Timer handler used to blink cursor on and
      * off. */
@@ -77,40 +77,40 @@ typedef struct
     /* Color for drawing traversal highlight
      * area when highlight is off. */
     XColor *highlightColorPtr; /* Color for drawing traversal highlight. */
-    GC highlightGC; /* For drawing traversal highlight. */
-    Tk_Justify justify; /* Justification to use for text within
-                         * window. */
-    int avgWidth; /* Width of average character. */
-    int prefWidth; /* Desired width of window, measured in
-                    * average characters. */
-    int inset; /* Number of pixels on the left and right
-                * sides that are taken up by XPAD, borderWidth
-                * (if any), and highlightWidth (if any). */
-    int leftIndex; /* Index of left-most character visible in
-                    * window. */
-    int leftX; /* X position at which leftIndex is drawn
-                * (varies depending on justify). */
-    int tabOrigin; /* Origin for tabs (left edge of string[0]). */
-    int insertPos; /* Index of character before which next
-                    * typed character will be inserted. */
-    char *showChar; /* Value of -show option.  If non-NULL, first
-                     * character is used for displaying all
-                     * characters in entry.  Malloc'ed. */
-    char *displayString; /* If non-NULL, points to string with same
-                          * length as string but whose characters
-                          * are all equal to showChar.  Malloc'ed. */
+    GC highlightGC;            /* For drawing traversal highlight. */
+    Tk_Justify justify;        /* Justification to use for text within
+                                * window. */
+    int avgWidth;              /* Width of average character. */
+    int prefWidth;             /* Desired width of window, measured in
+                                * average characters. */
+    int inset;                 /* Number of pixels on the left and right
+                                * sides that are taken up by XPAD, borderWidth
+                                * (if any), and highlightWidth (if any). */
+    int leftIndex;             /* Index of left-most character visible in
+                                * window. */
+    int leftX;                 /* X position at which leftIndex is drawn
+                                * (varies depending on justify). */
+    int tabOrigin;             /* Origin for tabs (left edge of string[0]). */
+    int insertPos;             /* Index of character before which next
+                                * typed character will be inserted. */
+    char *showChar;            /* Value of -show option.  If non-NULL, first
+                                * character is used for displaying all
+                                * characters in entry.  Malloc'ed. */
+    char *displayString;       /* If non-NULL, points to string with same
+                                * length as string but whose characters
+                                * are all equal to showChar.  Malloc'ed. */
 
     /*
      * Information about what's selected, if any.
      */
 
-    int selectFirst; /* Index of first selected character (-1 means
-                      * nothing selected. */
-    int selectLast; /* Index of last selected character (-1 means
-                     * nothing selected. */
-    int selectAnchor; /* Fixed end of selection (i.e. "select to"
-                       * operation will use this as one end of the
-                       * selection). */
+    int selectFirst;     /* Index of first selected character (-1 means
+                          * nothing selected. */
+    int selectLast;      /* Index of last selected character (-1 means
+                          * nothing selected. */
+    int selectAnchor;    /* Fixed end of selection (i.e. "select to"
+                          * operation will use this as one end of the
+                          * selection). */
     int exportSelection; /* Non-zero means tie internal entry selection
                           * to X selection. */
 
@@ -118,8 +118,8 @@ typedef struct
      * Information for scanning:
      */
 
-    int scanMarkX; /* X-position at which scan started (e.g.
-                    * button was pressed here). */
+    int scanMarkX;     /* X-position at which scan started (e.g.
+                        * button was pressed here). */
     int scanMarkIndex; /* Index of character that was at left of
                         * window when scan started. */
 
@@ -128,14 +128,14 @@ typedef struct
      */
 
     Tk_Cursor cursor; /* Current cursor for window, or None. */
-    char *takeFocus; /* Value of -takefocus option;  not used in
-                      * the C code, but used by keyboard traversal
-                      * scripts.  Malloc'ed, but may be NULL. */
-    char *scrollCmd; /* Command prefix for communicating with
-                      * scrollbar(s).  Malloc'ed.  NULL means
-                      * no command to issue. */
-    int flags; /* Miscellaneous flags;  see below for
-                * definitions. */
+    char *takeFocus;  /* Value of -takefocus option;  not used in
+                       * the C code, but used by keyboard traversal
+                       * scripts.  Malloc'ed, but may be NULL. */
+    char *scrollCmd;  /* Command prefix for communicating with
+                       * scrollbar(s).  Malloc'ed.  NULL means
+                       * no command to issue. */
+    int flags;        /* Miscellaneous flags;  see below for
+                       * definitions. */
 } Entry;
 
 /*
@@ -480,9 +480,9 @@ InsertChars _ANSI_ARGS_((Entry * entryPtr, int index, char *string));
 int Tk_EntryCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     Entry *entryPtr;
@@ -609,9 +609,9 @@ error:
 
 static int EntryWidgetCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about entry widget. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Entry *entryPtr = ( Entry * )clientData;
     int result = TCL_OK;
@@ -1205,11 +1205,11 @@ static void DestroyEntry(memPtr) char *memPtr; /* Info about entry widget. */
 
 static int ConfigureEntry(interp, entryPtr, argc, argv, flags)
 Tcl_Interp *interp; /* Used for error reporting. */
-Entry *entryPtr; /* Information about widget;  may or may
-                  * not already have values for some fields. */
-int argc; /* Number of valid entries in argv. */
-char **argv; /* Arguments. */
-int flags; /* Flags to pass to Tk_ConfigureWidget. */
+Entry *entryPtr;    /* Information about widget;  may or may
+                     * not already have values for some fields. */
+int argc;           /* Number of valid entries in argv. */
+char **argv;        /* Arguments. */
+int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
     XGCValues gcValues;
     GC new;
@@ -1833,8 +1833,8 @@ static void EntryComputeGeometry(entryPtr) Entry *entryPtr; /* Widget record
 static void
 InsertChars(entryPtr, index, string) Entry *entryPtr; /* Entry that is to get
                                                        * the new elements. */
-int index; /* Add the new elements before this
-            * element. */
+int index;    /* Add the new elements before this
+               * element. */
 char *string; /* New characters to add (NULL-terminated
                * string). */
 {
@@ -2131,7 +2131,7 @@ char *value; /* New text to display in entry. */
 
 static void EntryEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
-XEvent *eventPtr; /* Information about event. */
+XEvent *eventPtr;      /* Information about event. */
 {
     Entry *entryPtr = ( Entry * )clientData;
     if (eventPtr->type == Expose)
@@ -2239,10 +2239,10 @@ ClientData clientData; /* Pointer to widget record for widget. */
 
 static int GetEntryIndex(interp, entryPtr, string, indexPtr)
 Tcl_Interp *interp; /* For error messages. */
-Entry *entryPtr; /* Entry for which the index is being
-                  * specified. */
-char *string; /* Specifies character in entryPtr. */
-int *indexPtr; /* Where to store converted index. */
+Entry *entryPtr;    /* Entry for which the index is being
+                     * specified. */
+char *string;       /* Specifies character in entryPtr. */
+int *indexPtr;      /* Where to store converted index. */
 {
     size_t length;
 
@@ -2400,8 +2400,8 @@ int *indexPtr; /* Where to store converted index. */
 
 static void EntryScanTo(entryPtr,
                         x) Entry *entryPtr; /* Information about widget. */
-int x; /* X-coordinate to use for scan
-        * operation. */
+int x;                                      /* X-coordinate to use for scan
+                                             * operation. */
 {
     int newLeftIndex;
 
@@ -2530,13 +2530,13 @@ int index; /* Index of element that is to
 
 static int EntryFetchSelection(clientData, offset, buffer, maxBytes)
 ClientData clientData; /* Information about entry widget. */
-int offset; /* Offset within selection of first
-             * character to be returned. */
-char *buffer; /* Location in which to place
-               * selection. */
-int maxBytes; /* Maximum number of bytes to place
-               * at buffer, not including terminating
-               * NULL character. */
+int offset;            /* Offset within selection of first
+                        * character to be returned. */
+char *buffer;          /* Location in which to place
+                        * selection. */
+int maxBytes;          /* Maximum number of bytes to place
+                        * at buffer, not including terminating
+                        * NULL character. */
 {
     Entry *entryPtr = ( Entry * )clientData;
     int count;
@@ -2665,8 +2665,8 @@ static void EntryVisibleRange(entryPtr,
                                                            widget. */
 double *firstPtr; /* Return position of first visible
                    * character in widget. */
-double *lastPtr; /* Return position of char just after
-                  * last visible one. */
+double *lastPtr;  /* Return position of char just after
+                   * last visible one. */
 {
     char *displayString;
     int charsInWindow, endX;
@@ -2854,10 +2854,10 @@ int gotFocus; /* 1 means window is getting focus, 0 means
 /* ARGSUSED */
 static char *EntryTextVarProc(clientData, interp, name1, name2, flags)
 ClientData clientData; /* Information about button. */
-Tcl_Interp *interp; /* Interpreter containing variable. */
-char *name1; /* Not used. */
-char *name2; /* Not used. */
-int flags; /* Information about what happened. */
+Tcl_Interp *interp;    /* Interpreter containing variable. */
+char *name1;           /* Not used. */
+char *name2;           /* Not used. */
+int flags;             /* Information about what happened. */
 {
     Entry *entryPtr = ( Entry * )clientData;
     char *value;

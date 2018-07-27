@@ -38,16 +38,16 @@
 
 typedef struct
 {
-    Sfdisc_t disc; /* sfio discipline		*/
-    Sfio_t *input; /* tied with this input stream	*/
-    Sfio_t *error; /* tied with this error stream	*/
-    int rows; /* max rows			*/
-    int cols; /* max cols			*/
-    int row; /* current row			*/
-    int col; /* current col			*/
-    int match; /* match length, 0 if none	*/
+    Sfdisc_t disc;     /* sfio discipline		*/
+    Sfio_t *input;     /* tied with this input stream	*/
+    Sfio_t *error;     /* tied with this error stream	*/
+    int rows;          /* max rows			*/
+    int cols;          /* max cols			*/
+    int row;           /* current row			*/
+    int col;           /* current col			*/
+    int match;         /* match length, 0 if none	*/
     char pattern[128]; /* match pattern		*/
-    char prompt[1]; /* prompt string		*/
+    char prompt[1];    /* prompt string		*/
 } More_t;
 
 /*

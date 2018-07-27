@@ -23,10 +23,10 @@
 
 typedef struct VisualDictionary
 {
-    char *name; /* Textual name of class. */
+    char *name;    /* Textual name of class. */
     int minLength; /* Minimum # characters that must be
                     * specified for an unambiguous match. */
-    int class; /* X symbol for class. */
+    int class;     /* X symbol for class. */
 } VisualDictionary;
 static VisualDictionary visualNames[] = {
     { "best", 1, 0 },
@@ -48,18 +48,18 @@ static VisualDictionary visualNames[] = {
 
 struct TkColormap
 {
-    Colormap colormap; /* X's identifier for the colormap. */
-    Visual *visual; /* Visual for which colormap was
-                     * allocated. */
-    int refCount; /* How many uses of the colormap are still
-                   * outstanding (calls to Tk_GetColormap
-                   * minus calls to Tk_FreeColormap). */
-    int shareable; /* 0 means this colormap was allocated by
-                    * a call to Tk_GetColormap with "new",
-                    * implying that the window wants it all
-                    * for itself.  1 means that the colormap
-                    * was allocated as a default for a particular
-                    * visual, so it can be shared. */
+    Colormap colormap;          /* X's identifier for the colormap. */
+    Visual *visual;             /* Visual for which colormap was
+                                 * allocated. */
+    int refCount;               /* How many uses of the colormap are still
+                                 * outstanding (calls to Tk_GetColormap
+                                 * minus calls to Tk_FreeColormap). */
+    int shareable;              /* 0 means this colormap was allocated by
+                                 * a call to Tk_GetColormap with "new",
+                                 * implying that the window wants it all
+                                 * for itself.  1 means that the colormap
+                                 * was allocated as a default for a particular
+                                 * visual, so it can be shared. */
     struct TkColormap *nextPtr; /* Next in list of colormaps for this display,
                                  * or NULL for end of list. */
 };
@@ -88,14 +88,14 @@ struct TkColormap
  */
 
 Visual *Tk_GetVisual(interp, tkwin, string, depthPtr, colormapPtr)
-Tcl_Interp *interp; /* Interpreter to use for error
-                     * reporting. */
-Tk_Window tkwin; /* Window in which visual will be
-                  * used. */
-char *string; /* String describing visual.  See
-               * manual entry for details. */
-int *depthPtr; /* The depth of the returned visual
-                * is stored here. */
+Tcl_Interp *interp;    /* Interpreter to use for error
+                        * reporting. */
+Tk_Window tkwin;       /* Window in which visual will be
+                        * used. */
+char *string;          /* String describing visual.  See
+                        * manual entry for details. */
+int *depthPtr;         /* The depth of the returned visual
+                        * is stored here. */
 Colormap *colormapPtr; /* If non-NULL, then a suitable
                         * colormap for visual is placed here.
                         * This colormap must eventually be
@@ -436,9 +436,9 @@ Colormap Tk_GetColormap(interp,
                                                      * error reporting. */
 Tk_Window tkwin; /* Window where colormap will be
                   * used. */
-char *string; /* String that identifies colormap:
-               * either "new" or the name of
-               * another window. */
+char *string;    /* String that identifies colormap:
+                  * either "new" or the name of
+                  * another window. */
 {
     Colormap colormap;
     TkColormap *cmapPtr;

@@ -37,12 +37,12 @@
 
 #    include "uu.h"
 
-#    define UU_CLOSEOUT (1 << 4) /* close op when done		*/
-#    define UU_FREEPATH (1 << 5) /* free path when done		*/
+#    define UU_CLOSEOUT (1 << 4)   /* close op when done		*/
+#    define UU_FREEPATH (1 << 5)   /* free path when done		*/
 #    define UU_HEADERMUST (1 << 6) /* header must be called	*/
-#    define UU_LENGTH (1 << 7) /* length encoded too		*/
-#    define UU_DEFAULT (1 << 8) /* original method was default	*/
-#    define UU_METHOD (1 << 9) /* first method specific bit	*/
+#    define UU_LENGTH (1 << 7)     /* length encoded too		*/
+#    define UU_DEFAULT (1 << 8)    /* original method was default	*/
+#    define UU_METHOD (1 << 9)     /* first method specific bit	*/
 
 typedef struct
 {

@@ -41,7 +41,7 @@ static void DeleteInterpProc _ANSI_ARGS_((Tcl_Interp * interp));
 
 typedef struct
 {
-    char *name; /* Name of command. */
+    char *name;        /* Name of command. */
     Tcl_CmdProc *proc; /* Procedure that executes command. */
 } CmdInfo;
 
@@ -259,10 +259,10 @@ Tcl_CreateInterp()
  */
 
 void Tcl_CallWhenDeleted(interp, proc, clientData)
-Tcl_Interp *interp; /* Interpreter to watch. */
+Tcl_Interp *interp;         /* Interpreter to watch. */
 Tcl_InterpDeleteProc *proc; /* Procedure to call when interpreter
                              * is about to be deleted. */
-ClientData clientData; /* One-word value to pass to proc. */
+ClientData clientData;      /* One-word value to pass to proc. */
 {
     Interp *iPtr = ( Interp * )interp;
     static int assocDataCounter = 0;
@@ -306,10 +306,10 @@ ClientData clientData; /* One-word value to pass to proc. */
  */
 
 void Tcl_DontCallWhenDeleted(interp, proc, clientData)
-Tcl_Interp *interp; /* Interpreter to watch. */
+Tcl_Interp *interp;         /* Interpreter to watch. */
 Tcl_InterpDeleteProc *proc; /* Procedure to call when interpreter
                              * is about to be deleted. */
-ClientData clientData; /* One-word value to pass to proc. */
+ClientData clientData;      /* One-word value to pass to proc. */
 {
     Interp *iPtr = ( Interp * )interp;
     Tcl_HashTable *hTablePtr;
@@ -355,11 +355,11 @@ ClientData clientData; /* One-word value to pass to proc. */
  */
 
 void Tcl_SetAssocData(interp, name, proc, clientData)
-Tcl_Interp *interp; /* Interpreter to associate with. */
-char *name; /* Name for association. */
+Tcl_Interp *interp;         /* Interpreter to associate with. */
+char *name;                 /* Name for association. */
 Tcl_InterpDeleteProc *proc; /* Proc to call when interpreter is
                              * about to be deleted. */
-ClientData clientData; /* One-word value to pass to proc. */
+ClientData clientData;      /* One-word value to pass to proc. */
 {
     Interp *iPtr = ( Interp * )interp;
     AssocData *dPtr;
@@ -406,7 +406,7 @@ ClientData clientData; /* One-word value to pass to proc. */
 void Tcl_DeleteAssocData(interp,
                          name) Tcl_Interp *interp; /* Interpreter to associate
                                                       with. */
-char *name; /* Name of association. */
+char *name;                                        /* Name of association. */
 {
     Interp *iPtr = ( Interp * )interp;
     AssocData *dPtr;
@@ -449,8 +449,8 @@ char *name; /* Name of association. */
  */
 
 ClientData Tcl_GetAssocData(interp, name, procPtr)
-Tcl_Interp *interp; /* Interpreter associated with. */
-char *name; /* Name of association. */
+Tcl_Interp *interp;             /* Interpreter associated with. */
+char *name;                     /* Name of association. */
 Tcl_InterpDeleteProc **procPtr; /* Pointer to place to store address
                                  * of current deletion callback. */
 {
@@ -749,12 +749,12 @@ Tcl_Interp *interp; /* Token for command interpreter (returned
  */
 
 Tcl_Trace Tcl_CreateTrace(interp, level, proc, clientData)
-Tcl_Interp *interp; /* Interpreter in which to create the trace. */
-int level; /* Only call proc for commands at nesting level
-            * <= level (1 => top level). */
+Tcl_Interp *interp;     /* Interpreter in which to create the trace. */
+int level;              /* Only call proc for commands at nesting level
+                         * <= level (1 => top level). */
 Tcl_CmdTraceProc *proc; /* Procedure to call before executing each
                          * command. */
-ClientData clientData; /* Arbitrary one-word value to pass to proc. */
+ClientData clientData;  /* Arbitrary one-word value to pass to proc. */
 {
     Trace *tracePtr;
     Interp *iPtr = ( Interp * )interp;
@@ -838,7 +838,7 @@ void Tcl_AddErrorInfo(interp,
                       message) Tcl_Interp *interp; /* Interpreter to which
                                                     * error information
                                                     * pertains. */
-char *message; /* Message to record. */
+char *message;                                     /* Message to record. */
 {
     Interp *iPtr = ( Interp * )interp;
 

@@ -601,17 +601,17 @@ int flush;
 {
     struct inflate_state FAR *state;
     unsigned char FAR *next; /* next input */
-    unsigned char FAR *put; /* next output */
-    unsigned have, left; /* available input and output */
-    unsigned long hold; /* bit buffer */
-    unsigned bits; /* bits in bit buffer */
-    unsigned in, out; /* save starting available input and output */
-    unsigned copy; /* number of stored or match bytes to copy */
+    unsigned char FAR *put;  /* next output */
+    unsigned have, left;     /* available input and output */
+    unsigned long hold;      /* bit buffer */
+    unsigned bits;           /* bits in bit buffer */
+    unsigned in, out;        /* save starting available input and output */
+    unsigned copy;           /* number of stored or match bytes to copy */
     unsigned char FAR *from; /* where to copy match bytes from */
-    code this; /* current decoding table entry */
-    code last; /* parent table entry */
-    unsigned len; /* length to copy for repeats, bits to drop */
-    int ret; /* return code */
+    code this;               /* current decoding table entry */
+    code last;               /* parent table entry */
+    unsigned len;            /* length to copy for repeats, bits to drop */
+    int ret;                 /* return code */
 #ifdef GUNZIP
     unsigned char hbuf[4]; /* buffer for gzip header crc calculation */
 #endif
@@ -1423,9 +1423,9 @@ unsigned len;
 
 int ZEXPORT inflateSync(strm) z_streamp strm;
 {
-    unsigned len; /* number of bytes to look at or looked at */
+    unsigned len;          /* number of bytes to look at or looked at */
     unsigned long in, out; /* temporary to save total_in and total_out */
-    unsigned char buf[4]; /* to restore bit buffer to byte string */
+    unsigned char buf[4];  /* to restore bit buffer to byte string */
     struct inflate_state FAR *state;
 
     /* check parameters */

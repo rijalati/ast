@@ -14,7 +14,7 @@
 #define OVAR_NOADD 0x1
 #define OVAR_GETDISC 0x2
 #define OVAR_UNSETDISC 0x4
-#define OVAR_ARRAY 0x8 /* If array, must have part2 */
+#define OVAR_ARRAY 0x8     /* If array, must have part2 */
 #define OVAR_MAKEDISC 0x10 /* Install array disc. if not there */
 
 #define TKSH_TRACE_ELEMENT 0x400
@@ -566,12 +566,12 @@ tksh_arrputval(Namval_t *nv, const char *val, int flags, Namfun_t *nf)
     }
     /* Whole array unset */
     nv = nv_move(nv, &nvcpy); /* Copy because array must appear gone */
-    do /* call traces in each array element */
+    do                        /* call traces in each array element */
     {
         if ((nvsub = nv_opensub(nv)))
             nv_unset(nvsub);
     } while (nv_nextsub(nv) != 0);
-    nv_putv(nv, val, flags, nf); /* Free array */
+    nv_putv(nv, val, flags, nf);      /* Free array */
     nv_putsub(nv, NULL, ARRAY_UNDEF); /* End scan */
     TkshClearTraces(nv);
 }
@@ -1007,11 +1007,11 @@ Tcl_VarTraceInfo(Tcl_Interp *interp,
  */
 
 static void VarErrMsg(interp, part1, part2, operation, reason)
-Tcl_Interp *interp; /* Interpreter in which to record message. */
+Tcl_Interp *interp;  /* Interpreter in which to record message. */
 char *part1, *part2; /* Variable's two-part name. */
-char *operation; /* String describing operation that failed,
-                  * e.g. "read", "set", or "unset". */
-char *reason; /* String describing why operation failed. */
+char *operation;     /* String describing operation that failed,
+                      * e.g. "read", "set", or "unset". */
+char *reason;        /* String describing why operation failed. */
 {
     Tcl_ResetResult(interp);
     Tcl_AppendResult(

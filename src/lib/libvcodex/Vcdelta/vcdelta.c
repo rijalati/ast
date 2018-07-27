@@ -26,7 +26,7 @@
 
 #define SLOP 64 /* max overhead space needed for output */
 
-#define SFXSORT 00001 /* use suffix sorting for lz-parsing	*/
+#define SFXSORT 00001   /* use suffix sorting for lz-parsing	*/
 #define FREETABLE 00010 /* free the coding table on closing	*/
 
 static Vcmtarg_t _Diffargs[]
@@ -202,9 +202,9 @@ static ssize_t
 vcdputinst(Vclzparse_t *vcpa, int type, Vclzmatch_t *mtch, ssize_t n)
 #else
 static ssize_t vcdputinst(vcpa, type, mtch, n) Vclzparse_t *vcpa;
-int type; /* type of instruction		*/
+int type;          /* type of instruction		*/
 Vclzmatch_t *mtch; /* list of matched fragments	*/
-ssize_t n; /* number of fragments		*/
+ssize_t n;         /* number of fragments		*/
 #endif
 {
     ssize_t len, l, here;
@@ -379,7 +379,7 @@ Void_t **out;
     /* read size of data buffers */
     vcioinit(&data, del, ndel);
     ntar = ( ssize_t )vciogetu(&data); /* buffer size for target data		*/
-    ctrl = ( int )vciogetc(&data); /* to see if datasets were compressed	*/
+    ctrl = ( int )vciogetc(&data);  /* to see if datasets were compressed	*/
     d = ( ssize_t )vciogetu(&data); /* size of unmatched data		*/
     i = ( ssize_t )vciogetu(&data); /* size of instruction set		*/
     a = ( ssize_t )vciogetu(&data); /* size of COPY addresses		*/

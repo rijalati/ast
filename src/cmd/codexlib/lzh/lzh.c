@@ -13,21 +13,21 @@
 #define WINDOW_MAX (1 << WINBIT_MAX)
 
 #define MATCH_MAX 256 /* formerly F (not more than UCHAR_MAX + 1) */
-#define THRESHOLD 3 /* choose optimal value */
+#define THRESHOLD 3   /* choose optimal value */
 
 #define NC (UCHAR_MAX + MATCH_MAX - THRESHOLD + 2) /* alphbet 0..NC-1 */
-#define CBIT 9 /* $\lfloor \log_2 NC \rfloor + 1$ */
+#define CBIT 9       /* $\lfloor \log_2 NC \rfloor + 1$ */
 #define USHRT_BIT 16 /* (CHAR_BIT * sizeof(ui2)) */
 #define NP (WINBIT_MAX + 1)
 #define NT (USHRT_BIT + 3)
 #define PBIT 5 /* smallest int s.t. (1<<PBIT))>(WINBIT_MAX+1) */
 #define TBIT 5 /* smallest int s.t. (1<<TBIT)>NT */
 #define NPT 0x80
-#define N1 286 /* alphabet size */
+#define N1 286          /* alphabet size */
 #define N2 (2 * N1 - 1) /* # of nodes in Huffman tree */
-#define EXTRABITS 8 /* >= log2(F-THRESHOLD+258-N1) */
-#define BUFBITS 16 /* >= log2(MAXBUF) */
-#define LENFIELD 4 /* bit size of length field for tree output */
+#define EXTRABITS 8     /* >= log2(F-THRESHOLD+258-N1) */
+#define BUFBITS 16      /* >= log2(MAXBUF) */
+#define LENFIELD 4      /* bit size of length field for tree output */
 #define SNP (8 * 1024 / 64)
 #define SNP2 (SNP * 2 - 1)
 #define N_CHAR (256 + 60 - THRESHOLD + 1)
@@ -164,9 +164,9 @@ make_table(State_t *state,
            ui4 tablesize)
 {
 #if 1
-    ui2 count[17]; /* count of bitlen */
+    ui2 count[17];  /* count of bitlen */
     ui2 weight[17]; /* 0x10000ul >> bitlen */
-    ui2 start[17]; /* first code of bitlen */
+    ui2 start[17];  /* first code of bitlen */
     ui2 total;
     int i;
     int j;

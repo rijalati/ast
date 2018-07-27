@@ -33,12 +33,12 @@ typedef int(*Vcwevent_f) _ARG_(( Vcwindow_t *, int, Void_t *, Vcwdisc_t * ));
 
 struct _vcwmatch_s
 {
-    int type; /* VCD_[SOURCE|TARGET]FILE		*/
-    Sfoff_t wpos; /* position in file			*/
+    int type;      /* VCD_[SOURCE|TARGET]FILE		*/
+    Sfoff_t wpos;  /* position in file			*/
     ssize_t wsize; /* size of matching window		*/
     Void_t *wdata; /* window data				*/
     ssize_t msize; /* amount of data actually matched	*/
-    int more; /* more subwindows to process		*/
+    int more;      /* more subwindows to process		*/
 };
 
 struct _vcwmethod_s
@@ -61,7 +61,7 @@ struct _vcwindow_s
 {
     Vcwmethod_t *meth;
     Vcwdisc_t *disc;
-    ssize_t cmpsz; /* size of result of last comp. attempt	*/
+    ssize_t cmpsz;    /* size of result of last comp. attempt	*/
     Vcwmatch_t match; /* space to return the matching window	*/
     Void_t *mtdata;
 };

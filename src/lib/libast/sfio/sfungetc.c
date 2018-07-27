@@ -53,7 +53,7 @@ int
 sfungetc(Sfio_t *f, int c)
 #else
 int sfungetc(f, c) Sfio_t *f; /* push back one byte to this stream */
-int c; /* the value to be pushed back */
+int c;                        /* the value to be pushed back */
 #endif
 {
     reg Sfio_t *uf;

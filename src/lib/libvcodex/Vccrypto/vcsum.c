@@ -30,9 +30,9 @@
 
 typedef struct _sum_s
 {
-    int type; /* checksum method type	*/
-    ssize_t head; /* #control bytes	*/
-    Vcx_t digest; /* digest structure	*/
+    int type;       /* checksum method type	*/
+    ssize_t head;   /* #control bytes	*/
+    Vcx_t digest;   /* digest structure	*/
     ssize_t dgsize; /* digest size		*/
 } Sum_t;
 
@@ -196,7 +196,7 @@ sumheader(Vcodex_t *vc, Vcmtcode_t *mtcd)
         if ((dgsz = vciogetu(&io)) <= 0) /* digest size */
             return -1;
 
-        dt = vcionext(&io); /* the name of the digest method */
+        dt = vcionext(&io);     /* the name of the digest method */
         sz = vciomore(&io) - 1; /* length of that name */
         vcioskip(&io, sz);
         head = vciogetc(&io); /* number of control bytes */

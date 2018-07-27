@@ -63,13 +63,13 @@ int *peek;
    character. the fields mirror certain local variables in sfvscanf.  */
 typedef struct _scan_s
 {
-    int error; /* get set by _sfdscan if no value specified	*/
-    int inp; /* last input character read			*/
-    int width; /* field width					*/
-    Sfio_t *f; /* stream being scanned				*/
+    int error;              /* get set by _sfdscan if no value specified	*/
+    int inp;                /* last input character read			*/
+    int width;              /* field width					*/
+    Sfio_t *f;              /* stream being scanned				*/
     uchar *d, *endd, *data; /* local buffering system	*/
-    int peek; /* != 0 if unseekable/share stream		*/
-    int n_input; /* number of input bytes processed		*/
+    int peek;               /* != 0 if unseekable/share stream		*/
+    int n_input;            /* number of input bytes processed		*/
 } Scan_t;
 
 /* ds != 0 for scanning double values */
@@ -157,8 +157,8 @@ _sfsetclass(const char *form, Accept_t *ac, int flags)
 #else
 static char *_sfsetclass(form, ac, flags) char *form; /* format string
                                                        */
-Accept_t *ac; /* values of accepted characters	*/
-int flags; /* SFFMT_LONG for wchar_t		*/
+Accept_t *ac;                          /* values of accepted characters	*/
+int flags;                             /* SFFMT_LONG for wchar_t		*/
 #endif
 {
     int c, endc, n;
@@ -271,10 +271,10 @@ _sfgetwc(Scan_t *sc, wchar_t *wc, int fmt, Accept_t *ac, Void_t *mbs)
 #    else
 static int _sfgetwc(sc, wc, fmt, ac, mbs) Scan_t *sc; /* the scanning handle
                                                        */
-wchar_t *wc; /* to return a scanned wchar_t	*/
-int fmt; /* %s, %c, %[			*/
+wchar_t *wc;  /* to return a scanned wchar_t	*/
+int fmt;      /* %s, %c, %[			*/
 Accept_t *ac; /* accept handle for %[		*/
-Void_t *mbs; /* multibyte parsing state	*/
+Void_t *mbs;  /* multibyte parsing state	*/
 #    endif
 {
     int n, v;
@@ -347,7 +347,7 @@ int
 sfvscanf(Sfio_t *f, reg const char *form, va_list args)
 #else
 int sfvscanf(f, form, args) Sfio_t *f; /* file to be scanned */
-reg char *form; /* scanning format */
+reg char *form;                        /* scanning format */
 va_list args;
 #endif
 {

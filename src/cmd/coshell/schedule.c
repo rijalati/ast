@@ -27,18 +27,18 @@
 
 #include "service.h"
 
-#define W_CPU 80 /* additional cpu weight %	*/
-#define R_IDLE 4 /* idle range factor		*/
-#define W_IDLE (X_RANK / 15) /* idle weight			*/
-#define W_JOB 2 /* job weight			*/
-#define T_LOAD 10 /* load truncation		*/
-#define W_LOAD (X_RANK / 75) /* load weight			*/
-#define C_RANK 90 /* compressed after this %	*/
-#define H_RANK 85 /* rank hysterisis %		*/
-#define X_RANK RANK /* maximum rank w/o toss	*/
-#define H_TEMP 50 /* temp hysterisis %		*/
-#define W_TEMP 4 /* temp window bit size		*/
-#define R_USER (3 * 60 * 60) /* user activity range		*/
+#define W_CPU 80              /* additional cpu weight %	*/
+#define R_IDLE 4              /* idle range factor		*/
+#define W_IDLE (X_RANK / 15)  /* idle weight			*/
+#define W_JOB 2               /* job weight			*/
+#define T_LOAD 10             /* load truncation		*/
+#define W_LOAD (X_RANK / 75)  /* load weight			*/
+#define C_RANK 90             /* compressed after this %	*/
+#define H_RANK 85             /* rank hysterisis %		*/
+#define X_RANK RANK           /* maximum rank w/o toss	*/
+#define H_TEMP 50             /* temp hysterisis %		*/
+#define W_TEMP 4              /* temp window bit size		*/
+#define R_USER (3 * 60 * 60)  /* user activity range		*/
 #define W_USER (X_RANK / 600) /* user activity weight		*/
 
 #define CPU(n, v) (( v )*100 / (10 + (( n )-1) * W_CPU / 10) / 10)

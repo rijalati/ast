@@ -78,7 +78,7 @@ int
 sfputwc(Sfio_t *f, int w)
 #else
 int sfputwc(f, w) Sfio_t *f; /* write a portable ulong to this stream */
-int w; /* the unsigned value to be written */
+int w;                       /* the unsigned value to be written */
 #endif
 {
     reg uchar *s;

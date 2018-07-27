@@ -66,8 +66,8 @@
 #        endif
 #        ifndef _XLIB_H
 #            ifdef MAC_TCL
-#                include <Xlib.h>
 #                include <X.h>
+#                include <Xlib.h>
 #            else
 #                if _PACKAGE_ast
 #                    include <Xlib.h>
@@ -113,13 +113,13 @@ typedef char *Tk_Uid;
 
 typedef struct
 {
-    char *key; /* The key string that flags the option in the
-                * argv array. */
-    int type; /* Indicates option type;  see below. */
-    char *src; /* Value to be used in setting dst;  usage
-                * depends on type. */
-    char *dst; /* Address of value to be modified;  usage
-                * depends on type. */
+    char *key;  /* The key string that flags the option in the
+                 * argv array. */
+    int type;   /* Indicates option type;  see below. */
+    char *src;  /* Value to be used in setting dst;  usage
+                 * depends on type. */
+    char *dst;  /* Address of value to be modified;  usage
+                 * depends on type. */
     char *help; /* Documentation message describing this option. */
 } Tk_ArgvInfo;
 
@@ -177,9 +177,9 @@ typedef struct Tk_CustomOption
     Tk_OptionPrintProc *printProc; /* Procedure to return a printable
                                     * string describing an existing
                                     * option. */
-    ClientData clientData; /* Arbitrary one-word value used by
-                            * option parser:  passed to
-                            * parseProc and printProc. */
+    ClientData clientData;         /* Arbitrary one-word value used by
+                                    * option parser:  passed to
+                                    * parseProc and printProc. */
 } Tk_CustomOption;
 
 /*
@@ -191,21 +191,21 @@ typedef struct Tk_CustomOption
 
 typedef struct Tk_ConfigSpec
 {
-    int type; /* Type of option, such as TK_CONFIG_COLOR;
-               * see definitions below.  Last option in
-               * table must have type TK_CONFIG_END. */
-    char *argvName; /* Switch used to specify option in argv.
-                     * NULL means this spec is part of a group. */
-    char *dbName; /* Name for option in option database. */
-    char *dbClass; /* Class for option in database. */
-    char *defValue; /* Default value for option if not
-                     * specified in command line or database. */
-    int offset; /* Where in widget record to store value;
-                 * use Tk_Offset macro to generate values
-                 * for this. */
-    int specFlags; /* Any combination of the values defined
-                    * below;  other bits are used internally
-                    * by tkConfig.c. */
+    int type;                   /* Type of option, such as TK_CONFIG_COLOR;
+                                 * see definitions below.  Last option in
+                                 * table must have type TK_CONFIG_END. */
+    char *argvName;             /* Switch used to specify option in argv.
+                                 * NULL means this spec is part of a group. */
+    char *dbName;               /* Name for option in option database. */
+    char *dbClass;              /* Class for option in database. */
+    char *defValue;             /* Default value for option if not
+                                 * specified in command line or database. */
+    int offset;                 /* Where in widget record to store value;
+                                 * use Tk_Offset macro to generate values
+                                 * for this. */
+    int specFlags;              /* Any combination of the values defined
+                                 * below;  other bits are used internally
+                                 * by tkConfig.c. */
     Tk_CustomOption *customPtr; /* If type is TK_CONFIG_CUSTOM then this is
                                  * a pointer to info about how to parse and
                                  * print the option.  Otherwise it is
@@ -414,26 +414,26 @@ typedef struct
 {
     int type;
     unsigned long serial; /* # of last request processed by server */
-    Bool send_event; /* True if this came from a SendEvent request */
-    Display *display; /* Display the event was read from */
-    Window event; /* Window on which event was requested. */
-    Window root; /* root window that the event occured on */
-    Window subwindow; /* child window */
-    Time time; /* milliseconds */
-    int x, y; /* pointer x, y coordinates in event window */
-    int x_root, y_root; /* coordinates relative to root */
-    unsigned int state; /* key or button mask */
-    Tk_Uid name; /* Name of virtual event. */
-    Bool same_screen; /* same screen flag */
+    Bool send_event;      /* True if this came from a SendEvent request */
+    Display *display;     /* Display the event was read from */
+    Window event;         /* Window on which event was requested. */
+    Window root;          /* root window that the event occured on */
+    Window subwindow;     /* child window */
+    Time time;            /* milliseconds */
+    int x, y;             /* pointer x, y coordinates in event window */
+    int x_root, y_root;   /* coordinates relative to root */
+    unsigned int state;   /* key or button mask */
+    Tk_Uid name;          /* Name of virtual event. */
+    Bool same_screen;     /* same screen flag */
 } XVirtualEvent;
 
 typedef struct
 {
     int type;
     unsigned long serial; /* # of last request processed by server */
-    Bool send_event; /* True if this came from a SendEvent request */
-    Display *display; /* Display the event was read from */
-    Window window; /* Window in which event occurred. */
+    Bool send_event;      /* True if this came from a SendEvent request */
+    Display *display;     /* Display the event was read from */
+    Window window;        /* Window in which event occurred. */
 } XActivateDeactivateEvent;
 typedef XActivateDeactivateEvent XActivateEvent;
 typedef XActivateDeactivateEvent XDeactivateEvent;
@@ -581,31 +581,31 @@ typedef struct Tk_FakeWin
 
 typedef struct Tk_Item
 {
-    int id; /* Unique identifier for this item
-             * (also serves as first tag for
-             * item). */
-    struct Tk_Item *nextPtr; /* Next in display list of all
-                              * items in this canvas.  Later items
-                              * in list are drawn on top of earlier
-                              * ones. */
+    int id;                              /* Unique identifier for this item
+                                          * (also serves as first tag for
+                                          * item). */
+    struct Tk_Item *nextPtr;             /* Next in display list of all
+                                          * items in this canvas.  Later items
+                                          * in list are drawn on top of earlier
+                                          * ones. */
     Tk_Uid staticTagSpace[TK_TAG_SPACE]; /* Built-in space for limited # of
                                           * tags. */
-    Tk_Uid *tagPtr; /* Pointer to array of tags.  Usually
-                     * points to staticTagSpace, but
-                     * may point to malloc-ed space if
-                     * there are lots of tags. */
-    int tagSpace; /* Total amount of tag space available
-                   * at tagPtr. */
-    int numTags; /* Number of tag slots actually used
-                  * at *tagPtr. */
+    Tk_Uid *tagPtr;                      /* Pointer to array of tags.  Usually
+                                          * points to staticTagSpace, but
+                                          * may point to malloc-ed space if
+                                          * there are lots of tags. */
+    int tagSpace;                /* Total amount of tag space available
+                                  * at tagPtr. */
+    int numTags;                 /* Number of tag slots actually used
+                                  * at *tagPtr. */
     struct Tk_ItemType *typePtr; /* Table of procedures that implement
                                   * this type of item. */
-    int x1, y1, x2, y2; /* Bounding box for item, in integer
-                         * canvas units. Set by item-specific
-                         * code and guaranteed to contain every
-                         * pixel drawn in item.  Item area
-                         * includes x1 and y1 but not x2
-                         * and y2. */
+    int x1, y1, x2, y2;          /* Bounding box for item, in integer
+                                  * canvas units. Set by item-specific
+                                  * code and guaranteed to contain every
+                                  * pixel drawn in item.  Item area
+                                  * includes x1 and y1 but not x2
+                                  * and y2. */
 
     /*
      *------------------------------------------------------------------
@@ -683,52 +683,52 @@ _ANSI_ARGS_((Tk_Canvas canvas, Tk_Item *itemPtr, int first, int last));
 
 typedef struct Tk_ItemType
 {
-    char *name; /* The name of this type of item, such
-                 * as "line". */
-    int itemSize; /* Total amount of space needed for
-                   * item's record. */
-    Tk_ItemCreateProc *createProc; /* Procedure to create a new item of
-                                    * this type. */
-    Tk_ConfigSpec *configSpecs; /* Pointer to array of configuration
-                                 * specs for this type.  Used for
-                                 * returning configuration info. */
+    char *name;                       /* The name of this type of item, such
+                                       * as "line". */
+    int itemSize;                     /* Total amount of space needed for
+                                       * item's record. */
+    Tk_ItemCreateProc *createProc;    /* Procedure to create a new item of
+                                       * this type. */
+    Tk_ConfigSpec *configSpecs;       /* Pointer to array of configuration
+                                       * specs for this type.  Used for
+                                       * returning configuration info. */
     Tk_ItemConfigureProc *configProc; /* Procedure to call to change
                                        * configuration options. */
-    Tk_ItemCoordProc *coordProc; /* Procedure to call to get and set
-                                  * the item's coordinates. */
-    Tk_ItemDeleteProc *deleteProc; /* Procedure to delete existing item of
-                                    * this type. */
-    Tk_ItemDisplayProc *displayProc; /* Procedure to display items of
-                                      * this type. */
-    int alwaysRedraw; /* Non-zero means displayProc should
-                       * be called even when the item has
-                       * been moved off-screen. */
-    Tk_ItemPointProc *pointProc; /* Computes distance from item to
-                                  * a given point. */
-    Tk_ItemAreaProc *areaProc; /* Computes whether item is inside,
-                                * outside, or overlapping an area. */
+    Tk_ItemCoordProc *coordProc;      /* Procedure to call to get and set
+                                       * the item's coordinates. */
+    Tk_ItemDeleteProc *deleteProc;    /* Procedure to delete existing item of
+                                       * this type. */
+    Tk_ItemDisplayProc *displayProc;  /* Procedure to display items of
+                                       * this type. */
+    int alwaysRedraw;                 /* Non-zero means displayProc should
+                                       * be called even when the item has
+                                       * been moved off-screen. */
+    Tk_ItemPointProc *pointProc;      /* Computes distance from item to
+                                       * a given point. */
+    Tk_ItemAreaProc *areaProc;        /* Computes whether item is inside,
+                                       * outside, or overlapping an area. */
     Tk_ItemPostscriptProc *postscriptProc;
     /* Procedure to write a Postscript
      * description for items of this
      * type. */
-    Tk_ItemScaleProc *scaleProc; /* Procedure to rescale items of
-                                  * this type. */
+    Tk_ItemScaleProc *scaleProc;         /* Procedure to rescale items of
+                                          * this type. */
     Tk_ItemTranslateProc *translateProc; /* Procedure to translate items of
                                           * this type. */
-    Tk_ItemIndexProc *indexProc; /* Procedure to determine index of
-                                  * indicated character.  NULL if
-                                  * item doesn't support indexing. */
+    Tk_ItemIndexProc *indexProc;         /* Procedure to determine index of
+                                          * indicated character.  NULL if
+                                          * item doesn't support indexing. */
     Tk_ItemCursorProc *icursorProc; /* Procedure to set insert cursor pos.
                                      * to just before a given position. */
     Tk_ItemSelectionProc *selectionProc; /* Procedure to return selection (in
                                           * STRING format) when it is in this
                                           * item. */
-    Tk_ItemInsertProc *insertProc; /* Procedure to insert something into
-                                    * an item. */
-    Tk_ItemDCharsProc *dCharsProc; /* Procedure to delete characters
-                                    * from an item. */
-    struct Tk_ItemType *nextPtr; /* Used to link types together into
-                                  * a list. */
+    Tk_ItemInsertProc *insertProc;       /* Procedure to insert something into
+                                          * an item. */
+    Tk_ItemDCharsProc *dCharsProc;       /* Procedure to delete characters
+                                          * from an item. */
+    struct Tk_ItemType *nextPtr;         /* Used to link types together into
+                                          * a list. */
 } Tk_ItemType;
 
 /*
@@ -741,39 +741,39 @@ typedef struct Tk_ItemType
 
 typedef struct Tk_CanvasTextInfo
 {
-    Tk_3DBorder selBorder; /* Border and background for selected
-                            * characters.  Read-only to items.*/
-    int selBorderWidth; /* Width of border around selection.
-                         * Read-only to items. */
-    XColor *selFgColorPtr; /* Foreground color for selected text.
-                            * Read-only to items. */
-    Tk_Item *selItemPtr; /* Pointer to selected item.  NULL means
-                          * selection isn't in this canvas.
-                          * Writable by items. */
-    int selectFirst; /* Index of first selected character.
-                      * Writable by items. */
-    int selectLast; /* Index of last selected character.
-                     * Writable by items. */
-    Tk_Item *anchorItemPtr; /* Item corresponding to "selectAnchor":
-                             * not necessarily selItemPtr.   Read-only
-                             * to items. */
-    int selectAnchor; /* Fixed end of selection (i.e. "select to"
-                       * operation will use this as one end of the
-                       * selection).  Writable by items. */
+    Tk_3DBorder selBorder;    /* Border and background for selected
+                               * characters.  Read-only to items.*/
+    int selBorderWidth;       /* Width of border around selection.
+                               * Read-only to items. */
+    XColor *selFgColorPtr;    /* Foreground color for selected text.
+                               * Read-only to items. */
+    Tk_Item *selItemPtr;      /* Pointer to selected item.  NULL means
+                               * selection isn't in this canvas.
+                               * Writable by items. */
+    int selectFirst;          /* Index of first selected character.
+                               * Writable by items. */
+    int selectLast;           /* Index of last selected character.
+                               * Writable by items. */
+    Tk_Item *anchorItemPtr;   /* Item corresponding to "selectAnchor":
+                               * not necessarily selItemPtr.   Read-only
+                               * to items. */
+    int selectAnchor;         /* Fixed end of selection (i.e. "select to"
+                               * operation will use this as one end of the
+                               * selection).  Writable by items. */
     Tk_3DBorder insertBorder; /* Used to draw vertical bar for insertion
                                * cursor.  Read-only to items. */
-    int insertWidth; /* Total width of insertion cursor.  Read-only
-                      * to items. */
-    int insertBorderWidth; /* Width of 3-D border around insert cursor.
-                            * Read-only to items. */
-    Tk_Item *focusItemPtr; /* Item that currently has the input focus,
-                            * or NULL if no such item.  Read-only to
-                            * items.  */
-    int gotFocus; /* Non-zero means that the canvas widget has
-                   * the input focus.  Read-only to items.*/
-    int cursorOn; /* Non-zero means that an insertion cursor
-                   * should be displayed in focusItemPtr.
-                   * Read-only to items.*/
+    int insertWidth;          /* Total width of insertion cursor.  Read-only
+                               * to items. */
+    int insertBorderWidth;    /* Width of 3-D border around insert cursor.
+                               * Read-only to items. */
+    Tk_Item *focusItemPtr;    /* Item that currently has the input focus,
+                               * or NULL if no such item.  Read-only to
+                               * items.  */
+    int gotFocus;             /* Non-zero means that the canvas widget has
+                               * the input focus.  Read-only to items.*/
+    int cursorOn;             /* Non-zero means that an insertion cursor
+                               * should be displayed in focusItemPtr.
+                               * Read-only to items.*/
 } Tk_CanvasTextInfo;
 
 /*
@@ -871,15 +871,15 @@ typedef void *Tk_PhotoHandle;
 typedef struct Tk_PhotoImageBlock
 {
     unsigned char *pixelPtr; /* Pointer to the first pixel. */
-    int width; /* Width of block, in pixels. */
-    int height; /* Height of block, in pixels. */
-    int pitch; /* Address difference between corresponding
-                * pixels in successive lines. */
-    int pixelSize; /* Address difference between successive
-                    * pixels in the same line. */
-    int offset[3]; /* Address differences between the red, green
-                    * and blue components of the pixel and the
-                    * pixel as a whole. */
+    int width;               /* Width of block, in pixels. */
+    int height;              /* Height of block, in pixels. */
+    int pitch;               /* Address difference between corresponding
+                              * pixels in successive lines. */
+    int pixelSize;           /* Address difference between successive
+                              * pixels in the same line. */
+    int offset[3];           /* Address differences between the red, green
+                              * and blue components of the pixel and the
+                              * pixel as a whole. */
 } Tk_PhotoImageBlock;
 
 /*
@@ -1582,4 +1582,4 @@ EXTERN int Tk_WmCmd _ANSI_ARGS_(
 #        undef extern
 
 #    endif /* RESOURCE_INCLUDED */
-#endif /* _TK */
+#endif     /* _TK */

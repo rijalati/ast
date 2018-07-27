@@ -36,27 +36,27 @@
 ** Written by Kiem-Phong Vo.
 */
 
-#define V1_PACKET 1 /* packet ID for version 1	*/
+#define V1_PACKET 1  /* packet ID for version 1	*/
 #define V1_HEADER 16 /* length of version 1 header	*/
 #define V1_RECORD 48 /* length of version 1 record	*/
 
-#define V5_PACKET 5 /* packet ID for version 5	*/
+#define V5_PACKET 5  /* packet ID for version 5	*/
 #define V5_HEADER 24 /* length of version 5 header	*/
 #define V5_RECORD 48 /* length of version 5 record	*/
 
-#define V6_PACKET 6 /* packet ID for version 6	*/
+#define V6_PACKET 6  /* packet ID for version 6	*/
 #define V6_HEADER 24 /* length of version 6 header	*/
 #define V6_RECORD 52 /* length of version 6 record	*/
 
-#define V7_PACKET 7 /* packet ID for version 7	*/
+#define V7_PACKET 7  /* packet ID for version 7	*/
 #define V7_HEADER 24 /* length of version 7 header	*/
 #define V7_RECORD 52 /* length of version 7 record	*/
 
-#define V9_PACKET 9 /* packet ID for version 9	*/
-#define V9_HEADER 20 /* length of version 9 header	*/
+#define V9_PACKET 9   /* packet ID for version 9	*/
+#define V9_HEADER 20  /* length of version 9 header	*/
 #define V9_TEMPLATE 0 /* template flowset ID		*/
-#define V9_OPTION 1 /* option flowset ID		*/
-#define V9_DATA 256 /* data flowset ID are >= 256	*/
+#define V9_OPTION 1   /* option flowset ID		*/
+#define V9_DATA 256   /* data flowset ID are >= 256	*/
 
 /* to decide to process all data at once or by parts */
 #define V9_NPCKT 32 /* min required for by parts	*/
@@ -72,22 +72,22 @@
 
 typedef struct _nflrcrd_s /* to hold a set of netflow records */
 {
-    Dtlink_t link; /* CDT dictionary holder	*/
+    Dtlink_t link;     /* CDT dictionary holder	*/
     Vccontext_t *ctxt; /* context for table transform	*/
-    ssize_t id; /* template ID			*/
-    ssize_t sz; /* record length, if known	*/
-    Vcchar_t *data; /* data array			*/
-    ssize_t dtsz; /* length of data		*/
-    ssize_t dtbf; /* length of buffer		*/
-    Vcchar_t *code; /* tranformed data		*/
-    ssize_t cdsz; /* size of transformed data	*/
+    ssize_t id;        /* template ID			*/
+    ssize_t sz;        /* record length, if known	*/
+    Vcchar_t *data;    /* data array			*/
+    ssize_t dtsz;      /* length of data		*/
+    ssize_t dtbf;      /* length of buffer		*/
+    Vcchar_t *code;    /* tranformed data		*/
+    ssize_t cdsz;      /* size of transformed data	*/
 } Nflrcrd_t;
 
 typedef struct _netflow_s /* the internal netflow handle */
 {
     Vcodex_t *bwt; /* for general data transform	*/
     Vcodex_t *tbl; /* for fixed-length records	*/
-    Dt_t *rcdt; /* dictionary of V9-records	*/
+    Dt_t *rcdt;    /* dictionary of V9-records	*/
     Dtdisc_t disc; /* compare/make/free functions	*/
 } Netflow_t;
 
@@ -97,8 +97,8 @@ rcrdcopy(Nflrcrd_t *rc, Vcchar_t *dt, ssize_t sz)
 #else
 static ssize_t rcrdcopy(rc, dt, sz) Nflrcrd_t *rc; /* record to copy data into
                                                     */
-Vcchar_t *dt; /* data to be copied		*/
-ssize_t sz; /* data size			*/
+Vcchar_t *dt;                                      /* data to be copied		*/
+ssize_t sz;                                        /* data size			*/
 #endif
 {
     ssize_t z;
@@ -125,8 +125,8 @@ static ssize_t
 v9whole(Netflow_t *nfl, Vcchar_t *dt, Vcchar_t *enddt, Vcchar_t **epckt)
 #else
 static ssize_t v9whole(nfl, dt, enddt, endpckt) Netflow_t *nfl;
-Vcchar_t *dt; /* start of data to parse	*/
-Vcchar_t *enddt; /* end of data			*/
+Vcchar_t *dt;     /* start of data to parse	*/
+Vcchar_t *enddt;  /* end of data			*/
 Vcchar_t **epckt; /* to return good end of packet	*/
 #endif
 {
@@ -177,7 +177,7 @@ Vcchar_t **epckt; /* to return good end of packet	*/
         }
         else /* end of flowsets. compute and return the zero-padding */
         {
-            if (id > 0) /* will be a bad start for next parse */
+            if (id > 0)   /* will be a bad start for next parse */
                 return 0; /* but this one is ok */
 
             for (z = 4, *epckt = dt;; z += 4, *epckt = dt)
@@ -222,7 +222,7 @@ Nflrcrd_t *rcrd; /* list of head data for all packets	*/
         if (NETINT(rdt) != rc->id)
             continue;
         fsz = NETINT(rdt + 2) - 4; /* size of data flowset */
-        pz = fsz % rc->sz; /* padding amount */
+        pz = fsz % rc->sz;         /* padding amount */
         sz = fsz - pz;
         cnt += sz / rc->sz; /* count # of records */
         for (fdt += sz; pz > 0; --pz)
@@ -242,7 +242,7 @@ Nflrcrd_t *rcrd; /* list of head data for all packets	*/
         if (NETINT(rdt) != rc->id)
             continue;
         fsz = NETINT(rdt + 2) - 4; /* size of data flowset */
-        pz = fsz % rc->sz; /* padding amount */
+        pz = fsz % rc->sz;         /* padding amount */
         sz = fsz - pz;
         if (fdt != cdt) /* shift data to remove padding */
             memcpy(cdt, fdt, sz);
@@ -282,7 +282,7 @@ Void_t **out;
             break; /**/
         DEBUG_COUNT(pcktcnt);
         PUTINT(pad, sz); /* zero-padding */
-        npckt += 1; /* count number of processed packets */
+        npckt += 1;      /* count number of processed packets */
 
         /* output top part of packet header data */
         if (rcrdcopy(&rcrd, dt, 4) < 0)
@@ -378,7 +378,7 @@ Void_t **out;
         goto done;
     vcioinit(&io, output, sz);
 
-    vcioputu(&io, rcrd.cdsz); /* size of coded header data */
+    vcioputu(&io, rcrd.cdsz);            /* size of coded header data */
     vcioputs(&io, rcrd.code, rcrd.cdsz); /* coded header data */
     for (rc = dtfirst(nfl->rcdt); rc; rc = dtnext(nfl->rcdt, rc))
     {
@@ -804,7 +804,7 @@ Void_t **out;
         return 0;
 
     if ((sz = v9flow(vc, data, size, out)) == 0) /* version 9? */
-        sz = v1567flow(vc, data, size, out); /* version 1,5,6,7? */
+        sz = v1567flow(vc, data, size, out);     /* version 1,5,6,7? */
 
     if (sz == 0) /* not recognizable netflow data, just run bwt on it */
     {
@@ -964,7 +964,7 @@ Void_t *params;
         if (!(nfl = vcgetmtdata(vc, Netflow_t *)))
             return -1;
         rv = 0; /* normal closing */
-    do_close: /* free resources */
+    do_close:   /* free resources */
         if (nfl->tbl)
             vcclose(nfl->tbl);
         if (nfl->bwt)

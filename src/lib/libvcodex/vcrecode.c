@@ -29,10 +29,10 @@ int
 vcrecode(Vcodex_t *vc, Vcchar_t **dtp, ssize_t *dtz, ssize_t head, int type)
 #else
 int vcrecode(vc, dtp, dtz, head, type) Vcodex_t *vc; /* coding handle	*/
-Vcchar_t **dtp; /* input/output data	*/
-ssize_t *dtz; /* input/output size	*/
-ssize_t head; /* extra header		*/
-int type; /* = 0: undone is bad	*/
+Vcchar_t **dtp;                                      /* input/output data	*/
+ssize_t *dtz;                                        /* input/output size	*/
+ssize_t head;                                        /* extra header		*/
+int type;                                            /* = 0: undone is bad	*/
 #endif
 {
     ssize_t sz;

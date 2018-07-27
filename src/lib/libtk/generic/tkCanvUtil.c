@@ -63,8 +63,8 @@ Tk_Window Tk_CanvasTkwin(canvas) Tk_Canvas canvas; /* Token for the canvas. */
  */
 
 void Tk_CanvasDrawableCoords(canvas, x, y, drawableXPtr, drawableYPtr)
-Tk_Canvas canvas; /* Token for the canvas. */
-double x, y; /* Coordinates in canvas space. */
+Tk_Canvas canvas;                   /* Token for the canvas. */
+double x, y;                        /* Coordinates in canvas space. */
 short *drawableXPtr, *drawableYPtr; /* Screen coordinates are stored
                                      * here. */
 {
@@ -138,8 +138,8 @@ short *drawableXPtr, *drawableYPtr; /* Screen coordinates are stored
  */
 
 void Tk_CanvasWindowCoords(canvas, x, y, screenXPtr, screenYPtr)
-Tk_Canvas canvas; /* Token for the canvas. */
-double x, y; /* Coordinates in canvas space. */
+Tk_Canvas canvas;               /* Token for the canvas. */
+double x, y;                    /* Coordinates in canvas space. */
 short *screenXPtr, *screenYPtr; /* Screen coordinates are stored
                                  * here. */
 {
@@ -214,10 +214,10 @@ short *screenXPtr, *screenYPtr; /* Screen coordinates are stored
 
 int Tk_CanvasGetCoord(interp, canvas, string, doublePtr)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Canvas canvas; /* Canvas to which coordinate applies. */
-char *string; /* Describes coordinate (any screen
-               * coordinate form may be used here). */
-double *doublePtr; /* Place to store converted coordinate. */
+Tk_Canvas canvas;   /* Canvas to which coordinate applies. */
+char *string;       /* Describes coordinate (any screen
+                     * coordinate form may be used here). */
+double *doublePtr;  /* Place to store converted coordinate. */
 {
     TkCanvas *canvasPtr = ( TkCanvas * )canvas;
     if (Tk_GetScreenMM(canvasPtr->interp, canvasPtr->tkwin, string, doublePtr)
@@ -311,12 +311,12 @@ canvas) Tk_Canvas canvas; /* Token for the canvas widget. */
 
 int Tk_CanvasTagsParseProc(clientData, interp, tkwin, value, widgRec, offset)
 ClientData clientData; /* Not used.*/
-Tcl_Interp *interp; /* Used for reporting errors. */
-Tk_Window tkwin; /* Window containing canvas widget. */
-char *value; /* Value of option (list of tag
-              * names). */
-char *widgRec; /* Pointer to record for item. */
-int offset; /* Offset into item (ignored). */
+Tcl_Interp *interp;    /* Used for reporting errors. */
+Tk_Window tkwin;       /* Window containing canvas widget. */
+char *value;           /* Value of option (list of tag
+                        * names). */
+char *widgRec;         /* Pointer to record for item. */
+int offset;            /* Offset into item (ignored). */
 {
     Tk_Item *itemPtr = ( Tk_Item * )widgRec;
     int argc, i;
@@ -383,10 +383,10 @@ int offset; /* Offset into item (ignored). */
  */
 
 char *Tk_CanvasTagsPrintProc(clientData, tkwin, widgRec, offset, freeProcPtr)
-ClientData clientData; /* Ignored. */
-Tk_Window tkwin; /* Window containing canvas widget. */
-char *widgRec; /* Pointer to record for item. */
-int offset; /* Ignored. */
+ClientData clientData;      /* Ignored. */
+Tk_Window tkwin;            /* Window containing canvas widget. */
+char *widgRec;              /* Pointer to record for item. */
+int offset;                 /* Ignored. */
 Tcl_FreeProc **freeProcPtr; /* Pointer to variable to fill in with
                              * information about how to reclaim
                              * storage for return string. */

@@ -23,7 +23,7 @@
 
 typedef struct RegisteredInterp
 {
-    char *name; /* Interpreter's name (malloc-ed). */
+    char *name;         /* Interpreter's name (malloc-ed). */
     Tcl_Interp *interp; /* Interpreter associated with name.  NULL
                          * means that the application was unregistered
                          * or deleted while a send was in progress
@@ -58,20 +58,20 @@ static RegisteredInterp *registry = NULL;
 
 typedef struct NameRegistry
 {
-    TkDisplay *dispPtr; /* Display from which the registry was
-                         * read. */
-    int locked; /* Non-zero means that the display was
-                 * locked when the property was read in. */
-    int modified; /* Non-zero means that the property has
-                   * been modified, so it needs to be written
-                   * out when the NameRegistry is closed. */
+    TkDisplay *dispPtr;       /* Display from which the registry was
+                               * read. */
+    int locked;               /* Non-zero means that the display was
+                               * locked when the property was read in. */
+    int modified;             /* Non-zero means that the property has
+                               * been modified, so it needs to be written
+                               * out when the NameRegistry is closed. */
     unsigned long propLength; /* Length of the property, in bytes. */
-    char *property; /* The contents of the property, or NULL
-                     * if none.  See format description above;
-                     * this is *not* terminated by the first
-                     * null character.  Dynamically allocated. */
-    int allocedByX; /* Non-zero means must free property with
-                     * XFree;  zero means use ckfree. */
+    char *property;           /* The contents of the property, or NULL
+                               * if none.  See format description above;
+                               * this is *not* terminated by the first
+                               * null character.  Dynamically allocated. */
+    int allocedByX;           /* Non-zero means must free property with
+                               * XFree;  zero means use ckfree. */
 } NameRegistry;
 
 /*
@@ -86,24 +86,24 @@ typedef struct NameRegistry
 
 typedef struct PendingCommand
 {
-    int serial; /* Serial number expected in
-                 * result. */
+    int serial;         /* Serial number expected in
+                         * result. */
     TkDisplay *dispPtr; /* Display being used for communication. */
-    char *target; /* Name of interpreter command is
-                   * being sent to. */
-    Window commWindow; /* Target's communication window. */
+    char *target;       /* Name of interpreter command is
+                         * being sent to. */
+    Window commWindow;  /* Target's communication window. */
     Tcl_Interp *interp; /* Interpreter from which the send
                          * was invoked. */
-    int code; /* Tcl return code for command
-               * will be stored here. */
-    char *result; /* String result for command (malloc'ed),
-                   * or NULL. */
-    char *errorInfo; /* Information for "errorInfo" variable,
-                      * or NULL (malloc'ed). */
-    char *errorCode; /* Information for "errorCode" variable,
-                      * or NULL (malloc'ed). */
-    int gotResponse; /* 1 means a response has been received,
-                      * 0 means the command is still outstanding. */
+    int code;           /* Tcl return code for command
+                         * will be stored here. */
+    char *result;       /* String result for command (malloc'ed),
+                         * or NULL. */
+    char *errorInfo;    /* Information for "errorInfo" variable,
+                         * or NULL (malloc'ed). */
+    char *errorCode;    /* Information for "errorCode" variable,
+                         * or NULL (malloc'ed). */
+    int gotResponse;    /* 1 means a response has been received,
+                         * 0 means the command is still outstanding. */
     struct PendingCommand *nextPtr;
     /* Next in list of all outstanding
      * commands.  NULL means end of
@@ -270,10 +270,10 @@ Tcl_Interp *interp; /* Interpreter to use for error reporting
                      * is needed anyway). */
 TkDisplay *dispPtr; /* Display whose name registry is to be
                      * opened. */
-int lock; /* Non-zero means lock the window server
-           * when opening the registry, so no-one
-           * else can use the registry until we
-           * close it. */
+int lock;           /* Non-zero means lock the window server
+                     * when opening the registry, so no-one
+                     * else can use the registry until we
+                     * close it. */
 {
     NameRegistry *regPtr;
     int result, actualFormat;
@@ -376,7 +376,7 @@ int lock; /* Non-zero means lock the window server
 static Window RegFindName(regPtr, name)
 NameRegistry *regPtr; /* Pointer to a registry opened with a
                        * previous call to RegOpen. */
-char *name; /* Name of an application. */
+char *name;           /* Name of an application. */
 {
     char *p, *entry;
     Window commWindow;
@@ -427,7 +427,7 @@ char *name; /* Name of an application. */
 static void RegDeleteName(regPtr, name)
 NameRegistry *regPtr; /* Pointer to a registry opened with a
                        * previous call to RegOpen. */
-char *name; /* Name of an application. */
+char *name;           /* Name of an application. */
 {
     char *p, *entry, *entryName;
     int count;
@@ -488,11 +488,11 @@ char *name; /* Name of an application. */
 static void RegAddName(regPtr, name, commWindow)
 NameRegistry *regPtr; /* Pointer to a registry opened with a
                        * previous call to RegOpen. */
-char *name; /* Name of an application.  The caller
-             * must ensure that this name isn't
-             * already registered. */
-Window commWindow; /* X identifier for comm. window of
-                    * application.  */
+char *name;           /* Name of an application.  The caller
+                       * must ensure that this name isn't
+                       * already registered. */
+Window commWindow;    /* X identifier for comm. window of
+                       * application.  */
 {
     char id[30];
     char *newProp;
@@ -605,13 +605,13 @@ static void RegClose(regPtr) NameRegistry *regPtr; /* Pointer to a registry
 static int ValidateName(dispPtr, name, commWindow, oldOK)
 TkDisplay *dispPtr; /* Display for which to perform the
                      * validation. */
-char *name; /* The name of an application. */
-Window commWindow; /* X identifier for the application's
-                    * comm. window. */
-int oldOK; /* Non-zero means that we should consider
-            * an application to be valid even if it
-            * looks like an old-style (pre-4.0) one;
-            * 0 means consider these invalid. */
+char *name;         /* The name of an application. */
+Window commWindow;  /* X identifier for the application's
+                     * comm. window. */
+int oldOK;          /* Non-zero means that we should consider
+                     * an application to be valid even if it
+                     * looks like an old-style (pre-4.0) one;
+                     * 0 means consider these invalid. */
 {
     int result, actualFormat, argc, i;
     unsigned long length, bytesAfter;
@@ -775,10 +775,10 @@ char *Tk_SetAppName(tkwin,
                                             * application to be named:  it is
                                             * just used to identify the
                                             * application and the display.  */
-char *name; /* The name that will be used to
-             * refer to the interpreter in later
-             * "send" commands.  Must be globally
-             * unique. */
+char *name;                                /* The name that will be used to
+                                            * refer to the interpreter in later
+                                            * "send" commands.  Must be globally
+                                            * unique. */
 {
     RegisteredInterp *riPtr, *riPtr2;
     Window w;
@@ -937,9 +937,9 @@ char *name; /* The name that will be used to
 int Tk_SendCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Information about sender (only
                         * dispPtr field is used). */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     TkWindow *winPtr;
     Window commWindow;
@@ -1821,12 +1821,12 @@ XEvent *eventPtr; /* Information about event. */
 
 static void
 AppendPropCarefully(display, window, property, value, length, pendingPtr)
-Display *display; /* Display on which to operate. */
-Window window; /* Window whose property is to
-                * be modified. */
-Atom property; /* Name of property. */
-char *value; /* Characters to append to property. */
-int length; /* Number of bytes to append. */
+Display *display;           /* Display on which to operate. */
+Window window;              /* Window whose property is to
+                             * be modified. */
+Atom property;              /* Name of property. */
+char *value;                /* Characters to append to property. */
+int length;                 /* Number of bytes to append. */
 PendingCommand *pendingPtr; /* Pending command to mark complete
                              * if an error occurs during the
                              * property op.  NULL means just

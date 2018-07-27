@@ -303,17 +303,17 @@ b_date(int argc, char **argv, Shbltin_t *context)
     Fmt_t fmt;
     struct stat st;
 
-    char *cmd = argv[0]; /* original command path	*/
-    char *format = 0; /* tmxfmt() format		*/
-    char *string = 0; /* date string			*/
-    int elapsed = 0; /* args are start/stop pairs	*/
-    int filetime = 0; /* use this st_ time field	*/
-    int increment = 0; /* incrementally adjust time	*/
-    int last = 0; /* display the last time arg	*/
+    char *cmd = argv[0];      /* original command path	*/
+    char *format = 0;         /* tmxfmt() format		*/
+    char *string = 0;         /* date string			*/
+    int elapsed = 0;          /* args are start/stop pairs	*/
+    int filetime = 0;         /* use this st_ time field	*/
+    int increment = 0;        /* incrementally adjust time	*/
+    int last = 0;             /* display the last time arg	*/
     Tm_zone_t *listzones = 0; /* known time zone table	*/
-    int network = 0; /* don't set network time	*/
-    int show = 0; /* show date and don't set	*/
-    int unelapsed = 0; /* fmtelapsed() => strelapsed	*/
+    int network = 0;          /* don't set network time	*/
+    int show = 0;             /* show date and don't set	*/
+    int unelapsed = 0;        /* fmtelapsed() => strelapsed	*/
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     tm_info.flags = TM_DATESTYLE;

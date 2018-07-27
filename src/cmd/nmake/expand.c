@@ -1146,11 +1146,11 @@ native(Sfio_t *xp, const char *s)
     }
 }
 
-#define ORDER_COMMAND "" /* command assertion operator		*/
-#define ORDER_INIT "INIT" /* no prereq dir prefix			*/
+#define ORDER_COMMAND ""        /* command assertion operator		*/
+#define ORDER_INIT "INIT"       /* no prereq dir prefix			*/
 #define ORDER_LIBRARY "LIBRARY" /* library assertion operator		*/
 #define ORDER_PACKAGE "PACKAGE" /* package assertion operator		*/
-#define ORDER_RECURSE "MAKE" /* recursion assertion operator		*/
+#define ORDER_RECURSE "MAKE"    /* recursion assertion operator		*/
 #define ORDER_REQUIRE "REQUIRE" /* library prerequisite operator	*/
 
 #define ORDER_all 0x01

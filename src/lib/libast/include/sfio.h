@@ -54,11 +54,11 @@ typedef int(*Sfwalk_f) _ARG_(( Sfio_t *, Void_t * ));
 /* discipline structure */
 struct _sfdisc_s
 {
-    Sfread_f readf; /* read function		*/
-    Sfwrite_f writef; /* write function		*/
-    Sfseek_f seekf; /* seek function		*/
+    Sfread_f readf;     /* read function		*/
+    Sfwrite_f writef;   /* write function		*/
+    Sfseek_f seekf;     /* seek function		*/
     Sfexcept_f exceptf; /* to handle exceptions		*/
-    Sfdisc_t *disc; /* the continuing discipline	*/
+    Sfdisc_t *disc;     /* the continuing discipline	*/
 };
 
 #    include <sfio_s.h>
@@ -69,21 +69,21 @@ typedef int(*Sffmtext_f) _ARG_(( Sfio_t *, Void_t *, Sffmt_t * ));
 typedef int(*Sffmtevent_f) _ARG_(( Sfio_t *, int, Void_t *, Sffmt_t * ));
 struct _sffmt_s
 {
-    long version; /* version of this structure		*/
-    Sffmtext_f extf; /* function to process arguments	*/
+    long version;        /* version of this structure		*/
+    Sffmtext_f extf;     /* function to process arguments	*/
     Sffmtevent_f eventf; /* process events			*/
 
-    char *form; /* format string to stack		*/
+    char *form;   /* format string to stack		*/
     va_list args; /* corresponding arg list		*/
 
-    int fmt; /* format character			*/
+    int fmt;      /* format character			*/
     ssize_t size; /* object size				*/
-    int flags; /* formatting flags			*/
-    int width; /* width of field			*/
-    int precis; /* precision required			*/
-    int base; /* conversion base			*/
+    int flags;    /* formatting flags			*/
+    int width;    /* width of field			*/
+    int precis;   /* precision required			*/
+    int base;     /* conversion base			*/
 
-    char *t_str; /* type string 				*/
+    char *t_str;   /* type string 				*/
     ssize_t n_str; /* length of t_str 			*/
 
     Void_t *mbs; /* multibyte state for format string	*/
@@ -94,32 +94,32 @@ struct _sffmt_s
         ((type) ? ((fe)->version = SFIO_VERSION) : (fe)->version)
 
 #    define SFFMT_SSHORT 000000010 /* 'hh' flag, char			*/
-#    define SFFMT_TFLAG 000000020 /* 't' flag, ptrdiff_t			*/
-#    define SFFMT_ZFLAG 000000040 /* 'z' flag, size_t			*/
+#    define SFFMT_TFLAG 000000020  /* 't' flag, ptrdiff_t			*/
+#    define SFFMT_ZFLAG 000000040  /* 'z' flag, size_t			*/
 
-#    define SFFMT_LEFT 000000100 /* left-justification			*/
-#    define SFFMT_SIGN 000000200 /* must have a sign			*/
-#    define SFFMT_BLANK 000000400 /* if not signed, prepend a blank	*/
-#    define SFFMT_ZERO 000001000 /* zero-padding on the left		*/
-#    define SFFMT_ALTER 000002000 /* alternate formatting		*/
+#    define SFFMT_LEFT 000000100     /* left-justification			*/
+#    define SFFMT_SIGN 000000200     /* must have a sign			*/
+#    define SFFMT_BLANK 000000400    /* if not signed, prepend a blank	*/
+#    define SFFMT_ZERO 000001000     /* zero-padding on the left		*/
+#    define SFFMT_ALTER 000002000    /* alternate formatting		*/
 #    define SFFMT_THOUSAND 000004000 /* thousand grouping			*/
-#    define SFFMT_SKIP 000010000 /* skip assignment in scanf()		*/
-#    define SFFMT_SHORT 000020000 /* 'h' flag				*/
-#    define SFFMT_LONG 000040000 /* 'l' flag				*/
-#    define SFFMT_LLONG 000100000 /* 'll' flag				*/
-#    define SFFMT_LDOUBLE 000200000 /* 'L' flag				*/
-#    define SFFMT_VALUE 000400000 /* value is returned			*/
-#    define SFFMT_ARGPOS 001000000 /* getting arg for $ patterns		*/
-#    define SFFMT_IFLAG 002000000 /* 'I' flag				*/
-#    define SFFMT_JFLAG 004000000 /* 'j' flag, intmax_t			*/
-#    define SFFMT_CENTER 010000000 /* '=' flag, center justification	*/
-#    define SFFMT_CHOP 020000000 /* chop long string values from left	*/
-#    define SFFMT_SET 037777770 /* flags settable on calling extf	*/
+#    define SFFMT_SKIP 000010000     /* skip assignment in scanf()		*/
+#    define SFFMT_SHORT 000020000    /* 'h' flag				*/
+#    define SFFMT_LONG 000040000     /* 'l' flag				*/
+#    define SFFMT_LLONG 000100000    /* 'll' flag				*/
+#    define SFFMT_LDOUBLE 000200000  /* 'L' flag				*/
+#    define SFFMT_VALUE 000400000    /* value is returned			*/
+#    define SFFMT_ARGPOS 001000000   /* getting arg for $ patterns		*/
+#    define SFFMT_IFLAG 002000000    /* 'I' flag				*/
+#    define SFFMT_JFLAG 004000000    /* 'j' flag, intmax_t			*/
+#    define SFFMT_CENTER 010000000   /* '=' flag, center justification	*/
+#    define SFFMT_CHOP 020000000     /* chop long string values from left	*/
+#    define SFFMT_SET 037777770      /* flags settable on calling extf	*/
 
 /* for sfmutex() call */
-#    define SFMTX_LOCK 0 /* up mutex count			*/
+#    define SFMTX_LOCK 0    /* up mutex count			*/
 #    define SFMTX_TRYLOCK 1 /* try to up mutex count		*/
-#    define SFMTX_UNLOCK 2 /* down mutex count			*/
+#    define SFMTX_UNLOCK 2  /* down mutex count			*/
 #    define SFMTX_CLRLOCK 3 /* clear mutex count			*/
 
 /* various constants */
@@ -136,29 +136,30 @@ struct _sffmt_s
 #    endif
 
 /* bits for various types of files */
-#    define SF_READ 0000001 /* open for reading			*/
-#    define SF_WRITE 0000002 /* open for writing			*/
-#    define SF_STRING 0000004 /* a string stream			*/
+#    define SF_READ 0000001     /* open for reading			*/
+#    define SF_WRITE 0000002    /* open for writing			*/
+#    define SF_STRING 0000004   /* a string stream			*/
 #    define SF_APPENDWR 0000010 /* file is in append mode only		*/
-#    define SF_MALLOC 0000020 /* buffer is malloc-ed			*/
-#    define SF_LINE 0000040 /* line buffering			*/
-#    define SF_SHARE 0000100 /* stream with shared file descriptor 	*/
-#    define SF_EOF 0000200 /* eof was detected			*/
-#    define SF_ERROR 0000400 /* an error happened			*/
-#    define SF_STATIC 0001000 /* a stream that cannot be freed	*/
-#    define SF_IOCHECK 0002000 /* call exceptf before doing IO		*/
-#    define SF_PUBLIC 0004000 /* SF_SHARE and follow physical seek	*/
-#    define SF_MTSAFE 0010000 /* need thread safety			*/
-#    define SF_WHOLE 0020000 /* preserve wholeness of sfwrite/sfputr */
-#    define SF_IOINTR 0040000 /* return on interrupts			*/
-#    define SF_WCWIDTH 0100000 /* wcwidth display stream		*/
+#    define SF_MALLOC 0000020   /* buffer is malloc-ed			*/
+#    define SF_LINE 0000040     /* line buffering			*/
+#    define SF_SHARE 0000100    /* stream with shared file descriptor 	*/
+#    define SF_EOF 0000200      /* eof was detected			*/
+#    define SF_ERROR 0000400    /* an error happened			*/
+#    define SF_STATIC 0001000   /* a stream that cannot be freed	*/
+#    define SF_IOCHECK 0002000  /* call exceptf before doing IO		*/
+#    define SF_PUBLIC 0004000   /* SF_SHARE and follow physical seek	*/
+#    define SF_MTSAFE 0010000   /* need thread safety			*/
+#    define SF_WHOLE 0020000    /* preserve wholeness of sfwrite/sfputr */
+#    define SF_IOINTR 0040000   /* return on interrupts			*/
+#    define SF_WCWIDTH 0100000  /* wcwidth display stream		*/
 
 #    define SF_FLAGS 0177177 /* PUBLIC FLAGS PASSABLE TO SFNEW()	*/
-#    define SF_SETS 0177163 /* flags passable to sfset()		*/
+#    define SF_SETS 0177163  /* flags passable to sfset()		*/
 
 #    ifndef _SF_NO_OBSOLETE
-#        define SF_BUFCONST 0400000 /* unused flag - for compatibility only  \
-                                     */
+#        define SF_BUFCONST                                                  \
+            0400000 /* unused flag - for compatibility only                  \
+                     */
 #    endif
 
 /* for sfgetr/sfreserve to hold a record */
@@ -166,29 +167,29 @@ struct _sffmt_s
 #    define SF_LASTR 0000020 /* get the last incomplete record	*/
 
 /* exception events: SF_NEW(0), SF_READ(1), SF_WRITE(2) and the below 	*/
-#    define SF_SEEK 3 /* seek error				*/
+#    define SF_SEEK 3    /* seek error				*/
 #    define SF_CLOSING 4 /* when stream is about to be closed	*/
-#    define SF_DPUSH 5 /* when discipline is being pushed	*/
-#    define SF_DPOP 6 /* when discipline is being popped	*/
-#    define SF_DPOLL 7 /* see if stream is ready for I/O	*/
+#    define SF_DPUSH 5   /* when discipline is being pushed	*/
+#    define SF_DPOP 6    /* when discipline is being popped	*/
+#    define SF_DPOLL 7   /* see if stream is ready for I/O	*/
 #    define SF_DBUFFER 8 /* buffer not empty during push or pop	*/
-#    define SF_SYNC 9 /* announcing start/end synchronization */
-#    define SF_PURGE 10 /* a sfpurge() call was issued		*/
-#    define SF_FINAL 11 /* closing is done except stream free	*/
-#    define SF_READY 12 /* a polled stream is ready		*/
+#    define SF_SYNC 9    /* announcing start/end synchronization */
+#    define SF_PURGE 10  /* a sfpurge() call was issued		*/
+#    define SF_FINAL 11  /* closing is done except stream free	*/
+#    define SF_READY 12  /* a polled stream is ready		*/
 #    define SF_LOCKED 13 /* stream is in a locked state		*/
 #    define SF_ATEXIT 14 /* process is exiting			*/
 #    define SF_EVENT 100 /* start of user-defined events		*/
 
 /* for stack and disciplines */
-#    define SF_POPSTACK (( Sfio_t * )0) /* pop the stream stack		*/
+#    define SF_POPSTACK (( Sfio_t * )0)  /* pop the stream stack		*/
 #    define SF_POPDISC (( Sfdisc_t * )0) /* pop the discipline stack	*/
 
 /* for the notify function and discipline exception */
-#    define SF_NEW 0 /* new stream				*/
-#    define SF_SETFD (-1) /* about to set the file descriptor 	*/
+#    define SF_NEW 0         /* new stream				*/
+#    define SF_SETFD (-1)    /* about to set the file descriptor 	*/
 #    define SF_MTACCESS (-2) /* starting a multi-threaded stream	*/
-#    define SF_TMPFILE (-3) /* sftmp() switching from buf to file	*/
+#    define SF_TMPFILE (-3)  /* sftmp() switching from buf to file	*/
 
 #    define SF_BUFSIZE 8192 /* default buffer size			*/
 #    define SF_UNBOUND (-1) /* unbounded buffer size		*/

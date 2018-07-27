@@ -175,10 +175,10 @@ make_mode(Namval_t *np)
  */
 typedef struct _field_
 {
-    char *name; /* field name */
-    int flags; /* flags */
-    short offset; /* offset of field into data */
-    short size; /* size of field */
+    char *name;                    /* field name */
+    int flags;                     /* flags */
+    short offset;                  /* offset of field into data */
+    short size;                    /* size of field */
     Namval_t *(*make)(Namval_t *); /* discipline constructor */
 } Shfield_t;
 
@@ -211,8 +211,8 @@ sh_findfield(Shfield_t *ftable, int nelem, const char *name)
 
 typedef struct _class_
 {
-    int nelem; /* number of elements */
-    int dsize; /* size for data structure */
+    int nelem;         /* number of elements */
+    int dsize;         /* size for data structure */
     Shfield_t *fields; /* field description table */
 } Shclass_t;
 

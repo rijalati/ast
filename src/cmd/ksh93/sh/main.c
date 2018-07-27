@@ -131,7 +131,7 @@ sh_main(int ac, char *av[], Shinit_f userinit)
     Sfio_t *iop;
     Shell_t *shp;
     struct stat statb;
-    int i; /* set for restricted shell */
+    int i;        /* set for restricted shell */
     bool rshflag; /* set for restricted shell */
     char *command;
 
@@ -829,6 +829,6 @@ fixargs(char **argv, int mode)
     un.pst_command = stakptr(0);
     pstat(PSTAT_SETCMD, un, 0, 0, 0);
 #        endif /* PSTAT */
-#    endif /* EXECARGS */
+#    endif     /* EXECARGS */
 }
 #endif /* _lib_fork */

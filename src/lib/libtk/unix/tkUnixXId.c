@@ -39,10 +39,10 @@
 #define IDS_PER_STACK 10
 typedef struct TkIdStack
 {
-    XID ids[IDS_PER_STACK]; /* Array of free identifiers. */
-    int numUsed; /* Indicates how many of the entries
-                  * in ids are currently in use. */
-    TkDisplay *dispPtr; /* Display to which ids belong. */
+    XID ids[IDS_PER_STACK];    /* Array of free identifiers. */
+    int numUsed;               /* Indicates how many of the entries
+                                * in ids are currently in use. */
+    TkDisplay *dispPtr;        /* Display to which ids belong. */
     struct TkIdStack *nextPtr; /* Next bunch of free identifiers
                                 * for the same display. */
 } TkIdStack;
@@ -434,7 +434,7 @@ ClientData clientData; /* Pointer to TkIdStack list. */
 
 static Tk_RestrictAction CheckRestrictProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to flag to set. */
-XEvent *eventPtr; /* Event to filter;  not used. */
+XEvent *eventPtr;      /* Event to filter;  not used. */
 {
     int *flag = ( int * )clientData;
     *flag = 1;
@@ -463,9 +463,9 @@ Pixmap Tk_GetPixmap(display,
                     width,
                     height,
                     depth) Display *display; /* Display for new pixmap. */
-Drawable d; /* Drawable where pixmap will be used. */
+Drawable d;        /* Drawable where pixmap will be used. */
 int width, height; /* Dimensions of pixmap. */
-int depth; /* Bits per pixel for pixmap. */
+int depth;         /* Bits per pixel for pixmap. */
 {
     return XCreatePixmap(
     display, d, ( unsigned )width, ( unsigned )height, ( unsigned )depth);
@@ -492,7 +492,7 @@ int depth; /* Bits per pixel for pixmap. */
 void Tk_FreePixmap(display,
                    pixmap) Display *display; /* Display for which pixmap was
                                                 allocated. */
-Pixmap pixmap; /* Identifier for pixmap. */
+Pixmap pixmap;                               /* Identifier for pixmap. */
 {
     XFreePixmap(display, pixmap);
     Tk_FreeXId(display, ( XID )pixmap);

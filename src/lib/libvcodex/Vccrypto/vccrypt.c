@@ -51,8 +51,8 @@ Vcxpasskey_f Vcxpasskeyf; /* a global passkey function	*/
 typedef struct _crypt_s
 {
     Vcxmethod_t *meth; /* encryption method		*/
-    Vcx_t xx; /* encryption handle		*/
-    ssize_t head; /* #control bytes in data	*/
+    Vcx_t xx;          /* encryption handle		*/
+    ssize_t head;      /* #control bytes in data	*/
     int type;
 } Crypt_t;
 
@@ -295,7 +295,7 @@ cryptevent(Vcodex_t *vc, int type, Void_t *param)
             return -1;
 
         cr->type = CR_AES128 | CR_INIT;
-        cr->head = 1; /* 1 control byte */
+        cr->head = 1;         /* 1 control byte */
         cr->meth = Vcxaes128; /* default encryption method */
         for (data = ( char * )param; data;)
         {

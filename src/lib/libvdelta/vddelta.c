@@ -28,7 +28,7 @@
 long S_copy, S_add; /* amount of input covered by COPY and ADD	*/
 long N_copy, N_add; /* # of COPY and ADD instructions		*/
 long M_copy, M_add; /* max size of a COPY or ADD instruction	*/
-long N_merge; /* # of merged instructions			*/
+long N_merge;       /* # of merged instructions			*/
 #endif
 
 #define MERGABLE(a, c, k)                                                    \
@@ -37,15 +37,15 @@ long N_merge; /* # of merged instructions			*/
 typedef struct _table_s Table_t;
 struct _table_s
 {
-    Vdio_t io; /* io structure		*/
+    Vdio_t io;  /* io structure		*/
     uchar *src; /* source string	*/
     int n_src;
     uchar *tar; /* target string	*/
     int n_tar;
     K_DDECL(quick, recent, rhere); /* address caches	*/
-    int *link; /* links of elements	*/
-    int size; /* size of hash table	*/
-    int *hash; /* hash table		*/
+    int *link;                     /* links of elements	*/
+    int size;                      /* size of hash table	*/
+    int *hash;                     /* hash table		*/
 };
 
 /* encode and output delta instructions */
@@ -54,21 +54,21 @@ static int
 vdputinst(Table_t *tab, uchar *begs, uchar *here, reg int copy, int n_copy)
 #else
 static int vdputinst(tab, begs, here, copy, n_copy) Table_t *tab;
-uchar *begs; /* ADD data if any	*/
-uchar *here; /* current location	*/
+uchar *begs;  /* ADD data if any	*/
+uchar *here;  /* current location	*/
 reg int copy; /* best match if >= 0	*/
-int n_copy; /* length of match	*/
+int n_copy;   /* length of match	*/
 #endif
 {
     reg int n_add, i_add, i_copy, k_type;
     reg int n, c_addr, best, d;
 
-    n_add = begs ? here - begs : 0; /* add size		*/
+    n_add = begs ? here - begs : 0;          /* add size		*/
     c_addr = (here - tab->tar) + tab->n_src; /* current address	*/
     k_type = 0;
 
     if (n_copy > 0) /* process the COPY instruction */
-    { /**/
+    {               /**/
         DBTOTAL(N_copy, 1);
         DBTOTAL(S_copy, n_copy);
         DBMAX(M_copy, n_copy);
@@ -167,9 +167,9 @@ static int
 vdfold(Table_t *tab, reg uchar *fold, reg uchar *endfold, int target)
 #else
 static int vdfold(tab, fold, endfold, target) Table_t *tab;
-reg uchar *fold; /* start of area to fold	*/
+reg uchar *fold;    /* start of area to fold	*/
 reg uchar *endfold; /* end of area to fold		*/
-int target; /* 1 if doing the target stream	*/
+int target;         /* 1 if doing the target stream	*/
 #endif
 {
     reg ulong key, n;
@@ -410,8 +410,8 @@ vddelta(Vddisc_t *source, Vddisc_t *target, Vddisc_t *delta)
 #else
 long vddelta(source, target, delta) Vddisc_t *source; /* source data
                                                        */
-Vddisc_t *target; /* target data			*/
-Vddisc_t *delta; /* transform output data	*/
+Vddisc_t *target;                                     /* target data			*/
+Vddisc_t *delta;                                      /* transform output data	*/
 #endif
 {
     reg int size, k, n;
@@ -518,7 +518,7 @@ Vddisc_t *delta; /* transform output data	*/
 
     /* do one window at a time */
     while (n < n_tar)
-    { /* prepare the source string */
+    {                   /* prepare the source string */
         if (n_src <= 0) /* data compression */
         {
             if (n <= 0)

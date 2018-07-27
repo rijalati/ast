@@ -80,26 +80,26 @@ _STUB_vmdcshare()
 typedef struct _mmvm_s
 {
     unsigned int magic; /* magic bytes		*/
-    Void_t *base; /* address to map to	*/
-    ssize_t size; /* total data size	*/
-    ssize_t busy; /* amount in use	*/
-    key_t shmkey; /* shared segment's key	*/
-    int shmid; /* shared segment's ID	*/
-    int proj; /* project number	*/
-    char name[1]; /* file or shm name	*/
+    Void_t *base;       /* address to map to	*/
+    ssize_t size;       /* total data size	*/
+    ssize_t busy;       /* amount in use	*/
+    key_t shmkey;       /* shared segment's key	*/
+    int shmid;          /* shared segment's ID	*/
+    int proj;           /* project number	*/
+    char name[1];       /* file or shm name	*/
 } Mmvm_t;
 
 typedef struct _mmdisc_s
 {
     Vmdisc_t disc; /* Vmalloc discipline	*/
-    int init; /* initializing state	*/
-    int mode; /* closing modes	*/
-    Mmvm_t *mmvm; /* shared memory data	*/
-    ssize_t size; /* desired memory size	*/
-    key_t shmkey; /* shared segment's key	*/
-    int shmid; /* shared segment's ID	*/
-    int proj; /* shm project ID 	*/
-    char name[1]; /* backing store/strID	*/
+    int init;      /* initializing state	*/
+    int mode;      /* closing modes	*/
+    Mmvm_t *mmvm;  /* shared memory data	*/
+    ssize_t size;  /* desired memory size	*/
+    key_t shmkey;  /* shared segment's key	*/
+    int shmid;     /* shared segment's ID	*/
+    int proj;      /* shm project ID 	*/
+    char name[1];  /* backing store/strID	*/
 } Mmdisc_t;
 
 #    if DEBUG
@@ -135,7 +135,7 @@ _vmmdump(Vmalloc_t *vm, int fd)
     write(fd, mesg, strlen(mesg));
     return 0;
 }
-#    endif /*DEBUG*/
+#    endif                   /*DEBUG*/
 
 /* make a key from a string and a project number -- this is like ftok() */
 static key_t
@@ -167,7 +167,7 @@ mmfix(Mmvm_t *mmvm, Mmdisc_t *mmdc, int fd)
     ssize_t size = mmvm->size;
 
     if (base != ( Void_t * )mmvm) /* mmvm is not right yet */
-    { /**/
+    {                             /**/
         DEBUG_ASSERT(!base || (base && (VMLONG(base) % _Vmpagesize) == 0));
         if (mmdc->proj < 0)
         {
@@ -214,7 +214,7 @@ mminit(Mmdisc_t *mmdc)
 
     /* get/create the initial segment of data */
     if (mmdc->proj < 0) /* proj < 0 means doing mmap() */
-    { /* this can be done in multiple processes */
+    {                   /* this can be done in multiple processes */
         if ((fd = open(mmdc->name, O_RDWR | O_CREAT, FILE_MODE)) < 0)
         { /**/
             DEBUG_MESSAGE("vmdcshare: open() failed");
@@ -246,7 +246,7 @@ mminit(Mmdisc_t *mmdc)
                                 fd,
                                 ( off_t )0);
         if (!mmvm || mmvm == ( Mmvm_t * )(-1)) /* initial mapping failed */
-        { /**/
+        {                                      /**/
             DEBUG_MESSAGE("vmdcshare: mmap() failed");
             goto done;
         }
@@ -265,7 +265,7 @@ mminit(Mmdisc_t *mmdc)
         /* map the data segment into memory */
         mmvm = ( Mmvm_t * )shmat(mmdc->shmid, NIL(Void_t *), 0);
         if (!mmvm || mmvm == ( Mmvm_t * )(-1)) /* initial mapping failed */
-        { /**/
+        {                                      /**/
             DEBUG_MESSAGE("vmdcshare: attempt to attach memory failed");
             shmctl(mmdc->shmid, IPC_RMID, 0);
             goto done;
@@ -311,7 +311,7 @@ mminit(Mmdisc_t *mmdc)
         rv = 0; /* success, return this value to indicate a new map */
     }
     else /* wait for someone else to finish initialization */
-    { /**/
+    {    /**/
         DEBUG_ASSERT(mmdc->init == 0);
         if (mmvm->magic != MM_JUST4US && mmvm->magic != MM_MAGIC)
         { /**/
@@ -324,7 +324,7 @@ mminit(Mmdisc_t *mmdc)
             if (asogetint(&mmvm->magic) == MM_MAGIC)
                 break;
             else if ((try += 1) <= 0) /* too many tries */
-            { /**/
+            {                         /**/
                 DEBUG_MESSAGE("vmdcshare: waiting time exhausted");
                 goto done;
             }
@@ -354,12 +354,12 @@ done:
         ( void )close(fd);
 
     if (rv >= 0) /* successful construction of region */
-    { /**/
+    {            /**/
         DEBUG_ASSERT(mmvm && mmvm != ( Mmvm_t * )(-1));
         mmdc->mmvm = mmvm;
     }
     else if (mmvm && mmvm != ( Mmvm_t * )(-1)) /* error, remove map */
-    { /**/
+    {                                          /**/
         DEBUG_MESSAGE("vmdcshare: error during opening region");
         if (mmdc->proj < 0)
             ( void )munmap(( Void_t * )mmvm, size);
@@ -476,13 +476,13 @@ Vmdisc_t *disc;
             if ((rv = mminit(mmdc)) < 0) /* initialization failed */
                 return -1;
             else if (rv == 0) /* just started a new map */
-            { /**/
+            {                 /**/
                 DEBUG_ASSERT(mmdc->init == 1);
                 /**/ DEBUG_ASSERT(mmdc->mmvm->magic == MM_JUST4US);
                 return 0;
             }
             else /* an existing map was reconstructed */
-            { /**/
+            {    /**/
                 DEBUG_ASSERT(mmdc->init == 0);
                 /**/ DEBUG_ASSERT(mmdc->mmvm->magic == MM_MAGIC);
                 *(( Void_t ** )data) = MMDATA(mmdc->mmvm);
@@ -495,7 +495,7 @@ Vmdisc_t *disc;
     else if (type == VM_ENDOPEN) /* at end of vmopen() */
     {
         if (mmdc->init) /* this is the initializing process! */
-        { /**/
+        {               /**/
             DEBUG_ASSERT(mmdc->mmvm->magic == MM_JUST4US);
             asocasint(&mmdc->mmvm->magic, MM_JUST4US, MM_MAGIC);
 
@@ -527,11 +527,11 @@ Vmdisc_t *vmdcshare(name,
                     proj,
                     size,
                     mode) char *name; /* key or file persistent store		*/
-int proj; /* project ID, < 0 for doing mmap	*/
-ssize_t size; /* desired size for memory segment	*/
-int mode; /*  1: keep memory segments		*/
-/*  0: release memory segments		*/
-/* -1: like 0 plus removing files/shms	*/
+int proj;                             /* project ID, < 0 for doing mmap	*/
+ssize_t size;                         /* desired size for memory segment	*/
+int mode;                             /*  1: keep memory segments		*/
+                                      /*  0: release memory segments		*/
+                                      /* -1: like 0 plus removing files/shms	*/
 #    endif
 {
     Mmdisc_t *mmdc;

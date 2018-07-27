@@ -62,33 +62,33 @@ static void PrintUsage _ANSI_ARGS_((Tcl_Interp * interp,
  */
 
 int Tk_ParseArgv(interp, tkwin, argcPtr, argv, argTable, flags)
-Tcl_Interp *interp; /* Place to store error message. */
-Tk_Window tkwin; /* Window to use for setting Tk options.
-                  * NULL means ignore Tk option specs. */
-int *argcPtr; /* Number of arguments in argv.  Modified
-               * to hold # args left in argv at end. */
-char **argv; /* Array of arguments.  Modified to hold
-              * those that couldn't be processed here. */
+Tcl_Interp *interp;    /* Place to store error message. */
+Tk_Window tkwin;       /* Window to use for setting Tk options.
+                        * NULL means ignore Tk option specs. */
+int *argcPtr;          /* Number of arguments in argv.  Modified
+                        * to hold # args left in argv at end. */
+char **argv;           /* Array of arguments.  Modified to hold
+                        * those that couldn't be processed here. */
 Tk_ArgvInfo *argTable; /* Array of option descriptions */
-int flags; /* Or'ed combination of various flag bits,
-            * such as TK_ARGV_NO_DEFAULTS. */
+int flags;             /* Or'ed combination of various flag bits,
+                        * such as TK_ARGV_NO_DEFAULTS. */
 {
     Tk_ArgvInfo *infoPtr;
     /* Pointer to the current entry in the
      * table of argument descriptions. */
     Tk_ArgvInfo *matchPtr; /* Descriptor that matches current argument. */
-    char *curArg; /* Current argument */
-    char c; /* Second character of current arg (used for
-             * quick check for matching;  use 2nd char.
-             * because first char. will almost always
-             * be '-'). */
-    int srcIndex; /* Location from which to read next argument
-                   * from argv. */
-    int dstIndex; /* Index into argv to which next unused
-                   * argument should be copied (never greater
-                   * than srcIndex). */
-    int argc; /* # arguments in argv still to process. */
-    size_t length; /* Number of characters in current argument. */
+    char *curArg;          /* Current argument */
+    char c;                /* Second character of current arg (used for
+                            * quick check for matching;  use 2nd char.
+                            * because first char. will almost always
+                            * be '-'). */
+    int srcIndex;          /* Location from which to read next argument
+                            * from argv. */
+    int dstIndex;          /* Index into argv to which next unused
+                            * argument should be copied (never greater
+                            * than srcIndex). */
+    int argc;              /* # arguments in argv still to process. */
+    size_t length;         /* Number of characters in current argument. */
     int i;
 
     if (flags & TK_ARGV_DONT_SKIP_FIRST_ARG)
@@ -404,9 +404,9 @@ static void PrintUsage(interp,
                                                    * interp's result area. */
 Tk_ArgvInfo *argTable; /* Array of command-specific argument
                         * descriptions. */
-int flags; /* If the TK_ARGV_NO_DEFAULTS bit is set
-            * in this word, then don't generate
-            * information for default options. */
+int flags;             /* If the TK_ARGV_NO_DEFAULTS bit is set
+                        * in this word, then don't generate
+                        * information for default options. */
 {
     Tk_ArgvInfo *infoPtr;
     int width, i, numSpaces;

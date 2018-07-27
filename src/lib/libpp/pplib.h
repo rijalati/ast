@@ -80,51 +80,51 @@
 
 #    define TEST_INVERT (1L << 31)
 
-#    define PROTO_CLASSIC (1 << 0) /* classic to prototyped	*/
-#    define PROTO_DISABLE (1 << 1) /* disable conversion		*/
+#    define PROTO_CLASSIC (1 << 0)     /* classic to prototyped	*/
+#    define PROTO_DISABLE (1 << 1)     /* disable conversion		*/
 #    define PROTO_EXTERNALIZE (1 << 2) /* static fun() => extern fun()	*/
-#    define PROTO_FORCE (1 << 3) /* force even if no magic	*/
-#    define PROTO_HEADER (1 << 4) /* header defines too		*/
-#    define PROTO_INCLUDE (1 << 5) /* <prototyped.h> instead	*/
+#    define PROTO_FORCE (1 << 3)       /* force even if no magic	*/
+#    define PROTO_HEADER (1 << 4)      /* header defines too		*/
+#    define PROTO_INCLUDE (1 << 5)     /* <prototyped.h> instead	*/
 #    define PROTO_INITIALIZED (1 << 6) /* internal initialization	*/
-#    define PROTO_LINESYNC (1 << 7) /* force standalone line syncs	*/
-#    define PROTO_NOPRAGMA (1 << 8) /* delete pragma prototyped	*/
-#    define PROTO_PASS (1 << 9) /* pass blocks if no magic	*/
-#    define PROTO_PLUSPLUS (1 << 10) /* extern () -> extern (...)	*/
-#    define PROTO_RETAIN (1 << 11) /* defines retained after close	*/
-#    define PROTO_TEST (1 << 12) /* enable test code		*/
+#    define PROTO_LINESYNC (1 << 7)    /* force standalone line syncs	*/
+#    define PROTO_NOPRAGMA (1 << 8)    /* delete pragma prototyped	*/
+#    define PROTO_PASS (1 << 9)        /* pass blocks if no magic	*/
+#    define PROTO_PLUSPLUS (1 << 10)   /* extern () -> extern (...)	*/
+#    define PROTO_RETAIN (1 << 11)     /* defines retained after close	*/
+#    define PROTO_TEST (1 << 12)       /* enable test code		*/
 
 #    define PROTO_USER (1 << 13) /* first user flag		*/
 
-#    define SEARCH_EXISTS 0 /* ppsearch for existence	*/
-#    define SEARCH_HOSTED (1 << 0) /* search hosted dirs only	*/
-#    define SEARCH_IGNORE (1 << 1) /* ignore if not found		*/
+#    define SEARCH_EXISTS 0         /* ppsearch for existence	*/
+#    define SEARCH_HOSTED (1 << 0)  /* search hosted dirs only	*/
+#    define SEARCH_IGNORE (1 << 1)  /* ignore if not found		*/
 #    define SEARCH_INCLUDE (1 << 2) /* ppsearch for include		*/
-#    define SEARCH_VENDOR (1 << 3) /* search vendor dirs only	*/
-#    define SEARCH_NEXT (1 << 4) /* search next (uncover)	*/
-#    define SEARCH_USER (1 << 8) /* first user flag		*/
+#    define SEARCH_VENDOR (1 << 3)  /* search vendor dirs only	*/
+#    define SEARCH_NEXT (1 << 4)    /* search next (uncover)	*/
+#    define SEARCH_USER (1 << 8)    /* first user flag		*/
 
 #    define STYLE_gnu (1 << 0) /* gnu style args		*/
 
-#    define IN_c (1 << 0) /* C language file		*/
-#    define IN_defguard (1 << 1) /* did multiple include check	*/
-#    define IN_disable (1 << 2) /* saved state&DISABLE		*/
-#    define IN_endguard (1 << 3) /* did multiple include check	*/
-#    define IN_eof (1 << 4) /* reached EOF			*/
-#    define IN_expand (1 << 5) /* ppexpand buffer		*/
-#    define IN_flush (1 << 6) /* flush stdout on file_refill()*/
-#    define IN_hosted (1 << 7) /* saved mode&HOSTED		*/
+#    define IN_c (1 << 0)          /* C language file		*/
+#    define IN_defguard (1 << 1)   /* did multiple include check	*/
+#    define IN_disable (1 << 2)    /* saved state&DISABLE		*/
+#    define IN_endguard (1 << 3)   /* did multiple include check	*/
+#    define IN_eof (1 << 4)        /* reached EOF			*/
+#    define IN_expand (1 << 5)     /* ppexpand buffer		*/
+#    define IN_flush (1 << 6)      /* flush stdout on file_refill()*/
+#    define IN_hosted (1 << 7)     /* saved mode&HOSTED		*/
 #    define IN_ignoreline (1 << 8) /* ignore #line until file	*/
-#    define IN_newline (1 << 9) /* newline at end of last fill	*/
-#    define IN_noguard (1 << 10) /* no multiple include guard	*/
+#    define IN_newline (1 << 9)    /* newline at end of last fill	*/
+#    define IN_noguard (1 << 10)   /* no multiple include guard	*/
 #    define IN_prototype (1 << 11) /* ppproto() input		*/
-#    define IN_regular (1 << 12) /* regular input file		*/
-#    define IN_static (1 << 13) /* static buffer - don't free	*/
-#    define IN_sync (1 << 14) /* line sync required on pop	*/
-#    define IN_tokens (1L << 15) /* non-space tokens encountered	*/
+#    define IN_regular (1 << 12)   /* regular input file		*/
+#    define IN_static (1 << 13)    /* static buffer - don't free	*/
+#    define IN_sync (1 << 14)      /* line sync required on pop	*/
+#    define IN_tokens (1L << 15)   /* non-space tokens encountered	*/
 
 #    define OPT_GLOBAL (1 << 0) /* pp: pass optional		*/
-#    define OPT_PASS (1 << 1) /* pass on			*/
+#    define OPT_PASS (1 << 1)   /* pass on			*/
 
 struct ppsymbol;
 struct ppindex;
@@ -141,85 +141,85 @@ typedef void (
 
 struct ppinstk /* input stream stack frame	*/
 {
-    char *nextchr; /* next input char (first elt)	*/
-    struct ppinstk *next; /* next frame (for allocation)	*/
-    struct ppinstk *prev; /* previous frame		*/
-    long *control; /* control block level		*/
-    char *buffer; /* buffer base pointer		*/
-    char *file; /* saved file name		*/
-    char *prefix; /* directory prefix		*/
+    char *nextchr;           /* next input char (first elt)	*/
+    struct ppinstk *next;    /* next frame (for allocation)	*/
+    struct ppinstk *prev;    /* previous frame		*/
+    long *control;           /* control block level		*/
+    char *buffer;            /* buffer base pointer		*/
+    char *file;              /* saved file name		*/
+    char *prefix;            /* directory prefix		*/
     struct ppsymbol *symbol; /* macro info			*/
 #    if CHECKPOINT
     struct ppindex *index; /* checkpoint include index	*/
-    int buflen; /* buffer count			*/
+    int buflen;            /* buffer count			*/
 #    endif
-    int line; /* saved line number		*/
-    int vendor; /* saved pp.vendor		*/
-    short fd; /* file descriptor		*/
-    short hide; /* hide index (from pp.hide)	*/
+    int line;    /* saved line number		*/
+    int vendor;  /* saved pp.vendor		*/
+    short fd;    /* file descriptor		*/
+    short hide;  /* hide index (from pp.hide)	*/
     short flags; /* IN_[a-z]* flags		*/
-    char type; /* input type			*/
+    char type;   /* input type			*/
 };
 
 #    if MACKEYARGS
 struct ppkeyarg /* pp macro keyword arg info	*/
 {
-    char *name; /* keyword arg name		*/
+    char *name;  /* keyword arg name		*/
     char *value; /* keyword arg value		*/
 };
 #    endif
 
 struct pplist /* string list			*/
 {
-    char *value; /* string value			*/
+    char *value;         /* string value			*/
     struct pplist *next; /* next in list			*/
 };
 
 struct oplist /* queue op until PP_INIT	*/
 {
-    int op; /* PP_* op			*/
-    char *value; /* op value			*/
+    int op;              /* PP_* op			*/
+    char *value;         /* op value			*/
     struct oplist *next; /* next op			*/
 };
 
 struct pphide /* hidden symbol info		*/
 {
     struct ppmacro *macro; /* saved macro info		*/
-    unsigned long flags; /* saved symbol flags if macro	*/
-    int level; /* nesting level		*/
+    unsigned long flags;   /* saved symbol flags if macro	*/
+    int level;             /* nesting level		*/
 };
 
 struct ppmacstk /* macro invocation stack frame	*/
 {
     struct ppmacstk *next; /* next frame (for allocation)	*/
     struct ppmacstk *prev; /* previous frame		*/
-    int line; /* line number of first arg	*/
-    char *arg[1]; /* arg text pointers		*/
+    int line;              /* line number of first arg	*/
+    char *arg[1];          /* arg text pointers		*/
 };
 
 struct ppmember /* archive member pun on ppfile	*/
 {
     struct ppdirs *archive; /* archive holding file		*/
-    unsigned long offset; /* data offset			*/
-    unsigned long size; /* data size			*/
+    unsigned long offset;   /* data offset			*/
+    unsigned long size;     /* data size			*/
 };
 
 struct counter /* monitoring counters		*/
 {
     int candidate; /* macro candidates		*/
-    int function; /* function macros		*/
-    int macro; /* macro hits			*/
-    int pplex; /* pplex() calls		*/
-    int push; /* input stream pushes		*/
-    int terminal; /* terminal states		*/
-    int token; /* emitted tokens		*/
+    int function;  /* function macros		*/
+    int macro;     /* macro hits			*/
+    int pplex;     /* pplex() calls		*/
+    int push;      /* input stream pushes		*/
+    int terminal;  /* terminal states		*/
+    int token;     /* emitted tokens		*/
 };
 
 struct pptuple /* tuple macro			*/
 {
     struct pptuple *nomatch; /* nomatch tuple		*/
-    struct pptuple *match; /* match tuple			*/
-    char token[1]; /* matching token		*/
+    struct pptuple *match;   /* match tuple			*/
+    char token[1];           /* matching token		*/
 };
 
 struct ppfileid /* physical file id		*/
@@ -230,7 +230,7 @@ struct ppfileid /* physical file id		*/
 
 struct pathid /* physical file name and id	*/
 {
-    char *path; /* file path			*/
+    char *path;         /* file path			*/
     struct ppfileid id; /* file id			*/
 };
 
@@ -241,147 +241,147 @@ struct pathid /* physical file name and id	*/
         ((a)->st_ino = ( unsigned long )(b)->st_ino,                         \
          (a)->st_dev = ( unsigned long )(b)->st_dev)
 
-#    define _PP_CONTEXT_PRIVATE_ /* ppglobals private context	*/             \
+#    define _PP_CONTEXT_PRIVATE_   /* ppglobals private context	*/           \
         struct ppcontext *context; /* current context		*/                    \
-        long state; /* pp state flags		*/                                    \
-        long mode; /* uncoupled pp state flags	*/                            \
-        long option; /* option flags			*/                                    \
-        long test; /* implementation tests		*/                               \
+        long state;                /* pp state flags		*/                     \
+        long mode;                 /* uncoupled pp state flags	*/            \
+        long option;               /* option flags			*/                      \
+        long test;                 /* implementation tests		*/               \
         struct                                                               \
         {                                                                    \
-            Sfio_t *sp; /* FILEDEPS output stream	*/                         \
-            long flags; /* PP_FILEDEPS flags		*/                             \
-        } filedeps; /* FILEDEPS info		*/                                     \
-        struct ppdirs *firstdir; /* first include dir		*/                    \
-        struct ppdirs *lastdir; /* last include dir		*/                      \
-        int hide; /* current include hide index	*/                           \
-        int column; /* FILEDEPS column		*/                                   \
-        int pending; /* ppline() pending output	*/                           \
-        char *firstfile; /* ppline() first file		*/                          \
-        char *lastfile; /* ppline() most recent file	*/                      \
-        char *ignore; /* include ignore list file	*/                         \
-        char *probe; /* ppdefault probe key		*/                              \
-        Hash_table_t *filtab; /* file name hash table		*/                    \
-        Hash_table_t *prdtab; /* predicate hash table		*/                    \
-        char *date; /* start date string		*/                                 \
-        char *time; /* start time string		*/                                 \
-        char *maps; /* directive maps		*/                                    \
-        long ro_state; /* readonly state		*/                                 \
-        long ro_mode; /* readonly mode		*/                                   \
-        long ro_option; /* readonly option		*/                               \
-        long ro_op[2]; /* readonly op			*/                                   \
-        struct pathid cdir; /* arg C dir			*/                                \
-        struct pathid hostdir; /* arg host dir			*/                          \
-        char *ppdefault; /* arg default info file	*/                         \
+            Sfio_t *sp;             /* FILEDEPS output stream	*/             \
+            long flags;             /* PP_FILEDEPS flags		*/                 \
+        } filedeps;                 /* FILEDEPS info		*/                     \
+        struct ppdirs *firstdir;    /* first include dir		*/                 \
+        struct ppdirs *lastdir;     /* last include dir		*/                  \
+        int hide;                   /* current include hide index	*/         \
+        int column;                 /* FILEDEPS column		*/                   \
+        int pending;                /* ppline() pending output	*/            \
+        char *firstfile;            /* ppline() first file		*/               \
+        char *lastfile;             /* ppline() most recent file	*/          \
+        char *ignore;               /* include ignore list file	*/           \
+        char *probe;                /* ppdefault probe key		*/               \
+        Hash_table_t *filtab;       /* file name hash table		*/              \
+        Hash_table_t *prdtab;       /* predicate hash table		*/              \
+        char *date;                 /* start date string		*/                 \
+        char *time;                 /* start time string		*/                 \
+        char *maps;                 /* directive maps		*/                    \
+        long ro_state;              /* readonly state		*/                    \
+        long ro_mode;               /* readonly mode		*/                     \
+        long ro_option;             /* readonly option		*/                   \
+        long ro_op[2];              /* readonly op			*/                      \
+        struct pathid cdir;         /* arg C dir			*/                        \
+        struct pathid hostdir;      /* arg host dir			*/                     \
+        char *ppdefault;            /* arg default info file	*/              \
         struct ppindex *firstindex; /* first include index entry	*/          \
-        struct ppindex *lastindex; /* last include index entry	*/            \
-        struct oplist *firstop; /* first arg op			*/                         \
-        struct oplist *lastop; /* last arg op			*/                           \
-        struct oplist *firsttx; /* first text file		*/                       \
-        struct oplist *lasttx; /* last text file		*/                         \
-        unsigned char arg_file; /* arg file index		*/                        \
-        unsigned char arg_mode; /* arg mode			*/                             \
-        unsigned char arg_style; /* arg style			*/                           \
-        unsigned char c; /* arg C state			*/                                 \
-        unsigned char hosted; /* arg hosted state		*/                        \
-        unsigned char ignoresrc; /* arg ignore source state	*/               \
-        unsigned char initialized; /* arg initialized state	*/               \
-        unsigned char standalone; /* arg standalone state		*/                \
-        unsigned char spare_1; /* padding spare		*/
+        struct ppindex *lastindex;  /* last include index entry	*/           \
+        struct oplist *firstop;     /* first arg op			*/                     \
+        struct oplist *lastop;      /* last arg op			*/                      \
+        struct oplist *firsttx;     /* first text file		*/                   \
+        struct oplist *lasttx;      /* last text file		*/                    \
+        unsigned char arg_file;     /* arg file index		*/                    \
+        unsigned char arg_mode;     /* arg mode			*/                         \
+        unsigned char arg_style;    /* arg style			*/                        \
+        unsigned char c;            /* arg C state			*/                      \
+        unsigned char hosted;       /* arg hosted state		*/                  \
+        unsigned char ignoresrc;    /* arg ignore source state	*/            \
+        unsigned char initialized;  /* arg initialized state	*/              \
+        unsigned char standalone;   /* arg standalone state		*/              \
+        unsigned char spare_1;      /* padding spare		*/
 
 #    define _PP_GLOBALS_PRIVATE_ /* ppglobals private additions	*/           \
-        char *checkpoint; /* checkpoint version		*/                          \
-        int constack; /* pp.control size		*/                                 \
-        struct ppinstk *in; /* input stream stack pointer	*/                 \
-        char *addp; /* addbuf pointer		*/                                    \
-        char *args; /* predicate args		*/                                    \
-        char *addbuf; /* ADD buffer			*/                                     \
-        char *catbuf; /* catenation buffer		*/                               \
-        char *hdrbuf; /* HEADEREXPAND buffer		*/                             \
-        char *hidebuf; /* pp:hide buffer		*/                                 \
-        char *path; /* full path of last #include	*/                         \
-        char *tmpbuf; /* very temporary buffer	*/                            \
-        char *valbuf; /* builtin macro value buffer	*/                       \
-        char *optflags; /* OPT_* flags indexed by X_*	*/                     \
-        int lastout; /* last output char		*/                                 \
+        char *checkpoint;        /* checkpoint version		*/                   \
+        int constack;            /* pp.control size		*/                      \
+        struct ppinstk *in;      /* input stream stack pointer	*/            \
+        char *addp;              /* addbuf pointer		*/                       \
+        char *args;              /* predicate args		*/                       \
+        char *addbuf;            /* ADD buffer			*/                          \
+        char *catbuf;            /* catenation buffer		*/                    \
+        char *hdrbuf;            /* HEADEREXPAND buffer		*/                  \
+        char *hidebuf;           /* pp:hide buffer		*/                       \
+        char *path;              /* full path of last #include	*/            \
+        char *tmpbuf;            /* very temporary buffer	*/                 \
+        char *valbuf;            /* builtin macro value buffer	*/            \
+        char *optflags;          /* OPT_* flags indexed by X_*	*/            \
+        int lastout;             /* last output char		*/                     \
         /* the rest are implicitly initialized */                            \
-        char *include; /* saved path of last #include	*/                     \
-        char *prefix; /* current directory prefix	*/                         \
+        char *include;           /* saved path of last #include	*/           \
+        char *prefix;            /* current directory prefix	*/              \
         struct ppmember *member; /* include archive member data	*/           \
-        int hidden; /* hidden newline count		*/                              \
-        int hiding; /* number of symbols in hiding	*/                        \
-        int level; /* pplex() recursion level	*/                             \
+        int hidden;              /* hidden newline count		*/                 \
+        int hiding;              /* number of symbols in hiding	*/           \
+        int level;               /* pplex() recursion level	*/               \
         struct                                                               \
         {                                                                    \
-            int input; /* pool input			*/                                    \
+            int input;  /* pool input			*/                                   \
             int output; /* pool output			*/                                  \
-        } pool; /* loop on input,output,error	*/                             \
+        } pool;         /* loop on input,output,error	*/                     \
         struct                                                               \
         {                                                                    \
-            long ro_state; /* original pp.ro_state		*/                       \
-            long ro_mode; /* original pp.ro_mode		*/                         \
-            long ro_option; /* original pp.ro_option	*/                      \
-            long ro_op[2]; /* original pp.ro_op[]		*/                        \
-            int on; /* PP_RESET enabled		*/                                  \
+            long ro_state;        /* original pp.ro_state		*/                \
+            long ro_mode;         /* original pp.ro_mode		*/                 \
+            long ro_option;       /* original pp.ro_option	*/                \
+            long ro_op[2];        /* original pp.ro_op[]		*/                 \
+            int on;               /* PP_RESET enabled		*/                    \
             Hash_table_t *symtab; /* original pp.symtab scope	*/             \
-        } reset; /* PP_RESET state		*/                                       \
-        int truncate; /* identifier truncation length	*/                     \
-        struct ppmacstk *macp; /* top of macro actual stack	*/               \
-        char *maxmac; /* maximum size of macro stack	*/                      \
-        char *mactop; /* top of current macro frame	*/                       \
-        char *toknxt; /* '\0' of pp.token		*/                                \
-        long *control; /* control block flags pointer	*/                     \
-        long *maxcon; /* max control block frame	*/                          \
-        struct oplist *chop; /* include prefix chop list	*/                  \
-        struct ppfile *insert; /* inserted line sync file	*/                 \
-        struct ppfile *original; /* original include name	*/                 \
-        struct ppdirs *found; /* last successful ppsearch dir	*/             \
-        int vendor; /* vendor includes only		*/                              \
-        Hash_table_t *dirtab; /* directive hash table		*/                    \
-        Hash_table_t *strtab; /* string hash table		*/                       \
-        PPBUILTIN builtin; /* builtin macro handler	*/                       \
-        PPCOMMENT comment; /* pass along comments		*/                        \
-        PPINCREF incref; /* include file push/return	*/                      \
-        PPLINESYNC linesync; /* pass along line sync info	*/                 \
-        PPLINESYNC olinesync; /* original linesync value	*/                  \
-        PPMACREF macref; /* called on macro def/ref	*/                       \
-        PPOPTARG optarg; /* unknown option arg handler	*/                    \
-        PPPRAGMA pragma; /* pass along unknown pragmas	*/                    \
-        struct counter counter; /* monitoring counters		*/                   \
-        char funbuf[256]; /* last __FUNCTION__		*/
+        } reset;                  /* PP_RESET state		*/                      \
+        int truncate;             /* identifier truncation length	*/         \
+        struct ppmacstk *macp;    /* top of macro actual stack	*/            \
+        char *maxmac;             /* maximum size of macro stack	*/          \
+        char *mactop;             /* top of current macro frame	*/           \
+        char *toknxt;             /* '\0' of pp.token		*/                    \
+        long *control;            /* control block flags pointer	*/          \
+        long *maxcon;             /* max control block frame	*/              \
+        struct oplist *chop;      /* include prefix chop list	*/             \
+        struct ppfile *insert;    /* inserted line sync file	*/              \
+        struct ppfile *original;  /* original include name	*/                \
+        struct ppdirs *found;     /* last successful ppsearch dir	*/         \
+        int vendor;               /* vendor includes only		*/                \
+        Hash_table_t *dirtab;     /* directive hash table		*/                \
+        Hash_table_t *strtab;     /* string hash table		*/                   \
+        PPBUILTIN builtin;        /* builtin macro handler	*/                \
+        PPCOMMENT comment;        /* pass along comments		*/                 \
+        PPINCREF incref;          /* include file push/return	*/             \
+        PPLINESYNC linesync;      /* pass along line sync info	*/            \
+        PPLINESYNC olinesync;     /* original linesync value	*/              \
+        PPMACREF macref;          /* called on macro def/ref	*/              \
+        PPOPTARG optarg;          /* unknown option arg handler	*/           \
+        PPPRAGMA pragma;          /* pass along unknown pragmas	*/           \
+        struct counter counter;   /* monitoring counters		*/                 \
+        char funbuf[256];         /* last __FUNCTION__		*/
 
 #    define _PP_SYMBOL_PRIVATE_ /* ppsymbol private additions	*/             \
-        struct pphide *hidden; /* hidden symbol info		*/
+        struct pphide *hidden;  /* hidden symbol info		*/
 
 #    if MACKEYARGS
 #        define _PP_MACRO_PRIVATE_ /* ppmacro private additions	*/           \
             struct pptuple *tuple; /* tuple macro			*/                       \
             union                                                            \
             {                                                                \
-                char *formal; /* normal formals list		*/                     \
+                char *formal;         /* normal formals list		*/             \
                 struct ppkeyarg *key; /* keyword formals table	*/            \
-            } args; /* macro args info		*/                                   \
-            int size; /* body size			*/
-#        define formals args.formal /* formal argument list		*/
-#        define formkeys args.key /* formal keyword argument list	*/
+            } args;                   /* macro args info		*/                 \
+            int size;                 /* body size			*/
+#        define formals args.formal   /* formal argument list		*/
+#        define formkeys args.key     /* formal keyword argument list	*/
 #    else
 #        define _PP_MACRO_PRIVATE_ /* ppmacro private additions	*/           \
             struct pptuple *tuple; /* tuple macro			*/                       \
-            char *formals; /* formal argument list		*/                       \
-            int size; /* body size			*/
+            char *formals;         /* formal argument list		*/               \
+            int size;              /* body size			*/
 #    endif
 
 #    define _PP_DIRS_PRIVATE_ /* ppdirs private additions	*/                 \
-        unsigned char c; /* files here are C language	*/                     \
-        unsigned char index; /* prefix,local,standard index	*/               \
-        unsigned char type; /* dir type			*/                                 \
+        unsigned char c;      /* files here are C language	*/                \
+        unsigned char index;  /* prefix,local,standard index	*/              \
+        unsigned char type;   /* dir type			*/                               \
         union                                                                \
         {                                                                    \
-            char *buffer; /* TYPE_BUFFER buffer		*/                          \
-            Sfio_t *sp; /* archive stream		*/                                \
+            char *buffer;          /* TYPE_BUFFER buffer		*/                 \
+            Sfio_t *sp;            /* archive stream		*/                     \
             struct ppdirs *subdir; /* subdir list			*/                       \
-        } info; /* type info			*/                                            \
-        struct ppfileid id; /* directory id			*/
+        } info;                    /* type info			*/                         \
+        struct ppfileid id;        /* directory id			*/
 
 #    if !PROTOMAIN
 #        include <ast.h>
@@ -515,7 +515,7 @@ struct pathid /* physical file name and id	*/
         ( struct ppsymkey * )hashlook(                                       \
         t, n, HASH_CREATE | HASH_SIZE(sizeof(struct ppsymkey)), NiL)
 
-#    define MARK '@' /* internal mark		*/
+#    define MARK '@'      /* internal mark		*/
 #    define ARGOFFSET '1' /* macro arg mark offset	*/
 
 #    define STRAPP(p, v, r)                                                  \
@@ -549,35 +549,35 @@ struct pathid /* physical file name and id	*/
 #    define peekchr() (*pp.in->nextchr)
 #    define ungetchr(c) (*--pp.in->nextchr = (c))
 
-#    define MAXID 255 /* maximum identifier size	*/
+#    define MAXID 255         /* maximum identifier size	*/
 #    define MAXTOKEN PPTOKSIZ /* maximum token size		*/
-#    define MAXFORMALS 64 /* maximum number macro formals	*/
-#    define MAXHIDDEN 8 /* ppline if hidden>=MAXHIDDEN	*/
+#    define MAXFORMALS 64     /* maximum number macro formals	*/
+#    define MAXHIDDEN 8       /* ppline if hidden>=MAXHIDDEN	*/
 #    define DEFMACSTACK (MAXFORMALS * 32 * 32) /* default macstack size	*/
 
 #    define FSM_COMPATIBILITY 1 /* compatibility mode		*/
-#    define FSM_IDADD 2 /* add to identifer set		*/
-#    define FSM_IDDEL 3 /* delete from identifer set	*/
-#    define FSM_INIT 4 /* initilize			*/
-#    define FSM_MACRO 5 /* add new macro		*/
-#    define FSM_OPSPACE 6 /* handle <binop><space>=	*/
-#    define FSM_PLUSPLUS 7 /* C++ lexical analysis		*/
-#    define FSM_QUOTADD 8 /* add to quote set		*/
-#    define FSM_QUOTDEL 9 /* delete from quote set	*/
+#    define FSM_IDADD 2         /* add to identifer set		*/
+#    define FSM_IDDEL 3         /* delete from identifer set	*/
+#    define FSM_INIT 4          /* initilize			*/
+#    define FSM_MACRO 5         /* add new macro		*/
+#    define FSM_OPSPACE 6       /* handle <binop><space>=	*/
+#    define FSM_PLUSPLUS 7      /* C++ lexical analysis		*/
+#    define FSM_QUOTADD 8       /* add to quote set		*/
+#    define FSM_QUOTDEL 9       /* delete from quote set	*/
 
 #    define IN_TOP 01 /* top level -- directives ok	*/
 
-#    define IN_BUFFER (2 | IN_TOP) /* buffer of lines		*/
-#    define IN_COPY 2 /* macro arg (copied)		*/
-#    define IN_EXPAND 4 /* macro arg (expanded)		*/
-#    define IN_FILE (4 | IN_TOP) /* file				*/
-#    define IN_INIT (6 | IN_TOP) /* initialization IN_BUFFER	*/
-#    define IN_MACRO 8 /* macro text			*/
+#    define IN_BUFFER (2 | IN_TOP)    /* buffer of lines		*/
+#    define IN_COPY 2                 /* macro arg (copied)		*/
+#    define IN_EXPAND 4               /* macro arg (expanded)		*/
+#    define IN_FILE (4 | IN_TOP)      /* file				*/
+#    define IN_INIT (6 | IN_TOP)      /* initialization IN_BUFFER	*/
+#    define IN_MACRO 8                /* macro text			*/
 #    define IN_MULTILINE (8 | IN_TOP) /* multi-line macro text	*/
-#    define IN_QUOTE 10 /* "..." macro arg (copied)	*/
-#    define IN_RESCAN (10 | IN_TOP) /* directive rescan buffer	*/
-#    define IN_SQUOTE 12 /* '...' macro arg (copied)	*/
-#    define IN_STRING 14 /* string			*/
+#    define IN_QUOTE 10               /* "..." macro arg (copied)	*/
+#    define IN_RESCAN (10 | IN_TOP)   /* directive rescan buffer	*/
+#    define IN_SQUOTE 12              /* '...' macro arg (copied)	*/
+#    define IN_STRING 14              /* string			*/
 
 #    define INC_CLEAR (( struct ppsymbol * )0)
 #    define INC_IGNORE (( struct ppsymbol * )pp.addbuf)
@@ -608,14 +608,14 @@ struct pathid /* physical file name and id	*/
 #    define TYPE_VENDOR (1 << 6)
 
 #    define TOK_BUILTIN (1 << 0) /* last token was #(		*/
-#    define TOK_FORMAL (1 << 1) /* last token was arg formal id	*/
-#    define TOK_ID (1 << 2) /* last token was identifier	*/
-#    define TOK_TOKCAT (1 << 3) /* last token was ##		*/
+#    define TOK_FORMAL (1 << 1)  /* last token was arg formal id	*/
+#    define TOK_ID (1 << 2)      /* last token was identifier	*/
+#    define TOK_TOKCAT (1 << 3)  /* last token was ##		*/
 
 #    define HADELSE (1 << 0) /* already had else part	*/
-#    define KEPT (1 << 1) /* already kept part of block	*/
-#    define SKIP (1 << 2) /* skip this block		*/
-#    define BLOCKBITS 3 /* block flag bits		*/
+#    define KEPT (1 << 1)    /* already kept part of block	*/
+#    define SKIP (1 << 2)    /* skip this block		*/
+#    define BLOCKBITS 3      /* block flag bits		*/
 
 #    define SETIFBLOCK(p)                                                    \
         (*(p) = (*(( p )-1) & SKIP) | (( long )error_info.line << BLOCKBITS))
@@ -815,10 +815,10 @@ struct ppcontext /* pp context			*/
 
 struct ppfile /* include file info		*/
 {
-    HASH_HEADER; /* this is a hash bucket too	*/
-    struct ppsymbol *guard; /* guard symbol			*/
+    HASH_HEADER;                   /* this is a hash bucket too	*/
+    struct ppsymbol *guard;        /* guard symbol			*/
     struct ppfile *bound[INC_MAX]; /* include bindings		*/
-    int flags; /* INC_* flags			*/
+    int flags;                     /* INC_* flags			*/
 };
 
 #    if CHECKPOINT
@@ -826,9 +826,9 @@ struct ppfile /* include file info		*/
 struct ppindex /* checkpoint include index	*/
 {
     struct ppindex *next; /* next in list			*/
-    struct ppfile *file; /* include file			*/
-    unsigned long begin; /* beginning output offset	*/
-    unsigned long end; /* ending output offset		*/
+    struct ppfile *file;  /* include file			*/
+    unsigned long begin;  /* beginning output offset	*/
+    unsigned long end;    /* ending output offset		*/
 };
 
 #    endif
@@ -836,7 +836,7 @@ struct ppindex /* checkpoint include index	*/
 struct ppsymkey /* pun for SYM_KEYWORD lex val	*/
 {
     struct ppsymbol sym; /* symbol as usual		*/
-    int lex; /* lex value for SYM_KEYWORD	*/
+    int lex;             /* lex value for SYM_KEYWORD	*/
 };
 
 #    if PROTOMAIN && PROTO_STANDALONE

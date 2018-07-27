@@ -124,12 +124,12 @@ extern unsigned char *map;
 
 #define BYTE CHAR_BIT
 #define IMASK 0xC0000000 /* instruction flag */
-#define NEG 0x01000000 /* instruction written with ! */
-#define LMASK 0xffff /* low half word */
+#define NEG 0x01000000   /* instruction written with ! */
+#define LMASK 0xffff     /* low half word */
 #define AMASK 0x7fffffff /* address mask, clear sign bit */
-#define INACT (~AMASK) /* inactive bit, the sign bit */
-#define DOLLAR AMASK /* huge address */
-#define REGADR (~AMASK) /* context address */
+#define INACT (~AMASK)   /* inactive bit, the sign bit */
+#define DOLLAR AMASK     /* huge address */
+#define REGADR (~AMASK)  /* context address */
 
 extern word *
 instr(unsigned char *);

@@ -54,7 +54,7 @@ static const unsigned char adrs[UCHAR_MAX + 1]
 = { /* max no. of addrs, 3 is illegal */
     0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, /* <nl> */
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 0, 3, 3,
-    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, /* !# */
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3,                   /* !# */
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 3, 1, 3, 3, /* := */
     3, 3, 3, 3, 2, 3, 3, 2, 2, 3, 3, 3, 3, 3, 2, 3, /* DGHN */
     2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, /* P */
@@ -741,10 +741,10 @@ void
 compile(Text *script, Text *t)
 {
     word loc; /* progam counter */
-    int neg; /* ! in effect */
+    int neg;  /* ! in effect */
     int cmd;
     int naddr;
-    word *q; /* address of instruction word */
+    word *q;     /* address of instruction word */
     t->w = t->s; /* here w is a read pointer */
     while (*t->w)
     {

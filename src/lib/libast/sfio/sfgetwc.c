@@ -22,10 +22,10 @@
 #include "sfhdr.h"
 
 /*	Read the next multibyte character from f and return the corresponding rune
-*(wide char.)
-**
-**	Written by Kiem-Phong Vo
-*/
+ *(wide char.)
+ **
+ **	Written by Kiem-Phong Vo
+ */
 
 #if __STD_C
 int

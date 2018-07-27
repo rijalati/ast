@@ -42,9 +42,9 @@
  */
 typedef union
 {
-    KeySym keySym; /* KeySym that corresponds to xkey.keycode. */
-    int button; /* Button that was pressed (xbutton.button). */
-    Tk_Uid name; /* Tk_Uid of virtual event. */
+    KeySym keySym;         /* KeySym that corresponds to xkey.keycode. */
+    int button;            /* Button that was pressed (xbutton.button). */
+    Tk_Uid name;           /* Tk_Uid of virtual event. */
     ClientData clientData; /* Used when type of Detail is unknown, and to
                             * ensure that all bytes of Detail are initialized
                             * when this structure is used in a hash key. */
@@ -76,25 +76,25 @@ typedef union
 #define EVENT_BUFFER_SIZE 30
 typedef struct BindingTable
 {
-    XEvent eventRing[EVENT_BUFFER_SIZE]; /* Circular queue of recent events
-                                          * (higher indices are for more
-                                          * recent events). */
+    XEvent eventRing[EVENT_BUFFER_SIZE];  /* Circular queue of recent events
+                                           * (higher indices are for more
+                                           * recent events). */
     Detail detailRing[EVENT_BUFFER_SIZE]; /* "Detail" information (keySym,
                                            * button, Tk_Uid, or 0) for each
                                            * entry in eventRing. */
-    int curEvent; /* Index in eventRing of most recent
-                   * event.  Newer events have higher
-                   * indices. */
-    Tcl_HashTable patternTable; /* Used to map from an event to a
-                                 * list of patterns that may match that
-                                 * event.  Keys are PatternTableKey
-                                 * structs, values are (PatSeq *). */
-    Tcl_HashTable objectTable; /* Used to map from an object to a
-                                * list of patterns associated with
-                                * that object.  Keys are ClientData,
-                                * values are (PatSeq *). */
-    Tcl_Interp *interp; /* Interpreter in which commands are
-                         * executed. */
+    int curEvent;                         /* Index in eventRing of most recent
+                                           * event.  Newer events have higher
+                                           * indices. */
+    Tcl_HashTable patternTable;           /* Used to map from an event to a
+                                           * list of patterns that may match that
+                                           * event.  Keys are PatternTableKey
+                                           * structs, values are (PatSeq *). */
+    Tcl_HashTable objectTable;            /* Used to map from an object to a
+                                           * list of patterns associated with
+                                           * that object.  Keys are ClientData,
+                                           * values are (PatSeq *). */
+    Tcl_Interp *interp;                   /* Interpreter in which commands are
+                                           * executed. */
 } BindingTable;
 
 /*
@@ -144,10 +144,10 @@ typedef struct PatternTableKey
                         * tag of the object (or class of objects)
                         * relative to which the event occurred.
                         * For virtual event table, always NULL. */
-    int type; /* Type of event (from X). */
-    Detail detail; /* Additional information, such as keysym,
-                    * button, Tk_Uid, or 0 if nothing
-                    * additional. */
+    int type;          /* Type of event (from X). */
+    Detail detail;     /* Additional information, such as keysym,
+                        * button, Tk_Uid, or 0 if nothing
+                        * additional. */
 } PatternTableKey;
 
 /*
@@ -158,9 +158,9 @@ typedef struct PatternTableKey
 typedef struct Pattern
 {
     int eventType; /* Type of X event, e.g. ButtonPress. */
-    int needMods; /* Mask of modifiers that must be
-                   * present (0 means no modifiers are
-                   * required). */
+    int needMods;  /* Mask of modifiers that must be
+                    * present (0 means no modifiers are
+                    * required). */
     Detail detail; /* Additional information that must
                     * match event.  Normally this is 0,
                     * meaning no additional information
@@ -195,33 +195,33 @@ typedef struct Pattern
 
 typedef struct PatSeq
 {
-    int numPats; /* Number of patterns in sequence (usually
-                  * 1). */
-    char *command; /* Command to invoke when this pattern
-                    * sequence matches (malloc-ed). */
-    int flags; /* Miscellaneous flag values; see below for
-                * definitions. */
-    struct PatSeq *nextSeqPtr; /* Next in list of all pattern sequences
-                                * that have the same initial pattern.  NULL
-                                * means end of list. */
-    Tcl_HashEntry *hPtr; /* Pointer to hash table entry for the
-                          * initial pattern.  This is the head of the
-                          * list of which nextSeqPtr forms a part. */
+    int numPats;                 /* Number of patterns in sequence (usually
+                                  * 1). */
+    char *command;               /* Command to invoke when this pattern
+                                  * sequence matches (malloc-ed). */
+    int flags;                   /* Miscellaneous flag values; see below for
+                                  * definitions. */
+    struct PatSeq *nextSeqPtr;   /* Next in list of all pattern sequences
+                                  * that have the same initial pattern.  NULL
+                                  * means end of list. */
+    Tcl_HashEntry *hPtr;         /* Pointer to hash table entry for the
+                                  * initial pattern.  This is the head of the
+                                  * list of which nextSeqPtr forms a part. */
     struct VirtualOwners *voPtr; /* In a binding table, always NULL.  In a
                                   * virtual event table, identifies the array
                                   * of virtual events that can be triggered by
                                   * this event. */
-    struct PatSeq *nextObjPtr; /* In a binding table, next in list of all
-                                * pattern sequences for the same object (NULL
-                                * for end of list).  Needed to implement
-                                * Tk_DeleteAllBindings.  In a virtual event
-                                * table, always NULL. */
-    Pattern pats[1]; /* Array of "numPats" patterns.  Only one
-                      * element is declared here but in actuality
-                      * enough space will be allocated for "numPats"
-                      * patterns.  To match, pats[0] must match
-                      * event n, pats[1] must match event n-1, etc.
-                      */
+    struct PatSeq *nextObjPtr;   /* In a binding table, next in list of all
+                                  * pattern sequences for the same object (NULL
+                                  * for end of list).  Needed to implement
+                                  * Tk_DeleteAllBindings.  In a virtual event
+                                  * table, always NULL. */
+    Pattern pats[1];             /* Array of "numPats" patterns.  Only one
+                                  * element is declared here but in actuality
+                                  * enough space will be allocated for "numPats"
+                                  * patterns.  To match, pats[0] must match
+                                  * event n, pats[1] must match event n-1, etc.
+                                  */
 } PatSeq;
 
 /*
@@ -253,7 +253,7 @@ typedef struct PatSeq
 
 typedef struct VirtualOwners
 {
-    int numOwners; /* Number of virtual events to trigger. */
+    int numOwners;            /* Number of virtual events to trigger. */
     Tcl_HashEntry *owners[1]; /* Array of pointers to entries in
                                * virtualTable.  Enough space will
                                * actually be allocated for numOwners
@@ -267,7 +267,7 @@ typedef struct VirtualOwners
  */
 typedef struct PhysicalsOwned
 {
-    int numOwned; /* Number of physical events owned. */
+    int numOwned;       /* Number of physical events owned. */
     PatSeq *patSeqs[1]; /* Array of pointers to physical event
                          * patterns.  Enough space will actually
                          * be allocated to hold numOwned. */
@@ -287,9 +287,9 @@ typedef struct ScreenInfo
 {
     TkDisplay *curDispPtr; /* Display for last binding command invoked
                             * in this application. */
-    int curScreenIndex; /* Index of screen for last binding command. */
-    int bindingDepth; /* Number of active instances of Tk_BindEvent
-                       * in this application. */
+    int curScreenIndex;    /* Index of screen for last binding command. */
+    int bindingDepth;      /* Number of active instances of Tk_BindEvent
+                            * in this application. */
 } ScreenInfo;
 
 /*
@@ -306,7 +306,7 @@ typedef struct ScreenInfo
 #ifdef REDO_KEYSYM_LOOKUP
 typedef struct
 {
-    char *name; /* Name of keysym. */
+    char *name;   /* Name of keysym. */
     KeySym value; /* Numeric identifier for keysym. */
 } KeySymInfo;
 static KeySymInfo keyArray[] = {
@@ -316,8 +316,8 @@ static KeySymInfo keyArray[] = {
     { ( char * )NULL, 0 }
 };
 static Tcl_HashTable keySymTable; /* keyArray hashed by keysym value. */
-static Tcl_HashTable nameTable; /* keyArray hashed by keysym name. */
-#endif /* REDO_KEYSYM_LOOKUP */
+static Tcl_HashTable nameTable;   /* keyArray hashed by keysym name. */
+#endif                            /* REDO_KEYSYM_LOOKUP */
 
 static int initialized = 0;
 
@@ -331,10 +331,10 @@ static int initialized = 0;
 typedef struct
 {
     char *name; /* Name of modifier. */
-    int mask; /* Button/modifier mask value,							 *
-                 such as Button1Mask. */
-    int flags; /* Various flags;  see below for
-                * definitions. */
+    int mask;   /* Button/modifier mask value,							 *
+                   such as Button1Mask. */
+    int flags;  /* Various flags;  see below for
+                 * definitions. */
 } ModInfo;
 
 /*
@@ -402,9 +402,9 @@ static Tcl_HashTable modTable;
 
 typedef struct
 {
-    char *name; /* Name of event. */
-    int type; /* Event type for X, such as
-               * ButtonPress. */
+    char *name;    /* Name of event. */
+    int type;      /* Event type for X, such as
+                    * ButtonPress. */
     int eventMask; /* Mask bits (for XSelectInput)
                     * for this event type. */
 } EventInfo;
@@ -832,17 +832,17 @@ Tk_BindingTable bindingTable; /* Token for the binding table to
 
 unsigned long
 Tk_CreateBinding(interp, bindingTable, object, eventString, command, append)
-Tcl_Interp *interp; /* Used for error reporting. */
+Tcl_Interp *interp;           /* Used for error reporting. */
 Tk_BindingTable bindingTable; /* Table in which to create binding. */
-ClientData object; /* Token for object with which binding
-                    * is associated. */
-char *eventString; /* String describing event sequence
-                    * that triggers binding. */
-char *command; /* Contains Tcl command to execute
-                * when binding triggers. */
-int append; /* 0 means replace any existing
-             * binding for eventString;  1 means
-             * append to that binding. */
+ClientData object;            /* Token for object with which binding
+                               * is associated. */
+char *eventString;            /* String describing event sequence
+                               * that triggers binding. */
+char *command;                /* Contains Tcl command to execute
+                               * when binding triggers. */
+int append;                   /* 0 means replace any existing
+                               * binding for eventString;  1 means
+                               * append to that binding. */
 {
     BindingTable *bindPtr = ( BindingTable * )bindingTable;
     PatSeq *psPtr;
@@ -919,12 +919,12 @@ int append; /* 0 means replace any existing
  */
 
 int Tk_DeleteBinding(interp, bindingTable, object, eventString)
-Tcl_Interp *interp; /* Used for error reporting. */
+Tcl_Interp *interp;           /* Used for error reporting. */
 Tk_BindingTable bindingTable; /* Table in which to delete binding. */
-ClientData object; /* Token for object with which binding
-                    * is associated. */
-char *eventString; /* String describing event sequence
-                    * that triggers binding. */
+ClientData object;            /* Token for object with which binding
+                               * is associated. */
+char *eventString;            /* String describing event sequence
+                               * that triggers binding. */
 {
     BindingTable *bindPtr = ( BindingTable * )bindingTable;
     PatSeq *psPtr, *prevPtr;
@@ -1024,13 +1024,13 @@ char *eventString; /* String describing event sequence
  */
 
 char *Tk_GetBinding(interp, bindingTable, object, eventString)
-Tcl_Interp *interp; /* Interpreter for error reporting. */
+Tcl_Interp *interp;           /* Interpreter for error reporting. */
 Tk_BindingTable bindingTable; /* Table in which to look for
                                * binding. */
-ClientData object; /* Token for object with which binding
-                    * is associated. */
-char *eventString; /* String describing event sequence
-                    * that triggers binding. */
+ClientData object;            /* Token for object with which binding
+                               * is associated. */
+char *eventString;            /* String describing event sequence
+                               * that triggers binding. */
 {
     BindingTable *bindPtr = ( BindingTable * )bindingTable;
     PatSeq *psPtr;
@@ -1071,7 +1071,7 @@ void Tk_GetAllBindings(interp,
                                                     * result or error. */
 Tk_BindingTable bindingTable; /* Table in which to look for
                                * bindings. */
-ClientData object; /* Token for object. */
+ClientData object;            /* Token for object. */
 
 {
     BindingTable *bindPtr = ( BindingTable * )bindingTable;
@@ -1121,7 +1121,7 @@ ClientData object; /* Token for object. */
 void Tk_DeleteAllBindings(bindingTable, object)
 Tk_BindingTable bindingTable; /* Table in which to delete
                                * bindings. */
-ClientData object; /* Token for object. */
+ClientData object;            /* Token for object. */
 {
     BindingTable *bindPtr = ( BindingTable * )bindingTable;
     PatSeq *psPtr, *prevPtr;
@@ -1202,13 +1202,13 @@ ClientData object; /* Token for object. */
 void Tk_BindEvent(bindingTable, eventPtr, tkwin, numObjects, objectPtr)
 Tk_BindingTable bindingTable; /* Table in which to look for
                                * bindings. */
-XEvent *eventPtr; /* What actually happened. */
-Tk_Window tkwin; /* Window on display where event
-                  * occurred (needed in order to
-                  * locate display information). */
-int numObjects; /* Number of objects at *objectPtr. */
-ClientData *objectPtr; /* Array of one or more objects
-                        * to check for a matching binding. */
+XEvent *eventPtr;             /* What actually happened. */
+Tk_Window tkwin;              /* Window on display where event
+                               * occurred (needed in order to
+                               * locate display information). */
+int numObjects;               /* Number of objects at *objectPtr. */
+ClientData *objectPtr;        /* Array of one or more objects
+                               * to check for a matching binding. */
 {
     BindingTable *bindPtr = ( BindingTable * )bindingTable;
     TkDisplay *dispPtr = (( TkWindow * )tkwin)->dispPtr;
@@ -1613,20 +1613,20 @@ ClientData *objectPtr; /* Array of one or more objects
  */
 static PatSeq *
 MatchPatterns(dispPtr, bindPtr, psPtr, bestPtr, object, bestCommandPtr)
-TkDisplay *dispPtr; /* Display from which the event came. */
+TkDisplay *dispPtr;    /* Display from which the event came. */
 BindingTable *bindPtr; /* Information about binding table, such as
                         * ring of recent events. */
-PatSeq *psPtr; /* List of pattern sequences. */
-PatSeq *bestPtr; /* The best match seen so far, from a
-                  * previous call to this procedure.  NULL
-                  * means no prior best match. */
-ClientData object; /* If NULL, the sequences at psPtr
-                    * correspond to "normal" bindings.  If
-                    * non-NULL, the sequences at psPtr correspond
-                    * to virtual bindings; in order to match each
-                    * sequence must correspond to a virtual
-                    * binding for which a binding exists for
-                    * object in bindPtr. */
+PatSeq *psPtr;         /* List of pattern sequences. */
+PatSeq *bestPtr;       /* The best match seen so far, from a
+                        * previous call to this procedure.  NULL
+                        * means no prior best match. */
+ClientData object;     /* If NULL, the sequences at psPtr
+                        * correspond to "normal" bindings.  If
+                        * non-NULL, the sequences at psPtr correspond
+                        * to virtual bindings; in order to match each
+                        * sequence must correspond to a virtual
+                        * binding for which a binding exists for
+                        * object in bindPtr. */
 char **bestCommandPtr; /* Returns the command associated with the
                         * best match.  Not modified unless a result
                         * other than bestPtr is returned. */
@@ -1989,14 +1989,14 @@ char **bestCommandPtr; /* Returns the command associated with the
  */
 
 static void ExpandPercents(winPtr, before, eventPtr, keySym, dsPtr)
-TkWindow *winPtr; /* Window where event occurred:  needed to
-                   * get input context. */
-char *before; /* Command containing percent expressions
-               * to be replaced. */
-XEvent *eventPtr; /* X event containing information to be
-                   * used in % replacements. */
-KeySym keySym; /* KeySym: only relevant for KeyPress and
-                * KeyRelease events). */
+TkWindow *winPtr;   /* Window where event occurred:  needed to
+                     * get input context. */
+char *before;       /* Command containing percent expressions
+                     * to be replaced. */
+XEvent *eventPtr;   /* X event containing information to be
+                     * used in % replacements. */
+KeySym keySym;      /* KeySym: only relevant for KeyPress and
+                     * KeyRelease events). */
 Tcl_DString *dsPtr; /* Dynamic string in which to append new
                      * command. */
 {
@@ -2244,7 +2244,7 @@ Tcl_DString *dsPtr; /* Dynamic string in which to append new
                                              ( KeySym * )NULL,
                                              ( XComposeStatus * )NULL);
                 }
-#else /* TK_USE_INPUT_METHODS */
+#else  /* TK_USE_INPUT_METHODS */
                 numChars = XLookupString(&eventPtr->xkey,
                                          numStorage,
                                          NUM_SIZE,
@@ -2377,7 +2377,7 @@ Tcl_DString *dsPtr; /* Dynamic string in which to append new
 
 static void FreeScreenInfo(clientData, interp)
 ClientData clientData; /* Pointer to ScreenInfo structure. */
-Tcl_Interp *interp; /* Interpreter that is being deleted. */
+Tcl_Interp *interp;    /* Interpreter that is being deleted. */
 {
     ckfree(( char * )clientData);
 }
@@ -2406,8 +2406,8 @@ Tcl_Interp *interp; /* Interpreter that is being deleted. */
 static void ChangeScreen(interp, dispName, screenIndex)
 Tcl_Interp *interp; /* Interpreter in which to invoke
                      * command. */
-char *dispName; /* Name of new display. */
-int screenIndex; /* Index of new screen. */
+char *dispName;     /* Name of new display. */
+int screenIndex;    /* Index of new screen. */
 {
     Tcl_DString cmd;
     int code;
@@ -2447,9 +2447,9 @@ int screenIndex; /* Index of new screen. */
 int Tk_EventCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     int i;
     size_t length;
@@ -2675,11 +2675,11 @@ TkVirtualEventTable *vetPtr; /* The virtual event table to be destroyed. */
  */
 
 static int CreateVirtualEvent(interp, vetPtr, virtString, eventString)
-Tcl_Interp *interp; /* Used for error reporting. */
+Tcl_Interp *interp;          /* Used for error reporting. */
 TkVirtualEventTable *vetPtr; /* Table in which to augment virtual event. */
-char *virtString; /* Name of new virtual event. */
-char *eventString; /* String describing physical event that
-                    * triggers virtual event. */
+char *virtString;            /* Name of new virtual event. */
+char *eventString;           /* String describing physical event that
+                              * triggers virtual event. */
 {
     PatSeq *psPtr;
     int dummy;
@@ -2792,13 +2792,13 @@ char *eventString; /* String describing physical event that
  */
 
 static int DeleteVirtualEvent(interp, vetPtr, virtString, eventString)
-Tcl_Interp *interp; /* Used for error reporting. */
+Tcl_Interp *interp;          /* Used for error reporting. */
 TkVirtualEventTable *vetPtr; /* Table in which to delete event. */
-char *virtString; /* String describing event sequence that
-                   * triggers binding. */
-char *eventString; /* The event sequence that should be deleted,
-                    * or NULL to delete all event sequences for
-                    * the entire virtual event. */
+char *virtString;            /* String describing event sequence that
+                              * triggers binding. */
+char *eventString;           /* The event sequence that should be deleted,
+                              * or NULL to delete all event sequences for
+                              * the entire virtual event. */
 {
     int iPhys;
     Tk_Uid virtUid;
@@ -2971,9 +2971,9 @@ char *eventString; /* The event sequence that should be deleted,
  */
 
 static int GetVirtualEvent(interp, vetPtr, virtString)
-Tcl_Interp *interp; /* Interpreter for reporting. */
+Tcl_Interp *interp;          /* Interpreter for reporting. */
 TkVirtualEventTable *vetPtr; /* Table in which to look for event. */
-char *virtString; /* String describing virtual event. */
+char *virtString;            /* String describing virtual event. */
 {
     Tcl_HashEntry *vhPtr;
     Tcl_DString ds;
@@ -3027,7 +3027,7 @@ char *virtString; /* String describing virtual event. */
  */
 
 static void GetAllVirtualEvents(interp, vetPtr)
-Tcl_Interp *interp; /* Interpreter returning result. */
+Tcl_Interp *interp;          /* Interpreter returning result. */
 TkVirtualEventTable *vetPtr; /* Table containing events. */
 {
     Tcl_HashEntry *hPtr;
@@ -3086,9 +3086,9 @@ TkVirtualEventTable *vetPtr; /* Table containing events. */
  */
 static int HandleEventGenerate(interp, tkwin, argc, argv)
 Tcl_Interp *interp; /* Interp for error messages and name lookup. */
-Tk_Window tkwin; /* Main window of this application. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tk_Window tkwin;    /* Main window of this application. */
+int argc;           /* Number of arguments. */
+char **argv;        /* Argument strings. */
 {
     Pattern pat;
     char *p;
@@ -3857,21 +3857,21 @@ static PatSeq *FindSequence(interp,
                                                           * for error
                                                           * reporting. */
 Tcl_HashTable *patternTablePtr; /* Table to use for lookup. */
-ClientData object; /* For binding table, token for object with
-                    * which binding is associated.
-                    * For virtual event table, NULL. */
-char *eventString; /* String description of pattern to
-                    * match on.  See user documentation
-                    * for details. */
-int create; /* 0 means don't create the entry if
-             * it doesn't already exist.   Non-zero
-             * means create. */
-int allowVirtual; /* 0 means that virtual events are not
-                   * allowed in the sequence.  Non-zero
-                   * otherwise. */
-unsigned long *maskPtr; /* *maskPtr is filled in with the event
-                         * types on which this pattern sequence
-                         * depends. */
+ClientData object;              /* For binding table, token for object with
+                                 * which binding is associated.
+                                 * For virtual event table, NULL. */
+char *eventString;              /* String description of pattern to
+                                 * match on.  See user documentation
+                                 * for details. */
+int create;                     /* 0 means don't create the entry if
+                                 * it doesn't already exist.   Non-zero
+                                 * means create. */
+int allowVirtual;               /* 0 means that virtual events are not
+                                 * allowed in the sequence.  Non-zero
+                                 * otherwise. */
+unsigned long *maskPtr;         /* *maskPtr is filled in with the event
+                                 * types on which this pattern sequence
+                                 * depends. */
 {
 
     Pattern pats[EVENT_BUFFER_SIZE];
@@ -4038,12 +4038,12 @@ done:
  */
 
 static int ParseEventDescription(interp, eventStringPtr, patPtr, eventMaskPtr)
-Tcl_Interp *interp; /* For error messages. */
-char **eventStringPtr; /* On input, holds a pointer to start of
-                        * event string.  On exit, gets pointer to
-                        * rest of string after parsed event. */
-Pattern *patPtr; /* Filled with the pattern parsed from the
-                  * event string. */
+Tcl_Interp *interp;          /* For error messages. */
+char **eventStringPtr;       /* On input, holds a pointer to start of
+                              * event string.  On exit, gets pointer to
+                              * rest of string after parsed event. */
+Pattern *patPtr;             /* Filled with the pattern parsed from the
+                              * event string. */
 unsigned long *eventMaskPtr; /* Filled with event mask of matched event. */
 
 {
@@ -4300,7 +4300,7 @@ end:
 
 static char *GetField(p, copy, size) char *p; /* Pointer to part of pattern.
                                                */
-char *copy; /* Place to copy field. */
+char *copy;                                   /* Place to copy field. */
 int size; /* Maximum number of characters to
            * copy. */
 {
@@ -4790,7 +4790,7 @@ char *TkKeysymToString(keysym) KeySym keysym;
 int TkCopyAndGlobalEval(interp,
                         script) Tcl_Interp *interp; /* Interpreter in which to
                                                      * evaluate script. */
-char *script; /* Script to evaluate. */
+char *script;                                       /* Script to evaluate. */
 {
     Tcl_DString buffer;
     int code;

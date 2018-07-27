@@ -24,36 +24,36 @@
 typedef struct IncrInfo
 {
     TkWindow *winPtr; /* Window that owns selection. */
-    Atom selection; /* Selection that is being retrieved. */
-    Atom *multAtoms; /* Information about conversions to
-                      * perform:  one or more pairs of
-                      * (target, property).  This either
-                      * points to a retrieved  property (for
-                      * MULTIPLE retrievals) or to a static
-                      * array. */
+    Atom selection;   /* Selection that is being retrieved. */
+    Atom *multAtoms;  /* Information about conversions to
+                       * perform:  one or more pairs of
+                       * (target, property).  This either
+                       * points to a retrieved  property (for
+                       * MULTIPLE retrievals) or to a static
+                       * array. */
     unsigned long numConversions;
     /* Number of entries in offsets (same as
      * # of pairs in multAtoms). */
-    int *offsets; /* One entry for each pair in
-                   * multAtoms;  -1 means all data has
-                   * been transferred for this
-                   * conversion.  -2 means only the
-                   * final zero-length transfer still
-                   * has to be done.  Otherwise it is the
-                   * offset of the next chunk of data
-                   * to transfer.  This array is malloc-ed. */
-    int numIncrs; /* Number of entries in offsets that
-                   * aren't -1 (i.e. # of INCR-mode transfers
-                   * not yet completed). */
-    Tcl_TimerToken timeout; /* Token for timer procedure. */
-    int idleTime; /* Number of seconds since we heard
-                   * anything from the selection
-                   * requestor. */
-    Window reqWindow; /* Requestor's window id. */
-    Time time; /* Timestamp corresponding to
-                * selection at beginning of request;
-                * used to abort transfer if selection
-                * changes. */
+    int *offsets;             /* One entry for each pair in
+                               * multAtoms;  -1 means all data has
+                               * been transferred for this
+                               * conversion.  -2 means only the
+                               * final zero-length transfer still
+                               * has to be done.  Otherwise it is the
+                               * offset of the next chunk of data
+                               * to transfer.  This array is malloc-ed. */
+    int numIncrs;             /* Number of entries in offsets that
+                               * aren't -1 (i.e. # of INCR-mode transfers
+                               * not yet completed). */
+    Tcl_TimerToken timeout;   /* Token for timer procedure. */
+    int idleTime;             /* Number of seconds since we heard
+                               * anything from the selection
+                               * requestor. */
+    Window reqWindow;         /* Requestor's window id. */
+    Time time;                /* Timestamp corresponding to
+                               * selection at beginning of request;
+                               * used to abort transfer if selection
+                               * changes. */
     struct IncrInfo *nextPtr; /* Next in list of all INCR-style
                                * retrievals currently pending. */
 } IncrInfo;
@@ -108,16 +108,16 @@ static void SelTimeoutProc _ANSI_ARGS_((ClientData clientData));
  */
 
 int TkSelGetSelection(interp, tkwin, selection, target, proc, clientData)
-Tcl_Interp *interp; /* Interpreter to use for reporting
-                     * errors. */
-Tk_Window tkwin; /* Window on whose behalf to retrieve
-                  * the selection (determines display
-                  * from which to retrieve). */
-Atom selection; /* Selection to retrieve. */
-Atom target; /* Desired form in which selection
-              * is to be returned. */
-Tk_GetSelProc *proc; /* Procedure to call to process the
-                      * selection, once it has been retrieved. */
+Tcl_Interp *interp;    /* Interpreter to use for reporting
+                        * errors. */
+Tk_Window tkwin;       /* Window on whose behalf to retrieve
+                        * the selection (determines display
+                        * from which to retrieve). */
+Atom selection;        /* Selection to retrieve. */
+Atom target;           /* Desired form in which selection
+                        * is to be returned. */
+Tk_GetSelProc *proc;   /* Procedure to call to process the
+                        * selection, once it has been retrieved. */
 ClientData clientData; /* Arbitrary value to pass to proc. */
 {
     TkSelRetrievalInfo retr;
@@ -647,11 +647,11 @@ XSelectionRequestEvent *eventPtr;
 {
     XSelectionEvent reply; /* Used to notify requestor that
                             * selection info is ready. */
-    int multiple; /* Non-zero means a MULTIPLE request
-                   * is being handled. */
-    IncrInfo incr; /* State of selection conversion. */
-    Atom singleInfo[2]; /* incr.multAtoms points here except
-                         * for multiple conversions. */
+    int multiple;          /* Non-zero means a MULTIPLE request
+                            * is being handled. */
+    IncrInfo incr;         /* State of selection conversion. */
+    Atom singleInfo[2];    /* incr.multAtoms points here except
+                            * for multiple conversions. */
     int i;
     Tk_ErrorHandler errorHandler;
     TkSelectionInfo *infoPtr;
@@ -985,7 +985,7 @@ refuse:
 
 static void SelRcvIncrProc(clientData, eventPtr)
 ClientData clientData; /* Information about retrieval. */
-XEvent *eventPtr; /* X PropertyChange event. */
+XEvent *eventPtr;      /* X PropertyChange event. */
 {
     TkSelRetrievalInfo *retrPtr = ( TkSelRetrievalInfo * )clientData;
     char *propInfo;
@@ -1197,11 +1197,11 @@ static long *SelCvtToX(string,
                        tkwin,
                        numLongsPtr) char *string; /* String representation of
                                                      selection. */
-Atom type; /* Atom specifying the X format that is
-            * desired for the selection.  Should not
-            * be XA_STRING (if so, don't bother calling
-            * this procedure at all). */
-Tk_Window tkwin; /* Window that governs atom conversion. */
+Atom type;        /* Atom specifying the X format that is
+                   * desired for the selection.  Should not
+                   * be XA_STRING (if so, don't bother calling
+                   * this procedure at all). */
+Tk_Window tkwin;  /* Window that governs atom conversion. */
 int *numLongsPtr; /* Number of 32-bit words contained in the
                    * result. */
 {
@@ -1300,10 +1300,10 @@ static char *SelCvtFromX(propPtr,
                          numValues,
                          type,
                          tkwin) long *propPtr; /* Property value from X. */
-int numValues; /* Number of 32-bit values in property. */
-Atom type; /* Type of property  Should not be
-            * XA_STRING (if so, don't bother calling
-            * this procedure at all). */
+int numValues;   /* Number of 32-bit values in property. */
+Atom type;       /* Type of property  Should not be
+                  * XA_STRING (if so, don't bother calling
+                  * this procedure at all). */
 Tk_Window tkwin; /* Window to use for atom conversion. */
 {
     char *result;

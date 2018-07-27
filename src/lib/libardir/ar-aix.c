@@ -58,12 +58,12 @@ typedef struct Member_s
 
 typedef struct State_s /* method state			*/
 {
-    off_t current; /* current dirent offset	*/
-    off_t offset; /* next dirent offset		*/
-    off_t last; /* last member offset		*/
+    off_t current;   /* current dirent offset	*/
+    off_t offset;    /* next dirent offset		*/
+    off_t last;      /* last member offset		*/
     Member_t member; /* current member		*/
-    int term; /* trailing '\0' for member	*/
-    char *name; /* current member name		*/
+    int term;        /* trailing '\0' for member	*/
+    char *name;      /* current member name		*/
     size_t namesize; /* max size for name		*/
 } State_t;
 

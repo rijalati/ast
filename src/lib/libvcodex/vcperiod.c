@@ -111,7 +111,7 @@ ssize_t dtsz;
         s += dist[p + NEIGHBOR + 1] - dist[p - NEIGHBOR];
     }
 
-    period = 0; /* elect best period */
+    period = 0;            /* elect best period */
     maxs = 2 * vclogi(sz); /* a candidate period must have many repeats */
     for (p = NEIGHBOR; 2 * p < sz; ++p)
     {

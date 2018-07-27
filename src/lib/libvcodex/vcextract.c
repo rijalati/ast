@@ -29,8 +29,8 @@
 typedef struct _store_s
 {
     Vcmethod_t *meth; /* method 		*/
-    Vcchar_t *data; /* associated data	*/
-    ssize_t dtsz; /* length of data	*/
+    Vcchar_t *data;   /* associated data	*/
+    ssize_t dtsz;     /* length of data	*/
 } Store_t;
 
 #if __STD_C

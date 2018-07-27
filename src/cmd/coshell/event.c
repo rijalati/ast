@@ -142,79 +142,79 @@ struct Key_s;
 typedef struct Key_s Key_t;
 
 #    define DATA_clear 0x00000001 /* explicit clear			*/
-#    define DATA_hold 0x00000002 /* explicit hold			*/
+#    define DATA_hold 0x00000002  /* explicit hold			*/
 
 typedef uint32_t Number_t;
 
 typedef struct Data_s /* event data				*/
 {
     Number_t expire; /* expiration seconds since epoch	*/
-    Number_t time; /* last raise time			*/
-    Number_t raise; /* total # raise requests		*/
-    Number_t flags; /* DATA_* flags				*/
+    Number_t time;   /* last raise time			*/
+    Number_t raise;  /* total # raise requests		*/
+    Number_t flags;  /* DATA_* flags				*/
 } Data_t;
 
 typedef struct Event_s /* event bucket				*/
 {
-    Dtlink_t link; /* dictionary link			*/
+    Dtlink_t link;        /* dictionary link			*/
     unsigned int waiting; /* # clients waiting			*/
-    Data_t data; /* event persistent data		*/
-    char name[256]; /* event name				*/
+    Data_t data;          /* event persistent data		*/
+    char name[256];       /* event name				*/
 } Event_t;
 
 typedef struct Waiting_s /* pending event bucket			*/
 {
-    Dtlink_t link; /* dictionary link			*/
-    int id; /* wait id				*/
+    Dtlink_t link;  /* dictionary link			*/
+    int id;         /* wait id				*/
     Event_t *event; /* event bucket pointer			*/
 } Waiting_t;
 
 typedef struct Connection_s /* client connection state		*/
 {
-    Dtlink_t link; /* list link				*/
-    Csid_t id; /* connection id			*/
-    Dt_t *waiting; /* pending events			*/
-    datum list; /* list finger				*/
-    int fd; /* connection fd			*/
-    int all; /* list all vs. list match		*/
-    int code; /* request exit code			*/
-    int quiet; /* suppress response log messages	*/
+    Dtlink_t link;       /* list link				*/
+    Csid_t id;           /* connection id			*/
+    Dt_t *waiting;       /* pending events			*/
+    datum list;          /* list finger				*/
+    int fd;              /* connection fd			*/
+    int all;             /* list all vs. list match		*/
+    int code;            /* request exit code			*/
+    int quiet;           /* suppress response log messages	*/
     unsigned long newer; /* list --newer time			*/
     unsigned long older; /* list --older time			*/
-    regex_t re; /* list request pattern			*/
+    regex_t re;          /* list request pattern			*/
 } Connection_t;
 
 typedef struct Request_s /* static request info			*/
 {
     const char *name; /* request name				*/
-    int index; /* REQ_* index				*/
-    int min; /* min #args				*/
-    int max; /* max #args				*/
+    int index;        /* REQ_* index				*/
+    int min;          /* min #args				*/
+    int max;          /* max #args				*/
 } Request_t;
 
 typedef struct State_s /* program state			*/
 {
-    Cssdisc_t disc; /* css discipline			*/
-    Dtdisc_t condisc; /* connection dictionary discipline	*/
-    Dtdisc_t eventdisc; /* event dictionary discipline		*/
-    Dtdisc_t waitdisc; /* pending events dictionary discipline	*/
-    unsigned int active; /* number of active clients		*/
-    int hold; /* hold announcements			*/
-    int log; /* log activity				*/
-    int major; /* db major version			*/
-    int minor; /* db major version			*/
-    int swap; /* datum <=> native int32_ swap		*/
+    Cssdisc_t disc;       /* css discipline			*/
+    Dtdisc_t condisc;     /* connection dictionary discipline	*/
+    Dtdisc_t eventdisc;   /* event dictionary discipline		*/
+    Dtdisc_t waitdisc;    /* pending events dictionary discipline	*/
+    unsigned int active;  /* number of active clients		*/
+    int hold;             /* hold announcements			*/
+    int log;              /* log activity				*/
+    int major;            /* db major version			*/
+    int minor;            /* db major version			*/
+    int swap;             /* datum <=> native int32_ swap		*/
     unsigned long expire; /* expiration in seconds		*/
-    DBM *dbm; /* dbm handle				*/
-    Dt_t *connections; /* active connection list		*/
-    Dt_t *events; /* outstanding events dictionary	*/
-    char *service; /* service connect stream path		*/
-    char *path; /* event db path			*/
-    Sfio_t *logf; /* log file stream			*/
-    Sfio_t *usrf; /* usr buffer stream			*/
-    Sfio_t *tmp; /* tmp buffer stream			*/
-    char *cmd[1024]; /* request command argv			*/
-    char req[8 * 1024]; /* request buffer			*/
+    DBM *dbm;             /* dbm handle				*/
+    Dt_t *connections;    /* active connection list		*/
+    Dt_t *events;         /* outstanding events dictionary	*/
+    char *service;        /* service connect stream path		*/
+    char *path;           /* event db path			*/
+    Sfio_t *logf;         /* log file stream			*/
+    Sfio_t *usrf;         /* usr buffer stream			*/
+    Sfio_t *tmp;          /* tmp buffer stream			*/
+    char *cmd[1024];      /* request command argv			*/
+    char req[8 * 1024];   /* request buffer			*/
 } State_t;
 
 #    define REQ_all 1

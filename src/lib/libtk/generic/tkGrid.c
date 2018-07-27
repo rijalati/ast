@@ -27,9 +27,9 @@
 #define MIN(x, y) ((x) > (y) ? (y) : (x))
 
 #define COLUMN (1) /* working on column offsets */
-#define ROW (2) /* working on row offsets */
+#define ROW (2)    /* working on row offsets */
 
-#define CHECK_ONLY (1) /* check max slot constraint */
+#define CHECK_ONLY (1)  /* check max slot constraint */
 #define CHECK_SPACE (2) /* alloc more space, don't change max */
 
 /*
@@ -40,7 +40,7 @@
  */
 
 #define TYPICAL_SIZE 25 /* (arbitrary guess) */
-#define PREALLOC 10 /* extra slots to allocate */
+#define PREALLOC 10     /* extra slots to allocate */
 
 /*
  * Data structures are allocated dynamically to support arbitrary sized
@@ -55,9 +55,9 @@
  * Special characters to support relative layouts.
  */
 
-#define REL_SKIP 'x' /* Skip this column. */
+#define REL_SKIP 'x'  /* Skip this column. */
 #define REL_HORIZ '-' /* Extend previous widget horizontally. */
-#define REL_VERT '^' /* Extend widget from row above. */
+#define REL_VERT '^'  /* Extend widget from row above. */
 
 /*
  *  Structure to hold information for grid masters.  A slot is either
@@ -69,22 +69,22 @@ typedef struct SlotInfo
     int minSize; /* The minimum size of this slot (in pixels).
                   * It is set via the rowconfigure or
                   * columnconfigure commands. */
-    int weight; /* The resize weight of this slot. (0) means
-                 * this slot doesn't resize. Extra space in
-                 * the layout is given distributed among slots
-                 * inproportion to their weights. */
-    int pad; /* Extra padding, in pixels, required for
-              * this slot.  This amount is "added" to the
-              * largest slave in the slot. */
-    int offset; /* This is a cached value used for
-                 * introspection.  It is the pixel
-                 * offset of the right or bottom edge
-                 * of this slot from the beginning of the
-                 * layout. */
-    int temp; /* This is a temporary value used for
-               * calculating adjusted weights when
-               * shrinking the layout below its
-               * nominal size. */
+    int weight;  /* The resize weight of this slot. (0) means
+                  * this slot doesn't resize. Extra space in
+                  * the layout is given distributed among slots
+                  * inproportion to their weights. */
+    int pad;     /* Extra padding, in pixels, required for
+                  * this slot.  This amount is "added" to the
+                  * largest slave in the slot. */
+    int offset;  /* This is a cached value used for
+                  * introspection.  It is the pixel
+                  * offset of the right or bottom edge
+                  * of this slot from the beginning of the
+                  * layout. */
+    int temp;    /* This is a temporary value used for
+                  * calculating adjusted weights when
+                  * shrinking the layout below its
+                  * nominal size. */
 } SlotInfo;
 
 /*
@@ -98,21 +98,21 @@ typedef struct GridLayout
                                  * Each bin contains a list of all
                                  * slaves whose spans are >1 and whose
                                  * right edges fall in this slot. */
-    int minSize; /* Minimum size needed for this slot,
-                  * in pixels.  This is the space required
-                  * to hold any slaves contained entirely
-                  * in this slot, adjusted for any slot
-                  * constrants, such as size or padding. */
-    int pad; /* Padding needed for this slot */
-    int weight; /* Slot weight, controls resizing. */
-    int minOffset; /* The minimum offset, in pixels, from
-                    * the beginning of the layout to the
-                    * right/bottom edge of the slot calculated
-                    * from top/left to bottom/right. */
-    int maxOffset; /* The maximum offset, in pixels, from
-                    * the beginning of the layout to the
-                    * right-or-bottom edge of the slot calculated
-                    * from bottom-or-right to top-or-left. */
+    int minSize;                /* Minimum size needed for this slot,
+                                 * in pixels.  This is the space required
+                                 * to hold any slaves contained entirely
+                                 * in this slot, adjusted for any slot
+                                 * constrants, such as size or padding. */
+    int pad;                    /* Padding needed for this slot */
+    int weight;                 /* Slot weight, controls resizing. */
+    int minOffset;              /* The minimum offset, in pixels, from
+                                 * the beginning of the layout to the
+                                 * right/bottom edge of the slot calculated
+                                 * from top/left to bottom/right. */
+    int maxOffset;              /* The maximum offset, in pixels, from
+                                 * the beginning of the layout to the
+                                 * right-or-bottom edge of the slot calculated
+                                 * from bottom-or-right to top-or-left. */
 } GridLayout;
 
 /*
@@ -122,19 +122,19 @@ typedef struct GridLayout
 typedef struct
 {
     SlotInfo *columnPtr; /* Pointer to array of column constraints. */
-    SlotInfo *rowPtr; /* Pointer to array of row constraints. */
-    int columnEnd; /* The last column occupied by any slave. */
-    int columnMax; /* The number of columns with constraints. */
-    int columnSpace; /* The number of slots currently allocated for
-                      * column constraints. */
-    int rowEnd; /* The last row occupied by any slave. */
-    int rowMax; /* The number of rows with constraints. */
-    int rowSpace; /* The number of slots currently allocated
-                   * for row constraints. */
-    int startX; /* Pixel offset of this layout within its
-                 * parent. */
-    int startY; /* Pixel offset of this layout within its
-                 * parent. */
+    SlotInfo *rowPtr;    /* Pointer to array of row constraints. */
+    int columnEnd;       /* The last column occupied by any slave. */
+    int columnMax;       /* The number of columns with constraints. */
+    int columnSpace;     /* The number of slots currently allocated for
+                          * column constraints. */
+    int rowEnd;          /* The last row occupied by any slave. */
+    int rowMax;          /* The number of rows with constraints. */
+    int rowSpace;        /* The number of slots currently allocated
+                          * for row constraints. */
+    int startX;          /* Pixel offset of this layout within its
+                          * parent. */
+    int startY;          /* Pixel offset of this layout within its
+                          * parent. */
 } GridMaster;
 
 /*
@@ -146,53 +146,53 @@ typedef struct
 
 typedef struct Gridder
 {
-    Tk_Window tkwin; /* Tk token for window.  NULL means that
-                      * the window has been deleted, but the
-                      * gridder hasn't had a chance to clean up
-                      * yet because the structure is still in
-                      * use. */
+    Tk_Window tkwin;           /* Tk token for window.  NULL means that
+                                * the window has been deleted, but the
+                                * gridder hasn't had a chance to clean up
+                                * yet because the structure is still in
+                                * use. */
     struct Gridder *masterPtr; /* Master window within which this window
                                 * is managed (NULL means this window
                                 * isn't managed by the gridder). */
-    struct Gridder *nextPtr; /* Next window managed within same
-                              * parent.  List order doesn't matter. */
-    struct Gridder *slavePtr; /* First in list of slaves managed
-                               * inside this window (NULL means
-                               * no grid slaves). */
+    struct Gridder *nextPtr;   /* Next window managed within same
+                                * parent.  List order doesn't matter. */
+    struct Gridder *slavePtr;  /* First in list of slaves managed
+                                * inside this window (NULL means
+                                * no grid slaves). */
     GridMaster *masterDataPtr; /* Additional data for geometry master. */
-    int column, row; /* Location in the grid (starting
-                      * from zero). */
-    int numCols, numRows; /* Number of columns or rows this slave spans.
-                           * Should be at least 1. */
-    int padX, padY; /* Total additional pixels to leave around the
-                     * window (half of this space is left on each
-                     * side).  This is space *outside* the window:
-                     * we'll allocate extra space in frame but
-                     * won't enlarge window). */
-    int iPadX, iPadY; /* Total extra pixels to allocate inside the
-                       * window (half this amount will appear on
-                       * each side). */
-    int sticky; /* which sides of its cavity this window
-                 * sticks to. See below for definitions */
-    int doubleBw; /* Twice the window's last known border
-                   * width.  If this changes, the window
-                   * must be re-arranged within its parent. */
-    int *abortPtr; /* If non-NULL, it means that there is a nested
-                    * call to ArrangeGrid already working on
-                    * this window.  *abortPtr may be set to 1 to
-                    * abort that nested call.  This happens, for
-                    * example, if tkwin or any of its slaves
-                    * is deleted. */
-    int flags; /* Miscellaneous flags;  see below
-                * for definitions. */
+    int column, row;           /* Location in the grid (starting
+                                * from zero). */
+    int numCols, numRows;      /* Number of columns or rows this slave spans.
+                                * Should be at least 1. */
+    int padX, padY;            /* Total additional pixels to leave around the
+                                * window (half of this space is left on each
+                                * side).  This is space *outside* the window:
+                                * we'll allocate extra space in frame but
+                                * won't enlarge window). */
+    int iPadX, iPadY;          /* Total extra pixels to allocate inside the
+                                * window (half this amount will appear on
+                                * each side). */
+    int sticky;                /* which sides of its cavity this window
+                                * sticks to. See below for definitions */
+    int doubleBw;              /* Twice the window's last known border
+                                * width.  If this changes, the window
+                                * must be re-arranged within its parent. */
+    int *abortPtr;             /* If non-NULL, it means that there is a nested
+                                * call to ArrangeGrid already working on
+                                * this window.  *abortPtr may be set to 1 to
+                                * abort that nested call.  This happens, for
+                                * example, if tkwin or any of its slaves
+                                * is deleted. */
+    int flags;                 /* Miscellaneous flags;  see below
+                                * for definitions. */
 
     /*
      * These fields are used temporarily for layout calculations only.
      */
 
     struct Gridder *binNextPtr; /* Link to next span>1 slave in this bin. */
-    int size; /* Nominal size (width or height) in pixels
-               * of the slave.  This includes the padding. */
+    int size;                   /* Nominal size (width or height) in pixels
+                                 * of the slave.  This includes the padding. */
 } Gridder;
 
 /* Flag values for "sticky"ness  The 16 combinations subsume the packer's
@@ -261,8 +261,8 @@ static int StringToSticky _ANSI_ARGS_((char *string));
 static void Unlink _ANSI_ARGS_((Gridder * gridPtr));
 
 static Tk_GeomMgr gridMgrType = {
-    "grid", /* name */
-    GridReqProc, /* requestProc */
+    "grid",            /* name */
+    GridReqProc,       /* requestProc */
     GridLostSlaveProc, /* lostSlaveProc */
 };
 
@@ -286,15 +286,15 @@ static Tk_GeomMgr gridMgrType = {
 int Tk_GridCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
-    Gridder *masterPtr; /* master grid record */
+    Gridder *masterPtr;  /* master grid record */
     GridMaster *gridPtr; /* pointer to grid data */
-    size_t length; /* streing length of argument */
-    char c; /* 1st character of argument */
+    size_t length;       /* streing length of argument */
+    char c;              /* 1st character of argument */
 
     if ((argc >= 2)
         && ((argv[1][0] == '.') || (argv[1][0] == REL_SKIP)
@@ -317,10 +317,10 @@ char **argv; /* Argument strings. */
     if ((c == 'b') && (strncmp(argv[1], "bbox", length) == 0))
     {
         Tk_Window master;
-        int row, column; /* origin for bounding box */
+        int row, column;   /* origin for bounding box */
         int row2, column2; /* end of bounding box */
-        int endX, endY; /* last column/row in the layout */
-        int x = 0, y = 0; /* starting pixels for this bounding box */
+        int endX, endY;    /* last column/row in the layout */
+        int x = 0, y = 0;  /* starting pixels for this bounding box */
         int width, height; /* size of the bounding box */
 
         if (argc != 3 && argc != 5 && argc != 7)
@@ -555,8 +555,8 @@ char **argv; /* Argument strings. */
     {
         Tk_Window master;
         SlotInfo *slotPtr;
-        int x, y; /* Offset in pixels, from edge of parent. */
-        int i, j; /* Corresponding column and row indeces. */
+        int x, y;       /* Offset in pixels, from edge of parent. */
+        int i, j;       /* Corresponding column and row indeces. */
         int endX, endY; /* end of grid */
 
         if (argc != 5)
@@ -822,12 +822,12 @@ char **argv; /* Argument strings. */
     {
         Tk_Window master;
         SlotInfo *slotPtr = NULL;
-        int slot; /* the column or row number */
+        int slot;      /* the column or row number */
         size_t length; /* the # of chars in the "-option" string */
-        int slotType; /* COLUMN or ROW */
-        int size; /* the configuration value */
+        int slotType;  /* COLUMN or ROW */
+        int size;      /* the configuration value */
         int checkOnly; /* check the size only */
-        int ok; /* temporary TCL result code */
+        int ok;        /* temporary TCL result code */
         int i;
 
         if (((argc % 2 != 0) && (argc > 6)) || (argc < 4))
@@ -1104,7 +1104,7 @@ Tk_Window tkwin; /* Other Tk-related information
 static void GridLostSlaveProc(clientData, tkwin)
 ClientData clientData; /* Grid structure for slave window that
                         * was stolen away. */
-Tk_Window tkwin; /* Tk's handle for the slave window. */
+Tk_Window tkwin;       /* Tk's handle for the slave window. */
 {
     Gridder *slavePtr = ( Gridder * )clientData;
 
@@ -1140,16 +1140,16 @@ Tk_Window tkwin; /* Tk's handle for the slave window. */
 static int AdjustOffsets(size, slots, slotPtr) int size; /* The total layout
                                                             size (in pixels).
                                                           */
-int slots; /* Number of slots. */
+int slots;         /* Number of slots. */
 SlotInfo *slotPtr; /* Pointer to slot array. */
 {
-    int slot; /* Current slot. */
-    int diff = 0; /* Extra pixels needed to add to the layout. */
+    int slot;            /* Current slot. */
+    int diff = 0;        /* Extra pixels needed to add to the layout. */
     int totalWeight = 0; /* Sum of the weights for all the slots. */
-    int weight = 0; /* Sum of the weights so far. */
-    int minSize = 0; /* Minimum possible layout size. */
-    int newDiff = 0; /* The most pixels that can be added on
-                      * the current pass. */
+    int weight = 0;      /* Sum of the weights so far. */
+    int minSize = 0;     /* Minimum possible layout size. */
+    int newDiff = 0;     /* The most pixels that can be added on
+                          * the current pass. */
 
     diff = size - slotPtr[slots - 1].offset;
 
@@ -1333,10 +1333,10 @@ SlotInfo *slotPtr; /* Pointer to slot array. */
 
 static void AdjustForSticky(slavePtr, xPtr, yPtr, widthPtr, heightPtr)
 Gridder *slavePtr; /* Slave window to arrange in its cavity. */
-int *xPtr; /* Pixel location of the left edge of the cavity. */
-int *yPtr; /* Pixel location of the top edge of the cavity. */
-int *widthPtr; /* Width of the cavity (in pixels). */
-int *heightPtr; /* Height of the cavity (in pixels). */
+int *xPtr;         /* Pixel location of the left edge of the cavity. */
+int *yPtr;         /* Pixel location of the top edge of the cavity. */
+int *widthPtr;     /* Width of the cavity (in pixels). */
+int *heightPtr;    /* Height of the cavity (in pixels). */
 {
     int diffx = 0; /* Cavity width - slave width. */
     int diffy = 0; /* Cavity hight - slave height. */
@@ -1406,7 +1406,7 @@ ClientData clientData; /* Structure describing parent whose slaves
     Gridder *slavePtr;
     GridMaster *slotPtr = masterPtr->masterDataPtr;
     int abort;
-    int width, height; /* requested size of layout, in pixels */
+    int width, height;         /* requested size of layout, in pixels */
     int realWidth, realHeight; /* actual size layout should take-up */
 
     masterPtr->flags &= ~REQUESTED_RELAYOUT;
@@ -1497,7 +1497,7 @@ ClientData clientData; /* Structure describing parent whose slaves
     for (slavePtr = masterPtr->slavePtr; slavePtr != NULL && !abort;
          slavePtr = slavePtr->nextPtr)
     {
-        int x, y; /* top left coordinate */
+        int x, y;          /* top left coordinate */
         int width, height; /* slot or slave size */
         int col = slavePtr->column;
         int row = slavePtr->row;
@@ -1591,30 +1591,30 @@ ClientData clientData; /* Structure describing parent whose slaves
 
 static int ResolveConstraints(masterPtr, slotType, maxOffset)
 Gridder *masterPtr; /* The geometry master for this grid. */
-int slotType; /* Either ROW or COLUMN. */
-int maxOffset; /* The actual maximum size of this layout
-                * in pixels,  or 0 (not currently used). */
+int slotType;       /* Either ROW or COLUMN. */
+int maxOffset;      /* The actual maximum size of this layout
+                     * in pixels,  or 0 (not currently used). */
 {
-    SlotInfo *slotPtr; /* Pointer to row/col constraints. */
-    Gridder *slavePtr; /* List of slave windows in this grid. */
-    int constraintCount; /* Count of rows or columns that have
-                          * constraints. */
-    int slotCount; /* Last occupied row or column. */
-    int gridCount; /* The larger of slotCount and constraintCount.
-                    */
+    SlotInfo *slotPtr;     /* Pointer to row/col constraints. */
+    Gridder *slavePtr;     /* List of slave windows in this grid. */
+    int constraintCount;   /* Count of rows or columns that have
+                            * constraints. */
+    int slotCount;         /* Last occupied row or column. */
+    int gridCount;         /* The larger of slotCount and constraintCount.
+                            */
     GridLayout *layoutPtr; /* Temporary layout structure. */
-    int requiredSize; /* The natural size of the grid (pixels).
-                       * This is the minimum size needed to
-                       * accomodate all of the slaves at their
-                       * requested sizes. */
-    int offset; /* The pixel offset of the right edge of the
-                 * current slot from the beginning of the
-                 * layout. */
-    int slot; /* The current slot. */
-    int start; /* The first slot of a contiguous set whose
-                * constraints are not yet fully resolved. */
-    int end; /* The Last slot of a contiguous set whose
-              * constraints are not yet fully resolved. */
+    int requiredSize;      /* The natural size of the grid (pixels).
+                            * This is the minimum size needed to
+                            * accomodate all of the slaves at their
+                            * requested sizes. */
+    int offset;            /* The pixel offset of the right edge of the
+                            * current slot from the beginning of the
+                            * layout. */
+    int slot;              /* The current slot. */
+    int start;             /* The first slot of a contiguous set whose
+                            * constraints are not yet fully resolved. */
+    int end;               /* The Last slot of a contiguous set whose
+                            * constraints are not yet fully resolved. */
 
     /*
      * For typical sized tables, we'll use stack space for the layout data
@@ -1833,13 +1833,13 @@ int maxOffset; /* The actual maximum size of this layout
     {
         int totalWeight = 0; /* Sum of the weights for all of the
                               * slots in this span. */
-        int need = 0; /* The minimum space needed to layout
-                       * this span. */
-        int have = 0; /* The actual amount of space that will
-                       * be taken up by this span. */
-        int weight = 0; /* Cumulative weights of the columns in
-                         * this span. */
-        int noWeights = 0; /* True if the span has no weights. */
+        int need = 0;        /* The minimum space needed to layout
+                              * this span. */
+        int have = 0;        /* The actual amount of space that will
+                              * be taken up by this span. */
+        int weight = 0;      /* Cumulative weights of the columns in
+                              * this span. */
+        int noWeights = 0;   /* True if the span has no weights. */
 
         /*
          * Find a span by identifying ranges of slots whose edges are
@@ -2088,12 +2088,12 @@ static void SetGridSize(masterPtr) Gridder *masterPtr; /* The geometry master
 
 static int CheckSlotData(masterPtr, slot, slotType, checkOnly)
 Gridder *masterPtr; /* the geometry master for this grid */
-int slot; /* which slot to look at */
-int slotType; /* ROW or COLUMN */
-int checkOnly; /* don't allocate new space if true */
+int slot;           /* which slot to look at */
+int slotType;       /* ROW or COLUMN */
+int checkOnly;      /* don't allocate new space if true */
 {
     int last; /* last available slot memory is alloced for */
-    int end; /* last used constraint */
+    int end;  /* last used constraint */
 
     /*
      * If slot is out of bounds, return immediately.
@@ -2335,7 +2335,7 @@ static void DestroyGrid(memPtr) char *memPtr; /* Info about window that is now
 static void GridStructureProc(clientData, eventPtr)
 ClientData clientData; /* Our information about window
                         * referred to by eventPtr. */
-XEvent *eventPtr; /* Describes what just happened. */
+XEvent *eventPtr;      /* Describes what just happened. */
 {
     Gridder *gridPtr = ( Gridder * )clientData;
 
@@ -2426,14 +2426,14 @@ XEvent *eventPtr; /* Describes what just happened. */
 
 static int ConfigureSlaves(interp, tkwin, argc, argv)
 Tcl_Interp *interp; /* Interpreter for error reporting. */
-Tk_Window tkwin; /* Any window in application containing
-                  * slaves.  Used to look up slave names. */
-int argc; /* Number of elements in argv. */
-char *argv[]; /* Argument strings:  contains one or more
-               * window names followed by any number
-               * of "option value" pairs.  Caller must
-               * make sure that there is at least one
-               * window name. */
+Tk_Window tkwin;    /* Any window in application containing
+                     * slaves.  Used to look up slave names. */
+int argc;           /* Number of elements in argv. */
+char *argv[];       /* Argument strings:  contains one or more
+                     * window names followed by any number
+                     * of "option value" pairs.  Caller must
+                     * make sure that there is at least one
+                     * window name. */
 {
     Gridder *masterPtr = ( Gridder * )NULL;
     Gridder *slavePtr;
@@ -2441,10 +2441,10 @@ char *argv[]; /* Argument strings:  contains one or more
     int i, j, c, length, tmp;
     int numWindows = 0;
     int width;
-    int defaultColumn = 0; /* default column number */
+    int defaultColumn = 0;     /* default column number */
     int defaultColumnSpan = 1; /* default number of columns */
-    char *lastWindow = NULL; /* use this window to base current
-                              * Row/col on */
+    char *lastWindow = NULL;   /* use this window to base current
+                                * Row/col on */
 
     /*
      * Count the number of windows, or window short-cuts.
@@ -2879,7 +2879,7 @@ char *argv[]; /* Argument strings:  contains one or more
     for (j = 0; j < numWindows; j++)
     {
         struct Gridder *otherPtr;
-        int match; /* found a match for the ^ */
+        int match;               /* found a match for the ^ */
         int lastRow, lastColumn; /* implied end of table */
 
         if (*argv[j] == '.')

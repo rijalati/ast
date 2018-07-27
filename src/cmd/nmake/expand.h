@@ -33,29 +33,29 @@
 typedef struct
 {
     unsigned short type; /* {ED_OP,ED_QUAL}	*/
-    unsigned short op; /* old op name letter	*/
-    unsigned short arg; /* old op value char 1	*/
-    unsigned short aux; /* old op value char 2	*/
+    unsigned short op;   /* old op name letter	*/
+    unsigned short arg;  /* old op value char 1	*/
+    unsigned short aux;  /* old op value char 2	*/
 } Edit_cmd_t;
 
 typedef struct
 {
-    const char *name; /* option name		*/
+    const char *name;     /* option name		*/
     const Edit_cmd_t cmd; /* cmd info		*/
 } Edit_opt_t;
 
 typedef struct
 {
-    const char *name; /* operator name	*/
+    const char *name;          /* operator name	*/
     const Edit_opt_t *options; /* operator option map	*/
-    const Edit_cmd_t cmd; /* cmd info		*/
+    const Edit_cmd_t cmd;      /* cmd info		*/
 } Edit_map_t;
 
 typedef struct
 {
     const char *old; /* old op		*/
     const char *xxx; /* new op		*/
-    int len; /* len(old)==len(xxx)	*/
+    int len;         /* len(old)==len(xxx)	*/
 } Edit_xxx_t;
 
 #    define LT (1 << 0)

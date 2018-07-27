@@ -30,8 +30,8 @@ typedef struct _vchuff_s
     ssize_t freq[VCH_SIZE]; /* frequencies of bytes	*/
     ssize_t size[VCH_SIZE]; /* encoding lengths 	*/
     Vcbit_t bits[VCH_SIZE]; /* encoding bits 	*/
-    ssize_t maxs; /* max code size	*/
-    Vchtrie_t *trie; /* re-trie for decoding	*/
+    ssize_t maxs;           /* max code size	*/
+    Vchtrie_t *trie;        /* re-trie for decoding	*/
     int type;
 } Vchuff_t;
 
@@ -47,7 +47,7 @@ vchcopy(Vcodex_t *vc, ssize_t *freq, ssize_t *size, ssize_t maxs)
 int vchcopy(vc, freq, size, maxs) Vcodex_t *vc;
 ssize_t *freq; /* byte frequency table	*/
 ssize_t *size; /* code length table	*/
-ssize_t maxs; /* max length of any code	*/
+ssize_t maxs;  /* max length of any code	*/
 #endif
 {
     Vchuff_t *huff = vcgetmtdata(vc, Vchuff_t *);
@@ -121,8 +121,8 @@ Void_t **out; /* return encoded data 	*/
     vcioinit(&io, output, s);
 
     huff->maxs = vchbits(VCH_SIZE, size, bits); /* compute bits per byte */
-    vcioputu(&io, dtsz); /* size of raw data */
-    vcioputc(&io, huff->maxs); /* the control code */
+    vcioputu(&io, dtsz);                        /* size of raw data */
+    vcioputc(&io, huff->maxs);                  /* the control code */
 
     /**/ DEBUG_PRINT(2, "Vchuff: inputsz=%d ", dtsz);
     enddt = (dt = ( Vcchar_t * )data) + dtsz;
@@ -221,10 +221,10 @@ Void_t **out; /* return decoded data	*/
             vciofilb(&io, b, n, sz);
 
             p += (b >> (VC_BITSIZE - sz)); /* slot to look into */
-            if (size[p] > 0) /* byte is found */
+            if (size[p] > 0)               /* byte is found */
             {
                 vciodelb(&io, b, n, size[p]); /* consume bits */
-                *o = ( Vcchar_t )node[p]; /* decode the byte */
+                *o = ( Vcchar_t )node[p];     /* decode the byte */
                 if ((o += 1) >= endo)
                     break;
                 sz = ntop;

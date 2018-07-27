@@ -337,7 +337,7 @@ int type;
     if (h && _DTOBJ(disc, h) == obj
         && (type & (DT_START | DT_SEARCH | DT_NEXT | DT_PREV)))
         r = h; /* match at the finger, no search needed */
-    else /* linear search through the list */
+    else       /* linear search through the list */
     {
         h = NIL(Dtlink_t *); /* track first/last obj with same key */
         for (r = list->link; r; r = r->_rght)

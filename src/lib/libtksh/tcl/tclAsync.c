@@ -24,15 +24,15 @@
 
 typedef struct AsyncHandler
 {
-    int ready; /* Non-zero means this handler should
-                * be invoked in the next call to
-                * Tcl_AsyncInvoke. */
+    int ready;                    /* Non-zero means this handler should
+                                   * be invoked in the next call to
+                                   * Tcl_AsyncInvoke. */
     struct AsyncHandler *nextPtr; /* Next in list of all handlers for
                                    * the process. */
-    Tcl_AsyncProc *proc; /* Procedure to call when handler
-                          * is invoked. */
-    ClientData clientData; /* Value to pass to handler when it
-                            * is invoked. */
+    Tcl_AsyncProc *proc;          /* Procedure to call when handler
+                                   * is invoked. */
+    ClientData clientData;        /* Value to pass to handler when it
+                                   * is invoked. */
 } AsyncHandler;
 
 /*
@@ -41,7 +41,7 @@ typedef struct AsyncHandler
 
 static AsyncHandler *firstHandler; /* First handler defined for process,
                                     * or NULL if none. */
-static AsyncHandler *lastHandler; /* Last handler or NULL. */
+static AsyncHandler *lastHandler;  /* Last handler or NULL. */
 
 /*
  * The variable below is set to 1 whenever a handler becomes ready and
@@ -80,8 +80,8 @@ static int asyncActive = 0;
  */
 
 Tcl_AsyncHandler Tcl_AsyncCreate(proc, clientData)
-Tcl_AsyncProc *proc; /* Procedure to call when handler
-                      * is invoked. */
+Tcl_AsyncProc *proc;   /* Procedure to call when handler
+                        * is invoked. */
 ClientData clientData; /* Argument to pass to handler. */
 {
     AsyncHandler *asyncPtr;

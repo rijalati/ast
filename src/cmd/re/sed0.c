@@ -72,12 +72,12 @@ static Sfio_t*	aopen(char*, int);
 #define ustrncmp(a, b, c) strncmp(( char * )(a), ( char * )(b), c)
 
 int reflags = 0; /* regcomp() flags */
-int recno = 0; /* current record number */
-int nflag = 0; /* nonprint option */
-int qflag = 0; /* command q executed */
-int sflag = 0; /* substitution has occurred */
-int bflag = 0; /* strip leading blanks from c,a,i <text> */
-int uflag = 0; /* unbuffered output */
+int recno = 0;   /* current record number */
+int nflag = 0;   /* nonprint option */
+int qflag = 0;   /* command q executed */
+int sflag = 0;   /* substitution has occurred */
+int bflag = 0;   /* strip leading blanks from c,a,i <text> */
+int uflag = 0;   /* unbuffered output */
 
 unsigned char *map; /* CC_NAT*IVE => CC_ASCII map */
 
@@ -156,8 +156,8 @@ copyscript(Text *t, const unsigned char *s)
 
 struct
 {
-    int iargc; /* # of files not fully read */
-    char **iargv; /* current file */
+    int iargc;     /* # of files not fully read */
+    char **iargv;  /* current file */
     Sfio_t *ifile; /* current input file */
 } input;
 

@@ -269,16 +269,16 @@ void FAR *out_desc;
 {
     struct inflate_state FAR *state;
     unsigned char FAR *next; /* next input */
-    unsigned char FAR *put; /* next output */
-    unsigned have, left; /* available input and output */
-    unsigned long hold; /* bit buffer */
-    unsigned bits; /* bits in bit buffer */
-    unsigned copy; /* number of stored or match bytes to copy */
+    unsigned char FAR *put;  /* next output */
+    unsigned have, left;     /* available input and output */
+    unsigned long hold;      /* bit buffer */
+    unsigned bits;           /* bits in bit buffer */
+    unsigned copy;           /* number of stored or match bytes to copy */
     unsigned char FAR *from; /* where to copy match bytes from */
-    code this; /* current decoding table entry */
-    code last; /* parent table entry */
-    unsigned len; /* length to copy for repeats, bits to drop */
-    int ret; /* return code */
+    code this;               /* current decoding table entry */
+    code last;               /* parent table entry */
+    unsigned len;            /* length to copy for repeats, bits to drop */
+    int ret;                 /* return code */
     static const unsigned short order[19] = /* permutation of code lengths */
     { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
 

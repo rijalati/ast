@@ -34,10 +34,10 @@
             ((((a) - 'A' + 1) << 11) ^ (((b) - 'A' + 1) << 6) ^ (n))
 #    endif
 
-#    define CODEX_DATA SFDCEVENT('C', 'X', 'd') /* get data	*/
+#    define CODEX_DATA SFDCEVENT('C', 'X', 'd')   /* get data	*/
 #    define CODEX_GETPOS SFDCEVENT('C', 'X', 'g') /* get position	*/
 #    define CODEX_SETPOS SFDCEVENT('C', 'X', 's') /* set position	*/
-#    define CODEX_SIZE SFDCEVENT('C', 'X', 'z') /* set size	*/
+#    define CODEX_SIZE SFDCEVENT('C', 'X', 'z')   /* set size	*/
 
 typedef struct Codexcache_s
 {

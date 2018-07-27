@@ -36,8 +36,9 @@
 #    define BASH_RELEASE "ksh93"
 #endif
 #define BASH_VERSION                                                         \
-    BASH_MAJOR "." BASH_MINOR "." BASH_PATCH "(" BASH_BUILD ")"              \
-                                                            "-" BASH_RELEASE
+    BASH_MAJOR "." BASH_MINOR "." BASH_PATCH "(" BASH_BUILD                  \
+               ")"                                                           \
+               "-" BASH_RELEASE
 
 
 extern const char bash_pre_rc[];

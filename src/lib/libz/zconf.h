@@ -281,7 +281,7 @@
 #    if !defined(__MACTYPES__)
 typedef unsigned char Byte; /* 8 bits */
 #    endif
-typedef unsigned int uInt; /* 16 bits or more */
+typedef unsigned int uInt;   /* 16 bits or more */
 typedef unsigned long uLong; /* 32 bits or more */
 
 #    ifdef SMALL_MEDIUM
@@ -307,7 +307,7 @@ typedef Byte *voidp;
 
 #    if 0 /* HAVE_UNISTD_H -- this line is updated by ./configure */
 #        include <sys/types.h> /* for off_t */
-#        include <unistd.h> /* for SEEK_* and off_t */
+#        include <unistd.h>    /* for SEEK_* and off_t */
 #        ifdef VMS
 #            include <unixio.h> /* for off_t */
 #        endif

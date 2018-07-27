@@ -133,28 +133,28 @@
 #define MAGIC "\015\001\013\005"
 #define MAGICSIZE (sizeof(MAGIC) - 1)
 
-#define SEQUENCE 1 /* track semantic diffs		*/
+#define SEQUENCE 1     /* track semantic diffs		*/
 #define HEADERSIZE 128 /* handle largest header	*/
 
 #define HEADER_PREREQS 1 /* prereqs optional header	*/
 
 #define MINRULENUM 6 /* min # rule number fields	*/
 #define MINRULESTR 3 /* min # rule string fields	*/
-#define MINVARNUM 1 /* min # variable number fields	*/
-#define MINVARSTR 2 /* min # variable string fields	*/
+#define MINVARNUM 1  /* min # variable number fields	*/
+#define MINVARSTR 2  /* min # variable string fields	*/
 
 #define RULENUM (MINRULENUM + 2) /* # rule number fields		*/
 #define RULESTR (MINRULESTR + 0) /* # rule string fields		*/
-#define VARNUM (MINVARNUM + 0) /* # variable number fields	*/
-#define VARSTR (MINVARSTR + 0) /* # variable string fields	*/
+#define VARNUM (MINVARNUM + 0)   /* # variable number fields	*/
+#define VARSTR (MINVARSTR + 0)   /* # variable string fields	*/
 
 typedef struct Compstate_s /* compile state		*/
 {
-    char *sp; /* string table pointer		*/
-    Sfio_t *fp; /* object file pointer		*/
-    unsigned long lists; /* list index			*/
-    unsigned long rules; /* rule index			*/
-    unsigned long strings; /* string index			*/
+    char *sp;                /* string table pointer		*/
+    Sfio_t *fp;              /* object file pointer		*/
+    unsigned long lists;     /* list index			*/
+    unsigned long rules;     /* rule index			*/
+    unsigned long strings;   /* string index			*/
     unsigned long variables; /* variable index		*/
 } Compstate_t;
 
@@ -165,14 +165,14 @@ typedef struct Loadstate_s /* load state			*/
 
 static struct Object_s /* object global state		*/
 {
-    Sfio_t *pp; /* prerequisite ref pointer	*/
-    char *options; /* preprocess/probe options	*/
-    unsigned char *a2n; /* CC_ASCII=>CC_NATIVE		*/
-    unsigned char *n2a; /* CC_NATIVE=>CC_ASCII		*/
+    Sfio_t *pp;            /* prerequisite ref pointer	*/
+    char *options;         /* preprocess/probe options	*/
+    unsigned char *a2n;    /* CC_ASCII=>CC_NATIVE		*/
+    unsigned char *n2a;    /* CC_NATIVE=>CC_ASCII		*/
     unsigned long garbage; /* state garbage count		*/
-    unsigned long rules; /* state rule count		*/
-    int initialized; /* state initialized		*/
-    int lowres; /* low resolution time state	*/
+    unsigned long rules;   /* state rule count		*/
+    int initialized;       /* state initialized		*/
+    int lowres;            /* low resolution time state	*/
 } object;
 
 /*
@@ -195,20 +195,20 @@ typedef struct OLD_list_s OLD_list_t;
 
 typedef struct OLD_header_s /* old make object file header	*/
 {
-    long magic; /* magic number			*/
-    char version[32]; /* old was str - older was num  */
-    unsigned char null; /* 0 byte for long version's	*/
-    unsigned char sequence; /* different still compatible	*/
+    long magic;              /* magic number			*/
+    char version[32];        /* old was str - older was num  */
+    unsigned char null;      /* 0 byte for long version's	*/
+    unsigned char sequence;  /* different still compatible	*/
     unsigned char sizes[10]; /* misc size checks		*/
 } OLD_header_t;
 
 typedef struct OLD_trailer_s /* old make object file trailer	*/
 {
-    long magic; /* magic number			*/
-    char *options; /* options for set()		*/
-    long lists; /* number of compiled lists	*/
-    long rules; /* number of compiled rules	*/
-    long size; /* total sizeof object file	*/
+    long magic;     /* magic number			*/
+    char *options;  /* options for set()		*/
+    long lists;     /* number of compiled lists	*/
+    long rules;     /* number of compiled rules	*/
+    long size;      /* total sizeof object file	*/
     long variables; /* number of compiled variables	*/
 } OLD_trailer_t;
 
@@ -218,32 +218,32 @@ typedef struct OLD_rule_s /* old rule			*/
 
     union
     {
-        Frame_t *u_active; /* active target frame		*/
+        Frame_t *u_active;        /* active target frame		*/
         unsigned long u_complink; /* compilation link		*/
-        Rule_t *u_freelink; /* free list link		*/
+        Rule_t *u_freelink;       /* free list link		*/
     } u1;
 
     union
     {
-        char *u_uname; /* unbound name			*/
-        char *u_data; /* state value			*/
+        char *u_uname;         /* unbound name			*/
+        char *u_data;          /* state value			*/
         unsigned long u_event; /* state rule event time	*/
     } u2;
 
     OLD_list_t *prereqs; /* prerequisites		*/
-    char *action; /* update action		*/
-    unsigned long time; /* modify time			*/
+    char *action;        /* update action		*/
+    unsigned long time;  /* modify time			*/
 
     long attribute; /* external named attributes	*/
-    long dynamic; /* dynamic properties		*/
-    long property; /* stable properties		*/
+    long dynamic;   /* dynamic properties		*/
+    long property;  /* stable properties		*/
 
 #define noswap scan /* 0 or char elts after here	*/
 
-    unsigned char scan; /* file scan strategy index	*/
+    unsigned char scan;      /* file scan strategy index	*/
     unsigned char semaphore; /* semaphore + count		*/
-    unsigned char status; /* disposition			*/
-    unsigned char view; /* view bind index		*/
+    unsigned char status;    /* disposition			*/
+    unsigned char view;      /* view bind index		*/
 
 #if BINDINDEX
     unsigned char source; /* source bind index		*/
@@ -259,10 +259,10 @@ typedef struct OLD_rule_s /* old rule			*/
 
 typedef struct OLD_var_s /* old variable			*/
 {
-    char *name; /* name				*/
-    char *value; /* value			*/
+    char *name;    /* name				*/
+    char *value;   /* value			*/
     long property; /* static and dynamic		*/
-    long length; /* maximum length of value	*/
+    long length;   /* maximum length of value	*/
 } OLD_var_t;
 
 struct OLD_list_s /* old rule cons cell		*/

@@ -52,16 +52,16 @@
 
 typedef struct Saveset_s
 {
-    char *block; /* current block		*/
+    char *block;    /* current block		*/
     long blocksize; /* max block size		*/
-    char *bp; /* block pointer		*/
-    int recatt; /* record attributes		*/
-    int recfmt; /* record format		*/
-    int reclen; /* record length		*/
-    int recvfc; /* record fixed control length	*/
-    int lastsize; /* size of last record		*/
-    time_t time; /* backup time			*/
-    char id[17]; /* name id			*/
+    char *bp;       /* block pointer		*/
+    int recatt;     /* record attributes		*/
+    int recfmt;     /* record format		*/
+    int reclen;     /* record length		*/
+    int recvfc;     /* record fixed control length	*/
+    int lastsize;   /* size of last record		*/
+    time_t time;    /* backup time			*/
+    char id[17];    /* name id			*/
 } Saveset_t;
 
 /*

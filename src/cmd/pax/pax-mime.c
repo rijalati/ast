@@ -29,7 +29,7 @@
 
 typedef struct Mime_s
 {
-    size_t fill; /* last member filler size	*/
+    size_t fill;   /* last member filler size	*/
     size_t length; /* separator magic length	*/
     char magic[1]; /* separator magic		*/
 } Mime_t;

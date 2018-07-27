@@ -41,12 +41,12 @@ typedef struct ProtocolHandler
      * the same top-level window, or NULL for
      * end of list. */
     Tcl_Interp *interp; /* Interpreter in which to invoke command. */
-    char command[4]; /* Tcl command to invoke when a client
-                      * message for this protocol arrives.
-                      * The actual size of the structure varies
-                      * to accommodate the needs of the actual
-                      * command. THIS MUST BE THE LAST FIELD OF
-                      * THE STRUCTURE. */
+    char command[4];    /* Tcl command to invoke when a client
+                         * message for this protocol arrives.
+                         * The actual size of the structure varies
+                         * to accommodate the needs of the actual
+                         * command. THIS MUST BE THE LAST FIELD OF
+                         * THE STRUCTURE. */
 } ProtocolHandler;
 
 #define HANDLER_SIZE(cmdLength)                                              \
@@ -59,57 +59,57 @@ typedef struct ProtocolHandler
 
 typedef struct TkWmInfo
 {
-    TkWindow *winPtr; /* Pointer to main Tk information for
-                       * this window. */
-    Window reparent; /* If the window has been reparented, this
-                      * gives the ID of the ancestor of the window
-                      * that is a child of the root window (may
-                      * not be window's immediate parent).  If
-                      * the window isn't reparented, this has the
-                      * value None. */
-    Tk_Uid titleUid; /* Title to display in window caption.  If
-                      * NULL, use name of widget. */
-    Tk_Uid iconName; /* Name to display in icon. */
-    Window master; /* Master window for TRANSIENT_FOR property,
-                    * or None. */
-    XWMHints hints; /* Various pieces of information for
-                     * window manager. */
-    Tk_Uid leaderName; /* Path name of leader of window group
-                        * (corresponds to hints.window_group).
-                        * Note:  this field doesn't get updated
-                        * if leader is destroyed. */
+    TkWindow *winPtr;        /* Pointer to main Tk information for
+                              * this window. */
+    Window reparent;         /* If the window has been reparented, this
+                              * gives the ID of the ancestor of the window
+                              * that is a child of the root window (may
+                              * not be window's immediate parent).  If
+                              * the window isn't reparented, this has the
+                              * value None. */
+    Tk_Uid titleUid;         /* Title to display in window caption.  If
+                              * NULL, use name of widget. */
+    Tk_Uid iconName;         /* Name to display in icon. */
+    Window master;           /* Master window for TRANSIENT_FOR property,
+                              * or None. */
+    XWMHints hints;          /* Various pieces of information for
+                              * window manager. */
+    Tk_Uid leaderName;       /* Path name of leader of window group
+                              * (corresponds to hints.window_group).
+                              * Note:  this field doesn't get updated
+                              * if leader is destroyed. */
     Tk_Uid masterWindowName; /* Path name of window specified as master
                               * in "wm transient" command, or NULL.
                               * Note:  this field doesn't get updated if
                               * masterWindowName is destroyed. */
-    Tk_Window icon; /* Window to use as icon for this window,
-                     * or NULL. */
-    Tk_Window iconFor; /* Window for which this window is icon, or
-                        * NULL if this isn't an icon for anyone. */
-    int withdrawn; /* Non-zero means window has been withdrawn. */
+    Tk_Window icon;          /* Window to use as icon for this window,
+                              * or NULL. */
+    Tk_Window iconFor;       /* Window for which this window is icon, or
+                              * NULL if this isn't an icon for anyone. */
+    int withdrawn;           /* Non-zero means window has been withdrawn. */
 
     /*
      * Information used to construct an XSizeHints structure for
      * the window manager:
      */
 
-    int sizeHintsFlags; /* Flags word for XSizeHints structure.
-                         * If the PBaseSize flag is set then the
-                         * window is gridded;  otherwise it isn't
-                         * gridded. */
+    int sizeHintsFlags;      /* Flags word for XSizeHints structure.
+                              * If the PBaseSize flag is set then the
+                              * window is gridded;  otherwise it isn't
+                              * gridded. */
     int minWidth, minHeight; /* Minimum dimensions of window, in
                               * grid units, not pixels. */
     int maxWidth, maxHeight; /* Maximum dimensions of window, in
                               * grid units, not pixels. */
-    Tk_Window gridWin; /* Identifies the window that controls
-                        * gridding for this top-level, or NULL if
-                        * the top-level isn't currently gridded. */
+    Tk_Window gridWin;       /* Identifies the window that controls
+                              * gridding for this top-level, or NULL if
+                              * the top-level isn't currently gridded. */
     int widthInc, heightInc; /* Increments for size changes (# pixels
                               * per step). */
     struct
     {
-        int x; /* numerator */
-        int y; /* denominator */
+        int x;              /* numerator */
+        int y;              /* denominator */
     } minAspect, maxAspect; /* Min/max aspect ratios for window. */
     int reqGridWidth, reqGridHeight;
     /* The dimensions of the window (in
@@ -127,17 +127,17 @@ typedef struct TkWmInfo
                         * ConfigureNotify events (for when wm
                         * resizes window).  -1 means user hasn't
                         * requested dimensions. */
-    int x, y; /* Desired X and Y coordinates for window.
-               * These values are set by "wm geometry",
-               * plus by ConfigureNotify events (when wm
-               * moves window).  These numbers are
-               * different than the numbers stored in
-               * winPtr->changes because (a) they could be
-               * measured from the right or bottom edge
-               * of the screen (see WM_NEGATIVE_X and
-               * WM_NEGATIVE_Y flags) and (b) if the window
-               * has been reparented then they refer to the
-               * parent rather than the window itself. */
+    int x, y;          /* Desired X and Y coordinates for window.
+                        * These values are set by "wm geometry",
+                        * plus by ConfigureNotify events (when wm
+                        * moves window).  These numbers are
+                        * different than the numbers stored in
+                        * winPtr->changes because (a) they could be
+                        * measured from the right or bottom edge
+                        * of the screen (see WM_NEGATIVE_X and
+                        * WM_NEGATIVE_Y flags) and (b) if the window
+                        * has been reparented then they refer to the
+                        * parent rather than the window itself. */
     int parentWidth, parentHeight;
     /* Width and height of reparent, in pixels
      * *including border*.  If window hasn't been
@@ -159,15 +159,15 @@ typedef struct TkWmInfo
      * if there is one.
      */
 
-    Window vRoot; /* Virtual root window for this top-level,
-                   * or None if there is no virtual root
-                   * window (i.e. just use the screen's root). */
-    int vRootX, vRootY; /* Position of the virtual root inside the
-                         * root window.  If the WM_VROOT_OFFSET_STALE
-                         * flag is set then this information may be
-                         * incorrect and needs to be refreshed from
-                         * the X server.  If vRoot is None then these
-                         * values are both 0. */
+    Window vRoot;                /* Virtual root window for this top-level,
+                                  * or None if there is no virtual root
+                                  * window (i.e. just use the screen's root). */
+    int vRootX, vRootY;          /* Position of the virtual root inside the
+                                  * root window.  If the WM_VROOT_OFFSET_STALE
+                                  * flag is set then this information may be
+                                  * incorrect and needs to be refreshed from
+                                  * the X server.  If vRoot is None then these
+                                  * values are both 0. */
     int vRootWidth, vRootHeight; /* Dimensions of the virtual root window.
                                   * If vRoot is None, gives the dimensions
                                   * of the containing screen.  This
@@ -180,13 +180,13 @@ typedef struct TkWmInfo
 
     ProtocolHandler *protPtr; /* First in list of protocol handlers for
                                * this window (NULL means none). */
-    int cmdArgc; /* Number of elements in cmdArgv below. */
-    char **cmdArgv; /* Array of strings to store in the
-                     * WM_COMMAND property.  NULL means nothing
-                     * available. */
-    char *clientMachine; /* String to store in WM_CLIENT_MACHINE
-                          * property, or NULL. */
-    int flags; /* Miscellaneous flags, defined below. */
+    int cmdArgc;              /* Number of elements in cmdArgv below. */
+    char **cmdArgv;           /* Array of strings to store in the
+                               * WM_COMMAND property.  NULL means nothing
+                               * available. */
+    char *clientMachine;      /* String to store in WM_CLIENT_MACHINE
+                               * property, or NULL. */
+    int flags;                /* Miscellaneous flags, defined below. */
     struct TkWmInfo *nextPtr; /* Next in list of all top-level windows. */
 } WmInfo;
 
@@ -274,8 +274,8 @@ static int wmTracing = 0;
 static void TopLevelReqProc _ANSI_ARGS_((ClientData dummy, Tk_Window tkwin));
 
 static Tk_GeomMgr wmMgrType = {
-    "wm", /* name */
-    TopLevelReqProc, /* requestProc */
+    "wm",                           /* name */
+    TopLevelReqProc,                /* requestProc */
     ( Tk_GeomLostSlaveProc * )NULL, /* lostSlaveProc */
 };
 
@@ -287,14 +287,14 @@ static Tk_GeomMgr wmMgrType = {
 typedef struct WaitRestrictInfo
 {
     Display *display; /* Window belongs to this display. */
-    Window window; /* We're waiting for events on this window. */
-    int type; /* We only care about this type of event. */
+    Window window;    /* We're waiting for events on this window. */
+    int type;         /* We only care about this type of event. */
     XEvent *eventPtr; /* Where to store the event when it's found. */
-    int foundEvent; /* Non-zero means that an event of the
-                     * desired type has been found. */
-    int timeout; /* Non-zero means that too much time elapsed
-                  * while waiting, and we should just give
-                  * up. */
+    int foundEvent;   /* Non-zero means that an event of the
+                       * desired type has been found. */
+    int timeout;      /* Non-zero means that too much time elapsed
+                       * while waiting, and we should just give
+                       * up. */
 } WaitRestrictInfo;
 
 /*
@@ -738,9 +738,9 @@ void TkWmSetClass(winPtr) TkWindow *winPtr; /* Newly-created top-level window.
 int Tk_WmCmd(clientData, interp, argc, argv)
 ClientData clientData; /* Main window associated with
                         * interpreter. */
-Tcl_Interp *interp; /* Current interpreter. */
-int argc; /* Number of arguments. */
-char **argv; /* Argument strings. */
+Tcl_Interp *interp;    /* Current interpreter. */
+int argc;              /* Number of arguments. */
+char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
     TkWindow *winPtr;
@@ -2193,13 +2193,13 @@ updateGeom:
  */
 
 void Tk_SetGrid(tkwin, reqWidth, reqHeight, widthInc, heightInc)
-Tk_Window tkwin; /* Token for window.  New window mgr info
-                  * will be posted for the top-level window
-                  * associated with this window. */
-int reqWidth; /* Width (in grid units) corresponding to
-               * the requested geometry for tkwin. */
-int reqHeight; /* Height (in grid units) corresponding to
-                * the requested geometry for tkwin. */
+Tk_Window tkwin;         /* Token for window.  New window mgr info
+                          * will be posted for the top-level window
+                          * associated with this window. */
+int reqWidth;            /* Width (in grid units) corresponding to
+                          * the requested geometry for tkwin. */
+int reqHeight;           /* Height (in grid units) corresponding to
+                          * the requested geometry for tkwin. */
 int widthInc, heightInc; /* Pixel increments corresponding to a
                           * change of one grid unit. */
 {
@@ -2810,7 +2810,7 @@ winPtr) TkWindow *winPtr; /* Top-level window whose reparent info
 
 static void TopLevelEventProc(clientData, eventPtr)
 ClientData clientData; /* Window for which event occurred. */
-XEvent *eventPtr; /* Event that just happened. */
+XEvent *eventPtr;      /* Event that just happened. */
 {
     TkWindow *winPtr = ( TkWindow * )clientData;
 
@@ -3285,8 +3285,8 @@ static void UpdateSizeHints(winPtr) TkWindow *winPtr;
  */
 
 static void WaitForConfigureNotify(winPtr, serial)
-TkWindow *winPtr; /* Top-level window for which we want
-                   * to see a ConfigureNotify. */
+TkWindow *winPtr;     /* Top-level window for which we want
+                       * to see a ConfigureNotify. */
 unsigned long serial; /* Serial number of resize request.  Want to
                        * be sure wm has seen this. */
 {
@@ -3359,8 +3359,8 @@ unsigned long serial; /* Serial number of resize request.  Want to
 
 static int WaitForEvent(display, window, type, eventPtr)
 Display *display; /* Display event is coming from. */
-Window window; /* Window for which event is desired. */
-int type; /* Type of event that is wanted. */
+Window window;    /* Window for which event is desired. */
+int type;         /* Type of event that is wanted. */
 XEvent *eventPtr; /* Place to store event. */
 {
 #define TIMEOUT_MS 2000
@@ -3428,7 +3428,7 @@ XEvent *eventPtr; /* Place to store event. */
 
 static Tk_RestrictAction WaitRestrictProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to WaitRestrictInfo structure. */
-XEvent *eventPtr; /* Event that is about to be handled. */
+XEvent *eventPtr;      /* Event that is about to be handled. */
 {
     WaitRestrictInfo *infoPtr = ( WaitRestrictInfo * )clientData;
 
@@ -3510,9 +3510,9 @@ ClientData clientData; /* Pointer to WaitRestrictInfo structure. */
 static void WaitForMapNotify(winPtr, mapped)
 TkWindow *winPtr; /* Top-level window for which we want
                    * to see a particular mapping state. */
-int mapped; /* If non-zero, wait for window to become
-             * mapped, otherwise wait for it to become
-             * unmapped. */
+int mapped;       /* If non-zero, wait for window to become
+                   * mapped, otherwise wait for it to become
+                   * unmapped. */
 {
     WmInfo *wmPtr = winPtr->wmInfoPtr;
     XEvent event;
@@ -3611,10 +3611,10 @@ static void UpdateHints(winPtr) TkWindow *winPtr;
 
 static int ParseGeometry(interp, string, winPtr)
 Tcl_Interp *interp; /* Used for error reporting. */
-char *string; /* String containing new geometry.  Has the
-               * standard form "=wxh+x+y". */
-TkWindow *winPtr; /* Pointer to top-level window whose
-                   * geometry is to be changed. */
+char *string;       /* String containing new geometry.  Has the
+                     * standard form "=wxh+x+y". */
+TkWindow *winPtr;   /* Pointer to top-level window whose
+                     * geometry is to be changed. */
 {
     WmInfo *wmPtr = winPtr->wmInfoPtr;
     int x, y, width, height, flags;
@@ -3800,10 +3800,10 @@ int *yPtr; /* Where to store y-displacement of (0,0). */
  */
 
 Tk_Window Tk_CoordsToWindow(rootX, rootY, tkwin) int rootX,
-rootY; /* Coordinates of point in root window.  If
-        * a virtual-root window manager is in use,
-        * these coordinates refer to the virtual
-        * root, not the real root. */
+rootY;           /* Coordinates of point in root window.  If
+                  * a virtual-root window manager is in use,
+                  * these coordinates refer to the virtual
+                  * root, not the real root. */
 Tk_Window tkwin; /* Token for any window in application;
                   * used to identify the display. */
 {
@@ -3813,7 +3813,7 @@ Tk_Window tkwin; /* Token for any window in application;
     TkWindow *winPtr, *childPtr;
     TkWindow *nextPtr; /* Coordinates of highest child found so
                         * far that contains point. */
-    int x, y; /* Coordinates in winPtr. */
+    int x, y;          /* Coordinates in winPtr. */
     int tmpx, tmpy, bd;
 
     /*
@@ -4036,10 +4036,10 @@ UpdateVRootGeometry(wmPtr) WmInfo *wmPtr; /* Window manager information to be
  */
 
 void Tk_GetVRootGeometry(tkwin, xPtr, yPtr, widthPtr, heightPtr)
-Tk_Window tkwin; /* Window whose virtual root is to be
-                  * queried. */
-int *xPtr, *yPtr; /* Store x and y offsets of virtual root
-                   * here. */
+Tk_Window tkwin;           /* Window whose virtual root is to be
+                            * queried. */
+int *xPtr, *yPtr;          /* Store x and y offsets of virtual root
+                            * here. */
 int *widthPtr, *heightPtr; /* Store dimensions of virtual root here. */
 {
     WmInfo *wmPtr;
@@ -4215,7 +4215,7 @@ static void UpdateWmProtocols(wmPtr) WmInfo *wmPtr; /* Information about
 void TkWmProtocolEventProc(winPtr,
                            eventPtr) TkWindow *winPtr; /* Window to which the
                                                           event was sent. */
-XEvent *eventPtr; /* X event. */
+XEvent *eventPtr;                                      /* X event. */
 {
     WmInfo *wmPtr;
     ProtocolHandler *protPtr;
@@ -4294,8 +4294,8 @@ XEvent *eventPtr; /* X event. */
 void TkWmRestackToplevel(winPtr,
                          aboveBelow,
                          otherPtr) TkWindow *winPtr; /* Window to restack. */
-int aboveBelow; /* Gives relative position for restacking;
-                 * must be Above or Below. */
+int aboveBelow;     /* Gives relative position for restacking;
+                     * must be Above or Below. */
 TkWindow *otherPtr; /* Window relative to which to restack;
                      * if NULL, then winPtr gets restacked
                      * above or below *all* siblings. */
@@ -4308,7 +4308,7 @@ TkWindow *otherPtr; /* Window relative to which to restack;
     unsigned int numChildren;
     int i;
     int desiredIndex = 0; /* Initialized to stop gcc warnings. */
-    int ourIndex = 0; /* Initialized to stop gcc warnings. */
+    int ourIndex = 0;     /* Initialized to stop gcc warnings. */
     unsigned long serial;
     XEvent event;
     int diff;
@@ -4808,8 +4808,8 @@ static void
 GetMaxSize(wmPtr, maxWidthPtr, maxHeightPtr) WmInfo *wmPtr; /* Window manager
                                                              * information for
                                                              * the window. */
-int *maxWidthPtr; /* Where to store the current maximum
-                   * width of the window. */
+int *maxWidthPtr;  /* Where to store the current maximum
+                    * width of the window. */
 int *maxHeightPtr; /* Where to store the current maximum
                     * height of the window. */
 {

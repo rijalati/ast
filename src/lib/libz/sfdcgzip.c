@@ -71,8 +71,8 @@
 typedef struct
 {
     Sfdisc_t disc; /* sfio discipline		*/
-    gzFile *gz; /* gz handle			*/
-    Sfio_t *op; /* original stream		*/
+    gzFile *gz;    /* gz handle			*/
+    Sfio_t *op;    /* original stream		*/
 } Sfgzip_t;
 
 /*

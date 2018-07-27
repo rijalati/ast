@@ -96,7 +96,7 @@ static struct Double ratfun_gam __P(( double, double ));
  * Rational approximation, A0 + x*x*P(x)/Q(x), on the interval
  * [1.066.., 2.066..] accurate to 4.25e-19.
  */
-#    define LEFT -.3955078125 /* left boundary for rat. approx */
+#    define LEFT -.3955078125         /* left boundary for rat. approx */
 #    define x0 .461632144968362356785 /* xmin - 1 */
 
 #    define a0_hi 0.88560319441088874992
@@ -352,7 +352,7 @@ static double neg_gam(x) double x;
         y = one - x; /* exact: 128 < |x| < 255 */
         lg = large_gam(y);
         lsine = __log__D(M_PI / z); /* = TRUNC(log(u)) + small */
-        lg.a -= lsine.a; /* exact (opposite signs) */
+        lg.a -= lsine.a;            /* exact (opposite signs) */
         lg.b -= lsine.b;
         y = -(lg.a + lg.b);
         z = (y + lg.a) + lg.b;

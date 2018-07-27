@@ -148,8 +148,8 @@ help(void)
     H("\n");
     H("    C	set LC_COLLATE and LC_CTYPE to the locale in field 2\n");
     H("    I	set gl_fignore to the pattern in field 2\n");
-    H(
-    "    W	workspace file/dir; tab indentation denotes directory level\n");
+    H("    W	workspace file/dir; tab indentation denotes directory "
+      "level\n");
     H("\n");
     H("    {				silent skip if failed until }\n");
     H("    }				end of skip\n");

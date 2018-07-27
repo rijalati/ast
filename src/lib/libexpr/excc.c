@@ -26,9 +26,9 @@
  */
 
 #define _EX_CC_PRIVATE_                                                      \
-    char *id; /* prefix + _			*/                                             \
-    int lastop; /* last op			*/                                              \
-    int tmp; /* temp var index		*/                                           \
+    char *id;           /* prefix + _			*/                                   \
+    int lastop;         /* last op			*/                                      \
+    int tmp;            /* temp var index		*/                                \
     Exccdisc_t *ccdisc; /* excc() discipline		*/
 
 #include "exlib.h"

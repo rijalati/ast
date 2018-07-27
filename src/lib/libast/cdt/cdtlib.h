@@ -60,18 +60,18 @@ struct _dtdata_s
 {
     unsigned int lock; /* general dictionary lock	*/
     unsigned int type; /* method type, control flags	*/
-    ssize_t size; /* number of objects		*/
-    Dtuser_t user; /* application's data		*/
-    Dt_t dict; /* when DT_INDATA is requested	*/
+    ssize_t size;      /* number of objects		*/
+    Dtuser_t user;     /* application's data		*/
+    Dt_t dict;         /* when DT_INDATA is requested	*/
 };
 
 /* this structure holds the plugin information */
 typedef struct _dtlib_s
 {
-    char *name; /* short name */
-    char *description; /* short description */
-    char *release; /* release info */
-    char *prefix; /* name prefix */
+    char *name;           /* short name */
+    char *description;    /* short description */
+    char *release;        /* release info */
+    char *prefix;         /* name prefix */
     Dtmethod_t **methods; /* method list */
 } Dtlib_t;
 

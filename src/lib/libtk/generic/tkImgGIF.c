@@ -51,13 +51,13 @@ static int FileReadGIF _ANSI_ARGS_((Tcl_Interp * interp,
                                     int srcY));
 
 Tk_PhotoImageFormat tkImgFmtGIF = {
-    "GIF", /* name */
+    "GIF",        /* name */
     FileMatchGIF, /* fileMatchProc */
-    NULL, /* stringMatchProc */
-    FileReadGIF, /* fileReadProc */
-    NULL, /* stringReadProc */
-    NULL, /* fileWriteProc */
-    NULL, /* stringWriteProc */
+    NULL,         /* stringMatchProc */
+    FileReadGIF,  /* fileReadProc */
+    NULL,         /* stringReadProc */
+    NULL,         /* fileWriteProc */
+    NULL,         /* stringWriteProc */
 };
 
 #define INTERLACE 0x40
@@ -111,9 +111,9 @@ static int ReadImage _ANSI_ARGS_((Tcl_Interp * interp,
  */
 
 static int FileMatchGIF(f, fileName, formatString, widthPtr, heightPtr)
-FILE *f; /* The image file, open for reading. */
-char *fileName; /* The name of the image file. */
-char *formatString; /* User-specified format string, or NULL. */
+FILE *f;                   /* The image file, open for reading. */
+char *fileName;            /* The name of the image file. */
+char *formatString;        /* User-specified format string, or NULL. */
 int *widthPtr, *heightPtr; /* The dimensions of the image are
                             * returned here if the file is a valid
                             * raw GIF file. */
@@ -153,16 +153,16 @@ static int FileReadGIF(interp,
                        srcX,
                        srcY) Tcl_Interp *interp; /* Interpreter to use for
                                                     reporting errors. */
-FILE *f; /* The image file, open for reading. */
-char *fileName; /* The name of the image file. */
-char *formatString; /* User-specified format string, or NULL. */
+FILE *f;                    /* The image file, open for reading. */
+char *fileName;             /* The name of the image file. */
+char *formatString;         /* User-specified format string, or NULL. */
 Tk_PhotoHandle imageHandle; /* The photo image to write into. */
-int destX, destY; /* Coordinates of top-left pixel in
-                   * photo image to be written to. */
-int width, height; /* Dimensions of block of photo image to
-                    * be written to. */
-int srcX, srcY; /* Coordinates of top-left pixel to be used
-                 * in image being read. */
+int destX, destY;           /* Coordinates of top-left pixel in
+                             * photo image to be written to. */
+int width, height;          /* Dimensions of block of photo image to
+                             * be written to. */
+int srcX, srcY;             /* Coordinates of top-left pixel to be used
+                             * in image being read. */
 {
     int fileWidth, fileHeight;
     int nBytes;

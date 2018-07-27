@@ -130,8 +130,8 @@ __STDPP__directive pragma pp
 #        endif
 
 #        define _DIR_PRIVATE_                                                \
-            int dd_loc; /* offset in block		*/                               \
-            int dd_size; /* valid data in block		*/                          \
+            int dd_loc;   /* offset in block		*/                             \
+            int dd_size;  /* valid data in block		*/                         \
             char *dd_buf; /* directory block		*/
 
 #        ifdef _BLD_3d

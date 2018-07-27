@@ -31,7 +31,7 @@ static int
 _sfraiseall(int type, Void_t *data)
 #else
 static int _sfraiseall(type, data) int type; /* type of event	*/
-Void_t *data; /* associated data	*/
+Void_t *data;                                /* associated data	*/
 #endif
 {
     Sfio_t *f;
@@ -58,9 +58,9 @@ Void_t *data; /* associated data	*/
 int
 sfraise(Sfio_t *f, int type, Void_t *data)
 #else
-int sfraise(f, type, data) Sfio_t *f; /* stream		*/
-int type; /* type of event	*/
-Void_t *data; /* associated data	*/
+int sfraise(f, type, data) Sfio_t *f;        /* stream		*/
+int type;                                    /* type of event	*/
+Void_t *data;                                /* associated data	*/
 #endif
 {
     reg Sfdisc_t *disc, *next, *d;

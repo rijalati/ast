@@ -96,19 +96,19 @@ static char *errMsg = NULL;
  */
 
 /* definition	number	opnd?	meaning */
-#define END 0 /* no	End of program. */
-#define BOL 1 /* no	Match "" at beginning of line. */
-#define EOL 2 /* no	Match "" at end of line. */
-#define ANY 3 /* no	Match any one character. */
-#define ANYOF 4 /* str	Match any character in this string. */
-#define ANYBUT 5 /* str	Match any character not in this string. */
-#define BRANCH 6 /* node	Match this alternative, or the next... */
-#define BACK 7 /* no	Match "", "next" ptr points backward. */
+#define END 0     /* no	End of program. */
+#define BOL 1     /* no	Match "" at beginning of line. */
+#define EOL 2     /* no	Match "" at end of line. */
+#define ANY 3     /* no	Match any one character. */
+#define ANYOF 4   /* str	Match any character in this string. */
+#define ANYBUT 5  /* str	Match any character not in this string. */
+#define BRANCH 6  /* node	Match this alternative, or the next... */
+#define BACK 7    /* no	Match "", "next" ptr points backward. */
 #define EXACTLY 8 /* str	Match this string. */
 #define NOTHING 9 /* no	Match empty string. */
-#define STAR 10 /* node	Match this (simple) thing 0 or more times. */
-#define PLUS 11 /* node	Match this (simple) thing 1 or more times. */
-#define OPEN 20 /* no	Mark this point in input as start of #n. */
+#define STAR 10   /* node	Match this (simple) thing 0 or more times. */
+#define PLUS 11   /* node	Match this (simple) thing 1 or more times. */
+#define OPEN 20   /* no	Mark this point in input as start of #n. */
 /*	OPEN+1 is number 1, etc. */
 #define CLOSE (OPEN + NSUBEXP) /* no	Analogous to OPEN. */
 
@@ -174,9 +174,9 @@ static char *errMsg = NULL;
  * Flags to be passed up and down.
  */
 #define HASWIDTH 01 /* Known never to match null string. */
-#define SIMPLE 02 /* Simple enough to be STAR/PLUS operand. */
-#define SPSTART 04 /* Starts with * or +. */
-#define WORST 0 /* Worst case. */
+#define SIMPLE 02   /* Simple enough to be STAR/PLUS operand. */
+#define SPSTART 04  /* Starts with * or +. */
+#define WORST 0     /* Worst case. */
 
 /*
  * Global work variables for TclRegComp().
@@ -184,9 +184,9 @@ static char *errMsg = NULL;
 struct regcomp_state
 {
     char *regparse; /* Input-scan pointer. */
-    int regnpar; /* () count. */
-    char *regcode; /* Code-emit pointer; &regdummy = don't. */
-    long regsize; /* Code size. */
+    int regnpar;    /* () count. */
+    char *regcode;  /* Code-emit pointer; &regdummy = don't. */
+    long regsize;   /* Code size. */
 };
 
 static char regdummy;
@@ -474,10 +474,10 @@ struct regcomp_state *rcstate;
     else if (op == '*')
     {
         /* Emit x* as (x&|), where & means "self". */
-        reginsert(BRANCH, ret, rcstate); /* Either x */
-        regoptail(ret, regnode(BACK, rcstate)); /* and loop */
-        regoptail(ret, ret); /* back */
-        regtail(ret, regnode(BRANCH, rcstate)); /* or */
+        reginsert(BRANCH, ret, rcstate);         /* Either x */
+        regoptail(ret, regnode(BACK, rcstate));  /* and loop */
+        regoptail(ret, ret);                     /* back */
+        regtail(ret, regnode(BRANCH, rcstate));  /* or */
         regtail(ret, regnode(NOTHING, rcstate)); /* null. */
     }
     else if (op == '+' && (flags & SIMPLE))
@@ -487,16 +487,16 @@ struct regcomp_state *rcstate;
         /* Emit x+ as x(&|), where & means "self". */
         next = regnode(BRANCH, rcstate); /* Either */
         regtail(ret, next);
-        regtail(regnode(BACK, rcstate), ret); /* loop back */
+        regtail(regnode(BACK, rcstate), ret);    /* loop back */
         regtail(next, regnode(BRANCH, rcstate)); /* or */
         regtail(ret, regnode(NOTHING, rcstate)); /* null. */
     }
     else if (op == '?')
     {
         /* Emit x? as (x|) */
-        reginsert(BRANCH, ret, rcstate); /* Either x */
+        reginsert(BRANCH, ret, rcstate);        /* Either x */
         regtail(ret, regnode(BRANCH, rcstate)); /* or */
-        next = regnode(NOTHING, rcstate); /* null. */
+        next = regnode(NOTHING, rcstate);       /* null. */
         regtail(ret, next);
         regoptail(ret, next);
     }
@@ -753,10 +753,10 @@ char *val;
  */
 struct regexec_state
 {
-    char *reginput; /* String-input pointer. */
-    char *regbol; /* Beginning of input, for ^ check. */
+    char *reginput;   /* String-input pointer. */
+    char *regbol;     /* Beginning of input, for ^ check. */
     char **regstartp; /* Pointer to startp array. */
-    char **regendp; /* Ditto for endp. */
+    char **regendp;   /* Ditto for endp. */
 };
 
 /*
@@ -1038,7 +1038,7 @@ struct regexec_state *restate;
             char *save;
 
             if (OP(next) != BRANCH)
-            { /* No choice. */
+            {                         /* No choice. */
                 next = OPERAND(scan); /* Avoid recursion. */
             }
             else

@@ -137,32 +137,32 @@ typedef struct
 typedef struct
 {
     Cssdisc_t disc; /* css discipline		*/
-    Css_t *css; /* css handle			*/
+    Css_t *css;     /* css handle			*/
     struct
     {
-        Table_t job; /* job by <start,name>		*/
+        Table_t job;   /* job by <start,name>		*/
         Table_t owner; /* user by User_t*		*/
-        Table_t pid; /* job by pid			*/
+        Table_t pid;   /* job by pid			*/
         Table_t queue; /* queue by name		*/
-        Table_t uid; /* user by uid			*/
-        Table_t user; /* user by name			*/
+        Table_t uid;   /* user by uid			*/
+        Table_t user;  /* user by name			*/
     } table;
-    Queue_t *queue; /* default queue		*/
-    time_t update; /* info file mtime		*/
-    int nproc; /* total proc limit		*/
-    int peruser; /* total per user limit		*/
-    int pending; /* total pending jobs		*/
-    int running; /* total running jobs		*/
-    int bufsiz; /* sizeof(*buf)			*/
-    int init; /* initialization		*/
+    Queue_t *queue;         /* default queue		*/
+    time_t update;          /* info file mtime		*/
+    int nproc;              /* total proc limit		*/
+    int peruser;            /* total per user limit		*/
+    int pending;            /* total pending jobs		*/
+    int running;            /* total running jobs		*/
+    int bufsiz;             /* sizeof(*buf)			*/
+    int init;               /* initialization		*/
     unsigned long admin[4]; /* admin uids			*/
-    unsigned long total; /* total number of jobs run	*/
+    unsigned long total;    /* total number of jobs run	*/
     unsigned long sequence; /* job id sequence		*/
-    char *pwd; /* jobs dir path		*/
-    char *atx; /* setuid exec full path	*/
-    char *buf; /* work buffer			*/
-    Sfio_t *tmp; /* work string			*/
-    Connection_t con[1]; /* user connections		*/
+    char *pwd;              /* jobs dir path		*/
+    char *atx;              /* setuid exec full path	*/
+    char *buf;              /* work buffer			*/
+    Sfio_t *tmp;            /* work string			*/
+    Connection_t con[1];    /* user connections		*/
 } State_t;
 
 typedef struct

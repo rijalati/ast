@@ -31,7 +31,7 @@
 
 typedef struct State_s /* method state			*/
 {
-    Sfio_t *sp; /* sfpopen() stream		*/
+    Sfio_t *sp;          /* sfpopen() stream		*/
     unsigned long count; /* member count			*/
 } State_t;
 

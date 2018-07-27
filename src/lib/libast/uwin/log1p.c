@@ -175,7 +175,7 @@ extern double log1p(x) double x;
                 return (infnan(-ERANGE)); /* -INF */
             else
                 return (infnan(EDOM)); /* NaN */
-#    else /* defined(vax)||defined(tahoe) */
+#    else  /* defined(vax)||defined(tahoe) */
             /* x = -1, return -INF with signal */
             if (x == negone)
                 return (negone / zero);

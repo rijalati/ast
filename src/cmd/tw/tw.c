@@ -343,13 +343,13 @@ static const char usage[]
 #define ALL (( Exnode_t * )0)
 #define LIST (( Exnode_t * )1)
 
-#define FTW_LIST (FTW_USER << 0) /* files listed on stdin	*/
+#define FTW_LIST (FTW_USER << 0)      /* files listed on stdin	*/
 #define FTW_RECURSIVE (FTW_USER << 1) /* walk files listed on stdin	*/
 
 typedef struct Dir /* directory list		*/
 {
     struct Dir *next; /* next in list			*/
-    char *name; /* dir name			*/
+    char *name;       /* dir name			*/
 } Dir_t;
 
 State_t state;

@@ -39,40 +39,42 @@
 
 #    define PAX_PLUGIN_VERSION AST_PLUGIN_VERSION(20100528L)
 
-#    define PAX_IN (1 << 0) /* copy in			*/
-#    define PAX_OUT (1 << 1) /* copy out			*/
-#    define PAX_ARCHIVE (1 << 2) /* archive format		*/
-#    define PAX_COMPRESS (1 << 3) /* compress format		*/
-#    define PAX_DELTA (1 << 4) /* delta format			*/
-#    define PAX_DLL (1 << 5) /* format from external dll	*/
-#    define PAX_DOS (1 << 6) /* may contain dos names	*/
-#    define PAX_PSEUDO (1 << 7) /* pseudo delta format		*/
-#    define PAX_COMPRESSED (1 << 8) /* format already compressed	*/
-#    define PAX_CONV (1 << 9) /* format handles ccode conv	*/
-#    define PAX_DELTAINFO (1 << 10) /* format handles delta info	*/
-#    define PAX_KEEPSIZE (1 << 11) /* retain non REG st_size	*/
-#    define PAX_LINKTYPE (1 << 12) /* Paxfile_t.linktype supported	*/
+#    define PAX_IN (1 << 0)           /* copy in			*/
+#    define PAX_OUT (1 << 1)          /* copy out			*/
+#    define PAX_ARCHIVE (1 << 2)      /* archive format		*/
+#    define PAX_COMPRESS (1 << 3)     /* compress format		*/
+#    define PAX_DELTA (1 << 4)        /* delta format			*/
+#    define PAX_DLL (1 << 5)          /* format from external dll	*/
+#    define PAX_DOS (1 << 6)          /* may contain dos names	*/
+#    define PAX_PSEUDO (1 << 7)       /* pseudo delta format		*/
+#    define PAX_COMPRESSED (1 << 8)   /* format already compressed	*/
+#    define PAX_CONV (1 << 9)         /* format handles ccode conv	*/
+#    define PAX_DELTAINFO (1 << 10)   /* format handles delta info	*/
+#    define PAX_KEEPSIZE (1 << 11)    /* retain non REG st_size	*/
+#    define PAX_LINKTYPE (1 << 12)    /* Paxfile_t.linktype supported	*/
 #    define PAX_NOHARDLINKS (1 << 13) /* hard links not supported	*/
-#    define PAX_SLASHDIR (1 << 14) /* trailing slash => directory	*/
-#    define PAX_STANDARD (1L << 15) /* the standard format		*/
-#    define PAX_SUM (1L << 16) /* inline member checksum	*/
-#    define PAX_DELTAIO (1L << 17) /* separate delta io		*/
-#    define PAX_APPEND (1L << 18) /* archive append		*/
+#    define PAX_SLASHDIR (1 << 14)    /* trailing slash => directory	*/
+#    define PAX_STANDARD (1L << 15)   /* the standard format		*/
+#    define PAX_SUM (1L << 16)        /* inline member checksum	*/
+#    define PAX_DELTAIO (1L << 17)    /* separate delta io		*/
+#    define PAX_APPEND (1L << 18)     /* archive append		*/
 
 #    define PAX_FORMAT (1L << 24) /* first format specific flag	*/
 
-#    define PAX_BLOCK 512 /* io block size		*/
+#    define PAX_BLOCK 512    /* io block size		*/
 #    define PAX_DEFBLOCKS 20 /* default blocking		*/
 #    define PAX_DEFBUFFER 16 /* default io buffer blocking	*/
 
-#    define PAX_NOLINK 0 /* not a link			*/
+#    define PAX_NOLINK 0     /* not a link			*/
 #    define PAX_HARDLINK '1' /* hard link to previous entry	*/
 #    define PAX_SOFTLINK '2' /* soft link to previous entry	*/
 
-#    define PAX_EVENT_BUG_19951031 0x00000001 /* old write bug workaround    \
-                                               */
-#    define PAX_EVENT_DELTA_EXTEND 0x00000002 /* add delta entension info    \
-                                               */
+#    define PAX_EVENT_BUG_19951031                                           \
+        0x00000001 /* old write bug workaround                               \
+                    */
+#    define PAX_EVENT_DELTA_EXTEND                                           \
+        0x00000002                         /* add delta entension info       \
+                                            */
 #    define PAX_EVENT_SKIP_JUNK 0x00000004 /* junk header test		*/
 
 struct Pax_s;
@@ -98,16 +100,16 @@ typedef Paxformat_t *(*Paxlib_f)(Pax_t *);
 
 struct Paxvalue_s /* string and/or number value	*/
 {
-    char *string; /* string value			*/
-    int32_t number; /* numeric value		*/
+    char *string;     /* string value			*/
+    int32_t number;   /* numeric value		*/
     int32_t fraction; /* fractional part		*/
-    size_t size; /* max string size		*/
+    size_t size;      /* max string size		*/
 };
 
 struct Paxio_s /* io info			*/
 {
-    int fd; /* file descriptor		*/
-    int eof; /* hit EOF			*/
+    int fd;           /* file descriptor		*/
+    int eof;          /* hit EOF			*/
     off_t buffersize; /* buffer size			*/
 
 #    ifdef _PAX_IO_PRIVATE_
@@ -117,12 +119,12 @@ struct Paxio_s /* io info			*/
 
 struct Paxfile_s /* common internal file info	*/
 {
-    char *name; /* archive file name		*/
-    char *path; /* local file name for reading	*/
-    char *linkpath; /* link path			*/
-    struct stat *st; /* stat() info from ftwalk()	*/
+    char *name;         /* archive file name		*/
+    char *path;         /* local file name for reading	*/
+    char *linkpath;     /* link path			*/
+    struct stat *st;    /* stat() info from ftwalk()	*/
     off_t uncompressed; /* uncompressed size if != 0	*/
-    int linktype; /* link type			*/
+    int linktype;       /* link type			*/
 
 #    ifdef _PAX_FILE_PRIVATE_
     _PAX_FILE_PRIVATE_
@@ -131,16 +133,16 @@ struct Paxfile_s /* common internal file info	*/
 
 struct Paxformat_s /* format info			*/
 {
-    char *name; /* name				*/
-    char *match; /* name strgrpmatch pattern	*/
-    char *desc; /* description			*/
-    int variant; /* variant index		*/
-    int32_t flags; /* flags			*/
-    unsigned long regular; /* default regular blocking	*/
-    unsigned long special; /* default special blocking	*/
-    int align; /* trailer alignment		*/
+    char *name;               /* name				*/
+    char *match;              /* name strgrpmatch pattern	*/
+    char *desc;               /* description			*/
+    int variant;              /* variant index		*/
+    int32_t flags;            /* flags			*/
+    unsigned long regular;    /* default regular blocking	*/
+    unsigned long special;    /* default special blocking	*/
+    int align;                /* trailer alignment		*/
     struct Paxformat_s *next; /* next in list of all formats	*/
-    void *data; /* format specific data		*/
+    void *data;               /* format specific data		*/
     int (*done)(Pax_t *, Paxarchive_t *);
     int (*getprologue)(Pax_t *,
                        Paxformat_t *,
@@ -174,21 +176,21 @@ struct Paxformat_s /* format info			*/
 
 struct Paxarchive_s /* archive info			*/
 {
-    char *name; /* archive name			*/
-    void *data; /* format specific data		*/
+    char *name;          /* archive name			*/
+    void *data;          /* format specific data		*/
     Paxformat_t *format; /* format			*/
-    int32_t flags; /* format flags			*/
-    int incomplete; /* file requires new volume	*/
-    int volume; /* volume number		*/
-    size_t entries; /* total number of entries	*/
-    size_t entry; /* current entry index		*/
-    Paxio_t *io; /* current io			*/
-    struct /* paxstash() values		*/
+    int32_t flags;       /* format flags			*/
+    int incomplete;      /* file requires new volume	*/
+    int volume;          /* volume number		*/
+    size_t entries;      /* total number of entries	*/
+    size_t entry;        /* current entry index		*/
+    Paxio_t *io;         /* current io			*/
+    struct               /* paxstash() values		*/
     {
         Paxvalue_t comment; /* header comment		*/
-        Paxvalue_t head; /* header path name		*/
-        Paxvalue_t link; /* link text			*/
-        Paxvalue_t zip; /* zip header name		*/
+        Paxvalue_t head;    /* header path name		*/
+        Paxvalue_t link;    /* link text			*/
+        Paxvalue_t zip;     /* zip header name		*/
     } stash;
 
 #    ifdef _PAX_ARCHIVE_PRIVATE_
@@ -198,22 +200,22 @@ struct Paxarchive_s /* archive info			*/
 
 struct Pax_s /* global state			*/
 {
-    const char *id; /* interface id			*/
+    const char *id;         /* interface id			*/
     const char *passphrase; /* encryption passphrase	*/
-    int32_t flags; /* flags			*/
-    int gid; /* current group id		*/
-    int keepgoing; /* keep going on error		*/
-    int list; /* full file trace		*/
-    int modemask; /* ~umask()			*/
-    int strict; /* strict standard conformance	*/
-    int summary; /* output summary info		*/
-    int test; /* debug test bits		*/
-    int uid; /* current user id		*/
-    int verbose; /* trace files when acted upon	*/
-    int verify; /* verify action on file	*/
-    int warn; /* archive specific warnings	*/
-    long pid; /* main pid			*/
-    off_t buffersize; /* io buffer size		*/
+    int32_t flags;          /* flags			*/
+    int gid;                /* current group id		*/
+    int keepgoing;          /* keep going on error		*/
+    int list;               /* full file trace		*/
+    int modemask;           /* ~umask()			*/
+    int strict;             /* strict standard conformance	*/
+    int summary;            /* output summary info		*/
+    int test;               /* debug test bits		*/
+    int uid;                /* current user id		*/
+    int verbose;            /* trace files when acted upon	*/
+    int verify;             /* verify action on file	*/
+    int warn;               /* archive specific warnings	*/
+    long pid;               /* main pid			*/
+    off_t buffersize;       /* io buffer size		*/
 
     char buf[SF_BUFSIZE]; /* file io buffer		*/
 

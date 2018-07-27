@@ -27,11 +27,11 @@
 */
 
 #define VCRD_RECORD 00000010 /* data is record-oriented	*/
-#define VCRD_FIELD 00000020 /* data is field-oriented	*/
-#define VCRD_PAD 00000040 /* pad fields/records to full	*/
-#define VCRD_FIXED 00000100 /* fixed-length field		*/
+#define VCRD_FIELD 00000020  /* data is field-oriented	*/
+#define VCRD_PAD 00000040    /* pad fields/records to full	*/
+#define VCRD_FIXED 00000100  /* fixed-length field		*/
 
-#define VCRD_DOT 00001000 /* field was of the form x.y...	*/
+#define VCRD_DOT 00001000   /* field was of the form x.y...	*/
 #define VCRD_SLASH 00002000 /* like above but x.y.../z	*/
 
 #define VCRD_VECTOR 00100000 /* did transform vector already	*/
@@ -47,13 +47,13 @@
 */
 typedef struct _vcrdinfo_s
 {
-    ssize_t recn; /* >0 for total # of records	*/
-    ssize_t fldn; /* >0 for total # of fields	*/
+    ssize_t recn;  /* >0 for total # of records	*/
+    ssize_t fldn;  /* >0 for total # of fields	*/
     ssize_t *flen; /* schema field lengths if any 	*/
-    int fsep; /* >= 0 for field separator	*/
-    int rsep; /* >= 0 for record separator	*/
-    int dot; /* the . character		*/
-    int slash; /* the / character		*/
+    int fsep;      /* >= 0 for field separator	*/
+    int rsep;      /* >= 0 for record separator	*/
+    int dot;       /* the . character		*/
+    int slash;     /* the / character		*/
     int digit[10]; /* the characters 0-9		*/
 } Vcrdinfo_t;
 
@@ -61,42 +61,42 @@ typedef struct _vcrdinfo_s
 typedef struct _vcrdrecord_s
 {
     Vcchar_t *data; /* pointer to record data	*/
-    ssize_t dtsz; /* record length in a field	*/
+    ssize_t dtsz;   /* record length in a field	*/
 } Vcrdrecord_t;
 typedef struct _vcrdfield_s
 {
-    int type; /* DOT|SLASH|FIXED|... 		*/
+    int type;           /* DOT|SLASH|FIXED|... 		*/
     Vcrdrecord_t *rcrd; /* data in all records		*/
-    ssize_t maxz; /* max size of any record	*/
-    ssize_t *vect; /* transform vector by this fld	*/
-    Vcchar_t *data; /* locally allocated field data	*/
+    ssize_t maxz;       /* max size of any record	*/
+    ssize_t *vect;      /* transform vector by this fld	*/
+    Vcchar_t *data;     /* locally allocated field data	*/
 } Vcrdfield_t;
 
 /* structure of a table */
 typedef struct _vcrdtable_s
 {
     Vcrdinfo_t *info;
-    ssize_t parz; /* size of data just parsed	*/
-    ssize_t recn; /* number of records		*/
-    ssize_t fldn; /* number of fields per record	*/
+    ssize_t parz;     /* size of data just parsed	*/
+    ssize_t recn;     /* number of records		*/
+    ssize_t fldn;     /* number of fields per record	*/
     Vcrdfield_t *fld; /* list of fields		*/
 } Vcrdtable_t;
 
 /* prediction plan */
 typedef struct _vcrdplan_s
 {
-    ssize_t fldn; /* number of fields		*/
+    ssize_t fldn;    /* number of fields		*/
     ssize_t pred[1]; /* predictor list		*/
 } Vcrdplan_t;
 
 /* to compute the field and record format */
 typedef struct _vcrdformat_s
 {
-    int fsep; /* field separator		*/
-    int rsep; /* record separator		*/
-    ssize_t fldn; /* number of fields if computed	*/
+    int fsep;      /* field separator		*/
+    int rsep;      /* record separator		*/
+    ssize_t fldn;  /* number of fields if computed	*/
     ssize_t *fldz; /* field lengths (if fixed)	*/
-    double perf; /* compression performance	*/
+    double perf;   /* compression performance	*/
 } Vcrdformat_t;
 
 #define vcrdsize(tbl) ((tbl)->parz) /* size of data just parsed	*/
