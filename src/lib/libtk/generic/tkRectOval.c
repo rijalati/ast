@@ -1,4 +1,4 @@
-/* 
+/*
  * tkRectOval.c --
  *
  *	This file implements rectangle and oval items for canvas
@@ -19,78 +19,126 @@
  * The structure below defines the record for each rectangle/oval item.
  */
 
-typedef struct RectOvalItem  {
-    Tk_Item header;		/* Generic stuff that's the same for all
-				 * types.  MUST BE FIRST IN STRUCTURE. */
-    double bbox[4];		/* Coordinates of bounding box for rectangle
-				 * or oval (x1, y1, x2, y2).  Item includes
-				 * x1 and x2 but not y1 and y2. */
-    int width;			/* Width of outline. */
-    XColor *outlineColor;	/* Color for outline. */
-    XColor *fillColor;		/* Color for filling rectangle/oval. */
-    Pixmap fillStipple;		/* Stipple bitmap for filling item. */
-    GC outlineGC;		/* Graphics context for outline. */
-    GC fillGC;			/* Graphics context for filling item. */
+typedef struct RectOvalItem
+{
+    Tk_Item header; /* Generic stuff that's the same for all
+                     * types.  MUST BE FIRST IN STRUCTURE. */
+    double bbox[4]; /* Coordinates of bounding box for rectangle
+                     * or oval (x1, y1, x2, y2).  Item includes
+                     * x1 and x2 but not y1 and y2. */
+    int width; /* Width of outline. */
+    XColor *outlineColor; /* Color for outline. */
+    XColor *fillColor; /* Color for filling rectangle/oval. */
+    Pixmap fillStipple; /* Stipple bitmap for filling item. */
+    GC outlineGC; /* Graphics context for outline. */
+    GC fillGC; /* Graphics context for filling item. */
 } RectOvalItem;
 
 /*
  * Information used for parsing configuration specs:
  */
 
-static Tk_CustomOption tagsOption = {Tk_CanvasTagsParseProc,
-    Tk_CanvasTagsPrintProc, (ClientData) NULL
-};
+static Tk_CustomOption tagsOption
+= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData )NULL };
 
-static Tk_ConfigSpec configSpecs[] = {
-    {TK_CONFIG_COLOR, "-fill", (char *) NULL, (char *) NULL,
-	(char *) NULL, Tk_Offset(RectOvalItem, fillColor), TK_CONFIG_NULL_OK},
-    {TK_CONFIG_COLOR, "-outline", (char *) NULL, (char *) NULL,
-	"black", Tk_Offset(RectOvalItem, outlineColor), TK_CONFIG_NULL_OK},
-    {TK_CONFIG_BITMAP, "-stipple", (char *) NULL, (char *) NULL,
-	(char *) NULL, Tk_Offset(RectOvalItem, fillStipple), TK_CONFIG_NULL_OK},
-    {TK_CONFIG_CUSTOM, "-tags", (char *) NULL, (char *) NULL,
-	(char *) NULL, 0, TK_CONFIG_NULL_OK, &tagsOption},
-    {TK_CONFIG_PIXELS, "-width", (char *) NULL, (char *) NULL,
-	"1", Tk_Offset(RectOvalItem, width), TK_CONFIG_DONT_SET_DEFAULT},
-    {TK_CONFIG_END, (char *) NULL, (char *) NULL, (char *) NULL,
-	(char *) NULL, 0, 0}
-};
+static Tk_ConfigSpec configSpecs[]
+= { { TK_CONFIG_COLOR,
+      "-fill",
+      ( char * )NULL,
+      ( char * )NULL,
+      ( char * )NULL,
+      Tk_Offset(RectOvalItem, fillColor),
+      TK_CONFIG_NULL_OK },
+    { TK_CONFIG_COLOR,
+      "-outline",
+      ( char * )NULL,
+      ( char * )NULL,
+      "black",
+      Tk_Offset(RectOvalItem, outlineColor),
+      TK_CONFIG_NULL_OK },
+    { TK_CONFIG_BITMAP,
+      "-stipple",
+      ( char * )NULL,
+      ( char * )NULL,
+      ( char * )NULL,
+      Tk_Offset(RectOvalItem, fillStipple),
+      TK_CONFIG_NULL_OK },
+    { TK_CONFIG_CUSTOM,
+      "-tags",
+      ( char * )NULL,
+      ( char * )NULL,
+      ( char * )NULL,
+      0,
+      TK_CONFIG_NULL_OK,
+      &tagsOption },
+    { TK_CONFIG_PIXELS,
+      "-width",
+      ( char * )NULL,
+      ( char * )NULL,
+      "1",
+      Tk_Offset(RectOvalItem, width),
+      TK_CONFIG_DONT_SET_DEFAULT },
+    { TK_CONFIG_END,
+      ( char * )NULL,
+      ( char * )NULL,
+      ( char * )NULL,
+      ( char * )NULL,
+      0,
+      0 } };
 
 /*
  * Prototypes for procedures defined in this file:
  */
 
-static void		ComputeRectOvalBbox _ANSI_ARGS_((Tk_Canvas canvas,
-			    RectOvalItem *rectOvalPtr));
-static int		ConfigureRectOval _ANSI_ARGS_((Tcl_Interp *interp,
-			    Tk_Canvas canvas, Tk_Item *itemPtr, int argc,
-			    char **argv, int flags));
-static int		CreateRectOval _ANSI_ARGS_((Tcl_Interp *interp,
-			    Tk_Canvas canvas, struct Tk_Item *itemPtr,
-			    int argc, char **argv));
-static void		DeleteRectOval _ANSI_ARGS_((Tk_Canvas canvas,
-			    Tk_Item *itemPtr, Display *display));
-static void		DisplayRectOval _ANSI_ARGS_((Tk_Canvas canvas,
-			    Tk_Item *itemPtr, Display *display, Drawable dst,
-			    int x, int y, int width, int height));
-static int		OvalToArea _ANSI_ARGS_((Tk_Canvas canvas,
-			    Tk_Item *itemPtr, double *areaPtr));
-static double		OvalToPoint _ANSI_ARGS_((Tk_Canvas canvas,
-			    Tk_Item *itemPtr, double *pointPtr));
-static int		RectOvalCoords _ANSI_ARGS_((Tcl_Interp *interp,
-			    Tk_Canvas canvas, Tk_Item *itemPtr, int argc,
-			    char **argv));
-static int		RectOvalToPostscript _ANSI_ARGS_((Tcl_Interp *interp,
-			    Tk_Canvas canvas, Tk_Item *itemPtr, int prepass));
-static int		RectToArea _ANSI_ARGS_((Tk_Canvas canvas,
-			    Tk_Item *itemPtr, double *areaPtr));
-static double		RectToPoint _ANSI_ARGS_((Tk_Canvas canvas,
-			    Tk_Item *itemPtr, double *pointPtr));
-static void		ScaleRectOval _ANSI_ARGS_((Tk_Canvas canvas,
-			    Tk_Item *itemPtr, double originX, double originY,
-			    double scaleX, double scaleY));
-static void		TranslateRectOval _ANSI_ARGS_((Tk_Canvas canvas,
-			    Tk_Item *itemPtr, double deltaX, double deltaY));
+static void ComputeRectOvalBbox _ANSI_ARGS_((Tk_Canvas canvas,
+                                             RectOvalItem *rectOvalPtr));
+static int ConfigureRectOval _ANSI_ARGS_((Tcl_Interp * interp,
+                                          Tk_Canvas canvas,
+                                          Tk_Item *itemPtr,
+                                          int argc,
+                                          char **argv,
+                                          int flags));
+static int CreateRectOval _ANSI_ARGS_((Tcl_Interp * interp,
+                                       Tk_Canvas canvas,
+                                       struct Tk_Item *itemPtr,
+                                       int argc,
+                                       char **argv));
+static void DeleteRectOval _ANSI_ARGS_((Tk_Canvas canvas,
+                                        Tk_Item *itemPtr,
+                                        Display *display));
+static void DisplayRectOval _ANSI_ARGS_((Tk_Canvas canvas,
+                                         Tk_Item *itemPtr,
+                                         Display *display,
+                                         Drawable dst,
+                                         int x,
+                                         int y,
+                                         int width,
+                                         int height));
+static int
+OvalToArea _ANSI_ARGS_((Tk_Canvas canvas, Tk_Item *itemPtr, double *areaPtr));
+static double OvalToPoint _ANSI_ARGS_((Tk_Canvas canvas,
+                                       Tk_Item *itemPtr,
+                                       double *pointPtr));
+static int RectOvalCoords _ANSI_ARGS_((Tcl_Interp * interp,
+                                       Tk_Canvas canvas,
+                                       Tk_Item *itemPtr,
+                                       int argc,
+                                       char **argv));
+static int RectOvalToPostscript _ANSI_ARGS_(
+(Tcl_Interp * interp, Tk_Canvas canvas, Tk_Item *itemPtr, int prepass));
+static int
+RectToArea _ANSI_ARGS_((Tk_Canvas canvas, Tk_Item *itemPtr, double *areaPtr));
+static double RectToPoint _ANSI_ARGS_((Tk_Canvas canvas,
+                                       Tk_Item *itemPtr,
+                                       double *pointPtr));
+static void ScaleRectOval _ANSI_ARGS_((Tk_Canvas canvas,
+                                       Tk_Item *itemPtr,
+                                       double originX,
+                                       double originY,
+                                       double scaleX,
+                                       double scaleY));
+static void TranslateRectOval _ANSI_ARGS_(
+(Tk_Canvas canvas, Tk_Item *itemPtr, double deltaX, double deltaY));
 
 /*
  * The structures below defines the rectangle and oval item types
@@ -98,51 +146,51 @@ static void		TranslateRectOval _ANSI_ARGS_((Tk_Canvas canvas,
  */
 
 Tk_ItemType tkRectangleType = {
-    "rectangle",			/* name */
-    sizeof(RectOvalItem),		/* itemSize */
-    CreateRectOval,			/* createProc */
-    configSpecs,			/* configSpecs */
-    ConfigureRectOval,			/* configureProc */
-    RectOvalCoords,			/* coordProc */
-    DeleteRectOval,			/* deleteProc */
-    DisplayRectOval,			/* displayProc */
-    0,					/* alwaysRedraw */
-    RectToPoint,			/* pointProc */
-    RectToArea,				/* areaProc */
-    RectOvalToPostscript,		/* postscriptProc */
-    ScaleRectOval,			/* scaleProc */
-    TranslateRectOval,			/* translateProc */
-    (Tk_ItemIndexProc *) NULL,		/* indexProc */
-    (Tk_ItemCursorProc *) NULL,		/* icursorProc */
-    (Tk_ItemSelectionProc *) NULL,	/* selectionProc */
-    (Tk_ItemInsertProc *) NULL,		/* insertProc */
-    (Tk_ItemDCharsProc *) NULL,		/* dTextProc */
-    (Tk_ItemType *) NULL		/* nextPtr */
+    "rectangle", /* name */
+    sizeof(RectOvalItem), /* itemSize */
+    CreateRectOval, /* createProc */
+    configSpecs, /* configSpecs */
+    ConfigureRectOval, /* configureProc */
+    RectOvalCoords, /* coordProc */
+    DeleteRectOval, /* deleteProc */
+    DisplayRectOval, /* displayProc */
+    0, /* alwaysRedraw */
+    RectToPoint, /* pointProc */
+    RectToArea, /* areaProc */
+    RectOvalToPostscript, /* postscriptProc */
+    ScaleRectOval, /* scaleProc */
+    TranslateRectOval, /* translateProc */
+    ( Tk_ItemIndexProc * )NULL, /* indexProc */
+    ( Tk_ItemCursorProc * )NULL, /* icursorProc */
+    ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
+    ( Tk_ItemInsertProc * )NULL, /* insertProc */
+    ( Tk_ItemDCharsProc * )NULL, /* dTextProc */
+    ( Tk_ItemType * )NULL /* nextPtr */
 };
 
 Tk_ItemType tkOvalType = {
-    "oval",				/* name */
-    sizeof(RectOvalItem),		/* itemSize */
-    CreateRectOval,			/* createProc */
-    configSpecs,			/* configSpecs */
-    ConfigureRectOval,			/* configureProc */
-    RectOvalCoords,			/* coordProc */
-    DeleteRectOval,			/* deleteProc */
-    DisplayRectOval,			/* displayProc */
-    0,					/* alwaysRedraw */
-    OvalToPoint,			/* pointProc */
-    OvalToArea,				/* areaProc */
-    RectOvalToPostscript,		/* postscriptProc */
-    ScaleRectOval,			/* scaleProc */
-    TranslateRectOval,			/* translateProc */
-    (Tk_ItemIndexProc *) NULL,		/* indexProc */
-    (Tk_ItemCursorProc *) NULL,		/* cursorProc */
-    (Tk_ItemSelectionProc *) NULL,	/* selectionProc */
-    (Tk_ItemInsertProc *) NULL,		/* insertProc */
-    (Tk_ItemDCharsProc *) NULL,		/* dTextProc */
-    (Tk_ItemType *) NULL		/* nextPtr */
+    "oval", /* name */
+    sizeof(RectOvalItem), /* itemSize */
+    CreateRectOval, /* createProc */
+    configSpecs, /* configSpecs */
+    ConfigureRectOval, /* configureProc */
+    RectOvalCoords, /* coordProc */
+    DeleteRectOval, /* deleteProc */
+    DisplayRectOval, /* displayProc */
+    0, /* alwaysRedraw */
+    OvalToPoint, /* pointProc */
+    OvalToArea, /* areaProc */
+    RectOvalToPostscript, /* postscriptProc */
+    ScaleRectOval, /* scaleProc */
+    TranslateRectOval, /* translateProc */
+    ( Tk_ItemIndexProc * )NULL, /* indexProc */
+    ( Tk_ItemCursorProc * )NULL, /* cursorProc */
+    ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
+    ( Tk_ItemInsertProc * )NULL, /* insertProc */
+    ( Tk_ItemDCharsProc * )NULL, /* dTextProc */
+    ( Tk_ItemType * )NULL /* nextPtr */
 };
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -163,23 +211,26 @@ Tk_ItemType tkOvalType = {
  *--------------------------------------------------------------
  */
 
-static int
-CreateRectOval(interp, canvas, itemPtr, argc, argv)
-    Tcl_Interp *interp;			/* For error reporting. */
-    Tk_Canvas canvas;			/* Canvas to hold new item. */
-    Tk_Item *itemPtr;			/* Record to hold new item;  header
-					 * has been initialized by caller. */
-    int argc;				/* Number of arguments in argv. */
-    char **argv;			/* Arguments describing rectangle. */
+static int CreateRectOval(interp, canvas, itemPtr, argc, argv)
+Tcl_Interp *interp; /* For error reporting. */
+Tk_Canvas canvas; /* Canvas to hold new item. */
+Tk_Item *itemPtr; /* Record to hold new item;  header
+                   * has been initialized by caller. */
+int argc; /* Number of arguments in argv. */
+char **argv; /* Arguments describing rectangle. */
 {
-    RectOvalItem *rectOvalPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
 
-    if (argc < 4) {
-	Tcl_AppendResult(interp, "wrong # args: should be \"",
-		Tk_PathName(Tk_CanvasTkwin(canvas)), " create ",
-		itemPtr->typePtr->name, " x1 y1 x2 y2 ?options?\"",
-		(char *) NULL);
-	return TCL_ERROR;
+    if (argc < 4)
+    {
+        Tcl_AppendResult(interp,
+                         "wrong # args: should be \"",
+                         Tk_PathName(Tk_CanvasTkwin(canvas)),
+                         " create ",
+                         itemPtr->typePtr->name,
+                         " x1 y1 x2 y2 ?options?\"",
+                         ( char * )NULL);
+        return TCL_ERROR;
     }
 
     /*
@@ -198,25 +249,27 @@ CreateRectOval(interp, canvas, itemPtr, argc, argv)
      * Process the arguments to fill in the item record.
      */
 
-    if ((Tk_CanvasGetCoord(interp, canvas, argv[0],
-		&rectOvalPtr->bbox[0]) != TCL_OK)
-	    || (Tk_CanvasGetCoord(interp, canvas, argv[1],
-		&rectOvalPtr->bbox[1]) != TCL_OK)
-	    || (Tk_CanvasGetCoord(interp, canvas, argv[2],
-		    &rectOvalPtr->bbox[2]) != TCL_OK)
-	    || (Tk_CanvasGetCoord(interp, canvas, argv[3],
-		    &rectOvalPtr->bbox[3]) != TCL_OK)) {
-	return TCL_ERROR;
+    if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &rectOvalPtr->bbox[0])
+         != TCL_OK)
+        || (Tk_CanvasGetCoord(interp, canvas, argv[1], &rectOvalPtr->bbox[1])
+            != TCL_OK)
+        || (Tk_CanvasGetCoord(interp, canvas, argv[2], &rectOvalPtr->bbox[2])
+            != TCL_OK)
+        || (Tk_CanvasGetCoord(interp, canvas, argv[3], &rectOvalPtr->bbox[3])
+            != TCL_OK))
+    {
+        return TCL_ERROR;
     }
 
-    if (ConfigureRectOval(interp, canvas, itemPtr, argc-4, argv+4, 0)
-	    != TCL_OK) {
-	DeleteRectOval(canvas, itemPtr, Tk_Display(Tk_CanvasTkwin(canvas)));
-	return TCL_ERROR;
+    if (ConfigureRectOval(interp, canvas, itemPtr, argc - 4, argv + 4, 0)
+        != TCL_OK)
+    {
+        DeleteRectOval(canvas, itemPtr, Tk_Display(Tk_CanvasTkwin(canvas)));
+        return TCL_ERROR;
     }
     return TCL_OK;
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -235,49 +288,56 @@ CreateRectOval(interp, canvas, itemPtr, argc, argv)
  *--------------------------------------------------------------
  */
 
-static int
-RectOvalCoords(interp, canvas, itemPtr, argc, argv)
-    Tcl_Interp *interp;			/* Used for error reporting. */
-    Tk_Canvas canvas;			/* Canvas containing item. */
-    Tk_Item *itemPtr;			/* Item whose coordinates are to be
-					 * read or modified. */
-    int argc;				/* Number of coordinates supplied in
-					 * argv. */
-    char **argv;			/* Array of coordinates: x1, y1,
-					 * x2, y2, ... */
+static int RectOvalCoords(interp, canvas, itemPtr, argc, argv)
+Tcl_Interp *interp; /* Used for error reporting. */
+Tk_Canvas canvas; /* Canvas containing item. */
+Tk_Item *itemPtr; /* Item whose coordinates are to be
+                   * read or modified. */
+int argc; /* Number of coordinates supplied in
+           * argv. */
+char **argv; /* Array of coordinates: x1, y1,
+              * x2, y2, ... */
 {
-    RectOvalItem *rectOvalPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
     char c0[TCL_DOUBLE_SPACE], c1[TCL_DOUBLE_SPACE];
     char c2[TCL_DOUBLE_SPACE], c3[TCL_DOUBLE_SPACE];
 
-    if (argc == 0) {
-	Tcl_PrintDouble(interp, rectOvalPtr->bbox[0], c0);
-	Tcl_PrintDouble(interp, rectOvalPtr->bbox[1], c1);
-	Tcl_PrintDouble(interp, rectOvalPtr->bbox[2], c2);
-	Tcl_PrintDouble(interp, rectOvalPtr->bbox[3], c3);
-	Tcl_AppendResult(interp, c0, " ", c1, " ", c2, " ", c3,
-		(char *) NULL);
-    } else if (argc == 4) {
-	if ((Tk_CanvasGetCoord(interp, canvas, argv[0],
-		    &rectOvalPtr->bbox[0]) != TCL_OK)
-		|| (Tk_CanvasGetCoord(interp, canvas, argv[1],
-		    &rectOvalPtr->bbox[1]) != TCL_OK)
-		|| (Tk_CanvasGetCoord(interp, canvas, argv[2],
-			&rectOvalPtr->bbox[2]) != TCL_OK)
-		|| (Tk_CanvasGetCoord(interp, canvas, argv[3],
-			&rectOvalPtr->bbox[3]) != TCL_OK)) {
-	    return TCL_ERROR;
-	}
-	ComputeRectOvalBbox(canvas, rectOvalPtr);
-    } else {
-	sprintf(interp->result,
-		"wrong # coordinates: expected 0 or 4, got %d",
-		argc);
-	return TCL_ERROR;
+    if (argc == 0)
+    {
+        Tcl_PrintDouble(interp, rectOvalPtr->bbox[0], c0);
+        Tcl_PrintDouble(interp, rectOvalPtr->bbox[1], c1);
+        Tcl_PrintDouble(interp, rectOvalPtr->bbox[2], c2);
+        Tcl_PrintDouble(interp, rectOvalPtr->bbox[3], c3);
+        Tcl_AppendResult(
+        interp, c0, " ", c1, " ", c2, " ", c3, ( char * )NULL);
+    }
+    else if (argc == 4)
+    {
+        if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &rectOvalPtr->bbox[0])
+             != TCL_OK)
+            || (Tk_CanvasGetCoord(
+                interp, canvas, argv[1], &rectOvalPtr->bbox[1])
+                != TCL_OK)
+            || (Tk_CanvasGetCoord(
+                interp, canvas, argv[2], &rectOvalPtr->bbox[2])
+                != TCL_OK)
+            || (Tk_CanvasGetCoord(
+                interp, canvas, argv[3], &rectOvalPtr->bbox[3])
+                != TCL_OK))
+        {
+            return TCL_ERROR;
+        }
+        ComputeRectOvalBbox(canvas, rectOvalPtr);
+    }
+    else
+    {
+        sprintf(
+        interp->result, "wrong # coordinates: expected 0 or 4, got %d", argc);
+        return TCL_ERROR;
     }
     return TCL_OK;
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -298,25 +358,26 @@ RectOvalCoords(interp, canvas, itemPtr, argc, argv)
  *--------------------------------------------------------------
  */
 
-static int
-ConfigureRectOval(interp, canvas, itemPtr, argc, argv, flags)
-    Tcl_Interp *interp;		/* Used for error reporting. */
-    Tk_Canvas canvas;		/* Canvas containing itemPtr. */
-    Tk_Item *itemPtr;		/* Rectangle item to reconfigure. */
-    int argc;			/* Number of elements in argv.  */
-    char **argv;		/* Arguments describing things to configure. */
-    int flags;			/* Flags to pass to Tk_ConfigureWidget. */
+static int ConfigureRectOval(interp, canvas, itemPtr, argc, argv, flags)
+Tcl_Interp *interp; /* Used for error reporting. */
+Tk_Canvas canvas; /* Canvas containing itemPtr. */
+Tk_Item *itemPtr; /* Rectangle item to reconfigure. */
+int argc; /* Number of elements in argv.  */
+char **argv; /* Arguments describing things to configure. */
+int flags; /* Flags to pass to Tk_ConfigureWidget. */
 {
-    RectOvalItem *rectOvalPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
     XGCValues gcValues;
     GC newGC;
     unsigned long mask;
     Tk_Window tkwin;
 
     tkwin = Tk_CanvasTkwin(canvas);
-    if (Tk_ConfigureWidget(interp, tkwin, configSpecs, argc, argv,
-	    (char *) rectOvalPtr, flags) != TCL_OK) {
-	return TCL_ERROR;
+    if (Tk_ConfigureWidget(
+        interp, tkwin, configSpecs, argc, argv, ( char * )rectOvalPtr, flags)
+        != TCL_OK)
+    {
+        return TCL_ERROR;
     }
 
     /*
@@ -324,45 +385,57 @@ ConfigureRectOval(interp, canvas, itemPtr, argc, argv, flags)
      * graphics contexts.
      */
 
-    if (rectOvalPtr->width < 1) {
-	rectOvalPtr->width = 1;
+    if (rectOvalPtr->width < 1)
+    {
+        rectOvalPtr->width = 1;
     }
-    if (rectOvalPtr->outlineColor == NULL) {
-	newGC = None;
-    } else {
-	gcValues.foreground = rectOvalPtr->outlineColor->pixel;
-	gcValues.cap_style = CapProjecting;
-	gcValues.line_width = rectOvalPtr->width;
-	mask = GCForeground|GCCapStyle|GCLineWidth;
-	newGC = Tk_GetGC(tkwin, mask, &gcValues);
+    if (rectOvalPtr->outlineColor == NULL)
+    {
+        newGC = None;
     }
-    if (rectOvalPtr->outlineGC != None) {
-	Tk_FreeGC(Tk_Display(tkwin), rectOvalPtr->outlineGC);
+    else
+    {
+        gcValues.foreground = rectOvalPtr->outlineColor->pixel;
+        gcValues.cap_style = CapProjecting;
+        gcValues.line_width = rectOvalPtr->width;
+        mask = GCForeground | GCCapStyle | GCLineWidth;
+        newGC = Tk_GetGC(tkwin, mask, &gcValues);
+    }
+    if (rectOvalPtr->outlineGC != None)
+    {
+        Tk_FreeGC(Tk_Display(tkwin), rectOvalPtr->outlineGC);
     }
     rectOvalPtr->outlineGC = newGC;
 
-    if (rectOvalPtr->fillColor == NULL) {
-	newGC = None;
-    } else {
-	gcValues.foreground = rectOvalPtr->fillColor->pixel;
-	if (rectOvalPtr->fillStipple != None) {
-	    gcValues.stipple = rectOvalPtr->fillStipple;
-	    gcValues.fill_style = FillStippled;
-	    mask = GCForeground|GCStipple|GCFillStyle;
-	} else {
-	    mask = GCForeground;
-	}
-	newGC = Tk_GetGC(tkwin, mask, &gcValues);
+    if (rectOvalPtr->fillColor == NULL)
+    {
+        newGC = None;
     }
-    if (rectOvalPtr->fillGC != None) {
-	Tk_FreeGC(Tk_Display(tkwin), rectOvalPtr->fillGC);
+    else
+    {
+        gcValues.foreground = rectOvalPtr->fillColor->pixel;
+        if (rectOvalPtr->fillStipple != None)
+        {
+            gcValues.stipple = rectOvalPtr->fillStipple;
+            gcValues.fill_style = FillStippled;
+            mask = GCForeground | GCStipple | GCFillStyle;
+        }
+        else
+        {
+            mask = GCForeground;
+        }
+        newGC = Tk_GetGC(tkwin, mask, &gcValues);
+    }
+    if (rectOvalPtr->fillGC != None)
+    {
+        Tk_FreeGC(Tk_Display(tkwin), rectOvalPtr->fillGC);
     }
     rectOvalPtr->fillGC = newGC;
     ComputeRectOvalBbox(canvas, rectOvalPtr);
 
     return TCL_OK;
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -380,32 +453,38 @@ ConfigureRectOval(interp, canvas, itemPtr, argc, argv, flags)
  *--------------------------------------------------------------
  */
 
-static void
-DeleteRectOval(canvas, itemPtr, display)
-    Tk_Canvas canvas;			/* Info about overall widget. */
-    Tk_Item *itemPtr;			/* Item that is being deleted. */
-    Display *display;			/* Display containing window for
-					 * canvas. */
+static void DeleteRectOval(canvas,
+                           itemPtr,
+                           display) Tk_Canvas canvas; /* Info about overall
+                                                         widget. */
+Tk_Item *itemPtr; /* Item that is being deleted. */
+Display *display; /* Display containing window for
+                   * canvas. */
 {
-    RectOvalItem *rectOvalPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
 
-    if (rectOvalPtr->outlineColor != NULL) {
-	Tk_FreeColor(rectOvalPtr->outlineColor);
+    if (rectOvalPtr->outlineColor != NULL)
+    {
+        Tk_FreeColor(rectOvalPtr->outlineColor);
     }
-    if (rectOvalPtr->fillColor != NULL) {
-	Tk_FreeColor(rectOvalPtr->fillColor);
+    if (rectOvalPtr->fillColor != NULL)
+    {
+        Tk_FreeColor(rectOvalPtr->fillColor);
     }
-    if (rectOvalPtr->fillStipple != None) {
-	Tk_FreeBitmap(display, rectOvalPtr->fillStipple);
+    if (rectOvalPtr->fillStipple != None)
+    {
+        Tk_FreeBitmap(display, rectOvalPtr->fillStipple);
     }
-    if (rectOvalPtr->outlineGC != None) {
-	Tk_FreeGC(display, rectOvalPtr->outlineGC);
+    if (rectOvalPtr->outlineGC != None)
+    {
+        Tk_FreeGC(display, rectOvalPtr->outlineGC);
     }
-    if (rectOvalPtr->fillGC != None) {
-	Tk_FreeGC(display, rectOvalPtr->fillGC);
+    if (rectOvalPtr->fillGC != None)
+    {
+        Tk_FreeGC(display, rectOvalPtr->fillGC);
     }
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -425,12 +504,11 @@ DeleteRectOval(canvas, itemPtr, display)
  *--------------------------------------------------------------
  */
 
-	/* ARGSUSED */
-static void
-ComputeRectOvalBbox(canvas, rectOvalPtr)
-    Tk_Canvas canvas;			/* Canvas that contains item. */
-    RectOvalItem *rectOvalPtr;		/* Item whose bbox is to be
-					 * recomputed. */
+/* ARGSUSED */
+static void ComputeRectOvalBbox(canvas, rectOvalPtr)
+Tk_Canvas canvas; /* Canvas that contains item. */
+RectOvalItem *rectOvalPtr; /* Item whose bbox is to be
+                            * recomputed. */
 {
     int bloat, tmp;
     double dtmp;
@@ -439,23 +517,28 @@ ComputeRectOvalBbox(canvas, rectOvalPtr)
      * Make sure that the first coordinates are the lowest ones.
      */
 
-    if (rectOvalPtr->bbox[1] > rectOvalPtr->bbox[3]) {
-	double tmp;
-	tmp = rectOvalPtr->bbox[3];
-	rectOvalPtr->bbox[3] = rectOvalPtr->bbox[1];
-	rectOvalPtr->bbox[1] = tmp;
+    if (rectOvalPtr->bbox[1] > rectOvalPtr->bbox[3])
+    {
+        double tmp;
+        tmp = rectOvalPtr->bbox[3];
+        rectOvalPtr->bbox[3] = rectOvalPtr->bbox[1];
+        rectOvalPtr->bbox[1] = tmp;
     }
-    if (rectOvalPtr->bbox[0] > rectOvalPtr->bbox[2]) {
-	double tmp;
-	tmp = rectOvalPtr->bbox[2];
-	rectOvalPtr->bbox[2] = rectOvalPtr->bbox[0];
-	rectOvalPtr->bbox[0] = tmp;
+    if (rectOvalPtr->bbox[0] > rectOvalPtr->bbox[2])
+    {
+        double tmp;
+        tmp = rectOvalPtr->bbox[2];
+        rectOvalPtr->bbox[2] = rectOvalPtr->bbox[0];
+        rectOvalPtr->bbox[0] = tmp;
     }
 
-    if (rectOvalPtr->outlineColor == NULL) {
-	bloat = 0;
-    } else {
-	bloat = (rectOvalPtr->width+1)/2;
+    if (rectOvalPtr->outlineColor == NULL)
+    {
+        bloat = 0;
+    }
+    else
+    {
+        bloat = (rectOvalPtr->width + 1) / 2;
     }
 
     /*
@@ -465,25 +548,27 @@ ComputeRectOvalBbox(canvas, rectOvalPtr)
      */
 
     tmp = (rectOvalPtr->bbox[0] >= 0) ? rectOvalPtr->bbox[0] + .5
-	    : rectOvalPtr->bbox[0] - .5;
+                                      : rectOvalPtr->bbox[0] - .5;
     rectOvalPtr->header.x1 = tmp - bloat;
     tmp = (rectOvalPtr->bbox[1] >= 0) ? rectOvalPtr->bbox[1] + .5
-	    : rectOvalPtr->bbox[1] - .5;
+                                      : rectOvalPtr->bbox[1] - .5;
     rectOvalPtr->header.y1 = tmp - bloat;
     dtmp = rectOvalPtr->bbox[2];
-    if (dtmp < (rectOvalPtr->bbox[0] + 1)) {
-	dtmp = rectOvalPtr->bbox[0] + 1;
+    if (dtmp < (rectOvalPtr->bbox[0] + 1))
+    {
+        dtmp = rectOvalPtr->bbox[0] + 1;
     }
     tmp = (dtmp >= 0) ? dtmp + .5 : dtmp - .5;
     rectOvalPtr->header.x2 = tmp + bloat;
     dtmp = rectOvalPtr->bbox[3];
-    if (dtmp < (rectOvalPtr->bbox[1] + 1)) {
-	dtmp = rectOvalPtr->bbox[1] + 1;
+    if (dtmp < (rectOvalPtr->bbox[1] + 1))
+    {
+        dtmp = rectOvalPtr->bbox[1] + 1;
     }
     tmp = (dtmp >= 0) ? dtmp + .5 : dtmp - .5;
     rectOvalPtr->header.y2 = tmp + bloat;
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -504,15 +589,15 @@ ComputeRectOvalBbox(canvas, rectOvalPtr)
 
 static void
 DisplayRectOval(canvas, itemPtr, display, drawable, x, y, width, height)
-    Tk_Canvas canvas;			/* Canvas that contains item. */
-    Tk_Item *itemPtr;			/* Item to be displayed. */
-    Display *display;			/* Display on which to draw item. */
-    Drawable drawable;			/* Pixmap or window in which to draw
-					 * item. */
-    int x, y, width, height;		/* Describes region of canvas that
-					 * must be redisplayed (not used). */
+Tk_Canvas canvas; /* Canvas that contains item. */
+Tk_Item *itemPtr; /* Item to be displayed. */
+Display *display; /* Display on which to draw item. */
+Drawable drawable; /* Pixmap or window in which to draw
+                    * item. */
+int x, y, width, height; /* Describes region of canvas that
+                          * must be redisplayed (not used). */
 {
-    RectOvalItem *rectOvalPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
     short x1, y1, x2, y2;
 
     /*
@@ -521,15 +606,17 @@ DisplayRectOval(canvas, itemPtr, display, drawable, x, y, width, height)
      * X servers will die if it isn't.
      */
 
-    Tk_CanvasDrawableCoords(canvas, rectOvalPtr->bbox[0], rectOvalPtr->bbox[1],
-	    &x1, &y1);
-    Tk_CanvasDrawableCoords(canvas, rectOvalPtr->bbox[2], rectOvalPtr->bbox[3],
-	    &x2, &y2);
-    if (x2 <= x1) {
-	x2 = x1+1;
+    Tk_CanvasDrawableCoords(
+    canvas, rectOvalPtr->bbox[0], rectOvalPtr->bbox[1], &x1, &y1);
+    Tk_CanvasDrawableCoords(
+    canvas, rectOvalPtr->bbox[2], rectOvalPtr->bbox[3], &x2, &y2);
+    if (x2 <= x1)
+    {
+        x2 = x1 + 1;
     }
-    if (y2 <= y1) {
-	y2 = y1+1;
+    if (y2 <= y1)
+    {
+        y2 = y1 + 1;
     }
 
     /*
@@ -539,33 +626,66 @@ DisplayRectOval(canvas, itemPtr, display, drawable, x, y, width, height)
      * read-only.
      */
 
-    if (rectOvalPtr->fillGC != None) {
-	if (rectOvalPtr->fillStipple != None) {
-	    Tk_CanvasSetStippleOrigin(canvas, rectOvalPtr->fillGC);
-	}
-	if (rectOvalPtr->header.typePtr == &tkRectangleType) {
-	    XFillRectangle(display, drawable, rectOvalPtr->fillGC,
-		    x1, y1, (unsigned int) (x2-x1), (unsigned int) (y2-y1));
-	} else {
-	    XFillArc(display, drawable, rectOvalPtr->fillGC,
-		    x1, y1, (unsigned) (x2-x1), (unsigned) (y2-y1),
-		    0, 360*64);
-	}
-	if (rectOvalPtr->fillStipple != None) {
-	    XSetTSOrigin(display, rectOvalPtr->fillGC, 0, 0);
-	}
+    if (rectOvalPtr->fillGC != None)
+    {
+        if (rectOvalPtr->fillStipple != None)
+        {
+            Tk_CanvasSetStippleOrigin(canvas, rectOvalPtr->fillGC);
+        }
+        if (rectOvalPtr->header.typePtr == &tkRectangleType)
+        {
+            XFillRectangle(display,
+                           drawable,
+                           rectOvalPtr->fillGC,
+                           x1,
+                           y1,
+                           ( unsigned int )(x2 - x1),
+                           ( unsigned int )(y2 - y1));
+        }
+        else
+        {
+            XFillArc(display,
+                     drawable,
+                     rectOvalPtr->fillGC,
+                     x1,
+                     y1,
+                     ( unsigned )(x2 - x1),
+                     ( unsigned )(y2 - y1),
+                     0,
+                     360 * 64);
+        }
+        if (rectOvalPtr->fillStipple != None)
+        {
+            XSetTSOrigin(display, rectOvalPtr->fillGC, 0, 0);
+        }
     }
-    if (rectOvalPtr->outlineGC != None) {
-	if (rectOvalPtr->header.typePtr == &tkRectangleType) {
-	    XDrawRectangle(display, drawable, rectOvalPtr->outlineGC,
-		    x1, y1, (unsigned) (x2-x1), (unsigned) (y2-y1));
-	} else {
-	    XDrawArc(display, drawable, rectOvalPtr->outlineGC,
-		    x1, y1, (unsigned) (x2-x1), (unsigned) (y2-y1), 0, 360*64);
-	}
+    if (rectOvalPtr->outlineGC != None)
+    {
+        if (rectOvalPtr->header.typePtr == &tkRectangleType)
+        {
+            XDrawRectangle(display,
+                           drawable,
+                           rectOvalPtr->outlineGC,
+                           x1,
+                           y1,
+                           ( unsigned )(x2 - x1),
+                           ( unsigned )(y2 - y1));
+        }
+        else
+        {
+            XDrawArc(display,
+                     drawable,
+                     rectOvalPtr->outlineGC,
+                     x1,
+                     y1,
+                     ( unsigned )(x2 - x1),
+                     ( unsigned )(y2 - y1),
+                     0,
+                     360 * 64);
+        }
     }
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -589,14 +709,14 @@ DisplayRectOval(canvas, itemPtr, display, drawable, x, y, width, height)
  *--------------------------------------------------------------
  */
 
-	/* ARGSUSED */
+/* ARGSUSED */
 static double
-RectToPoint(canvas, itemPtr, pointPtr)
-    Tk_Canvas canvas;		/* Canvas containing item. */
-    Tk_Item *itemPtr;		/* Item to check against point. */
-    double *pointPtr;		/* Pointer to x and y coordinates. */
+RectToPoint(canvas, itemPtr, pointPtr) Tk_Canvas canvas; /* Canvas containing
+                                                            item. */
+Tk_Item *itemPtr; /* Item to check against point. */
+double *pointPtr; /* Pointer to x and y coordinates. */
 {
-    RectOvalItem *rectPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *rectPtr = ( RectOvalItem * )itemPtr;
     double xDiff, yDiff, x1, y1, x2, y2, inc, tmp;
 
     /*
@@ -608,12 +728,13 @@ RectToPoint(canvas, itemPtr, pointPtr)
     y1 = rectPtr->bbox[1];
     x2 = rectPtr->bbox[2];
     y2 = rectPtr->bbox[3];
-    if (rectPtr->outlineGC != None) {
-	inc = rectPtr->width/2.0;
-	x1 -= inc;
-	y1 -= inc;
-	x2 += inc;
-	y2 += inc;
+    if (rectPtr->outlineGC != None)
+    {
+        inc = rectPtr->width / 2.0;
+        x1 -= inc;
+        y1 -= inc;
+        x2 += inc;
+        y2 += inc;
     }
 
     /*
@@ -623,54 +744,70 @@ RectToPoint(canvas, itemPtr, pointPtr)
      * of edge.
      */
 
-    if ((pointPtr[0] >= x1) && (pointPtr[0] < x2)
-		&& (pointPtr[1] >= y1) && (pointPtr[1] < y2)) {
-	if ((rectPtr->fillGC != None) || (rectPtr->outlineGC == None)) {
-	    return 0.0;
-	}
-	xDiff = pointPtr[0] - x1;
-	tmp = x2 - pointPtr[0];
-	if (tmp < xDiff) {
-	    xDiff = tmp;
-	}
-	yDiff = pointPtr[1] - y1;
-	tmp = y2 - pointPtr[1];
-	if (tmp < yDiff) {
-	    yDiff = tmp;
-	}
-	if (yDiff < xDiff) {
-	    xDiff = yDiff;
-	}
-	xDiff -= rectPtr->width;
-	if (xDiff < 0.0) {
-	    return 0.0;
-	}
-	return xDiff;
+    if ((pointPtr[0] >= x1) && (pointPtr[0] < x2) && (pointPtr[1] >= y1)
+        && (pointPtr[1] < y2))
+    {
+        if ((rectPtr->fillGC != None) || (rectPtr->outlineGC == None))
+        {
+            return 0.0;
+        }
+        xDiff = pointPtr[0] - x1;
+        tmp = x2 - pointPtr[0];
+        if (tmp < xDiff)
+        {
+            xDiff = tmp;
+        }
+        yDiff = pointPtr[1] - y1;
+        tmp = y2 - pointPtr[1];
+        if (tmp < yDiff)
+        {
+            yDiff = tmp;
+        }
+        if (yDiff < xDiff)
+        {
+            xDiff = yDiff;
+        }
+        xDiff -= rectPtr->width;
+        if (xDiff < 0.0)
+        {
+            return 0.0;
+        }
+        return xDiff;
     }
 
     /*
      * Point is outside rectangle.
      */
 
-    if (pointPtr[0] < x1) {
-	xDiff = x1 - pointPtr[0];
-    } else if (pointPtr[0] > x2)  {
-	xDiff = pointPtr[0] - x2;
-    } else {
-	xDiff = 0;
+    if (pointPtr[0] < x1)
+    {
+        xDiff = x1 - pointPtr[0];
+    }
+    else if (pointPtr[0] > x2)
+    {
+        xDiff = pointPtr[0] - x2;
+    }
+    else
+    {
+        xDiff = 0;
     }
 
-    if (pointPtr[1] < y1) {
-	yDiff = y1 - pointPtr[1];
-    } else if (pointPtr[1] > y2)  {
-	yDiff = pointPtr[1] - y2;
-    } else {
-	yDiff = 0;
+    if (pointPtr[1] < y1)
+    {
+        yDiff = y1 - pointPtr[1];
+    }
+    else if (pointPtr[1] > y2)
+    {
+        yDiff = pointPtr[1] - y2;
+    }
+    else
+    {
+        yDiff = 0;
     }
 
     return hypot(xDiff, yDiff);
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -694,26 +831,27 @@ RectToPoint(canvas, itemPtr, pointPtr)
  *--------------------------------------------------------------
  */
 
-	/* ARGSUSED */
+/* ARGSUSED */
 static double
-OvalToPoint(canvas, itemPtr, pointPtr)
-    Tk_Canvas canvas;		/* Canvas containing item. */
-    Tk_Item *itemPtr;		/* Item to check against point. */
-    double *pointPtr;		/* Pointer to x and y coordinates. */
+OvalToPoint(canvas, itemPtr, pointPtr) Tk_Canvas canvas; /* Canvas containing
+                                                            item. */
+Tk_Item *itemPtr; /* Item to check against point. */
+double *pointPtr; /* Pointer to x and y coordinates. */
 {
-    RectOvalItem *ovalPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *ovalPtr = ( RectOvalItem * )itemPtr;
     double width;
     int filled;
 
     width = ovalPtr->width;
     filled = ovalPtr->fillGC != None;
-    if (ovalPtr->outlineGC == None) {
-	width = 0.0;
-	filled = 1;
+    if (ovalPtr->outlineGC == None)
+    {
+        width = 0.0;
+        filled = 1;
     }
     return TkOvalToPoint(ovalPtr->bbox, width, filled, pointPtr);
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -734,45 +872,49 @@ OvalToPoint(canvas, itemPtr, pointPtr)
  *--------------------------------------------------------------
  */
 
-	/* ARGSUSED */
-static int
-RectToArea(canvas, itemPtr, areaPtr)
-    Tk_Canvas canvas;		/* Canvas containing item. */
-    Tk_Item *itemPtr;		/* Item to check against rectangle. */
-    double *areaPtr;		/* Pointer to array of four coordinates
-				 * (x1, y1, x2, y2) describing rectangular
-				 * area.  */
+/* ARGSUSED */
+static int RectToArea(canvas,
+                      itemPtr,
+                      areaPtr) Tk_Canvas canvas; /* Canvas containing item. */
+Tk_Item *itemPtr; /* Item to check against rectangle. */
+double *areaPtr; /* Pointer to array of four coordinates
+                  * (x1, y1, x2, y2) describing rectangular
+                  * area.  */
 {
-    RectOvalItem *rectPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *rectPtr = ( RectOvalItem * )itemPtr;
     double halfWidth;
 
-    halfWidth = rectPtr->width/2.0;
-    if (rectPtr->outlineGC == None) {
-	halfWidth = 0.0;
+    halfWidth = rectPtr->width / 2.0;
+    if (rectPtr->outlineGC == None)
+    {
+        halfWidth = 0.0;
     }
 
     if ((areaPtr[2] <= (rectPtr->bbox[0] - halfWidth))
-	    || (areaPtr[0] >= (rectPtr->bbox[2] + halfWidth))
-	    || (areaPtr[3] <= (rectPtr->bbox[1] - halfWidth))
-	    || (areaPtr[1] >= (rectPtr->bbox[3] + halfWidth))) {
-	return -1;
+        || (areaPtr[0] >= (rectPtr->bbox[2] + halfWidth))
+        || (areaPtr[3] <= (rectPtr->bbox[1] - halfWidth))
+        || (areaPtr[1] >= (rectPtr->bbox[3] + halfWidth)))
+    {
+        return -1;
     }
     if ((rectPtr->fillGC == None) && (rectPtr->outlineGC != None)
-	    && (areaPtr[0] >= (rectPtr->bbox[0] + halfWidth))
-	    && (areaPtr[1] >= (rectPtr->bbox[1] + halfWidth))
-	    && (areaPtr[2] <= (rectPtr->bbox[2] - halfWidth))
-	    && (areaPtr[3] <= (rectPtr->bbox[3] - halfWidth))) {
-	return -1;
+        && (areaPtr[0] >= (rectPtr->bbox[0] + halfWidth))
+        && (areaPtr[1] >= (rectPtr->bbox[1] + halfWidth))
+        && (areaPtr[2] <= (rectPtr->bbox[2] - halfWidth))
+        && (areaPtr[3] <= (rectPtr->bbox[3] - halfWidth)))
+    {
+        return -1;
     }
     if ((areaPtr[0] <= (rectPtr->bbox[0] - halfWidth))
-	    && (areaPtr[1] <= (rectPtr->bbox[1] - halfWidth))
-	    && (areaPtr[2] >= (rectPtr->bbox[2] + halfWidth))
-	    && (areaPtr[3] >= (rectPtr->bbox[3] + halfWidth))) {
-	return 1;
+        && (areaPtr[1] <= (rectPtr->bbox[1] - halfWidth))
+        && (areaPtr[2] >= (rectPtr->bbox[2] + halfWidth))
+        && (areaPtr[3] >= (rectPtr->bbox[3] + halfWidth)))
+    {
+        return 1;
     }
     return 0;
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -793,16 +935,16 @@ RectToArea(canvas, itemPtr, areaPtr)
  *--------------------------------------------------------------
  */
 
-	/* ARGSUSED */
-static int
-OvalToArea(canvas, itemPtr, areaPtr)
-    Tk_Canvas canvas;		/* Canvas containing item. */
-    Tk_Item *itemPtr;		/* Item to check against oval. */
-    double *areaPtr;		/* Pointer to array of four coordinates
-				 * (x1, y1, x2, y2) describing rectangular
-				 * area.  */
+/* ARGSUSED */
+static int OvalToArea(canvas,
+                      itemPtr,
+                      areaPtr) Tk_Canvas canvas; /* Canvas containing item. */
+Tk_Item *itemPtr; /* Item to check against oval. */
+double *areaPtr; /* Pointer to array of four coordinates
+                  * (x1, y1, x2, y2) describing rectangular
+                  * area.  */
 {
-    RectOvalItem *ovalPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *ovalPtr = ( RectOvalItem * )itemPtr;
     double oval[4], halfWidth;
     int result;
 
@@ -810,9 +952,10 @@ OvalToArea(canvas, itemPtr, areaPtr)
      * Expand the oval to include the width of the outline, if any.
      */
 
-    halfWidth = ovalPtr->width/2.0;
-    if (ovalPtr->outlineGC == None) {
-	halfWidth = 0.0;
+    halfWidth = ovalPtr->width / 2.0;
+    if (ovalPtr->outlineGC == None)
+    {
+        halfWidth = 0.0;
     }
     oval[0] = ovalPtr->bbox[0] - halfWidth;
     oval[1] = ovalPtr->bbox[1] - halfWidth;
@@ -829,32 +972,32 @@ OvalToArea(canvas, itemPtr, areaPtr)
      */
 
     if ((result == 0) && (ovalPtr->outlineGC != None)
-	    && (ovalPtr->fillGC == None)) {
-	double centerX, centerY, width, height;
-	double xDelta1, yDelta1, xDelta2, yDelta2;
+        && (ovalPtr->fillGC == None))
+    {
+        double centerX, centerY, width, height;
+        double xDelta1, yDelta1, xDelta2, yDelta2;
 
-	centerX = (ovalPtr->bbox[0] + ovalPtr->bbox[2])/2.0;
-	centerY = (ovalPtr->bbox[1] + ovalPtr->bbox[3])/2.0;
-	width = (ovalPtr->bbox[2] - ovalPtr->bbox[0])/2.0 - halfWidth;
-	height = (ovalPtr->bbox[3] - ovalPtr->bbox[1])/2.0 - halfWidth;
-	xDelta1 = (areaPtr[0] - centerX)/width;
-	xDelta1 *= xDelta1;
-	yDelta1 = (areaPtr[1] - centerY)/height;
-	yDelta1 *= yDelta1;
-	xDelta2 = (areaPtr[2] - centerX)/width;
-	xDelta2 *= xDelta2;
-	yDelta2 = (areaPtr[3] - centerY)/height;
-	yDelta2 *= yDelta2;
-	if (((xDelta1 + yDelta1) < 1.0)
-		&& ((xDelta1 + yDelta2) < 1.0)
-		&& ((xDelta2 + yDelta1) < 1.0)
-		&& ((xDelta2 + yDelta2) < 1.0)) {
-	    return -1;
-	}
+        centerX = (ovalPtr->bbox[0] + ovalPtr->bbox[2]) / 2.0;
+        centerY = (ovalPtr->bbox[1] + ovalPtr->bbox[3]) / 2.0;
+        width = (ovalPtr->bbox[2] - ovalPtr->bbox[0]) / 2.0 - halfWidth;
+        height = (ovalPtr->bbox[3] - ovalPtr->bbox[1]) / 2.0 - halfWidth;
+        xDelta1 = (areaPtr[0] - centerX) / width;
+        xDelta1 *= xDelta1;
+        yDelta1 = (areaPtr[1] - centerY) / height;
+        yDelta1 *= yDelta1;
+        xDelta2 = (areaPtr[2] - centerX) / width;
+        xDelta2 *= xDelta2;
+        yDelta2 = (areaPtr[3] - centerY) / height;
+        yDelta2 *= yDelta2;
+        if (((xDelta1 + yDelta1) < 1.0) && ((xDelta1 + yDelta2) < 1.0)
+            && ((xDelta2 + yDelta1) < 1.0) && ((xDelta2 + yDelta2) < 1.0))
+        {
+            return -1;
+        }
     }
     return result;
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -876,23 +1019,26 @@ OvalToArea(canvas, itemPtr, areaPtr)
  *--------------------------------------------------------------
  */
 
-static void
-ScaleRectOval(canvas, itemPtr, originX, originY, scaleX, scaleY)
-    Tk_Canvas canvas;			/* Canvas containing rectangle. */
-    Tk_Item *itemPtr;			/* Rectangle to be scaled. */
-    double originX, originY;		/* Origin about which to scale rect. */
-    double scaleX;			/* Amount to scale in X direction. */
-    double scaleY;			/* Amount to scale in Y direction. */
+static void ScaleRectOval(canvas, itemPtr, originX, originY, scaleX, scaleY)
+Tk_Canvas canvas; /* Canvas containing rectangle. */
+Tk_Item *itemPtr; /* Rectangle to be scaled. */
+double originX, originY; /* Origin about which to scale rect. */
+double scaleX; /* Amount to scale in X direction. */
+double scaleY; /* Amount to scale in Y direction. */
 {
-    RectOvalItem *rectOvalPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
 
-    rectOvalPtr->bbox[0] = originX + scaleX*(rectOvalPtr->bbox[0] - originX);
-    rectOvalPtr->bbox[1] = originY + scaleY*(rectOvalPtr->bbox[1] - originY);
-    rectOvalPtr->bbox[2] = originX + scaleX*(rectOvalPtr->bbox[2] - originX);
-    rectOvalPtr->bbox[3] = originY + scaleY*(rectOvalPtr->bbox[3] - originY);
+    rectOvalPtr->bbox[0]
+    = originX + scaleX * (rectOvalPtr->bbox[0] - originX);
+    rectOvalPtr->bbox[1]
+    = originY + scaleY * (rectOvalPtr->bbox[1] - originY);
+    rectOvalPtr->bbox[2]
+    = originX + scaleX * (rectOvalPtr->bbox[2] - originX);
+    rectOvalPtr->bbox[3]
+    = originY + scaleY * (rectOvalPtr->bbox[3] - originY);
     ComputeRectOvalBbox(canvas, rectOvalPtr);
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -912,14 +1058,13 @@ ScaleRectOval(canvas, itemPtr, originX, originY, scaleX, scaleY)
  *--------------------------------------------------------------
  */
 
-static void
-TranslateRectOval(canvas, itemPtr, deltaX, deltaY)
-    Tk_Canvas canvas;			/* Canvas containing item. */
-    Tk_Item *itemPtr;			/* Item that is being moved. */
-    double deltaX, deltaY;		/* Amount by which item is to be
-					 * moved. */
+static void TranslateRectOval(canvas, itemPtr, deltaX, deltaY)
+Tk_Canvas canvas; /* Canvas containing item. */
+Tk_Item *itemPtr; /* Item that is being moved. */
+double deltaX, deltaY; /* Amount by which item is to be
+                        * moved. */
 {
-    RectOvalItem *rectOvalPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
 
     rectOvalPtr->bbox[0] += deltaX;
     rectOvalPtr->bbox[1] += deltaY;
@@ -927,7 +1072,7 @@ TranslateRectOval(canvas, itemPtr, deltaX, deltaY)
     rectOvalPtr->bbox[3] += deltaY;
     ComputeRectOvalBbox(canvas, rectOvalPtr);
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -949,18 +1094,17 @@ TranslateRectOval(canvas, itemPtr, deltaX, deltaY)
  *--------------------------------------------------------------
  */
 
-static int
-RectOvalToPostscript(interp, canvas, itemPtr, prepass)
-    Tcl_Interp *interp;			/* Interpreter for error reporting. */
-    Tk_Canvas canvas;			/* Information about overall canvas. */
-    Tk_Item *itemPtr;			/* Item for which Postscript is
-					 * wanted. */
-    int prepass;			/* 1 means this is a prepass to
-					 * collect font information;  0 means
-					 * final Postscript is being created. */
+static int RectOvalToPostscript(interp, canvas, itemPtr, prepass)
+Tcl_Interp *interp; /* Interpreter for error reporting. */
+Tk_Canvas canvas; /* Information about overall canvas. */
+Tk_Item *itemPtr; /* Item for which Postscript is
+                   * wanted. */
+int prepass; /* 1 means this is a prepass to
+              * collect font information;  0 means
+              * final Postscript is being created. */
 {
     char pathCmd[500], string[100];
-    RectOvalItem *rectOvalPtr = (RectOvalItem *) itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
     double y1, y2;
 
     y1 = Tk_CanvasPsY(canvas, rectOvalPtr->bbox[1]);
@@ -973,55 +1117,75 @@ RectOvalToPostscript(interp, canvas, itemPtr, prepass)
      */
 
 
-    if (rectOvalPtr->header.typePtr == &tkRectangleType) {
-	sprintf(pathCmd, "%.15g %.15g moveto %.15g 0 rlineto 0 %.15g rlineto %.15g 0 rlineto closepath\n",
-		rectOvalPtr->bbox[0], y1,
-		rectOvalPtr->bbox[2]-rectOvalPtr->bbox[0], y2-y1,
-		rectOvalPtr->bbox[0]-rectOvalPtr->bbox[2]);
-    } else {
-	sprintf(pathCmd, "matrix currentmatrix\n%.15g %.15g translate %.15g %.15g scale 1 0 moveto 0 0 1 0 360 arc\nsetmatrix\n",
-		(rectOvalPtr->bbox[0] + rectOvalPtr->bbox[2])/2, (y1 + y2)/2,
-		(rectOvalPtr->bbox[2] - rectOvalPtr->bbox[0])/2, (y1 - y2)/2);
+    if (rectOvalPtr->header.typePtr == &tkRectangleType)
+    {
+        sprintf(pathCmd,
+                "%.15g %.15g moveto %.15g 0 rlineto 0 %.15g rlineto %.15g 0 "
+                "rlineto closepath\n",
+                rectOvalPtr->bbox[0],
+                y1,
+                rectOvalPtr->bbox[2] - rectOvalPtr->bbox[0],
+                y2 - y1,
+                rectOvalPtr->bbox[0] - rectOvalPtr->bbox[2]);
+    }
+    else
+    {
+        sprintf(pathCmd,
+                "matrix currentmatrix\n%.15g %.15g translate %.15g %.15g "
+                "scale 1 0 moveto 0 0 1 0 360 arc\nsetmatrix\n",
+                (rectOvalPtr->bbox[0] + rectOvalPtr->bbox[2]) / 2,
+                (y1 + y2) / 2,
+                (rectOvalPtr->bbox[2] - rectOvalPtr->bbox[0]) / 2,
+                (y1 - y2) / 2);
     }
 
     /*
      * First draw the filled area of the rectangle.
      */
 
-    if (rectOvalPtr->fillColor != NULL) {
-	Tcl_AppendResult(interp, pathCmd, (char *) NULL);
-	if (Tk_CanvasPsColor(interp, canvas, rectOvalPtr->fillColor)
-		!= TCL_OK) {
-	    return TCL_ERROR;
-	}
-	if (rectOvalPtr->fillStipple != None) {
-	    Tcl_AppendResult(interp, "clip ", (char *) NULL);
-	    if (Tk_CanvasPsStipple(interp, canvas, rectOvalPtr->fillStipple)
-		    != TCL_OK) {
-		return TCL_ERROR;
-	    }
-	    if (rectOvalPtr->outlineColor != NULL) {
-		Tcl_AppendResult(interp, "grestore gsave\n", (char *) NULL);
-	    }
-	} else {
-	    Tcl_AppendResult(interp, "fill\n", (char *) NULL);
-	}
+    if (rectOvalPtr->fillColor != NULL)
+    {
+        Tcl_AppendResult(interp, pathCmd, ( char * )NULL);
+        if (Tk_CanvasPsColor(interp, canvas, rectOvalPtr->fillColor)
+            != TCL_OK)
+        {
+            return TCL_ERROR;
+        }
+        if (rectOvalPtr->fillStipple != None)
+        {
+            Tcl_AppendResult(interp, "clip ", ( char * )NULL);
+            if (Tk_CanvasPsStipple(interp, canvas, rectOvalPtr->fillStipple)
+                != TCL_OK)
+            {
+                return TCL_ERROR;
+            }
+            if (rectOvalPtr->outlineColor != NULL)
+            {
+                Tcl_AppendResult(interp, "grestore gsave\n", ( char * )NULL);
+            }
+        }
+        else
+        {
+            Tcl_AppendResult(interp, "fill\n", ( char * )NULL);
+        }
     }
 
     /*
      * Now draw the outline, if there is one.
      */
 
-    if (rectOvalPtr->outlineColor != NULL) {
-	Tcl_AppendResult(interp, pathCmd, (char *) NULL);
-	sprintf(string, "%d setlinewidth", rectOvalPtr->width);
-	Tcl_AppendResult(interp, string,
-		" 0 setlinejoin 2 setlinecap\n", (char *) NULL);
-	if (Tk_CanvasPsColor(interp, canvas, rectOvalPtr->outlineColor)
-		!= TCL_OK) {
-	    return TCL_ERROR;
-	}
-	Tcl_AppendResult(interp, "stroke\n", (char *) NULL);
+    if (rectOvalPtr->outlineColor != NULL)
+    {
+        Tcl_AppendResult(interp, pathCmd, ( char * )NULL);
+        sprintf(string, "%d setlinewidth", rectOvalPtr->width);
+        Tcl_AppendResult(
+        interp, string, " 0 setlinejoin 2 setlinecap\n", ( char * )NULL);
+        if (Tk_CanvasPsColor(interp, canvas, rectOvalPtr->outlineColor)
+            != TCL_OK)
+        {
+            return TCL_ERROR;
+        }
+        Tcl_AppendResult(interp, "stroke\n", ( char * )NULL);
     }
     return TCL_OK;
 }

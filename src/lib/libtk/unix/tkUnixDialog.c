@@ -11,7 +11,7 @@
  * SCCS: @(#) tkUnixDialog.c 1.5 96/08/28 21:21:01
  *
  */
- 
+
 #include "tkInt.h"
 #include "tkUnixInt.h"
 
@@ -36,45 +36,49 @@
  */
 
 static int EvalArgv(interp, cmdName, argc, argv)
-    Tcl_Interp *interp;		/* Current interpreter. */
-    char * cmdName;		/* Name of the TCL command to call */
-    int argc;			/* Number of arguments. */
-    char **argv;		/* Argument strings. */
+Tcl_Interp *interp; /* Current interpreter. */
+char *cmdName; /* Name of the TCL command to call */
+int argc; /* Number of arguments. */
+char **argv; /* Argument strings. */
 {
     Tcl_CmdInfo cmdInfo;
 
-    if (!Tcl_GetCommandInfo(interp, cmdName, &cmdInfo)) {
-	char * cmdArgv[2];
+    if (!Tcl_GetCommandInfo(interp, cmdName, &cmdInfo))
+    {
+        char *cmdArgv[2];
 
-	/*
-	 * This comand is not in the interpreter yet -- looks like we
-	 * have to auto-load it
-	 */
-	if (!Tcl_GetCommandInfo(interp, "auto_load", &cmdInfo)) {
-	    Tcl_ResetResult(interp);
-	    Tcl_AppendResult(interp, "cannot execute command \"auto_load\"",
-		NULL);
-	    return TCL_ERROR;
-	}
+        /*
+         * This comand is not in the interpreter yet -- looks like we
+         * have to auto-load it
+         */
+        if (!Tcl_GetCommandInfo(interp, "auto_load", &cmdInfo))
+        {
+            Tcl_ResetResult(interp);
+            Tcl_AppendResult(
+            interp, "cannot execute command \"auto_load\"", NULL);
+            return TCL_ERROR;
+        }
 
-	cmdArgv[0] = "auto_load";
-	cmdArgv[1] = cmdName;
+        cmdArgv[0] = "auto_load";
+        cmdArgv[1] = cmdName;
 
-	if ((*cmdInfo.proc)(cmdInfo.clientData, interp, 2, cmdArgv)!= TCL_OK){ 
-	    return TCL_ERROR;
-	}
+        if ((*cmdInfo.proc)(cmdInfo.clientData, interp, 2, cmdArgv) != TCL_OK)
+        {
+            return TCL_ERROR;
+        }
 
-	if (!Tcl_GetCommandInfo(interp, cmdName, &cmdInfo)) {
-	    Tcl_ResetResult(interp);
-	    Tcl_AppendResult(interp, "cannot auto-load command \"",
-		cmdName, "\"",NULL);
-	    return TCL_ERROR;
-	}
+        if (!Tcl_GetCommandInfo(interp, cmdName, &cmdInfo))
+        {
+            Tcl_ResetResult(interp);
+            Tcl_AppendResult(
+            interp, "cannot auto-load command \"", cmdName, "\"", NULL);
+            return TCL_ERROR;
+        }
     }
 
     return (*cmdInfo.proc)(cmdInfo.clientData, interp, argc, argv);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -95,16 +99,15 @@ static int EvalArgv(interp, cmdName, argc, argv)
  *----------------------------------------------------------------------
  */
 
-int
-Tk_ChooseColorCmd(clientData, interp, argc, argv)
-    ClientData clientData;	/* Main window associated with interpreter. */
-    Tcl_Interp *interp;		/* Current interpreter. */
-    int argc;			/* Number of arguments. */
-    char **argv;		/* Argument strings. */
+int Tk_ChooseColorCmd(clientData, interp, argc, argv)
+ClientData clientData; /* Main window associated with interpreter. */
+Tcl_Interp *interp; /* Current interpreter. */
+int argc; /* Number of arguments. */
+char **argv; /* Argument strings. */
 {
     return EvalArgv(interp, "tkColorDialog", argc, argv);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -126,22 +129,24 @@ Tk_ChooseColorCmd(clientData, interp, argc, argv)
  *----------------------------------------------------------------------
  */
 
-int
-Tk_GetOpenFileCmd(clientData, interp, argc, argv)
-    ClientData clientData;	/* Main window associated with interpreter. */
-    Tcl_Interp *interp;		/* Current interpreter. */
-    int argc;			/* Number of arguments. */
-    char **argv;		/* Argument strings. */
+int Tk_GetOpenFileCmd(clientData, interp, argc, argv)
+ClientData clientData; /* Main window associated with interpreter. */
+Tcl_Interp *interp; /* Current interpreter. */
+int argc; /* Number of arguments. */
+char **argv; /* Argument strings. */
 {
-    Tk_Window tkwin = (Tk_Window)clientData;
+    Tk_Window tkwin = ( Tk_Window )clientData;
 
-    if (Tk_StrictMotif(tkwin)) {
-	return EvalArgv(interp, "tkMotifFDialog", argc, argv);
-    } else {
-	return EvalArgv(interp, "tkFDialog", argc, argv);
+    if (Tk_StrictMotif(tkwin))
+    {
+        return EvalArgv(interp, "tkMotifFDialog", argc, argv);
+    }
+    else
+    {
+        return EvalArgv(interp, "tkFDialog", argc, argv);
     }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -159,22 +164,24 @@ Tk_GetOpenFileCmd(clientData, interp, argc, argv)
  *----------------------------------------------------------------------
  */
 
-int
-Tk_GetSaveFileCmd(clientData, interp, argc, argv)
-    ClientData clientData;	/* Main window associated with interpreter. */
-    Tcl_Interp *interp;		/* Current interpreter. */
-    int argc;			/* Number of arguments. */
-    char **argv;		/* Argument strings. */
+int Tk_GetSaveFileCmd(clientData, interp, argc, argv)
+ClientData clientData; /* Main window associated with interpreter. */
+Tcl_Interp *interp; /* Current interpreter. */
+int argc; /* Number of arguments. */
+char **argv; /* Argument strings. */
 {
-    Tk_Window tkwin = (Tk_Window)clientData;
+    Tk_Window tkwin = ( Tk_Window )clientData;
 
-    if (Tk_StrictMotif(tkwin)) {
-	return EvalArgv(interp, "tkMotifFDialog", argc, argv);
-    } else {
-	return EvalArgv(interp, "tkFDialog", argc, argv);
+    if (Tk_StrictMotif(tkwin))
+    {
+        return EvalArgv(interp, "tkMotifFDialog", argc, argv);
+    }
+    else
+    {
+        return EvalArgv(interp, "tkFDialog", argc, argv);
     }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -194,13 +201,11 @@ Tk_GetSaveFileCmd(clientData, interp, argc, argv)
  *----------------------------------------------------------------------
  */
 
-int
-Tk_MessageBoxCmd(clientData, interp, argc, argv)
-    ClientData clientData;	/* Main window associated with interpreter. */
-    Tcl_Interp *interp;		/* Current interpreter. */
-    int argc;			/* Number of arguments. */
-    char **argv;		/* Argument strings. */
+int Tk_MessageBoxCmd(clientData, interp, argc, argv)
+ClientData clientData; /* Main window associated with interpreter. */
+Tcl_Interp *interp; /* Current interpreter. */
+int argc; /* Number of arguments. */
+char **argv; /* Argument strings. */
 {
     return EvalArgv(interp, "tkMessageBox", argc, argv);
 }
-

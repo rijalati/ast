@@ -1,23 +1,23 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 2003-2011 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*                     Phong Vo <phongvo@gmail.com>                     *
-*                                                                      *
-***********************************************************************/
-#include	"vchdr.h"
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 2003-2011 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *                     Phong Vo <phongvo@gmail.com>                     *
+ *                                                                      *
+ ***********************************************************************/
+#include "vchdr.h"
 
 /*	Counting bucket sort.
 **	Return the number of distinct bytes. The bckt[] argument returns
@@ -28,47 +28,57 @@
 */
 
 #if __STD_C
-ssize_t vcbcktsort(ssize_t* indx, ssize_t* list, ssize_t n, Vcchar_t* data, ssize_t* bckt)
+ssize_t
+vcbcktsort(ssize_t *indx,
+           ssize_t *list,
+           ssize_t n,
+           Vcchar_t *data,
+           ssize_t *bckt)
 #else
-ssize_t vcbcktsort(indx, list, n, data, bckt)
-ssize_t*	indx;	/* output sorted indxes	*/
-ssize_t*	list;	/* indices to be sorted	*/
-ssize_t		n;	/* # of indices		*/
-Vcchar_t*	data;	/* data used to sort	*/
-ssize_t*	bckt;	/* [256] buckets	*/
+ssize_t vcbcktsort(indx, list, n, data, bckt) ssize_t *indx; /* output sorted
+                                                                indxes	*/
+ssize_t *list; /* indices to be sorted	*/
+ssize_t n; /* # of indices		*/
+Vcchar_t *data; /* data used to sort	*/
+ssize_t *bckt; /* [256] buckets	*/
 #endif
 {
-	ssize_t		i, p, c;
-	ssize_t		distinct = 0;
+    ssize_t i, p, c;
+    ssize_t distinct = 0;
 
-	/* count byte frequencies */
-	memset(bckt, 0, 256*sizeof(ssize_t));
-	if(list) /* sort using secondary predictor */
-	{	for(p = 0; p < n; ++p)
-			bckt[data[list[p]]] += 1;
-	}
-	else /* unsorted permutation was the identity */
-	{	for(p = 0; p < n; ++p)
-			bckt[data[p]] += 1;
-	}
+    /* count byte frequencies */
+    memset(bckt, 0, 256 * sizeof(ssize_t));
+    if (list) /* sort using secondary predictor */
+    {
+        for (p = 0; p < n; ++p)
+            bckt[data[list[p]]] += 1;
+    }
+    else /* unsorted permutation was the identity */
+    {
+        for (p = 0; p < n; ++p)
+            bckt[data[p]] += 1;
+    }
 
-	for(p = 0, i = 0; i < 256; ++i) /* starting positions */
-	{	if((c = bckt[i]) > 0)
-			distinct += 1;
-		bckt[i] = p;
-		p += c;
-	}
+    for (p = 0, i = 0; i < 256; ++i) /* starting positions */
+    {
+        if ((c = bckt[i]) > 0)
+            distinct += 1;
+        bckt[i] = p;
+        p += c;
+    }
 
-	if(list) /* sorting a sublist of indices */
-	{	for(p = 0; p < n; ++p)
-			indx[bckt[data[list[p]]]++] = list[p];
-	}
-	else /* sorting all indices */
-	{	for(p = 0; p < n; ++p)
-			indx[bckt[data[p]]++] = p;
-	}
+    if (list) /* sorting a sublist of indices */
+    {
+        for (p = 0; p < n; ++p)
+            indx[bckt[data[list[p]]]++] = list[p];
+    }
+    else /* sorting all indices */
+    {
+        for (p = 0; p < n; ++p)
+            indx[bckt[data[p]]++] = p;
+    }
 
-	return distinct;
+    return distinct;
 }
 
 
@@ -77,9 +87,9 @@ ssize_t*	bckt;	/* [256] buckets	*/
 ** incompatible with earlier version of Vctable. So this is saved here in case
 ** we ever need to deal with data compressed with such versions.
 */
-#if __STD_C
+#    if __STD_C
 ssize_t vcbcktsort(ssize_t* sort, ssize_t* list, ssize_t n, Vcchar_t* data, ssize_t* bckt)
-#else
+#    else
 ssize_t vcbcktsort(sort, list, n, data, bckt)
 ssize_t*	sort;	/* to output sorted elements	*/
 ssize_t*	list;	/* != NULL: list to be sorted	*/
@@ -87,7 +97,7 @@ ssize_t*	list;	/* != NULL: list to be sorted	*/
 ssize_t		n;	/* # of elements to be sorted	*/
 Vcchar_t*	data;	/* data identifying elements	*/
 ssize_t*	bckt;	/* temp space of [256] buckets 	*/
-#endif
+#    endif
 {
 	ssize_t		p, i, c, minc, maxc;
 	ssize_t		distinct = 0;

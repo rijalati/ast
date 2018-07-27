@@ -16,7 +16,7 @@
  * SCCS: @(#) limits.h 1.7 96/02/15 14:43:55
  */
 
-#define LONG_MIN		0x80000000
-#define LONG_MAX		0x7fffffff
-#define INT_MIN			0x80000000
-#define INT_MAX			0x7fffffff
+#define LONG_MIN 0x80000000
+#define LONG_MAX 0x7fffffff
+#define INT_MIN 0x80000000
+#define INT_MAX 0x7fffffff

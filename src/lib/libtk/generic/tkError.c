@@ -1,4 +1,4 @@
-/* 
+/*
  * tkError.c --
  *
  *	This file provides a high-performance mechanism for
@@ -22,17 +22,18 @@
  * be invoked if an error occurs that we can't handle.
  */
 
-static int	(*defaultHandler) _ANSI_ARGS_((Display *display,
-		    XErrorEvent *eventPtr)) = NULL;
+static int(*defaultHandler)
+_ANSI_ARGS_((Display * display, XErrorEvent *eventPtr))
+= NULL;
 
 
 /*
  * Forward references to procedures declared later in this file:
  */
 
-static int	ErrorProc _ANSI_ARGS_((Display *display,
-		    XErrorEvent *errEventPtr));
-
+static int ErrorProc _ANSI_ARGS_((Display * display,
+                                  XErrorEvent *errEventPtr));
+
 /*
  *--------------------------------------------------------------
  *
@@ -76,23 +77,27 @@ static int	ErrorProc _ANSI_ARGS_((Display *display,
  */
 
 Tk_ErrorHandler
-Tk_CreateErrorHandler(display, error, request, minorCode, errorProc, clientData)
-    Display *display;		/* Display for which to handle
-				 * errors. */
-    int error;			/* Consider only errors with this
-				 * error_code (-1 means consider
-				 * all errors). */
-    int request;		/* Consider only errors with this
-				 * major request code (-1 means
-				 * consider all major codes). */
-    int minorCode;		/* Consider only errors with this
-				 * minor request code (-1 means
-				 * consider all minor codes). */
-    Tk_ErrorProc *errorProc;	/* Procedure to invoke when a
-				 * matching error occurs.  NULL means
-				 * just ignore matching errors. */
-    ClientData clientData;	/* Arbitrary value to pass to
-				 * errorProc. */
+Tk_CreateErrorHandler(display,
+                      error,
+                      request,
+                      minorCode,
+                      errorProc,
+                      clientData) Display *display; /* Display for which to
+                                                     * handle errors. */
+int error; /* Consider only errors with this
+            * error_code (-1 means consider
+            * all errors). */
+int request; /* Consider only errors with this
+              * major request code (-1 means
+              * consider all major codes). */
+int minorCode; /* Consider only errors with this
+                * minor request code (-1 means
+                * consider all minor codes). */
+Tk_ErrorProc *errorProc; /* Procedure to invoke when a
+                          * matching error occurs.  NULL means
+                          * just ignore matching errors. */
+ClientData clientData; /* Arbitrary value to pass to
+                        * errorProc. */
 {
     TkErrorHandler *errorPtr;
     TkDisplay *dispPtr;
@@ -103,26 +108,28 @@ Tk_CreateErrorHandler(display, error, request, minorCode, errorProc, clientData)
      */
 
     dispPtr = TkGetDisplay(display);
-    if (dispPtr == NULL) {
-	panic("Unknown display passed to Tk_CreateErrorHandler");
+    if (dispPtr == NULL)
+    {
+        panic("Unknown display passed to Tk_CreateErrorHandler");
     }
 
     /*
      * Make sure that X calls us whenever errors occur.
      */
 
-    if (defaultHandler == NULL) {
-	defaultHandler = XSetErrorHandler(ErrorProc);
+    if (defaultHandler == NULL)
+    {
+        defaultHandler = XSetErrorHandler(ErrorProc);
     }
 
     /*
      * Create the handler record.
      */
 
-    errorPtr = (TkErrorHandler *) ckalloc(sizeof(TkErrorHandler));
+    errorPtr = ( TkErrorHandler * )ckalloc(sizeof(TkErrorHandler));
     errorPtr->dispPtr = dispPtr;
     errorPtr->firstRequest = NextRequest(display);
-    errorPtr->lastRequest = (unsigned) -1;
+    errorPtr->lastRequest = ( unsigned )-1;
     errorPtr->error = error;
     errorPtr->request = request;
     errorPtr->minorCode = minorCode;
@@ -131,9 +138,9 @@ Tk_CreateErrorHandler(display, error, request, minorCode, errorProc, clientData)
     errorPtr->nextPtr = dispPtr->errorPtr;
     dispPtr->errorPtr = errorPtr;
 
-    return (Tk_ErrorHandler) errorPtr;
+    return ( Tk_ErrorHandler )errorPtr;
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -156,13 +163,12 @@ Tk_CreateErrorHandler(display, error, request, minorCode, errorProc, clientData)
  *--------------------------------------------------------------
  */
 
-void
-Tk_DeleteErrorHandler(handler)
-    Tk_ErrorHandler handler;	/* Token for handler to delete;
-				 * was previous return value from
-				 * Tk_CreateErrorHandler. */
+void Tk_DeleteErrorHandler(handler)
+Tk_ErrorHandler handler; /* Token for handler to delete;
+                          * was previous return value from
+                          * Tk_CreateErrorHandler. */
 {
-    TkErrorHandler *errorPtr = (TkErrorHandler *) handler;
+    TkErrorHandler *errorPtr = ( TkErrorHandler * )handler;
     TkDisplay *dispPtr = errorPtr->dispPtr;
 
     errorPtr->lastRequest = NextRequest(dispPtr->display) - 1;
@@ -182,32 +188,38 @@ Tk_DeleteErrorHandler(handler)
      */
 
     dispPtr->deleteCount += 1;
-    if (dispPtr->deleteCount >= 10) {
-	TkErrorHandler *prevPtr;
-	TkErrorHandler *nextPtr;
-	int lastSerial;
+    if (dispPtr->deleteCount >= 10)
+    {
+        TkErrorHandler *prevPtr;
+        TkErrorHandler *nextPtr;
+        int lastSerial;
 
-	dispPtr->deleteCount = 0;
-	lastSerial = LastKnownRequestProcessed(dispPtr->display);
-	errorPtr = dispPtr->errorPtr;
-	for (errorPtr = dispPtr->errorPtr, prevPtr = NULL;
-		errorPtr != NULL;  errorPtr = nextPtr) {
-	    nextPtr = errorPtr->nextPtr;
-	    if ((errorPtr->lastRequest != -1)
-		    && (errorPtr->lastRequest <= lastSerial)) {
-		if (prevPtr == NULL) {
-		    dispPtr->errorPtr = nextPtr;
-		} else {
-		    prevPtr->nextPtr = nextPtr;
-		}
-		ckfree((char *) errorPtr);
-		continue;
-	    }
-	    prevPtr = errorPtr;
-	}
+        dispPtr->deleteCount = 0;
+        lastSerial = LastKnownRequestProcessed(dispPtr->display);
+        errorPtr = dispPtr->errorPtr;
+        for (errorPtr = dispPtr->errorPtr, prevPtr = NULL; errorPtr != NULL;
+             errorPtr = nextPtr)
+        {
+            nextPtr = errorPtr->nextPtr;
+            if ((errorPtr->lastRequest != -1)
+                && (errorPtr->lastRequest <= lastSerial))
+            {
+                if (prevPtr == NULL)
+                {
+                    dispPtr->errorPtr = nextPtr;
+                }
+                else
+                {
+                    prevPtr->nextPtr = nextPtr;
+                }
+                ckfree(( char * )errorPtr);
+                continue;
+            }
+            prevPtr = errorPtr;
+        }
     }
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -230,11 +242,10 @@ Tk_DeleteErrorHandler(handler)
  *--------------------------------------------------------------
  */
 
-static int
-ErrorProc(display, errEventPtr)
-    Display *display;			/* Display for which error
-					 * occurred. */
-    XErrorEvent *errEventPtr;	/* Information about error. */
+static int ErrorProc(display,
+                     errEventPtr) Display *display; /* Display for which error
+                                                     * occurred. */
+XErrorEvent *errEventPtr; /* Information about error. */
 {
     TkDisplay *dispPtr;
     TkErrorHandler *errorPtr;
@@ -245,8 +256,9 @@ ErrorProc(display, errEventPtr)
      */
 
     dispPtr = TkGetDisplay(display);
-    if (dispPtr == NULL) {
-	goto couldntHandle;
+    if (dispPtr == NULL)
+    {
+        goto couldntHandle;
     }
 
     /*
@@ -254,26 +266,32 @@ ErrorProc(display, errEventPtr)
      */
 
     for (errorPtr = dispPtr->errorPtr; errorPtr != NULL;
-	    errorPtr = errorPtr->nextPtr) {
-	if ((errorPtr->firstRequest > errEventPtr->serial)
-		|| ((errorPtr->error != -1)
-		    && (errorPtr->error != errEventPtr->error_code))
-		|| ((errorPtr->request != -1)
-		    && (errorPtr->request != errEventPtr->request_code))
-		|| ((errorPtr->minorCode != -1)
-		    && (errorPtr->minorCode != errEventPtr->minor_code))
-		|| ((errorPtr->lastRequest != -1)
-		    && (errorPtr->lastRequest < errEventPtr->serial))) {
-	    continue;
-	}
-	if (errorPtr->errorProc == NULL) {
-	    return 0;
-	} else {
-	    if ((*errorPtr->errorProc)(errorPtr->clientData,
-		    errEventPtr) == 0) {
-		return 0;
-	    }
-	}
+         errorPtr = errorPtr->nextPtr)
+    {
+        if ((errorPtr->firstRequest > errEventPtr->serial)
+            || ((errorPtr->error != -1)
+                && (errorPtr->error != errEventPtr->error_code))
+            || ((errorPtr->request != -1)
+                && (errorPtr->request != errEventPtr->request_code))
+            || ((errorPtr->minorCode != -1)
+                && (errorPtr->minorCode != errEventPtr->minor_code))
+            || ((errorPtr->lastRequest != -1)
+                && (errorPtr->lastRequest < errEventPtr->serial)))
+        {
+            continue;
+        }
+        if (errorPtr->errorProc == NULL)
+        {
+            return 0;
+        }
+        else
+        {
+            if ((*errorPtr->errorProc)(errorPtr->clientData, errEventPtr)
+                == 0)
+            {
+                return 0;
+            }
+        }
     }
 
     /*
@@ -285,15 +303,16 @@ ErrorProc(display, errEventPtr)
      * remove the entry from the window table.
      */
 
-    if ((errEventPtr->error_code == BadWindow) && (Tk_IdToWindow(display,
-	    (Window) errEventPtr->resourceid) != NULL)) {
-	return 0;
+    if ((errEventPtr->error_code == BadWindow)
+        && (Tk_IdToWindow(display, ( Window )errEventPtr->resourceid) != NULL))
+    {
+        return 0;
     }
 
     /*
      * We couldn't handle the error.  Use the default handler.
      */
 
-    couldntHandle:
+couldntHandle:
     return (*defaultHandler)(display, errEventPtr);
 }

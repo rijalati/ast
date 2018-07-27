@@ -21,6 +21,6 @@
  * than the ones they're defined in.
  */
 
-extern void		TkCreateXEventSource _ANSI_ARGS_((void));
+extern void TkCreateXEventSource _ANSI_ARGS_(( void ));
 
 #endif /* _TKUNIXINT */

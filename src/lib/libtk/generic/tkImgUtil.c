@@ -1,4 +1,4 @@
-/* 
+/*
  * tkImgUtil.c --
  *
  *	This file contains image related utility functions.
@@ -14,7 +14,7 @@
 #include "tkInt.h"
 #include "xbytes.h"
 
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -33,19 +33,20 @@
  *----------------------------------------------------------------------
  */
 
-char *
-TkAlignImageData(image, alignment, bitOrder)
-    XImage *image;		/* Image to be aligned. */
-    int alignment;		/* Number of bytes to which the data should
-				 * be aligned (e.g. 2 or 4) */
-    int bitOrder;		/* Desired bit order: LSBFirst or MSBFirst. */
+char *TkAlignImageData(image,
+                       alignment,
+                       bitOrder) XImage *image; /* Image to be aligned. */
+int alignment; /* Number of bytes to which the data should
+                * be aligned (e.g. 2 or 4) */
+int bitOrder; /* Desired bit order: LSBFirst or MSBFirst. */
 {
     long dataWidth;
     char *data, *srcPtr, *destPtr;
     int i, j;
 
-    if (image->bits_per_pixel != 1) {
-	panic("TkAlignImageData: Can't handle image depths greater than 1.");
+    if (image->bits_per_pixel != 1)
+    {
+        panic("TkAlignImageData: Can't handle image depths greater than 1.");
     }
 
     /*
@@ -53,25 +54,33 @@ TkAlignImageData(image, alignment, bitOrder)
      */
 
     dataWidth = image->bytes_per_line;
-    if (dataWidth % alignment) {
-	dataWidth += (alignment - (dataWidth % alignment));
+    if (dataWidth % alignment)
+    {
+        dataWidth += (alignment - (dataWidth % alignment));
     }
 
     data = ckalloc(dataWidth * image->height);
 
     destPtr = data;
-    for (i = 0; i < image->height; i++) {
-	srcPtr = &image->data[i * image->bytes_per_line];
-	for (j = 0; j < dataWidth; j++) {
-	    if (j >= image->bytes_per_line) {
-		*destPtr = 0;
-	    } else if (image->bitmap_bit_order != bitOrder) {
-		*destPtr = xBitReverseTable[(unsigned char)(*(srcPtr++))];
-	    } else {
-		*destPtr = *(srcPtr++);
-	    }
-	    destPtr++;
-	}
+    for (i = 0; i < image->height; i++)
+    {
+        srcPtr = &image->data[i * image->bytes_per_line];
+        for (j = 0; j < dataWidth; j++)
+        {
+            if (j >= image->bytes_per_line)
+            {
+                *destPtr = 0;
+            }
+            else if (image->bitmap_bit_order != bitOrder)
+            {
+                *destPtr = xBitReverseTable[( unsigned char )(*(srcPtr++))];
+            }
+            else
+            {
+                *destPtr = *(srcPtr++);
+            }
+            destPtr++;
+        }
     }
     return data;
 }

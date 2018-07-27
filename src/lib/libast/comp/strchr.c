@@ -1,24 +1,24 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 1985-2011 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*               Glenn Fowler <glenn.s.fowler@gmail.com>                *
-*                    David Korn <dgkorn@gmail.com>                     *
-*                     Phong Vo <phongvo@gmail.com>                     *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 1985-2011 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *               Glenn Fowler <glenn.s.fowler@gmail.com>                *
+ *                    David Korn <dgkorn@gmail.com>                     *
+ *                     Phong Vo <phongvo@gmail.com>                     *
+ *                                                                      *
+ ***********************************************************************/
 #pragma prototyped
 
 #include <ast.h>
@@ -29,29 +29,33 @@ NoN(strchr)
 
 #else
 
-#undef	strchr
+#    undef strchr
 
-#if _lib_index
+#    if _lib_index
 
-#undef	index
+#        undef index
 
-extern char*	index(const char*, int);
+extern char *
+index(const char *, int);
 
-char*
-strchr(const char* s, int c)
+char *
+strchr(const char *s, int c)
 {
-	return(index(s, c));
+    return (index(s, c));
 }
 
-#else
+#    else
 
-char*
-strchr(const char* s, int c)
+char *
+strchr(const char *s, int c)
 {
-	do if (*s == c) return((char*)s); while(*s++);
-	return(0);
+    do
+        if (*s == c)
+            return (( char * )s);
+    while (*s++);
+    return (0);
 }
 
-#endif
+#    endif
 
 #endif

@@ -1,4 +1,4 @@
-/* 
+/*
  * tkUnixInit.c --
  *
  *	This file contains Unix-specific interpreter initialization
@@ -13,7 +13,7 @@
  */
 
 #if _PACKAGE_ast
-#include <ast.h>
+#    include <ast.h>
 #endif
 
 #include "tkInt.h"
@@ -65,7 +65,7 @@ static char initScript[] =
     error $msg\n\
 }\n\
 tkInit";
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -84,18 +84,24 @@ tkInit";
  *----------------------------------------------------------------------
  */
 
-int
-TkPlatformInit(interp)
-    Tcl_Interp *interp;
+int TkPlatformInit(interp) Tcl_Interp *interp;
 {
     char *libDir;
 
     libDir = Tcl_GetVar(interp, "tk_library", TCL_GLOBAL_ONLY);
-    if (libDir == NULL) {
-	libDir = pathpath(LIB_DIR, "", PATH_EXECUTE|PATH_READ, defaultLibraryDir, sizeof(defaultLibraryDir));
-	if (libDir == NULL)
-		sfsprintf(defaultLibraryDir, sizeof(defaultLibraryDir), "/usr/local/%s", LIB_DIR);
-	Tcl_SetVar(interp, "tk_library", defaultLibraryDir, TCL_GLOBAL_ONLY);
+    if (libDir == NULL)
+    {
+        libDir = pathpath(LIB_DIR,
+                          "",
+                          PATH_EXECUTE | PATH_READ,
+                          defaultLibraryDir,
+                          sizeof(defaultLibraryDir));
+        if (libDir == NULL)
+            sfsprintf(defaultLibraryDir,
+                      sizeof(defaultLibraryDir),
+                      "/usr/local/%s",
+                      LIB_DIR);
+        Tcl_SetVar(interp, "tk_library", defaultLibraryDir, TCL_GLOBAL_ONLY);
     }
     TkCreateXEventSource();
     return Tcl_Eval(interp, initScript);

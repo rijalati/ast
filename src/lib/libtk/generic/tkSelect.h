@@ -24,20 +24,21 @@
  * active at the same time.
  */
 
-typedef struct TkSelectionInfo {
-    Atom selection;		/* Selection name, e.g. XA_PRIMARY. */
-    Tk_Window owner;		/* Current owner of this selection. */
-    int serial;			/* Serial number of last XSelectionSetOwner
-				 * request made to server for this
-				 * selection (used to filter out redundant
-				 * SelectionClear events). */
-    Time time;			/* Timestamp used to acquire selection. */
-    Tk_LostSelProc *clearProc;	/* Procedure to call when owner loses
-				 * selection. */
-    ClientData clearData;	/* Info to pass to clearProc. */
+typedef struct TkSelectionInfo
+{
+    Atom selection; /* Selection name, e.g. XA_PRIMARY. */
+    Tk_Window owner; /* Current owner of this selection. */
+    int serial; /* Serial number of last XSelectionSetOwner
+                 * request made to server for this
+                 * selection (used to filter out redundant
+                 * SelectionClear events). */
+    Time time; /* Timestamp used to acquire selection. */
+    Tk_LostSelProc *clearProc; /* Procedure to call when owner loses
+                                * selection. */
+    ClientData clearData; /* Info to pass to clearProc. */
     struct TkSelectionInfo *nextPtr;
-				/* Next in list of current selections on
-                                 * this display.  NULL means end of list */
+    /* Next in list of current selections on
+     * this display.  NULL means end of list */
 } TkSelectionInfo;
 
 /*
@@ -46,24 +47,25 @@ typedef struct TkSelectionInfo {
  * are linked in a list rooted in the TkWindow structure.
  */
 
-typedef struct TkSelHandler {
-    Atom selection;		/* Selection name, e.g. XA_PRIMARY */
-    Atom target;		/* Target type for selection
-				 * conversion, such as TARGETS or
-				 * STRING. */
-    Atom format;		/* Format in which selection
-				 * info will be returned, such
-				 * as STRING or ATOM. */
-    Tk_SelectionProc *proc;	/* Procedure to generate selection
-				 * in this format. */
-    ClientData clientData;	/* Argument to pass to proc. */
-    int size;			/* Size of units returned by proc
-				 * (8 for STRING, 32 for almost
-				 * anything else). */
+typedef struct TkSelHandler
+{
+    Atom selection; /* Selection name, e.g. XA_PRIMARY */
+    Atom target; /* Target type for selection
+                  * conversion, such as TARGETS or
+                  * STRING. */
+    Atom format; /* Format in which selection
+                  * info will be returned, such
+                  * as STRING or ATOM. */
+    Tk_SelectionProc *proc; /* Procedure to generate selection
+                             * in this format. */
+    ClientData clientData; /* Argument to pass to proc. */
+    int size; /* Size of units returned by proc
+               * (8 for STRING, 32 for almost
+               * anything else). */
     struct TkSelHandler *nextPtr;
-				/* Next selection handler associated
-				 * with same window (NULL for end of
-				 * list). */
+    /* Next selection handler associated
+     * with same window (NULL for end of
+     * list). */
 } TkSelHandler;
 
 /*
@@ -77,28 +79,30 @@ typedef struct TkSelHandler {
  * different displays).
  */
 
-typedef struct TkSelRetrievalInfo {
-    Tcl_Interp *interp;		/* Interpreter for error reporting. */
-    TkWindow *winPtr;		/* Window used as requestor for
-				 * selection. */
-    Atom selection;		/* Selection being requested. */
-    Atom property;		/* Property where selection will appear. */
-    Atom target;		/* Desired form for selection. */
-    int (*proc) _ANSI_ARGS_((ClientData clientData, Tcl_Interp *interp,
-	char *portion));	/* Procedure to call to handle pieces
-				 * of selection. */
-    ClientData clientData;	/* Argument for proc. */
-    int result;			/* Initially -1.  Set to a Tcl
-				 * return value once the selection
-				 * has been retrieved. */
-    Tcl_TimerToken timeout;	/* Token for current timeout procedure. */
-    int idleTime;		/* Number of seconds that have gone by
-				 * without hearing anything from the
-				 * selection owner. */
+typedef struct TkSelRetrievalInfo
+{
+    Tcl_Interp *interp; /* Interpreter for error reporting. */
+    TkWindow *winPtr; /* Window used as requestor for
+                       * selection. */
+    Atom selection; /* Selection being requested. */
+    Atom property; /* Property where selection will appear. */
+    Atom target; /* Desired form for selection. */
+    int(*proc) _ANSI_ARGS_((ClientData clientData,
+                            Tcl_Interp *interp,
+                            char *portion)); /* Procedure to call to handle
+                                              * pieces of selection. */
+    ClientData clientData; /* Argument for proc. */
+    int result; /* Initially -1.  Set to a Tcl
+                 * return value once the selection
+                 * has been retrieved. */
+    Tcl_TimerToken timeout; /* Token for current timeout procedure. */
+    int idleTime; /* Number of seconds that have gone by
+                   * without hearing anything from the
+                   * selection owner. */
     struct TkSelRetrievalInfo *nextPtr;
-				/* Next in list of all pending
-				 * selection retrievals.  NULL means
-				 * end of list. */
+    /* Next in list of all pending
+     * selection retrievals.  NULL means
+     * end of list. */
 } TkSelRetrievalInfo;
 
 /*
@@ -110,22 +114,24 @@ typedef struct TkSelRetrievalInfo {
  * type.
  */
 
-typedef struct TkClipboardBuffer {
-    char *buffer;			/* Null terminated data buffer. */
-    long length;			/* Length of string in buffer. */
-    struct TkClipboardBuffer *nextPtr;	/* Next in list of buffers.  NULL
-					 * means end of list . */
+typedef struct TkClipboardBuffer
+{
+    char *buffer; /* Null terminated data buffer. */
+    long length; /* Length of string in buffer. */
+    struct TkClipboardBuffer *nextPtr; /* Next in list of buffers.  NULL
+                                        * means end of list . */
 } TkClipboardBuffer;
 
-typedef struct TkClipboardTarget {
-    Atom type;				/* Type conversion supported. */
-    Atom format;			/* Representation used for data. */
-    TkClipboardBuffer *firstBufferPtr;	/* First in list of data buffers. */
-    TkClipboardBuffer *lastBufferPtr;	/* Last in list of clipboard buffers.
-					 * Used to speed up appends. */
-    struct TkClipboardTarget *nextPtr;	/* Next in list of targets on
-					 * clipboard.  NULL means end of
-					 * list. */
+typedef struct TkClipboardTarget
+{
+    Atom type; /* Type conversion supported. */
+    Atom format; /* Representation used for data. */
+    TkClipboardBuffer *firstBufferPtr; /* First in list of data buffers. */
+    TkClipboardBuffer *lastBufferPtr; /* Last in list of clipboard buffers.
+                                       * Used to speed up appends. */
+    struct TkClipboardTarget *nextPtr; /* Next in list of targets on
+                                        * clipboard.  NULL means end of
+                                        * list. */
 } TkClipboardTarget;
 
 /*
@@ -138,11 +144,12 @@ typedef struct TkClipboardTarget {
  * than one) are linked into a list.
  */
 
-typedef struct TkSelInProgress {
-    TkSelHandler *selPtr;	/* Handler being executed.  If this handler
-				 * is deleted, the field is set to NULL. */
+typedef struct TkSelInProgress
+{
+    TkSelHandler *selPtr; /* Handler being executed.  If this handler
+                           * is deleted, the field is set to NULL. */
     struct TkSelInProgress *nextPtr;
-				/* Next higher nested search. */
+    /* Next higher nested search. */
 } TkSelInProgress;
 
 /*
@@ -150,8 +157,8 @@ typedef struct TkSelInProgress {
  */
 
 extern TkSelInProgress *pendingPtr;
-				/* Topmost search in progress, or
-				 * NULL if none. */
+/* Topmost search in progress, or
+ * NULL if none. */
 
 /*
  * Chunk size for retrieving selection.  It's defined both in
@@ -168,17 +175,22 @@ extern TkSelInProgress *pendingPtr;
  * but shouldn't be used anywhere else in Tk (or by Tk clients):
  */
 
-extern void		TkSelClearSelection _ANSI_ARGS_((Tk_Window tkwin,
-			    XEvent *eventPtr));
-extern int		TkSelDefaultSelection _ANSI_ARGS_((
-			    TkSelectionInfo *infoPtr, Atom target,
-			    char *buffer, int maxBytes, Atom *typePtr));
-extern int		TkSelGetSelection _ANSI_ARGS_((Tcl_Interp *interp,
-			    Tk_Window tkwin, Atom selection, Atom target,
-			    Tk_GetSelProc *proc, ClientData clientData));
+extern void TkSelClearSelection _ANSI_ARGS_((Tk_Window tkwin,
+                                             XEvent *eventPtr));
+extern int TkSelDefaultSelection _ANSI_ARGS_((TkSelectionInfo * infoPtr,
+                                              Atom target,
+                                              char *buffer,
+                                              int maxBytes,
+                                              Atom *typePtr));
+extern int TkSelGetSelection _ANSI_ARGS_((Tcl_Interp * interp,
+                                          Tk_Window tkwin,
+                                          Atom selection,
+                                          Atom target,
+                                          Tk_GetSelProc *proc,
+                                          ClientData clientData));
 #ifndef TkSelUpdateClipboard
-extern void		TkSelUpdateClipboard _ANSI_ARGS_((TkWindow *winPtr,
-			    TkClipboardTarget *targetPtr));
+extern void TkSelUpdateClipboard _ANSI_ARGS_((TkWindow * winPtr,
+                                              TkClipboardTarget *targetPtr));
 #endif
 
 #endif /* _TKSELECT */

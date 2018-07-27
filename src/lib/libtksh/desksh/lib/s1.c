@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void test1()
+void
+test1()
 {
-    printf ("howdy\n");
+    printf("howdy\n");
 }
-

@@ -5,11 +5,11 @@
  */
 
 #ifndef _HUFF_H
-#define _HUFF_H		1
+#    define _HUFF_H 1
 
-#include "zip.h"
+#    include "zip.h"
 
-#include <vmalloc.h>
+#    include <vmalloc.h>
 
 /* Huffman code lookup table entry--this entry is four bytes for machines
    that have 16-bit pointers (e.g. PC's in the small or medium model).
@@ -19,19 +19,21 @@
    an unused code.  If a code with e == 99 is looked up, this implies an
    error in the data. */
 
-struct Huff_s; typedef struct Huff_s Huff_t;
+struct Huff_s;
+typedef struct Huff_s Huff_t;
 
 struct Huff_s
 {
-    uch			e;	/* number of extra bits or operation */
-    uch			b;	/* number of bits in this code or subcode */
+    uch e; /* number of extra bits or operation */
+    uch b; /* number of bits in this code or subcode */
     union
     {
-	ush		n;	/* literal, length base, or distance base */
-	Huff_t*		t;	/* pointer to next level of table */
+        ush n; /* literal, length base, or distance base */
+        Huff_t *t; /* pointer to next level of table */
     } v;
 };
 
-extern int	huff(ulg*, ulg, ulg, ush*, ush*, Huff_t**, int*, Vmalloc_t*);
+extern int
+huff(ulg *, ulg, ulg, ush *, ush *, Huff_t **, int *, Vmalloc_t *);
 
 #endif

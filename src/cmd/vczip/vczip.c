@@ -1,39 +1,39 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 2003-2013 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*                     Phong Vo <phongvo@gmail.com>                     *
-*               Glenn Fowler <glenn.s.fowler@gmail.com>                *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 2003-2013 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *                     Phong Vo <phongvo@gmail.com>                     *
+ *               Glenn Fowler <glenn.s.fowler@gmail.com>                *
+ *                                                                      *
+ ***********************************************************************/
 /*	Command to encode and decode with Vcodex methods.
 **
 **	Written by Kiem-Phong Vo (09/06/2003 - ILNGUYEN)
 */
 
 #include <ast.h>
-#include <vcodex.h>
 #include <codex.h>
 #include <ctype.h>
 #include <error.h>
 #include <tmx.h>
+#include <vcodex.h>
 
-#define BUFFERSIZE	8*1024*1024
+#define BUFFERSIZE 8 * 1024 * 1024
 
-#define S(s)		# s
-#define X(s)		S(s)
+#define S(s) #s
+#define X(s) S(s)
 
 static const char usage[] =
 "[-?\n@(#)$Id: vczip (AT&T Research) 2013-08-11 $\n]"
@@ -143,69 +143,75 @@ USAGE_LICENSE
 "[+SEE ALSO?\bcodex\b(1), \bcodex\b(3), \bvcodex\b(3)]"
 ;
 
-#define VC_cat		0x01
-#define VC_force	0x02
-#define VC_remove	0x04
+#define VC_cat 0x01
+#define VC_force 0x02
+#define VC_remove 0x04
 
 static int
-optmethod(Void_t* obj, char* name, char* desc, Void_t* handle)
+optmethod(Void_t *obj, char *name, char *desc, Void_t *handle)
 {
-	Sfio_t*		sp = (Sfio_t*)handle;
-	Vcmethod_t*	mt = (Vcmethod_t*)obj;
-	int		i;
+    Sfio_t *sp = ( Sfio_t * )handle;
+    Vcmethod_t *mt = ( Vcmethod_t * )obj;
+    int i;
 
-	sfprintf(sp, "[+%s?", name);
-	optesc(sp, desc, 0);
-	if(mt->args)
-	{	sfprintf(sp, " The arguments are:]{");
-		for(i = 0; mt->args[i].desc; i++)
-		{	sfprintf(sp, "[+%s?", mt->args[i].name ? mt->args[i].name : "-");
-			if(mt->args[i].desc)
-				optesc(sp, mt->args[i].desc, 0);
-			sfputc(sp, ']');
-			if(!mt->args[i].name)
-				break;
-		}
-	}
-	else
-		sfputc(sp, ']');
-	if(mt->about)
-	{	if(!mt->args)
-			sfputc(sp, '{');
-		sfprintf(sp, "%s}", mt->about);
-	}
-	else if(mt->args)
-		sfputc(sp, '}');
-	return 0;
+    sfprintf(sp, "[+%s?", name);
+    optesc(sp, desc, 0);
+    if (mt->args)
+    {
+        sfprintf(sp, " The arguments are:]{");
+        for (i = 0; mt->args[i].desc; i++)
+        {
+            sfprintf(sp, "[+%s?", mt->args[i].name ? mt->args[i].name : "-");
+            if (mt->args[i].desc)
+                optesc(sp, mt->args[i].desc, 0);
+            sfputc(sp, ']');
+            if (!mt->args[i].name)
+                break;
+        }
+    }
+    else
+        sfputc(sp, ']');
+    if (mt->about)
+    {
+        if (!mt->args)
+            sfputc(sp, '{');
+        sfprintf(sp, "%s}", mt->about);
+    }
+    else if (mt->args)
+        sfputc(sp, '}');
+    return 0;
 }
 
 static int
-optalias(Void_t* obj, char* name, char* desc, Void_t* handle)
+optalias(Void_t *obj, char *name, char *desc, Void_t *handle)
 {
-	Sfio_t*		sp = (Sfio_t*)handle;
+    Sfio_t *sp = ( Sfio_t * )handle;
 
-	sfprintf(sp, "[+%s?Equivalent to \b%s\b.]", name, desc);
-	return 0;
+    sfprintf(sp, "[+%s?Equivalent to \b%s\b.]", name, desc);
+    return 0;
 }
 
 static int
-optfname(Void_t* obj, char* pattern, char* transform, Void_t* handle)
+optfname(Void_t *obj, char *pattern, char *transform, Void_t *handle)
 {
-	Sfio_t*		sp = (Sfio_t*)handle;
+    Sfio_t *sp = ( Sfio_t * )handle;
 
-	sfprintf(sp, "[+%s?File name pattern match encoding method \b%s\b.]", pattern, transform);
-	return 0;
+    sfprintf(sp,
+             "[+%s?File name pattern match encoding method \b%s\b.]",
+             pattern,
+             transform);
+    return 0;
 }
 
 static int
-optwindow(Void_t* obj, char* name, char* desc, Void_t* handle)
+optwindow(Void_t *obj, char *name, char *desc, Void_t *handle)
 {
-	Sfio_t*		sp = (Sfio_t*)handle;
+    Sfio_t *sp = ( Sfio_t * )handle;
 
-	sfprintf(sp, "[+%s?", name);
-	optesc(sp, desc, 0);
-	sfprintf(sp, "]");
-	return 0;
+    sfprintf(sp, "[+%s?", name);
+    optesc(sp, desc, 0);
+    sfprintf(sp, "]");
+    return 0;
 }
 
 /*
@@ -213,58 +219,58 @@ optwindow(Void_t* obj, char* name, char* desc, Void_t* handle)
  */
 
 static int
-optinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
+optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
 {
-	Codexmeth_t*	meth;
-	const char*	p;
-	int		c;
+    Codexmeth_t *meth;
+    const char *p;
+    int c;
 
-	switch (*s)
-	{
-	case 'c':
-		/* codex methods */
-		for (meth = codexlist(NiL); meth; meth = codexlist(meth))
-		{
-			sfprintf(sp, "[+%s\b (codex", meth->name);
-			if (meth->identf)
-				sfprintf(sp, ",ident");
-			if (!(meth->flags & CODEX_ENCODE))
-				sfprintf(sp, ",decode");
-			sfputc(sp, ')');
-			sfputc(sp, '?');
-			p = meth->description;
-			while (c = *p++)
-			{
-				if (c == ']')
-					sfputc(sp, c);
-				sfputc(sp, c);
-			}
-			sfputc(sp, ']');
-			if ((p = meth->options) || meth->optionsf)
-			{
-				sfprintf(sp, "{\n");
-				if (meth->optionsf)
-					(*meth->optionsf)(meth, sp);
-				if (p)
-					sfprintf(sp, "%s", p);
-				sfprintf(sp, "\n}");
-			}
-		}
-		break;
-	case 'v':
-		/* vcodex methods */
-		vcwalkmeth(optmethod, sp);
-		/* aliases */
-		vcwalkalias(optalias, sp);
-		/* vcodex file name pattern methods */
-		vcwalkfname(optfname, sp);
-		break;
-	case 'w':
-		/* vcodex window methods */
-		vcwwalkmeth(optwindow, sp);
-		break;
-	}
-	return 0;
+    switch (*s)
+    {
+    case 'c':
+        /* codex methods */
+        for (meth = codexlist(NiL); meth; meth = codexlist(meth))
+        {
+            sfprintf(sp, "[+%s\b (codex", meth->name);
+            if (meth->identf)
+                sfprintf(sp, ",ident");
+            if (!(meth->flags & CODEX_ENCODE))
+                sfprintf(sp, ",decode");
+            sfputc(sp, ')');
+            sfputc(sp, '?');
+            p = meth->description;
+            while (c = *p++)
+            {
+                if (c == ']')
+                    sfputc(sp, c);
+                sfputc(sp, c);
+            }
+            sfputc(sp, ']');
+            if ((p = meth->options) || meth->optionsf)
+            {
+                sfprintf(sp, "{\n");
+                if (meth->optionsf)
+                    (*meth->optionsf)(meth, sp);
+                if (p)
+                    sfprintf(sp, "%s", p);
+                sfprintf(sp, "\n}");
+            }
+        }
+        break;
+    case 'v':
+        /* vcodex methods */
+        vcwalkmeth(optmethod, sp);
+        /* aliases */
+        vcwalkalias(optalias, sp);
+        /* vcodex file name pattern methods */
+        vcwalkfname(optfname, sp);
+        break;
+    case 'w':
+        /* vcodex window methods */
+        vcwwalkmeth(optwindow, sp);
+        break;
+    }
+    return 0;
 }
 
 /*
@@ -272,296 +278,321 @@ optinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
  */
 
 static int
-apply(int action, int flags, char* command, char* transform, char* input, char* output, char* buf, size_t bufsize, Codexdisc_t* codexdisc)
+apply(int action,
+      int flags,
+      char *command,
+      char *transform,
+      char *input,
+      char *output,
+      char *buf,
+      size_t bufsize,
+      Codexdisc_t *codexdisc)
 {
-	Sfio_t*			ip;
-	Sfio_t*			op;
-	char*			s;
-	ssize_t			n;
-	int			r;
-	Codexdata_t		data;
-	struct stat		si;
-	struct stat		so;
-	char			sx[3];
+    Sfio_t *ip;
+    Sfio_t *op;
+    char *s;
+    ssize_t n;
+    int r;
+    Codexdata_t data;
+    struct stat si;
+    struct stat so;
+    char sx[3];
 
-	Sfio_t*			pp = 0;
-	char*			suffix = 0;
+    Sfio_t *pp = 0;
+    char *suffix = 0;
 
-	static const char	devstdin[] = "/dev/stdin";
-	static const char	devstdout[] = "/dev/stdout";
+    static const char devstdin[] = "/dev/stdin";
+    static const char devstdout[] = "/dev/stdout";
 
-	/*
-	 * set up the sfio input stream
-	 */
+    /*
+     * set up the sfio input stream
+     */
 
-	if (!input || streq(input, "-") || streq(input, devstdin))
-	{
-		input = (char*)devstdin;
-		ip = sfstdin,
-		sfopen(ip, NiL, "rb");
-		flags |= VC_cat;
-	}
-	else if (!(ip = sfopen(NiL, input, "rb")))
-	{
-		error(ERROR_SYSTEM|2, "%s: cannot read", input);
-		return 0;
-	}
-	sfset(ip, SF_SHARE, 0);
-	if (fstat(sffileno(ip), &si))
-	{
-		error(ERROR_SYSTEM|2, "%s: cannot stat", input);
-		goto nope;
-	}
+    if (!input || streq(input, "-") || streq(input, devstdin))
+    {
+        input = ( char * )devstdin;
+        ip = sfstdin, sfopen(ip, NiL, "rb");
+        flags |= VC_cat;
+    }
+    else if (!(ip = sfopen(NiL, input, "rb")))
+    {
+        error(ERROR_SYSTEM | 2, "%s: cannot read", input);
+        return 0;
+    }
+    sfset(ip, SF_SHARE, 0);
+    if (fstat(sffileno(ip), &si))
+    {
+        error(ERROR_SYSTEM | 2, "%s: cannot stat", input);
+        goto nope;
+    }
 
-	/*
-	 * set up the sfio output stream
-	 */
+    /*
+     * set up the sfio output stream
+     */
 
-	if (!output && !(flags & VC_cat))
-	{
-		if (!transform && vcgetfname(input, &transform, &suffix))
-			transform = command;
-		if (transform && vcgetsuff(transform, &suffix))
-		{
-			suffix = sx;
-			sx[0] = transform[0];
-			sx[1] = 'z';
-			sx[2] = 0;
-		}
-		if (suffix)
-		{
-			if (!(pp = sfstropen()))
-			{
-				error(ERROR_SYSTEM|2, "%s: out of space", input);
-				goto nope;
-			}
-			if (action == VC_ENCODE)
-				sfprintf(pp, "%s.%s", input, suffix);
-			else if ((s = strrchr(input, '.')) && !strcmp(s + 1, suffix))
-				sfwrite(pp, input, s - input);
-			else
-			{
-				error(2, "%s: unknown suffix -- ignored", input);
-				goto nope;
-			}
-			output = sfstruse(pp);
-			flags |= VC_remove;
-		}
-		else
-		{
-			error(2, "%s: unknown suffix for method %s -- ignored", input, transform);
-			goto nope;
-		}
-		if (!stat(output, &so) && si.st_dev == so.st_dev && si.st_ino == so.st_ino)
-		{
-			error(ERROR_SYSTEM|2, "%s: identical to %s", output, input);
-			goto nope;
-		}
-		if (!(op = sfopen(NiL, output, "wb")))
-		{
-			error(ERROR_SYSTEM|2, "%s: cannot write", output);
-			goto nope;
-		}
-	}
-	if (!output || streq(output, "-") || streq(output, devstdout))
-	{
-		output = (char*)devstdout;
-		op = sfstdout,
-		sfopen(op, NiL, "wb");
-	}
-	sfset(op, SF_SHARE, 0);
+    if (!output && !(flags & VC_cat))
+    {
+        if (!transform && vcgetfname(input, &transform, &suffix))
+            transform = command;
+        if (transform && vcgetsuff(transform, &suffix))
+        {
+            suffix = sx;
+            sx[0] = transform[0];
+            sx[1] = 'z';
+            sx[2] = 0;
+        }
+        if (suffix)
+        {
+            if (!(pp = sfstropen()))
+            {
+                error(ERROR_SYSTEM | 2, "%s: out of space", input);
+                goto nope;
+            }
+            if (action == VC_ENCODE)
+                sfprintf(pp, "%s.%s", input, suffix);
+            else if ((s = strrchr(input, '.')) && !strcmp(s + 1, suffix))
+                sfwrite(pp, input, s - input);
+            else
+            {
+                error(2, "%s: unknown suffix -- ignored", input);
+                goto nope;
+            }
+            output = sfstruse(pp);
+            flags |= VC_remove;
+        }
+        else
+        {
+            error(2,
+                  "%s: unknown suffix for method %s -- ignored",
+                  input,
+                  transform);
+            goto nope;
+        }
+        if (!stat(output, &so) && si.st_dev == so.st_dev
+            && si.st_ino == so.st_ino)
+        {
+            error(ERROR_SYSTEM | 2, "%s: identical to %s", output, input);
+            goto nope;
+        }
+        if (!(op = sfopen(NiL, output, "wb")))
+        {
+            error(ERROR_SYSTEM | 2, "%s: cannot write", output);
+            goto nope;
+        }
+    }
+    if (!output || streq(output, "-") || streq(output, devstdout))
+    {
+        output = ( char * )devstdout;
+        op = sfstdout, sfopen(op, NiL, "wb");
+    }
+    sfset(op, SF_SHARE, 0);
 
-	/*
-	 * check codex sfio discipline
-	 */
+    /*
+     * check codex sfio discipline
+     */
 
-	if (action == VC_ENCODE)
-	{
-		if (codex(op, transform, CODEX_ENCODE, codexdisc, NiL) < 0)
-		{
-			error(2, "%s: cannot push output stream discipline", output);
-			goto bad;
-		}
-	}
-	else if (codex(ip, transform, CODEX_DECODE, codexdisc, NiL) < 0)
-	{
-		error(2, "%s: cannot push input stream discipline", input);
-		goto bad;
-	}
+    if (action == VC_ENCODE)
+    {
+        if (codex(op, transform, CODEX_ENCODE, codexdisc, NiL) < 0)
+        {
+            error(2, "%s: cannot push output stream discipline", output);
+            goto bad;
+        }
+    }
+    else if (codex(ip, transform, CODEX_DECODE, codexdisc, NiL) < 0)
+    {
+        error(2, "%s: cannot push input stream discipline", input);
+        goto bad;
+    }
 
-	/*
-	 * copy from sfstdin to sfstdout
-	 */
+    /*
+     * copy from sfstdin to sfstdout
+     */
 
-	if (action)
-	{
-		if (buf)
-			for (;;)
-			{	
-				if ((n = sfread(ip, buf, bufsize)) <= 0)
-				{
-					if (n < 0)
-						error(ERROR_SYSTEM|2, "%s: read error", input);
-					break;
-				}
-				if (sfwrite(op, buf, n) < 0)
-					break;
-			}
-		else
-		{
-			sfmove(ip, op, SF_UNBOUND, -1);
-			if (!sfeof(ip))
-				error(ERROR_SYSTEM|2, "%s: read error", input);
-		}
-		if (sferror(op) || sfsync(op))
-			error(ERROR_SYSTEM|2, "%s: write error", output);
-		else if (codexdata(action == VC_ENCODE ? op : ip, &data) > 0)
-		{
-			unsigned char*	u;
-			unsigned char*	e;
+    if (action)
+    {
+        if (buf)
+            for (;;)
+            {
+                if ((n = sfread(ip, buf, bufsize)) <= 0)
+                {
+                    if (n < 0)
+                        error(ERROR_SYSTEM | 2, "%s: read error", input);
+                    break;
+                }
+                if (sfwrite(op, buf, n) < 0)
+                    break;
+            }
+        else
+        {
+            sfmove(ip, op, SF_UNBOUND, -1);
+            if (!sfeof(ip))
+                error(ERROR_SYSTEM | 2, "%s: read error", input);
+        }
+        if (sferror(op) || sfsync(op))
+            error(ERROR_SYSTEM | 2, "%s: write error", output);
+        else if (codexdata(action == VC_ENCODE ? op : ip, &data) > 0)
+        {
+            unsigned char *u;
+            unsigned char *e;
 
-			if (data.buf)
-			{
-				for (e = (u = (unsigned char*)data.buf) + data.size; u < e; u++)
-					sfprintf(sfstderr, "%02x", *u);
-				sfprintf(sfstderr, "\n");
-			}
-			else
-				sfprintf(sfstderr, "%0*I*x\n", data.size * 2, sizeof(data.num), data.num);
-		}
-		codexpop(action == VC_ENCODE ? op : ip, 0);
-	}
-	else
-		sfprintf(sfstdout, "\n");
-	r = 1;
-	goto done;
- bad:
-	r = -1;
-	goto done;
- nope:
-	r = 0;
- done:
-	if (ip && ip != sfstdin)
-		sfclose(ip);
-	if (op && op != sfstdout)
-		sfclose(op);
-	if (r > 0 && (flags & VC_remove))
-	{
-		if (chmod(output, si.st_mode))
-			error(ERROR_SYSTEM|1, "%s: cannot set file mode", output);
-		if (tmxtouch(output, tmxgetatime(&si), tmxgetmtime(&si), tmxgetctime(&si), 0))
-			error(ERROR_SYSTEM|1, "%s: cannot set file times", output);
-		if (remove(input))
-			error(ERROR_SYSTEM|1, "%s: cannot remove input file", input);
-	}
-	if (pp)
-		sfstrclose(pp);
-	return r;
+            if (data.buf)
+            {
+                for (e = (u = ( unsigned char * )data.buf) + data.size; u < e;
+                     u++)
+                    sfprintf(sfstderr, "%02x", *u);
+                sfprintf(sfstderr, "\n");
+            }
+            else
+                sfprintf(sfstderr,
+                         "%0*I*x\n",
+                         data.size * 2,
+                         sizeof(data.num),
+                         data.num);
+        }
+        codexpop(action == VC_ENCODE ? op : ip, 0);
+    }
+    else
+        sfprintf(sfstdout, "\n");
+    r = 1;
+    goto done;
+bad:
+    r = -1;
+    goto done;
+nope:
+    r = 0;
+done:
+    if (ip && ip != sfstdin)
+        sfclose(ip);
+    if (op && op != sfstdout)
+        sfclose(op);
+    if (r > 0 && (flags & VC_remove))
+    {
+        if (chmod(output, si.st_mode))
+            error(ERROR_SYSTEM | 1, "%s: cannot set file mode", output);
+        if (tmxtouch(
+            output, tmxgetatime(&si), tmxgetmtime(&si), tmxgetctime(&si), 0))
+            error(ERROR_SYSTEM | 1, "%s: cannot set file times", output);
+        if (remove(input))
+            error(ERROR_SYSTEM | 1, "%s: cannot remove input file", input);
+    }
+    if (pp)
+        sfstrclose(pp);
+    return r;
 }
 
 int
-main(int argc, char** argv)
+main(int argc, char **argv)
 {
-	int		action;
-	int		c;
-	char*		s;
-	char*		input;
-	char*		transform;
-	Optdisc_t	optdisc;
-	char		command[256];
+    int action;
+    int c;
+    char *s;
+    char *input;
+    char *transform;
+    Optdisc_t optdisc;
+    char command[256];
 
-	char*		buf = 0;
-	char*		output = 0;
-	size_t		bufsize = BUFFERSIZE;
-	int		flags = 0;
+    char *buf = 0;
+    char *output = 0;
+    size_t bufsize = BUFFERSIZE;
+    int flags = 0;
 
-	/* NOTE: disciplines may be accessed after main() returns */
+    /* NOTE: disciplines may be accessed after main() returns */
 
-	static Codexdisc_t	codexdisc;	/* codex discipline	*/
+    static Codexdisc_t codexdisc; /* codex discipline	*/
 
-	error_info.id = (s = strrchr(argv[0], '/')) ? (s + 1) : argv[0];
-	s = error_info.id;
-	transform = command;
-	action = VC_ENCODE;
-	while (transform < &command[sizeof(command)-1] && (c = *s++) && isalnum(c) && (c = tolower(c)))
-		if (c == 'a' && tolower(*s) == 't' && !*(s+1))
-		{
-			action = VC_DECODE;
-			flags |= VC_cat;
-			s = "zip";
-		}
-		else if (c == 'u' && tolower(*s) == 'n')
-		{	
-			action = VC_DECODE;
-			s++;
-		}
-		else
-			*transform++ = c;
-	*transform = 0;
-	transform = 0;
-	codexinit(&codexdisc, errorf);
-	optinit(&optdisc, optinfo);
-	for (;;)
-	{
-		switch (optget(argv, usage))
-		{
-		case 'b':
-			bufsize = (size_t)opt_info.number;
-			continue;
-		case 'c':
-			action = VC_DECODE;
-			flags |= VC_cat;
-			continue;
-		case 'f':
-			flags |= VC_force;
-			continue;
-		case 'm':
-			transform = opt_info.arg;
-			continue;
-		case 'o':
-			output = opt_info.arg;
-			continue;
-		case 'p':
-			codexdisc.flags |= CODEX_PLAIN;
-			continue;
-		case 'q':
-			action = 0;
-			codexdisc.identify = sfstdout;
-			continue;
-		case 's':
-			codexdisc.source = opt_info.arg;
-			continue;
-		case 'u':
-			action = VC_DECODE;
-			continue;
-		case 'w':
-			codexdisc.window = opt_info.arg;
-			continue;
-		case 'D':
-			error_info.trace = -(int)opt_info.num;
-			continue;
-		case ':':
-			error(2, "%s", opt_info.arg);
-			continue;
-		case '?':
-			error(ERROR_USAGE|4, "%s", opt_info.arg);
-			continue;
-		}
-		break;
-	}
-	argv += opt_info.index;
-	if (error_info.errors)
-		error(ERROR_USAGE|4, "%s", optusage(NiL));
-	if ((input = *argv) && *++argv && output)
-		error(3, "--output=%s: invalid when more than one file operand is specified", output);
-	if (output && (flags & VC_cat))
-		error(3, "--output=%s: invalid --cat is specified", output);
-	while (bufsize > 0)
-	{
-		if (buf = malloc(bufsize))
-			break;
-		bufsize /= 2;
-	}
-	while (apply(action, flags, command, transform, input, output, buf, bufsize, &codexdisc) >= 0 && (input = *argv++));
-	return error_info.errors != 0;
+    error_info.id = (s = strrchr(argv[0], '/')) ? (s + 1) : argv[0];
+    s = error_info.id;
+    transform = command;
+    action = VC_ENCODE;
+    while (transform < &command[sizeof(command) - 1] && (c = *s++)
+           && isalnum(c) && (c = tolower(c)))
+        if (c == 'a' && tolower(*s) == 't' && !*(s + 1))
+        {
+            action = VC_DECODE;
+            flags |= VC_cat;
+            s = "zip";
+        }
+        else if (c == 'u' && tolower(*s) == 'n')
+        {
+            action = VC_DECODE;
+            s++;
+        }
+        else
+            *transform++ = c;
+    *transform = 0;
+    transform = 0;
+    codexinit(&codexdisc, errorf);
+    optinit(&optdisc, optinfo);
+    for (;;)
+    {
+        switch (optget(argv, usage))
+        {
+        case 'b':
+            bufsize = ( size_t )opt_info.number;
+            continue;
+        case 'c':
+            action = VC_DECODE;
+            flags |= VC_cat;
+            continue;
+        case 'f':
+            flags |= VC_force;
+            continue;
+        case 'm':
+            transform = opt_info.arg;
+            continue;
+        case 'o':
+            output = opt_info.arg;
+            continue;
+        case 'p':
+            codexdisc.flags |= CODEX_PLAIN;
+            continue;
+        case 'q':
+            action = 0;
+            codexdisc.identify = sfstdout;
+            continue;
+        case 's':
+            codexdisc.source = opt_info.arg;
+            continue;
+        case 'u':
+            action = VC_DECODE;
+            continue;
+        case 'w':
+            codexdisc.window = opt_info.arg;
+            continue;
+        case 'D':
+            error_info.trace = -( int )opt_info.num;
+            continue;
+        case ':':
+            error(2, "%s", opt_info.arg);
+            continue;
+        case '?':
+            error(ERROR_USAGE | 4, "%s", opt_info.arg);
+            continue;
+        }
+        break;
+    }
+    argv += opt_info.index;
+    if (error_info.errors)
+        error(ERROR_USAGE | 4, "%s", optusage(NiL));
+    if ((input = *argv) && *++argv && output)
+        error(
+        3,
+        "--output=%s: invalid when more than one file operand is specified",
+        output);
+    if (output && (flags & VC_cat))
+        error(3, "--output=%s: invalid --cat is specified", output);
+    while (bufsize > 0)
+    {
+        if (buf = malloc(bufsize))
+            break;
+        bufsize /= 2;
+    }
+    while (
+    apply(
+    action, flags, command, transform, input, output, buf, bufsize, &codexdisc)
+    >= 0
+    && (input = *argv++))
+        ;
+    return error_info.errors != 0;
 }

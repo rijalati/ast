@@ -2,7 +2,9 @@
 
 #if !_UWIN || _lib_atanh
 
-void _STUB_atanh(){}
+void
+_STUB_atanh()
+{}
 
 #else
 
@@ -35,21 +37,21 @@ void _STUB_atanh(){}
  * SUCH DAMAGE.
  */
 
-#ifndef lint
+#    ifndef lint
 static char sccsid[] = "@(#)atanh.c	8.1 (Berkeley) 6/4/93";
-#endif /* not lint */
+#    endif /* not lint */
 
 /* ATANH(X)
  * RETURN THE HYPERBOLIC ARC TANGENT OF X
  * DOUBLE PRECISION (VAX D format 56 bits, IEEE DOUBLE 53 BITS)
- * CODED IN C BY K.C. NG, 1/8/85; 
+ * CODED IN C BY K.C. NG, 1/8/85;
  * REVISED BY K.C. NG on 2/7/85, 3/7/85, 8/18/85.
  *
  * Required kernel function:
  *	log1p(x) 	...return log(1+x)
  *
  * Method :
- *	Return 
+ *	Return
  *                          1              2x                          x
  *		atanh(x) = --- * log(1 + -------) = 0.5 * log1p(2 * --------)
  *                          2             1 - x                      1 - x
@@ -65,25 +67,25 @@ static char sccsid[] = "@(#)atanh.c	8.1 (Berkeley) 6/4/93";
  *	observed error was 1.87 ulps (units in the last place) at
  *	x= -3.8962076028810414000e-03.
  */
-#include "mathimpl.h"
+#    include "mathimpl.h"
 
-#if defined(vax)||defined(tahoe)
-#include <errno.h>
-#endif	/* defined(vax)||defined(tahoe) */
+#    if defined(vax) || defined(tahoe)
+#        include <errno.h>
+#    endif /* defined(vax)||defined(tahoe) */
 
-extern double atanh(x)
-double x;
+extern double atanh(x) double x;
 {
-	double z;
-	z = copysign(0.5,x);
-	x = copysign(x,1.0);
-#if defined(vax)||defined(tahoe)
-	if (x == 1.0) {
-	    return(copysign(1.0,z)*infnan(ERANGE));	/* sign(x)*INF */
-	}
-#endif	/* defined(vax)||defined(tahoe) */
-	x = x/(1.0-x);
-	return( z*log1p(x+x) );
+    double z;
+    z = copysign(0.5, x);
+    x = copysign(x, 1.0);
+#    if defined(vax) || defined(tahoe)
+    if (x == 1.0)
+    {
+        return (copysign(1.0, z) * infnan(ERANGE)); /* sign(x)*INF */
+    }
+#    endif /* defined(vax)||defined(tahoe) */
+    x = x / (1.0 - x);
+    return (z * log1p(x + x));
 }
 
 #endif

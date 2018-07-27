@@ -1,24 +1,24 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 1985-2011 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*               Glenn Fowler <glenn.s.fowler@gmail.com>                *
-*                    David Korn <dgkorn@gmail.com>                     *
-*                     Phong Vo <phongvo@gmail.com>                     *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 1985-2011 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *               Glenn Fowler <glenn.s.fowler@gmail.com>                *
+ *                    David Korn <dgkorn@gmail.com>                     *
+ *                     Phong Vo <phongvo@gmail.com>                     *
+ *                                                                      *
+ ***********************************************************************/
 #pragma prototyped
 /*
  * readdir
@@ -36,26 +36,31 @@ NoN(readdir)
 
 #else
 
-struct dirent*
-readdir(DIR* dirp)
+struct dirent *
+readdir(DIR *dirp)
 {
-	struct dirent*	dp;
+    struct dirent *dp;
 
-	for (;;)
-	{
-		if (dirp->dd_loc >= dirp->dd_size)
-		{
-			if (dirp->dd_size < 0) return(0);
-			dirp->dd_loc = 0;
-			if ((dirp->dd_size = getdents(dirp->dd_fd, dirp->dd_buf, DIRBLKSIZ)) <= 0)
-				return(0);
-		}
-		dp = (struct dirent*)((char*)dirp->dd_buf + dirp->dd_loc);
-		if (dp->d_reclen <= 0) return(0);
-		dirp->dd_loc += dp->d_reclen;
-		if (dp->d_fileno) return(dp);
-	}
-	/*NOTREACHED*/
+    for (;;)
+    {
+        if (dirp->dd_loc >= dirp->dd_size)
+        {
+            if (dirp->dd_size < 0)
+                return (0);
+            dirp->dd_loc = 0;
+            if ((dirp->dd_size
+                 = getdents(dirp->dd_fd, dirp->dd_buf, DIRBLKSIZ))
+                <= 0)
+                return (0);
+        }
+        dp = ( struct dirent * )(( char * )dirp->dd_buf + dirp->dd_loc);
+        if (dp->d_reclen <= 0)
+            return (0);
+        dirp->dd_loc += dp->d_reclen;
+        if (dp->d_fileno)
+            return (dp);
+    }
+    /*NOTREACHED*/
 }
 
 #endif

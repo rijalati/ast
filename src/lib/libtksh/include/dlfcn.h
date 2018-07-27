@@ -4,13 +4,16 @@
  */
 
 #ifndef RTLD_NOW
-#   define RTLD_NOW 1
+#    define RTLD_NOW 1
 #endif
 
 #ifndef RTLD_GLOBAL
-#   define RTLD_GLOBAL 0
+#    define RTLD_GLOBAL 0
 #endif
 
-extern void*	dlopen(const char*,int);
-extern void*	dlsym(void*, const char*);
-extern char*	dlerror(void);
+extern void *
+dlopen(const char *, int);
+extern void *
+dlsym(void *, const char *);
+extern char *
+dlerror(void);

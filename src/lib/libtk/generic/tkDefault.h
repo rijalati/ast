@@ -17,20 +17,20 @@
 #define _TKDEFAULT
 
 #if !defined(_WINIX) && (_UWIN || __CYGWIN__ || __EMX__)
-#define _WINIX		1
+#    define _WINIX 1
 #endif
 #if !_WINIX && (defined(__WIN32__) || defined(_WIN32) || defined(WIN32))
-#define	WIN_TCL		1
+#    define WIN_TCL 1
 #endif
 
 #if defined(WIN_TCL)
-#   include "tkWinDefault.h"
+#    include "tkWinDefault.h"
 #else
-#   if defined(MAC_TCL)
-#	include "tkMacDefault.h"
-#   else
-#	include "tkUnixDef.h"
-#   endif
+#    if defined(MAC_TCL)
+#        include "tkMacDefault.h"
+#    else
+#        include "tkUnixDef.h"
+#    endif
 #endif
 
 #endif /* _TKDEFAULT */

@@ -1,4 +1,4 @@
-/* 
+/*
  * tclUnixChan.c
  *
  *	Common channel driver for Unix channels based on files, command
@@ -12,8 +12,8 @@
  * SCCS: @(#) tclUnixChan.c 1.185 96/11/12 14:49:17
  */
 
-#include	"tclInt.h"	/* Internal definitions for Tcl. */
-#include	"tclPort.h"	/* Portability features for Tcl. */
+#include "tclInt.h" /* Internal definitions for Tcl. */
+#include "tclPort.h" /* Portability features for Tcl. */
 
 #undef lseek
 
@@ -21,37 +21,40 @@
  * This structure describes per-instance state of a file based channel.
  */
 
-typedef struct FileState {
-    Tcl_File inFile;	/* Input from file. */
-    Tcl_File outFile;	/* Output to file. */
+typedef struct FileState
+{
+    Tcl_File inFile; /* Input from file. */
+    Tcl_File outFile; /* Output to file. */
 } FileState;
 
 /*
  * This structure describes per-instance state of a pipe based channel.
  */
 
-typedef struct PipeState {
-    Tcl_File inFile;	/* Output from pipe. */
-    Tcl_File outFile;	/* Input to pipe. */
-    Tcl_File errorFile;	/* Error output from pipe. */
-    int numPids;	/* How many processes are attached to this pipe? */
-    int *pidPtr;	/* The process IDs themselves. Allocated by
-                         * the creator of the pipe. */
-    int isNonBlocking;	/* Nonzero when the pipe is in nonblocking mode.
-                         * Used to decide whether to wait for the children
-                         * at close time. */
+typedef struct PipeState
+{
+    Tcl_File inFile; /* Output from pipe. */
+    Tcl_File outFile; /* Input to pipe. */
+    Tcl_File errorFile; /* Error output from pipe. */
+    int numPids; /* How many processes are attached to this pipe? */
+    int *pidPtr; /* The process IDs themselves. Allocated by
+                  * the creator of the pipe. */
+    int isNonBlocking; /* Nonzero when the pipe is in nonblocking mode.
+                        * Used to decide whether to wait for the children
+                        * at close time. */
 } PipeState;
 
 /*
  * This structure describes per-instance state of a tcp based channel.
  */
 
-typedef struct TcpState {
-    int flags;				/* ORed combination of the
-                                         * bitfields defined below. */
-    Tcl_File sock;			/* The socket itself. */
-    Tcl_TcpAcceptProc *acceptProc;	/* Proc to call on accept. */
-    ClientData acceptProcData;		/* The data for the accept proc. */
+typedef struct TcpState
+{
+    int flags; /* ORed combination of the
+                * bitfields defined below. */
+    Tcl_File sock; /* The socket itself. */
+    Tcl_TcpAcceptProc *acceptProc; /* Proc to call on accept. */
+    ClientData acceptProcData; /* The data for the accept proc. */
 } TcpState;
 
 /*
@@ -59,8 +62,8 @@ typedef struct TcpState {
  * structure.
  */
 
-#define TCP_ASYNC_SOCKET	(1<<0)	/* Asynchronous socket. */
-#define TCP_ASYNC_CONNECT	(1<<1)	/* Async connect in progress. */
+#define TCP_ASYNC_SOCKET (1 << 0) /* Asynchronous socket. */
+#define TCP_ASYNC_CONNECT (1 << 1) /* Async connect in progress. */
 
 /*
  * The following defines the maximum length of the listen queue. This is
@@ -69,13 +72,13 @@ typedef struct TcpState {
  * the connection request will fail.
  */
 
-#ifndef	SOMAXCONN
-#define SOMAXCONN	100
+#ifndef SOMAXCONN
+#    define SOMAXCONN 100
 #endif
 
-#if	(SOMAXCONN < 100)
-#undef	SOMAXCONN
-#define	SOMAXCONN	100
+#if (SOMAXCONN < 100)
+#    undef SOMAXCONN
+#    define SOMAXCONN 100
 #endif
 
 /*
@@ -83,7 +86,7 @@ typedef struct TcpState {
  * for a socket.
  */
 
-#define SOCKET_BUFSIZE	4096
+#define SOCKET_BUFSIZE 4096
 
 /*
  * Static routines for this file:
@@ -97,40 +100,32 @@ static int		CreateSocketAddress _ANSI_ARGS_(
 			    (struct sockaddr_in *sockaddrPtr,
 			    char *host, int port));
 #endif
-static int		FileBlockModeProc _ANSI_ARGS_((
-    			    ClientData instanceData, int mode));
-static int		FileCloseProc _ANSI_ARGS_((ClientData instanceData,
-			    Tcl_Interp *interp));
-static Tcl_File		FileGetProc _ANSI_ARGS_((ClientData instanceData,
-		            int direction));
-static int		FileInputProc _ANSI_ARGS_((ClientData instanceData,
-		            char *buf, int toRead, int *errorCode));
-static int		FileOutputProc _ANSI_ARGS_((
-			    ClientData instanceData, char *buf, int toWrite,
-                            int *errorCode));
-static int		FileReadyProc _ANSI_ARGS_((ClientData instanceData,
-		            int mask));
-static int		FileSeekProc _ANSI_ARGS_((ClientData instanceData,
-			    long offset, int mode, int *errorCode));
-static void		FileWatchProc _ANSI_ARGS_((ClientData instanceData,
-		            int mask));
+static int FileBlockModeProc _ANSI_ARGS_((ClientData instanceData, int mode));
+static int FileCloseProc _ANSI_ARGS_((ClientData instanceData,
+                                      Tcl_Interp *interp));
+static Tcl_File FileGetProc _ANSI_ARGS_((ClientData instanceData,
+                                         int direction));
+static int FileInputProc
+_ANSI_ARGS_((ClientData instanceData, char *buf, int toRead, int *errorCode));
+static int FileOutputProc _ANSI_ARGS_(
+(ClientData instanceData, char *buf, int toWrite, int *errorCode));
+static int FileReadyProc _ANSI_ARGS_((ClientData instanceData, int mask));
+static int FileSeekProc
+_ANSI_ARGS_((ClientData instanceData, long offset, int mode, int *errorCode));
+static void FileWatchProc _ANSI_ARGS_((ClientData instanceData, int mask));
 #if 1
-static int		PipeBlockModeProc _ANSI_ARGS_((
-    			    ClientData instanceData, int mode));
-static int		PipeCloseProc _ANSI_ARGS_((ClientData instanceData,
-			    Tcl_Interp *interp));
+static int PipeBlockModeProc _ANSI_ARGS_((ClientData instanceData, int mode));
+static int PipeCloseProc _ANSI_ARGS_((ClientData instanceData,
+                                      Tcl_Interp *interp));
 #endif
-static Tcl_File		PipeGetProc _ANSI_ARGS_((ClientData instanceData,
-		            int direction));
-static int		PipeInputProc _ANSI_ARGS_((ClientData instanceData,
-		            char *buf, int toRead, int *errorCode));
-static int		PipeOutputProc _ANSI_ARGS_((
-			    ClientData instanceData, char *buf, int toWrite,
-                            int *errorCode));
-static int		PipeReadyProc _ANSI_ARGS_((ClientData instanceData,
-		            int mask));
-static void		PipeWatchProc _ANSI_ARGS_((ClientData instanceData,
-		            int mask));
+static Tcl_File PipeGetProc _ANSI_ARGS_((ClientData instanceData,
+                                         int direction));
+static int PipeInputProc
+_ANSI_ARGS_((ClientData instanceData, char *buf, int toRead, int *errorCode));
+static int PipeOutputProc _ANSI_ARGS_(
+(ClientData instanceData, char *buf, int toWrite, int *errorCode));
+static int PipeReadyProc _ANSI_ARGS_((ClientData instanceData, int mask));
+static void PipeWatchProc _ANSI_ARGS_((ClientData instanceData, int mask));
 #if 0
 static void		TcpAccept _ANSI_ARGS_((ClientData data, int mask));
 static int		TcpBlockModeProc _ANSI_ARGS_((ClientData data,
@@ -150,43 +145,43 @@ static int		TcpReadyProc _ANSI_ARGS_((ClientData instanceData,
 static void		TcpWatchProc _ANSI_ARGS_((ClientData instanceData,
 		            int mask));
 #else
-#if 0
-#define PipeBlockModeProc NULL
-#define PipeCloseProc NULL
-#define PipeGetProc NULL
-#define PipeInputProc NULL
-#define PipeOutputProc NULL
-#define PipeReadyProc NULL
-#define PipeWatchProc NULL
+#    if 0
+#        define PipeBlockModeProc NULL
+#        define PipeCloseProc NULL
+#        define PipeGetProc NULL
+#        define PipeInputProc NULL
+#        define PipeOutputProc NULL
+#        define PipeReadyProc NULL
+#        define PipeWatchProc NULL
+#    endif
+#    define TcpGetOptionProc NULL
+#    define TcpCloseProc NULL
+#    define TcpInputProc NULL
+#    define TcpOutputProc NULL
+#    define TcpBlockModeProc NULL
+#    define TcpReadyProc NULL
+#    define TcpWatchProc NULL
+#    define TcpGetProc NULL
 #endif
-#define TcpGetOptionProc NULL
-#define TcpCloseProc NULL
-#define TcpInputProc NULL
-#define TcpOutputProc NULL
-#define TcpBlockModeProc NULL
-#define TcpReadyProc NULL
-#define TcpWatchProc NULL
-#define TcpGetProc NULL
-#endif
-static int		WaitForConnect _ANSI_ARGS_((TcpState *statePtr,
-		            int *errorCodePtr));
+static int WaitForConnect _ANSI_ARGS_((TcpState * statePtr,
+                                       int *errorCodePtr));
 
 /*
  * This structure describes the channel type structure for file based IO:
  */
 
 static Tcl_ChannelType fileChannelType = {
-    "file",				/* Type name. */
-    FileBlockModeProc,			/* Set blocking/nonblocking mode.*/
-    FileCloseProc,			/* Close proc. */
-    FileInputProc,			/* Input proc. */
-    FileOutputProc,			/* Output proc. */
-    FileSeekProc,			/* Seek proc. */
-    NULL,				/* Set option proc. */
-    NULL,				/* Get option proc. */
-    FileWatchProc,			/* Initialize notifier. */
-    FileReadyProc,			/* Are there events? */
-    FileGetProc,			/* Get Tcl_Files out of channel. */
+    "file", /* Type name. */
+    FileBlockModeProc, /* Set blocking/nonblocking mode.*/
+    FileCloseProc, /* Close proc. */
+    FileInputProc, /* Input proc. */
+    FileOutputProc, /* Output proc. */
+    FileSeekProc, /* Seek proc. */
+    NULL, /* Set option proc. */
+    NULL, /* Get option proc. */
+    FileWatchProc, /* Initialize notifier. */
+    FileReadyProc, /* Are there events? */
+    FileGetProc, /* Get Tcl_Files out of channel. */
 };
 
 /*
@@ -195,17 +190,17 @@ static Tcl_ChannelType fileChannelType = {
  */
 
 static Tcl_ChannelType pipeChannelType = {
-    "pipe",				/* Type name. */
-    PipeBlockModeProc,			/* Set blocking/nonblocking mode.*/
-    PipeCloseProc,			/* Close proc. */
-    PipeInputProc,			/* Input proc. */
-    PipeOutputProc,			/* Output proc. */
-    NULL,				/* Seek proc. */
-    NULL,				/* Set option proc. */
-    NULL,				/* Get option proc. */
-    PipeWatchProc,			/* Initialize notifier. */
-    PipeReadyProc,			/* Are there events? */
-    PipeGetProc,			/* Get Tcl_Files out of channel. */
+    "pipe", /* Type name. */
+    PipeBlockModeProc, /* Set blocking/nonblocking mode.*/
+    PipeCloseProc, /* Close proc. */
+    PipeInputProc, /* Input proc. */
+    PipeOutputProc, /* Output proc. */
+    NULL, /* Seek proc. */
+    NULL, /* Set option proc. */
+    NULL, /* Get option proc. */
+    PipeWatchProc, /* Initialize notifier. */
+    PipeReadyProc, /* Are there events? */
+    PipeGetProc, /* Get Tcl_Files out of channel. */
 };
 
 /*
@@ -214,19 +209,19 @@ static Tcl_ChannelType pipeChannelType = {
  */
 
 static Tcl_ChannelType tcpChannelType = {
-    "tcp",				/* Type name. */
-    TcpBlockModeProc,			/* Set blocking/nonblocking mode.*/
-    TcpCloseProc,			/* Close proc. */
-    TcpInputProc,			/* Input proc. */
-    TcpOutputProc,			/* Output proc. */
-    NULL,				/* Seek proc. */
-    NULL,				/* Set option proc. */
-    TcpGetOptionProc,			/* Get option proc. */
-    TcpWatchProc,			/* Initialize notifier. */
-    TcpReadyProc,			/* Are there events? */
-    TcpGetProc,				/* Get Tcl_Files out of channel. */
+    "tcp", /* Type name. */
+    TcpBlockModeProc, /* Set blocking/nonblocking mode.*/
+    TcpCloseProc, /* Close proc. */
+    TcpInputProc, /* Input proc. */
+    TcpOutputProc, /* Output proc. */
+    NULL, /* Seek proc. */
+    NULL, /* Set option proc. */
+    TcpGetOptionProc, /* Get option proc. */
+    TcpWatchProc, /* Initialize notifier. */
+    TcpReadyProc, /* Are there events? */
+    TcpGetProc, /* Get Tcl_Files out of channel. */
 };
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -244,66 +239,85 @@ static Tcl_ChannelType tcpChannelType = {
  *----------------------------------------------------------------------
  */
 
-	/* ARGSUSED */
-static int
-FileBlockModeProc(instanceData, mode)
-    ClientData instanceData;		/* File state. */
-    int mode;				/* The mode to set. Can be one of
-                                         * TCL_MODE_BLOCKING or
-                                         * TCL_MODE_NONBLOCKING. */
+/* ARGSUSED */
+static int FileBlockModeProc(instanceData,
+                             mode) ClientData instanceData; /* File state. */
+int mode; /* The mode to set. Can be one of
+           * TCL_MODE_BLOCKING or
+           * TCL_MODE_NONBLOCKING. */
 {
-    FileState *fsPtr = (FileState *) instanceData;
+    FileState *fsPtr = ( FileState * )instanceData;
     int curStatus;
     int fd;
 
-#ifndef	USE_FIONBIO
-    if (fsPtr->inFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(fsPtr->inFile, NULL);
+#ifndef USE_FIONBIO
+    if (fsPtr->inFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(fsPtr->inFile, NULL);
         curStatus = fcntl(fd, F_GETFL, 0);
-        if (mode == TCL_MODE_BLOCKING) {
+        if (mode == TCL_MODE_BLOCKING)
+        {
             curStatus &= (~(O_NONBLOCK));
-        } else {
+        }
+        else
+        {
             curStatus |= O_NONBLOCK;
         }
-        if (fcntl(fd, F_SETFL, curStatus) < 0) {
+        if (fcntl(fd, F_SETFL, curStatus) < 0)
+        {
             return errno;
         }
         curStatus = fcntl(fd, F_GETFL, 0);
     }
-    if (fsPtr->outFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(fsPtr->outFile, NULL);
+    if (fsPtr->outFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(fsPtr->outFile, NULL);
         curStatus = fcntl(fd, F_GETFL, 0);
-        if (mode == TCL_MODE_BLOCKING) {
+        if (mode == TCL_MODE_BLOCKING)
+        {
             curStatus &= (~(O_NONBLOCK));
-        } else {
+        }
+        else
+        {
             curStatus |= O_NONBLOCK;
         }
-        if (fcntl(fd, F_SETFL, curStatus) < 0) {
+        if (fcntl(fd, F_SETFL, curStatus) < 0)
+        {
             return errno;
         }
     }
 #endif
 
-#ifdef	USE_FIONBIO
-    if (fsPtr->inFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(fsPtr->inFile, NULL);
-        if (mode == TCL_MODE_BLOCKING) {
+#ifdef USE_FIONBIO
+    if (fsPtr->inFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(fsPtr->inFile, NULL);
+        if (mode == TCL_MODE_BLOCKING)
+        {
             curStatus = 0;
-        } else {
+        }
+        else
+        {
             curStatus = 1;
         }
-        if (ioctl(fd, (int) FIONBIO, &curStatus) < 0) {
+        if (ioctl(fd, ( int )FIONBIO, &curStatus) < 0)
+        {
             return errno;
         }
     }
-    if (fsPtr->outFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(fsPtr->outFile, NULL);
-        if (mode == TCL_MODE_BLOCKING) {
+    if (fsPtr->outFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(fsPtr->outFile, NULL);
+        if (mode == TCL_MODE_BLOCKING)
+        {
             curStatus = 0;
-        } else {
+        }
+        else
+        {
             curStatus = 1;
         }
-        if (ioctl(fd, (int) FIONBIO,  &curStatus) < 0) {
+        if (ioctl(fd, ( int )FIONBIO, &curStatus) < 0)
+        {
             return errno;
         }
     }
@@ -311,7 +325,7 @@ FileBlockModeProc(instanceData, mode)
 
     return 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -330,22 +344,21 @@ FileBlockModeProc(instanceData, mode)
  *----------------------------------------------------------------------
  */
 
-static int
-FileInputProc(instanceData, buf, toRead, errorCodePtr)
-    ClientData instanceData;		/* File state. */
-    char *buf;				/* Where to store data read. */
-    int toRead;				/* How much space is available
-                                         * in the buffer? */
-    int *errorCodePtr;			/* Where to store error code. */
+static int FileInputProc(instanceData, buf, toRead, errorCodePtr)
+ClientData instanceData; /* File state. */
+char *buf; /* Where to store data read. */
+int toRead; /* How much space is available
+             * in the buffer? */
+int *errorCodePtr; /* Where to store error code. */
 {
-    FileState *fsPtr = (FileState *) instanceData;
-    int fd;				/* The OS handle for reading. */
-    int bytesRead;			/* How many bytes were actually
-                                         * read from the input device? */
+    FileState *fsPtr = ( FileState * )instanceData;
+    int fd; /* The OS handle for reading. */
+    int bytesRead; /* How many bytes were actually
+                    * read from the input device? */
 
     *errorCodePtr = 0;
-    fd = (int) Tcl_GetFileInfo(fsPtr->inFile, NULL);
-    
+    fd = ( int )Tcl_GetFileInfo(fsPtr->inFile, NULL);
+
     /*
      * Assume there is always enough input available. This will block
      * appropriately, and read will unblock as soon as a short read is
@@ -353,14 +366,15 @@ FileInputProc(instanceData, buf, toRead, errorCodePtr)
      * nonblocking, the read will never block.
      */
 
-    bytesRead = read(fd, buf, (size_t) toRead);
-    if (bytesRead > -1) {
+    bytesRead = read(fd, buf, ( size_t )toRead);
+    if (bytesRead > -1)
+    {
         return bytesRead;
     }
     *errorCodePtr = errno;
     return -1;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -380,27 +394,27 @@ FileInputProc(instanceData, buf, toRead, errorCodePtr)
  *----------------------------------------------------------------------
  */
 
-static int
-FileOutputProc(instanceData, buf, toWrite, errorCodePtr)
-    ClientData instanceData;		/* File state. */
-    char *buf;				/* The data buffer. */
-    int toWrite;			/* How many bytes to write? */
-    int *errorCodePtr;			/* Where to store error code. */
+static int FileOutputProc(instanceData, buf, toWrite, errorCodePtr)
+ClientData instanceData; /* File state. */
+char *buf; /* The data buffer. */
+int toWrite; /* How many bytes to write? */
+int *errorCodePtr; /* Where to store error code. */
 {
-    FileState *fsPtr = (FileState *) instanceData;
+    FileState *fsPtr = ( FileState * )instanceData;
     int written;
     int fd;
 
     *errorCodePtr = 0;
-    fd = (int) Tcl_GetFileInfo(fsPtr->outFile, NULL);
-    written = write(fd, buf, (size_t) toWrite);
-    if (written > -1) {
+    fd = ( int )Tcl_GetFileInfo(fsPtr->outFile, NULL);
+    written = write(fd, buf, ( size_t )toWrite);
+    if (written > -1)
+    {
         return written;
     }
     *errorCodePtr = errno;
     return -1;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -418,47 +432,53 @@ FileOutputProc(instanceData, buf, toWrite, errorCodePtr)
  *----------------------------------------------------------------------
  */
 
-static int
-FileCloseProc(instanceData, interp)
-    ClientData instanceData;	/* File state. */
-    Tcl_Interp *interp;		/* For error reporting - unused. */
+static int FileCloseProc(instanceData,
+                         interp) ClientData instanceData; /* File state. */
+Tcl_Interp *interp; /* For error reporting - unused. */
 {
-    FileState *fsPtr = (FileState *) instanceData;
+    FileState *fsPtr = ( FileState * )instanceData;
     int fd, errorCode = 0;
 
-    if (fsPtr->inFile != NULL) {
+    if (fsPtr->inFile != NULL)
+    {
 
-	/*
-	 * Check for read/write file so we only close it once.
-	 */
+        /*
+         * Check for read/write file so we only close it once.
+         */
 
-	if (fsPtr->inFile == fsPtr->outFile) {
-	    fsPtr->outFile = NULL;
-	}
-        fd = (int) Tcl_GetFileInfo(fsPtr->inFile, NULL);
+        if (fsPtr->inFile == fsPtr->outFile)
+        {
+            fsPtr->outFile = NULL;
+        }
+        fd = ( int )Tcl_GetFileInfo(fsPtr->inFile, NULL);
         Tcl_FreeFile(fsPtr->inFile);
-        if (!TclInExit() || ((fd != 0) && (fd != 1) && (fd != 2))) {
-            if (close(fd) < 0) {
+        if (!TclInExit() || ((fd != 0) && (fd != 1) && (fd != 2)))
+        {
+            if (close(fd) < 0)
+            {
                 errorCode = errno;
             }
         }
     }
 
-    if (fsPtr->outFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(fsPtr->outFile, NULL);
-        Tcl_FreeFile(fsPtr->outFile);        
-        if (!TclInExit() || ((fd != 0) && (fd != 1) && (fd != 2))) {
-            if ((close(fd) < 0) && (errorCode == 0)) {
+    if (fsPtr->outFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(fsPtr->outFile, NULL);
+        Tcl_FreeFile(fsPtr->outFile);
+        if (!TclInExit() || ((fd != 0) && (fd != 1) && (fd != 2)))
+        {
+            if ((close(fd) < 0) && (errorCode == 0))
+            {
                 errorCode = errno;
             }
         }
     }
 
-    ckfree((char *) fsPtr);
-    
+    ckfree(( char * )fsPtr);
+
     return errorCode;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -479,37 +499,42 @@ FileCloseProc(instanceData, interp)
  *----------------------------------------------------------------------
  */
 
-static int
-FileSeekProc(instanceData, offset, mode, errorCodePtr)
-    ClientData instanceData;			/* File state. */
-    long offset;				/* Offset to seek to. */
-    int mode;					/* Relative to where
-                                                 * should we seek? Can be
-                                                 * one of SEEK_START,
-                                                 * SEEK_SET or SEEK_END. */
-    int *errorCodePtr;				/* To store error code. */
+static int FileSeekProc(instanceData, offset, mode, errorCodePtr)
+ClientData instanceData; /* File state. */
+long offset; /* Offset to seek to. */
+int mode; /* Relative to where
+           * should we seek? Can be
+           * one of SEEK_START,
+           * SEEK_SET or SEEK_END. */
+int *errorCodePtr; /* To store error code. */
 {
-    FileState *fsPtr = (FileState *) instanceData;
+    FileState *fsPtr = ( FileState * )instanceData;
     int newLoc;
     int fd;
 
     *errorCodePtr = 0;
-    if (fsPtr->inFile != (Tcl_File) NULL) {
-        fd = (int) Tcl_GetFileInfo(fsPtr->inFile, NULL);
-    } else if (fsPtr->outFile != (Tcl_File) NULL) {
-        fd = (int) Tcl_GetFileInfo(fsPtr->outFile, NULL);
-    } else {
+    if (fsPtr->inFile != ( Tcl_File )NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(fsPtr->inFile, NULL);
+    }
+    else if (fsPtr->outFile != ( Tcl_File )NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(fsPtr->outFile, NULL);
+    }
+    else
+    {
         *errorCodePtr = EFAULT;
         return -1;
     }
     newLoc = lseek(fd, offset, mode);
-    if (newLoc != -1) {
+    if (newLoc != -1)
+    {
         return newLoc;
     }
     *errorCodePtr = errno;
     return -1;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -527,32 +552,36 @@ FileSeekProc(instanceData, offset, mode, errorCodePtr)
  *----------------------------------------------------------------------
  */
 
-static void
-FileWatchProc(instanceData, mask)
-    ClientData instanceData;		/* The file state. */
-    int mask;				/* Events of interest; an OR-ed
-                                         * combination of TCL_READABLE,
-                                         * TCL_WRITABLE and TCL_EXCEPTION. */
+static void FileWatchProc(instanceData,
+                          mask) ClientData instanceData; /* The file state. */
+int mask; /* Events of interest; an OR-ed
+           * combination of TCL_READABLE,
+           * TCL_WRITABLE and TCL_EXCEPTION. */
 {
-    FileState *fsPtr = (FileState *) instanceData;
+    FileState *fsPtr = ( FileState * )instanceData;
 
-    if ((mask & TCL_READABLE) && (fsPtr->inFile != (Tcl_File) NULL)) {
+    if ((mask & TCL_READABLE) && (fsPtr->inFile != ( Tcl_File )NULL))
+    {
         Tcl_WatchFile(fsPtr->inFile, TCL_READABLE);
     }
-    if ((mask & TCL_WRITABLE) && (fsPtr->outFile != (Tcl_File) NULL)) {
+    if ((mask & TCL_WRITABLE) && (fsPtr->outFile != ( Tcl_File )NULL))
+    {
         Tcl_WatchFile(fsPtr->outFile, TCL_WRITABLE);
     }
 
-    if (mask & TCL_EXCEPTION) {
-        if (fsPtr->inFile != (Tcl_File) NULL) {
+    if (mask & TCL_EXCEPTION)
+    {
+        if (fsPtr->inFile != ( Tcl_File )NULL)
+        {
             Tcl_WatchFile(fsPtr->inFile, TCL_EXCEPTION);
         }
-        if (fsPtr->outFile != (Tcl_File) NULL) {
+        if (fsPtr->outFile != ( Tcl_File )NULL)
+        {
             Tcl_WatchFile(fsPtr->outFile, TCL_EXCEPTION);
         }
     }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -571,33 +600,37 @@ FileWatchProc(instanceData, mask)
  *----------------------------------------------------------------------
  */
 
-static int
-FileReadyProc(instanceData, mask)
-    ClientData instanceData;		/* The file state. */
-    int mask;				/* Events of interest; an OR-ed
-                                         * combination of TCL_READABLE,
-                                         * TCL_WRITABLE and TCL_EXCEPTION. */
+static int FileReadyProc(instanceData,
+                         mask) ClientData instanceData; /* The file state. */
+int mask; /* Events of interest; an OR-ed
+           * combination of TCL_READABLE,
+           * TCL_WRITABLE and TCL_EXCEPTION. */
 {
-    FileState *fsPtr = (FileState *) instanceData;
+    FileState *fsPtr = ( FileState * )instanceData;
     int present = 0;
 
-    if ((mask & TCL_READABLE) && (fsPtr->inFile != (Tcl_File) NULL)) {
+    if ((mask & TCL_READABLE) && (fsPtr->inFile != ( Tcl_File )NULL))
+    {
         present |= Tcl_FileReady(fsPtr->inFile, TCL_READABLE);
     }
-    if ((mask & TCL_WRITABLE) && (fsPtr->outFile != (Tcl_File) NULL)) {
+    if ((mask & TCL_WRITABLE) && (fsPtr->outFile != ( Tcl_File )NULL))
+    {
         present |= Tcl_FileReady(fsPtr->outFile, TCL_WRITABLE);
     }
-    if (mask & TCL_EXCEPTION) {
-        if (fsPtr->inFile != (Tcl_File) NULL) {
+    if (mask & TCL_EXCEPTION)
+    {
+        if (fsPtr->inFile != ( Tcl_File )NULL)
+        {
             present |= Tcl_FileReady(fsPtr->inFile, TCL_EXCEPTION);
         }
-        if (fsPtr->outFile != (Tcl_File) NULL) {
+        if (fsPtr->outFile != ( Tcl_File )NULL)
+        {
             present |= Tcl_FileReady(fsPtr->outFile, TCL_EXCEPTION);
         }
     }
     return present;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -607,7 +640,7 @@ FileReadyProc(instanceData, mask)
  *	a file based channel.
  *
  * Results:
- *	The appropriate Tcl_File or NULL if not present. 
+ *	The appropriate Tcl_File or NULL if not present.
  *
  * Side effects:
  *	None.
@@ -615,22 +648,24 @@ FileReadyProc(instanceData, mask)
  *----------------------------------------------------------------------
  */
 
-static Tcl_File
-FileGetProc(instanceData, direction)
-    ClientData instanceData;		/* The file state. */
-    int direction;			/* Which Tcl_File to retrieve? */
+static Tcl_File FileGetProc(instanceData,
+                            direction) ClientData instanceData; /* The file
+                                                                   state. */
+int direction; /* Which Tcl_File to retrieve? */
 {
-    FileState *fsPtr = (FileState *) instanceData;
+    FileState *fsPtr = ( FileState * )instanceData;
 
-    if (direction == TCL_READABLE) {
+    if (direction == TCL_READABLE)
+    {
         return fsPtr->inFile;
     }
-    if (direction == TCL_WRITABLE) {
+    if (direction == TCL_WRITABLE)
+    {
         return fsPtr->outFile;
     }
-    return (Tcl_File) NULL;
+    return ( Tcl_File )NULL;
 }
-
+
 #if 0
 /*
  *----------------------------------------------------------------------
@@ -682,7 +717,7 @@ TclGetAndDetachPids(interp, chan)
     }
 }
 #endif
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -700,74 +735,93 @@ TclGetAndDetachPids(interp, chan)
  *----------------------------------------------------------------------
  */
 
-	/* ARGSUSED */
-static int
-PipeBlockModeProc(instanceData, mode)
-    ClientData instanceData;		/* Pipe state. */
-    int mode;				/* The mode to set. Can be one of
-                                         * TCL_MODE_BLOCKING or
-                                         * TCL_MODE_NONBLOCKING. */
+/* ARGSUSED */
+static int PipeBlockModeProc(instanceData,
+                             mode) ClientData instanceData; /* Pipe state. */
+int mode; /* The mode to set. Can be one of
+           * TCL_MODE_BLOCKING or
+           * TCL_MODE_NONBLOCKING. */
 {
-    PipeState *psPtr = (PipeState *) instanceData;
+    PipeState *psPtr = ( PipeState * )instanceData;
     int curStatus;
     int fd;
 
-#ifndef	USE_FIONBIO    
-    if (psPtr->inFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(psPtr->inFile, NULL);
+#ifndef USE_FIONBIO
+    if (psPtr->inFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(psPtr->inFile, NULL);
         curStatus = fcntl(fd, F_GETFL, 0);
-        if (mode == TCL_MODE_BLOCKING) {
+        if (mode == TCL_MODE_BLOCKING)
+        {
             curStatus &= (~(O_NONBLOCK));
-        } else {
+        }
+        else
+        {
             curStatus |= O_NONBLOCK;
         }
-        if (fcntl(fd, F_SETFL, curStatus) < 0) {
+        if (fcntl(fd, F_SETFL, curStatus) < 0)
+        {
             return errno;
         }
         curStatus = fcntl(fd, F_GETFL, 0);
     }
-    if (psPtr->outFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(psPtr->outFile, NULL);
+    if (psPtr->outFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(psPtr->outFile, NULL);
         curStatus = fcntl(fd, F_GETFL, 0);
-        if (mode == TCL_MODE_BLOCKING) {
+        if (mode == TCL_MODE_BLOCKING)
+        {
             curStatus &= (~(O_NONBLOCK));
-        } else {
+        }
+        else
+        {
             curStatus |= O_NONBLOCK;
         }
-        if (fcntl(fd, F_SETFL, curStatus) < 0) {
+        if (fcntl(fd, F_SETFL, curStatus) < 0)
+        {
             return errno;
         }
     }
-#endif	/* !FIONBIO */
+#endif /* !FIONBIO */
 
-#ifdef	USE_FIONBIO
-    if (psPtr->inFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(psPtr->inFile, NULL);
-        if (mode == TCL_MODE_BLOCKING) {
+#ifdef USE_FIONBIO
+    if (psPtr->inFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(psPtr->inFile, NULL);
+        if (mode == TCL_MODE_BLOCKING)
+        {
             curStatus = 0;
-        } else {
+        }
+        else
+        {
             curStatus = 1;
         }
-        if (ioctl(fd, (int) FIONBIO, &curStatus) < 0) {
+        if (ioctl(fd, ( int )FIONBIO, &curStatus) < 0)
+        {
             return errno;
         }
     }
-    if (psPtr->outFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(psPtr->outFile, NULL);
-        if (mode == TCL_MODE_BLOCKING) {
+    if (psPtr->outFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(psPtr->outFile, NULL);
+        if (mode == TCL_MODE_BLOCKING)
+        {
             curStatus = 0;
-        } else {
+        }
+        else
+        {
             curStatus = 1;
         }
-        if (ioctl(fd, (int) FIONBIO,  &curStatus) < 0) {
+        if (ioctl(fd, ( int )FIONBIO, &curStatus) < 0)
+        {
             return errno;
         }
     }
-#endif	/* USE_FIONBIO */
-    
+#endif /* USE_FIONBIO */
+
     return 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -786,11 +840,11 @@ PipeBlockModeProc(instanceData, mode)
  *----------------------------------------------------------------------
  */
 
-	/* ARGSUSED */
-static int
-PipeCloseProc(instanceData, interp)
-    ClientData instanceData;	/* The pipe to close. */
-    Tcl_Interp *interp;		/* For error reporting. */
+/* ARGSUSED */
+static int PipeCloseProc(instanceData,
+                         interp) ClientData instanceData; /* The pipe to
+                                                             close. */
+Tcl_Interp *interp; /* For error reporting. */
 {
     PipeState *pipePtr;
 #if 0
@@ -801,20 +855,24 @@ PipeCloseProc(instanceData, interp)
 
     errorCode = 0;
     result = 0;
-    pipePtr = (PipeState *) instanceData;
-    if (pipePtr->inFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(pipePtr->inFile, NULL);
+    pipePtr = ( PipeState * )instanceData;
+    if (pipePtr->inFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(pipePtr->inFile, NULL);
         Tcl_FreeFile(pipePtr->inFile);
-	if (close(fd) < 0) {
-	    errorCode = errno;
-	}
+        if (close(fd) < 0)
+        {
+            errorCode = errno;
+        }
     }
-    if (pipePtr->outFile != NULL) {
-        fd = (int) Tcl_GetFileInfo(pipePtr->outFile, NULL);
+    if (pipePtr->outFile != NULL)
+    {
+        fd = ( int )Tcl_GetFileInfo(pipePtr->outFile, NULL);
         Tcl_FreeFile(pipePtr->outFile);
-	if ((close(fd) < 0) && (errorCode == 0)) {
-	    errorCode = errno;
-	}
+        if ((close(fd) < 0) && (errorCode == 0))
+        {
+            errorCode = errno;
+        }
     }
 
 #if 0
@@ -853,16 +911,18 @@ PipeCloseProc(instanceData, interp)
     }
 #endif
 
-    if (pipePtr->numPids != 0) {
-        ckfree((char *) pipePtr->pidPtr);
+    if (pipePtr->numPids != 0)
+    {
+        ckfree(( char * )pipePtr->pidPtr);
     }
-    ckfree((char *) pipePtr);
-    if (errorCode == 0) {
+    ckfree(( char * )pipePtr);
+    if (errorCode == 0)
+    {
         return result;
     }
     return errorCode;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -881,22 +941,21 @@ PipeCloseProc(instanceData, interp)
  *----------------------------------------------------------------------
  */
 
-static int
-PipeInputProc(instanceData, buf, toRead, errorCodePtr)
-    ClientData instanceData;		/* Pipe state. */
-    char *buf;				/* Where to store data read. */
-    int toRead;				/* How much space is available
-                                         * in the buffer? */
-    int *errorCodePtr;			/* Where to store error code. */
+static int PipeInputProc(instanceData, buf, toRead, errorCodePtr)
+ClientData instanceData; /* Pipe state. */
+char *buf; /* Where to store data read. */
+int toRead; /* How much space is available
+             * in the buffer? */
+int *errorCodePtr; /* Where to store error code. */
 {
-    PipeState *psPtr = (PipeState *) instanceData;
-    int fd;				/* The OS handle for reading. */
-    int bytesRead;			/* How many bytes were actually
-                                         * read from the input device? */
+    PipeState *psPtr = ( PipeState * )instanceData;
+    int fd; /* The OS handle for reading. */
+    int bytesRead; /* How many bytes were actually
+                    * read from the input device? */
 
     *errorCodePtr = 0;
-    fd = (int) Tcl_GetFileInfo(psPtr->inFile, NULL);
-    
+    fd = ( int )Tcl_GetFileInfo(psPtr->inFile, NULL);
+
     /*
      * Assume there is always enough input available. This will block
      * appropriately, and read will unblock as soon as a short read is
@@ -904,14 +963,15 @@ PipeInputProc(instanceData, buf, toRead, errorCodePtr)
      * nonblocking, the read will never block.
      */
 
-    bytesRead = read(fd, buf, (size_t) toRead);
-    if (bytesRead > -1) {
+    bytesRead = read(fd, buf, ( size_t )toRead);
+    if (bytesRead > -1)
+    {
         return bytesRead;
     }
     *errorCodePtr = errno;
     return -1;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -931,27 +991,27 @@ PipeInputProc(instanceData, buf, toRead, errorCodePtr)
  *----------------------------------------------------------------------
  */
 
-static int
-PipeOutputProc(instanceData, buf, toWrite, errorCodePtr)
-    ClientData instanceData;		/* Pipe state. */
-    char *buf;				/* The data buffer. */
-    int toWrite;			/* How many bytes to write? */
-    int *errorCodePtr;			/* Where to store error code. */
+static int PipeOutputProc(instanceData, buf, toWrite, errorCodePtr)
+ClientData instanceData; /* Pipe state. */
+char *buf; /* The data buffer. */
+int toWrite; /* How many bytes to write? */
+int *errorCodePtr; /* Where to store error code. */
 {
-    PipeState *psPtr = (PipeState *) instanceData;
+    PipeState *psPtr = ( PipeState * )instanceData;
     int written;
     int fd;
 
     *errorCodePtr = 0;
-    fd = (int) Tcl_GetFileInfo(psPtr->outFile, NULL);
-    written = write(fd, buf, (size_t) toWrite);
-    if (written > -1) {
+    fd = ( int )Tcl_GetFileInfo(psPtr->outFile, NULL);
+    written = write(fd, buf, ( size_t )toWrite);
+    if (written > -1)
+    {
         return written;
     }
     *errorCodePtr = errno;
     return -1;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -969,32 +1029,36 @@ PipeOutputProc(instanceData, buf, toWrite, errorCodePtr)
  *----------------------------------------------------------------------
  */
 
-static void
-PipeWatchProc(instanceData, mask)
-    ClientData instanceData;		/* The pipe state. */
-    int mask;				/* Events of interest; an OR-ed
-                                         * combination of TCL_READABLE,
-                                         * TCL_WRITABEL and TCL_EXCEPTION. */
+static void PipeWatchProc(instanceData,
+                          mask) ClientData instanceData; /* The pipe state. */
+int mask; /* Events of interest; an OR-ed
+           * combination of TCL_READABLE,
+           * TCL_WRITABEL and TCL_EXCEPTION. */
 {
-    PipeState *psPtr = (PipeState *) instanceData;
+    PipeState *psPtr = ( PipeState * )instanceData;
 
-    if ((mask & TCL_READABLE) && (psPtr->inFile != (Tcl_File) NULL)) {
+    if ((mask & TCL_READABLE) && (psPtr->inFile != ( Tcl_File )NULL))
+    {
         Tcl_WatchFile(psPtr->inFile, TCL_READABLE);
     }
-    if ((mask & TCL_WRITABLE) && (psPtr->outFile != (Tcl_File) NULL)) {
+    if ((mask & TCL_WRITABLE) && (psPtr->outFile != ( Tcl_File )NULL))
+    {
         Tcl_WatchFile(psPtr->outFile, TCL_WRITABLE);
     }
 
-    if (mask & TCL_EXCEPTION) {
-        if (psPtr->inFile != (Tcl_File) NULL) {
+    if (mask & TCL_EXCEPTION)
+    {
+        if (psPtr->inFile != ( Tcl_File )NULL)
+        {
             Tcl_WatchFile(psPtr->inFile, TCL_EXCEPTION);
         }
-        if (psPtr->outFile != (Tcl_File) NULL) {
+        if (psPtr->outFile != ( Tcl_File )NULL)
+        {
             Tcl_WatchFile(psPtr->outFile, TCL_EXCEPTION);
         }
     }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1013,33 +1077,37 @@ PipeWatchProc(instanceData, mask)
  *----------------------------------------------------------------------
  */
 
-static int
-PipeReadyProc(instanceData, mask)
-    ClientData instanceData;		/* The pipe state. */
-    int mask;				/* Events of interest; an OR-ed
-                                         * combination of TCL_READABLE,
-                                         * TCL_WRITABLE and TCL_EXCEPTION. */
+static int PipeReadyProc(instanceData,
+                         mask) ClientData instanceData; /* The pipe state. */
+int mask; /* Events of interest; an OR-ed
+           * combination of TCL_READABLE,
+           * TCL_WRITABLE and TCL_EXCEPTION. */
 {
-    PipeState *psPtr = (PipeState *) instanceData;
+    PipeState *psPtr = ( PipeState * )instanceData;
     int present = 0;
 
-    if ((mask & TCL_READABLE) && (psPtr->inFile != (Tcl_File) NULL)) {
+    if ((mask & TCL_READABLE) && (psPtr->inFile != ( Tcl_File )NULL))
+    {
         present |= Tcl_FileReady(psPtr->inFile, TCL_READABLE);
     }
-    if ((mask & TCL_WRITABLE) && (psPtr->outFile != (Tcl_File) NULL)) {
+    if ((mask & TCL_WRITABLE) && (psPtr->outFile != ( Tcl_File )NULL))
+    {
         present |= Tcl_FileReady(psPtr->outFile, TCL_WRITABLE);
     }
-    if (mask & TCL_EXCEPTION) {
-        if (psPtr->inFile != (Tcl_File) NULL) {
+    if (mask & TCL_EXCEPTION)
+    {
+        if (psPtr->inFile != ( Tcl_File )NULL)
+        {
             present |= Tcl_FileReady(psPtr->inFile, TCL_EXCEPTION);
         }
-        if (psPtr->outFile != (Tcl_File) NULL) {
+        if (psPtr->outFile != ( Tcl_File )NULL)
+        {
             present |= Tcl_FileReady(psPtr->outFile, TCL_EXCEPTION);
         }
     }
     return present;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1049,7 +1117,7 @@ PipeReadyProc(instanceData, mask)
  *	a command pipeline based channel.
  *
  * Results:
- *	The appropriate Tcl_File or NULL if not present. 
+ *	The appropriate Tcl_File or NULL if not present.
  *
  * Side effects:
  *	None.
@@ -1057,22 +1125,24 @@ PipeReadyProc(instanceData, mask)
  *----------------------------------------------------------------------
  */
 
-static Tcl_File
-PipeGetProc(instanceData, direction)
-    ClientData instanceData;		/* The pipe state. */
-    int direction;			/* Which Tcl_File to retrieve? */
+static Tcl_File PipeGetProc(instanceData,
+                            direction) ClientData instanceData; /* The pipe
+                                                                   state. */
+int direction; /* Which Tcl_File to retrieve? */
 {
-    PipeState *psPtr = (PipeState *) instanceData;
+    PipeState *psPtr = ( PipeState * )instanceData;
 
-    if (direction == TCL_READABLE) {
+    if (direction == TCL_READABLE)
+    {
         return psPtr->inFile;
     }
-    if (direction == TCL_WRITABLE) {
+    if (direction == TCL_WRITABLE)
+    {
         return psPtr->outFile;
     }
-    return (Tcl_File) NULL;
+    return ( Tcl_File )NULL;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1092,16 +1162,15 @@ PipeGetProc(instanceData, direction)
  *----------------------------------------------------------------------
  */
 
-Tcl_Channel
-Tcl_OpenFileChannel(interp, fileName, modeString, permissions)
-    Tcl_Interp *interp;			/* Interpreter for error reporting;
-                                         * can be NULL. */
-    char *fileName;			/* Name of file to open. */
-    char *modeString;			/* A list of POSIX open modes or
-                                         * a string such as "rw". */
-    int permissions;			/* If the open involves creating a
-                                         * file, with what modes to create
-                                         * it? */
+Tcl_Channel Tcl_OpenFileChannel(interp, fileName, modeString, permissions)
+Tcl_Interp *interp; /* Interpreter for error reporting;
+                     * can be NULL. */
+char *fileName; /* Name of file to open. */
+char *modeString; /* A list of POSIX open modes or
+                   * a string such as "rw". */
+int permissions; /* If the open involves creating a
+                  * file, with what modes to create
+                  * it? */
 {
     int fd, seekFlag, mode, channelPermissions;
     Tcl_File file;
@@ -1111,30 +1180,33 @@ Tcl_OpenFileChannel(interp, fileName, modeString, permissions)
     Tcl_DString buffer;
 
     mode = TclGetOpenMode(interp, modeString, &seekFlag);
-    if (mode == -1) {
+    if (mode == -1)
+    {
         return NULL;
     }
-    switch (mode & (O_RDONLY | O_WRONLY | O_RDWR)) {
-	case O_RDONLY:
-	    channelPermissions = TCL_READABLE;
-	    break;
-	case O_WRONLY:
-	    channelPermissions = TCL_WRITABLE;
-	    break;
-	case O_RDWR:
-	    channelPermissions = (TCL_READABLE | TCL_WRITABLE);
-	    break;
-	default:
-            /*
-             * This may occurr if modeString was "", for example.
-             */
-	    panic("Tcl_OpenFileChannel: invalid mode value");
-	    return NULL;
+    switch (mode & (O_RDONLY | O_WRONLY | O_RDWR))
+    {
+    case O_RDONLY:
+        channelPermissions = TCL_READABLE;
+        break;
+    case O_WRONLY:
+        channelPermissions = TCL_WRITABLE;
+        break;
+    case O_RDWR:
+        channelPermissions = (TCL_READABLE | TCL_WRITABLE);
+        break;
+    default:
+        /*
+         * This may occurr if modeString was "", for example.
+         */
+        panic("Tcl_OpenFileChannel: invalid mode value");
+        return NULL;
     }
 
     nativeName = Tcl_TranslateFileName(interp, fileName, &buffer);
-    if (nativeName == NULL) {
-	return NULL;
+    if (nativeName == NULL)
+    {
+        return NULL;
     }
     fd = open(nativeName, mode, permissions);
 
@@ -1142,13 +1214,19 @@ Tcl_OpenFileChannel(interp, fileName, modeString, permissions)
      * If nativeName is not NULL, the buffer is valid and we must free
      * the storage.
      */
-    
+
     Tcl_DStringFree(&buffer);
 
-    if (fd < 0) {
-        if (interp != (Tcl_Interp *) NULL) {
-            Tcl_AppendResult(interp, "couldn't open \"", fileName, "\": ",
-                    Tcl_PosixError(interp), (char *) NULL);
+    if (fd < 0)
+    {
+        if (interp != ( Tcl_Interp * )NULL)
+        {
+            Tcl_AppendResult(interp,
+                             "couldn't open \"",
+                             fileName,
+                             "\": ",
+                             Tcl_PosixError(interp),
+                             ( char * )NULL);
         }
         return NULL;
     }
@@ -1157,48 +1235,65 @@ Tcl_OpenFileChannel(interp, fileName, modeString, permissions)
      * Set close-on-exec flag on the fd so that child processes will not
      * inherit this fd.
      */
-  
+
     fcntl(fd, F_SETFD, FD_CLOEXEC);
-    
+
     sprintf(channelName, "file%d", fd);
-    file = Tcl_GetFile((ClientData) fd, TCL_UNIX_FD);
-    
-    fsPtr = (FileState *) ckalloc((unsigned) sizeof(FileState));
-    if (channelPermissions & TCL_READABLE) {
+    file = Tcl_GetFile(( ClientData )fd, TCL_UNIX_FD);
+
+    fsPtr = ( FileState * )ckalloc(( unsigned )sizeof(FileState));
+    if (channelPermissions & TCL_READABLE)
+    {
         fsPtr->inFile = file;
-    } else {
-        fsPtr->inFile = (Tcl_File) NULL;
     }
-    if (channelPermissions & TCL_WRITABLE) {
+    else
+    {
+        fsPtr->inFile = ( Tcl_File )NULL;
+    }
+    if (channelPermissions & TCL_WRITABLE)
+    {
         fsPtr->outFile = file;
-    } else {
-        fsPtr->outFile = (Tcl_File) NULL;
     }
-    chan = Tcl_CreateChannel(&fileChannelType, channelName,
-            (ClientData) fsPtr, channelPermissions);
+    else
+    {
+        fsPtr->outFile = ( Tcl_File )NULL;
+    }
+    chan = Tcl_CreateChannel(
+    &fileChannelType, channelName, ( ClientData )fsPtr, channelPermissions);
 
     /*
      * The channel may not be open now, for example if we tried to
      * open a file with permissions that cannot be satisfied.
      */
-    
-    if (chan == (Tcl_Channel) NULL) {
-        if (interp != (Tcl_Interp *) NULL) {
-            Tcl_AppendResult(interp, "couldn't create channel \"",
-                    channelName, "\": ", Tcl_PosixError(interp),
-                    (char *) NULL);
+
+    if (chan == ( Tcl_Channel )NULL)
+    {
+        if (interp != ( Tcl_Interp * )NULL)
+        {
+            Tcl_AppendResult(interp,
+                             "couldn't create channel \"",
+                             channelName,
+                             "\": ",
+                             Tcl_PosixError(interp),
+                             ( char * )NULL);
         }
         Tcl_FreeFile(file);
         close(fd);
         return NULL;
     }
 
-    if (seekFlag) {
-        if (Tcl_Seek(chan, 0, SEEK_END) < 0) {
-            if (interp != (Tcl_Interp *) NULL) {
-                Tcl_AppendResult(interp, "couldn't seek to end of file on \"",
-                        channelName, "\": ", Tcl_PosixError(interp),
-                        (char *) NULL);
+    if (seekFlag)
+    {
+        if (Tcl_Seek(chan, 0, SEEK_END) < 0)
+        {
+            if (interp != ( Tcl_Interp * )NULL)
+            {
+                Tcl_AppendResult(interp,
+                                 "couldn't seek to end of file on \"",
+                                 channelName,
+                                 "\": ",
+                                 Tcl_PosixError(interp),
+                                 ( char * )NULL);
             }
             Tcl_Close(NULL, chan);
             return NULL;
@@ -1206,7 +1301,7 @@ Tcl_OpenFileChannel(interp, fileName, modeString, permissions)
     }
     return chan;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1223,13 +1318,12 @@ Tcl_OpenFileChannel(interp, fileName, modeString, permissions)
  *----------------------------------------------------------------------
  */
 
-Tcl_Channel
-Tcl_MakeFileChannel(inFd, outFd, mode)
-    ClientData inFd;		/* OS level handle used for input. */
-    ClientData outFd;		/* OS level handle used for output. */
-    int mode;			/* ORed combination of TCL_READABLE and
-                                 * TCL_WRITABLE to indicate whether inFile
-                                 * and/or outFile are valid. */
+Tcl_Channel Tcl_MakeFileChannel(inFd, outFd, mode)
+ClientData inFd; /* OS level handle used for input. */
+ClientData outFd; /* OS level handle used for output. */
+int mode; /* ORed combination of TCL_READABLE and
+           * TCL_WRITABLE to indicate whether inFile
+           * and/or outFile are valid. */
 {
     Tcl_Channel chan;
     int fileUsed;
@@ -1237,20 +1331,23 @@ Tcl_MakeFileChannel(inFd, outFd, mode)
     FileState *fsPtr;
     char channelName[20];
 
-    if (mode == 0) {
-        return (Tcl_Channel) NULL;
+    if (mode == 0)
+    {
+        return ( Tcl_Channel )NULL;
     }
-    
-    inFile = (Tcl_File) NULL;
-    outFile = (Tcl_File) NULL;
-    
-    if (mode & TCL_READABLE) {
-	sprintf(channelName, "file%d", (int) inFd);
+
+    inFile = ( Tcl_File )NULL;
+    outFile = ( Tcl_File )NULL;
+
+    if (mode & TCL_READABLE)
+    {
+        sprintf(channelName, "file%d", ( int )inFd);
         inFile = Tcl_GetFile(inFd, TCL_UNIX_FD);
     }
-    
-    if (mode & TCL_WRITABLE) {
-	sprintf(channelName, "file%d", (int) outFd);
+
+    if (mode & TCL_WRITABLE)
+    {
+        sprintf(channelName, "file%d", ( int )outFd);
         outFile = Tcl_GetFile(outFd, TCL_UNIX_FD);
     }
 
@@ -1258,9 +1355,10 @@ Tcl_MakeFileChannel(inFd, outFd, mode)
      * Look to see if a channel with those two Tcl_Files already exists.
      * If so, return it.
      */
-    
+
     chan = TclFindFileChannel(inFile, outFile, &fileUsed);
-    if (chan != (Tcl_Channel) NULL) {
+    if (chan != ( Tcl_Channel )NULL)
+    {
         return chan;
     }
 
@@ -1269,18 +1367,19 @@ Tcl_MakeFileChannel(inFd, outFd, mode)
      * create a new channel containing it; this avoids core dumps
      * later, when the Tcl_File would be freed twice.
      */
-    
-    if (fileUsed) {
-        return (Tcl_Channel) NULL;
+
+    if (fileUsed)
+    {
+        return ( Tcl_Channel )NULL;
     }
-    fsPtr = (FileState *) ckalloc((unsigned) sizeof(FileState));
+    fsPtr = ( FileState * )ckalloc(( unsigned )sizeof(FileState));
     fsPtr->inFile = inFile;
     fsPtr->outFile = outFile;
-    
-    return Tcl_CreateChannel(&fileChannelType, channelName,
-            (ClientData) fsPtr, mode);
+
+    return Tcl_CreateChannel(
+    &fileChannelType, channelName, ( ClientData )fsPtr, mode);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1301,20 +1400,21 @@ Tcl_MakeFileChannel(inFd, outFd, mode)
 
 Tcl_Channel
 TclCreateCommandChannel(readFile, writeFile, errorFile, numPids, pidPtr)
-    Tcl_File readFile;		/* If non-null, gives the file for reading. */
-    Tcl_File writeFile;		/* If non-null, gives the file for writing. */
-    Tcl_File errorFile;		/* If non-null, gives the file where errors
-				 * can be read. */
-    int numPids;		/* The number of pids in the pid array. */
-    int *pidPtr;		/* An array of process identifiers.
-                                 * Allocated by the caller, freed when
-                                 * the channel is closed or the processes
-                                 * are detached (in a background exec). */
+Tcl_File readFile; /* If non-null, gives the file for reading. */
+Tcl_File writeFile; /* If non-null, gives the file for writing. */
+Tcl_File errorFile; /* If non-null, gives the file where errors
+                     * can be read. */
+int numPids; /* The number of pids in the pid array. */
+int *pidPtr; /* An array of process identifiers.
+              * Allocated by the caller, freed when
+              * the channel is closed or the processes
+              * are detached (in a background exec). */
 {
     Tcl_Channel channel;
     char channelName[20];
     int channelId;
-    PipeState *statePtr = (PipeState *) ckalloc((unsigned) sizeof(PipeState));
+    PipeState *statePtr
+    = ( PipeState * )ckalloc(( unsigned )sizeof(PipeState));
     int mode;
 
     statePtr->inFile = readFile;
@@ -1325,26 +1425,35 @@ TclCreateCommandChannel(readFile, writeFile, errorFile, numPids, pidPtr)
     statePtr->isNonBlocking = 0;
 
     mode = 0;
-    if (readFile != (Tcl_File) NULL) {
+    if (readFile != ( Tcl_File )NULL)
+    {
         mode |= TCL_READABLE;
     }
-    if (writeFile != (Tcl_File) NULL) {
+    if (writeFile != ( Tcl_File )NULL)
+    {
         mode |= TCL_WRITABLE;
     }
-    
+
     /*
      * Use one of the fds associated with the channel as the
      * channel id.
      */
 
-    if (readFile) {
-	channelId = (int) Tcl_GetFileInfo(readFile, NULL);
-    } else if (writeFile) {
-	channelId = (int) Tcl_GetFileInfo(writeFile, NULL);
-    } else if (errorFile) {
-	channelId = (int) Tcl_GetFileInfo(errorFile, NULL);
-    } else {
-	channelId = 0;
+    if (readFile)
+    {
+        channelId = ( int )Tcl_GetFileInfo(readFile, NULL);
+    }
+    else if (writeFile)
+    {
+        channelId = ( int )Tcl_GetFileInfo(writeFile, NULL);
+    }
+    else if (errorFile)
+    {
+        channelId = ( int )Tcl_GetFileInfo(errorFile, NULL);
+    }
+    else
+    {
+        channelId = 0;
     }
 
     /*
@@ -1354,20 +1463,21 @@ TclCreateCommandChannel(readFile, writeFile, errorFile, numPids, pidPtr)
      */
 
     sprintf(channelName, "file%d", channelId);
-    channel = Tcl_CreateChannel(&pipeChannelType, channelName,
-            (ClientData) statePtr, mode);
+    channel = Tcl_CreateChannel(
+    &pipeChannelType, channelName, ( ClientData )statePtr, mode);
 
-    if (channel == NULL) {
+    if (channel == NULL)
+    {
 
         /*
          * pidPtr will be freed by the caller if the return value is NULL.
          */
-        
-	ckfree((char *)statePtr);
+
+        ckfree(( char * )statePtr);
     }
     return channel;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1385,47 +1495,55 @@ TclCreateCommandChannel(readFile, writeFile, errorFile, numPids, pidPtr)
  *----------------------------------------------------------------------
  */
 
-	/* ARGSUSED */
-int
-Tcl_PidCmd(dummy, interp, argc, argv)
-    ClientData dummy;			/* Not used. */
-    Tcl_Interp *interp;			/* Current interpreter. */
-    int argc;				/* Number of arguments. */
-    char **argv;			/* Argument strings. */
+/* ARGSUSED */
+int Tcl_PidCmd(dummy, interp, argc, argv) ClientData dummy; /* Not used. */
+Tcl_Interp *interp; /* Current interpreter. */
+int argc; /* Number of arguments. */
+char **argv; /* Argument strings. */
 {
-    Tcl_Channel chan;			/* The channel to get pids for. */
-    Tcl_ChannelType *chanTypePtr;	/* The type of that channel. */
-    PipeState *pipePtr;			/* The pipe state. */
-    int i;				/* Loops over PIDs attached to the
-                                         * pipe. */
-    char string[50];			/* Temp buffer for string rep. of
-                                         * PIDs attached to the pipe. */
+    Tcl_Channel chan; /* The channel to get pids for. */
+    Tcl_ChannelType *chanTypePtr; /* The type of that channel. */
+    PipeState *pipePtr; /* The pipe state. */
+    int i; /* Loops over PIDs attached to the
+            * pipe. */
+    char string[50]; /* Temp buffer for string rep. of
+                      * PIDs attached to the pipe. */
 
-    if (argc > 2) {
-	Tcl_AppendResult(interp, "wrong # args: should be \"",
-		argv[0], " ?channelId?\"", (char *) NULL);
-	return TCL_ERROR;
+    if (argc > 2)
+    {
+        Tcl_AppendResult(interp,
+                         "wrong # args: should be \"",
+                         argv[0],
+                         " ?channelId?\"",
+                         ( char * )NULL);
+        return TCL_ERROR;
     }
-    if (argc == 1) {
-	sprintf(interp->result, "%ld", (long) getpid());
-    } else {
+    if (argc == 1)
+    {
+        sprintf(interp->result, "%ld", ( long )getpid());
+    }
+    else
+    {
         chan = Tcl_GetChannel(interp, argv[1], NULL);
-        if (chan == (Tcl_Channel) NULL) {
-	    return TCL_ERROR;
-	}
-	chanTypePtr = Tcl_GetChannelType(chan);
-	if (chanTypePtr != &pipeChannelType) {
-	    return TCL_OK;
-	}
-        pipePtr = (PipeState *) Tcl_GetChannelInstanceData(chan);
-        for (i = 0; i < pipePtr->numPids; i++) {
-	    sprintf(string, "%d", pipePtr->pidPtr[i]);
-	    Tcl_AppendElement(interp, string);
-	}
+        if (chan == ( Tcl_Channel )NULL)
+        {
+            return TCL_ERROR;
+        }
+        chanTypePtr = Tcl_GetChannelType(chan);
+        if (chanTypePtr != &pipeChannelType)
+        {
+            return TCL_OK;
+        }
+        pipePtr = ( PipeState * )Tcl_GetChannelInstanceData(chan);
+        for (i = 0; i < pipePtr->numPids; i++)
+        {
+            sprintf(string, "%d", pipePtr->pidPtr[i]);
+            Tcl_AppendElement(interp, string);
+        }
     }
     return TCL_OK;
 }
-
+
 #if 0
 /*
  *----------------------------------------------------------------------
@@ -1458,7 +1576,7 @@ TcpBlockModeProc(instanceData, mode)
     
     statePtr = (TcpState *) instanceData;
     sock = (int) Tcl_GetFileInfo(statePtr->sock, NULL);
-#ifndef	USE_FIONBIO
+#    ifndef USE_FIONBIO
     setting = fcntl(sock, F_GETFL, 0);
     if (mode == TCL_MODE_BLOCKING) {
         statePtr->flags &= (~(TCP_ASYNC_SOCKET));
@@ -1470,9 +1588,9 @@ TcpBlockModeProc(instanceData, mode)
     if (fcntl(sock, F_SETFL, setting) < 0) {
         return errno;
     }
-#endif
+#    endif
 
-#ifdef	USE_FIONBIO
+#    ifdef USE_FIONBIO
     if (mode == TCL_MODE_BLOCKING) {
         statePtr->flags &= (~(TCP_ASYNC_SOCKET));
         setting = 0;
@@ -1486,7 +1604,7 @@ TcpBlockModeProc(instanceData, mode)
             return errno;
         }
     }
-#endif
+#    endif
 
     return 0;
 }
@@ -1534,16 +1652,16 @@ WaitForConnect(statePtr, errorCodePtr)
                 timeOut);
         if (!(statePtr->flags & TCP_ASYNC_SOCKET)) {
             sock = (int) Tcl_GetFileInfo(statePtr->sock, NULL);
-#ifndef	USE_FIONBIO
+#    ifndef USE_FIONBIO
             flags = fcntl(sock, F_GETFL, 0);
             flags &= (~(O_NONBLOCK));
             (void) fcntl(sock, F_SETFL, flags);
-#endif
+#    endif
 
-#ifdef	USE_FIONBIO
+#    ifdef USE_FIONBIO
             flags = 0;
             (void) ioctl(sock, FIONBIO, &flags);
-#endif
+#    endif
         }
         if (state & TCL_EXCEPTION) {
             return -1;
@@ -2021,16 +2139,16 @@ CreateSocket(interp, port, host, server, myaddr, myport, async)
 	 */
 
         if (async) {
-#ifndef	USE_FIONBIO
+#    ifndef USE_FIONBIO
             origState = fcntl(sock, F_GETFL, 0);
             curState = origState | O_NONBLOCK;
             status = fcntl(sock, F_SETFL, curState);
-#endif
+#    endif
 
-#ifdef	USE_FIONBIO
+#    ifdef USE_FIONBIO
             curState = 1;
             status = ioctl(sock, FIONBIO, &curState);
-#endif            
+#    endif            
         } else {
             status = 0;
         }
@@ -2122,13 +2240,13 @@ CreateSocketAddress(sockaddrPtr, host, port)
                         (VOID *) hostent->h_addr_list[0],
                         (size_t) hostent->h_length);
             } else {
-#ifdef	EHOSTUNREACH
+#    ifdef EHOSTUNREACH
                 errno = EHOSTUNREACH;
-#else
-#ifdef ENXIO
+#    else
+#        ifdef ENXIO
                 errno = ENXIO;
-#endif
-#endif
+#        endif
+#    endif
                 return 0;	/* error */
             }
         }
@@ -2379,7 +2497,7 @@ TcpAccept(data, mask)
     }
 }
 #endif
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -2398,67 +2516,69 @@ TcpAccept(data, mask)
  *----------------------------------------------------------------------
  */
 
-Tcl_Channel
-TclGetDefaultStdChannel(type)
-    int type;			/* One of TCL_STDIN, TCL_STDOUT, TCL_STDERR. */
+Tcl_Channel TclGetDefaultStdChannel(
+type) int type; /* One of TCL_STDIN, TCL_STDOUT, TCL_STDERR. */
 {
     Tcl_Channel channel = NULL;
-    int fd = 0;			/* Initializations needed to prevent */
-    int mode = 0;		/* compiler warning (used before set). */
+    int fd = 0; /* Initializations needed to prevent */
+    int mode = 0; /* compiler warning (used before set). */
     char *bufMode = NULL;
 
-    switch (type) {
-        case TCL_STDIN:
-            if ((lseek(0, (off_t) 0, SEEK_CUR) == -1) &&
-                    (errno == EBADF)) {
-                return (Tcl_Channel) NULL;
-            }
-	    fd = 0;
-	    mode = TCL_READABLE;
-            bufMode = "line";
-            break;
-        case TCL_STDOUT:
-            if ((lseek(1, (off_t) 0, SEEK_CUR) == -1) &&
-                    (errno == EBADF)) {
-                return (Tcl_Channel) NULL;
-            }
-	    fd = 1;
-	    mode = TCL_WRITABLE;
-            bufMode = "line";
-            break;
-        case TCL_STDERR:
-            if ((lseek(2, (off_t) 0, SEEK_CUR) == -1) &&
-                    (errno == EBADF)) {
-                return (Tcl_Channel) NULL;
-            }
-	    fd = 2;
-	    mode = TCL_WRITABLE;
-	    bufMode = "none";
-            break;
-	default:
-	    panic("TclGetDefaultStdChannel: Unexpected channel type");
-	    break;
+    switch (type)
+    {
+    case TCL_STDIN:
+        if ((lseek(0, ( off_t )0, SEEK_CUR) == -1) && (errno == EBADF))
+        {
+            return ( Tcl_Channel )NULL;
+        }
+        fd = 0;
+        mode = TCL_READABLE;
+        bufMode = "line";
+        break;
+    case TCL_STDOUT:
+        if ((lseek(1, ( off_t )0, SEEK_CUR) == -1) && (errno == EBADF))
+        {
+            return ( Tcl_Channel )NULL;
+        }
+        fd = 1;
+        mode = TCL_WRITABLE;
+        bufMode = "line";
+        break;
+    case TCL_STDERR:
+        if ((lseek(2, ( off_t )0, SEEK_CUR) == -1) && (errno == EBADF))
+        {
+            return ( Tcl_Channel )NULL;
+        }
+        fd = 2;
+        mode = TCL_WRITABLE;
+        bufMode = "none";
+        break;
+    default:
+        panic("TclGetDefaultStdChannel: Unexpected channel type");
+        break;
     }
 
-    channel = Tcl_MakeFileChannel((ClientData) fd, (ClientData) fd, mode);
+    channel = Tcl_MakeFileChannel(( ClientData )fd, ( ClientData )fd, mode);
 
     /*
      * Set up the normal channel options for stdio handles.
      */
 
-    if (Tcl_SetChannelOption(NULL, channel, "-translation", "auto") ==
-            TCL_ERROR) {
-        Tcl_Close((Tcl_Interp *) NULL, channel);
+    if (Tcl_SetChannelOption(NULL, channel, "-translation", "auto")
+        == TCL_ERROR)
+    {
+        Tcl_Close(( Tcl_Interp * )NULL, channel);
         return NULL;
     }
-    if (Tcl_SetChannelOption(NULL, channel, "-buffering", bufMode) ==
-            TCL_ERROR) {
-        Tcl_Close((Tcl_Interp *) NULL, channel);
+    if (Tcl_SetChannelOption(NULL, channel, "-buffering", bufMode)
+        == TCL_ERROR)
+    {
+        Tcl_Close(( Tcl_Interp * )NULL, channel);
         return NULL;
     }
     return channel;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -2478,15 +2598,13 @@ TclGetDefaultStdChannel(type)
  *----------------------------------------------------------------------
  */
 
-void
-TclClosePipeFile(file)
-    Tcl_File file;
+void TclClosePipeFile(file) Tcl_File file;
 {
-    int fd = (int) Tcl_GetFileInfo(file, NULL);
+    int fd = ( int )Tcl_GetFileInfo(file, NULL);
     close(fd);
     Tcl_FreeFile(file);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -2509,18 +2627,17 @@ TclClosePipeFile(file)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_GetOpenFile(interp, string, forWriting, checkUsage, filePtr)
-    Tcl_Interp *interp;		/* Interpreter in which to find file. */
-    char *string;		/* String that identifies file. */
-    int forWriting;		/* 1 means the file is going to be used
-				 * for writing, 0 means for reading. */
-    int checkUsage;		/* 1 means verify that the file was opened
-				 * in a mode that allows the access specified
-				 * by "forWriting". Ignored, we always
-                                 * check that the channel is open for the
-                                 * requested mode. */
-    ClientData *filePtr;	/* Store pointer to FILE structure here. */
+int Tcl_GetOpenFile(interp, string, forWriting, checkUsage, filePtr)
+Tcl_Interp *interp; /* Interpreter in which to find file. */
+char *string; /* String that identifies file. */
+int forWriting; /* 1 means the file is going to be used
+                 * for writing, 0 means for reading. */
+int checkUsage; /* 1 means verify that the file was opened
+                 * in a mode that allows the access specified
+                 * by "forWriting". Ignored, we always
+                 * check that the channel is open for the
+                 * requested mode. */
+ClientData *filePtr; /* Store pointer to FILE structure here. */
 {
     Tcl_Channel chan;
     int chanMode;
@@ -2528,18 +2645,22 @@ Tcl_GetOpenFile(interp, string, forWriting, checkUsage, filePtr)
     Tcl_File tf;
     int fd;
     FILE *f;
-    
+
     chan = Tcl_GetChannel(interp, string, &chanMode);
-    if (chan == (Tcl_Channel) NULL) {
+    if (chan == ( Tcl_Channel )NULL)
+    {
         return TCL_ERROR;
     }
-    if ((forWriting) && ((chanMode & TCL_WRITABLE) == 0)) {
-        Tcl_AppendResult(interp,
-                "\"", string, "\" wasn't opened for writing", (char *) NULL);
+    if ((forWriting) && ((chanMode & TCL_WRITABLE) == 0))
+    {
+        Tcl_AppendResult(
+        interp, "\"", string, "\" wasn't opened for writing", ( char * )NULL);
         return TCL_ERROR;
-    } else if ((!(forWriting)) && ((chanMode & TCL_READABLE) == 0)) {
-        Tcl_AppendResult(interp,
-                "\"", string, "\" wasn't opened for reading", (char *) NULL);
+    }
+    else if ((!(forWriting)) && ((chanMode & TCL_READABLE) == 0))
+    {
+        Tcl_AppendResult(
+        interp, "\"", string, "\" wasn't opened for reading", ( char * )NULL);
         return TCL_ERROR;
     }
 
@@ -2551,29 +2672,36 @@ Tcl_GetOpenFile(interp, string, forWriting, checkUsage, filePtr)
 
     chanTypePtr = Tcl_GetChannelType(chan);
     if ((chanTypePtr == &fileChannelType) || (chanTypePtr == &pipeChannelType)
-            || (chanTypePtr == &tcpChannelType)) {
+        || (chanTypePtr == &tcpChannelType))
+    {
         tf = Tcl_GetChannelFile(chan,
-                (forWriting ? TCL_WRITABLE : TCL_READABLE));
-        fd = (int) Tcl_GetFileInfo(tf, NULL);
+                                (forWriting ? TCL_WRITABLE : TCL_READABLE));
+        fd = ( int )Tcl_GetFileInfo(tf, NULL);
 
         /*
          * The call to fdopen below is probably dangerous, since it will
          * truncate an existing file if the file is being opened
          * for writing....
          */
-        
+
         f = fdopen(fd, (forWriting ? "w" : "r"));
-        if (f == NULL) {
-            Tcl_AppendResult(interp, "cannot get a FILE * for \"", string,
-                    "\"", (char *) NULL);
+        if (f == NULL)
+        {
+            Tcl_AppendResult(interp,
+                             "cannot get a FILE * for \"",
+                             string,
+                             "\"",
+                             ( char * )NULL);
             return TCL_ERROR;
         }
-        *filePtr = (ClientData) f;
+        *filePtr = ( ClientData )f;
         return TCL_OK;
     }
 
-    Tcl_AppendResult(interp, "\"", string,
-            "\" cannot be used to get a FILE * - unsupported type",
-            (char *) NULL);
-    return TCL_ERROR;        
+    Tcl_AppendResult(interp,
+                     "\"",
+                     string,
+                     "\" cannot be used to get a FILE * - unsupported type",
+                     ( char * )NULL);
+    return TCL_ERROR;
 }

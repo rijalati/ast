@@ -1,5 +1,5 @@
 #pragma prototyped
-/* 
+/*
  * tkMain.c --
  *
  *	This file contains a generic main program for Tk-based applications.
@@ -24,11 +24,11 @@
 #include <tcl.h>
 #include <tk.h>
 #if 0
-#ifdef NO_STDLIB_H
-#   include "../compat/stdlib.h"
-#else
-#   include <stdlib.h>
-#endif
+#    ifdef NO_STDLIB_H
+#        include "../compat/stdlib.h"
+#    else
+#        include <stdlib.h>
+#    endif
 #endif
 
 /*
@@ -40,7 +40,7 @@
  * some systems.
  */
 
-extern int		isatty _ANSI_ARGS_((int fd));
+extern int isatty _ANSI_ARGS_((int fd));
 #if 0
 extern int		read _ANSI_ARGS_((int fd, char *buf, size_t size));
 extern char *		strrchr _ANSI_ARGS_((CONST char *string, int c));
@@ -50,23 +50,22 @@ extern char *		strrchr _ANSI_ARGS_((CONST char *string, int c));
  * Global variables used by the main program:
  */
 
-static Tcl_Interp *interp;	/* Interpreter for this application. */
-static Tcl_DString command;	/* Used to assemble lines of terminal input
-				 * into Tcl commands. */
-static Tcl_DString line;	/* Used to read the next line from the
-                                 * terminal input. */
-static int tty;			/* Non-zero means standard input is a
-				 * terminal-like device.  Zero means it's
-				 * a file. */
+static Tcl_Interp *interp; /* Interpreter for this application. */
+static Tcl_DString command; /* Used to assemble lines of terminal input
+                             * into Tcl commands. */
+static Tcl_DString line; /* Used to read the next line from the
+                          * terminal input. */
+static int tty; /* Non-zero means standard input is a
+                 * terminal-like device.  Zero means it's
+                 * a file. */
 
 /*
  * Forward declarations for procedures defined later in this file.
  */
 
-static void		Prompt _ANSI_ARGS_((Tcl_Interp *interp, int partial));
-static void		StdinProc _ANSI_ARGS_((ClientData clientData,
-			    int mask));
-
+static void Prompt _ANSI_ARGS_((Tcl_Interp * interp, int partial));
+static void StdinProc _ANSI_ARGS_((ClientData clientData, int mask));
+
 /*
  *----------------------------------------------------------------------
  *
@@ -86,14 +85,12 @@ static void		StdinProc _ANSI_ARGS_((ClientData clientData,
  *----------------------------------------------------------------------
  */
 
-void
-Tksh_TkMain(argc, argv, appInitProc)
-    int argc;				/* Number of arguments. */
-    char **argv;			/* Array of argument strings. */
-    Tcl_AppInitProc *appInitProc;	/* Application-specific initialization
-					 * procedure to call after most
-					 * initialization but before starting
-					 * to execute commands. */
+void Tksh_TkMain(argc, argv, appInitProc) int argc; /* Number of arguments. */
+char **argv; /* Array of argument strings. */
+Tcl_AppInitProc *appInitProc; /* Application-specific initialization
+                               * procedure to call after most
+                               * initialization but before starting
+                               * to execute commands. */
 {
     char *args, *fileName;
     char buf[20];
@@ -118,17 +115,20 @@ Tksh_TkMain(argc, argv, appInitProc)
      */
 
     fileName = NULL;
-    if (argc > 1) {
-	length = strlen(argv[1]);
-	if ((length >= 2) && (strncmp(argv[1], "-file", length) == 0)) {
-	    argc--;
-	    argv++;
-	}
+    if (argc > 1)
+    {
+        length = strlen(argv[1]);
+        if ((length >= 2) && (strncmp(argv[1], "-file", length) == 0))
+        {
+            argc--;
+            argv++;
+        }
     }
-    if ((argc > 1) && (argv[1][0] != '-')) {
-	fileName = argv[1];
-	argc--;
-	argv++;
+    if ((argc > 1) && (argv[1][0] != '-'))
+    {
+        fileName = argv[1];
+        argc--;
+        argv++;
     }
 
     /*
@@ -136,13 +136,15 @@ Tksh_TkMain(argc, argv, appInitProc)
      * and "argv".
      */
 
-    args = Tcl_Merge(argc-1, argv+1);
+    args = Tcl_Merge(argc - 1, argv + 1);
     Tcl_SetVar(interp, "argv", args, TCL_GLOBAL_ONLY);
     ckfree(args);
-    sprintf(buf, "%d", argc-1);
+    sprintf(buf, "%d", argc - 1);
     Tcl_SetVar(interp, "argc", buf, TCL_GLOBAL_ONLY);
-    Tcl_SetVar(interp, "argv0", (fileName != NULL) ? fileName : argv[0],
-	    TCL_GLOBAL_ONLY);
+    Tcl_SetVar(interp,
+               "argv0",
+               (fileName != NULL) ? fileName : argv[0],
+               TCL_GLOBAL_ONLY);
 
     /*
      * Set the "tcl_interactive" variable.
@@ -160,78 +162,94 @@ Tksh_TkMain(argc, argv, appInitProc)
 #else
     tty = isatty(0);
 #endif
-    Tcl_SetVar(interp, "tcl_interactive",
-	    ((fileName == NULL) && tty) ? "1" : "0", TCL_GLOBAL_ONLY);
+    Tcl_SetVar(interp,
+               "tcl_interactive",
+               ((fileName == NULL) && tty) ? "1" : "0",
+               TCL_GLOBAL_ONLY);
 
     /*
      * Invoke application-specific initialization.
      */
 
-    if ((*appInitProc)(interp) != TCL_OK) {
-	errChannel = Tcl_GetStdChannel(TCL_STDERR);
-	if (errChannel) {
-            Tcl_Write(errChannel,
-		    "application-specific initialization failed: ", -1);
+    if ((*appInitProc)(interp) != TCL_OK)
+    {
+        errChannel = Tcl_GetStdChannel(TCL_STDERR);
+        if (errChannel)
+        {
+            Tcl_Write(
+            errChannel, "application-specific initialization failed: ", -1);
             Tcl_Write(errChannel, interp->result, -1);
             Tcl_Write(errChannel, "\n", 1);
         }
-    	Tcl_DeleteInterp(interp);
-	Tcl_Exit(1);		/* added so tksh will exit here */
+        Tcl_DeleteInterp(interp);
+        Tcl_Exit(1); /* added so tksh will exit here */
     }
 
     /*
      * Invoke the script specified on the command line, if any.
      */
 
-    if (fileName != NULL) {
-	code = Tcl_EvalFile(interp, fileName);
-	if (code != TCL_OK) {
-	    goto error;
-	}
-	tty = 0;
-    } else {
+    if (fileName != NULL)
+    {
+        code = Tcl_EvalFile(interp, fileName);
+        if (code != TCL_OK)
+        {
+            goto error;
+        }
+        tty = 0;
+    }
+    else
+    {
 
-	/*
-	 * Commands will come from standard input, so set up an event
-	 * handler for standard input.  Evaluate the .rc file, if one
-	 * has been specified, set up an event handler for standard
-	 * input, and print a prompt if the input device is a terminal.
-	 */
+        /*
+         * Commands will come from standard input, so set up an event
+         * handler for standard input.  Evaluate the .rc file, if one
+         * has been specified, set up an event handler for standard
+         * input, and print a prompt if the input device is a terminal.
+         */
 
-	fileName = Tcl_GetVar(interp, "tcl_rcFileName", TCL_GLOBAL_ONLY);
+        fileName = Tcl_GetVar(interp, "tcl_rcFileName", TCL_GLOBAL_ONLY);
 
-	if (fileName != NULL) {
-	    Tcl_DString buffer;
-	    char *fullName;
-    
-	    fullName = Tcl_TranslateFileName(interp, fileName, &buffer);
-	    if (fullName == NULL) {
-		errChannel = Tcl_GetStdChannel(TCL_STDERR);
-		if (errChannel) {
+        if (fileName != NULL)
+        {
+            Tcl_DString buffer;
+            char *fullName;
+
+            fullName = Tcl_TranslateFileName(interp, fileName, &buffer);
+            if (fullName == NULL)
+            {
+                errChannel = Tcl_GetStdChannel(TCL_STDERR);
+                if (errChannel)
+                {
                     Tcl_Write(errChannel, interp->result, -1);
                     Tcl_Write(errChannel, "\n", 1);
                 }
-	    } else {
+            }
+            else
+            {
 
                 /*
                  * NOTE: The following relies on O_RDONLY==0.
                  */
-                
+
                 chan = Tcl_OpenFileChannel(interp, fullName, "r", 0);
-                if (chan != (Tcl_Channel) NULL) {
+                if (chan != ( Tcl_Channel )NULL)
+                {
                     Tcl_Close(NULL, chan);
-                    if (Tcl_EvalFile(interp, fullName) != TCL_OK) {
-			errChannel = Tcl_GetStdChannel(TCL_STDERR);
-			if (errChannel) {
+                    if (Tcl_EvalFile(interp, fullName) != TCL_OK)
+                    {
+                        errChannel = Tcl_GetStdChannel(TCL_STDERR);
+                        if (errChannel)
+                        {
                             Tcl_Write(errChannel, interp->result, -1);
                             Tcl_Write(errChannel, "\n", 1);
                         }
                     }
                 }
             }
-            
-	    Tcl_DStringFree(&buffer);
-	}
+
+            Tcl_DStringFree(&buffer);
+        }
 
 #if 0
 	/*
@@ -280,15 +298,16 @@ error:
 
     Tcl_AddErrorInfo(interp, "");
     errChannel = Tcl_GetStdChannel(TCL_STDERR);
-    if (errChannel) {
-        Tcl_Write(errChannel, Tcl_GetVar(interp, "errorInfo", TCL_GLOBAL_ONLY),
-		-1);
+    if (errChannel)
+    {
+        Tcl_Write(
+        errChannel, Tcl_GetVar(interp, "errorInfo", TCL_GLOBAL_ONLY), -1);
         Tcl_Write(errChannel, "\n", 1);
     }
     Tcl_DeleteInterp(interp);
     Tcl_Exit(1);
 }
-
+
 #if 0
 /*
  *----------------------------------------------------------------------
@@ -461,63 +480,69 @@ defaultPrompt:
 /*********************************************************************/
 
 static int Tksh_BindCmd(clientData, interp, argc, argv)
-    ClientData clientData;      /* Main window associated with
-                                 * interpreter. */
-    Tcl_Interp *interp;         /* Current interpreter. */
-    int argc;                   /* Number of arguments. */
-    char **argv;                /* Argument strings. */
+ClientData clientData; /* Main window associated with
+                        * interpreter. */
+Tcl_Interp *interp; /* Current interpreter. */
+int argc; /* Number of arguments. */
+char **argv; /* Argument strings. */
 {
-	char *bindscript, *script = NULL, *oldarg;
-	int result;
+    char *bindscript, *script = NULL, *oldarg;
+    int result;
 
-	if ((argc == 4) && (argv[3][0] != '+'))
-	{
-		static char *bindprefixksh = "#!ksh\n";
-		static char *bindprefixtcl = "#!tcl\n";
-#		define BINDPRELEN 6
+    if ((argc == 4) && (argv[3][0] != '+'))
+    {
+        static char *bindprefixksh = "#!ksh\n";
+        static char *bindprefixtcl = "#!tcl\n";
+#define BINDPRELEN 6
 
-		bindscript = argv[3];
-		if ((bindscript[0] == '#') && (bindscript[1] == '!' ))
-		{
-			if ((strcmp(bindscript, bindprefixksh) == 0) ||
-			    (strcmp(bindscript, bindprefixtcl) == 0))
-				return Tk_BindCmd(clientData,interp,argc,argv);
-		}
-		script = (char *) malloc(strlen(bindscript) + BINDPRELEN +1);
-		strcpy(script, (((Interp *) interp)->interpType == INTERP_TCL)?
-				bindprefixtcl : bindprefixksh);
-		strcpy(script + BINDPRELEN, bindscript);
-		oldarg = argv[3];
-		argv[3] = script;
-		result = Tk_BindCmd(clientData, interp, argc, argv);
-		argv[3] = oldarg;
-		free(script);
-		return result;
-	}
-	return Tk_BindCmd(clientData, interp, argc, argv);
+        bindscript = argv[3];
+        if ((bindscript[0] == '#') && (bindscript[1] == '!'))
+        {
+            if ((strcmp(bindscript, bindprefixksh) == 0)
+                || (strcmp(bindscript, bindprefixtcl) == 0))
+                return Tk_BindCmd(clientData, interp, argc, argv);
+        }
+        script = ( char * )malloc(strlen(bindscript) + BINDPRELEN + 1);
+        strcpy(script,
+               ((( Interp * )interp)->interpType == INTERP_TCL)
+               ? bindprefixtcl
+               : bindprefixksh);
+        strcpy(script + BINDPRELEN, bindscript);
+        oldarg = argv[3];
+        argv[3] = script;
+        result = Tk_BindCmd(clientData, interp, argc, argv);
+        argv[3] = oldarg;
+        free(script);
+        return result;
+    }
+    return Tk_BindCmd(clientData, interp, argc, argv);
 }
-static void bindsetup(Tcl_Interp *interp)
+static void
+bindsetup(Tcl_Interp *interp)
 {
-	Tcl_CmdInfo bindInfo;
-	if (Tcl_GetCommandInfo(interp, "bind", & bindInfo))
-	{
-		bindInfo.proc = Tksh_BindCmd;
-		/* Tcl_SetCommandInfo(interp, "bind", &bindInfo); */
-		Tcl_CreateCommand(interp, "bind", bindInfo.proc,
-			bindInfo.clientData, bindInfo.deleteProc);
-		Tksh_SetCommandType(interp, "bind", INTERP_CURRENT);
-	}
+    Tcl_CmdInfo bindInfo;
+    if (Tcl_GetCommandInfo(interp, "bind", &bindInfo))
+    {
+        bindInfo.proc = Tksh_BindCmd;
+        /* Tcl_SetCommandInfo(interp, "bind", &bindInfo); */
+        Tcl_CreateCommand(interp,
+                          "bind",
+                          bindInfo.proc,
+                          bindInfo.clientData,
+                          bindInfo.deleteProc);
+        Tksh_SetCommandType(interp, "bind", INTERP_CURRENT);
+    }
 }
-static int b_tkloop(int argc, char **argv, Shbltin_t *context)
+static int
+b_tkloop(int argc, char **argv, Shbltin_t *context)
 {
-	Tcl_Interp *interp = (Tcl_Interp *)context->ptr;
-	Tksh_BeginBlock(interp, INTERP_TCL);
-	Tk_MainLoop();
-	Tksh_EndBlock(interp);
-	return 0;
+    Tcl_Interp *interp = ( Tcl_Interp * )context->ptr;
+    Tksh_BeginBlock(interp, INTERP_TCL);
+    Tk_MainLoop();
+    Tksh_EndBlock(interp);
+    return 0;
 }
-int Tksh_Init(interp)
-    Tcl_Interp *interp;         /* Interpreter to initialize. */
+int Tksh_Init(interp) Tcl_Interp *interp; /* Interpreter to initialize. */
 {
 #if 0
     static char initCmd[] =
@@ -531,34 +556,37 @@ int Tksh_Init(interp)
         fi\n";
 #endif
     bindsetup(interp);
-    sh_addbuiltin("tkloop", b_tkloop, (void *) interp);
+    sh_addbuiltin("tkloop", b_tkloop, ( void * )interp);
     return TCL_OK;
 }
 
-static int
-Tksh_AppInit(interp)
-    Tcl_Interp *interp;		/* Interpreter for application. */
+static int Tksh_AppInit(interp) Tcl_Interp *interp; /* Interpreter for
+                                                       application. */
 {
-    if (Tcl_Init(interp) == TCL_ERROR) {
-	return TCL_ERROR;
+    if (Tcl_Init(interp) == TCL_ERROR)
+    {
+        return TCL_ERROR;
     }
     Tksh_BeginBlock(interp, INTERP_TCL);
-		/* Should be current, but Tk_Init evals a script. */
-    if (Tk_Init(interp) == TCL_ERROR) {
-	return TCL_ERROR;
+    /* Should be current, but Tk_Init evals a script. */
+    if (Tk_Init(interp) == TCL_ERROR)
+    {
+        return TCL_ERROR;
     }
-    if (Tksh_Init(interp) == TCL_ERROR) {
-	return TCL_ERROR;
+    if (Tksh_Init(interp) == TCL_ERROR)
+    {
+        return TCL_ERROR;
     }
-    Tksh_SetCommandType(interp, "button", INTERP_CURRENT);  /* Why do this? */
+    Tksh_SetCommandType(interp, "button", INTERP_CURRENT); /* Why do this? */
     Tksh_EndBlock(interp);
-    Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc *) NULL);
+    Tcl_StaticPackage(interp, "Tk", Tk_Init, ( Tcl_PackageInitProc * )NULL);
 #ifdef TK_TEST
-    if (Tktest_Init(interp) == TCL_ERROR) {
-	return TCL_ERROR;
+    if (Tktest_Init(interp) == TCL_ERROR)
+    {
+        return TCL_ERROR;
     }
-    Tcl_StaticPackage(interp, "Tktest", Tktest_Init,
-            (Tcl_PackageInitProc *) NULL);
+    Tcl_StaticPackage(
+    interp, "Tktest", Tktest_Init, ( Tcl_PackageInitProc * )NULL);
 #endif /* TK_TEST */
 
 
@@ -590,73 +618,82 @@ Tksh_AppInit(interp)
 }
 #include <signal.h>
 static int gotIntr;
-extern int Tcl_NumEventsFound(void);
-static void SigEventSetup(ClientData clientData, int flags)
+extern int
+Tcl_NumEventsFound(void);
+static void
+SigEventSetup(ClientData clientData, int flags)
+{}
+static int
+SigEventProcess(Tcl_Event *evPtr, int flags)
 {
+    return 1;
 }
-static int SigEventProcess(Tcl_Event *evPtr, int flags)
+static void
+SigEventCheck(ClientData clientData, int flags)
 {
-	return 1;
+    Tcl_Event *evPtr;
+    if (Tcl_NumEventsFound() < 0)
+    {
+        evPtr = ( Tcl_Event * )malloc(sizeof(Tcl_Event));
+        evPtr->proc = SigEventProcess;
+        gotIntr = 1;
+        ;
+        Tcl_QueueEvent(evPtr, TCL_QUEUE_TAIL);
+    }
 }
-static void SigEventCheck(ClientData clientData, int flags)
+static void
+TmoutProc(ClientData clientData)
 {
-	Tcl_Event *evPtr;
-	if (Tcl_NumEventsFound() < 0)
-	{
-		evPtr = (Tcl_Event *) malloc(sizeof(Tcl_Event));
-		evPtr->proc = SigEventProcess;
-		gotIntr = 1;;
-		Tcl_QueueEvent(evPtr, TCL_QUEUE_TAIL);
-	}
+    *(( int * )clientData) = 1;
 }
-static void TmoutProc(ClientData clientData)
+static void
+fileReady(ClientData clientData, int mask)
 {
-	*((int *)clientData) = 1;
-}
-static void fileReady(ClientData clientData, int mask)
-{
-	Tcl_File *filePtr = (Tcl_File *) clientData;
-	/* Tcl_DeleteFileHandler(*filePtr); */
-	Tcl_CreateFileHandler(*filePtr, 0, fileReady, (ClientData) 0);
-	*filePtr = NULL;
+    Tcl_File *filePtr = ( Tcl_File * )clientData;
+    /* Tcl_DeleteFileHandler(*filePtr); */
+    Tcl_CreateFileHandler(*filePtr, 0, fileReady, ( ClientData )0);
+    *filePtr = NULL;
 }
 #include <wait.h>
-int tksh_waitevent(int fd, long tmout, int rw)
+int
+tksh_waitevent(int fd, long tmout, int rw)
 {
-	int tFlag = 0, result = 1;
-	Tcl_TimerToken token;
-	Tcl_File file = NULL;
-	gotIntr = 0;
+    int tFlag = 0, result = 1;
+    Tcl_TimerToken token;
+    Tcl_File file = NULL;
+    gotIntr = 0;
 
-	if (fd >= 0)
-	{
-		file = Tcl_GetFile((ClientData)fd ,TCL_UNIX_FD);
-		Tcl_CreateFileHandler(file, TCL_READABLE, fileReady, &file);
-	}
+    if (fd >= 0)
+    {
+        file = Tcl_GetFile(( ClientData )fd, TCL_UNIX_FD);
+        Tcl_CreateFileHandler(file, TCL_READABLE, fileReady, &file);
+    }
 
-        if (tmout> 0)
-                token = Tcl_CreateTimerHandler((int)tmout,TmoutProc,&(tFlag));
+    if (tmout > 0)
+        token = Tcl_CreateTimerHandler(( int )tmout, TmoutProc, &(tFlag));
 
-	Tksh_BeginBlock(interp, INTERP_TCL);	/* Best Guess */
-	while ((!gotIntr) && (!tFlag) && ((fd<0)||file) && result && (fd>=0 || !sh_waitsafe()))
-		result = Tcl_DoOneEvent(0);
-	Tksh_EndBlock(interp);
+    Tksh_BeginBlock(interp, INTERP_TCL); /* Best Guess */
+    while ((!gotIntr) && (!tFlag) && ((fd < 0) || file) && result
+           && (fd >= 0 || !sh_waitsafe()))
+        result = Tcl_DoOneEvent(0);
+    Tksh_EndBlock(interp);
 
-	if (gotIntr)
-	{
-		result = -1;
-		errno = EINTR;
-	} else
-	{
-		result = 1;
-	}
+    if (gotIntr)
+    {
+        result = -1;
+        errno = EINTR;
+    }
+    else
+    {
+        result = 1;
+    }
 
-        if (tmout > 0)
-                Tcl_DeleteTimerHandler(token);
-	if (file)
-		Tcl_CreateFileHandler(file, 0, fileReady, (ClientData) 0);
+    if (tmout > 0)
+        Tcl_DeleteTimerHandler(token);
+    if (file)
+        Tcl_CreateFileHandler(file, 0, fileReady, ( ClientData )0);
 
-	return result;
+    return result;
 }
 #if 0
 static void stoptk(void)
@@ -664,18 +701,20 @@ static void stoptk(void)
         Tcl_Exit(0);
 }
 #endif
-int b_tkinit(int argc, char *argv[], Shbltin_t *context)
+int
+b_tkinit(int argc, char *argv[], Shbltin_t *context)
 {
-        static char *av[] = { "tkinit", 0 };
+    static char *av[] = { "tkinit", 0 };
 
-        if (argc == 0)
-        {
-                argc = 1;
-                argv = av;
-        }
-        Tksh_TkMain(argc,argv,context ? (Tcl_AppInitProc*)context->ptr : Tksh_AppInit);
-	Tcl_CreateEventSource(SigEventSetup,SigEventCheck,NULL);
-	sh_waitnotify(tksh_waitevent);
-        /* atexit(stoptk); */
-        return 0;
+    if (argc == 0)
+    {
+        argc = 1;
+        argv = av;
+    }
+    Tksh_TkMain(
+    argc, argv, context ? ( Tcl_AppInitProc * )context->ptr : Tksh_AppInit);
+    Tcl_CreateEventSource(SigEventSetup, SigEventCheck, NULL);
+    sh_waitnotify(tksh_waitevent);
+    /* atexit(stoptk); */
+    return 0;
 }

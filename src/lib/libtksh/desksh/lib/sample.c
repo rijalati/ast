@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void main()
+void
+main()
 {
-    printf ("hello world\n");
+    printf("hello world\n");
     test1();
     test2();
 }
-

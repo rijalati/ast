@@ -1,24 +1,24 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 1985-2011 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*               Glenn Fowler <glenn.s.fowler@gmail.com>                *
-*                    David Korn <dgkorn@gmail.com>                     *
-*                     Phong Vo <phongvo@gmail.com>                     *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 1985-2011 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *               Glenn Fowler <glenn.s.fowler@gmail.com>                *
+ *                    David Korn <dgkorn@gmail.com>                     *
+ *                     Phong Vo <phongvo@gmail.com>                     *
+ *                                                                      *
+ ***********************************************************************/
 #pragma prototyped
 /*
  * Glenn Fowler
@@ -35,94 +35,95 @@
 
 #if _UWIN
 
-#include <uwin.h>
+#    include <uwin.h>
 
 size_t
-pathposix(const char* path, char* buf, size_t siz)
+pathposix(const char *path, char *buf, size_t siz)
 {
-	return uwin_unpath(path, buf, siz);
+    return uwin_unpath(path, buf, siz);
 }
 
 #else
 
-#if __CYGWIN__
+#    if __CYGWIN__
 
-extern void	cygwin_conv_to_posix_path(const char*, char*);
-
-size_t
-pathposix(const char* path, char* buf, size_t siz)
-{
-	size_t		n;
-
-	if (!buf || siz < PATH_MAX)
-	{
-		char	tmp[PATH_MAX];
-
-		cygwin_conv_to_posix_path(path, tmp);
-		if ((n = strlen(tmp)) < siz && buf)
-			memcpy(buf, tmp, n + 1);
-		return n;
-	}
-	cygwin_conv_to_posix_path(path, buf);
-	return strlen(buf);
-}
-
-#else
-
-#if __EMX__ && 0 /* show me the docs */
+extern void
+cygwin_conv_to_posix_path(const char *, char *);
 
 size_t
-pathposix(const char* path, char* buf, size_t siz)
+pathposix(const char *path, char *buf, size_t siz)
 {
-	char*		s;
-	size_t		n;
+    size_t n;
 
-	if (!_posixpath(buf, path, siz))
-	{
-		for (s = buf; *s; s++)
-			if (*s == '/')
-				*s = '\\';
-	}
-	else if ((n = strlen(path)) < siz && buf)
-		memcpy(buf, path, n + 1);
-	return n;
+    if (!buf || siz < PATH_MAX)
+    {
+        char tmp[PATH_MAX];
+
+        cygwin_conv_to_posix_path(path, tmp);
+        if ((n = strlen(tmp)) < siz && buf)
+            memcpy(buf, tmp, n + 1);
+        return n;
+    }
+    cygwin_conv_to_posix_path(path, buf);
+    return strlen(buf);
 }
 
-#else
+#    else
 
-#if __INTERIX
-
-#include <interix/interix.h>
+#        if __EMX__ && 0 /* show me the docs */
 
 size_t
-pathposix(const char* path, char *buf, size_t siz)
+pathposix(const char *path, char *buf, size_t siz)
 {
-	static const char	pfx[] = "/dev/fs";
+    char *s;
+    size_t n;
 
-	*buf = 0;
-	if (!strncasecmp(path, pfx, sizeof(pfx) - 1))
-		strlcpy(buf, path, siz);
-	else
-		winpath2unix(path, PATH_NONSTRICT, buf, siz);
-	return strlen(buf);
+    if (!_posixpath(buf, path, siz))
+    {
+        for (s = buf; *s; s++)
+            if (*s == '/')
+                *s = '\\';
+    }
+    else if ((n = strlen(path)) < siz && buf)
+        memcpy(buf, path, n + 1);
+    return n;
 }
 
-#else
+#        else
+
+#            if __INTERIX
+
+#                include <interix/interix.h>
 
 size_t
-pathposix(const char* path, char* buf, size_t siz)
+pathposix(const char *path, char *buf, size_t siz)
 {
-	size_t		n;
+    static const char pfx[] = "/dev/fs";
 
-	if ((n = strlen(path)) < siz && buf)
-		memcpy(buf, path, n + 1);
-	return n;
+    *buf = 0;
+    if (!strncasecmp(path, pfx, sizeof(pfx) - 1))
+        strlcpy(buf, path, siz);
+    else
+        winpath2unix(path, PATH_NONSTRICT, buf, siz);
+    return strlen(buf);
 }
 
-#endif
+#            else
 
-#endif
+size_t
+pathposix(const char *path, char *buf, size_t siz)
+{
+    size_t n;
 
-#endif
+    if ((n = strlen(path)) < siz && buf)
+        memcpy(buf, path, n + 1);
+    return n;
+}
+
+#            endif
+
+#        endif
+
+#    endif
 
 #endif

@@ -1,4 +1,4 @@
-/* 
+/*
  * tkCanvUtil.c --
  *
  *	This procedure contains a collection of utility procedures
@@ -13,10 +13,10 @@
  * SCCS: @(#) tkCanvUtil.c 1.6 96/02/15 18:53:10
  */
 
-#include "tkInt.h"
 #include "tkCanvas.h"
+#include "tkInt.h"
 
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -34,14 +34,12 @@
  *----------------------------------------------------------------------
  */
 
-Tk_Window
-Tk_CanvasTkwin(canvas)
-    Tk_Canvas canvas;			/* Token for the canvas. */
+Tk_Window Tk_CanvasTkwin(canvas) Tk_Canvas canvas; /* Token for the canvas. */
 {
-    TkCanvas *canvasPtr = (TkCanvas *) canvas;
+    TkCanvas *canvasPtr = ( TkCanvas * )canvas;
     return canvasPtr->tkwin;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -64,45 +62,60 @@ Tk_CanvasTkwin(canvas)
  *----------------------------------------------------------------------
  */
 
-void
-Tk_CanvasDrawableCoords(canvas, x, y, drawableXPtr, drawableYPtr)
-    Tk_Canvas canvas;			/* Token for the canvas. */
-    double x, y;			/* Coordinates in canvas space. */
-    short *drawableXPtr, *drawableYPtr;	/* Screen coordinates are stored
-					 * here. */
+void Tk_CanvasDrawableCoords(canvas, x, y, drawableXPtr, drawableYPtr)
+Tk_Canvas canvas; /* Token for the canvas. */
+double x, y; /* Coordinates in canvas space. */
+short *drawableXPtr, *drawableYPtr; /* Screen coordinates are stored
+                                     * here. */
 {
-    TkCanvas *canvasPtr = (TkCanvas *) canvas;
+    TkCanvas *canvasPtr = ( TkCanvas * )canvas;
     double tmp;
 
     tmp = x - canvasPtr->drawableXOrigin;
-    if (tmp > 0) {
-	tmp += 0.5;
-    } else {
-	tmp -= 0.5;
+    if (tmp > 0)
+    {
+        tmp += 0.5;
     }
-    if (tmp > 32767) {
-	*drawableXPtr = 32767;
-    } else if (tmp < -32768) {
-	*drawableXPtr = -32768;
-    } else {
-	*drawableXPtr = tmp;
+    else
+    {
+        tmp -= 0.5;
+    }
+    if (tmp > 32767)
+    {
+        *drawableXPtr = 32767;
+    }
+    else if (tmp < -32768)
+    {
+        *drawableXPtr = -32768;
+    }
+    else
+    {
+        *drawableXPtr = tmp;
     }
 
-    tmp = y  - canvasPtr->drawableYOrigin;
-    if (tmp > 0) {
-	tmp += 0.5;
-    } else {
-	tmp -= 0.5;
+    tmp = y - canvasPtr->drawableYOrigin;
+    if (tmp > 0)
+    {
+        tmp += 0.5;
     }
-    if (tmp > 32767) {
-	*drawableYPtr = 32767;
-    } else if (tmp < -32768) {
-	*drawableYPtr = -32768;
-    } else {
-	*drawableYPtr = tmp;
+    else
+    {
+        tmp -= 0.5;
+    }
+    if (tmp > 32767)
+    {
+        *drawableYPtr = 32767;
+    }
+    else if (tmp < -32768)
+    {
+        *drawableYPtr = -32768;
+    }
+    else
+    {
+        *drawableYPtr = tmp;
     }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -124,45 +137,60 @@ Tk_CanvasDrawableCoords(canvas, x, y, drawableXPtr, drawableYPtr)
  *----------------------------------------------------------------------
  */
 
-void
-Tk_CanvasWindowCoords(canvas, x, y, screenXPtr, screenYPtr)
-    Tk_Canvas canvas;			/* Token for the canvas. */
-    double x, y;			/* Coordinates in canvas space. */
-    short *screenXPtr, *screenYPtr;	/* Screen coordinates are stored
-					 * here. */
+void Tk_CanvasWindowCoords(canvas, x, y, screenXPtr, screenYPtr)
+Tk_Canvas canvas; /* Token for the canvas. */
+double x, y; /* Coordinates in canvas space. */
+short *screenXPtr, *screenYPtr; /* Screen coordinates are stored
+                                 * here. */
 {
-    TkCanvas *canvasPtr = (TkCanvas *) canvas;
+    TkCanvas *canvasPtr = ( TkCanvas * )canvas;
     double tmp;
 
     tmp = x - canvasPtr->xOrigin;
-    if (tmp > 0) {
-	tmp += 0.5;
-    } else {
-	tmp -= 0.5;
+    if (tmp > 0)
+    {
+        tmp += 0.5;
     }
-    if (tmp > 32767) {
-	*screenXPtr = 32767;
-    } else if (tmp < -32768) {
-	*screenXPtr = -32768;
-    } else {
-	*screenXPtr = tmp;
+    else
+    {
+        tmp -= 0.5;
+    }
+    if (tmp > 32767)
+    {
+        *screenXPtr = 32767;
+    }
+    else if (tmp < -32768)
+    {
+        *screenXPtr = -32768;
+    }
+    else
+    {
+        *screenXPtr = tmp;
     }
 
-    tmp = y  - canvasPtr->yOrigin;
-    if (tmp > 0) {
-	tmp += 0.5;
-    } else {
-	tmp -= 0.5;
+    tmp = y - canvasPtr->yOrigin;
+    if (tmp > 0)
+    {
+        tmp += 0.5;
     }
-    if (tmp > 32767) {
-	*screenYPtr = 32767;
-    } else if (tmp < -32768) {
-	*screenYPtr = -32768;
-    } else {
-	*screenYPtr = tmp;
+    else
+    {
+        tmp -= 0.5;
+    }
+    if (tmp > 32767)
+    {
+        *screenYPtr = 32767;
+    }
+    else if (tmp < -32768)
+    {
+        *screenYPtr = -32768;
+    }
+    else
+    {
+        *screenYPtr = tmp;
     }
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -184,23 +212,23 @@ Tk_CanvasWindowCoords(canvas, x, y, screenXPtr, screenYPtr)
  *--------------------------------------------------------------
  */
 
-int
-Tk_CanvasGetCoord(interp, canvas, string, doublePtr)
-    Tcl_Interp *interp;		/* Interpreter for error reporting. */
-    Tk_Canvas canvas;		/* Canvas to which coordinate applies. */
-    char *string;		/* Describes coordinate (any screen
-				 * coordinate form may be used here). */
-    double *doublePtr;		/* Place to store converted coordinate. */
+int Tk_CanvasGetCoord(interp, canvas, string, doublePtr)
+Tcl_Interp *interp; /* Interpreter for error reporting. */
+Tk_Canvas canvas; /* Canvas to which coordinate applies. */
+char *string; /* Describes coordinate (any screen
+               * coordinate form may be used here). */
+double *doublePtr; /* Place to store converted coordinate. */
 {
-    TkCanvas *canvasPtr = (TkCanvas *) canvas;
-    if (Tk_GetScreenMM(canvasPtr->interp, canvasPtr->tkwin, string,
-	    doublePtr) != TCL_OK) {
-	return TCL_ERROR;
+    TkCanvas *canvasPtr = ( TkCanvas * )canvas;
+    if (Tk_GetScreenMM(canvasPtr->interp, canvasPtr->tkwin, string, doublePtr)
+        != TCL_OK)
+    {
+        return TCL_ERROR;
     }
     *doublePtr *= canvasPtr->pixelsPerMM;
     return TCL_OK;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -219,20 +247,21 @@ Tk_CanvasGetCoord(interp, canvas, string, doublePtr)
  *----------------------------------------------------------------------
  */
 
-void
-Tk_CanvasSetStippleOrigin(canvas, gc)
-    Tk_Canvas canvas;		/* Token for a canvas. */
-    GC gc;			/* Graphics context that is about to be
-				 * used to draw a stippled pattern as
-				 * part of redisplaying the canvas. */
+void Tk_CanvasSetStippleOrigin(canvas,
+                               gc) Tk_Canvas canvas; /* Token for a canvas. */
+GC gc; /* Graphics context that is about to be
+        * used to draw a stippled pattern as
+        * part of redisplaying the canvas. */
 
 {
-    TkCanvas *canvasPtr = (TkCanvas *) canvas;
+    TkCanvas *canvasPtr = ( TkCanvas * )canvas;
 
-    XSetTSOrigin(canvasPtr->display, gc, -canvasPtr->drawableXOrigin,
-	    -canvasPtr->drawableYOrigin);
+    XSetTSOrigin(canvasPtr->display,
+                 gc,
+                 -canvasPtr->drawableXOrigin,
+                 -canvasPtr->drawableYOrigin);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -256,13 +285,12 @@ Tk_CanvasSetStippleOrigin(canvas, gc)
  *----------------------------------------------------------------------
  */
 
-Tk_CanvasTextInfo *
-Tk_CanvasGetTextInfo(canvas)
-    Tk_Canvas canvas;			/* Token for the canvas widget. */
+Tk_CanvasTextInfo *Tk_CanvasGetTextInfo(
+canvas) Tk_Canvas canvas; /* Token for the canvas widget. */
 {
-    return &((TkCanvas *) canvas)->textInfo;
+    return &(( TkCanvas * )canvas)->textInfo;
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -281,17 +309,16 @@ Tk_CanvasGetTextInfo(canvas)
  *--------------------------------------------------------------
  */
 
-int
-Tk_CanvasTagsParseProc(clientData, interp, tkwin, value, widgRec, offset)
-    ClientData clientData;		/* Not used.*/
-    Tcl_Interp *interp;			/* Used for reporting errors. */
-    Tk_Window tkwin;			/* Window containing canvas widget. */
-    char *value;			/* Value of option (list of tag
-					 * names). */
-    char *widgRec;			/* Pointer to record for item. */
-    int offset;				/* Offset into item (ignored). */
+int Tk_CanvasTagsParseProc(clientData, interp, tkwin, value, widgRec, offset)
+ClientData clientData; /* Not used.*/
+Tcl_Interp *interp; /* Used for reporting errors. */
+Tk_Window tkwin; /* Window containing canvas widget. */
+char *value; /* Value of option (list of tag
+              * names). */
+char *widgRec; /* Pointer to record for item. */
+int offset; /* Offset into item (ignored). */
 {
-    Tk_Item *itemPtr = (Tk_Item *) widgRec;
+    Tk_Item *itemPtr = ( Tk_Item * )widgRec;
     int argc, i;
     char **argv;
     Tk_Uid *newPtr;
@@ -300,8 +327,9 @@ Tk_CanvasTagsParseProc(clientData, interp, tkwin, value, widgRec, offset)
      * Break the value up into the individual tag names.
      */
 
-    if (Tcl_SplitList(interp, value, &argc, &argv) != TCL_OK) {
-	return TCL_ERROR;
+    if (Tcl_SplitList(interp, value, &argc, &argv) != TCL_OK)
+    {
+        return TCL_ERROR;
     }
 
     /*
@@ -309,25 +337,29 @@ Tk_CanvasTagsParseProc(clientData, interp, tkwin, value, widgRec, offset)
      * tag names.
      */
 
-    if (itemPtr->tagSpace < argc) {
-	newPtr = (Tk_Uid *) ckalloc((unsigned) (argc * sizeof(Tk_Uid)));
-	for (i = itemPtr->numTags-1; i >= 0; i--) {
-	    newPtr[i] = itemPtr->tagPtr[i];
-	}
-	if (itemPtr->tagPtr != itemPtr->staticTagSpace) {
-	    ckfree((char *) itemPtr->tagPtr);
-	}
-	itemPtr->tagPtr = newPtr;
-	itemPtr->tagSpace = argc;
+    if (itemPtr->tagSpace < argc)
+    {
+        newPtr = ( Tk_Uid * )ckalloc(( unsigned )(argc * sizeof(Tk_Uid)));
+        for (i = itemPtr->numTags - 1; i >= 0; i--)
+        {
+            newPtr[i] = itemPtr->tagPtr[i];
+        }
+        if (itemPtr->tagPtr != itemPtr->staticTagSpace)
+        {
+            ckfree(( char * )itemPtr->tagPtr);
+        }
+        itemPtr->tagPtr = newPtr;
+        itemPtr->tagSpace = argc;
     }
     itemPtr->numTags = argc;
-    for (i = 0; i < argc; i++) {
-	itemPtr->tagPtr[i] = Tk_GetUid(argv[i]);
+    for (i = 0; i < argc; i++)
+    {
+        itemPtr->tagPtr[i] = Tk_GetUid(argv[i]);
     }
-    ckfree((char *) argv);
+    ckfree(( char * )argv);
     return TCL_OK;
 }
-
+
 /*
  *--------------------------------------------------------------
  *
@@ -350,26 +382,27 @@ Tk_CanvasTagsParseProc(clientData, interp, tkwin, value, widgRec, offset)
  *--------------------------------------------------------------
  */
 
-char *
-Tk_CanvasTagsPrintProc(clientData, tkwin, widgRec, offset, freeProcPtr)
-    ClientData clientData;		/* Ignored. */
-    Tk_Window tkwin;			/* Window containing canvas widget. */
-    char *widgRec;			/* Pointer to record for item. */
-    int offset;				/* Ignored. */
-    Tcl_FreeProc **freeProcPtr;		/* Pointer to variable to fill in with
-					 * information about how to reclaim
-					 * storage for return string. */
+char *Tk_CanvasTagsPrintProc(clientData, tkwin, widgRec, offset, freeProcPtr)
+ClientData clientData; /* Ignored. */
+Tk_Window tkwin; /* Window containing canvas widget. */
+char *widgRec; /* Pointer to record for item. */
+int offset; /* Ignored. */
+Tcl_FreeProc **freeProcPtr; /* Pointer to variable to fill in with
+                             * information about how to reclaim
+                             * storage for return string. */
 {
-    Tk_Item *itemPtr = (Tk_Item *) widgRec;
+    Tk_Item *itemPtr = ( Tk_Item * )widgRec;
 
-    if (itemPtr->numTags == 0) {
-	*freeProcPtr = (Tcl_FreeProc *) NULL;
-	return "";
+    if (itemPtr->numTags == 0)
+    {
+        *freeProcPtr = ( Tcl_FreeProc * )NULL;
+        return "";
     }
-    if (itemPtr->numTags == 1) {
-	*freeProcPtr = (Tcl_FreeProc *) NULL;
-	return (char *) itemPtr->tagPtr[0];
+    if (itemPtr->numTags == 1)
+    {
+        *freeProcPtr = ( Tcl_FreeProc * )NULL;
+        return ( char * )itemPtr->tagPtr[0];
     }
     *freeProcPtr = TCL_DYNAMIC;
-    return Tcl_Merge(itemPtr->numTags, (char **) itemPtr->tagPtr);
+    return Tcl_Merge(itemPtr->numTags, ( char ** )itemPtr->tagPtr);
 }

@@ -18,140 +18,145 @@
  *
  **********************************************************************/
 
-EXTERN int              Tcl_TclConvertElement _ANSI_ARGS_((char *src,
-                            char *dst, int flags));
-EXTERN char *           Tcl_TclMerge _ANSI_ARGS_((int argc, char **argv));
-EXTERN int              Tcl_TclScanElement _ANSI_ARGS_((char *string,
-                            int *flagPtr));
-EXTERN int              Tcl_TclSplitList _ANSI_ARGS_((Tcl_Interp *interp,
-                            char *list, int *argcPtr, char ***argvPtr));
+EXTERN int
+Tcl_TclConvertElement _ANSI_ARGS_((char *src, char *dst, int flags));
+EXTERN char *Tcl_TclMerge _ANSI_ARGS_((int argc, char **argv));
+EXTERN int Tcl_TclScanElement _ANSI_ARGS_((char *string, int *flagPtr));
+EXTERN int Tcl_TclSplitList
+_ANSI_ARGS_((Tcl_Interp * interp, char *list, int *argcPtr, char ***argvPtr));
 
 static int listMode = INTERP_TCL;
 #define TkshListMode() (listMode)
 
 typedef struct TkshArgcArgv
 {
-	int *argcPtr;
-	char ***argvPtr;
+    int *argcPtr;
+    char ***argvPtr;
 } TkshArgcArgv;
 
 
-static int tksh_cmd_split(int argc, char *argv[], Shbltin_t *context)
+static int
+tksh_cmd_split(int argc, char *argv[], Shbltin_t *context)
 {
-	int i, size=0;
-	char **newargv;
-	char *newptr;
-	TkshArgcArgv *args = (TkshArgcArgv *)context->ptr;
+    int i, size = 0;
+    char **newargv;
+    char *newptr;
+    TkshArgcArgv *args = ( TkshArgcArgv * )context->ptr;
 
-	for (i=1; i < argc; i++)
-		size += strlen(argv[i]);
+    for (i = 1; i < argc; i++)
+        size += strlen(argv[i]);
 
-	newargv = (char **) malloc(size + argc * (sizeof(char *) + 1) );
-	newptr = (char *) (newargv + argc);
+    newargv = ( char ** )malloc(size + argc * (sizeof(char *) + 1));
+    newptr = ( char * )(newargv + argc);
 
-	for (i=1; i < argc; i++)
-	{
-		newargv[i-1] = newptr;
-		newptr = strcopy(newptr, argv[i]) + 1;
-	}
+    for (i = 1; i < argc; i++)
+    {
+        newargv[i - 1] = newptr;
+        newptr = strcopy(newptr, argv[i]) + 1;
+    }
 
-	newargv[argc-1]= (char*) 0;
-	
-	*(args->argcPtr) = argc-1;
-	*(args->argvPtr) = newargv;
-	
-	return 0;
+    newargv[argc - 1] = ( char * )0;
+
+    *(args->argcPtr) = argc - 1;
+    *(args->argvPtr) = newargv;
+
+    return 0;
 }
 
-int TkshSetListMode(int mode)
+int
+TkshSetListMode(int mode)
 {
-	int oldmode = listMode;
-	if (mode >= 0)
-		listMode = mode;
-	return oldmode;
+    int oldmode = listMode;
+    if (mode >= 0)
+        listMode = mode;
+    return oldmode;
 }
 
-char *Tksh_ConvertList(Tcl_Interp *interp, char *list, int toMode)
+char *
+Tksh_ConvertList(Tcl_Interp *interp, char *list, int toMode)
 {
-	int fromMode = (toMode == INTERP_KSH) ? INTERP_TCL : INTERP_KSH;
-	int oldMode, argc;
-	char *result, **argv;
+    int fromMode = (toMode == INTERP_KSH) ? INTERP_TCL : INTERP_KSH;
+    int oldMode, argc;
+    char *result, **argv;
 
-	result = NULL;
-	oldMode = TkshSetListMode(fromMode);
-	if (Tcl_SplitList(interp, list, &argc, &argv) == TCL_OK)
-	{
-		TkshSetListMode(toMode);
-		result = Tcl_Merge(argc, argv);
-	}
-	TkshSetListMode(oldMode);
-	return result;
+    result = NULL;
+    oldMode = TkshSetListMode(fromMode);
+    if (Tcl_SplitList(interp, list, &argc, &argv) == TCL_OK)
+    {
+        TkshSetListMode(toMode);
+        result = Tcl_Merge(argc, argv);
+    }
+    TkshSetListMode(oldMode);
+    return result;
 }
 
-int Tcl_SplitList(Tcl_Interp *interp, char *list, int *argcPtr, char ***argvPtr)
+int
+Tcl_SplitList(Tcl_Interp *interp, char *list, int *argcPtr, char ***argvPtr)
 {
-	int result = TCL_ERROR;
-	FILE *str;
-	static TkshArgcArgv argstruct, *args = &argstruct;
-	char *command;
-	static int init=0;
+    int result = TCL_ERROR;
+    FILE *str;
+    static TkshArgcArgv argstruct, *args = &argstruct;
+    char *command;
+    static int init = 0;
 
 #ifndef NO_TCL_EVAL
-	if (TkshListMode() == INTERP_TCL)
-                return Tcl_TclSplitList(interp, list, argcPtr, argvPtr);
+    if (TkshListMode() == INTERP_TCL)
+        return Tcl_TclSplitList(interp, list, argcPtr, argvPtr);
 #endif
 
-	if (! init)
-	{
-		sh_addbuiltin(SPLIT_CMD_NAME, tksh_cmd_split, (void *) args);
-		init = 1;
-	}
+    if (!init)
+    {
+        sh_addbuiltin(SPLIT_CMD_NAME, tksh_cmd_split, ( void * )args);
+        init = 1;
+    }
 
-	command = (char *) malloc(strlen(list)+strlen(SPLIT_CMD_NAME)+2);
-	dprintf2(("Splitting...\n"));
-	if (args && command)
-	{
-		sprintf(command, "%s %s",SPLIT_CMD_NAME, list);
+    command = ( char * )malloc(strlen(list) + strlen(SPLIT_CMD_NAME) + 2);
+    dprintf2(("Splitting...\n"));
+    if (args && command)
+    {
+        sprintf(command, "%s %s", SPLIT_CMD_NAME, list);
 
-		args->argcPtr = argcPtr;
-		args->argvPtr = argvPtr;
+        args->argcPtr = argcPtr;
+        args->argvPtr = argvPtr;
 
-		if ((str = sfopen((Sfio_t *) 0, command, "s")))
-		{
-			sh_eval(str, 0x8000);
-			sfclose(str);
-			result = Tksh_OkOrErr();
-		}
-		free(command);
-	}
+        if ((str = sfopen(( Sfio_t * )0, command, "s")))
+        {
+            sh_eval(str, 0x8000);
+            sfclose(str);
+            result = Tksh_OkOrErr();
+        }
+        free(command);
+    }
 
-	return result;
+    return result;
 }
 
 
-int Tcl_ScanElement(char *src, int *flagsPtr)
+int
+Tcl_ScanElement(char *src, int *flagsPtr)
 {
 #ifndef NO_TCL_EVAL
-	if (TkshListMode() == INTERP_TCL)
-                return Tcl_TclScanElement(src, flagsPtr);
+    if (TkshListMode() == INTERP_TCL)
+        return Tcl_TclScanElement(src, flagsPtr);
 #endif
-	return strlen(sh_fmtq(src));
+    return strlen(sh_fmtq(src));
 }
 
 
-int Tcl_ConvertElement(char *src, char *dst, int flags)
+int
+Tcl_ConvertElement(char *src, char *dst, int flags)
 {
-	char *str;
-	int len;
+    char *str;
+    int len;
 
 #ifndef NO_TCL_EVAL
-	if (TkshListMode() == INTERP_TCL)
-                return Tcl_TclConvertElement(src, dst, flags);
+    if (TkshListMode() == INTERP_TCL)
+        return Tcl_TclConvertElement(src, dst, flags);
 #endif
-	str = sh_fmtq(src);
-	len = strlen(str);
-	memcpy(dst, str, len+1);
-	return len;
+    str = sh_fmtq(src);
+    len = strlen(str);
+    memcpy(dst, str, len + 1);
+    return len;
 }
 
 
@@ -176,12 +181,10 @@ int Tcl_ConvertElement(char *src, char *dst, int flags)
  *----------------------------------------------------------------------
  */
 
-char *
-Tcl_Merge(argc, argv)
-    int argc;			/* How many strings to merge. */
-    char **argv;		/* Array of string values. */
+char *Tcl_Merge(argc, argv) int argc; /* How many strings to merge. */
+char **argv; /* Array of string values. */
 {
-#   define LOCAL_SIZE 20
+#define LOCAL_SIZE 20
     int localFlags[LOCAL_SIZE], *flagPtr;
     int numChars;
     char *result;
@@ -189,44 +192,53 @@ Tcl_Merge(argc, argv)
     int i;
 
 #ifndef NO_TCL_EVAL
-	if (TkshListMode() == INTERP_TCL)
-                return Tcl_TclMerge(argc, argv);
+    if (TkshListMode() == INTERP_TCL)
+        return Tcl_TclMerge(argc, argv);
 #endif
 
     /*
      * Pass 1: estimate space, gather flags.
      */
 
-    if (argc <= LOCAL_SIZE) {
-	flagPtr = localFlags;
-    } else {
-	flagPtr = (int *) ckalloc((unsigned) argc*sizeof(int));
+    if (argc <= LOCAL_SIZE)
+    {
+        flagPtr = localFlags;
+    }
+    else
+    {
+        flagPtr = ( int * )ckalloc(( unsigned )argc * sizeof(int));
     }
     numChars = 1;
-    for (i = 0; i < argc; i++) {
-	numChars += Tcl_ScanElement(argv[i], &flagPtr[i]) + 1;
+    for (i = 0; i < argc; i++)
+    {
+        numChars += Tcl_ScanElement(argv[i], &flagPtr[i]) + 1;
     }
 
     /*
      * Pass two: copy into the result area.
      */
 
-    result = (char *) ckalloc((unsigned) numChars);
+    result = ( char * )ckalloc(( unsigned )numChars);
     dst = result;
-    for (i = 0; i < argc; i++) {
-	numChars = Tcl_ConvertElement(argv[i], dst, flagPtr[i]);
-	dst += numChars;
-	*dst = ' ';
-	dst++;
+    for (i = 0; i < argc; i++)
+    {
+        numChars = Tcl_ConvertElement(argv[i], dst, flagPtr[i]);
+        dst += numChars;
+        *dst = ' ';
+        dst++;
     }
-    if (dst == result) {
-	*dst = 0;
-    } else {
-	dst[-1] = 0;
+    if (dst == result)
+    {
+        *dst = 0;
+    }
+    else
+    {
+        dst[-1] = 0;
     }
 
-    if (flagPtr != localFlags) {
-	ckfree((char *) flagPtr);
+    if (flagPtr != localFlags)
+    {
+        ckfree(( char * )flagPtr);
     }
     return result;
 }
@@ -306,7 +318,7 @@ Tcl_RegExpExec(Tcl_Interp *interp, Tcl_RegExp regexp, char *string, char *start)
 	exp->n = strgrpmatch(string, exp->re, exp->pos, 10, STR_MAXIMAL);
 	/* Had ((string==start)? STR_LEFT:0), but this seems to be wrong */
 
-#ifdef DEBUG
+#    ifdef DEBUG
 	{
 		int i;
 		dprintf(("Match result for pat. %s, str. %s (%s): %d\n",
@@ -315,7 +327,7 @@ Tcl_RegExpExec(Tcl_Interp *interp, Tcl_RegExp regexp, char *string, char *start)
 			dprintf(("From %d to %d\n", exp->pos[2*i],
 				exp->pos[2*i+1]));
 	}
-#endif
+#    endif
 	return (exp->n > 0) ? 1 : exp->n;
 }
 

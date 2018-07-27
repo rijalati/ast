@@ -1,4 +1,4 @@
-/* 
+/*
  * tclUnixNotify.c --
  *
  *	This file contains Unix-specific procedures for the notifier,
@@ -15,17 +15,17 @@
 
 #include "tclInt.h"
 #include "tclPort.h"
-#include <signal.h> 
+#include <signal.h>
 
 #ifdef WIN32
-#undef _DLL
-#undef VOID
-#include <windows.h>
-#define _DLL 1
+#    undef _DLL
+#    undef VOID
+#    include <windows.h>
+#    define _DLL 1
 #endif
 
 #if HAVE_SYS_SELECT_H && !defined(NFDBITS)
-#include <sys/select.h>
+#    include <sys/select.h>
 #endif
 
 /*
@@ -33,18 +33,18 @@
  * exception masks to select during calls to Tcl_DoOneEvent.
  */
 
-static fd_mask checkMasks[3*MASK_SIZE];
-				/* This array is used to build up the masks
-				 * to be used in the next call to select.
-				 * Bits are set in response to calls to
-				 * Tcl_WatchFile. */
-static fd_mask readyMasks[3*MASK_SIZE];
-				/* This array reflects the readable/writable
-				 * conditions that were found to exist by the
-				 * last call to select. */
-static int numFdBits;		/* Number of valid bits in checkMasks
-				 * (one more than highest fd for which
-				 * Tcl_WatchFile has been called). */
+static fd_mask checkMasks[3 * MASK_SIZE];
+/* This array is used to build up the masks
+ * to be used in the next call to select.
+ * Bits are set in response to calls to
+ * Tcl_WatchFile. */
+static fd_mask readyMasks[3 * MASK_SIZE];
+/* This array reflects the readable/writable
+ * conditions that were found to exist by the
+ * last call to select. */
+static int numFdBits; /* Number of valid bits in checkMasks
+                       * (one more than highest fd for which
+                       * Tcl_WatchFile has been called). */
 
 #if 1
 static int eventsFound;
@@ -55,16 +55,19 @@ static int ignoreEvents;
  * Static routines in this file:
  */
 
-static int	MaskEmpty _ANSI_ARGS_((long *maskPtr));
-
-extern void TclWinFlushEvents()
+static int MaskEmpty _ANSI_ARGS_((long *maskPtr));
+
+extern void
+TclWinFlushEvents()
 {
     ignoreEvents = 1;
-    while (Tcl_DoOneEvent(TCL_DONT_WAIT|TCL_WINDOW_EVENTS|TCL_IDLE_EVENTS)) {
+    while (
+    Tcl_DoOneEvent(TCL_DONT_WAIT | TCL_WINDOW_EVENTS | TCL_IDLE_EVENTS))
+    {
     }
     ignoreEvents = 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -79,61 +82,67 @@ extern void TclWinFlushEvents()
  *	None.
  *
  * Side effects:
- *	
+ *
  *	The notifier will generate a file event when the I/O channel
  *	given by fd next becomes ready in the way indicated by mask.
  *	If fd is already registered then the old mask will be replaced
  *	with the new one.  Once the event is sent, the notifier will
  *	not send any more events about the fd until the next call to
- *	Tcl_NotifyFile. 
+ *	Tcl_NotifyFile.
  *
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_WatchFile(file, mask)
-    Tcl_File file;	/* Generic file handle for a stream. */
-    int mask;			/* OR'ed combination of TCL_READABLE,
-				 * TCL_WRITABLE, and TCL_EXCEPTION:
-				 * indicates conditions to wait for
-				 * in select. */
+void Tcl_WatchFile(file, mask) Tcl_File file; /* Generic file handle for a
+                                                 stream. */
+int mask; /* OR'ed combination of TCL_READABLE,
+           * TCL_WRITABLE, and TCL_EXCEPTION:
+           * indicates conditions to wait for
+           * in select. */
 {
     int fd, type, index;
     fd_mask bit;
 
-    fd = (int) Tcl_GetFileInfo(file, &type);
+    fd = ( int )Tcl_GetFileInfo(file, &type);
 
-    if (type != TCL_UNIX_FD) {
-	panic("Tcl_WatchFile: unexpected file type");
-    }
-
-    if (fd >= FD_SETSIZE) {
-	panic("Tcl_WatchFile can't handle file id %d", fd);
+    if (type != TCL_UNIX_FD)
+    {
+        panic("Tcl_WatchFile: unexpected file type");
     }
 
-    index = fd/(NBBY*sizeof(fd_mask));
-    bit = 1 << (fd%(NBBY*sizeof(fd_mask)));
-    if (mask & TCL_READABLE) {
-	checkMasks[index] |= bit;
+    if (fd >= FD_SETSIZE)
+    {
+        panic("Tcl_WatchFile can't handle file id %d", fd);
     }
-    if (mask & TCL_WRITABLE) {
-	(checkMasks+MASK_SIZE)[index] |= bit;
+
+    index = fd / (NBBY * sizeof(fd_mask));
+    bit = 1 << (fd % (NBBY * sizeof(fd_mask)));
+    if (mask & TCL_READABLE)
+    {
+        checkMasks[index] |= bit;
     }
-    if (mask & TCL_EXCEPTION) {
-	(checkMasks+2*(MASK_SIZE))[index] |= bit;
+    if (mask & TCL_WRITABLE)
+    {
+        (checkMasks + MASK_SIZE)[index] |= bit;
     }
-    if (numFdBits <= fd) {
-	numFdBits = fd+1;
+    if (mask & TCL_EXCEPTION)
+    {
+        (checkMasks + 2 * (MASK_SIZE))[index] |= bit;
+    }
+    if (numFdBits <= fd)
+    {
+        numFdBits = fd + 1;
     }
 }
 
 #if 1
-extern int Tcl_NumEventsFound()
+extern int
+Tcl_NumEventsFound()
 {
-   return eventsFound;
+    return eventsFound;
 }
 #endif
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -156,36 +165,40 @@ extern int Tcl_NumEventsFound()
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_FileReady(file, mask)
-    Tcl_File file;	/* Generic file handle for a stream. */
-    int mask;			/* OR'ed combination of TCL_READABLE,
-				 * TCL_WRITABLE, and TCL_EXCEPTION:
-				 * indicates conditions caller cares about. */
+int Tcl_FileReady(file,
+                  mask) Tcl_File file; /* Generic file handle for a stream. */
+int mask; /* OR'ed combination of TCL_READABLE,
+           * TCL_WRITABLE, and TCL_EXCEPTION:
+           * indicates conditions caller cares about. */
 {
     int index, result, type, fd;
     fd_mask bit;
 
-    fd = (int) Tcl_GetFileInfo(file, &type);
-    if (type != TCL_UNIX_FD) {
-	panic("Tcl_FileReady: unexpected file type");
+    fd = ( int )Tcl_GetFileInfo(file, &type);
+    if (type != TCL_UNIX_FD)
+    {
+        panic("Tcl_FileReady: unexpected file type");
     }
 
-    index = fd/(NBBY*sizeof(fd_mask));
-    bit = 1 << (fd%(NBBY*sizeof(fd_mask)));
+    index = fd / (NBBY * sizeof(fd_mask));
+    bit = 1 << (fd % (NBBY * sizeof(fd_mask)));
     result = 0;
-    if ((mask & TCL_READABLE) && (readyMasks[index] & bit)) {
-	result |= TCL_READABLE;
+    if ((mask & TCL_READABLE) && (readyMasks[index] & bit))
+    {
+        result |= TCL_READABLE;
     }
-    if ((mask & TCL_WRITABLE) && ((readyMasks+MASK_SIZE)[index] & bit)) {
-	result |= TCL_WRITABLE;
+    if ((mask & TCL_WRITABLE) && ((readyMasks + MASK_SIZE)[index] & bit))
+    {
+        result |= TCL_WRITABLE;
     }
-    if ((mask & TCL_EXCEPTION) && ((readyMasks+(2*MASK_SIZE))[index] & bit)) {
-	result |= TCL_EXCEPTION;
+    if ((mask & TCL_EXCEPTION)
+        && ((readyMasks + (2 * MASK_SIZE))[index] & bit))
+    {
+        result |= TCL_EXCEPTION;
     }
     return result;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -202,25 +215,25 @@ Tcl_FileReady(file, mask)
  *----------------------------------------------------------------------
  */
 
-static int
-MaskEmpty(maskPtr)
-    long *maskPtr;
+static int MaskEmpty(maskPtr) long *maskPtr;
 {
     long *runPtr, *tailPtr;
     int found, sz;
 
     sz = 3 * ((MASK_SIZE) / sizeof(long)) * sizeof(fd_mask);
     for (runPtr = maskPtr, tailPtr = maskPtr + sz, found = 0;
-             runPtr < tailPtr;
-             runPtr++) {
-        if (*runPtr != 0) {
+         runPtr < tailPtr;
+         runPtr++)
+    {
+        if (*runPtr != 0)
+        {
             found = 1;
             break;
         }
     }
-    return !found;    
+    return !found;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -244,49 +257,56 @@ MaskEmpty(maskPtr)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_WaitForEvent(timePtr)
-    Tcl_Time *timePtr;		/* Specifies the maximum amount of time
-				 * that this procedure should block before
-				 * returning.  The time is given as an
-				 * interval, not an absolute wakeup time.
-				 * NULL means block forever. */
+int Tcl_WaitForEvent(
+timePtr) Tcl_Time *timePtr; /* Specifies the maximum amount of time
+                             * that this procedure should block before
+                             * returning.  The time is given as an
+                             * interval, not an absolute wakeup time.
+                             * NULL means block forever. */
 {
     struct timeval timeout, *timeoutPtr;
     int numFound;
 #ifdef WIN32
-	static int winFd = -1;
-	if (ignoreEvents)
-		return TCL_OK;
-	if (winFd < 0)
-		winFd = open("/dev/windows", 0);
-	Tcl_WatchFile(Tcl_GetFile((ClientData)winFd,TCL_UNIX_FD),TCL_READABLE);
+    static int winFd = -1;
+    if (ignoreEvents)
+        return TCL_OK;
+    if (winFd < 0)
+        winFd = open("/dev/windows", 0);
+    Tcl_WatchFile(Tcl_GetFile(( ClientData )winFd, TCL_UNIX_FD),
+                  TCL_READABLE);
 #endif
 
-    memcpy((VOID *) readyMasks, (VOID *) checkMasks,
-	    3*MASK_SIZE*sizeof(fd_mask));
-    if (timePtr == NULL) {
-	if ((numFdBits == 0) || (MaskEmpty((long *) readyMasks))) {
-	    return TCL_ERROR;
-	}
-	timeoutPtr = NULL;
-    } else {
-	timeoutPtr = &timeout;
-	timeout.tv_sec = timePtr->sec;
-	timeout.tv_usec = timePtr->usec;
+    memcpy(( VOID * )readyMasks,
+           ( VOID * )checkMasks,
+           3 * MASK_SIZE * sizeof(fd_mask));
+    if (timePtr == NULL)
+    {
+        if ((numFdBits == 0) || (MaskEmpty(( long * )readyMasks)))
+        {
+            return TCL_ERROR;
+        }
+        timeoutPtr = NULL;
     }
-    numFound = select(numFdBits, (SELECT_MASK *) &readyMasks[0],
-	    (SELECT_MASK *) &readyMasks[MASK_SIZE],
-	    (SELECT_MASK *) &readyMasks[2*MASK_SIZE], timeoutPtr);
+    else
+    {
+        timeoutPtr = &timeout;
+        timeout.tv_sec = timePtr->sec;
+        timeout.tv_usec = timePtr->usec;
+    }
+    numFound = select(numFdBits,
+                      ( SELECT_MASK * )&readyMasks[0],
+                      ( SELECT_MASK * )&readyMasks[MASK_SIZE],
+                      ( SELECT_MASK * )&readyMasks[2 * MASK_SIZE],
+                      timeoutPtr);
 
 #ifdef WIN32
-	if (FD_ISSET(winFd, ((SELECT_MASK *) &readyMasks[0])))
-	{
-		MSG msg;
-		GetMessage(&msg, NULL, 0, 0);
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
+    if (FD_ISSET(winFd, (( SELECT_MASK * )&readyMasks[0])))
+    {
+        MSG msg;
+        GetMessage(&msg, NULL, 0, 0);
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
 #endif
 
     /*
@@ -295,8 +315,9 @@ Tcl_WaitForEvent(timePtr)
      */
 
     eventsFound = numFound;
-    if (numFound == -1) {
-	memset((VOID *) readyMasks, 0, 3*MASK_SIZE*sizeof(fd_mask));
+    if (numFound == -1)
+    {
+        memset(( VOID * )readyMasks, 0, 3 * MASK_SIZE * sizeof(fd_mask));
     }
 
     /*
@@ -305,10 +326,10 @@ Tcl_WaitForEvent(timePtr)
      */
 
     numFdBits = 0;
-    memset((VOID *) checkMasks, 0, 3*MASK_SIZE*sizeof(fd_mask));
+    memset(( VOID * )checkMasks, 0, 3 * MASK_SIZE * sizeof(fd_mask));
     return TCL_OK;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -325,9 +346,7 @@ Tcl_WaitForEvent(timePtr)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_Sleep(ms)
-    int ms;			/* Number of milliseconds to sleep. */
+void Tcl_Sleep(ms) int ms; /* Number of milliseconds to sleep. */
 {
     static struct timeval delay;
     Tcl_Time before, after;
@@ -341,32 +360,35 @@ Tcl_Sleep(ms)
 
     TclpGetTime(&before);
     after = before;
-    after.sec += ms/1000;
-    after.usec += (ms%1000)*1000;
-    if (after.usec > 1000000) {
-	after.usec -= 1000000;
-	after.sec += 1;
+    after.sec += ms / 1000;
+    after.usec += (ms % 1000) * 1000;
+    if (after.usec > 1000000)
+    {
+        after.usec -= 1000000;
+        after.sec += 1;
     }
-    while (1) {
-	delay.tv_sec = after.sec - before.sec;
-	delay.tv_usec = after.usec - before.usec;
-	if (delay.tv_usec < 0) {
-	    delay.tv_usec += 1000000;
-	    delay.tv_sec -= 1;
-	}
+    while (1)
+    {
+        delay.tv_sec = after.sec - before.sec;
+        delay.tv_usec = after.usec - before.usec;
+        if (delay.tv_usec < 0)
+        {
+            delay.tv_usec += 1000000;
+            delay.tv_sec -= 1;
+        }
 
-	/*
-	 * Special note:  must convert delay.tv_sec to int before comparing
-	 * to zero, since delay.tv_usec is unsigned on some platforms.
-	 */
+        /*
+         * Special note:  must convert delay.tv_sec to int before comparing
+         * to zero, since delay.tv_usec is unsigned on some platforms.
+         */
 
-	if ((((int) delay.tv_sec) < 0)
-		|| ((delay.tv_usec == 0) && (delay.tv_sec == 0))) {
-	    break;
-	}
-	(void) select(0, (SELECT_MASK *) 0, (SELECT_MASK *) 0,
-		(SELECT_MASK *) 0, &delay);
-	TclpGetTime(&before);
+        if (((( int )delay.tv_sec) < 0)
+            || ((delay.tv_usec == 0) && (delay.tv_sec == 0)))
+        {
+            break;
+        }
+        ( void )select(
+        0, ( SELECT_MASK * )0, ( SELECT_MASK * )0, ( SELECT_MASK * )0, &delay);
+        TclpGetTime(&before);
     }
 }
-

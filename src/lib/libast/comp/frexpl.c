@@ -1,24 +1,24 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 1985-2011 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*               Glenn Fowler <glenn.s.fowler@gmail.com>                *
-*                    David Korn <dgkorn@gmail.com>                     *
-*                     Phong Vo <phongvo@gmail.com>                     *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 1985-2011 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *               Glenn Fowler <glenn.s.fowler@gmail.com>                *
+ *                    David Korn <dgkorn@gmail.com>                     *
+ *                     Phong Vo <phongvo@gmail.com>                     *
+ *                                                                      *
+ ***********************************************************************/
 #pragma prototyped
 
 /*
@@ -35,127 +35,131 @@ NoN(frexpl)
 
 #else
 
-#ifndef LDBL_MAX_EXP
-#define LDBL_MAX_EXP	DBL_MAX_EXP
-#endif
+#    ifndef LDBL_MAX_EXP
+#        define LDBL_MAX_EXP DBL_MAX_EXP
+#    endif
 
-#if defined(_ast_fltmax_exp_index) && defined(_ast_fltmax_exp_shift)
+#    if defined(_ast_fltmax_exp_index) && defined(_ast_fltmax_exp_shift)
 
-#define INIT()		_ast_fltmax_exp_t _pow_
-#define pow2(i)		(_pow_.f=1,_pow_.e[_ast_fltmax_exp_index]+=((i)<<_ast_fltmax_exp_shift),_pow_.f)
+#        define INIT() _ast_fltmax_exp_t _pow_
+#        define pow2(i)                                                      \
+            (_pow_.f = 1,                                                    \
+             _pow_.e[_ast_fltmax_exp_index]                                  \
+             += ((i) << _ast_fltmax_exp_shift),                              \
+             _pow_.f)
 
-#else
+#    else
 
-static _ast_fltmax_t	pow2tab[LDBL_MAX_EXP + 1];
+static _ast_fltmax_t pow2tab[LDBL_MAX_EXP + 1];
 
 static int
 init(void)
 {
-	int		x;
-	_ast_fltmax_t		g;
+    int x;
+    _ast_fltmax_t g;
 
-	g = 1;
-	for (x = 0; x < elementsof(pow2tab); x++)
-	{
-		pow2tab[x] = g;
-		g *= 2;
-	}
-	return 0;
+    g = 1;
+    for (x = 0; x < elementsof(pow2tab); x++)
+    {
+        pow2tab[x] = g;
+        g *= 2;
+    }
+    return 0;
 }
 
-#define INIT()		(pow2tab[0]?0:init())
+#        define INIT() (pow2tab[0] ? 0 : init())
 
-#define pow2(i)		(pow2tab[i])
+#        define pow2(i) (pow2tab[i])
 
-#endif
+#    endif
 
-#if !_lib_frexpl
+#    if !_lib_frexpl
 
-#undef	frexpl
+#        undef frexpl
 
 extern _ast_fltmax_t
-frexpl(_ast_fltmax_t f, int* p)
+frexpl(_ast_fltmax_t f, int *p)
 {
-	int		k;
-	int		x;
-	_ast_fltmax_t		g;
+    int k;
+    int x;
+    _ast_fltmax_t g;
 
-	INIT();
+    INIT();
 
-	/*
-	 * normalize
-	 */
+    /*
+     * normalize
+     */
 
-	x = k = LDBL_MAX_EXP / 2;
-	if (f < 1)
-	{
-		g = 1.0L / f;
-		for (;;)
-		{
-			k = (k + 1) / 2;
-			if (g < pow2(x))
-				x -= k;
-			else if (k == 1 && g < pow2(x+1))
-				break;
-			else
-				x += k;
-		}
-		if (g == pow2(x))
-			x--;
-		x = -x;
-	}
-	else if (f > 1)
-	{
-		for (;;)
-		{
-			k = (k + 1) / 2;
-			if (f > pow2(x))
-				x += k;
-			else if (k == 1 && f > pow2(x-1))
-				break;
-			else
-				x -= k;
-		}
-		if (f == pow2(x))
-			x++;
-	}
-	else
-		x = 1;
-	*p = x;
+    x = k = LDBL_MAX_EXP / 2;
+    if (f < 1)
+    {
+        g = 1.0L / f;
+        for (;;)
+        {
+            k = (k + 1) / 2;
+            if (g < pow2(x))
+                x -= k;
+            else if (k == 1 && g < pow2(x + 1))
+                break;
+            else
+                x += k;
+        }
+        if (g == pow2(x))
+            x--;
+        x = -x;
+    }
+    else if (f > 1)
+    {
+        for (;;)
+        {
+            k = (k + 1) / 2;
+            if (f > pow2(x))
+                x += k;
+            else if (k == 1 && f > pow2(x - 1))
+                break;
+            else
+                x -= k;
+        }
+        if (f == pow2(x))
+            x++;
+    }
+    else
+        x = 1;
+    *p = x;
 
-	/*
-	 * shift
-	 */
+    /*
+     * shift
+     */
 
-	x = -x;
-	if (x < 0)
-		f /= pow2(-x);
-	else if (x < LDBL_MAX_EXP)
-		f *= pow2(x);
-	else
-		f = (f * pow2(LDBL_MAX_EXP - 1)) * pow2(x - (LDBL_MAX_EXP - 1));
-	return f;
+    x = -x;
+    if (x < 0)
+        f /= pow2(-x);
+    else if (x < LDBL_MAX_EXP)
+        f *= pow2(x);
+    else
+        f = (f * pow2(LDBL_MAX_EXP - 1)) * pow2(x - (LDBL_MAX_EXP - 1));
+    return f;
 }
 
-#endif
+#    endif
 
-#if !_lib_ldexpl
+#    if !_lib_ldexpl
 
-#undef	ldexpl
+#        undef ldexpl
 
 extern _ast_fltmax_t
 ldexpl(_ast_fltmax_t f, int x)
 {
-	INIT();
-	if (x < 0)
-		f /= pow2(-x);
-	else if (x < LDBL_MAX_EXP)
-		f *= pow2(x);
-	else
-		f = (f * pow2(LDBL_MAX_EXP - 1)) * pow2(x - (LDBL_MAX_EXP - 1));
-	return f;
+    INIT();
+    if (x < 0)
+        f /= pow2(-x);
+    else if (x < LDBL_MAX_EXP)
+        f *= pow2(x);
+    else
+        f = (f * pow2(LDBL_MAX_EXP - 1)) * pow2(x - (LDBL_MAX_EXP - 1));
+    return f;
 }
 
-#endif
+#    endif
 
 #endif

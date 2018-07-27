@@ -1,24 +1,24 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 1985-2011 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*               Glenn Fowler <glenn.s.fowler@gmail.com>                *
-*                    David Korn <dgkorn@gmail.com>                     *
-*                     Phong Vo <phongvo@gmail.com>                     *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 1985-2011 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *               Glenn Fowler <glenn.s.fowler@gmail.com>                *
+ *                    David Korn <dgkorn@gmail.com>                     *
+ *                     Phong Vo <phongvo@gmail.com>                     *
+ *                                                                      *
+ ***********************************************************************/
 #pragma prototyped
 
 /*
@@ -28,91 +28,91 @@
 #include "stdhdr.h"
 
 void
-clearerr_unlocked(Sfio_t* sp)
+clearerr_unlocked(Sfio_t *sp)
 {
-	clearerr(sp);
+    clearerr(sp);
 }
 
 int
-feof_unlocked(Sfio_t* sp)
+feof_unlocked(Sfio_t *sp)
 {
-	return feof(sp);
+    return feof(sp);
 }
 
 int
-ferror_unlocked(Sfio_t* sp)
+ferror_unlocked(Sfio_t *sp)
 {
-	return ferror(sp);
+    return ferror(sp);
 }
 
 int
-fflush_unlocked(Sfio_t* sp)
+fflush_unlocked(Sfio_t *sp)
 {
-	return fflush(sp);
+    return fflush(sp);
 }
 
 int
-fgetc_unlocked(Sfio_t* sp)
+fgetc_unlocked(Sfio_t *sp)
 {
-	return fgetc(sp);
+    return fgetc(sp);
 }
 
-char*
-fgets_unlocked(char* buf, int size, Sfio_t* sp)
+char *
+fgets_unlocked(char *buf, int size, Sfio_t *sp)
 {
-	return fgets(buf, size, sp);
-}
-
-int
-fileno_unlocked(Sfio_t* sp)
-{
-	return fileno(sp);
+    return fgets(buf, size, sp);
 }
 
 int
-fputc_unlocked(int c, Sfio_t* sp)
+fileno_unlocked(Sfio_t *sp)
 {
-	return fputc(c, sp);
+    return fileno(sp);
 }
 
 int
-fputs_unlocked(char* buf, Sfio_t* sp)
+fputc_unlocked(int c, Sfio_t *sp)
 {
-	return fputs(buf, sp);
+    return fputc(c, sp);
+}
+
+int
+fputs_unlocked(char *buf, Sfio_t *sp)
+{
+    return fputs(buf, sp);
 }
 
 size_t
-fread_unlocked(void* buf, size_t size, size_t n, Sfio_t* sp)
+fread_unlocked(void *buf, size_t size, size_t n, Sfio_t *sp)
 {
-	return fread(buf, size, n, sp);
+    return fread(buf, size, n, sp);
 }
 
 size_t
-fwrite_unlocked(void* buf, size_t size, size_t n, Sfio_t* sp)
+fwrite_unlocked(void *buf, size_t size, size_t n, Sfio_t *sp)
 {
-	return fwrite(buf, size, n, sp);
+    return fwrite(buf, size, n, sp);
 }
 
 int
-getc_unlocked(Sfio_t* sp)
+getc_unlocked(Sfio_t *sp)
 {
-	return getc(sp);
+    return getc(sp);
 }
 
 int
 getchar_unlocked(void)
 {
-	return getchar();
+    return getchar();
 }
 
 int
-putc_unlocked(int c, Sfio_t* sp)
+putc_unlocked(int c, Sfio_t *sp)
 {
-	return putc(c, sp);
+    return putc(c, sp);
 }
 
 int
 putchar_unlocked(int c)
 {
-	return putchar(c);
+    return putchar(c);
 }

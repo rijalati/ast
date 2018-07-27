@@ -1,42 +1,42 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 2007-2012 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*               Roland Mainz <roland.mainz@nrubsig.org>                *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 2007-2012 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *               Roland Mainz <roland.mainz@nrubsig.org>                *
+ *                                                                      *
+ ***********************************************************************/
 #pragma prototyped
 
-#include "defs.h"
-#include "variables.h"
-#include "lexstates.h"
-#include "io.h"
-#include "name.h"
 #include "builtins.h"
+#include "defs.h"
 #include "history.h"
+#include "io.h"
+#include "lexstates.h"
+#include "name.h"
 #include "terminal.h"
-#include <stdio.h>
+#include "variables.h"
 #include <poll.h>
-#include <tmx.h>
+#include <stdio.h>
 #include <stk.h>
+#include <tmx.h>
 
 #ifndef SH_DICT
-#   define SH_DICT "libshell"
+#    define SH_DICT "libshell"
 #endif
 
-#define sh_contexttoshell(context)	((context)?((context)->shp):(NULL))
+#define sh_contexttoshell(context) ((context) ? ((context)->shp) : (NULL))
 
 static
 const char sh_optpoll[] =
@@ -220,522 +220,595 @@ const char sh_optpoll[] =
 ;
 
 
-/* Like |nv_open()| but constructs variable name on the fly using |sfsprintf()| format */
-static
-Namval_t *nv_open_fmt(Dt_t *dict, int flags, const char *namefmt, ...)
+/* Like |nv_open()| but constructs variable name on the fly using
+ * |sfsprintf()| format */
+static Namval_t *
+nv_open_fmt(Dt_t *dict, int flags, const char *namefmt, ...)
 {
-	char 	varnamebuff[PATH_MAX];
-	va_list	ap;
+    char varnamebuff[PATH_MAX];
+    va_list ap;
 
-	va_start(ap, namefmt);
-	vsnprintf(varnamebuff, sizeof(varnamebuff), namefmt, ap);
-	va_end(ap);
-	
-	return nv_open(varnamebuff, dict, flags);
+    va_start(ap, namefmt);
+    vsnprintf(varnamebuff, sizeof(varnamebuff), namefmt, ap);
+    va_end(ap);
+
+    return nv_open(varnamebuff, dict, flags);
 }
 
 /* Name/value mapping table for POLL*-flags */
 struct pollflagnamemap
 {
-	const int flag;
-	const char *name;
+    const int flag;
+    const char *name;
 };
 
-static const
-struct pollflagnamemap pfnm[]=
-{
-	{ POLLIN,	"pollin"	},
+static const struct pollflagnamemap pfnm[] = {
+    { POLLIN, "pollin" },
 #ifdef POLLPRI
-	{ POLLPRI,	"pollpri"	},
+    { POLLPRI, "pollpri" },
 #endif
-	{ POLLOUT,	"pollout"	},
+    { POLLOUT, "pollout" },
 #ifdef POLLRDNORM
-	{ POLLRDNORM,	"pollrdnorm"	},
+    { POLLRDNORM, "pollrdnorm" },
 #endif
 #ifdef POLLWRNORM
-	{ POLLWRNORM,	"pollwrnorm"	},
+    { POLLWRNORM, "pollwrnorm" },
 #endif
 #ifdef POLLRDBAND
-	{ POLLRDBAND,	"pollrdband"	},
+    { POLLRDBAND, "pollrdband" },
 #endif
 #ifdef POLLWRBAND
-	{ POLLWRBAND,	"pollwrband"	},
+    { POLLWRBAND, "pollwrband" },
 #endif
 #ifdef POLLMSG
-	{ POLLMSG,	"pollmsg"	},
+    { POLLMSG, "pollmsg" },
 #endif
 #ifdef POLLREMOVE
-	{ POLLREMOVE,	"pollremove"	},
+    { POLLREMOVE, "pollremove" },
 #endif
 #ifdef POLLRDHUP
-	{ POLLRDHUP,	"pollrdhup"	},
+    { POLLRDHUP, "pollrdhup" },
 #endif
-	{ POLLERR,	"pollerr"	},
-	{ POLLHUP,	"pollhup"	},
-	{ POLLNVAL,	"pollnval"	},
-	{ 0,		NULL		},
+    { POLLERR, "pollerr" },       { POLLHUP, "pollhup" },
+    { POLLNVAL, "pollnval" },     { 0, NULL },
 };
 
 /* structure to keep track of per array entry data */
 struct pollstat
 {
-	/* name of array subscript */
-	const char *array_subscript;
+    /* name of array subscript */
+    const char *array_subscript;
 
-	/* |sfio| keeps track of sfio information */
-	struct
-	{
-		Sfio_t	*sfd;
-		ssize_t flags;
-	} sfio;
+    /* |sfio| keeps track of sfio information */
+    struct
+    {
+        Sfio_t *sfd;
+        ssize_t flags;
+    } sfio;
 
-	/*
-	 * Bits in |eventvar_found| are POLL*-bits, set if matching
-	 * ar[i].events.poll* var was found. We use this later to
-	 * set the same ar[i].revents.poll* variable, regardless
-	 * whether it was polled or not. This was done so the script
-	 * author can control which poll* variables in the "revents"
-	 * compound appear and which not.
-	 */
-	int eventvar_found;
+    /*
+     * Bits in |eventvar_found| are POLL*-bits, set if matching
+     * ar[i].events.poll* var was found. We use this later to
+     * set the same ar[i].revents.poll* variable, regardless
+     * whether it was polled or not. This was done so the script
+     * author can control which poll* variables in the "revents"
+     * compound appear and which not.
+     */
+    int eventvar_found;
 };
 
-/* poll on given |fds| data and retry after EINTR/EAGAIN while adjusting timeout */
-static
-int poll_loop(Shbltin_t* context, struct pollfd *fds, nfds_t nfds, int timeout)
+/* poll on given |fds| data and retry after EINTR/EAGAIN while adjusting
+ * timeout */
+static int
+poll_loop(Shbltin_t *context, struct pollfd *fds, nfds_t nfds, int timeout)
 {
 /* nanoseconds to milliseconds */
-#define TIME_NS2MS(t) ((t)/(1000UL*1000UL))
+#define TIME_NS2MS(t) ((t) / (1000UL * 1000UL))
 /* milliseconds to nanoseconds */
-#define TIME_MS2NS(t) (((Time_t)(t))*(1000UL*1000UL))
+#define TIME_MS2NS(t) (((Time_t)(t)) * (1000UL * 1000UL))
 
-	int n;
+    int n;
 
-	/* We need two codepaths here:
-	 * 1. timeout > 0:  we have to wait for |timeout| or events.
-	 * 2. timeout <= 0: we have to wait forever (-1), return
-	 *    immediately (0) or an event occurs.
-	 */
-	if (timeout > 0)
-	{
-		const Time_t starttime = tmxgettime();
-		Time_t timeout_ns = TIME_MS2NS(timeout);
+    /* We need two codepaths here:
+     * 1. timeout > 0:  we have to wait for |timeout| or events.
+     * 2. timeout <= 0: we have to wait forever (-1), return
+     *    immediately (0) or an event occurs.
+     */
+    if (timeout > 0)
+    {
+        const Time_t starttime = tmxgettime();
+        Time_t timeout_ns = TIME_MS2NS(timeout);
 
-		do
-		{
-			while(((n = poll(fds, nfds, timeout)) < 0) &&
-				((errno == EINTR) || (errno == EAGAIN)) &&
-				(!context->sigset))
-				errno=0;
+        do
+        {
+            while (((n = poll(fds, nfds, timeout)) < 0)
+                   && ((errno == EINTR) || (errno == EAGAIN))
+                   && (!context->sigset))
+                errno = 0;
 
-			timeout_ns=timeout_ns-(tmxgettime()-starttime);
-			timeout=TIME_NS2MS(timeout_ns);
-		} while((timeout > 0) && (!context->sigset));
-	}
-	else
-	{
-		while(((n = poll(fds, nfds, timeout)) < 0) &&
-			((errno == EINTR) || (errno == EAGAIN)) &&
-			(!context->sigset))
-			errno=0;
-	}
-	return n;
+            timeout_ns = timeout_ns - (tmxgettime() - starttime);
+            timeout = TIME_NS2MS(timeout_ns);
+        } while ((timeout > 0) && (!context->sigset));
+    }
+    else
+    {
+        while (((n = poll(fds, nfds, timeout)) < 0)
+               && ((errno == EINTR) || (errno == EAGAIN))
+               && (!context->sigset))
+            errno = 0;
+    }
+    return n;
 }
 
 
-/* get ".poll*"-variables in "ar[i].events" and store data in |currpollfd| and |currps| */
-static
-bool get_compound_revents(Shell_t *shp, const char *parrayname, struct pollstat *currps, struct pollfd *currpollfd)
+/* get ".poll*"-variables in "ar[i].events" and store data in |currpollfd| and
+ * |currps| */
+static bool
+get_compound_revents(Shell_t *shp,
+                     const char *parrayname,
+                     struct pollstat *currps,
+                     struct pollfd *currpollfd)
 {
-	const char	*subname=currps->array_subscript;
-	Namval_t	*np;
-	int		fd;
-	int		pi;
+    const char *subname = currps->array_subscript;
+    Namval_t *np;
+    int fd;
+    int pi;
 
-	np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_NOFAIL|NV_NOADD, "%s[%s].fd", parrayname, subname);
-	if (!np)
-	{
-		errormsg(SH_DICT, ERROR_ERROR, "missing pollfd %s[%s].fd", parrayname, subname);
-		return false;
-	}
-	fd = (int)nv_getnum(np);
-	nv_close(np);
-	if ((fd < -1) || (fd > OPEN_MAX))
-	{
-		errormsg(SH_DICT, ERROR_ERROR, "invalid pollfd %s[%s].fd %d", parrayname, subname, fd);
-		return false;
-	}
-	currpollfd->fd = fd;
+    np = nv_open_fmt(shp->var_tree,
+                     NV_VARNAME | NV_NOFAIL | NV_NOADD,
+                     "%s[%s].fd",
+                     parrayname,
+                     subname);
+    if (!np)
+    {
+        errormsg(
+        SH_DICT, ERROR_ERROR, "missing pollfd %s[%s].fd", parrayname, subname);
+        return false;
+    }
+    fd = ( int )nv_getnum(np);
+    nv_close(np);
+    if ((fd < -1) || (fd > OPEN_MAX))
+    {
+        errormsg(SH_DICT,
+                 ERROR_ERROR,
+                 "invalid pollfd %s[%s].fd %d",
+                 parrayname,
+                 subname,
+                 fd);
+        return false;
+    }
+    currpollfd->fd = fd;
 
-	np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_COMVAR|NV_NOFAIL|NV_NOADD, "%s[%s].events", parrayname, subname);
-	if (!np)
-	{
-		errormsg(SH_DICT, ERROR_ERROR, "missing pollfd %s[%s].events", parrayname, subname);
-		return false;
-	}
-	nv_close(np);
+    np = nv_open_fmt(shp->var_tree,
+                     NV_VARNAME | NV_COMVAR | NV_NOFAIL | NV_NOADD,
+                     "%s[%s].events",
+                     parrayname,
+                     subname);
+    if (!np)
+    {
+        errormsg(SH_DICT,
+                 ERROR_ERROR,
+                 "missing pollfd %s[%s].events",
+                 parrayname,
+                 subname);
+        return false;
+    }
+    nv_close(np);
 
-	currpollfd->events=0;
-	currpollfd->revents=0;
-	currps->eventvar_found=0;
-	for (pi=0 ; pfnm[pi].name != NULL ; pi++)
-	{
-		const char *s;
+    currpollfd->events = 0;
+    currpollfd->revents = 0;
+    currps->eventvar_found = 0;
+    for (pi = 0; pfnm[pi].name != NULL; pi++)
+    {
+        const char *s;
 
-		np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_NOFAIL|NV_NOADD, "%s[%s].events.%s", parrayname, subname, pfnm[pi].name);
-		if (!np)
-			continue;
+        np = nv_open_fmt(shp->var_tree,
+                         NV_VARNAME | NV_NOFAIL | NV_NOADD,
+                         "%s[%s].events.%s",
+                         parrayname,
+                         subname,
+                         pfnm[pi].name);
+        if (!np)
+            continue;
 
-		currps->eventvar_found |= pfnm[pi].flag;
-		s=nv_getval(np);
-		if (s != NULL)
-		{
-			if (!strcmp(s, "true"))
-				currpollfd->events |= pfnm[pi].flag;
-			else if (!strcmp(s, "false"))
-				;
-			else
-				errormsg(SH_DICT, ERROR_ERROR, "invalid boolean value % in variable %s[%s].events", s, parrayname, subname);
-		}
-		nv_close(np);
-	}
+        currps->eventvar_found |= pfnm[pi].flag;
+        s = nv_getval(np);
+        if (s != NULL)
+        {
+            if (!strcmp(s, "true"))
+                currpollfd->events |= pfnm[pi].flag;
+            else if (!strcmp(s, "false"))
+                ;
+            else
+                errormsg(SH_DICT,
+                         ERROR_ERROR,
+                         "invalid boolean value % in variable %s[%s].events",
+                         s,
+                         parrayname,
+                         subname);
+        }
+        nv_close(np);
+    }
 
-	return true;
+    return true;
 }
 
-/* set ".poll*"-variables in "ar[i].revents" per data in |currpollfd| and |currps| */
-static
-void set_compound_revents(Shell_t *shp, const char *parrayname, struct pollstat *currps, struct pollfd *currpollfd)
+/* set ".poll*"-variables in "ar[i].revents" per data in |currpollfd| and
+ * |currps| */
+static void
+set_compound_revents(Shell_t *shp,
+                     const char *parrayname,
+                     struct pollstat *currps,
+                     struct pollfd *currpollfd)
 {
-	const char *subname=currps->array_subscript;
-	Namval_t *np;
-	int pi;
+    const char *subname = currps->array_subscript;
+    Namval_t *np;
+    int pi;
 
-	np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_NOFAIL|NV_COMVAR, "%s[%s].revents", parrayname, subname);
-	if (!np)
-	{
-		errormsg(SH_DICT, ERROR_ERROR, "could not create pollfd %s[%s].revents", parrayname, subname);
-		return;
-	}
-	nv_setvtree(np); /* make "revents" really a compound variable */
-	nv_close(np);
+    np = nv_open_fmt(shp->var_tree,
+                     NV_VARNAME | NV_NOFAIL | NV_COMVAR,
+                     "%s[%s].revents",
+                     parrayname,
+                     subname);
+    if (!np)
+    {
+        errormsg(SH_DICT,
+                 ERROR_ERROR,
+                 "could not create pollfd %s[%s].revents",
+                 parrayname,
+                 subname);
+        return;
+    }
+    nv_setvtree(np); /* make "revents" really a compound variable */
+    nv_close(np);
 
-	for (pi=0 ; pfnm[pi].name != NULL ; pi++)
-	{
-		/*
-		 * POLLHUP|POLLNVAL|POLLERR can always appear in |currpollfd->revents|
-		 * even if we did not request them in |currpollfd->events|
-		 */
-		if ((currps->eventvar_found & pfnm[pi].flag) ||
-			((currpollfd->revents & (POLLHUP|POLLNVAL|POLLERR)) & pfnm[pi].flag))
-		{
-			np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_NOFAIL, "%s[%s].revents.%s", parrayname, subname, pfnm[pi].name);
-			if (!np)
-				continue;
+    for (pi = 0; pfnm[pi].name != NULL; pi++)
+    {
+        /*
+         * POLLHUP|POLLNVAL|POLLERR can always appear in |currpollfd->revents|
+         * even if we did not request them in |currpollfd->events|
+         */
+        if ((currps->eventvar_found & pfnm[pi].flag)
+            || ((currpollfd->revents & (POLLHUP | POLLNVAL | POLLERR))
+                & pfnm[pi].flag))
+        {
+            np = nv_open_fmt(shp->var_tree,
+                             NV_VARNAME | NV_NOFAIL,
+                             "%s[%s].revents.%s",
+                             parrayname,
+                             subname,
+                             pfnm[pi].name);
+            if (!np)
+                continue;
 
-			nv_putval(np, ((currpollfd->revents & pfnm[pi].flag)?"true":"false"), 0);
-			nv_close(np);
-		}
-	}
+            nv_putval(
+            np, ((currpollfd->revents & pfnm[pi].flag) ? "true" : "false"), 0);
+            nv_close(np);
+        }
+    }
 }
 
 /* |main()| for poll(1) builtin */
-extern
-int b_poll(int argc, char *argv[], Shbltin_t* context)
+extern int
+b_poll(int argc, char *argv[], Shbltin_t *context)
 {
-	Shell_t		*shp = sh_contexttoshell(context);
-	Namval_t	*np,
-			*array_np,
-			*array_np_sub;
-	Sfio_t		*strstk		= NULL; /* stk object for memory allocations */
-	const char	*parrayname,		/* name of array with poll data */
-			*eventarrayname = NULL, /* name of array with indexes to results */
-			*subname,		/* current subscript */
-			*s;
-	int		n;
-	nfds_t		numpollfd = 0;		/* number of entries to poll */
-	int		i,
-			j;
-	double		timeout		= -1.;
-	char		buff[PATH_MAX*2+1];	/* fixme: theoretically enough to hold two variable names */
-	bool		ttyraw		= false;/* put ttys into raw more when polling */
-	bool		pollsfio	= true; /* should we ask sfio layer if it has data cached ? */
-	int		pi;			/* index for |pfnm| */
-	struct pollfd   *pollfd		= NULL,	/* data for poll(2) */
-			*currpollfd;		/* current |pollfd| we are working on */
-	struct pollstat *pollstat	= NULL,	/* context data from shell array */
-			*currps;		/* current |pollstat| we are working on */
-	int		retval		= 0;	/* return value of builtin */
+    Shell_t *shp = sh_contexttoshell(context);
+    Namval_t *np, *array_np, *array_np_sub;
+    Sfio_t *strstk = NULL; /* stk object for memory allocations */
+    const char *parrayname, /* name of array with poll data */
+    *eventarrayname = NULL, /* name of array with indexes to results */
+    *subname, /* current subscript */
+    *s;
+    int n;
+    nfds_t numpollfd = 0; /* number of entries to poll */
+    int i, j;
+    double timeout = -1.;
+    char buff[PATH_MAX * 2 + 1]; /* fixme: theoretically enough to hold two
+                                    variable names */
+    bool ttyraw = false; /* put ttys into raw more when polling */
+    bool pollsfio
+    = true; /* should we ask sfio layer if it has data cached ? */
+    int pi; /* index for |pfnm| */
+    struct pollfd *pollfd = NULL, /* data for poll(2) */
+    *currpollfd; /* current |pollfd| we are working on */
+    struct pollstat *pollstat = NULL, /* context data from shell array */
+    *currps; /* current |pollstat| we are working on */
+    int retval = 0; /* return value of builtin */
 
-	while (n = optget(argv, sh_optpoll)) switch (n)
-	{
-		case 't':
-			errno = 0;
-			timeout = strtod(opt_info.arg, (char **)NULL);	
-			if (errno != 0)
-				errormsg(SH_DICT, ERROR_system(1), "%s: invalid timeout", opt_info.arg);
+    while (n = optget(argv, sh_optpoll))
+        switch (n)
+        {
+        case 't':
+            errno = 0;
+            timeout = strtod(opt_info.arg, ( char ** )NULL);
+            if (errno != 0)
+                errormsg(SH_DICT,
+                         ERROR_system(1),
+                         "%s: invalid timeout",
+                         opt_info.arg);
 
-			/* -t uses seconds */
-			if (timeout >=0)
-				timeout *= 1000.;
-			break;
-		case 'e':
-			eventarrayname = opt_info.arg;
-			break;
-		case 'S':
-			pollsfio=opt_info.num?true:false;
-			break;
-		case 'R':
-			ttyraw=opt_info.num?true:false;
-			break;
-		case ':':
-			errormsg(SH_DICT, ERROR_ERROR, "%s", opt_info.arg);
-			break;
-		case '?':
-			errormsg(SH_DICT, ERROR_usage(2), "%s", opt_info.arg);
-			break;
-	}
-	argc -= opt_info.index;
-	argv += opt_info.index;
-	if(argc!=1)
-		errormsg(SH_DICT, ERROR_usage(2), optusage((char*)0));
+            /* -t uses seconds */
+            if (timeout >= 0)
+                timeout *= 1000.;
+            break;
+        case 'e':
+            eventarrayname = opt_info.arg;
+            break;
+        case 'S':
+            pollsfio = opt_info.num ? true : false;
+            break;
+        case 'R':
+            ttyraw = opt_info.num ? true : false;
+            break;
+        case ':':
+            errormsg(SH_DICT, ERROR_ERROR, "%s", opt_info.arg);
+            break;
+        case '?':
+            errormsg(SH_DICT, ERROR_usage(2), "%s", opt_info.arg);
+            break;
+        }
+    argc -= opt_info.index;
+    argv += opt_info.index;
+    if (argc != 1)
+        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * )0));
 
-	parrayname = argv[0];
+    parrayname = argv[0];
 
-	strstk = stkopen(0);
-	if (!strstk)
-		errormsg(SH_DICT, ERROR_system(1), e_nospace);
+    strstk = stkopen(0);
+    if (!strstk)
+        errormsg(SH_DICT, ERROR_system(1), e_nospace);
 
-	array_np = nv_open(parrayname, shp->var_tree, NV_VARNAME|NV_NOFAIL|NV_NOADD);
-	if (!array_np)
-	{
-		stkclose(strstk);
-		errormsg(SH_DICT, ERROR_system(1), "cannot find array variable %s", parrayname);
-	}
-	if (!nv_isattr(array_np, NV_ARRAY))
-	{
-		nv_close(array_np);
-		stkclose(strstk);
-		errormsg(SH_DICT, ERROR_system(1), "variable %s is not an array", parrayname);
-	}
+    array_np
+    = nv_open(parrayname, shp->var_tree, NV_VARNAME | NV_NOFAIL | NV_NOADD);
+    if (!array_np)
+    {
+        stkclose(strstk);
+        errormsg(SH_DICT,
+                 ERROR_system(1),
+                 "cannot find array variable %s",
+                 parrayname);
+    }
+    if (!nv_isattr(array_np, NV_ARRAY))
+    {
+        nv_close(array_np);
+        stkclose(strstk);
+        errormsg(
+        SH_DICT, ERROR_system(1), "variable %s is not an array", parrayname);
+    }
 
-	/*
-	 * Count number of array elememts. We need to do it "manually"
-	 * to handle sparse indexed and associative arrays
-	 */
-	nv_putsub(array_np, NULL, 0, ARRAY_SCAN);
-	array_np_sub = array_np;
-	do
-	{
-		if (!(subname=nv_getsub(array_np_sub)))
-			break;
-		numpollfd++;
-	} while(array_np_sub && nv_nextsub(array_np_sub));
+    /*
+     * Count number of array elememts. We need to do it "manually"
+     * to handle sparse indexed and associative arrays
+     */
+    nv_putsub(array_np, NULL, 0, ARRAY_SCAN);
+    array_np_sub = array_np;
+    do
+    {
+        if (!(subname = nv_getsub(array_np_sub)))
+            break;
+        numpollfd++;
+    } while (array_np_sub && nv_nextsub(array_np_sub));
 
-	/*
-	 * Done with counting, now we need to allocate a work area big enough
-	 */
-	pollfd   = (struct pollfd   *)stkalloc(strstk, (sizeof(struct pollfd)   * numpollfd));
-	pollstat = (struct pollstat *)stkalloc(strstk, (sizeof(struct pollstat) * numpollfd));
-	if (!pollfd || !pollstat)
-	{
-		errormsg(SH_DICT, ERROR_ERROR, e_nospace);
-		goto done_error;
-	}
+    /*
+     * Done with counting, now we need to allocate a work area big enough
+     */
+    pollfd = ( struct pollfd * )stkalloc(strstk,
+                                         (sizeof(struct pollfd) * numpollfd));
+    pollstat = ( struct pollstat * )stkalloc(
+    strstk, (sizeof(struct pollstat) * numpollfd));
+    if (!pollfd || !pollstat)
+    {
+        errormsg(SH_DICT, ERROR_ERROR, e_nospace);
+        goto done_error;
+    }
 
-	/*
-	 * Walk the array again and fetch the data we need...
-	 */
-	nv_putsub(array_np, NULL, 0, ARRAY_SCAN);
-	array_np_sub = array_np;
-	i = 0;
-	do
-	{
-		if (!(subname=nv_getsub(array_np_sub)))
-			break;
+    /*
+     * Walk the array again and fetch the data we need...
+     */
+    nv_putsub(array_np, NULL, 0, ARRAY_SCAN);
+    array_np_sub = array_np;
+    i = 0;
+    do
+    {
+        if (!(subname = nv_getsub(array_np_sub)))
+            break;
 
-		pollstat[i].array_subscript=stkcopy(strstk, subname);
-		if (!pollstat[i].array_subscript)
-		{
-			errormsg(SH_DICT, ERROR_ERROR, e_nospace);
-			goto done_error;
-		}
+        pollstat[i].array_subscript = stkcopy(strstk, subname);
+        if (!pollstat[i].array_subscript)
+        {
+            errormsg(SH_DICT, ERROR_ERROR, e_nospace);
+            goto done_error;
+        }
 
-		if (!get_compound_revents(shp, parrayname, &pollstat[i], &pollfd[i]))
-			goto done_error;
+        if (!get_compound_revents(shp, parrayname, &pollstat[i], &pollfd[i]))
+            goto done_error;
 
-		i++;
-	} while(array_np_sub && nv_nextsub(array_np_sub));
+        i++;
+    } while (array_np_sub && nv_nextsub(array_np_sub));
 
-	nv_close(array_np);
-	array_np=NULL;
+    nv_close(array_np);
+    array_np = NULL;
 
-	/*
-	 * If sfio handles fds we need to check whether there are
-	 * any data in the sfio buffers and remember this information
-	 * so we can set { POLLIN, POLLOUT } on demand to reflect
-	 * this information.
-	 */
-	if (pollsfio)
-	{
-		Sfio_t	**sfd;
-		int	fd;
-		int	num_sfd=0,
-			active_sfd=0;
+    /*
+     * If sfio handles fds we need to check whether there are
+     * any data in the sfio buffers and remember this information
+     * so we can set { POLLIN, POLLOUT } on demand to reflect
+     * this information.
+     */
+    if (pollsfio)
+    {
+        Sfio_t **sfd;
+        int fd;
+        int num_sfd = 0, active_sfd = 0;
 
-		sfd = (Sfio_t **)stkalloc(strstk, (sizeof(Sfio_t *) * (numpollfd+1)));
-		if (!sfd)
-		{
-			errormsg(SH_DICT, ERROR_ERROR, e_nospace);
-			goto done_error;
-		}
+        sfd
+        = ( Sfio_t ** )stkalloc(strstk, (sizeof(Sfio_t *) * (numpollfd + 1)));
+        if (!sfd)
+        {
+            errormsg(SH_DICT, ERROR_ERROR, e_nospace);
+            goto done_error;
+        }
 
-		for (i=0 ; i < numpollfd ; i++)
-		{
-			currps=&pollstat[i];
-			fd=pollfd[i].fd;
-			
-			currps->sfio.sfd=(fd>=0)?sh_fd2sfio(shp, fd):NULL;
-			currps->sfio.flags=0;
-			if (currps->sfio.sfd!=NULL)
-			{
-				/* Only add |currps->sfio.sfd| to the
-				 * |sfd| array (list of |Sfio_t*|
-				 * passed to |sfpoll()|) if it is not
-				 * in that list yet. This prevents
-				 * that we call |sfpoll()| on the same
-				 * sfio stream multiple times (which
-				 * can happen if pollfd contains the
-				 * same fd multiple times (which is
-				 * valid usage, for example if multiple
-				 * consumers pool their pool lists in
-				 * one poll call or listen to different
-				 * sets of poll event flags)).
-				 */
-				for (j=0 ; j < num_sfd ; j++)
-				{
-					if (sfd[j]==currps->sfio.sfd)
-						break;
-				}
-				if (j == num_sfd)
-					sfd[num_sfd++]=currps->sfio.sfd;
-			}
-		}
+        for (i = 0; i < numpollfd; i++)
+        {
+            currps = &pollstat[i];
+            fd = pollfd[i].fd;
 
-		active_sfd = sfpoll(&sfd[0], num_sfd, 0);
-		if (active_sfd > 0)
-		{
-			ssize_t sfpoll_flags;
+            currps->sfio.sfd = (fd >= 0) ? sh_fd2sfio(shp, fd) : NULL;
+            currps->sfio.flags = 0;
+            if (currps->sfio.sfd != NULL)
+            {
+                /* Only add |currps->sfio.sfd| to the
+                 * |sfd| array (list of |Sfio_t*|
+                 * passed to |sfpoll()|) if it is not
+                 * in that list yet. This prevents
+                 * that we call |sfpoll()| on the same
+                 * sfio stream multiple times (which
+                 * can happen if pollfd contains the
+                 * same fd multiple times (which is
+                 * valid usage, for example if multiple
+                 * consumers pool their pool lists in
+                 * one poll call or listen to different
+                 * sets of poll event flags)).
+                 */
+                for (j = 0; j < num_sfd; j++)
+                {
+                    if (sfd[j] == currps->sfio.sfd)
+                        break;
+                }
+                if (j == num_sfd)
+                    sfd[num_sfd++] = currps->sfio.sfd;
+            }
+        }
 
-			for (i=0 ; i < active_sfd ; i++)
-			{
-				sfpoll_flags=sfvalue(sfd[i]);
+        active_sfd = sfpoll(&sfd[0], num_sfd, 0);
+        if (active_sfd > 0)
+        {
+            ssize_t sfpoll_flags;
 
-				/*
-				 * We have to loop over all entries
-				 * because single fd may be polled
-				 * multiple times in different pollfd
-				 * entries
-				 */
-				for (j=0 ; j < numpollfd ; j++)
-				{
-					if (pollstat[j].sfio.sfd == sfd[i])
-						pollstat[j].sfio.flags=sfpoll_flags;
-				}
-			}
-		}
-	}
+            for (i = 0; i < active_sfd; i++)
+            {
+                sfpoll_flags = sfvalue(sfd[i]);
 
-	/*
-	 * Create --eventarray array on demand
-	 */
-	if (eventarrayname)
-	{
-		np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_ARRAY|NV_NOFAIL, "%s", eventarrayname);
-		if (!np)
-		{
-			errormsg(SH_DICT, ERROR_ERROR, "could not create eventarray variable %s", eventarrayname);
-			goto done_error;
-		}
+                /*
+                 * We have to loop over all entries
+                 * because single fd may be polled
+                 * multiple times in different pollfd
+                 * entries
+                 */
+                for (j = 0; j < numpollfd; j++)
+                {
+                    if (pollstat[j].sfio.sfd == sfd[i])
+                        pollstat[j].sfio.flags = sfpoll_flags;
+                }
+            }
+        }
+    }
 
-		nv_close(np);
-	}
+    /*
+     * Create --eventarray array on demand
+     */
+    if (eventarrayname)
+    {
+        np = nv_open_fmt(shp->var_tree,
+                         NV_VARNAME | NV_ARRAY | NV_NOFAIL,
+                         "%s",
+                         eventarrayname);
+        if (!np)
+        {
+            errormsg(SH_DICT,
+                     ERROR_ERROR,
+                     "could not create eventarray variable %s",
+                     eventarrayname);
+            goto done_error;
+        }
 
-	/*
-	 * Make sure we poll on "raw" tty to catch _every_ keystroke...
-	 */
-	if (ttyraw)
-	{
-		int fd;
+        nv_close(np);
+    }
 
-		for (i=0 ; i < numpollfd ; i++)
-		{
-			fd=pollfd[i].fd;
-			if ((fd >=0) && (shp->fdstatus[fd]&IOTTY))
-				tty_raw(fd, 1);
-		}
-	}
+    /*
+     * Make sure we poll on "raw" tty to catch _every_ keystroke...
+     */
+    if (ttyraw)
+    {
+        int fd;
 
-	/*
-	 * ... then poll for events...
-	 */
-	n = poll_loop(context, pollfd, numpollfd, timeout);
+        for (i = 0; i < numpollfd; i++)
+        {
+            fd = pollfd[i].fd;
+            if ((fd >= 0) && (shp->fdstatus[fd] & IOTTY))
+                tty_raw(fd, 1);
+        }
+    }
 
-	/* 
-	 * ... and restore the tty's to "cooked" mode
-	 */
-	if (ttyraw)
-	{
-		int fd;
+    /*
+     * ... then poll for events...
+     */
+    n = poll_loop(context, pollfd, numpollfd, timeout);
 
-		for (i=0 ; i < numpollfd ; i++)
-		{
-			fd=pollfd[i].fd;
-			if ((fd >=0) && (shp->fdstatus[fd]&IOTTY))
-				tty_cooked(fd);
-		}
-	}
+    /*
+     * ... and restore the tty's to "cooked" mode
+     */
+    if (ttyraw)
+    {
+        int fd;
 
-	if (n < 0)
-	{
-		/* |ERROR_system(0)| won't quit the builtin */
-		errormsg(SH_DICT, ERROR_system(0), "poll(2) failure");
-		retval=1;
-	}
+        for (i = 0; i < numpollfd; i++)
+        {
+            fd = pollfd[i].fd;
+            if ((fd >= 0) && (shp->fdstatus[fd] & IOTTY))
+                tty_cooked(fd);
+        }
+    }
 
-	/*
-	 * Write results back into the array
-	 */
-	for (i=0 ; i < numpollfd ; i++)
-	{
-		/* Adjust data in |pollfd[i]| to reflect sfio stream status (if requested) */
-		if (pollsfio)
-		{
-			if ((pollfd[i].events & POLLIN)  && (pollstat[i].sfio.flags & SF_READ))
-				pollfd[i].revents |= POLLIN;
-			if ((pollfd[i].events & POLLOUT) && (pollstat[i].sfio.flags & SF_WRITE))
-				pollfd[i].revents |= POLLOUT;
-		}
+    if (n < 0)
+    {
+        /* |ERROR_system(0)| won't quit the builtin */
+        errormsg(SH_DICT, ERROR_system(0), "poll(2) failure");
+        retval = 1;
+    }
 
-		set_compound_revents(shp, parrayname, &pollstat[i], &pollfd[i]);
+    /*
+     * Write results back into the array
+     */
+    for (i = 0; i < numpollfd; i++)
+    {
+        /* Adjust data in |pollfd[i]| to reflect sfio stream status (if
+         * requested) */
+        if (pollsfio)
+        {
+            if ((pollfd[i].events & POLLIN)
+                && (pollstat[i].sfio.flags & SF_READ))
+                pollfd[i].revents |= POLLIN;
+            if ((pollfd[i].events & POLLOUT)
+                && (pollstat[i].sfio.flags & SF_WRITE))
+                pollfd[i].revents |= POLLOUT;
+        }
 
-		/* Add array index to eventarray if this pollfd entry had any events */
-		if (eventarrayname && pollfd[i].revents)
-		{
-			sfsprintf(buff, sizeof(buff), "%s+=( '%s' )", eventarrayname, pollstat[i].array_subscript);
-			sh_trap(shp, buff, 0);
-		}
-	}
-	
-	goto done;
+        set_compound_revents(shp, parrayname, &pollstat[i], &pollfd[i]);
+
+        /* Add array index to eventarray if this pollfd entry had any events
+         */
+        if (eventarrayname && pollfd[i].revents)
+        {
+            sfsprintf(buff,
+                      sizeof(buff),
+                      "%s+=( '%s' )",
+                      eventarrayname,
+                      pollstat[i].array_subscript);
+            sh_trap(shp, buff, 0);
+        }
+    }
+
+    goto done;
 
 done_error:
-	retval=1;
+    retval = 1;
 done:
-	if (array_np)
-		nv_close(array_np);
-	if (strstk)
-		stkclose(strstk);
-	
-	return(retval);
+    if (array_np)
+        nv_close(array_np);
+    if (strstk)
+        stkclose(strstk);
+
+    return (retval);
 }

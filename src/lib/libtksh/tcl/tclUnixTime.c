@@ -1,4 +1,4 @@
-/* 
+/*
  * tclUnixTime.c --
  *
  *	Contains Unix specific versions of Tcl functions that
@@ -14,11 +14,11 @@
 
 #if _PACKAGE_ast
 
-#include <ast.h>
-#include <tm.h>
-#include <tv.h>
+#    include <ast.h>
+#    include <tm.h>
+#    include <tv.h>
 
-#include "tcl.h"
+#    include "tcl.h"
 
 /*
  * see function comments below for details
@@ -27,42 +27,38 @@
 unsigned long
 TclpGetSeconds()
 {
-	return time(NiL);
+    return time(NiL);
 }
 
 unsigned long
 TclpGetClicks()
 {
-	Tv_t	tv;
+    Tv_t tv;
 
-	tvgettime(&tv);
-	return 1000000 * tv.tv_sec + tv.tv_nsec / 1000;
+    tvgettime(&tv);
+    return 1000000 * tv.tv_sec + tv.tv_nsec / 1000;
 }
 
-int
-TclpGetTimeZone(now)
-unsigned long	now;
+int TclpGetTimeZone(now) unsigned long now;
 {
-	tmset(tm_info.zone);
-	return tm_info.zone->west;
+    tmset(tm_info.zone);
+    return tm_info.zone->west;
 }
 
-void
-TclpGetTime(tp)
-Tcl_Time*	tp;
+void TclpGetTime(tp) Tcl_Time *tp;
 {
-	Tv_t	tv;
+    Tv_t tv;
 
-	tvgettime(&tv);
-	tp->sec = tv.tv_sec;
-	tp->usec = tv.tv_nsec / 1000;
+    tvgettime(&tv);
+    tp->sec = tv.tv_sec;
+    tp->usec = tv.tv_nsec / 1000;
 }
 
 #else /* _PACKAGE_ast */
 
-#include "tclInt.h"
-#include "tclPort.h"
-
+#    include "tclInt.h"
+#    include "tclPort.h"
+
 /*
  *-----------------------------------------------------------------------------
  *
@@ -83,9 +79,9 @@ Tcl_Time*	tp;
 unsigned long
 TclpGetSeconds()
 {
-    return time((time_t *) NULL);
+    return time(( time_t * )NULL);
 }
-
+
 /*
  *-----------------------------------------------------------------------------
  *
@@ -109,23 +105,23 @@ unsigned long
 TclpGetClicks()
 {
     unsigned long now;
-#ifdef NO_GETTOD
+#    ifdef NO_GETTOD
     struct tms dummy;
-#else
+#    else
     struct timeval date;
     struct timezone tz;
-#endif
+#    endif
 
-#ifdef NO_GETTOD
-    now = (unsigned long) times(&dummy);
-#else
+#    ifdef NO_GETTOD
+    now = ( unsigned long )times(&dummy);
+#    else
     gettimeofday(&date, &tz);
-    now = date.tv_sec*1000000 + date.tv_usec;
-#endif
+    now = date.tv_sec * 1000000 + date.tv_usec;
+#    endif
 
     return now;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -144,9 +140,7 @@ TclpGetClicks()
  *----------------------------------------------------------------------
  */
 
-int
-TclpGetTimeZone (currentTime)
-    unsigned long  currentTime;
+int TclpGetTimeZone(currentTime) unsigned long currentTime;
 {
     /*
      * Determine how a timezone is obtained from "struct tm".  If there is no
@@ -156,47 +150,50 @@ TclpGetTimeZone (currentTime)
      * The gettimeofday system call can also be used to determine the time
      * zone.
      */
-    
-#if defined(HAVE_TM_TZADJ)
-#   define TCL_GOT_TIMEZONE
-    time_t      curTime = (time_t) currentTime;
-    struct tm  *timeDataPtr = localtime(&curTime);
-    int         timeZone;
 
-    timeZone = timeDataPtr->tm_tzadj  / 60;
-    if (timeDataPtr->tm_isdst) {
+#    if defined(HAVE_TM_TZADJ)
+#        define TCL_GOT_TIMEZONE
+    time_t curTime = ( time_t )currentTime;
+    struct tm *timeDataPtr = localtime(&curTime);
+    int timeZone;
+
+    timeZone = timeDataPtr->tm_tzadj / 60;
+    if (timeDataPtr->tm_isdst)
+    {
         timeZone += 60;
     }
-    
-    return timeZone;
-#endif
 
-#if defined(HAVE_TM_GMTOFF) && !defined (TCL_GOT_TIMEZONE)
-#   define TCL_GOT_TIMEZONE
-    time_t     curTime = (time_t) currentTime;
+    return timeZone;
+#    endif
+
+#    if defined(HAVE_TM_GMTOFF) && !defined(TCL_GOT_TIMEZONE)
+#        define TCL_GOT_TIMEZONE
+    time_t curTime = ( time_t )currentTime;
     struct tm *timeDataPtr = localtime(&currentTime);
-    int        timeZone;
+    int timeZone;
 
     timeZone = -(timeDataPtr->tm_gmtoff / 60);
-    if (timeDataPtr->tm_isdst) {
+    if (timeDataPtr->tm_isdst)
+    {
         timeZone += 60;
     }
-    
+
     return timeZone;
-#endif
+#    endif
 
     /*
      * Must prefer timezone variable over gettimeofday, as gettimeofday does
      * not return timezone information on many systems that have moved this
      * information outside of the kernel.
      */
-    
-#if defined(HAVE_TIMEZONE_VAR) && !defined (TCL_GOT_TIMEZONE)
-#   define TCL_GOT_TIMEZONE
-    static int setTZ = 0;
-    int        timeZone;
 
-    if (!setTZ) {
+#    if defined(HAVE_TIMEZONE_VAR) && !defined(TCL_GOT_TIMEZONE)
+#        define TCL_GOT_TIMEZONE
+    static int setTZ = 0;
+    int timeZone;
+
+    if (!setTZ)
+    {
         tzset();
         setTZ = 1;
     }
@@ -209,32 +206,33 @@ TclpGetTimeZone (currentTime)
     timeZone = timezone / 60;
 
     return timeZone;
-#endif
+#    endif
 
-#if defined(HAVE_GETTIMEOFDAY) && !defined (TCL_GOT_TIMEZONE)
-#   define TCL_GOT_TIMEZONE
-    struct timeval  tv;
+#    if defined(HAVE_GETTIMEOFDAY) && !defined(TCL_GOT_TIMEZONE)
+#        define TCL_GOT_TIMEZONE
+    struct timeval tv;
     struct timezone tz;
     int timeZone;
 
     gettimeofday(&tv, &tz);
     timeZone = tz.tz_minuteswest;
-    if (tz.tz_dsttime) {
+    if (tz.tz_dsttime)
+    {
         timeZone += 60;
     }
-    
+
     return timeZone;
-#endif
+#    endif
 
-#ifndef TCL_GOT_TIMEZONE
-    /*
-     * Cause compile error, we don't know how to get timezone.
-     */
-    error: autoconf did not figure out how to determine the timezone. 
-#endif
-
+#    ifndef TCL_GOT_TIMEZONE
+/*
+ * Cause compile error, we don't know how to get timezone.
+ */
+error:
+    autoconf did not figure out how to determine the timezone.
+#    endif
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -252,14 +250,13 @@ TclpGetTimeZone (currentTime)
  *----------------------------------------------------------------------
  */
 
-void
-TclpGetTime(timePtr)
-    Tcl_Time *timePtr;		/* Location to store time information. */
+void TclpGetTime(timePtr) Tcl_Time *timePtr; /* Location to store time
+                                                information. */
 {
     struct timeval tv;
     struct timezone tz;
-    
-    (void) gettimeofday(&tv, &tz);
+
+    ( void )gettimeofday(&tv, &tz);
     timePtr->sec = tv.tv_sec;
     timePtr->usec = tv.tv_usec;
 }

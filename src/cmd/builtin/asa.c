@@ -1,23 +1,23 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 1992-2012 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*               Glenn Fowler <glenn.s.fowler@gmail.com>                *
-*                    David Korn <dgkorn@gmail.com>                     *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 1992-2012 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *               Glenn Fowler <glenn.s.fowler@gmail.com>                *
+ *                    David Korn <dgkorn@gmail.com>                     *
+ *                                                                      *
+ ***********************************************************************/
 #pragma prototyped
 /*
  * asa.c
@@ -57,91 +57,94 @@ static const char usage[] =
 "[+SEE ALSO?\blpr\b(1)]"
 ;
 
-#include	<cmd.h>
+#include <cmd.h>
 
-static int asa(Sfio_t *in, Sfio_t *out, int reclen)
+static int
+asa(Sfio_t *in, Sfio_t *out, int reclen)
 {
-	char	*cp;
-	int	n, c = 0;
-	while(1)
-	{
-		if(reclen>0)
-			cp = sfreserve(in,n=reclen, -1);
-		else
-			cp = sfgetr(in,'\n',0);
-		if(!cp)
-			break;
-		if(reclen<=0)
-			n = sfvalue(in)-2;
-		else
-			while(--n>0 && cp[n]==' ');
-		switch(*cp)
-		{
-		    case '\n':
-			break;
-		    case '0':
-			sfputc(out,'\n');
-			break;
-		    case '1':
-			if(c)
-			{
-				sfputc(out,c);
-				c = '\f';
-			}
-			break;
-		    case '+':
-			c = '\r';
-			break;
-		}
-		if(c)
-			sfputc(out,c);
-		if(n>0)
-			sfwrite(out,cp+1,n);
-		c = '\n';
-	}
-	if(c)
-		sfputc(out,c);
-	return(0);
+    char *cp;
+    int n, c = 0;
+    while (1)
+    {
+        if (reclen > 0)
+            cp = sfreserve(in, n = reclen, -1);
+        else
+            cp = sfgetr(in, '\n', 0);
+        if (!cp)
+            break;
+        if (reclen <= 0)
+            n = sfvalue(in) - 2;
+        else
+            while (--n > 0 && cp[n] == ' ')
+                ;
+        switch (*cp)
+        {
+        case '\n':
+            break;
+        case '0':
+            sfputc(out, '\n');
+            break;
+        case '1':
+            if (c)
+            {
+                sfputc(out, c);
+                c = '\f';
+            }
+            break;
+        case '+':
+            c = '\r';
+            break;
+        }
+        if (c)
+            sfputc(out, c);
+        if (n > 0)
+            sfwrite(out, cp + 1, n);
+        c = '\n';
+    }
+    if (c)
+        sfputc(out, c);
+    return (0);
 }
 
 int
-b_asa(int argc, char** argv, Shbltin_t* context)
+b_asa(int argc, char **argv, Shbltin_t *context)
 {
-	char	*cp;
-	Sfio_t	*fp;
-	int	n, reclen=0;
+    char *cp;
+    Sfio_t *fp;
+    int n, reclen = 0;
 
-	cmdinit(argc, argv, (void*)0, (const char*)0, 0);
-	while (n = optget(argv, usage)) switch (n)
-	{
-	    case 'r':
-		reclen = opt_info.num;
-		break;
-	    case ':':
-		error(2, "%s", opt_info.arg);
-		break;
-	    case '?':
-		error(ERROR_usage(2), "%s", opt_info.arg);
-		break;
-	}
-	argv += opt_info.index;
-	if(error_info.errors)
-		error(ERROR_usage(2),"%s",optusage((char*)0));
-	if (cp = *argv)
-		argv++;
-	do
-	{
-		if (!cp || streq(cp,"-"))
-			fp = sfstdin;
-		else if (!(fp = sfopen(NiL, cp, "r")))
-		{
-			error(ERROR_system(0), "%s: cannot open", cp);
-			error_info.errors = 1;
-			continue;
-		}
-		n = asa(fp, sfstdout,reclen);
-		if (fp != sfstdin)
-			sfclose(fp);
-	} while (cp = *argv++);
-	return(error_info.errors);
+    cmdinit(argc, argv, ( void * )0, ( const char * )0, 0);
+    while (n = optget(argv, usage))
+        switch (n)
+        {
+        case 'r':
+            reclen = opt_info.num;
+            break;
+        case ':':
+            error(2, "%s", opt_info.arg);
+            break;
+        case '?':
+            error(ERROR_usage(2), "%s", opt_info.arg);
+            break;
+        }
+    argv += opt_info.index;
+    if (error_info.errors)
+        error(ERROR_usage(2), "%s", optusage(( char * )0));
+    if (cp = *argv)
+        argv++;
+    do
+    {
+        if (!cp || streq(cp, "-"))
+            fp = sfstdin;
+        else if (!(fp = sfopen(NiL, cp, "r")))
+        {
+            error(ERROR_system(0), "%s: cannot open", cp);
+            error_info.errors = 1;
+            continue;
+        }
+        n = asa(fp, sfstdout, reclen);
+        if (fp != sfstdin)
+            sfclose(fp);
+    } while (cp = *argv++);
+    return (error_info.errors);
 }

@@ -17,27 +17,27 @@
 #define _TKPORT
 
 #if !defined(_WINIX) && (_UWIN || __CYGWIN__ || __EMX__)
-#define _WINIX		1
+#    define _WINIX 1
 #endif
 #if !_WINIX && (defined(__WIN32__) || defined(_WIN32) || defined(WIN32))
-#define	WIN_TCL		1
+#    define WIN_TCL 1
 #endif
 
 #ifndef _TK
-#include "tk.h"
+#    include "tk.h"
 #endif
 #ifndef _TCL
-#include "tcl.h"
+#    include "tcl.h"
 #endif
 
 #if defined(WIN_TCL)
-#   include "tkWinPort.h"
+#    include "tkWinPort.h"
 #else
-#   if defined(MAC_TCL)
-#	include "tkMacPort.h"
-#   else
-#	include "../unix/tkUnixPort.h"
-#   endif
+#    if defined(MAC_TCL)
+#        include "tkMacPort.h"
+#    else
+#        include "../unix/tkUnixPort.h"
+#    endif
 #endif
 
 #endif /* _TKPORT */

@@ -1,4 +1,4 @@
-/* 
+/*
  * tclLoadDl.c --
  *
  *	This procedure provides a version of the TclLoadFile that
@@ -15,9 +15,9 @@
 
 #include "tclInt.h"
 #ifdef NO_DLFCN_H
-#   include "../compat/dlfcn.h"
+#    include "../compat/dlfcn.h"
 #else
-#   include <dlfcn.h>
+#    include <dlfcn.h>
 #endif
 
 /*
@@ -28,13 +28,13 @@
  */
 
 #ifndef RTLD_NOW
-#   define RTLD_NOW 1
+#    define RTLD_NOW 1
 #endif
 
 #ifndef RTLD_GLOBAL
-#   define RTLD_GLOBAL 0
+#    define RTLD_GLOBAL 0
 #endif
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -56,30 +56,34 @@
  *----------------------------------------------------------------------
  */
 
-int
-TclLoadFile(interp, fileName, sym1, sym2, proc1Ptr, proc2Ptr)
-    Tcl_Interp *interp;		/* Used for error reporting. */
-    char *fileName;		/* Name of the file containing the desired
-				 * code. */
-    char *sym1, *sym2;		/* Names of two procedures to look up in
-				 * the file's symbol table. */
-    Tcl_PackageInitProc **proc1Ptr, **proc2Ptr;
-				/* Where to return the addresses corresponding
-				 * to sym1 and sym2. */
+int TclLoadFile(interp, fileName, sym1, sym2, proc1Ptr, proc2Ptr)
+Tcl_Interp *interp; /* Used for error reporting. */
+char *fileName; /* Name of the file containing the desired
+                 * code. */
+char *sym1, *sym2; /* Names of two procedures to look up in
+                    * the file's symbol table. */
+Tcl_PackageInitProc **proc1Ptr, **proc2Ptr;
+/* Where to return the addresses corresponding
+ * to sym1 and sym2. */
 {
     VOID *handle;
 
     handle = dlopen(fileName, RTLD_NOW | RTLD_GLOBAL);
-    if (handle == NULL) {
-	Tcl_AppendResult(interp, "couldn't load file \"", fileName,
-		"\": ", dlerror(), (char *) NULL);
-	return TCL_ERROR;
+    if (handle == NULL)
+    {
+        Tcl_AppendResult(interp,
+                         "couldn't load file \"",
+                         fileName,
+                         "\": ",
+                         dlerror(),
+                         ( char * )NULL);
+        return TCL_ERROR;
     }
-    *proc1Ptr = (Tcl_PackageInitProc *) dlsym(handle, sym1);
-    *proc2Ptr = (Tcl_PackageInitProc *) dlsym(handle, sym2);
+    *proc1Ptr = ( Tcl_PackageInitProc * )dlsym(handle, sym1);
+    *proc2Ptr = ( Tcl_PackageInitProc * )dlsym(handle, sym2);
     return TCL_OK;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -100,12 +104,12 @@ TclLoadFile(interp, fileName, sym1, sym2, proc1Ptr, proc2Ptr)
  *----------------------------------------------------------------------
  */
 
-int
-TclGuessPackageName(fileName, bufPtr)
-    char *fileName;		/* Name of file containing package (already
-				 * translated to local form if needed). */
-    Tcl_DString *bufPtr;	/* Initialized empty dstring.  Append
-				 * package name to this if possible. */
+int TclGuessPackageName(
+fileName,
+bufPtr) char *fileName; /* Name of file containing package (already
+                         * translated to local form if needed). */
+Tcl_DString *bufPtr; /* Initialized empty dstring.  Append
+                      * package name to this if possible. */
 {
     return 0;
 }

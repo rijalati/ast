@@ -2,19 +2,19 @@
 /* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Bison interface for Yacc-like parsers in C
-   
+
       Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
-   
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -27,84 +27,85 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     MINTOKEN = 258,
-     CHAR = 259,
-     INT = 260,
-     INTEGER = 261,
-     UNSIGNED = 262,
-     FLOATING = 263,
-     STRING = 264,
-     VOID = 265,
-     STATIC = 266,
-     ADDRESS = 267,
-     BREAK = 268,
-     CALL = 269,
-     CASE = 270,
-     CONSTANT = 271,
-     CONTINUE = 272,
-     DECLARE = 273,
-     DEFAULT = 274,
-     DYNAMIC = 275,
-     ELSE = 276,
-     EXIT = 277,
-     FOR = 278,
-     FUNCTION = 279,
-     ITERATE = 280,
-     ID = 281,
-     IF = 282,
-     LABEL = 283,
-     MEMBER = 284,
-     NAME = 285,
-     POS = 286,
-     PRAGMA = 287,
-     PRE = 288,
-     PRINTF = 289,
-     PROCEDURE = 290,
-     QUERY = 291,
-     RETURN = 292,
-     SCANF = 293,
-     SPRINTF = 294,
-     SSCANF = 295,
-     SWITCH = 296,
-     WHILE = 297,
-     F2I = 298,
-     F2S = 299,
-     I2F = 300,
-     I2S = 301,
-     S2B = 302,
-     S2F = 303,
-     S2I = 304,
-     F2X = 305,
-     I2X = 306,
-     S2X = 307,
-     X2F = 308,
-     X2I = 309,
-     X2S = 310,
-     OR = 311,
-     AND = 312,
-     NE = 313,
-     EQ = 314,
-     GE = 315,
-     LE = 316,
-     RS = 317,
-     LS = 318,
-     UNARY = 319,
-     DEC = 320,
-     INC = 321,
-     CAST = 322,
-     MAXTOKEN = 323
-   };
+#    define YYTOKENTYPE
+/* Put the tokens into the symbol table, so that GDB and other debuggers
+   know about them.  */
+enum yytokentype
+{
+    MINTOKEN = 258,
+    CHAR = 259,
+    INT = 260,
+    INTEGER = 261,
+    UNSIGNED = 262,
+    FLOATING = 263,
+    STRING = 264,
+    VOID = 265,
+    STATIC = 266,
+    ADDRESS = 267,
+    BREAK = 268,
+    CALL = 269,
+    CASE = 270,
+    CONSTANT = 271,
+    CONTINUE = 272,
+    DECLARE = 273,
+    DEFAULT = 274,
+    DYNAMIC = 275,
+    ELSE = 276,
+    EXIT = 277,
+    FOR = 278,
+    FUNCTION = 279,
+    ITERATE = 280,
+    ID = 281,
+    IF = 282,
+    LABEL = 283,
+    MEMBER = 284,
+    NAME = 285,
+    POS = 286,
+    PRAGMA = 287,
+    PRE = 288,
+    PRINTF = 289,
+    PROCEDURE = 290,
+    QUERY = 291,
+    RETURN = 292,
+    SCANF = 293,
+    SPRINTF = 294,
+    SSCANF = 295,
+    SWITCH = 296,
+    WHILE = 297,
+    F2I = 298,
+    F2S = 299,
+    I2F = 300,
+    I2S = 301,
+    S2B = 302,
+    S2F = 303,
+    S2I = 304,
+    F2X = 305,
+    I2X = 306,
+    S2X = 307,
+    X2F = 308,
+    X2I = 309,
+    X2S = 310,
+    OR = 311,
+    AND = 312,
+    NE = 313,
+    EQ = 314,
+    GE = 315,
+    LE = 316,
+    RS = 317,
+    LS = 318,
+    UNARY = 319,
+    DEC = 320,
+    INC = 321,
+    CAST = 322,
+    MAXTOKEN = 323
+};
 #endif
 /* Tokens.  */
 #define MINTOKEN 258
@@ -175,34 +176,29 @@
 #define MAXTOKEN 323
 
 
-
-
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+#if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
 
-/* Line 2068 of yacc.c  */
-/* #line 17 "/home/gsf/src/lib/libexpr/exparse.y" */
+    /* Line 2068 of yacc.c  */
+    /* #line 17 "/home/gsf/src/lib/libexpr/exparse.y" */
 
-	struct Exnode_s*expr;
-	double		floating;
-	struct Exref_s*	reference;
-	struct Exid_s*	id;
-	Sflong_t	integer;
-	int		op;
-	char*		string;
-	struct Exbuf_s*	buffer;
+    struct Exnode_s *expr;
+    double floating;
+    struct Exref_s *reference;
+    struct Exid_s *id;
+    Sflong_t integer;
+    int op;
+    char *string;
+    struct Exbuf_s *buffer;
 
 
-
-/* Line 2068 of yacc.c  */
-/* #line 199 "exparse.h" */
+    /* Line 2068 of yacc.c  */
+    /* #line 199 "exparse.h" */
 } YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
-# define YYSTYPE_IS_DECLARED 1
+#    define YYSTYPE_IS_TRIVIAL 1
+#    define yystype YYSTYPE /* obsolescent; will be withdrawn */
+#    define YYSTYPE_IS_DECLARED 1
 #endif
 
 extern YYSTYPE exlval;
-
-

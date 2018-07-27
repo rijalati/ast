@@ -24,10 +24,12 @@
  */
 #include "config_ast.h"  // IWYU pragma: keep
 
-#include <ast_common.h>
 #include "ast_float.h"
+#include <ast_common.h>
 
-int main() {
+int
+main()
+{
     int i;
 #if _ast_fltmax_double
     char *fs = "";
@@ -40,19 +42,34 @@ int main() {
 #endif
 
     printf("\nstatic const float sf_flt_pow10[] =\n{\n");
-    for (i = 0; i <= FLT_MAX_10_EXP; i++) printf("\t1E%d%s,\n", i, fs);
+    for (i = 0; i <= FLT_MAX_10_EXP; i++)
+        printf("\t1E%d%s,\n", i, fs);
     printf("};\n");
     printf("\nstatic const double sf_dbl_pow10[] =\n{\n");
-    for (i = 0; i <= DBL_MAX_10_EXP; i++) printf("\t1E%d%s,\n", i, ds);
+    for (i = 0; i <= DBL_MAX_10_EXP; i++)
+        printf("\t1E%d%s,\n", i, ds);
     printf("};\n");
 #if !_ast_fltmax_double
     printf("\nstatic const _ast_fltmax_t sf_ldbl_pow10[] =\n{\n");
-    for (i = 0; i <= LDBL_MAX_10_EXP; i++) printf("\t1E%d%s,\n", i, ls);
+    for (i = 0; i <= LDBL_MAX_10_EXP; i++)
+        printf("\t1E%d%s,\n", i, ls);
     printf("};\n");
 #endif
     printf("\nSftab_t _Sftable =\n{\n");
-    printf("\t{ 1E1%s, 1E2%s, 1E4%s, 1E8%s, 1E16%s, 1E32%s },\n", ls, ls, ls, ls, ls, ls);
-    printf("\t{ 1E-1%s, 1E-2%s, 1E-4%s, 1E-8%s, 1E-16%s, 1E-32%s },\n", ls, ls, ls, ls, ls, ls);
+    printf("\t{ 1E1%s, 1E2%s, 1E4%s, 1E8%s, 1E16%s, 1E32%s },\n",
+           ls,
+           ls,
+           ls,
+           ls,
+           ls,
+           ls);
+    printf("\t{ 1E-1%s, 1E-2%s, 1E-4%s, 1E-8%s, 1E-16%s, 1E-32%s },\n",
+           ls,
+           ls,
+           ls,
+           ls,
+           ls,
+           ls);
     printf("\t{ '0','0', '0','1', '0','2', '0','3', '0','4',\n");
     printf("\t  '0','5', '0','6', '0','7', '0','8', '0','9',\n");
     printf("\t  '1','0', '1','1', '1','2', '1','3', '1','4',\n");
@@ -74,7 +91,9 @@ int main() {
     printf("\t  '9','0', '9','1', '9','2', '9','3', '9','4',\n");
     printf("\t  '9','5', '9','6', '9','7', '9','8', '9','9',\n");
     printf("\t},\n");
-    printf("\t\"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@_\",\n");
+    printf(
+    "\t\"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@_\","
+    "\n");
     printf("\tsfcvinit, 0,\n");
     printf("\tsffmtpos,\n");
     printf("\tsffmtint,\n");

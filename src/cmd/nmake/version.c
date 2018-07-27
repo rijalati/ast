@@ -1,22 +1,22 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 1984-2013 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*               Glenn Fowler <glenn.s.fowler@gmail.com>                *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 1984-2013 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *               Glenn Fowler <glenn.s.fowler@gmail.com>                *
+ *                                                                      *
+ ***********************************************************************/
 #pragma prototyped
 /*
  * Glenn Fowler
@@ -28,18 +28,18 @@
  */
 
 #ifndef STAMP
-#define STAMP		"\n@(#)$Id: make (AT&T Research) BOOTLEG $\0\n"
+#    define STAMP "\n@(#)$Id: make (AT&T Research) BOOTLEG $\0\n"
 #endif
 
 #ifndef IDNAME
-#define IDNAME		"make"
+#    define IDNAME "make"
 #endif
 
-static char		id[] = STAMP;
+static char id[] = STAMP;
 
-char*			idname = IDNAME;
+char *idname = IDNAME;
 
-char*			version = id;
+char *version = id;
 
 char*			initstatic =
 "\

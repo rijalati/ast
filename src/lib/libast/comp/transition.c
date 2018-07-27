@@ -1,24 +1,24 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 1985-2011 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*               Glenn Fowler <glenn.s.fowler@gmail.com>                *
-*                    David Korn <dgkorn@gmail.com>                     *
-*                     Phong Vo <phongvo@gmail.com>                     *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 1985-2011 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *               Glenn Fowler <glenn.s.fowler@gmail.com>                *
+ *                    David Korn <dgkorn@gmail.com>                     *
+ *                     Phong Vo <phongvo@gmail.com>                     *
+ *                                                                      *
+ ***********************************************************************/
 #pragma prototyped
 
 /*
@@ -28,10 +28,10 @@
 #include <ast.h>
 
 #if defined(__EXPORT__)
-#define extern	__EXPORT__
+#    define extern __EXPORT__
 #endif
 
-#define STUB		1
+#define STUB 1
 
 /*
  * 2006-09-28
@@ -43,41 +43,41 @@
 
 #if !_std_strtol
 
-#ifndef strtol
-#undef	STUB
+#    ifndef strtol
+#        undef STUB
 extern long
-_ast_strtol(const char* a, char** b, int c)
+_ast_strtol(const char *a, char **b, int c)
 {
-	return strtol(a, b, c);
+    return strtol(a, b, c);
 }
-#endif
+#    endif
 
-#ifndef strtoul
-#undef	STUB
+#    ifndef strtoul
+#        undef STUB
 extern unsigned long
-_ast_strtoul(const char* a, char** b, int c)
+_ast_strtoul(const char *a, char **b, int c)
 {
-	return strtoul(a, b, c);
+    return strtoul(a, b, c);
 }
-#endif
+#    endif
 
-#ifndef strtoll
-#undef	STUB
+#    ifndef strtoll
+#        undef STUB
 extern intmax_t
-_ast_strtoll(const char* a, char** b, int c)
+_ast_strtoll(const char *a, char **b, int c)
 {
-	return strtoll(a, b, c);
+    return strtoll(a, b, c);
 }
-#endif
+#    endif
 
-#ifndef strtoull
-#undef	STUB
+#    ifndef strtoull
+#        undef STUB
 extern uintmax_t
-_ast_strtoull(const char* a, char** b, int c)
+_ast_strtoull(const char *a, char **b, int c)
 {
-	return strtoull(a, b, c);
+    return strtoull(a, b, c);
 }
-#endif
+#    endif
 
 #endif
 

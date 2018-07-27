@@ -25,56 +25,56 @@
  */
 
 #ifndef VOID
-#   ifdef __STDC__
-#       define VOID void
-#   else
-#       define VOID char
-#   endif
+#    ifdef __STDC__
+#        define VOID void
+#    else
+#        define VOID char
+#    endif
 #endif
 
-#include <stdio.h>
 #include <ctype.h>
 #include <fcntl.h>
+#include <stdio.h>
 #ifdef HAVE_LIMITS_H
-#   include <limits.h>
+#    include <limits.h>
 #else
-#   include "../compat/limits.h"
+#    include "../compat/limits.h"
 #endif
 #include <math.h>
 #include <pwd.h>
 #ifdef NO_STDLIB_H
-#   include "../compat/stdlib.h"
+#    include "../compat/stdlib.h"
 #else
-#   include <stdlib.h>
+#    include <stdlib.h>
 #endif
 #include <string.h>
-#include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #ifndef _TCL
-#   include <tcl.h>
+#    include <tcl.h>
 #endif
 #ifdef HAVE_UNISTD_H
-#   include <unistd.h>
+#    include <unistd.h>
 #else
-#   include "../compat/unistd.h"
+#    include "../compat/unistd.h"
 #endif
 #if _PACKAGE_ast
-#   include <Xlib.h>
-#   include <cursorfont.h>
-#   include <keysym.h>
-#   include <Xatom.h>
-#   include <Xproto.h>
-#   include <Xresource.h>
-#   include <Xutil.h>
+#    include <Xatom.h>
+#    include <Xlib.h>
+#    include <Xproto.h>
+#    include <Xresource.h>
+#    include <Xutil.h>
+#    include <cursorfont.h>
+#    include <keysym.h>
 #else
-#   include <X11/Xlib.h>
-#   include <X11/cursorfont.h>
-#   include <X11/keysym.h>
-#   include <X11/Xatom.h>
-#   include <X11/Xproto.h>
-#   include <X11/Xresource.h>
-#   include <X11/Xutil.h>
+#    include <X11/Xatom.h>
+#    include <X11/Xlib.h>
+#    include <X11/Xproto.h>
+#    include <X11/Xresource.h>
+#    include <X11/Xutil.h>
+#    include <X11/cursorfont.h>
+#    include <X11/keysym.h>
 #endif
 
 /*
@@ -89,31 +89,42 @@ extern int errno;
  */
 
 #ifndef NBBY
-#   define NBBY 8
+#    define NBBY 8
 #endif
 
 /*
  * These macros are just wrappers for the equivalent X Region calls.
  */
 
-#define TkClipBox(rgn, rect) XClipBox((Region) rgn, rect)
+#define TkClipBox(rgn, rect) XClipBox(( Region )rgn, rect)
 #define TkCreateRegion() (TkRegion) XCreateRegion()
-#define TkDestroyRegion(rgn) XDestroyRegion((Region) rgn)
-#define TkIntersectRegion(a, b, r) XIntersectRegion((Region) a, \
-	(Region) b, (Region) r)
-#define TkRectInRegion(r, x, y, w, h) XRectInRegion((Region) r, x, y, w, h)
-#define TkSetRegion(d, gc, rgn) XSetRegion(d, gc, (Region) rgn)
-#define TkUnionRectWithRegion(rect, src, ret) XUnionRectWithRegion(rect, \
-	(Region) src, (Region) ret)
+#define TkDestroyRegion(rgn) XDestroyRegion(( Region )rgn)
+#define TkIntersectRegion(a, b, r)                                           \
+    XIntersectRegion(( Region )a, ( Region )b, ( Region )r)
+#define TkRectInRegion(r, x, y, w, h) XRectInRegion(( Region )r, x, y, w, h)
+#define TkSetRegion(d, gc, rgn) XSetRegion(d, gc, ( Region )rgn)
+#define TkUnionRectWithRegion(rect, src, ret)                                \
+    XUnionRectWithRegion(rect, ( Region )src, ( Region )ret)
 
 /*
  * The TkPutImage macro strips off the color table information, which isn't
  * needed for X.
  */
 
-#define TkPutImage(colors, ncolors, display, pixels, gc, image, destx, desty, srcx, srcy, width, height) \
-	XPutImage(display, pixels, gc, image, destx, desty, srcx, \
-	srcy, width, height);
+#define TkPutImage(colors,                                                   \
+                   ncolors,                                                  \
+                   display,                                                  \
+                   pixels,                                                   \
+                   gc,                                                       \
+                   image,                                                    \
+                   destx,                                                    \
+                   desty,                                                    \
+                   srcx,                                                     \
+                   srcy,                                                     \
+                   width,                                                    \
+                   height)                                                   \
+    XPutImage(                                                               \
+    display, pixels, gc, image, destx, desty, srcx, srcy, width, height);
 
 /*
  * The following Tk functions are implemented as macros under Windows.
@@ -127,15 +138,15 @@ extern int errno;
  */
 
 #ifndef SEEK_SET
-#   define SEEK_SET 0
+#    define SEEK_SET 0
 #endif
 
 #ifndef SEEK_CUR
-#   define SEEK_CUR 1
+#    define SEEK_CUR 1
 #endif
 
 #ifndef SEEK_END
-#   define SEEK_END 2
+#    define SEEK_END 2
 #endif
 
 /*
@@ -143,13 +154,18 @@ extern int errno;
  * in any other header file.
  */
 
-extern void		panic();
+extern void
+panic();
 
 /*
  * These functions do nothing under Unix, so we just eliminate calls them.
  */
 
-#define TkSelUpdateClipboard(a,b) {}
-#define TkSetPixmapColormap(p,c) {}
+#define TkSelUpdateClipboard(a, b)                                           \
+    {                                                                        \
+    }
+#define TkSetPixmapColormap(p, c)                                            \
+    {                                                                        \
+    }
 
 #endif /* _UNIXPORT */

@@ -5,8 +5,8 @@
 // here just in case we've overlooked something in the transition to the Meson
 // build tool.
 //
-// I am explicitly including all such symbols to help us identify areas where we
-// may be missing a platform feature test. Such symbols will show up as
+// I am explicitly including all such symbols to help us identify areas where
+// we may be missing a platform feature test. Such symbols will show up as
 // `#undef` comments after the Meson config step has been run to produce the
 // `build/config_ast.h` header. There will be a lot of false positives until
 // we have removed symbols that are known to no longer be relevant.

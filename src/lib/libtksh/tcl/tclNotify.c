@@ -1,4 +1,4 @@
-/* 
+/*
  * tclNotify.c --
  *
  *	This file provides the parts of the Tcl event notifier that are
@@ -38,10 +38,10 @@ TclEventSource *tclFirstEventSourcePtr = NULL;
  * notifier the next time it blocks (default:  block forever).
  */
 
-static int blockTimeSet = 0;	/* 0 means there is no maximum block
-				 * time:  block forever. */
-static Tcl_Time blockTime;	/* If blockTimeSet is 1, gives the
-				 * maximum elapsed time for the next block. */
+static int blockTimeSet = 0; /* 0 means there is no maximum block
+                              * time:  block forever. */
+static Tcl_Time blockTime; /* If blockTimeSet is 1, gives the
+                            * maximum elapsed time for the next block. */
 
 /*
  * The following variables keep track of the event queue.  In addition
@@ -54,19 +54,19 @@ static Tcl_Time blockTime;	/* If blockTimeSet is 1, gives the
  */
 
 static Tcl_Event *firstEventPtr = NULL;
-				/* First pending event, or NULL if none. */
+/* First pending event, or NULL if none. */
 static Tcl_Event *lastEventPtr = NULL;
-				/* Last pending event, or NULL if none. */
+/* Last pending event, or NULL if none. */
 static Tcl_Event *markerEventPtr = NULL;
-				/* Last high-priority event in queue, or
-				 * NULL if none. */
+/* Last high-priority event in queue, or
+ * NULL if none. */
 
 /*
  * Prototypes for procedures used only in this file:
  */
 
-static int		ServiceEvent _ANSI_ARGS_((int flags));
-
+static int ServiceEvent _ANSI_ARGS_((int flags));
+
 /*
  *----------------------------------------------------------------------
  *
@@ -103,25 +103,24 @@ static int		ServiceEvent _ANSI_ARGS_((int flags));
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_CreateEventSource(setupProc, checkProc, clientData)
-    Tcl_EventSetupProc *setupProc;	/* Procedure to invoke to figure out
-					 * what to wait for. */
-    Tcl_EventCheckProc *checkProc;	/* Procedure to call after waiting
-					 * to see what happened. */
-    ClientData clientData;		/* One-word argument to pass to
-					 * setupProc and checkProc. */
+void Tcl_CreateEventSource(setupProc, checkProc, clientData)
+Tcl_EventSetupProc *setupProc; /* Procedure to invoke to figure out
+                                * what to wait for. */
+Tcl_EventCheckProc *checkProc; /* Procedure to call after waiting
+                                * to see what happened. */
+ClientData clientData; /* One-word argument to pass to
+                        * setupProc and checkProc. */
 {
     TclEventSource *sourcePtr;
 
-    sourcePtr = (TclEventSource *) ckalloc(sizeof(TclEventSource));
+    sourcePtr = ( TclEventSource * )ckalloc(sizeof(TclEventSource));
     sourcePtr->setupProc = setupProc;
     sourcePtr->checkProc = checkProc;
     sourcePtr->clientData = clientData;
     sourcePtr->nextPtr = tclFirstEventSourcePtr;
     tclFirstEventSourcePtr = sourcePtr;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -141,35 +140,39 @@ Tcl_CreateEventSource(setupProc, checkProc, clientData)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_DeleteEventSource(setupProc, checkProc, clientData)
-    Tcl_EventSetupProc *setupProc;	/* Procedure to invoke to figure out
-					 * what to wait for. */
-    Tcl_EventCheckProc *checkProc;	/* Procedure to call after waiting
-					 * to see what happened. */
-    ClientData clientData;		/* One-word argument to pass to
-					 * setupProc and checkProc. */
+void Tcl_DeleteEventSource(setupProc, checkProc, clientData)
+Tcl_EventSetupProc *setupProc; /* Procedure to invoke to figure out
+                                * what to wait for. */
+Tcl_EventCheckProc *checkProc; /* Procedure to call after waiting
+                                * to see what happened. */
+ClientData clientData; /* One-word argument to pass to
+                        * setupProc and checkProc. */
 {
     TclEventSource *sourcePtr, *prevPtr;
 
     for (sourcePtr = tclFirstEventSourcePtr, prevPtr = NULL;
-	    sourcePtr != NULL;
-	    prevPtr = sourcePtr, sourcePtr = sourcePtr->nextPtr) {
-	if ((sourcePtr->setupProc != setupProc)
-		|| (sourcePtr->checkProc != checkProc)
-		|| (sourcePtr->clientData != clientData)) {
-	    continue;
-	}
-	if (prevPtr == NULL) {
-	    tclFirstEventSourcePtr = sourcePtr->nextPtr;
-	} else {
-	    prevPtr->nextPtr = sourcePtr->nextPtr;
-	}
-	ckfree((char *) sourcePtr);
-	return;
+         sourcePtr != NULL;
+         prevPtr = sourcePtr, sourcePtr = sourcePtr->nextPtr)
+    {
+        if ((sourcePtr->setupProc != setupProc)
+            || (sourcePtr->checkProc != checkProc)
+            || (sourcePtr->clientData != clientData))
+        {
+            continue;
+        }
+        if (prevPtr == NULL)
+        {
+            tclFirstEventSourcePtr = sourcePtr->nextPtr;
+        }
+        else
+        {
+            prevPtr->nextPtr = sourcePtr->nextPtr;
+        }
+        ckfree(( char * )sourcePtr);
+        return;
     }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -191,59 +194,71 @@ Tcl_DeleteEventSource(setupProc, checkProc, clientData)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_QueueEvent(evPtr, position)
-    Tcl_Event* evPtr;		/* Event to add to queue.  The storage
-				 * space must have been allocated the caller
-				 * with malloc (ckalloc), and it becomes
-				 * the property of the event queue.  It
-				 * will be freed after the event has been
-				 * handled. */
-    Tcl_QueuePosition position;	/* One of TCL_QUEUE_TAIL, TCL_QUEUE_HEAD,
-				 * TCL_QUEUE_MARK. */
+void Tcl_QueueEvent(evPtr, position)
+Tcl_Event *evPtr; /* Event to add to queue.  The storage
+                   * space must have been allocated the caller
+                   * with malloc (ckalloc), and it becomes
+                   * the property of the event queue.  It
+                   * will be freed after the event has been
+                   * handled. */
+Tcl_QueuePosition position; /* One of TCL_QUEUE_TAIL, TCL_QUEUE_HEAD,
+                             * TCL_QUEUE_MARK. */
 {
-    if (position == TCL_QUEUE_TAIL) {
-	/*
-	 * Append the event on the end of the queue.
-	 */
+    if (position == TCL_QUEUE_TAIL)
+    {
+        /*
+         * Append the event on the end of the queue.
+         */
 
-	evPtr->nextPtr = NULL;
-	if (firstEventPtr == NULL) {
-	    firstEventPtr = evPtr;
-	} else {
-	    lastEventPtr->nextPtr = evPtr;
-	}
-	lastEventPtr = evPtr;
-    } else if (position == TCL_QUEUE_HEAD) {
-	/*
-	 * Push the event on the head of the queue.
-	 */
+        evPtr->nextPtr = NULL;
+        if (firstEventPtr == NULL)
+        {
+            firstEventPtr = evPtr;
+        }
+        else
+        {
+            lastEventPtr->nextPtr = evPtr;
+        }
+        lastEventPtr = evPtr;
+    }
+    else if (position == TCL_QUEUE_HEAD)
+    {
+        /*
+         * Push the event on the head of the queue.
+         */
 
-	evPtr->nextPtr = firstEventPtr;
-	if (firstEventPtr == NULL) {
-	    lastEventPtr = evPtr;
-	}	    
-	firstEventPtr = evPtr;
-    } else if (position == TCL_QUEUE_MARK) {
-	/*
-	 * Insert the event after the current marker event and advance
-	 * the marker to the new event.
-	 */
+        evPtr->nextPtr = firstEventPtr;
+        if (firstEventPtr == NULL)
+        {
+            lastEventPtr = evPtr;
+        }
+        firstEventPtr = evPtr;
+    }
+    else if (position == TCL_QUEUE_MARK)
+    {
+        /*
+         * Insert the event after the current marker event and advance
+         * the marker to the new event.
+         */
 
-	if (markerEventPtr == NULL) {
-	    evPtr->nextPtr = firstEventPtr;
-	    firstEventPtr = evPtr;
-	} else {
-	    evPtr->nextPtr = markerEventPtr->nextPtr;
-	    markerEventPtr->nextPtr = evPtr;
-	}
-	markerEventPtr = evPtr;
-	if (evPtr->nextPtr == NULL) {
-	    lastEventPtr = evPtr;
-	}
+        if (markerEventPtr == NULL)
+        {
+            evPtr->nextPtr = firstEventPtr;
+            firstEventPtr = evPtr;
+        }
+        else
+        {
+            evPtr->nextPtr = markerEventPtr->nextPtr;
+            markerEventPtr->nextPtr = evPtr;
+        }
+        markerEventPtr = evPtr;
+        if (evPtr->nextPtr == NULL)
+        {
+            lastEventPtr = evPtr;
+        }
     }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -262,42 +277,49 @@ Tcl_QueueEvent(evPtr, position)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_DeleteEvents(proc, clientData)
-    Tcl_EventDeleteProc *proc;		/* The procedure to call. */
-    ClientData clientData;    		/* type-specific data. */
+void Tcl_DeleteEvents(proc,
+                      clientData) Tcl_EventDeleteProc *proc; /* The procedure
+                                                                to call. */
+ClientData clientData; /* type-specific data. */
 {
     Tcl_Event *evPtr, *prevPtr, *hold;
 
-    for (prevPtr = (Tcl_Event *) NULL, evPtr = firstEventPtr;
-             evPtr != (Tcl_Event *) NULL;
-             ) {
-        if ((*proc) (evPtr, clientData) == 1) {
-            if (firstEventPtr == evPtr) {
+    for (prevPtr = ( Tcl_Event * )NULL, evPtr = firstEventPtr;
+         evPtr != ( Tcl_Event * )NULL;)
+    {
+        if ((*proc)(evPtr, clientData) == 1)
+        {
+            if (firstEventPtr == evPtr)
+            {
                 firstEventPtr = evPtr->nextPtr;
-                if (evPtr->nextPtr == (Tcl_Event *) NULL) {
-                    lastEventPtr = (Tcl_Event *) NULL;
+                if (evPtr->nextPtr == ( Tcl_Event * )NULL)
+                {
+                    lastEventPtr = ( Tcl_Event * )NULL;
                 }
-            } else {
+            }
+            else
+            {
                 prevPtr->nextPtr = evPtr->nextPtr;
             }
             hold = evPtr;
             evPtr = evPtr->nextPtr;
-            ckfree((char *) hold);
-        } else {
+            ckfree(( char * )hold);
+        }
+        else
+        {
             prevPtr = evPtr;
             evPtr = evPtr->nextPtr;
         }
     }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
  * ServiceEvent --
  *
  *	Process one event from the event queue.  This routine is called
- *	by the notifier whenever it wants Tk to process an event.  
+ *	by the notifier whenever it wants Tk to process an event.
  *
  * Results:
  *	The return value is 1 if the procedure actually found an event
@@ -312,13 +334,12 @@ Tcl_DeleteEvents(proc, clientData)
  */
 
 static int
-ServiceEvent(flags)
-    int flags;			/* Indicates what events should be processed.
-				 * May be any combination of TCL_WINDOW_EVENTS
-				 * TCL_FILE_EVENTS, TCL_TIMER_EVENTS, or other
-				 * flags defined elsewhere.  Events not
-				 * matching this will be skipped for processing
-				 * later. */
+ServiceEvent(flags) int flags; /* Indicates what events should be processed.
+                                * May be any combination of TCL_WINDOW_EVENTS
+                                * TCL_FILE_EVENTS, TCL_TIMER_EVENTS, or other
+                                * flags defined elsewhere.  Events not
+                                * matching this will be skipped for processing
+                                * later. */
 {
     Tcl_Event *evPtr, *prevPtr;
     Tcl_EventProc *proc;
@@ -326,9 +347,10 @@ ServiceEvent(flags)
     /*
      * No event flags is equivalent to TCL_ALL_EVENTS.
      */
-    
-    if ((flags & TCL_ALL_EVENTS) == 0) {
-	flags |= TCL_ALL_EVENTS;
+
+    if ((flags & TCL_ALL_EVENTS) == 0)
+    {
+        flags |= TCL_ALL_EVENTS;
     }
 
     /*
@@ -336,68 +358,80 @@ ServiceEvent(flags)
      * that can actually be handled.
      */
 
-    for (evPtr = firstEventPtr; evPtr != NULL; evPtr = evPtr->nextPtr) {
-	/*
-	 * Call the handler for the event.  If it actually handles the
-	 * event then free the storage for the event.  There are two
-	 * tricky things here, but stemming from the fact that the event
-	 * code may be re-entered while servicing the event:
-	 *
-	 * 1. Set the "proc" field to NULL.  This is a signal to ourselves
-	 *    that we shouldn't reexecute the handler if the event loop
-	 *    is re-entered.
-	 * 2. When freeing the event, must search the queue again from the
-	 *    front to find it.  This is because the event queue could
-	 *    change almost arbitrarily while handling the event, so we
-	 *    can't depend on pointers found now still being valid when
-	 *    the handler returns.
-	 */
+    for (evPtr = firstEventPtr; evPtr != NULL; evPtr = evPtr->nextPtr)
+    {
+        /*
+         * Call the handler for the event.  If it actually handles the
+         * event then free the storage for the event.  There are two
+         * tricky things here, but stemming from the fact that the event
+         * code may be re-entered while servicing the event:
+         *
+         * 1. Set the "proc" field to NULL.  This is a signal to ourselves
+         *    that we shouldn't reexecute the handler if the event loop
+         *    is re-entered.
+         * 2. When freeing the event, must search the queue again from the
+         *    front to find it.  This is because the event queue could
+         *    change almost arbitrarily while handling the event, so we
+         *    can't depend on pointers found now still being valid when
+         *    the handler returns.
+         */
 
-	proc = evPtr->proc;
-	evPtr->proc = NULL;
-	if ((proc != NULL) && (*proc)(evPtr, flags)) {
-	    if (firstEventPtr == evPtr) {
-		firstEventPtr = evPtr->nextPtr;
-		if (evPtr->nextPtr == NULL) {
-		    lastEventPtr = NULL;
-		}
-		if (markerEventPtr == evPtr) {
-		    markerEventPtr = NULL;
-		}
-	    } else {
-		for (prevPtr = firstEventPtr; prevPtr->nextPtr != evPtr;
-			prevPtr = prevPtr->nextPtr) {
-		    /* Empty loop body. */
-		}
-		prevPtr->nextPtr = evPtr->nextPtr;
-		if (evPtr->nextPtr == NULL) {
-		    lastEventPtr = prevPtr;
-		}
-		if (markerEventPtr == evPtr) {
-		    markerEventPtr = prevPtr;
-		}
-	    }
-	    ckfree((char *) evPtr);
-	    return 1;
-	} else {
-	    /*
-	     * The event wasn't actually handled, so we have to restore
-	     * the proc field to allow the event to be attempted again.
-	     */
+        proc = evPtr->proc;
+        evPtr->proc = NULL;
+        if ((proc != NULL) && (*proc)(evPtr, flags))
+        {
+            if (firstEventPtr == evPtr)
+            {
+                firstEventPtr = evPtr->nextPtr;
+                if (evPtr->nextPtr == NULL)
+                {
+                    lastEventPtr = NULL;
+                }
+                if (markerEventPtr == evPtr)
+                {
+                    markerEventPtr = NULL;
+                }
+            }
+            else
+            {
+                for (prevPtr = firstEventPtr; prevPtr->nextPtr != evPtr;
+                     prevPtr = prevPtr->nextPtr)
+                {
+                    /* Empty loop body. */
+                }
+                prevPtr->nextPtr = evPtr->nextPtr;
+                if (evPtr->nextPtr == NULL)
+                {
+                    lastEventPtr = prevPtr;
+                }
+                if (markerEventPtr == evPtr)
+                {
+                    markerEventPtr = prevPtr;
+                }
+            }
+            ckfree(( char * )evPtr);
+            return 1;
+        }
+        else
+        {
+            /*
+             * The event wasn't actually handled, so we have to restore
+             * the proc field to allow the event to be attempted again.
+             */
 
-	    evPtr->proc = proc;
-	}
+            evPtr->proc = proc;
+        }
 
-	/*
-	 * The handler for this event asked to defer it.  Just go on to
-	 * the next event.
-	 */
+        /*
+         * The handler for this event asked to defer it.  Just go on to
+         * the next event.
+         */
 
-	continue;
+        continue;
     }
     return 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -417,20 +451,20 @@ ServiceEvent(flags)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_SetMaxBlockTime(timePtr)
-    Tcl_Time *timePtr;		/* Specifies a maximum elapsed time for
-				 * the next blocking operation in the
-				 * event notifier. */
+void Tcl_SetMaxBlockTime(
+timePtr) Tcl_Time *timePtr; /* Specifies a maximum elapsed time for
+                             * the next blocking operation in the
+                             * event notifier. */
 {
     if (!blockTimeSet || (timePtr->sec < blockTime.sec)
-	    || ((timePtr->sec == blockTime.sec)
-	    && (timePtr->usec < blockTime.usec))) {
-	blockTime = *timePtr;
-	blockTimeSet = 1;
+        || ((timePtr->sec == blockTime.sec)
+            && (timePtr->usec < blockTime.usec)))
+    {
+        blockTime = *timePtr;
+        blockTimeSet = 1;
     }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -454,13 +488,11 @@ Tcl_SetMaxBlockTime(timePtr)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_DoOneEvent(flags)
-    int flags;			/* Miscellaneous flag values:  may be any
-				 * combination of TCL_DONT_WAIT,
-				 * TCL_WINDOW_EVENTS, TCL_FILE_EVENTS,
-				 * TCL_TIMER_EVENTS, TCL_IDLE_EVENTS, or
-				 * others defined by event sources. */
+int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
+                                      * combination of TCL_DONT_WAIT,
+                                      * TCL_WINDOW_EVENTS, TCL_FILE_EVENTS,
+                                      * TCL_TIMER_EVENTS, TCL_IDLE_EVENTS, or
+                                      * others defined by event sources. */
 {
     TclEventSource *sourcePtr;
     Tcl_Time *timePtr;
@@ -468,9 +500,10 @@ Tcl_DoOneEvent(flags)
     /*
      * No event flags is equivalent to TCL_ALL_EVENTS.
      */
-    
-    if ((flags & TCL_ALL_EVENTS) == 0) {
-	flags |= TCL_ALL_EVENTS;
+
+    if ((flags & TCL_ALL_EVENTS) == 0)
+    {
+        flags |= TCL_ALL_EVENTS;
     }
 
     /*
@@ -484,100 +517,115 @@ Tcl_DoOneEvent(flags)
      * just to loop back and try again.
      */
 
-    while (1) {
+    while (1)
+    {
 
-	sh_sigcheck(0); /* XXX: tksh specific */
+        sh_sigcheck(0); /* XXX: tksh specific */
 
-	/*
-	 * The first thing we do is to service any asynchronous event
-	 * handlers.
-	 */
-    
-	if (Tcl_AsyncReady()) {
-	    (void) Tcl_AsyncInvoke((Tcl_Interp *) NULL, 0);
-	    return 1;
-	}
+        /*
+         * The first thing we do is to service any asynchronous event
+         * handlers.
+         */
 
-	/*
-	 * If idle events are the only things to service, skip the
-	 * main part of the loop and go directly to handle idle
-	 * events (i.e. don't wait even if TCL_DONT_WAIT isn't set.
-	 */
+        if (Tcl_AsyncReady())
+        {
+            ( void )Tcl_AsyncInvoke(( Tcl_Interp * )NULL, 0);
+            return 1;
+        }
 
-	if (flags == TCL_IDLE_EVENTS) {
-	    flags = TCL_IDLE_EVENTS|TCL_DONT_WAIT;
-	    goto idleEvents;
-	}
+        /*
+         * If idle events are the only things to service, skip the
+         * main part of the loop and go directly to handle idle
+         * events (i.e. don't wait even if TCL_DONT_WAIT isn't set.
+         */
 
-	/*
-	 * Ask Tk to service a queued event, if there are any.
-	 */
+        if (flags == TCL_IDLE_EVENTS)
+        {
+            flags = TCL_IDLE_EVENTS | TCL_DONT_WAIT;
+            goto idleEvents;
+        }
 
-	if (ServiceEvent(flags)) {
-	    return 1;
-	}
+        /*
+         * Ask Tk to service a queued event, if there are any.
+         */
 
-	/*
-	 * There are no events already queued.  Invoke all of the
-	 * event sources to give them a chance to setup for the wait.
-	 */
+        if (ServiceEvent(flags))
+        {
+            return 1;
+        }
 
-	blockTimeSet = 0;
-	for (sourcePtr = tclFirstEventSourcePtr; sourcePtr != NULL;
-		sourcePtr = sourcePtr->nextPtr) {
-	    (*sourcePtr->setupProc)(sourcePtr->clientData, flags);
-	}
-	if ((flags & TCL_DONT_WAIT) ||
-		((flags & TCL_IDLE_EVENTS) && TclIdlePending())) {
-	    /*
-	     * Don't block:  there are idle events waiting, or we don't
-	     * care about idle events anyway, or the caller asked us not
-	     * to block.
-	     */
+        /*
+         * There are no events already queued.  Invoke all of the
+         * event sources to give them a chance to setup for the wait.
+         */
 
-	    blockTime.sec = 0;
-	    blockTime.usec = 0;
-	    timePtr = &blockTime;
-	} else if (blockTimeSet) {
-	    timePtr = &blockTime;
-	} else {
-	    timePtr = NULL;
-	}
+        blockTimeSet = 0;
+        for (sourcePtr = tclFirstEventSourcePtr; sourcePtr != NULL;
+             sourcePtr = sourcePtr->nextPtr)
+        {
+            (*sourcePtr->setupProc)(sourcePtr->clientData, flags);
+        }
+        if ((flags & TCL_DONT_WAIT)
+            || ((flags & TCL_IDLE_EVENTS) && TclIdlePending()))
+        {
+            /*
+             * Don't block:  there are idle events waiting, or we don't
+             * care about idle events anyway, or the caller asked us not
+             * to block.
+             */
 
-	/*
-	 * Wait until an event occurs or the timer expires.
-	 */
+            blockTime.sec = 0;
+            blockTime.usec = 0;
+            timePtr = &blockTime;
+        }
+        else if (blockTimeSet)
+        {
+            timePtr = &blockTime;
+        }
+        else
+        {
+            timePtr = NULL;
+        }
 
-	if (Tcl_WaitForEvent(timePtr) == TCL_ERROR) {
-	    return 0;
-	}
+        /*
+         * Wait until an event occurs or the timer expires.
+         */
 
-	/*
-	 * Give each of the event sources a chance to queue events,
-	 * then call ServiceEvent and give it another chance to
-	 * service events.
-	 */
+        if (Tcl_WaitForEvent(timePtr) == TCL_ERROR)
+        {
+            return 0;
+        }
 
-	for (sourcePtr = tclFirstEventSourcePtr; sourcePtr != NULL;
-		sourcePtr = sourcePtr->nextPtr) {
-	    (*sourcePtr->checkProc)(sourcePtr->clientData, flags);
-	}
-	if (ServiceEvent(flags)) {
-	    return 1;
-	}
+        /*
+         * Give each of the event sources a chance to queue events,
+         * then call ServiceEvent and give it another chance to
+         * service events.
+         */
 
-	/*
-	 * We've tried everything at this point, but nobody had anything
-	 * to do.  Check for idle events.  If none, either quit or go back
-	 * to the top and try again.
-	 */
+        for (sourcePtr = tclFirstEventSourcePtr; sourcePtr != NULL;
+             sourcePtr = sourcePtr->nextPtr)
+        {
+            (*sourcePtr->checkProc)(sourcePtr->clientData, flags);
+        }
+        if (ServiceEvent(flags))
+        {
+            return 1;
+        }
 
-	idleEvents:
-	if ((flags & TCL_IDLE_EVENTS) && TclServiceIdle()) {
-	    return 1;
-	}
-	if (flags & TCL_DONT_WAIT) {
-	    return 0;
-	}
+        /*
+         * We've tried everything at this point, but nobody had anything
+         * to do.  Check for idle events.  If none, either quit or go back
+         * to the top and try again.
+         */
+
+    idleEvents:
+        if ((flags & TCL_IDLE_EVENTS) && TclServiceIdle())
+        {
+            return 1;
+        }
+        if (flags & TCL_DONT_WAIT)
+        {
+            return 0;
+        }
     }
 }

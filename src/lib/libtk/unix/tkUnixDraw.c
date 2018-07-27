@@ -1,4 +1,4 @@
-/* 
+/*
  * tkUnixDraw.c --
  *
  *	This file contains X specific drawing routines.
@@ -18,21 +18,22 @@
  * ScrollRestrictProc from TkScrollWindow.
  */
 
-typedef struct ScrollInfo {
-    int done;			/* Flag is 0 until filtering is done. */
-    Display *display;		/* Display to filter. */
-    Window window;		/* Window to filter. */
-    TkRegion region;		/* Region into which damage is accumulated. */
-    int dx, dy;			/* Amount by which window was shifted. */
+typedef struct ScrollInfo
+{
+    int done; /* Flag is 0 until filtering is done. */
+    Display *display; /* Display to filter. */
+    Window window; /* Window to filter. */
+    TkRegion region; /* Region into which damage is accumulated. */
+    int dx, dy; /* Amount by which window was shifted. */
 } ScrollInfo;
 
 /*
  * Forward declarations for procedures declared later in this file:
  */
 
-static Tk_RestrictAction	ScrollRestrictProc _ANSI_ARGS_((
-    				    ClientData arg, XEvent *eventPtr));
-
+static Tk_RestrictAction ScrollRestrictProc _ANSI_ARGS_((ClientData arg,
+                                                         XEvent *eventPtr));
+
 /*
  *----------------------------------------------------------------------
  *
@@ -53,20 +54,27 @@ static Tk_RestrictAction	ScrollRestrictProc _ANSI_ARGS_((
  *----------------------------------------------------------------------
  */
 
-int
-TkScrollWindow(tkwin, gc, x, y, width, height, dx, dy, damageRgn)
-    Tk_Window tkwin;		/* The window to be scrolled. */
-    GC gc;			/* GC for window to be scrolled. */
-    int x, y, width, height;	/* Position rectangle to be scrolled. */
-    int dx, dy;			/* Distance rectangle should be moved. */
-    TkRegion damageRgn;		/* Region to accumulate damage in. */
+int TkScrollWindow(tkwin, gc, x, y, width, height, dx, dy, damageRgn)
+Tk_Window tkwin; /* The window to be scrolled. */
+GC gc; /* GC for window to be scrolled. */
+int x, y, width, height; /* Position rectangle to be scrolled. */
+int dx, dy; /* Distance rectangle should be moved. */
+TkRegion damageRgn; /* Region to accumulate damage in. */
 {
     Tk_RestrictProc *oldProc;
     ClientData oldArg, dummy;
     ScrollInfo info;
-    
-    XCopyArea(Tk_Display(tkwin), Tk_WindowId(tkwin), Tk_WindowId(tkwin), gc,
-	    x, y, (unsigned int) width, (unsigned int) height, x + dx, y + dy);
+
+    XCopyArea(Tk_Display(tkwin),
+              Tk_WindowId(tkwin),
+              Tk_WindowId(tkwin),
+              gc,
+              x,
+              y,
+              ( unsigned int )width,
+              ( unsigned int )height,
+              x + dx,
+              y + dy);
 
     info.done = 0;
     info.window = Tk_WindowId(tkwin);
@@ -82,16 +90,17 @@ TkScrollWindow(tkwin, gc, x, y, width, height, dx, dy, damageRgn)
      */
 
     XSync(info.display, False);
-    oldProc = Tk_RestrictEvents(ScrollRestrictProc, (ClientData) &info,
-	    &oldArg);
-    while (!info.done) {
-	Tcl_DoOneEvent(TCL_WINDOW_EVENTS|TCL_DONT_WAIT);
+    oldProc
+    = Tk_RestrictEvents(ScrollRestrictProc, ( ClientData )&info, &oldArg);
+    while (!info.done)
+    {
+        Tcl_DoOneEvent(TCL_WINDOW_EVENTS | TCL_DONT_WAIT);
     }
     Tk_RestrictEvents(oldProc, oldArg, &dummy);
 
-    return XEmptyRegion((Region) damageRgn) ? 0 : 1;
+    return XEmptyRegion(( Region )damageRgn) ? 0 : 1;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -112,12 +121,10 @@ TkScrollWindow(tkwin, gc, x, y, width, height, dx, dy, damageRgn)
  *----------------------------------------------------------------------
  */
 
-static Tk_RestrictAction
-ScrollRestrictProc(arg, eventPtr)
-    ClientData arg;
-    XEvent *eventPtr;
+static Tk_RestrictAction ScrollRestrictProc(arg, eventPtr) ClientData arg;
+XEvent *eventPtr;
 {
-    ScrollInfo *info = (ScrollInfo *) arg;
+    ScrollInfo *info = ( ScrollInfo * )arg;
     XRectangle rect;
 
     /*
@@ -125,46 +132,54 @@ ScrollRestrictProc(arg, eventPtr)
      */
 
     if (info->done || (eventPtr->xany.display != info->display)
-	    || (eventPtr->xany.window != info->window)) {
-	return TK_DEFER_EVENT;
+        || (eventPtr->xany.window != info->window))
+    {
+        return TK_DEFER_EVENT;
     }
 
-    if (eventPtr->type == NoExpose) {
-	info->done = 1;
-    } else if (eventPtr->type == GraphicsExpose) {
-	rect.x = eventPtr->xgraphicsexpose.x;
-	rect.y = eventPtr->xgraphicsexpose.y;
-	rect.width = eventPtr->xgraphicsexpose.width;
-	rect.height = eventPtr->xgraphicsexpose.height;
-	XUnionRectWithRegion(&rect, (Region) info->region,
-		(Region) info->region);
+    if (eventPtr->type == NoExpose)
+    {
+        info->done = 1;
+    }
+    else if (eventPtr->type == GraphicsExpose)
+    {
+        rect.x = eventPtr->xgraphicsexpose.x;
+        rect.y = eventPtr->xgraphicsexpose.y;
+        rect.width = eventPtr->xgraphicsexpose.width;
+        rect.height = eventPtr->xgraphicsexpose.height;
+        XUnionRectWithRegion(
+        &rect, ( Region )info->region, ( Region )info->region);
 
-	if (eventPtr->xgraphicsexpose.count == 0) {
-	    info->done = 1;
-	}
-    } else if (eventPtr->type == Expose) {
+        if (eventPtr->xgraphicsexpose.count == 0)
+        {
+            info->done = 1;
+        }
+    }
+    else if (eventPtr->type == Expose)
+    {
 
-	/*
-	 * This case is tricky.  This event was already queued before
-	 * the XCopyArea was issued.  If this area overlaps the area
-	 * being copied, then some of the copied area may be invalid.
-	 * The easiest way to handle this case is to mark both the
-	 * original area and the shifted area as damaged.
-	 */
+        /*
+         * This case is tricky.  This event was already queued before
+         * the XCopyArea was issued.  If this area overlaps the area
+         * being copied, then some of the copied area may be invalid.
+         * The easiest way to handle this case is to mark both the
+         * original area and the shifted area as damaged.
+         */
 
-	rect.x = eventPtr->xexpose.x;
-	rect.y = eventPtr->xexpose.y;
-	rect.width = eventPtr->xexpose.width;
-	rect.height = eventPtr->xexpose.height;
-	XUnionRectWithRegion(&rect, (Region) info->region,
-		(Region) info->region);
-	rect.x += info->dx;
-	rect.y += info->dy;
-	XUnionRectWithRegion(&rect, (Region) info->region,
-		(Region) info->region);
-    } else {
-	return TK_DEFER_EVENT;
+        rect.x = eventPtr->xexpose.x;
+        rect.y = eventPtr->xexpose.y;
+        rect.width = eventPtr->xexpose.width;
+        rect.height = eventPtr->xexpose.height;
+        XUnionRectWithRegion(
+        &rect, ( Region )info->region, ( Region )info->region);
+        rect.x += info->dx;
+        rect.y += info->dy;
+        XUnionRectWithRegion(
+        &rect, ( Region )info->region, ( Region )info->region);
+    }
+    else
+    {
+        return TK_DEFER_EVENT;
     }
     return TK_DISCARD_EVENT;
 }
-

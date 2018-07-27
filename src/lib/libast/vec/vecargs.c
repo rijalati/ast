@@ -1,24 +1,24 @@
 /***********************************************************************
-*                                                                      *
-*               This software is part of the ast package               *
-*          Copyright (c) 1985-2011 AT&T Intellectual Property          *
-*                      and is licensed under the                       *
-*                 Eclipse Public License, Version 1.0                  *
-*                    by AT&T Intellectual Property                     *
-*                                                                      *
-*                A copy of the License is available at                 *
-*          http://www.eclipse.org/org/documents/epl-v10.html           *
-*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
-*                                                                      *
-*              Information and Software Systems Research               *
-*                            AT&T Research                             *
-*                           Florham Park NJ                            *
-*                                                                      *
-*               Glenn Fowler <glenn.s.fowler@gmail.com>                *
-*                    David Korn <dgkorn@gmail.com>                     *
-*                     Phong Vo <phongvo@gmail.com>                     *
-*                                                                      *
-***********************************************************************/
+ *                                                                      *
+ *               This software is part of the ast package               *
+ *          Copyright (c) 1985-2011 AT&T Intellectual Property          *
+ *                      and is licensed under the                       *
+ *                 Eclipse Public License, Version 1.0                  *
+ *                    by AT&T Intellectual Property                     *
+ *                                                                      *
+ *                A copy of the License is available at                 *
+ *          http://www.eclipse.org/org/documents/epl-v10.html           *
+ *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+ *                                                                      *
+ *              Information and Software Systems Research               *
+ *                            AT&T Research                             *
+ *                           Florham Park NJ                            *
+ *                                                                      *
+ *               Glenn Fowler <glenn.s.fowler@gmail.com>                *
+ *                    David Korn <dgkorn@gmail.com>                     *
+ *                     Phong Vo <phongvo@gmail.com>                     *
+ *                                                                      *
+ ***********************************************************************/
 #pragma prototyped
 /*
  * Glenn Fowler
@@ -28,8 +28,8 @@
  */
 
 #include <ast.h>
-#include <vecargs.h>
 #include <ctype.h>
+#include <vecargs.h>
 
 /*
  * insert the string vector vec between
@@ -42,35 +42,40 @@
  */
 
 int
-vecargs(char** vec, int* argcp, char*** argvp)
+vecargs(char **vec, int *argcp, char ***argvp)
 {
-	char**	argv;
-	char**	oargv;
-	char**		ovec;
-	char*		s;
-	int		num;
+    char **argv;
+    char **oargv;
+    char **ovec;
+    char *s;
+    int num;
 
-	if (!vec) return(-1);
-	if ((num = (char**)(*(vec - 1)) - vec) > 0)
-	{
-		if (!(argv = newof(0, char*, num + *argcp + 1, 0)))
-		{
-			vecfree(vec, 0);
-			return(-1);
-		}
-		oargv = *argvp;
-		*argvp = argv;
-		*argv++ = *oargv++;
-		ovec = vec;
-		while (s = *argv = *vec++)
-		{
-			while (isspace(*s)) s++;
-			if (*s) argv++;
-		}
-		vecfree(ovec, 1);
-		while (*argv = *oargv++) argv++;
-		*argcp = argv - *argvp;
-	}
-	else vecfree(vec, 0);
-	return(0);
+    if (!vec)
+        return (-1);
+    if ((num = ( char ** )(*(vec - 1)) - vec) > 0)
+    {
+        if (!(argv = newof(0, char *, num + *argcp + 1, 0)))
+        {
+            vecfree(vec, 0);
+            return (-1);
+        }
+        oargv = *argvp;
+        *argvp = argv;
+        *argv++ = *oargv++;
+        ovec = vec;
+        while (s = *argv = *vec++)
+        {
+            while (isspace(*s))
+                s++;
+            if (*s)
+                argv++;
+        }
+        vecfree(ovec, 1);
+        while (*argv = *oargv++)
+            argv++;
+        *argcp = argv - *argvp;
+    }
+    else
+        vecfree(vec, 0);
+    return (0);
 }

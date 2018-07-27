@@ -1,4 +1,4 @@
-/* 
+/*
  * tkUnixXId.c --
  *
  *	This file provides a replacement function for the default X
@@ -37,25 +37,26 @@
  */
 
 #define IDS_PER_STACK 10
-typedef struct TkIdStack {
-    XID ids[IDS_PER_STACK];		/* Array of free identifiers. */
-    int numUsed;			/* Indicates how many of the entries
-					 * in ids are currently in use. */
-    TkDisplay *dispPtr;			/* Display to which ids belong. */
-    struct TkIdStack *nextPtr;		/* Next bunch of free identifiers
-					 * for the same display. */
+typedef struct TkIdStack
+{
+    XID ids[IDS_PER_STACK]; /* Array of free identifiers. */
+    int numUsed; /* Indicates how many of the entries
+                  * in ids are currently in use. */
+    TkDisplay *dispPtr; /* Display to which ids belong. */
+    struct TkIdStack *nextPtr; /* Next bunch of free identifiers
+                                * for the same display. */
 } TkIdStack;
 
 /*
  * Forward declarations for procedures defined in this file:
  */
 
-static XID		AllocXId _ANSI_ARGS_((Display *display));
-static Tk_RestrictAction CheckRestrictProc _ANSI_ARGS_((
-			    ClientData clientData, XEvent *eventPtr));
-static void		WindowIdCleanup _ANSI_ARGS_((ClientData clientData));
-static void		WindowIdCleanup2 _ANSI_ARGS_((ClientData clientData));
-
+static XID AllocXId _ANSI_ARGS_((Display * display));
+static Tk_RestrictAction CheckRestrictProc _ANSI_ARGS_((ClientData clientData,
+                                                        XEvent *eventPtr));
+static void WindowIdCleanup _ANSI_ARGS_((ClientData clientData));
+static void WindowIdCleanup2 _ANSI_ARGS_((ClientData clientData));
+
 /*
  *----------------------------------------------------------------------
  *
@@ -73,10 +74,8 @@ static void		WindowIdCleanup2 _ANSI_ARGS_((ClientData clientData));
  *----------------------------------------------------------------------
  */
 
-void
-TkInitXId(dispPtr)
-    TkDisplay *dispPtr;			/* Tk's information about the
-					 * display. */
+void TkInitXId(dispPtr) TkDisplay *dispPtr; /* Tk's information about the
+                                             * display. */
 {
     dispPtr->idStackPtr = NULL;
     dispPtr->defaultAllocProc = dispPtr->display->resource_alloc;
@@ -84,7 +83,7 @@ TkInitXId(dispPtr)
     dispPtr->windowStackPtr = NULL;
     dispPtr->idCleanupScheduled = 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -104,9 +103,8 @@ TkInitXId(dispPtr)
  *----------------------------------------------------------------------
  */
 
-static XID
-AllocXId(display)
-    Display *display;			/* Display for which to allocate. */
+static XID AllocXId(display) Display *display; /* Display for which to
+                                                  allocate. */
 {
     TkDisplay *dispPtr;
     TkIdStack *stackPtr;
@@ -116,24 +114,27 @@ AllocXId(display)
      */
 
     dispPtr = TkGetDisplay(display);
-    
+
     /*
      * If the topmost chunk on the stack is empty then free it.  Then
      * check for a free id on the stack and return it if it exists.
      */
 
     stackPtr = dispPtr->idStackPtr;
-    if (stackPtr != NULL) {
-	while (stackPtr->numUsed == 0) {
-	    dispPtr->idStackPtr = stackPtr->nextPtr;
-	    ckfree((char *) stackPtr);
-	    stackPtr = dispPtr->idStackPtr;
-	    if (stackPtr == NULL) {
-		goto defAlloc;
-	    }
-	}
-	stackPtr->numUsed--;
-	return stackPtr->ids[stackPtr->numUsed];
+    if (stackPtr != NULL)
+    {
+        while (stackPtr->numUsed == 0)
+        {
+            dispPtr->idStackPtr = stackPtr->nextPtr;
+            ckfree(( char * )stackPtr);
+            stackPtr = dispPtr->idStackPtr;
+            if (stackPtr == NULL)
+            {
+                goto defAlloc;
+            }
+        }
+        stackPtr->numUsed--;
+        return stackPtr->ids[stackPtr->numUsed];
     }
 
     /*
@@ -141,10 +142,10 @@ AllocXId(display)
      * allocator.
      */
 
-    defAlloc:
+defAlloc:
     return (*dispPtr->defaultAllocProc)(display);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -163,12 +164,10 @@ AllocXId(display)
  *----------------------------------------------------------------------
  */
 
-void
-Tk_FreeXId(display, xid)
-    Display *display;			/* Display for which xid was
-					 * allocated. */
-    XID xid;				/* Identifier that is no longer
-					 * in use. */
+void Tk_FreeXId(display, xid) Display *display; /* Display for which xid was
+                                                 * allocated. */
+XID xid; /* Identifier that is no longer
+          * in use. */
 {
     TkDisplay *dispPtr;
     TkIdStack *stackPtr;
@@ -182,14 +181,15 @@ Tk_FreeXId(display, xid)
     /*
      * Add a new chunk to the stack if the current chunk is full.
      */
-    
+
     stackPtr = dispPtr->idStackPtr;
-    if ((stackPtr == NULL) || (stackPtr->numUsed >= IDS_PER_STACK)) {
-	stackPtr = (TkIdStack *) ckalloc(sizeof(TkIdStack));
-	stackPtr->numUsed = 0;
-	stackPtr->dispPtr = dispPtr;
-	stackPtr->nextPtr = dispPtr->idStackPtr;
-	dispPtr->idStackPtr = stackPtr;
+    if ((stackPtr == NULL) || (stackPtr->numUsed >= IDS_PER_STACK))
+    {
+        stackPtr = ( TkIdStack * )ckalloc(sizeof(TkIdStack));
+        stackPtr->numUsed = 0;
+        stackPtr->dispPtr = dispPtr;
+        stackPtr->nextPtr = dispPtr->idStackPtr;
+        dispPtr->idStackPtr = stackPtr;
     }
 
     /*
@@ -199,7 +199,7 @@ Tk_FreeXId(display, xid)
     stackPtr->ids[stackPtr->numUsed] = xid;
     stackPtr->numUsed++;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -256,10 +256,9 @@ Tk_FreeXId(display, xid)
  *----------------------------------------------------------------------
  */
 
-void
-TkFreeWindowId(dispPtr, w)
-    TkDisplay *dispPtr;		/* Display that w belongs to. */
-    Window w;			/* X identifier for window on dispPtr. */
+void TkFreeWindowId(dispPtr,
+                    w) TkDisplay *dispPtr; /* Display that w belongs to. */
+Window w; /* X identifier for window on dispPtr. */
 {
     TkIdStack *stackPtr;
 
@@ -270,12 +269,13 @@ TkFreeWindowId(dispPtr, w)
      */
 
     stackPtr = dispPtr->windowStackPtr;
-    if ((stackPtr == NULL) || (stackPtr->numUsed >= IDS_PER_STACK)) {
-	stackPtr = (TkIdStack *) ckalloc(sizeof(TkIdStack));
-	stackPtr->numUsed = 0;
-	stackPtr->dispPtr = dispPtr;
-	stackPtr->nextPtr = dispPtr->windowStackPtr;
-	dispPtr->windowStackPtr = stackPtr;
+    if ((stackPtr == NULL) || (stackPtr->numUsed >= IDS_PER_STACK))
+    {
+        stackPtr = ( TkIdStack * )ckalloc(sizeof(TkIdStack));
+        stackPtr->numUsed = 0;
+        stackPtr->dispPtr = dispPtr;
+        stackPtr->nextPtr = dispPtr->windowStackPtr;
+        dispPtr->windowStackPtr = stackPtr;
     }
 
     /*
@@ -290,12 +290,13 @@ TkFreeWindowId(dispPtr, w)
      * scheduled.
      */
 
-    if (!dispPtr->idCleanupScheduled) {
-	dispPtr->idCleanupScheduled = 1;
-	Tcl_CreateTimerHandler(100, WindowIdCleanup, (ClientData *) dispPtr);
+    if (!dispPtr->idCleanupScheduled)
+    {
+        dispPtr->idCleanupScheduled = 1;
+        Tcl_CreateTimerHandler(100, WindowIdCleanup, ( ClientData * )dispPtr);
     }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -316,11 +317,10 @@ TkFreeWindowId(dispPtr, w)
  *----------------------------------------------------------------------
  */
 
-static void
-WindowIdCleanup(clientData)
-    ClientData clientData;	/* Pointer to TkDisplay for display */
+static void WindowIdCleanup(clientData)
+ClientData clientData; /* Pointer to TkDisplay for display */
 {
-    TkDisplay *dispPtr = (TkDisplay *) clientData;
+    TkDisplay *dispPtr = ( TkDisplay * )clientData;
     int anyEvents, delta;
     Tk_RestrictProc *oldProc;
     ClientData oldData;
@@ -338,21 +338,24 @@ WindowIdCleanup(clientData)
      *	   the procedure gets invoked.
      */
 
-    if (dispPtr->destroyCount > 0) {
-	goto tryAgain;
+    if (dispPtr->destroyCount > 0)
+    {
+        goto tryAgain;
     }
     delta = LastKnownRequestProcessed(dispPtr->display)
-	    - dispPtr->lastDestroyRequest;
-    if (delta < 0) {
-	XSync(dispPtr->display, False);
+            - dispPtr->lastDestroyRequest;
+    if (delta < 0)
+    {
+        XSync(dispPtr->display, False);
     }
     anyEvents = 0;
-    oldProc = Tk_RestrictEvents(CheckRestrictProc, (ClientData) &anyEvents,
-	    &oldData);
-    Tcl_DoOneEvent(TCL_DONT_WAIT|TCL_WINDOW_EVENTS);
+    oldProc = Tk_RestrictEvents(
+    CheckRestrictProc, ( ClientData )&anyEvents, &oldData);
+    Tcl_DoOneEvent(TCL_DONT_WAIT | TCL_WINDOW_EVENTS);
     Tk_RestrictEvents(oldProc, oldData, &oldData);
-    if (anyEvents) {
-	goto tryAgain;
+    if (anyEvents)
+    {
+        goto tryAgain;
     }
 
     /*
@@ -360,10 +363,11 @@ WindowIdCleanup(clientData)
      * more (see comments for TkFreeWindowId).  Schedule the final freeing.
      */
 
-    if (dispPtr->windowStackPtr != NULL) {
-	Tcl_CreateTimerHandler(5000, WindowIdCleanup2,
-		(ClientData) dispPtr->windowStackPtr);
-	dispPtr->windowStackPtr = NULL;
+    if (dispPtr->windowStackPtr != NULL)
+    {
+        Tcl_CreateTimerHandler(
+        5000, WindowIdCleanup2, ( ClientData )dispPtr->windowStackPtr);
+        dispPtr->windowStackPtr = NULL;
     }
     return;
 
@@ -371,11 +375,11 @@ WindowIdCleanup(clientData)
      * It's still not safe to free up the ids.  Try again a bit later.
      */
 
-    tryAgain:
+tryAgain:
     dispPtr->idCleanupScheduled = 1;
-    Tcl_CreateTimerHandler(500, WindowIdCleanup, (ClientData *) dispPtr);
+    Tcl_CreateTimerHandler(500, WindowIdCleanup, ( ClientData * )dispPtr);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -394,21 +398,21 @@ WindowIdCleanup(clientData)
  *----------------------------------------------------------------------
  */
 
-static void
-WindowIdCleanup2(clientData)
-    ClientData clientData;	/* Pointer to TkIdStack list. */
+static void WindowIdCleanup2(clientData)
+ClientData clientData; /* Pointer to TkIdStack list. */
 {
-    TkIdStack *stackPtr = (TkIdStack *) clientData;
+    TkIdStack *stackPtr = ( TkIdStack * )clientData;
     TkIdStack *lastPtr;
 
     lastPtr = stackPtr;
-    while (lastPtr->nextPtr != NULL) {
-	lastPtr = lastPtr->nextPtr;
+    while (lastPtr->nextPtr != NULL)
+    {
+        lastPtr = lastPtr->nextPtr;
     }
     lastPtr->nextPtr = stackPtr->dispPtr->idStackPtr;
     stackPtr->dispPtr->idStackPtr = stackPtr;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -428,16 +432,15 @@ WindowIdCleanup2(clientData)
  *----------------------------------------------------------------------
  */
 
-static Tk_RestrictAction
-CheckRestrictProc(clientData, eventPtr)
-    ClientData clientData;	/* Pointer to flag to set. */
-    XEvent *eventPtr;		/* Event to filter;  not used. */
+static Tk_RestrictAction CheckRestrictProc(clientData, eventPtr)
+ClientData clientData; /* Pointer to flag to set. */
+XEvent *eventPtr; /* Event to filter;  not used. */
 {
-    int *flag = (int *) clientData;
+    int *flag = ( int * )clientData;
     *flag = 1;
     return TK_DEFER_EVENT;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -455,17 +458,19 @@ CheckRestrictProc(clientData, eventPtr)
  *----------------------------------------------------------------------
  */
 
-Pixmap
-Tk_GetPixmap(display, d, width, height, depth)
-    Display *display;		/* Display for new pixmap. */
-    Drawable d;			/* Drawable where pixmap will be used. */
-    int width, height;		/* Dimensions of pixmap. */
-    int depth;			/* Bits per pixel for pixmap. */
+Pixmap Tk_GetPixmap(display,
+                    d,
+                    width,
+                    height,
+                    depth) Display *display; /* Display for new pixmap. */
+Drawable d; /* Drawable where pixmap will be used. */
+int width, height; /* Dimensions of pixmap. */
+int depth; /* Bits per pixel for pixmap. */
 {
-    return XCreatePixmap(display, d, (unsigned) width, (unsigned) height,
-	    (unsigned) depth);
+    return XCreatePixmap(
+    display, d, ( unsigned )width, ( unsigned )height, ( unsigned )depth);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -484,11 +489,11 @@ Tk_GetPixmap(display, d, width, height, depth)
  *----------------------------------------------------------------------
  */
 
-void
-Tk_FreePixmap(display, pixmap)
-    Display *display;		/* Display for which pixmap was allocated. */
-    Pixmap pixmap;		/* Identifier for pixmap. */
+void Tk_FreePixmap(display,
+                   pixmap) Display *display; /* Display for which pixmap was
+                                                allocated. */
+Pixmap pixmap; /* Identifier for pixmap. */
 {
     XFreePixmap(display, pixmap);
-    Tk_FreeXId(display, (XID) pixmap);
+    Tk_FreeXId(display, ( XID )pixmap);
 }
