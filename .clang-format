@@ -30,7 +30,7 @@ BraceWrapping: {
     AfterUnion : 'true'
     BeforeCatch : 'false'
     BeforeElse : 'false'
-    IndentBraces : 'true'
+    IndentBraces : 'false'
     SplitEmptyFunction : 'false'
 }
 BreakBeforeBinaryOperators: 'NonAssignment'
