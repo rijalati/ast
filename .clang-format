@@ -3,7 +3,7 @@ BasedOnStyle: LLVM
 AccessModifierOffset: 0
 AlignAfterOpenBracket: Align
 AlignEscapedNewlines: Right
-AlignConsecutiveDeclarations: true
+AlignConsecutiveDeclarations: false
 AlignConsecutiveAssignments: true
 AlignOperands: 'true'
 AlignTrailingComments: false
@@ -51,7 +51,6 @@ IndentPPDirectives: AfterHash
 IndentWidth: 4
 Language: Cpp
 MaxEmptyLinesToKeep: 2
-PointerBindsToType: false
 PenaltyBreakComment: '78'
 PenaltyBreakFirstLessLess: '78'
 PenaltyBreakString: '78'
