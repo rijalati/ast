@@ -1,7 +1,7 @@
 ---
 
 AccessModifierOffset: '-2'
-AlignEscapedNewlinesLeft: false
+AlignEscapedNewlinesLeft: true
 AlignOperands: 'true'
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: true
@@ -11,7 +11,7 @@ AllowShortLoopsOnASingleLine: false
 AlwaysBreakBeforeMultilineStrings: true
 AlwaysBreakTemplateDeclarations: false
 BinPackParameters: false
-BinPackArguments: true
+BinPackArguments: false
 BreakBeforeBinaryOperators: true
 BreakBeforeBraces: Linux
 BraceWrapping: {
@@ -49,13 +49,13 @@ PenaltyReturnTypeOnItsOwnLine: '60'
 PointerAlignment: Right
 ReflowComments: 'true'
 SortIncludes: 'true'
-SpaceAfterCStyleCast: 'false'
+SpaceAfterCStyleCast: 'true'
 SpaceBeforeAssignmentOperators: false
 SpaceBeforeParens: ControlStatements
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 2
 SpacesInAngles: false
-SpacesInCStyleCastParentheses: false
+SpacesInCStyleCastParentheses: true
 SpacesInParentheses: false
 Standard: Auto
 TabWidth: 4
