@@ -29,7 +29,7 @@ BraceWrapping: {
     AfterExternBlock : 'true'
     AfterUnion : 'true'
     BeforeCatch : 'false'
-    BeforeElse : 'false'
+    BeforeElse : 'true'
     IndentBraces : 'false'
     SplitEmptyFunction : 'false'
 }
@@ -50,6 +50,7 @@ IndentWrappedFunctionNames: true
 IndentPPDirectives: AfterHash
 IndentWidth: 4
 Language: Cpp
+NamespaceIndentation: All
 MaxEmptyLinesToKeep: 2
 PenaltyBreakComment: '78'
 PenaltyBreakFirstLessLess: '78'
