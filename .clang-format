@@ -14,14 +14,14 @@ AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterReturnType: All
-AlwaysBreakBeforeMultilineStrings: false
-AlwaysBreakTemplateDeclarations: false
+AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakTemplateDeclarations: Yes
 BinPackParameters: false
 BinPackArguments: false
 BreakBeforeBraces: Custom
 BraceWrapping: {
     AfterClass: 'false'
-    AfterControlStatement: 'false'
+    AfterControlStatement: 'true'
     AfterEnum : 'true'
     AfterFunction : 'true'
     AfterNamespace : 'true'
