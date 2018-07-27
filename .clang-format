@@ -1,6 +1,6 @@
 ---
 Language: 'Cpp'
-Standard: 'Cpp11'
+Standard: 'Auto'
 BasedOnStyle: 'LLVM'
 UseTab: 'Never'
 TabWidth: '4'
