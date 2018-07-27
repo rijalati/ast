@@ -1,8 +1,8 @@
+---
 
-# .clang-format
-
-AccessModifierOffset: 0
+AccessModifierOffset: '-2'
 AlignEscapedNewlinesLeft: false
+AlignOperands: 'true'
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortFunctionsOnASingleLine: false
@@ -11,13 +11,26 @@ AllowShortLoopsOnASingleLine: false
 AlwaysBreakBeforeMultilineStrings: true
 AlwaysBreakTemplateDeclarations: false
 BinPackParameters: false
+BinPackArguments: true
 BreakBeforeBinaryOperators: true
 BreakBeforeBraces: Linux
+BraceWrapping: {
+    AfterClass: 'true'
+    AfterControlStatement: 'true'
+    AfterEnum : 'true'
+    AfterFunction : 'true'
+    AfterNamespace : 'true'
+    AfterStruct : 'true'
+    AfterUnion : 'true'
+    BeforeCatch : 'false'
+    BeforeElse : 'true'
+    IndentBraces : 'false'
+}
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: false
 ColumnLimit: 78
 CommentPragmas: ''
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 0
 ContinuationIndentWidth: 0
 Cpp11BracedListStyle: false
@@ -35,7 +48,7 @@ PenaltyExcessCharacter: '78'
 PenaltyReturnTypeOnItsOwnLine: '60'
 PointerAlignment: Right
 ReflowComments: 'true'
-SortIncludes: 'false'
+SortIncludes: 'true'
 SpaceAfterCStyleCast: 'false'
 SpaceBeforeAssignmentOperators: false
 SpaceBeforeParens: ControlStatements
@@ -44,6 +57,6 @@ SpacesBeforeTrailingComments: 2
 SpacesInAngles: false
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
-#Standard: Cpp03
+Standard: Auto
 TabWidth: 4
-UseTab: Never
+UseTab: ForIndentation
