@@ -68,7 +68,7 @@ pathpath_20100601(const char *p,
     if (!p) {
         if (cmd)
             free(cmd);
-        cmd = a ? strdup(a) : ( char * )0;
+        cmd = a ? strdup(a) : ( char * ) 0;
         return 0;
     }
     if (strlen(p) < size) {
@@ -86,7 +86,7 @@ pathpath_20100601(const char *p,
     }
     if (*p == '/')
         a = 0;
-    else if (s = ( char * )a) {
+    else if (s = ( char * ) a) {
         x = s;
         if (strchr(p, '/')) {
             a = p;

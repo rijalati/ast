@@ -71,7 +71,7 @@ typedef struct Ico_s
 static int
 ico_done(Pax_t *pax, Paxarchive_t *ap)
 {
-    Ico_t *ico = ( Ico_t * )ap->data;
+    Ico_t *ico = ( Ico_t * ) ap->data;
 
     if (!ico)
         return -1;
@@ -122,7 +122,7 @@ ico_getprologue(Pax_t *pax,
 static int
 ico_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 {
-    Ico_t *ico = ( Ico_t * )ap->data;
+    Ico_t *ico = ( Ico_t * ) ap->data;
     unsigned char *p;
     int width;
     int height;
@@ -144,8 +144,8 @@ ico_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
               "ico-%d-c%dp%db%dw%dh%d.ico",
               ap->entry,
               p[2],
-              ( int )swapget(3, p + 4, 2),
-              ( int )swapget(3, p + 6, 2),
+              ( int ) swapget(3, p + 4, 2),
+              ( int ) swapget(3, p + 6, 2),
               width,
               height);
     f->name = ico->name;
@@ -165,7 +165,7 @@ ico_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 static int
 ico_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
 {
-    Ico_t *ico = ( Ico_t * )ap->data;
+    Ico_t *ico = ( Ico_t * ) ap->data;
     Sfio_t *sp;
     ssize_t n;
     size_t z;
@@ -198,7 +198,7 @@ ico_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
 static int
 ico_putprologue(Pax_t *pax, Paxarchive_t *ap, int append)
 {
-    Ico_t *ico = ( Ico_t * )ap->data;
+    Ico_t *ico = ( Ico_t * ) ap->data;
     unsigned char hdr[ICO_HEADER];
 
     if (!ico) {
@@ -223,7 +223,7 @@ ico_putheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 static int
 ico_putdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
 {
-    Ico_t *ico = ( Ico_t * )ap->data;
+    Ico_t *ico = ( Ico_t * ) ap->data;
     Sfio_t *sp;
     unsigned char *p;
     int d;
@@ -245,7 +245,7 @@ ico_putdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
                 NiL, pax, 2, "%s: %s: read error", ap->name, f->name);
             return -1;
         }
-        p = ( unsigned char * )pax->buf;
+        p = ( unsigned char * ) pax->buf;
         if (d) {
             if (n < ICO_HEADER + ICO_DIRECTORY) {
                 if (pax->errorf)
@@ -295,14 +295,14 @@ ico_putdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
 static off_t
 ico_putepilogue(Pax_t *pax, Paxarchive_t *ap)
 {
-    Ico_t *ico = ( Ico_t * )ap->data;
+    Ico_t *ico = ( Ico_t * ) ap->data;
     unsigned char *p;
     unsigned char *b;
     int i;
     uint32_t size;
     uint32_t offset;
 
-    b = p = ( unsigned char * )sfstrbase(ico->head);
+    b = p = ( unsigned char * ) sfstrbase(ico->head);
     swapput(3, p + 4, 2, ap->entry);
     p += ICO_HEADER;
     size = offset = ICO_HEADER + ap->entries * ICO_DIRECTORY;

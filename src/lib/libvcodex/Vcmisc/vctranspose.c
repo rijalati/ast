@@ -51,15 +51,15 @@ typedef struct _transpose_s
 static Vcmtarg_t _Transargs[]
 = { { "rsep",
       "Rows are separated  by 'rsep=character'.",
-      ( Void_t * )TR_SEPARATOR },
-    { "fsep", "This is equivalent to 'rsep'.", ( Void_t * )TR_SEPARATOR },
+      ( Void_t * ) TR_SEPARATOR },
+    { "fsep", "This is equivalent to 'rsep'.", ( Void_t * ) TR_SEPARATOR },
     { "columns",
       "Number of columns is defined by 'columns=length'.",
-      ( Void_t * )TR_COLUMNS },
+      ( Void_t * ) TR_COLUMNS },
     { "0",
       "Only transposed data are coded, not meta-data.",
-      ( Void_t * )TR_PLAIN },
-    { 0, "Both transposed data and meta-data are coded.", ( Void_t * )0 } };
+      ( Void_t * ) TR_PLAIN },
+    { 0, "Both transposed data and meta-data are coded.", ( Void_t * ) 0 } };
 
 #if __STD_C
 static ssize_t
@@ -84,7 +84,7 @@ Vcchar_t *flip;
             nrows += 1;
 
     /* allocate space for row data */
-    if (!(fl = ( Transflip_t * )calloc(nrows, sizeof(Transflip_t))))
+    if (!(fl = ( Transflip_t * ) calloc(nrows, sizeof(Transflip_t))))
         RETURN(-1);
 
     /* compute record starts and record sizes */
@@ -141,7 +141,7 @@ Vcchar_t *flip;
             nrows += 1;
 
     /* allocate space for row data */
-    if (!(fl = ( Transflip_t * )calloc(nrows, sizeof(Transflip_t))))
+    if (!(fl = ( Transflip_t * ) calloc(nrows, sizeof(Transflip_t))))
         RETURN(-1);
     for (r = 0; r < nrows; ++r)
         fl[r].open = r;
@@ -377,7 +377,7 @@ Void_t **out;
     Transpose_t *trans;
 
     vc->undone = 0;
-    if ((sz = ( ssize_t )size) <= 0)
+    if ((sz = ( ssize_t ) size) <= 0)
         return 0;
 
     if (!(trans = vcgetmtdata(vc, Transpose_t *)))
@@ -396,7 +396,7 @@ Void_t **out;
 
     if (rsep >= 0) /* var-length table */
     {
-        for (dt = ( Vcchar_t * )data, z = sz - 1; z >= 0; --z)
+        for (dt = ( Vcchar_t * ) data, z = sz - 1; z >= 0; --z)
             if (dt[z] == rsep)
                 break;
         vc->undone = sz - (z + 1); /* exclude the dangling record */
@@ -419,10 +419,10 @@ Void_t **out;
         RETURN(-1);
 
     if (rsep >= 0) {
-        if ((nrows = transflip(( Vcchar_t * )data, sz, rsep, output)) < 0)
+        if ((nrows = transflip(( Vcchar_t * ) data, sz, rsep, output)) < 0)
             RETURN(-1);
     } else
-        transfixed(( Vcchar_t * )data, nrows, ncols, output);
+        transfixed(( Vcchar_t * ) data, nrows, ncols, output);
 
     dt = output;
     if (vcrecode(vc, &output, &sz, z, 0) < 0)
@@ -535,10 +535,10 @@ Void_t *params;
     Vcmtarg_t *arg;
 
     if (type == VC_OPENING) {
-        if (!(trans = ( Transpose_t * )calloc(1, sizeof(Transpose_t))))
+        if (!(trans = ( Transpose_t * ) calloc(1, sizeof(Transpose_t))))
             RETURN(-1);
         if (!(trans->ctxt
-              = ( Transctxt_t * )vcinitcontext(vc, NIL(Vccontext_t *)))) {
+              = ( Transctxt_t * ) vcinitcontext(vc, NIL(Vccontext_t *)))) {
             free(trans);
             RETURN(-1);
         }
@@ -554,7 +554,7 @@ Void_t *params;
     vc_setarg:
         if (!(ctxt = vcgetcontext(vc, Transctxt_t *)))
             RETURN(-1);
-        for (data = ( char * )params; data && *data;) {
+        for (data = ( char * ) params; data && *data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Transargs, &arg);
             switch (TYPECAST(int, arg->data)) {
             case TR_SEPARATOR: /* setting the record separator */
@@ -562,7 +562,7 @@ Void_t *params;
                 ctxt->ncols = 0;
                 break;
             case TR_COLUMNS: /* setting number of columns */
-                ctxt->ncols = ( ssize_t )vcatoi(val);
+                ctxt->ncols = ( ssize_t ) vcatoi(val);
                 ctxt->rsep = -1;
                 break;
             case TR_PLAIN: /* setting transpose.0 */
@@ -577,14 +577,14 @@ Void_t *params;
     } else if (type == VC_INITCONTEXT) {
         if (!params)
             return 0;
-        if (!(ctxt = ( Transctxt_t * )calloc(1, sizeof(Transctxt_t))))
+        if (!(ctxt = ( Transctxt_t * ) calloc(1, sizeof(Transctxt_t))))
             RETURN(-1);
         ctxt->ncols = 0;
         ctxt->rsep = -1;
-        *(( Transctxt_t ** )params) = ctxt;
+        *(( Transctxt_t ** ) params) = ctxt;
         return 1;
     } else if (type == VC_FREECONTEXT) {
-        if ((ctxt = ( Transctxt_t * )params))
+        if ((ctxt = ( Transctxt_t * ) params))
             free(ctxt);
         return 0;
     } else

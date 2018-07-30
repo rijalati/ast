@@ -147,7 +147,7 @@ typedef struct State_s
 static int
 optset(Jcl_t *jcl, int c, Jcldisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     unsigned long f;
     char *s;
     time_t *t;
@@ -240,7 +240,7 @@ optset(Jcl_t *jcl, int c, Jcldisc_t *disc)
         f = JCL_PARAMETERIZE;
         break;
     case 'r':
-        (( State_t * )disc)->resolve = !!opt_info.number;
+        (( State_t * ) disc)->resolve = !!opt_info.number;
         return 1;
     case 'R':
         t = &jcl->disc->rdate;

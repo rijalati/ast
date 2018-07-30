@@ -41,7 +41,7 @@ fmtscale(Sfulong_t n, int k)
     char suf[3];
     char *s;
     char *buf;
-    Lc_numeric_t *p = ( Lc_numeric_t * )LCINFO(AST_LC_NUMERIC)->data;
+    Lc_numeric_t *p = ( Lc_numeric_t * ) LCINFO(AST_LC_NUMERIC)->data;
 
     static const char scale[] = "bkMGTPE";
 

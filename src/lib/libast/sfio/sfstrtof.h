@@ -119,7 +119,7 @@
 
 #if S2F_scan
 
-typedef int(*S2F_get_f) _ARG_(( void *, int ));
+typedef int(*S2F_get_f) _ARG_(( void *, int ) );
 
 #    define ERR(e)
 #    define GET(p) (*get)(p, 0)
@@ -135,12 +135,12 @@ typedef int(*S2F_get_f) _ARG_(( void *, int ));
 
 #    if S2F_size
 #        define GET(p) (((p) < (z)) ? (*p++) : (back = 0))
-#        define PUT(p) (end ? (*end = ( char * )p - back) : ( char * )0)
+#        define PUT(p) (end ? (*end = ( char * ) p - back) : ( char * ) 0)
 #        define REV(p, t, b) (p = t, back = b)
 #        define SET(p, t, b) (t = p, b = back)
 #    else
 #        define GET(p) (*p++)
-#        define PUT(p) (end ? (*end = ( char * )p - 1) : ( char * )0)
+#        define PUT(p) (end ? (*end = ( char * ) p - 1) : ( char * ) 0)
 #        define REV(p, t, b) (p = t)
 #        define SET(p, t, b) (t = p)
 #    endif
@@ -196,7 +196,7 @@ char **end;
 #endif
 {
 #if !S2F_scan
-    unsigned char *s = ( unsigned char * )str;
+    unsigned char *s = ( unsigned char * ) str;
 #    if S2F_size
     unsigned char *z = s + size;
     int back = 1;
@@ -376,7 +376,8 @@ char **end;
         if (c >= '0' && c <= '9') {
             digits++;
             n = (n << 3) + (n << 1) + (c - '0');
-            if (n >= ((~(( S2F_batch )0)) / 10) && part < elementsof(parts)) {
+            if (n >= ((~(( S2F_batch ) 0)) / 10)
+                && part < elementsof(parts)) {
                 parts[part].batch = n;
                 n = 0;
                 parts[part].digits = digits;

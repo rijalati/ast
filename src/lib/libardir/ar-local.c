@@ -45,7 +45,7 @@ localclose(Ardir_t *ar)
     State_t *state;
     int r;
 
-    if (!ar || !(state = ( State_t * )ar->data))
+    if (!ar || !(state = ( State_t * ) ar->data))
         r = -1;
     else {
         if (!state->sp || sfclose(state->sp))
@@ -72,7 +72,7 @@ localopen(Ardir_t *ar, char *buf, size_t n)
         return -1;
     if (!(state = newof(0, State_t, 1, 0)))
         return -1;
-    ar->data = ( void * )state;
+    ar->data = ( void * ) state;
     cmd
     = sfprints("${ARDIR:-ar} ${ARDIRFLAGS:-tv} '%s' 2>/dev/null", ar->path);
     if (!(state->sp = sfpopen(NiL, cmd, "r"))
@@ -90,7 +90,7 @@ localopen(Ardir_t *ar, char *buf, size_t n)
 static Ardirent_t *
 localnext(Ardir_t *ar)
 {
-    State_t *state = ( State_t * )ar->data;
+    State_t *state = ( State_t * ) ar->data;
     char *s;
     char *t;
     char *e;

@@ -63,22 +63,22 @@ static Option_t options[] = /* option table			*/
 
     { "accept",
       OPT_accept,
-      ( char * )&state.accept,
+      ( char * ) &state.accept,
       0,
       "Accept filesystem timestamps of existing targets." },
     { "alias",
       OPT_alias,
-      ( char * )&state.alias,
+      ( char * ) &state.alias,
       0,
       "Enable directory aliasing." },
     { "base",
       OPT_base,
-      ( char * )&state.base,
+      ( char * ) &state.base,
       0,
       "Compile base or global rules." },
     { "believe",
       OPT_believe,
-      ( char * )&state.believe,
+      ( char * ) &state.believe,
       0,
       "Believe the state file time of files lower than view level"
       " \alevel-1\a. The file system time will be checked for files with"
@@ -88,17 +88,17 @@ static Option_t options[] = /* option table			*/
       "level:=0" },
     { "compatibility",
       OPT_compatibility,
-      ( char * )&state.compatibility,
+      ( char * ) &state.compatibility,
       0,
       "Disable compatibility messages." },
     { "compile",
       OPT_compile,
-      ( char * )&state.compileonly,
+      ( char * ) &state.compileonly,
       0,
       "Compile the input makefile and exit." },
     { "corrupt",
       OPT_corrupt,
-      ( char * )&state.corrupt,
+      ( char * ) &state.corrupt,
       0,
       "\aaction\a determines the action to take for corrupt or invalid"
       " top view state files. The top view default is \berror\b and the"
@@ -111,7 +111,7 @@ static Option_t options[] = /* option table			*/
       "}" },
     { "cross",
       OPT_cross,
-      ( char * )&state.cross,
+      ( char * ) &state.cross,
       0,
       "Don't run generated executables." },
     { "debug",
@@ -123,30 +123,30 @@ static Option_t options[] = /* option table			*/
       "level" },
     { "errorid",
       OPT_errorid,
-      ( char * )&state.errorid,
+      ( char * ) &state.errorid,
       0,
       "Add \aid\a to the error message command identifier.",
       "id:=make" },
     { "exec",
       OPT_exec,
-      ( char * )&state.exec,
+      ( char * ) &state.exec,
       0,
       "Enable shell action execution. \b--noexec\b"
       " disables all but \b.ALWAYS\b shell actions and also disables"
       " make object and state file generation/updates." },
     { "expandview",
       OPT_expandview,
-      ( char * )&state.expandview,
+      ( char * ) &state.expandview,
       0,
       "Expand \a3d\a filesystem paths." },
     { "explain",
       OPT_explain,
-      ( char * )&state.explain,
+      ( char * ) &state.explain,
       0,
       "Explain each action." },
     { "file",
       OPT_file,
-      ( char * )&internal.makefiles,
+      ( char * ) &internal.makefiles,
       0,
       "Read the makefile \afile\a. If \b--file\b is not specified then"
       " the makefile names specified by \b$(MAKEFILES)\b are attempted in"
@@ -155,24 +155,24 @@ static Option_t options[] = /* option table			*/
       "file" },
     { "force",
       OPT_force,
-      ( char * )&state.force,
+      ( char * ) &state.force,
       0,
       "Force all targets to be out of date." },
     { "global",
       OPT_global,
-      ( char * )&internal.globalfiles,
+      ( char * ) &internal.globalfiles,
       0,
       "Read the global makefile \afile\a. The \b--file\b search is not"
       " affected.",
       "file" },
     { "ignore",
       OPT_ignore,
-      ( char * )&state.ignore,
+      ( char * ) &state.ignore,
       0,
       "Ignore shell action errors." },
     { "ignorelock",
       OPT_ignorelock,
-      ( char * )&state.ignorelock,
+      ( char * ) &state.ignorelock,
       0,
       "Ignore state file locks." },
     { "include",
@@ -183,12 +183,12 @@ static Option_t options[] = /* option table			*/
       "directory" },
     { "intermediate",
       OPT_intermediate,
-      ( char * )&state.intermediate,
+      ( char * ) &state.intermediate,
       0,
       "Force intermediate target generation." },
     { "jobs",
       OPT_jobs,
-      ( char * )&state.jobs,
+      ( char * ) &state.jobs,
       0,
       "Set the shell action concurrency level to \alevel\a."
       " Level \b1\b allows dependency checking while an action is"
@@ -197,18 +197,18 @@ static Option_t options[] = /* option table			*/
       "level:=${" CO_ENV_PROC "::-1}" },
     { "keepgoing",
       OPT_keepgoing,
-      ( char * )&state.keepgoing,
+      ( char * ) &state.keepgoing,
       0,
       "Continue after error with sibling prerequisites." },
     { "list",
       OPT_list,
-      ( char * )&state.list,
+      ( char * ) &state.list,
       0,
       "List the current rules and variables on the standard output in"
       " makefile form." },
     { "mam",
       OPT_mam,
-      ( char * )&state.mam.options,
+      ( char * ) &state.mam.options,
       0,
       "Write \amake abstract machine\a output to \afile\a if specified or"
       " to the standard output otherwise. See \bmam\b(5) for details on"
@@ -232,7 +232,7 @@ static Option_t options[] = /* option table			*/
       "}" },
     { "never",
       OPT_never,
-      ( char * )&state.never,
+      ( char * ) &state.never,
       0,
       "Don't execute any shell actions. \b--noexec\b executes \b.ALWAYS\b"
       " shell actions." },
@@ -263,12 +263,12 @@ static Option_t options[] = /* option table			*/
       "}" },
     { "override",
       OPT_override,
-      ( char * )&state.override,
+      ( char * ) &state.override,
       0,
       "Implicit rules or metarules override explicit rules." },
     { "questionable",
       OPT_questionable,
-      ( char * )&state.questionable,
+      ( char * ) &state.questionable,
       0,
       "Enable questionable features defined by \amask\a. Questionable"
       " features are artifacts of previous implementations (\bnmake\b has"
@@ -278,19 +278,19 @@ static Option_t options[] = /* option table			*/
       "mask" },
     { "readonly",
       OPT_readonly,
-      ( char * )&state.readonly,
+      ( char * ) &state.readonly,
       0,
       "Current assignments and assertions will be marked \breadonly\b." },
     { "readstate",
       OPT_readstate,
-      ( char * )&state.readstate,
+      ( char * ) &state.readstate,
       0,
       "Ignore state files lower than view level \alevel\a. \alevel=0\a"
       " ignores state files on all view levels. The top view is level 0.",
       "level:=0" },
     { "regress",
       OPT_regress,
-      ( char * )&state.regress,
+      ( char * ) &state.regress,
       0,
       "Massage output for regression testing. \aaction\a may be one of:",
       "[action:!message]"
@@ -300,35 +300,35 @@ static Option_t options[] = /* option table			*/
       "}" },
     { "reread",
       OPT_reread,
-      ( char * )&state.reread,
+      ( char * ) &state.reread,
       0,
       "Ignore any previously generated \b.mo\b files and re-read all"
       " input makefiles." },
     { "ruledump",
       OPT_ruledump,
-      ( char * )&state.ruledump,
+      ( char * ) &state.ruledump,
       0,
       "Dump rule information in tabular form on the standard"
       " error when \bnmake\b exits." },
     { "scan",
       OPT_scan,
-      ( char * )&state.scan,
+      ( char * ) &state.scan,
       0,
       "Scan for and/or check implicit file prerequisites. On by default." },
     { "serialize",
       OPT_serialize,
-      ( char * )&state.serialize,
+      ( char * ) &state.serialize,
       0,
       "Serialize concurrent output by caching job stdout and stderr"
       " output until job completion." },
     { "silent",
       OPT_silent,
-      ( char * )&state.silent,
+      ( char * ) &state.silent,
       0,
       "Do not trace shell actions as they are executed." },
     { "strictview",
       OPT_strictview,
-      ( char * )&state.strictview,
+      ( char * ) &state.strictview,
       0,
       "Set \bVPATH\b \b.SOURCE\b rule interpretation to follow strict"
       " \a3d\a filesystem semantics, where directories in the top views"
@@ -336,7 +336,7 @@ static Option_t options[] = /* option table			*/
       " \bVPATH\b defined, off by default otherwise." },
     { "target-context",
       OPT_targetcontext,
-      ( char * )&state.targetcontext,
+      ( char * ) &state.targetcontext,
       0,
       "Expand and execute shell actions in the target directory context."
       " This allows a single makefile to control a directory tree while"
@@ -344,7 +344,7 @@ static Option_t options[] = /* option table			*/
       " default target files are generated in the current directory." },
     { "target-prefix",
       OPT_targetprefix,
-      ( char * )&state.targetprefix,
+      ( char * ) &state.targetprefix,
       0,
       "Allow metarules to match \aseparator\a in the target to \b/\b"
       " in the source. Used to disambiguate source file base name clashes"
@@ -353,7 +353,7 @@ static Option_t options[] = /* option table			*/
       "separator" },
     { "test",
       OPT_test,
-      ( char * )&state.test,
+      ( char * ) &state.test,
       0,
       "Enable test code defined by \amask\a. Test code is implementation"
       " specific. The test \amask\a registry is in the \bmain.c\b \bnmake\b"
@@ -361,7 +361,7 @@ static Option_t options[] = /* option table			*/
       "mask" },
     { "tolerance",
       OPT_tolerance,
-      ( char * )&state.tolerance,
+      ( char * ) &state.tolerance,
       0,
       "Set the time comparison tolerance to \aseconds\a. Times within"
       " the tolerance range compare equal. Useful on systems that can't"
@@ -370,24 +370,24 @@ static Option_t options[] = /* option table			*/
       "seconds" },
     { "touch",
       OPT_touch,
-      ( char * )&state.touch,
+      ( char * ) &state.touch,
       0,
       "Touch the time stamps of out of date targets rather than execute"
       " the shell action." },
     { "vardump",
       OPT_vardump,
-      ( char * )&state.vardump,
+      ( char * ) &state.vardump,
       0,
       "Dump variable information in tabular form on the standard"
       " error when \bnmake\b exits." },
     { "warn",
       OPT_warn,
-      ( char * )&state.warn,
+      ( char * ) &state.warn,
       0,
       "Enable verbose warning messages." },
     { "writeobject",
       OPT_writeobject,
-      ( char * )&state.writeobject,
+      ( char * ) &state.writeobject,
       0,
       "Generate a \b.mo\b make object file in \afile\a that can be read"
       " instead of the input makefiles on the next \bnmake\b invocation."
@@ -398,7 +398,7 @@ static Option_t options[] = /* option table			*/
       "file:=$(MAKEFILE::B::S=.mo)" },
     { "writestate",
       OPT_writestate,
-      ( char * )&state.writestate,
+      ( char * ) &state.writestate,
       0,
       "Generate a \b.ms\b make state file in \afile\a when \bnmake\b exits."
       "The state contains the time stamps of all prerequisites and targets"
@@ -493,12 +493,12 @@ getoption(const char *name)
     Option_t *op;
     int c;
 
-    if (!(op = ( Option_t * )hashget(opt.table, name))
+    if (!(op = ( Option_t * ) hashget(opt.table, name))
         && (strchr(name, '-') || strchr(name, '_'))) {
         while (c = *name++)
             if (c != '-' && c != '_')
                 sfputc(internal.tmp, c);
-        op = ( Option_t * )hashget(opt.table, sfstruse(internal.tmp));
+        op = ( Option_t * ) hashget(opt.table, sfstruse(internal.tmp));
     }
     return op;
 }
@@ -510,13 +510,13 @@ putoption(Option_t *op, int index)
     int c;
     char buf[16];
 
-    hashput(opt.table, op->name, ( char * )op);
+    hashput(opt.table, op->name, ( char * ) op);
     if (strchr(op->name, '-') || strchr(op->name, '_')) {
         s = op->name;
         while (c = *s++)
             if (c != '-' && c != '_')
                 sfputc(internal.tmp, c);
-        hashput(opt.table, strdup(sfstruse(internal.tmp)), ( char * )op);
+        hashput(opt.table, strdup(sfstruse(internal.tmp)), ( char * ) op);
     }
     if (op->flags & Of)
         sfsprintf(buf, sizeof(buf), "+%d", OPT(op->flags));
@@ -525,10 +525,10 @@ putoption(Option_t *op, int index)
         buf[1] = OPT(op->flags);
         buf[2] = 0;
     }
-    hashput(opt.table, strdup(buf), ( char * )op);
+    hashput(opt.table, strdup(buf), ( char * ) op);
     if (index >= elementsof(options)) {
         sfsprintf(buf, sizeof(buf), "-%d", index);
-        hashput(opt.table, strdup(buf), ( char * )op);
+        hashput(opt.table, strdup(buf), ( char * ) op);
     }
 }
 
@@ -546,7 +546,7 @@ optinit(void)
         options[i].flags |= Om;
         switch (OPT(options[i].flags)) {
         case OPT(OPT_debug):
-            options[i].value = ( char * )&error_info.trace;
+            options[i].value = ( char * ) &error_info.trace;
             break;
         }
         putoption(&options[i], i);
@@ -600,14 +600,14 @@ setcall(Option_t *op, int readonly)
         state.readonly = readonly;
         switch (op->flags & (Ob | On | Os)) {
         case Ob:
-            call(r, *(( unsigned char * )op->value) ? "1" : null);
+            call(r, *(( unsigned char * ) op->value) ? "1" : null);
             break;
         case On:
-            sfsprintf(buf, sizeof(buf), "%d", *(( int * )op->value));
+            sfsprintf(buf, sizeof(buf), "%d", *(( int * ) op->value));
             call(r, buf);
             break;
         case Os:
-            call(r, *(( char ** )op->value));
+            call(r, *(( char ** ) op->value));
             break;
         }
         state.readonly = oreadonly;
@@ -725,7 +725,7 @@ mamwrite(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *dp)
     static int siz;
 
     z = n;
-    if (n > 1 && (( char * )buf)[n - 1] == '\n') {
+    if (n > 1 && (( char * ) buf)[n - 1] == '\n') {
         if (n >= siz) {
             siz = roundof(n + 1, 1024);
             tmp = newof(tmp, char, siz, 0);
@@ -740,7 +740,7 @@ mamwrite(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *dp)
             }
             memcpy(tmp, s, z);
             tmp[z++] = '\n';
-            buf = ( const char * )tmp;
+            buf = ( const char * ) tmp;
         }
     }
     return sfwr(fp, buf, z, dp) == z ? n : -1;
@@ -921,7 +921,7 @@ setop(Option_t *op, int n, char *s, int type)
             n = sfstrtell(internal.tmp) + 1;
             s = sfstruse(internal.tmp);
             x = newof(0, Oplist_t, 1, n);
-            x->option = strcpy(( char * )(x + 1), s);
+            x->option = strcpy(( char * ) (x + 1), s);
             if (opt.lasthidden)
                 opt.lasthidden = opt.lasthidden->next = x;
             else
@@ -1271,15 +1271,16 @@ setop(Option_t *op, int n, char *s, int type)
                 nop = 0;
             if (nop) {
                 if (n & On)
-                    *(( int * )nop->value) = *(( unsigned char * )nop->value);
+                    *(( int * ) nop->value)
+                    = *(( unsigned char * ) nop->value);
                 else if (n & Os)
-                    *(( char ** )nop->value) = 0;
+                    *(( char ** ) nop->value) = 0;
                 nop->flags = n;
             set_insert:
                 nop->name = name;
                 nop->set = func;
                 if ((n & (Os | Oa)) == (Os | Oa) && !op->value)
-                    *(( Rule_t ** )nop->value)
+                    *(( Rule_t ** ) nop->value)
                     = catrule(".OPTION.", nop->name, ".LIST.", 1);
                 if (!desc)
                     desc = "option.";
@@ -1309,7 +1310,7 @@ setop(Option_t *op, int n, char *s, int type)
                     readonly = 1;
             } else if (!(nop = getoption(name))) {
                 nop = newof(0, Option_t, 1, sizeof(char *));
-                nop->value = ( char * )(nop + 1);
+                nop->value = ( char * ) (nop + 1);
                 nop->flags = n | OPT_EXTERNAL;
                 if (!state.loading)
                     nop->flags |= OPT_DECLARE;
@@ -1326,13 +1327,13 @@ setop(Option_t *op, int n, char *s, int type)
                     if ((n & (Ob | On | Os))
                         != (nop->flags & (Ob | On | Os))) {
                         if (n & Os)
-                            *(( char ** )nop->value) = 0;
+                            *(( char ** ) nop->value) = 0;
                         else if ((n & On) && (nop->flags & Ob))
-                            *(( int * )nop->value)
-                            = *(( unsigned char * )nop->value);
+                            *(( int * ) nop->value)
+                            = *(( unsigned char * ) nop->value);
                         else if ((n & Ob) && (nop->flags & On))
-                            *(( unsigned char * )nop->value)
-                            = *(( int * )nop->value) != 0;
+                            *(( unsigned char * ) nop->value)
+                            = *(( int * ) nop->value) != 0;
                     }
                     nop->flags = n;
                 } else if (OPT(nop->flags) != OPT(n))
@@ -1464,31 +1465,31 @@ setop(Option_t *op, int n, char *s, int type)
         if (op->flags & Ob) {
             switch (type) {
             case '^':
-                *(( unsigned char * )op->value) ^= n;
+                *(( unsigned char * ) op->value) ^= n;
                 break;
             default:
-                *(( unsigned char * )op->value) = n != 0;
+                *(( unsigned char * ) op->value) = n != 0;
                 break;
             }
         } else if (op->flags & On) {
             switch (type) {
             case '+':
-                *(( int * )op->value) += n;
+                *(( int * ) op->value) += n;
                 break;
             case '-':
-                *(( int * )op->value) -= n;
+                *(( int * ) op->value) -= n;
                 break;
             case '|':
-                *(( int * )op->value) |= n;
+                *(( int * ) op->value) |= n;
                 break;
             case '&':
-                *(( int * )op->value) &= n;
+                *(( int * ) op->value) &= n;
                 break;
             case '^':
-                *(( int * )op->value) ^= n;
+                *(( int * ) op->value) ^= n;
                 break;
             default:
-                *(( int * )op->value) = n;
+                *(( int * ) op->value) = n;
                 break;
             }
         } else if (op->flags & Os) {
@@ -1501,7 +1502,7 @@ setop(Option_t *op, int n, char *s, int type)
                     for (;;) {
                         if (t = strchr(s, ':'))
                             *t = 0;
-                        addprereq((*( Rule_t ** )op->value),
+                        addprereq((*( Rule_t ** ) op->value),
                                   makerule(s),
                                   PREREQ_APPEND);
                         if (!t)
@@ -1510,11 +1511,11 @@ setop(Option_t *op, int n, char *s, int type)
                         s = t;
                     }
                 } else {
-                    freelist((*( Rule_t ** )op->value)->prereqs);
-                    (*( Rule_t ** )op->value)->prereqs = 0;
+                    freelist((*( Rule_t ** ) op->value)->prereqs);
+                    (*( Rule_t ** ) op->value)->prereqs = 0;
                 }
             } else
-                *(( char ** )op->value) = s ? strdup(s) : 0;
+                *(( char ** ) op->value) = s ? strdup(s) : 0;
         }
     }
     if (op->set)
@@ -1575,7 +1576,7 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
     switch (op->flags & (Ob | On | Os)) {
     case Ob:
         if (op->value)
-            n = *(( unsigned char * )op->value);
+            n = *(( unsigned char * ) op->value);
         else
             n = 0;
         if ((op->flags & Oi) ^ (flag & Oi))
@@ -1606,7 +1607,7 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
         break;
     case On:
         if (op->value)
-            n = *(( int * )op->value);
+            n = *(( int * ) op->value);
         else
             n = 0;
         if (op->flags & Oi)
@@ -1636,7 +1637,7 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
         break;
     case Os:
         if ((op->flags & Oa) && op->value && !(flag & Oi)) {
-            p = (*( Rule_t ** )op->value)->prereqs;
+            p = (*( Rule_t ** ) op->value)->prereqs;
             switch (setting) {
             case 0:
                 if (!p)
@@ -1665,7 +1666,7 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
                 }
         } else {
             if (op->value && !(flag & Oi))
-                v = *(( char ** )op->value);
+                v = *(( char ** ) op->value);
             else
                 v = 0;
             switch (setting) {
@@ -1875,7 +1876,7 @@ optset(int i, char *v, Sfio_t *scope)
             } else
                 n = strlen(v);
             x = newof(0, Oplist_t, 1, n + 1);
-            x->option = strcpy(( char * )(x + 1), v);
+            x->option = strcpy(( char * ) (x + 1), v);
             if (opt.lastdelayed)
                 opt.lastdelayed = opt.lastdelayed->next = x;
             else
@@ -2133,7 +2134,7 @@ punt(int old)
             sfprintf(sfstderr, "\t");
 #endif
             putptr(vec, 0);
-            av = ( char ** )sfstrbase(vec);
+            av = ( char ** ) sfstrbase(vec);
             while (*av)
                 sfprintf(sfstderr, "%s ", *av++);
             sfprintf(sfstderr, "\n");
@@ -2165,7 +2166,7 @@ punt(int old)
      * start fresh
      */
 
-    av = ( char ** )sfstrbase(vec);
+    av = ( char ** ) sfstrbase(vec);
     execvp(av[0], av);
     error(3, "cannot exec %s", av[0]);
 }

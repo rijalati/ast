@@ -105,8 +105,8 @@ static int
 isword();
 
 #else
-#    define gencpy(a, b) strcpy(( char * )(a), ( char * )(b))
-#    define genncpy(a, b, n) strncpy(( char * )(a), ( char * )(b), n)
+#    define gencpy(a, b) strcpy(( char * ) (a), ( char * ) (b))
+#    define genncpy(a, b, n) strncpy(( char * ) (a), ( char * ) (b), n)
 #    define genlen(str) strlen(str)
 #    define print(c) isprint(c)
 #    define isword(c) isalnum(out[c])
@@ -201,13 +201,13 @@ unsigned scend;
     kstack = buff + MAXLINE * sizeof(genchar);
 #else
     if (kstack == 0) {
-        kstack = ( genchar * )malloc(sizeof(genchar) * (MAXLINE));
+        kstack = ( genchar * ) malloc(sizeof(genchar) * (MAXLINE));
         kstack[0] = '\0';
     }
 #endif
     Prompt = prompt;
     screen = Screen;
-    drawbuff = out = ( genchar * )buff;
+    drawbuff = out = ( genchar * ) buff;
     if (tty_raw(ERRIO) < 0) {
         p_flush();
         return (read(fd, buff, scend));
@@ -218,7 +218,7 @@ unsigned scend;
     ed_setup(fd);
 #ifdef ESH_NFIRST
     if (hist_ptr) /* hloff cleared by ed_setup, recalculate... */
-        hloff = hist_copy(( char * )0, hline, -1);
+        hloff = hist_copy(( char * ) 0, hline, -1);
     if (location.his_command == -5) /* to be initialized */
     {
         kstack[0] = '\0'; /* also clear kstack... */
@@ -255,9 +255,9 @@ unsigned scend;
         if (location.his_command < histlines) {
             hline = location.his_command;
             hloff = location.his_line;
-            hist_copy(( char * )kstack, hline, hloff);
+            hist_copy(( char * ) kstack, hline, hloff);
 #    ifdef MULTIBYTE
-            ed_internal(( char * )kstack, kstack);
+            ed_internal(( char * ) kstack, kstack);
 #    endif /* MULTIBYTE */
             ed_ungetchar(cntl('Y'));
         }
@@ -603,7 +603,7 @@ unsigned scend;
 #endif
             hist_copy(out, hline, hloff);
 #ifdef MULTIBYTE
-            ed_internal(( char * )(out), out);
+            ed_internal(( char * ) (out), out);
 #endif /* MULTIBYTE */
         drawline:
             eol = genlen(out);
@@ -639,7 +639,7 @@ process:
 
 static void show_info(str) char *str;
 {
-    char *out = ( char * )drawbuff;
+    char *out = ( char * ) drawbuff;
     int c;
     genchar string[LBUF];
     int sav_cur = cur;
@@ -939,7 +939,7 @@ static void xcommands(count) int count;
             ed_ungetchar('\n');
         return;
 
-#        define itos(i) ltos(( long )(i), 10) /* want signed conversion */
+#        define itos(i) ltos(( long ) (i), 10) /* want signed conversion */
 
     case cntl('H'): /* ^X^H show history info */
     {
@@ -1050,13 +1050,13 @@ int direction;
         direction = -1;
     if (i != 2) {
 #ifdef MULTIBYTE
-        ed_external(string, ( char * )string);
+        ed_external(string, ( char * ) string);
 #endif /* MULTIBYTE */
-        strncpy(lstring, (( char * )string) + 2, SEARCHSIZE);
+        strncpy(lstring, (( char * ) string) + 2, SEARCHSIZE);
         prevdirection = direction;
     } else
         direction = prevdirection;
-    location = hist_find(( char * )lstring, hline, 1, direction);
+    location = hist_find(( char * ) lstring, hline, 1, direction);
     i = location.his_command;
     if (i > 0) {
         hline = i;
@@ -1066,9 +1066,9 @@ int direction;
 #else
         hloff = location.his_line;
 #endif /* ESH_NFIRST */
-        hist_copy(( char * )out, hline, hloff);
+        hist_copy(( char * ) out, hline, hloff);
 #ifdef MULTIBYTE
-        ed_internal(( char * )out, out);
+        ed_internal(( char * ) out, out);
 #endif /* MULTIBYTE */
         return;
     }

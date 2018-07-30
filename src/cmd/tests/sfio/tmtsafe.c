@@ -114,7 +114,7 @@ do_inverted: /* get back to here when trying to make things fail */
     for (i = 0; i < 26; ++i) {
         if (!(thread[i] = vtopen(0, 0)))
             terror("Creating thread handle[%d]", i);
-        if (vtrun(thread[i], writesmall, ( Void_t * )i) < 0)
+        if (vtrun(thread[i], writesmall, ( Void_t * ) i) < 0)
             terror("Running thread [%d]", i);
     }
 
@@ -123,7 +123,7 @@ do_inverted: /* get back to here when trying to make things fail */
         vtwait(thread[i]);
     }
 
-    if (sfseek(Sf, ( Sfoff_t )0, SEEK_SET) != ( Sfoff_t )0) {
+    if (sfseek(Sf, ( Sfoff_t ) 0, SEEK_SET) != ( Sfoff_t ) 0) {
         if (Inverted)
             tsuccess("Rewinding failed as expected");
         else
@@ -167,13 +167,13 @@ do_inverted: /* get back to here when trying to make things fail */
     for (i = 0; i < 25; ++i) {
         if (!(thread[i] = vtopen(0, 0)))
             terror("Creating thread %d", i);
-        if (vtrun(thread[i], writesmall, ( void * )i) < 0)
+        if (vtrun(thread[i], writesmall, ( void * ) i) < 0)
             terror("Running thread %d", i);
     }
     sleep(1);
     if (!(thread[i] = vtopen(0, 0)))
         terror("Creating big thread z");
-    if (vtrun(thread[i], writebig, ( void * )i) < 0)
+    if (vtrun(thread[i], writebig, ( void * ) i) < 0)
         terror("Running big thread z");
 
     for (i = 0; i < 26; ++i) {
@@ -181,7 +181,7 @@ do_inverted: /* get back to here when trying to make things fail */
         vtwait(thread[i]);
     }
 
-    if (sfseek(Sf, ( Sfoff_t )0, SEEK_SET) != ( Sfoff_t )0) {
+    if (sfseek(Sf, ( Sfoff_t ) 0, SEEK_SET) != ( Sfoff_t ) 0) {
         if (Inverted)
             tsuccess("Rewinding failed as expected");
         else

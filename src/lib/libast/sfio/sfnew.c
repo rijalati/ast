@@ -69,9 +69,9 @@ int flags;   /* type of file stream */
                 return NIL(Sfio_t *);
 
             if (f->data
-                && ((flags & SF_STRING) || size != ( size_t )SF_UNBOUND)) {
+                && ((flags & SF_STRING) || size != ( size_t ) SF_UNBOUND)) {
                 if (sflags & SF_MALLOC)
-                    free(( Void_t * )f->data);
+                    free(( Void_t * ) f->data);
                 f->data = NIL(uchar *);
             }
             if (!f->data)
@@ -92,7 +92,7 @@ int flags;   /* type of file stream */
         }
 
         if (!f) {
-            if (!(f = ( Sfio_t * )malloc(sizeof(Sfio_t))))
+            if (!(f = ( Sfio_t * ) malloc(sizeof(Sfio_t))))
                 return NIL(Sfio_t *);
             SFCLEAR(f, NIL(Vtmutex_t *));
         }
@@ -111,17 +111,17 @@ int flags;   /* type of file stream */
     f->getr = f->tiny[0] = 0;
 
     f->mode |= SF_INIT;
-    if (size != ( size_t )SF_UNBOUND) {
+    if (size != ( size_t ) SF_UNBOUND) {
         f->size = size;
-        f->data = size <= 0 ? NIL(uchar *) : ( uchar * )buf;
+        f->data = size <= 0 ? NIL(uchar *) : ( uchar * ) buf;
     }
     f->endb = f->endr = f->endw = f->next = f->data;
 
     if (_Sfnotify)
-        (*_Sfnotify)(f, SF_NEW, ( void * )(( long )f->file));
+        (*_Sfnotify)(f, SF_NEW, ( void * ) (( long ) f->file));
 
     if (f->flags & SF_STRING)
-        ( void )_sfmode(f, f->mode & SF_RDWR, 0);
+        ( void ) _sfmode(f, f->mode & SF_RDWR, 0);
 
     return f;
 }

@@ -36,7 +36,7 @@ _stdgets(Sfio_t *f, char *us, int n, int isgets)
     SFLOCK(f, 0);
 
     n -= 1;
-    is = ( uchar * )us;
+    is = ( uchar * ) us;
 
     while (n) { /* peek the read buffer for data */
         if ((p = f->endb - (ps = f->next)) <= 0) {
@@ -50,7 +50,7 @@ _stdgets(Sfio_t *f, char *us, int n, int isgets)
             p = n;
 
 #if _lib_memccpy
-        if ((ps = ( uchar * )memccpy(( char * )is, ( char * )ps, '\n', p))
+        if ((ps = ( uchar * ) memccpy(( char * ) is, ( char * ) ps, '\n', p))
             != NIL(uchar *))
             p = ps - is;
         is += p;
@@ -82,7 +82,7 @@ _stdgets(Sfio_t *f, char *us, int n, int isgets)
             n -= p;
     }
 
-    if ((_Sfi = is - (( uchar * )us)) <= 0)
+    if ((_Sfi = is - (( uchar * ) us)) <= 0)
         us = NIL(char *);
     else if (isgets && is[-1] == '\n') {
         is[-1] = '\0';

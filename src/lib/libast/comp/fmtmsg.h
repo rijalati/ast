@@ -74,12 +74,12 @@
 
 /* null argument values -- 0 just doesn't get any respect */
 
-#    define MM_NULLLBL ( char * )0 /* label			*/
-#    define MM_NULLSEV 0           /* severity			*/
-#    define MM_NULLMC 0L           /* class			*/
-#    define MM_NULLTXT ( char * )0 /* text				*/
-#    define MM_NULLACT ( char * )0 /* action			*/
-#    define MM_NULLTAG ( char * )0 /* tag				*/
+#    define MM_NULLLBL ( char * ) 0 /* label			*/
+#    define MM_NULLSEV 0            /* severity			*/
+#    define MM_NULLMC 0L            /* class			*/
+#    define MM_NULLTXT ( char * ) 0 /* text				*/
+#    define MM_NULLACT ( char * ) 0 /* action			*/
+#    define MM_NULLTAG ( char * ) 0 /* tag				*/
 
 #    ifdef MM_TABLES
 

@@ -31,7 +31,7 @@
 #include "test.h"
 
 
-#define HUGE_INT ((( unsigned )-1) >> 1)
+#define HUGE_INT ((( unsigned ) -1) >> 1)
 #define BEGIN 0
 #define MIDDLE 1
 #define END 2
@@ -108,7 +108,7 @@ p_tree(const Shnode_t *t, int tflags)
         if (begin_line && level > 0)
             sfnputc(outfile, '\t', level);
         begin_line = 0;
-        p_comarg(( struct comnod * )t);
+        p_comarg(( struct comnod * ) t);
         break;
 
     case TSETIO:
@@ -321,7 +321,8 @@ p_tree(const Shnode_t *t, int tflags)
                 un_op[1] = flags;
                 sfputr(outfile, un_op, ' ');
             } else
-                cp = (( char * )(shtab_testops + (flags & 037) - 1)->sh_name);
+                cp
+                = (( char * ) (shtab_testops + (flags & 037) - 1)->sh_name);
             p_arg(&(t->lst.lstlef->arg), ' ', 0);
             if (t->tre.tretyp & TBINARY) {
                 sfputr(outfile, cp, ' ');
@@ -386,11 +387,11 @@ p_arg(const struct argnod *arg, int endchar, int opts)
             int c = (arg->argflag & ARG_RAW) ? '>' : '<';
             sfputc(outfile, c);
             sfputc(outfile, '(');
-            p_tree(( Shnode_t * )arg->argchn.ap, 0);
+            p_tree(( Shnode_t * ) arg->argchn.ap, 0);
             sfputc(outfile, ')');
         } else if (*cp == 0 && opts == POST && arg->argchn.ap) {
             /* compound assignment */
-            struct fornod *fp = ( struct fornod * )arg->argchn.ap;
+            struct fornod *fp = ( struct fornod * ) arg->argchn.ap;
             sfprintf(outfile, "%s=(\n", fp->fornam);
             sfnputc(outfile, '\t', ++level);
             p_tree(fp->fortre, 0);
@@ -446,7 +447,7 @@ p_redirect(const struct ionod *iop)
         if (iop->iodelim) {
             /* here document */
 #ifdef xxx
-            iop->iolink = ( char * )here_doc;
+            iop->iolink = ( char * ) here_doc;
 #endif
             here_doc = iop;
             io_op[2] = '<';
@@ -494,7 +495,7 @@ p_comarg(const struct comnod *com)
         if (com->comtyp & COMSCAN)
             p_arg(com->comarg, flag, POST);
         else
-            p_comlist(( struct dolnod * )com->comarg, flag);
+            p_comlist(( struct dolnod * ) com->comarg, flag);
     }
     if (com->comio)
         p_redirect(com->comio);
@@ -554,12 +555,12 @@ here_body(const struct ionod *iop)
     Sfio_t *infile;
 #ifdef xxx
     if (iop->iolink)
-        here_body(( struct inode * )iop->iolink);
+        here_body(( struct inode * ) iop->iolink);
     iop->iolink = 0;
 #endif
     if (iop->iofile & IOSTRG)
         infile = sfnew(
-        ( Sfio_t * )0, iop->ioname, iop->iosize, -1, SF_STRING | SF_READ);
+        ( Sfio_t * ) 0, iop->ioname, iop->iosize, -1, SF_STRING | SF_READ);
     else
         sfseek(infile = sh.heredocs, iop->iooffset, SEEK_SET);
     sfmove(infile, outfile, iop->iosize, -1);

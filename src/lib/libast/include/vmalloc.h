@@ -41,10 +41,10 @@ typedef struct Vmdisc_s Vmdisc_t;
 typedef struct Vmethod_s Vmethod_t;
 typedef struct Vmdata_s Vmdata_t;
 typedef Void_t *( *Vmemory_f )
-_ARG_(( Vmalloc_t *, Void_t *, size_t, size_t, Vmdisc_t * ));
-typedef int(*Vmexcept_f) _ARG_(( Vmalloc_t *, int, Void_t *, Vmdisc_t * ));
+_ARG_(( Vmalloc_t *, Void_t *, size_t, size_t, Vmdisc_t * ) );
+typedef int(*Vmexcept_f) _ARG_(( Vmalloc_t *, int, Void_t *, Vmdisc_t * ) );
 typedef int(*Vmseg_f)
-_ARG_(( Vmalloc_t *, Void_t *, size_t, Vmdisc_t *, Void_t * ));
+_ARG_(( Vmalloc_t *, Void_t *, size_t, Vmdisc_t *, Void_t * ) );
 
 struct Vmstat_s
 {
@@ -71,15 +71,15 @@ struct Vmdisc_s
 
 struct Vmethod_s
 {
-    Void_t *( *allocf )_ARG_(( Vmalloc_t *, size_t, int ));
-    Void_t *( *resizef )_ARG_(( Vmalloc_t *, Void_t *, size_t, int, int ));
-    int(*freef) _ARG_(( Vmalloc_t *, Void_t *, int ));
+    Void_t *( *allocf ) _ARG_(( Vmalloc_t *, size_t, int ) );
+    Void_t *( *resizef ) _ARG_(( Vmalloc_t *, Void_t *, size_t, int, int ) );
+    int(*freef) _ARG_(( Vmalloc_t *, Void_t *, int ) );
     int(*nopf)
-    _ARG_(( Vmalloc_t *, Void_t *, int )); /* was addrf -- binary
-                                              compatibility filler */
-    int(*statf) _ARG_(( Vmalloc_t *, Vmstat_t *, int )); /* was sizef */
-    int(*eventf) _ARG_(( Vmalloc_t *, int, Void_t * ));  /* was compactf */
-    Void_t *( *alignf )_ARG_(( Vmalloc_t *, size_t, size_t, int ));
+    _ARG_(( Vmalloc_t *, Void_t *, int ) ); /* was addrf -- binary
+                                               compatibility filler */
+    int(*statf) _ARG_(( Vmalloc_t *, Vmstat_t *, int ) ); /* was sizef */
+    int(*eventf) _ARG_(( Vmalloc_t *, int, Void_t * ) );  /* was compactf */
+    Void_t *( *alignf ) _ARG_(( Vmalloc_t *, size_t, size_t, int ) );
     unsigned int meth;
 };
 
@@ -156,48 +156,48 @@ _BEGIN_EXTERNS_ /* public functions */
 #        define extern __EXPORT__
 #    endif
 
-extern Vmalloc_t *vmopen _ARG_(( Vmdisc_t *, Vmethod_t *, int ));
-extern int vmclose _ARG_(( Vmalloc_t * ));
-extern int vmclear _ARG_(( Vmalloc_t * ));
+extern Vmalloc_t *vmopen _ARG_(( Vmdisc_t *, Vmethod_t *, int ) );
+extern int vmclose _ARG_(( Vmalloc_t * ) );
+extern int vmclear _ARG_(( Vmalloc_t * ) );
 
-extern Vmdisc_t *vmdisc _ARG_(( Vmalloc_t *, Vmdisc_t * ));
-extern Vmdisc_t *vmdcshare _ARG_(( char *, int, ssize_t, int ));
-extern Vmdisc_t *vmdcderive _ARG_(( Vmalloc_t *, ssize_t, int ));
+extern Vmdisc_t *vmdisc _ARG_(( Vmalloc_t *, Vmdisc_t * ) );
+extern Vmdisc_t *vmdcshare _ARG_(( char *, int, ssize_t, int ) );
+extern Vmdisc_t *vmdcderive _ARG_(( Vmalloc_t *, ssize_t, int ) );
 
 extern Void_t *vmuserdata _ARG_((Vmalloc_t *, unsigned int, ssize_t size));
 extern Void_t *vmmaddress _ARG_((size_t));
 
 extern Void_t *vmalloc _ARG_((Vmalloc_t *, size_t));
 extern Void_t *vmalign _ARG_((Vmalloc_t *, size_t, size_t));
-extern Void_t *vmresize _ARG_(( Vmalloc_t *, Void_t *, size_t, int ));
-extern int vmfree _ARG_(( Vmalloc_t *, Void_t * ));
+extern Void_t *vmresize _ARG_(( Vmalloc_t *, Void_t *, size_t, int ) );
+extern int vmfree _ARG_(( Vmalloc_t *, Void_t * ) );
 
-extern int vmset _ARG_(( Vmalloc_t *, int, int ));
-extern void vmclrlock _ARG_(( int ));
+extern int vmset _ARG_(( Vmalloc_t *, int, int ) );
+extern void vmclrlock _ARG_(( int ) );
 
-extern Void_t *vmsegfind _ARG_(( Vmalloc_t *, Void_t * ));
-extern int vmsegwalk _ARG_(( Vmalloc_t *, Vmseg_f, Void_t * ));
+extern Void_t *vmsegfind _ARG_(( Vmalloc_t *, Void_t * ) );
+extern int vmsegwalk _ARG_(( Vmalloc_t *, Vmseg_f, Void_t * ) );
 
-extern Vmalloc_t *vmregion _ARG_(( Void_t * ));
+extern Vmalloc_t *vmregion _ARG_(( Void_t * ) );
 
-extern Void_t *vmdbwatch _ARG_(( Void_t * ));
-extern int vmdbcheck _ARG_(( Vmalloc_t * ));
-extern int vmdebug _ARG_(( int ));
+extern Void_t *vmdbwatch _ARG_(( Void_t * ) );
+extern int vmdbcheck _ARG_(( Vmalloc_t * ) );
+extern int vmdebug _ARG_(( int ) );
 
-extern int vmtrace _ARG_(( int ));
-extern int vmstat _ARG_(( Vmalloc_t *, Vmstat_t * ));
+extern int vmtrace _ARG_(( int ) );
+extern int vmstat _ARG_(( Vmalloc_t *, Vmstat_t * ) );
 
 extern Void_t *vmgetmem _ARG_((Vmalloc_t *, Void_t *, size_t));
 
-extern char *vmstrdup _ARG_(( Vmalloc_t *, const char * ));
+extern char *vmstrdup _ARG_(( Vmalloc_t *, const char * ) );
 
 #    if !defined(_BLD_vmalloc) && !defined(_AST_STD_H)                       \
     && !defined(__stdlib_h) && !defined(__STDLIB_H)                          \
     && !defined(_STDLIB_INCLUDED) && !defined(_INC_STDLIB)
 extern Void_t *malloc _ARG_((size_t));
 extern Void_t *realloc _ARG_((Void_t *, size_t));
-extern void free _ARG_(( Void_t * ));
-extern void cfree _ARG_(( Void_t * ));
+extern void free _ARG_(( Void_t * ) );
+extern void cfree _ARG_(( Void_t * ) );
 extern Void_t *calloc _ARG_((size_t, size_t));
 extern Void_t *memalign _ARG_((size_t, size_t));
 extern Void_t *valloc _ARG_((size_t));
@@ -207,15 +207,15 @@ extern Void_t *valloc _ARG_((size_t));
 _END_EXTERNS_
 
 /* to coerce any value to a Vmalloc_t*, make ANSI happy */
-#    define _VM_(vm) (( Vmalloc_t * )(vm))
+#    define _VM_(vm) (( Vmalloc_t * ) (vm))
 
 /* enable recording of where a call originates from */
 #    ifdef VMFL
 
 #        if defined(__FILE__)
-#            define _VMFILE_(vm) (_VM_(vm)->file = ( char * )__FILE__)
+#            define _VMFILE_(vm) (_VM_(vm)->file = ( char * ) __FILE__)
 #        else
-#            define _VMFILE_(vm) (_VM_(vm)->file = ( char * )0)
+#            define _VMFILE_(vm) (_VM_(vm)->file = ( char * ) 0)
 #        endif
 
 #        if defined(__LINE__)
@@ -225,9 +225,9 @@ _END_EXTERNS_
 #        endif
 
 #        if defined(__FUNCTION__)
-#            define _VMFUNC_(vm) (_VM_(vm)->func = ( char * )__FUNCTION__)
+#            define _VMFUNC_(vm) (_VM_(vm)->func = ( char * ) __FUNCTION__)
 #        else
-#            define _VMFUNC_(vm) (_VM_(vm)->func = ( char * )0)
+#            define _VMFUNC_(vm) (_VM_(vm)->func = ( char * ) 0)
 #        endif
 
 #        define _VMFL_(vm) (_VMFILE_(vm), _VMLINE_(vm), _VMFUNC_(vm))
@@ -237,9 +237,9 @@ _END_EXTERNS_
 #        define vmresize(vm, d, sz, type)                                    \
             (_VMFL_(vm),                                                     \
              (*(_VM_(vm)->meth.resizef))(                                    \
-             (vm), ( Void_t * )(d), (sz), (type), 0))
+             (vm), ( Void_t * ) (d), (sz), (type), 0))
 #        define vmfree(vm, d)                                                \
-            (_VMFL_(vm), (*(_VM_(vm)->meth.freef))((vm), ( Void_t * )(d), 0))
+            (_VMFL_(vm), (*(_VM_(vm)->meth.freef))((vm), ( Void_t * ) (d), 0))
 #        define vmalign(vm, sz, align)                                       \
             (_VMFL_(vm), (*(_VM_(vm)->meth.alignf))((vm), (sz), (align), 0))
 
@@ -254,10 +254,11 @@ _END_EXTERNS_
 
 #            define malloc(s) (_VMFL_(Vmregion), _ast_malloc((size_t)(s)))
 #            define realloc(d, s)                                            \
-                (_VMFL_(Vmregion), _ast_realloc(( Void_t * )(d), (size_t)(s)))
+                (_VMFL_(Vmregion),                                           \
+                 _ast_realloc(( Void_t * ) (d), (size_t)(s)))
 #            define calloc(n, s)                                             \
-                (_VMFL_(Vmregion), _ast_calloc(( size_t )n, (size_t)(s)))
-#            define free(d) (_VMFL_(Vmregion), _ast_free(( Void_t * )(d)))
+                (_VMFL_(Vmregion), _ast_calloc(( size_t ) n, (size_t)(s)))
+#            define free(d) (_VMFL_(Vmregion), _ast_free(( Void_t * ) (d)))
 #            define memalign(a, s)                                           \
                 (_VMFL_(Vmregion), _ast_memalign((size_t)(a), (size_t)(s)))
 #            define valloc(s)		(_VMFL_(Vmregion), _ast_valloc((size_t)(s) )
@@ -271,16 +272,16 @@ _END_EXTERNS_
 #                    define malloc(s) (_VMFL_(Vmregion), malloc((size_t)(s)))
 #                    define realloc(d, s)                                    \
                         (_VMFL_(Vmregion),                                   \
-                         realloc(( Void_t * )(d), (size_t)(s)))
+                         realloc(( Void_t * ) (d), (size_t)(s)))
 #                    define calloc(n, s)                                     \
-                        (_VMFL_(Vmregion), calloc(( size_t )n, (size_t)(s)))
-#                    define free(d) (_VMFL_(Vmregion), free(( Void_t * )(d)))
+                        (_VMFL_(Vmregion), calloc(( size_t ) n, (size_t)(s)))
+#                    define free(d) (_VMFL_(Vmregion), free(( Void_t * ) (d)))
 #                    define memalign(a, s)                                   \
                         (_VMFL_(Vmregion), memalign((size_t)(a), (size_t)(s)))
 #                    define valloc(s)		(_VMFL_(Vmregion), valloc((size_t)(s) )
 #                    ifndef strdup
 #                        define strdup(s)                                    \
-                            (_VMFL_(Vmregion), (strdup)(( char * )(s)))
+                            (_VMFL_(Vmregion), (strdup)(( char * ) (s)))
 #                    endif
 
 #                else
@@ -292,15 +293,15 @@ _END_EXTERNS_
                          _VMNM_(mallo, /, *, *, /, c)((size_t)(s)))
 #                    define realloc(d, s)                                    \
                         (_VMFL_(Vmregion),                                   \
-                         _VMNM_(reallo, /, *, *, /, c)(( Void_t * )(d),      \
+                         _VMNM_(reallo, /, *, *, /, c)(( Void_t * ) (d),     \
                                                        (size_t)(s)))
 #                    define calloc(n, s)                                     \
                         (_VMFL_(Vmregion),                                   \
-                         _VMNM_(callo, /, *, *, /, c)(( size_t )n,           \
+                         _VMNM_(callo, /, *, *, /, c)(( size_t ) n,          \
                                                       (size_t)(s)))
 #                    define free(d)                                          \
                         (_VMFL_(Vmregion),                                   \
-                         _VMNM_(fre, /, *, *, /, e)(( Void_t * )(d)))
+                         _VMNM_(fre, /, *, *, /, e)(( Void_t * ) (d)))
 #                    define memalign(a, s)                                   \
                         (_VMFL_(Vmregion),                                   \
                          _VMNM_(memalig, /, *, *, /, n)((size_t)(a),         \
@@ -310,7 +311,7 @@ _END_EXTERNS_
 #                    ifndef strdup
 #                        define strdup(s)                                    \
                             (_VMFL_(Vmregion),                               \
-                             _VMNM_(strdu, /, *, *, /, p)(( char * )(s)))
+                             _VMNM_(strdu, /, *, *, /, p)(( char * ) (s)))
 #                    endif
 
 #                endif /*__STD_C || defined(__STDPP__) ||                    \
@@ -331,25 +332,25 @@ _END_EXTERNS_
 #    ifndef vmresize
 #        define vmresize(vm, d, sz, type)                                    \
             (*(_VM_(vm)->meth.resizef))(                                     \
-            (vm), ( Void_t * )(d), (sz), (type), 0)
+            (vm), ( Void_t * ) (d), (sz), (type), 0)
 #    endif
 #    ifndef vmfree
 #        define vmfree(vm, d)                                                \
-            (*(_VM_(vm)->meth.freef))((vm), ( Void_t * )(d), 0)
+            (*(_VM_(vm)->meth.freef))((vm), ( Void_t * ) (d), 0)
 #    endif
 #    ifndef vmalign
 #        define vmalign(vm, sz, align)                                       \
             (*(_VM_(vm)->meth.alignf))((vm), (sz), (align), 0)
 #    endif
 
-#    define vmdata(vm) (( Void_t * )(_VM_(vm)->data))
+#    define vmdata(vm) (( Void_t * ) (_VM_(vm)->data))
 
 #    define vmoldof(v, p, t, n, x)                                           \
-        ( t * )vmresize((v), (p), sizeof(t) * (n) + (x), (VM_RSMOVE))
+        ( t * ) vmresize((v), (p), sizeof(t) * (n) + (x), (VM_RSMOVE))
 #    define vmnewof(v, p, t, n, x)                                           \
-        ( t * )vmresize((v),                                                 \
-                        (p),                                                 \
-                        sizeof(t) * (n) + (x),                               \
-                        (VM_RSMOVE | VM_RSCOPY | VM_RSZERO))
+        ( t * ) vmresize((v),                                                \
+                         (p),                                                \
+                         sizeof(t) * (n) + (x),                              \
+                         (VM_RSMOVE | VM_RSCOPY | VM_RSZERO))
 
 #endif /* _VMALLOC_H */

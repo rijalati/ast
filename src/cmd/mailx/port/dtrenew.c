@@ -144,6 +144,6 @@ reg Void_t *obj;
     }
 
     dt->data->size -= 1;
-    return (*dt->meth->searchf)(dt, ( Void_t * )e, DT_RENEW) ? obj
-                                                             : NIL(Void_t *);
+    return (*dt->meth->searchf)(dt, ( Void_t * ) e, DT_RENEW) ? obj
+                                                              : NIL(Void_t *);
 }

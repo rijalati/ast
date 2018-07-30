@@ -78,7 +78,7 @@
             swapmem((a)->swapio, b, b, c);                                   \
     } while (0)
 
-#define TEXT(b, c, t) text(t, ( unsigned char * )b, c)
+#define TEXT(b, c, t) text(t, ( unsigned char * ) b, c)
 
 #define CONVERT(a, b, c)                                                     \
     CVT(a, b, c, (a)->convert[SECTION(a)].f2t, (a)->convert[SECTION(a)].f2a)
@@ -434,7 +434,7 @@ chunk(Archive_t *ap, char *t, char *f, size_t n, char *o)
 off_t
 bread(Archive_t *ap, void *ob, off_t n, off_t m, int must)
 {
-    char *s = ( char * )ob;
+    char *s = ( char * ) ob;
     ssize_t c;
     char *b;
     off_t r;
@@ -603,7 +603,7 @@ bget(Archive_t *ap, off_t n, off_t *p)
         }
         if (p)
             *p = n;
-        return n ? ap->io->next : ( char * )0;
+        return n ? ap->io->next : ( char * ) 0;
     }
     if (n > ap->io->buffersize) {
         i = ap->io->next - ap->io->buffer;
@@ -862,7 +862,7 @@ bflushout(Archive_t *ap)
 void
 bwrite(Archive_t *ap, void *ab, off_t n)
 {
-    char *b = ( char * )ab;
+    char *b = ( char * ) ab;
     long c;
     long an;
 
@@ -1182,7 +1182,7 @@ newio(Archive_t *ap, int c, int n)
         file = 0;
     if (file && ap->name != definput && ap->name != defoutput
         && strmatch(ap->name, "*.+([0-9])") && (s = strrchr(ap->name, '.'))
-        && ( int )strtol(++s, NiL, 10) == ap->part) {
+        && ( int ) strtol(++s, NiL, 10) == ap->part) {
         /*
          * the parts will be ap->name in sequence
          * the first part realloc the name with
@@ -1245,7 +1245,7 @@ newio(Archive_t *ap, int c, int n)
                 if (!(s = sfstruse(cp)))
                     nospace();
                 s = (pp = sfpopen(pp, s, "r")) ? sfgetr(pp, '\n', 1)
-                                               : ( char * )0;
+                                               : ( char * ) 0;
             } else {
                 interactive();
                 sfputc(state.wtty, CC_bel);

@@ -154,14 +154,14 @@
 #    endif
 
 #    if 1
-extern __MANGLE__ int access __PROTO__(( const char *, int ));
-extern __MANGLE__ int mkdir __PROTO__(( const char *, int ));
+extern __MANGLE__ int access __PROTO__(( const char *, int ) );
+extern __MANGLE__ int mkdir __PROTO__(( const char *, int ) );
 #    endif
 
 #endif
 
 #if 1
-extern __MANGLE__ int utime __PROTO__(( const char *, time_t * ));
+extern __MANGLE__ int utime __PROTO__(( const char *, time_t * ) );
 #endif
 
 
@@ -207,16 +207,17 @@ static const char id[]
 struct ppsymbol;
 struct ppindex;
 
-typedef char *( *PPBUILTIN )__PROTO__(( char *, const char *, const char * ));
+typedef char *( *PPBUILTIN )
+__PROTO__(( char *, const char *, const char * ) );
 typedef void(*PPCOMMENT)
-__PROTO__(( const char *, const char *, const char *, int ));
-typedef void(*PPINCREF) __PROTO__(( const char *, const char *, int, int ));
-typedef void(*PPLINESYNC) __PROTO__(( int, const char * ));
+__PROTO__(( const char *, const char *, const char *, int ) );
+typedef void(*PPINCREF) __PROTO__(( const char *, const char *, int, int ) );
+typedef void(*PPLINESYNC) __PROTO__(( int, const char * ) );
 typedef void(*PPMACREF)
-__PROTO__(( struct ppsymbol *, const char *, int, int, unsigned long ));
-typedef int(*PPOPTARG) __PROTO__(( int, int, const char * ));
+__PROTO__(( struct ppsymbol *, const char *, int, int, unsigned long ) );
+typedef int(*PPOPTARG) __PROTO__(( int, int, const char * ) );
 typedef void(*PPPRAGMA)
-__PROTO__(( const char *, const char *, const char *, const char *, int ));
+__PROTO__(( const char *, const char *, const char *, const char *, int ) );
 
 struct ppinstk
 {
@@ -495,22 +496,22 @@ struct ppglobals
 extern __MANGLE__ struct ppglobals pp;
 extern __MANGLE__ char _pp_ctype[];
 
-extern __MANGLE__ int ppargs __PROTO__(( char **, int ));
-extern __MANGLE__ void ppcpp __PROTO__(( void ));
-extern __MANGLE__ void ppcomment __PROTO__(( char *, char *, char *, int ));
-extern __MANGLE__ __V_ *ppcontext __PROTO__(( __V_ *, int ));
+extern __MANGLE__ int ppargs __PROTO__(( char **, int ) );
+extern __MANGLE__ void ppcpp __PROTO__(( void ) );
+extern __MANGLE__ void ppcomment __PROTO__(( char *, char *, char *, int ) );
+extern __MANGLE__ __V_ *ppcontext __PROTO__(( __V_ *, int ) );
 extern __MANGLE__ void pperror __PROTO__((int, ...));
-extern __MANGLE__ void ppincref __PROTO__(( char *, char *, int, int ));
-extern __MANGLE__ void ppinput __PROTO__(( char *, char *, int ));
-extern __MANGLE__ int pplex __PROTO__(( void ));
-extern __MANGLE__ void ppline __PROTO__(( int, char * ));
+extern __MANGLE__ void ppincref __PROTO__(( char *, char *, int, int ) );
+extern __MANGLE__ void ppinput __PROTO__(( char *, char *, int ) );
+extern __MANGLE__ int pplex __PROTO__(( void ) );
+extern __MANGLE__ void ppline __PROTO__(( int, char * ) );
 extern __MANGLE__ void
-ppmacref __PROTO__(( struct ppsymbol *, char *, int, int, unsigned long ));
+ppmacref __PROTO__(( struct ppsymbol *, char *, int, int, unsigned long ) );
 extern __MANGLE__ void ppop __PROTO__((int, ...));
 extern __MANGLE__ void
-pppragma __PROTO__(( char *, char *, char *, char *, int ));
+pppragma __PROTO__(( char *, char *, char *, char *, int ) );
 extern __MANGLE__ int ppprintf __PROTO__((char *, ...));
-extern __MANGLE__ int ppsync __PROTO__(( void ));
+extern __MANGLE__ int ppsync __PROTO__(( void ) );
 
 #line 369 "../../lib/libpp/pplib.h"
 
@@ -620,59 +621,59 @@ struct ppsymkey
 
 extern __MANGLE__ __V_ *realloc __PROTO__((__V_ *, size_t));
 extern __MANGLE__ __V_ *calloc __PROTO__((size_t, size_t));
-extern __MANGLE__ char *ctime __PROTO__(( time_t * ));
-extern __MANGLE__ void free __PROTO__(( __V_ * ));
+extern __MANGLE__ char *ctime __PROTO__(( time_t * ) );
+extern __MANGLE__ void free __PROTO__(( __V_ * ) );
 
 #    ifndef O_RDONLY
 
-extern __MANGLE__ int access __PROTO__(( const char *, int ));
-extern __MANGLE__ int close __PROTO__(( int ));
-extern __MANGLE__ int creat __PROTO__(( const char *, int ));
-extern __MANGLE__ void exit __PROTO__(( int ));
-extern __MANGLE__ int link __PROTO__(( const char *, const char * ));
+extern __MANGLE__ int access __PROTO__(( const char *, int ) );
+extern __MANGLE__ int close __PROTO__(( int ) );
+extern __MANGLE__ int creat __PROTO__(( const char *, int ) );
+extern __MANGLE__ void exit __PROTO__(( int ) );
+extern __MANGLE__ int link __PROTO__(( const char *, const char * ) );
 extern __MANGLE__ int open __PROTO__((const char *, int, ...));
-extern __MANGLE__ int read __PROTO__(( int, __V_ *, int ));
-extern __MANGLE__ time_t time __PROTO__(( time_t * ));
-extern __MANGLE__ int unlink __PROTO__(( const char * ));
-extern __MANGLE__ int write __PROTO__(( int, const __V_ *, int ));
+extern __MANGLE__ int read __PROTO__(( int, __V_ *, int ) );
+extern __MANGLE__ time_t time __PROTO__(( time_t * ) );
+extern __MANGLE__ int unlink __PROTO__(( const char * ) );
+extern __MANGLE__ int write __PROTO__(( int, const __V_ *, int ) );
 
 #    endif
 
 #endif
 
 #line 803
-extern __MANGLE__ void ppassert __PROTO__(( int, char *, char * ));
-extern __MANGLE__ void ppbuiltin __PROTO__(( void ));
-extern __MANGLE__ int ppcall __PROTO__(( struct ppsymbol *, int ));
-extern __MANGLE__ int ppcontrol __PROTO__(( void ));
-extern __MANGLE__ void ppdump __PROTO__(( void ));
-extern __MANGLE__ char *ppexpand __PROTO__(( char * ));
-extern __MANGLE__ long ppexpr __PROTO__(( int * ));
-extern __MANGLE__ void ppfsm __PROTO__(( int, char * ));
-extern __MANGLE__ char *ppinstr __PROTO__(( struct ppinstk * ));
-extern __MANGLE__ char *ppkeyname __PROTO__(( int, int ));
-extern __MANGLE__ char *pplexstr __PROTO__(( int ));
-extern __MANGLE__ void ppload __PROTO__(( char * ));
-extern __MANGLE__ void ppmapinclude __PROTO__(( char *, char * ));
-extern __MANGLE__ char *ppmodestr __PROTO__(( long ));
+extern __MANGLE__ void ppassert __PROTO__(( int, char *, char * ) );
+extern __MANGLE__ void ppbuiltin __PROTO__(( void ) );
+extern __MANGLE__ int ppcall __PROTO__(( struct ppsymbol *, int ) );
+extern __MANGLE__ int ppcontrol __PROTO__(( void ) );
+extern __MANGLE__ void ppdump __PROTO__(( void ) );
+extern __MANGLE__ char *ppexpand __PROTO__(( char * ) );
+extern __MANGLE__ long ppexpr __PROTO__(( int * ) );
+extern __MANGLE__ void ppfsm __PROTO__(( int, char * ) );
+extern __MANGLE__ char *ppinstr __PROTO__(( struct ppinstk * ) );
+extern __MANGLE__ char *ppkeyname __PROTO__(( int, int ) );
+extern __MANGLE__ char *pplexstr __PROTO__(( int ) );
+extern __MANGLE__ void ppload __PROTO__(( char * ) );
+extern __MANGLE__ void ppmapinclude __PROTO__(( char *, char * ) );
+extern __MANGLE__ char *ppmodestr __PROTO__(( long ) );
 extern __MANGLE__ int ppmultiple __PROTO__(( struct ppfile *,
-                                             struct ppsymbol * ));
-extern __MANGLE__ void ppnest __PROTO__(( void ));
-extern __MANGLE__ int ppoption __PROTO__(( char * ));
-extern __MANGLE__ char *ppoptionstr __PROTO__(( long ));
-extern __MANGLE__ void pppclose __PROTO__(( char * ));
-extern __MANGLE__ int pppdrop __PROTO__(( char * ));
+                                             struct ppsymbol * ) );
+extern __MANGLE__ void ppnest __PROTO__(( void ) );
+extern __MANGLE__ int ppoption __PROTO__(( char * ) );
+extern __MANGLE__ char *ppoptionstr __PROTO__(( long ) );
+extern __MANGLE__ void pppclose __PROTO__(( char * ) );
+extern __MANGLE__ int pppdrop __PROTO__(( char * ) );
 extern __MANGLE__ char *
-pppopen __PROTO__(( char *, int, char *, char *, char *, char *, int ));
-extern __MANGLE__ int pppread __PROTO__(( char * ));
-extern __MANGLE__ int pppredargs __PROTO__(( void ));
-extern __MANGLE__ void pppush __PROTO__(( int, char *, char *, int ));
-extern __MANGLE__ struct ppsymbol *pprefmac __PROTO__(( char *, int ));
-extern __MANGLE__ int ppsearch __PROTO__(( char *, int, int ));
-extern __MANGLE__ int ppset __PROTO__(( long *, long, int ));
-extern __MANGLE__ char *ppstatestr __PROTO__(( long ));
-extern __MANGLE__ char *pptokstr __PROTO__(( char *, int ));
-extern __MANGLE__ void pptrace __PROTO__(( int ));
+pppopen __PROTO__(( char *, int, char *, char *, char *, char *, int ) );
+extern __MANGLE__ int pppread __PROTO__(( char * ) );
+extern __MANGLE__ int pppredargs __PROTO__(( void ) );
+extern __MANGLE__ void pppush __PROTO__(( int, char *, char *, int ) );
+extern __MANGLE__ struct ppsymbol *pprefmac __PROTO__(( char *, int ) );
+extern __MANGLE__ int ppsearch __PROTO__(( char *, int, int ) );
+extern __MANGLE__ int ppset __PROTO__(( long *, long, int ) );
+extern __MANGLE__ char *ppstatestr __PROTO__(( long ) );
+extern __MANGLE__ char *pptokstr __PROTO__(( char *, int ) );
+extern __MANGLE__ void pptrace __PROTO__(( int ) );
 
 #line 11 "../../lib/libpp/ppfsm.c"
 
@@ -686,7 +687,7 @@ extern __MANGLE__ short _pp_fsmtab[(0 + 28) + 1][255 + 1];
 
 extern __MANGLE__ char _pp_trigraph[255 + 1];
 
-extern __MANGLE__ void _pp_refill __PROTO__(( int ));
+extern __MANGLE__ void _pp_refill __PROTO__(( int ) );
 
 #line 12 "../../lib/libpp/ppfsm.c"
 
@@ -1412,7 +1413,7 @@ void ppfsm __PARAM__((int op, char *s), (op, s)) __OTORP__(int op; char *s;)
 
 
 #line 68
-extern __MANGLE__ long strkey __PROTO__(( const char * ));
+extern __MANGLE__ long strkey __PROTO__(( const char * ) );
 
 #line 20 "../../lib/libpp/ppproto.c"
 
@@ -1537,7 +1538,7 @@ __OTORP__(char *iob; int level; char *msg; char *arg;)
 
     p = strcopy((buf), ("proto: "));
     if (iob) {
-        Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
+        Proto_t *proto = ( Proto_t * ) (iob - sizeof(Proto_t));
 
         if (proto->line) {
             if (proto->file) {
@@ -1822,7 +1823,7 @@ __OTORP__(Notice_t *notice; Buffer_t * b;)
 
     copy(b, "Copyright (c) ", -1);
     if (notice->test) {
-        clock = ( time_t )1000212300;
+        clock = ( time_t ) 1000212300;
         t = ctime(&clock) + 20;
     } else if (!(t = notice->item[18].data)) {
         time(&clock);
@@ -2200,7 +2201,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                         }
                     if (h >= 0) {
                         notice.item[h].data
-                        = (notice.item[h].size = s - v) ? v : ( char * )0;
+                        = (notice.item[h].size = s - v) ? v : ( char * ) 0;
                         notice.item[h].quote = quote;
                         k = 1;
                     }
@@ -2239,8 +2240,8 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
     if (notice.type != 4) {
         if (!notice.type)
             notice.type = 12;
-        comment(&notice, &buf, (( char * )0), 1, 0);
-        comment(&notice, &buf, (( char * )0), 0, 0);
+        comment(&notice, &buf, (( char * ) 0), 1, 0);
+        comment(&notice, &buf, (( char * ) 0), 0, 0);
         if (notice.item[14].data) {
             copy(&tmp, "This software is part of the ", -1);
             expand(&notice, &tmp, &notice.item[14]);
@@ -2316,7 +2317,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->siz),
                         0);
             }
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "A copy of the License is available at",
@@ -2357,7 +2358,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                         "http://www.opensource.org/licenses/cpl",
                         sizeof("http://www.opensource.org/licenses/cpl") - 1,
                         0);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
         } else if (notice.type == 5) {
             copy(&tmp, notice.item[14].data ? "and it" : "This software", -1);
             copy(&tmp, " may only be used by you under license from", -1);
@@ -2415,7 +2416,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->nxt = (&tmp)->buf,
                          (&tmp)->siz),
                         0);
-                comment(&notice, &buf, (( char * )0), 0, 0);
+                comment(&notice, &buf, (( char * ) 0), 0, 0);
                 expand(&notice, &tmp, &notice.item[21]);
                 comment(&notice,
                         &buf,
@@ -2436,7 +2437,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                              (&tmp)->siz),
                             0);
                 }
-                comment(&notice, &buf, (( char * )0), 0, 0);
+                comment(&notice, &buf, (( char * ) 0), 0, 0);
             }
             comment(&notice,
                     &buf,
@@ -2479,9 +2480,9 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                      (&tmp)->nxt = (&tmp)->buf,
                      (&tmp)->siz),
                     0);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
         } else if (notice.type == 11) {
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(
             &notice,
             &buf,
@@ -2510,7 +2511,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
             sizeof("either version 2, or (at your option) any later version.")
             - 1,
             0);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "This software is distributed in the hope that it",
@@ -2541,7 +2542,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
             sizeof("See the GNU General Public License for more details.")
             - 1,
             0);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "You should have received a copy of the",
@@ -2568,9 +2569,9 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     "http://www.gnu.org/copyleft/gpl.html",
                     sizeof("http://www.gnu.org/copyleft/gpl.html") - 1,
                     0);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
         } else if (notice.type == 8) {
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "Redistribution and use in source and binary forms, with "
@@ -2592,7 +2593,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     "conditions are met:",
                     sizeof("conditions are met:") - 1,
                     -1);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "   1. Redistributions of source code must retain the "
@@ -2613,7 +2614,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     "      following disclaimer.",
                     sizeof("      following disclaimer.") - 1,
                     -1);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "   2. Redistributions in binary form must reproduce the "
@@ -2643,7 +2644,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     sizeof("      materials provided with the distribution.")
                     - 1,
                     -1);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             copy(&tmp, "   3. Neither the name of ", -1);
             if (notice.item[i = 15].data || notice.item[i = 5].data
                 || notice.item[i = 2].data)
@@ -2679,7 +2680,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     "      specific prior written permission.",
                     sizeof("      specific prior written permission.") - 1,
                     -1);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(
             &notice,
             &buf,
@@ -2776,9 +2777,9 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     "POSSIBILITY OF SUCH DAMAGE.",
                     sizeof("POSSIBILITY OF SUCH DAMAGE.") - 1,
                     -1);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
         } else if (notice.type == 9) {
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "This software is provided 'as-is', without any express "
@@ -2801,7 +2802,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     sizeof("damages arising from the use of this software.")
                     - 1,
                     -1);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "Permission is granted to anyone to use this software "
@@ -2826,7 +2827,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                            "restrictions:")
                     - 1,
                     -1);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     " 1. The origin of this software must not be "
@@ -2861,7 +2862,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     -1);
             comment(
             &notice, &buf, "    required.", sizeof("    required.") - 1, -1);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     " 2. Altered source versions must be plainly marked as "
@@ -2879,7 +2880,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
             -1);
             comment(
             &notice, &buf, "    software.", sizeof("    software.") - 1, -1);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     " 3. This notice may not be removed or altered from any "
@@ -2893,9 +2894,9 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     "    distribution.",
                     sizeof("    distribution.") - 1,
                     -1);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
         } else if (notice.type == 10) {
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "Permission is hereby granted, free of charge, to any "
@@ -2953,7 +2954,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     "subject to the following conditions:",
                     sizeof("subject to the following conditions:") - 1,
                     0);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "The above copyright notice and this permission notice "
@@ -2970,7 +2971,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
             - 1,
             0);
             comment(&notice, &buf, "Software.", sizeof("Software.") - 1, 0);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
             comment(&notice,
                     &buf,
                     "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF "
@@ -3032,7 +3033,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
             sizeof("SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.")
             - 1,
             0);
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
         } else {
             if (notice.type == 15) {
                 if (notice.item[i = 15].data || notice.item[i = 5].data
@@ -3049,7 +3050,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->nxt = (&tmp)->buf,
                          (&tmp)->siz),
                         1);
-                comment(&notice, &buf, (( char * )0), 0, 0);
+                comment(&notice, &buf, (( char * ) 0), 0, 0);
                 if (notice.item[21].data) {
                     copy(&tmp, "This is proprietary source code", -1);
                     if (i >= 0)
@@ -3127,21 +3128,21 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                             - 1,
                             1);
                 }
-                comment(&notice, &buf, (( char * )0), 0, 0);
+                comment(&notice, &buf, (( char * ) 0), 0, 0);
             } else if (notice.type == 13) {
                 comment(&notice,
                         &buf,
                         "For nonexclusive individual use",
                         sizeof("For nonexclusive individual use") - 1,
                         1);
-                comment(&notice, &buf, (( char * )0), 0, 0);
+                comment(&notice, &buf, (( char * ) 0), 0, 0);
             } else if (notice.type == 14) {
                 comment(&notice,
                         &buf,
                         "For noncommercial use",
                         sizeof("For noncommercial use") - 1,
                         1);
-                comment(&notice, &buf, (( char * )0), 0, 0);
+                comment(&notice, &buf, (( char * ) 0), 0, 0);
             }
             if (notice.type >= 15 && !notice.item[21].data) {
                 comment(&notice,
@@ -3149,7 +3150,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                         "Unpublished & Not for Publication",
                         sizeof("Unpublished & Not for Publication") - 1,
                         0);
-                comment(&notice, &buf, (( char * )0), 0, 0);
+                comment(&notice, &buf, (( char * ) 0), 0, 0);
             }
             if (notice.item[21].data) {
                 copy(&tmp, "This software is licensed", -1);
@@ -3218,7 +3219,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                              (&tmp)->siz),
                             0);
                 }
-                comment(&notice, &buf, (( char * )0), 0, 0);
+                comment(&notice, &buf, (( char * ) 0), 0, 0);
             } else if (notice.type == 15) {
                 comment(
                 &notice,
@@ -3234,7 +3235,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                 sizeof("actual or intended publication of such source code")
                 - 1,
                 0);
-                comment(&notice, &buf, (( char * )0), 0, 0);
+                comment(&notice, &buf, (( char * ) 0), 0, 0);
             }
         }
         if (v = notice.item[12].data) {
@@ -3261,7 +3262,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                         h);
             } while (v++ < x);
             if (item.size)
-                comment(&notice, &buf, (( char * )0), 0, 0);
+                comment(&notice, &buf, (( char * ) 0), 0, 0);
         }
         if (notice.item[13].data) {
             expand(&notice, &tmp, &notice.item[13]);
@@ -3298,7 +3299,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->siz),
                         0);
             }
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
         }
     }
     if (v = notice.item[0].data) {
@@ -3339,7 +3340,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                                     "CONTRIBUTORS",
                                     sizeof("CONTRIBUTORS") - 1,
                                     0);
-                            comment(&notice, &buf, (( char * )0), 0, 0);
+                            comment(&notice, &buf, (( char * ) 0), 0, 0);
                         }
                         k = 1;
                         expand(&notice, &tmp, &notice.id[i].value);
@@ -3369,7 +3370,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                                 "CONTRIBUTORS",
                                 sizeof("CONTRIBUTORS") - 1,
                                 0);
-                        comment(&notice, &buf, (( char * )0), 0, 0);
+                        comment(&notice, &buf, (( char * ) 0), 0, 0);
                     }
                     k = 1;
                     expand(&notice, &tmp, &item);
@@ -3384,7 +3385,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
             }
         }
         if (k > 0)
-            comment(&notice, &buf, (( char * )0), 0, 0);
+            comment(&notice, &buf, (( char * ) 0), 0, 0);
     }
     if (notice.type == 4) {
         copy(&buf, "[-copyright?", -1);
@@ -3400,7 +3401,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
         (((&buf)->nxt < (&buf)->end) ? (*(&buf)->nxt++ = ('\n'))
                                      : (('\n'), (-1)));
     } else
-        comment(&notice, &buf, (( char * )0), -1, 0);
+        comment(&notice, &buf, (( char * ) 0), -1, 0);
     return (*((&buf)->nxt >= (&buf)->end ? ((&buf)->nxt = (&buf)->end - 1)
                                          : (&buf)->nxt)
             = 0,
@@ -3600,7 +3601,7 @@ fsm_start:
     do {
         rp = _pp_fsmtab[state];
     fsm_get:
-        while (!(state = rp[c = (*( unsigned char * )ip++)]))
+        while (!(state = rp[c = (*( unsigned char * ) ip++)]))
             ;
     fsm_next:;
     } while (state > 0);
@@ -3698,7 +3699,7 @@ fsm_terminal:
     case ((0 + 28) + 2):
         if (c) {
             if (state = _pp_fsmtab[(0 + 28)]
-                                  [((( rp )-_pp_fsmtab[0]) / (255 + 1)) + 1])
+                                  [((( rp ) -_pp_fsmtab[0]) / (255 + 1)) + 1])
                 goto fsm_terminal;
             do {
                 (proto->ip = ip);
@@ -3800,7 +3801,7 @@ fsm_terminal:
         if (c == quot) {
 
             if (!(flags & (1L << 3)))
-                qe = (c == '"') ? op : ( char * )0;
+                qe = (c == '"') ? op : ( char * ) 0;
 
             (*op++ = (c));
 
@@ -3852,7 +3853,7 @@ fsm_terminal:
                     proto->call = call;
                 } while (0);
                 lex(proto, (flags & ((1L << 16))) | (1L << 21));
-                for (n = x = 0; (c = (*( unsigned char * )ip++)), x < 3; x++)
+                for (n = x = 0; (c = (*( unsigned char * ) ip++)), x < 3; x++)
                     switch (c) {
                     case '0':
                     case '1':
@@ -4035,20 +4036,20 @@ fsm_terminal:
         (ip--);
         c = (0401 + 0);
         if (!(flags & (1L << 1)))
-            switch ((((( long )(*proto->tp)) << 16)
-                     | ((( long )(*(ip - 1))) << 8)
-                     | (( long )(ip - proto->tp)))) {
-            case (((( long )('N')) << 16) | ((( long )('N')) << 8)
-                  | (( long )(3))):
+            switch ((((( long ) (*proto->tp)) << 16)
+                     | ((( long ) (*(ip - 1))) << 8)
+                     | (( long ) (ip - proto->tp)))) {
+            case (((( long ) ('N')) << 16) | ((( long ) ('N')) << 8)
+                  | (( long ) (3))):
                 if (proto->tp[1] == 'o')
                     c = ((0500 + 4) + 6);
                 break;
-            case (((( long )('d')) << 16) | ((( long )('o')) << 8)
-                  | (( long )(2))):
+            case (((( long ) ('d')) << 16) | ((( long ) ('o')) << 8)
+                  | (( long ) (2))):
                 c = ((0500 + 4) + 6);
                 break;
-            case (((( long )('e')) << 16) | ((( long )('e')) << 8)
-                  | (( long )(4))):
+            case (((( long ) ('e')) << 16) | ((( long ) ('e')) << 8)
+                  | (( long ) (4))):
                 if (!(flags & (1L << 21))
                     && (flags & ((1L << 3) | (1L << 25))) != (1L << 3)
                     && !sstrncmp(proto->tp, "else", 4)) {
@@ -4056,24 +4057,24 @@ fsm_terminal:
                     goto fsm_id;
                 }
                 break;
-            case (((( long )('e')) << 16) | ((( long )('n')) << 8)
-                  | (( long )(6))):
+            case (((( long ) ('e')) << 16) | ((( long ) ('n')) << 8)
+                  | (( long ) (6))):
                 if (!sstrncmp(proto->tp, "extern", 6))
                     c = ((0500 + 4) + 9);
                 break;
-            case (((( long )('f')) << 16) | ((( long )('r')) << 8)
-                  | (( long )(3))):
+            case (((( long ) ('f')) << 16) | ((( long ) ('r')) << 8)
+                  | (( long ) (3))):
                 if (!(flags & (1L << 21)) && !sstrncmp(proto->tp, "for", 3)) {
                     c = ((0500 + 4) + 11);
                     goto fsm_id;
                 }
                 break;
-            case (((( long )('i')) << 16) | ((( long )('f')) << 8)
-                  | (( long )(2))):
+            case (((( long ) ('i')) << 16) | ((( long ) ('f')) << 8)
+                  | (( long ) (2))):
                 c = ((0500 + 4) + 13);
                 break;
-            case (((( long )('i')) << 16) | ((( long )('e')) << 8)
-                  | (( long )(6))):
+            case (((( long ) ('i')) << 16) | ((( long ) ('e')) << 8)
+                  | (( long ) (6))):
                 if (!sstrncmp(proto->tp, "inline", 6)
                     && !(flags
                          & ((1L << 15) | (1L << 23) | (1L << 25) | (1L << 26)))
@@ -4105,37 +4106,37 @@ fsm_terminal:
                     } while (0);
                 }
                 break;
-            case (((( long )('r')) << 16) | ((( long )('n')) << 8)
-                  | (( long )(6))):
+            case (((( long ) ('r')) << 16) | ((( long ) ('n')) << 8)
+                  | (( long ) (6))):
                 if (!(flags & (1L << 21))
                     && !sstrncmp(proto->tp, "return", 6)) {
                     c = ((0500 + 4) + 17);
                     goto fsm_id;
                 }
                 break;
-            case (((( long )('s')) << 16) | ((( long )('c')) << 8)
-                  | (( long )(6))):
+            case (((( long ) ('s')) << 16) | ((( long ) ('c')) << 8)
+                  | (( long ) (6))):
                 if ((proto->options & (1L << 6))
                     && !sstrncmp(proto->tp, "static", 6)) {
                     proto->ox = op - 6;
                     flags |= (1L << 6);
                 }
                 break;
-            case (((( long )('t')) << 16) | ((( long )('f')) << 8)
-                  | (( long )(7))):
+            case (((( long ) ('t')) << 16) | ((( long ) ('f')) << 8)
+                  | (( long ) (7))):
                 if (!(flags & (1L << 21))
                     && !sstrncmp(proto->tp, "typedef", 7)) {
                     flags |= (1L << 26);
                     c = ((0500 + 4) + 9);
                 }
                 break;
-            case (((( long )('v')) << 16) | ((( long )('t')) << 8)
-                  | (( long )(8))):
+            case (((( long ) ('v')) << 16) | ((( long ) ('t')) << 8)
+                  | (( long ) (8))):
                 if (*ip == '(' && !sstrncmp(proto->tp, "va_start", 8))
                     c = (0500 + 1);
                 break;
-            case (((( long )('v')) << 16) | ((( long )('d')) << 8)
-                  | (( long )(4))):
+            case (((( long ) ('v')) << 16) | ((( long ) ('d')) << 8)
+                  | (( long ) (4))):
                 if (!sstrncmp(proto->tp, "void", 4)) {
                     if (flags
                         & ((1L << 0) | (1L << 19) | (1L << 10) | (1L << 11)))
@@ -4177,8 +4178,8 @@ fsm_terminal:
                     }
                 }
                 break;
-            case (((( long )('w')) << 16) | ((( long )('e')) << 8)
-                  | (( long )(5))):
+            case (((( long ) ('w')) << 16) | ((( long ) ('e')) << 8)
+                  | (( long ) (5))):
                 if (!(flags & (1L << 21))
                     && !sstrncmp(proto->tp, "while", 5)) {
                     c = ((0500 + 4) + 26);
@@ -4210,11 +4211,11 @@ fsm_terminal:
     default:
         if (state & (1 << 7)) {
             if (c == '\\') {
-                if (!(n = (*( unsigned char * )ip++))) {
+                if (!(n = (*( unsigned char * ) ip++))) {
                     goto fsm_eob;
                 fsm_splice:
                     c = '\\';
-                    n = (*( unsigned char * )ip++);
+                    n = (*( unsigned char * ) ip++);
                 }
                 if (n == '\n') {
                     proto->line++;
@@ -4560,10 +4561,11 @@ fsm_terminal:
                                 *v++ = ' ';
                                 v = memcopy(v, im, ie - im);
                                 *v = 0;
-                                proto_error(( char * )proto + sizeof(Proto_t),
+                                proto_error(( char * ) proto
+                                            + sizeof(Proto_t),
                                             2,
                                             op,
-                                            (( char * )0));
+                                            (( char * ) 0));
                             }
                             ip--;
 
@@ -4723,11 +4725,11 @@ fsm_terminal:
                                 } else if (*ie == ')') {
                                     if (op > om && *(op - 1) == '(')
                                         proto_error(
-                                        ( char * )proto + sizeof(Proto_t),
+                                        ( char * ) proto + sizeof(Proto_t),
                                         1,
                                         "function pointer argument prototype "
                                         "omitted",
-                                        (( char * )0));
+                                        (( char * ) 0));
                                     (*op++ = (*ie++));
                                     while (*ie == ' ' || *ie == '\t'
                                            || *ie == '\n')
@@ -5420,11 +5422,11 @@ fsm_terminal:
 
 void pppclose __PARAM__((char *iob), (iob)) __OTORP__(char *iob;)
 {
-    Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
+    Proto_t *proto = ( Proto_t * ) (iob - sizeof(Proto_t));
 
     if (proto->flags & (1L << 16))
         close(proto->fd);
-    free(( char * )proto);
+    free(( char * ) proto);
 }
 
 
@@ -5477,9 +5479,9 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
 
         n = (16 * 1024);
         if (!(proto
-              = ((0) ? ( Proto_t * )realloc(
-                       ( char * )(0), sizeof(Proto_t) * (1) + (5 * n + 2))
-                     : ( Proto_t * )calloc(
+              = ((0) ? ( Proto_t * ) realloc(
+                       ( char * ) (0), sizeof(Proto_t) * (1) + (5 * n + 2))
+                     : ( Proto_t * ) calloc(
                        1, sizeof(Proto_t) * (1) + (5 * n + 2)))))
             return 0;
         proto->iz = n;
@@ -5488,7 +5490,7 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
     }
     proto->fd = fd;
     proto->package = package;
-    iob = ( char * )proto + sizeof(Proto_t);
+    iob = ( char * ) proto + sizeof(Proto_t);
     proto->op = proto->ob = iob;
     proto->ip = proto->ib = iob + proto->oz + n;
     if (m)
@@ -5518,7 +5520,7 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
     if (!notice && !options
         || (comlen = astlicense(com,
                                 sizeof(com),
-                                (( char * )0),
+                                (( char * ) 0),
                                 "type=check",
                                 proto->cc[0],
                                 proto->cc[1],
@@ -5669,10 +5671,10 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
                                              proto->cc[1],
                                              proto->cc[2]))
                         < 0)
-                        proto_error(( char * )proto + sizeof(Proto_t),
+                        proto_error(( char * ) proto + sizeof(Proto_t),
                                     1,
                                     proto->op,
-                                    (( char * )0));
+                                    (( char * ) 0));
                     else
                         proto->op += comlen;
                 }
@@ -5688,7 +5690,7 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
 
     if (!(retain & (1 << 6))) {
         retain |= (1 << 6);
-        ppfsm(4, (( char * )0));
+        ppfsm(4, (( char * ) 0));
     }
 
     proto->line = 1;
@@ -5704,10 +5706,10 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
                                      proto->cc[1],
                                      proto->cc[2]))
                 < 0)
-                proto_error(( char * )proto + sizeof(Proto_t),
+                proto_error(( char * ) proto + sizeof(Proto_t),
                             1,
                             proto->op,
-                            (( char * )0));
+                            (( char * ) 0));
             else
                 proto->op += comlen;
         }
@@ -5764,7 +5766,7 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
 
 int pppread __PARAM__((char *iob), (iob)) __OTORP__(char *iob;)
 {
-    Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
+    Proto_t *proto = ( Proto_t * ) (iob - sizeof(Proto_t));
     int n;
 
     if (proto->flags & (1L << 18)) {
@@ -5877,7 +5879,7 @@ __OTORP__(char *file; char *license; char *options; char *package; char *copy;
     char buf[1024];
 
     if (file && access(file, 4))
-        proto_error((( char * )0), 2, file, "not found");
+        proto_error((( char * ) 0), 2, file, "not found");
     else if (b
              = pppopen(file, 0, license, options, package, comment, flags)) {
         if (!file)
@@ -5939,7 +5941,7 @@ __OTORP__(char *file; char *license; char *options; char *package; char *copy;
             p = b;
             for (;;) {
                 if ((m = write(fd, p, n)) <= 0) {
-                    proto_error(b, 2, "write error", (( char * )0));
+                    proto_error(b, 2, "write error", (( char * ) 0));
                     flags |= ((1 << 13) << 0);
                     break;
                 }
@@ -5996,7 +5998,7 @@ __OTORP__(char *file; char *comment;)
         if (suffix && sstrlen(suffix) <= 3)
             for (i = 0; i < sizeof(sufcom) / sizeof(sufcom[0]); i++)
                 if (!strcmp(suffix, sufcom[i].suffix))
-                    return ( char * )sufcom[i].comment;
+                    return ( char * ) sufcom[i].comment;
     }
     return comment;
 }
@@ -6069,7 +6071,7 @@ __OTORP__(int argc; char **argv;)
                 }
                 n = sstrlen(b);
                 if ((n + 1) >= (oe - op))
-                    proto_error((( char * )0), 3, b, "too many options");
+                    proto_error((( char * ) 0), 3, b, "too many options");
                 else {
                     *op++ = '\n';
                     memcopy(op, b, n + 1);
@@ -6117,7 +6119,7 @@ __OTORP__(int argc; char **argv;)
                 comment = "#";
                 continue;
             default:
-                proto_error((( char * )0), 2, file, "unknown option");
+                proto_error((( char * ) 0), 2, file, "unknown option");
 
             case '?':
                 b = "Usage: proto [-dfhinprstvzP+S] [-C directory] [-e package] [-l file]\n             [-o \"name='value' ...\"] [-L file] file ...\n";
@@ -6133,7 +6135,7 @@ __OTORP__(int argc; char **argv;)
         if (*list == '-' && !*(list + 1))
             fd = 0;
         else if ((fd = open(list, O_RDONLY)) < 0)
-            proto_error((( char * )0), 3, list, "not found");
+            proto_error((( char * ) 0), 3, list, "not found");
         do {
             for (b = buf; (n = read(fd, b, 1)) > 0 && *b != '\n'
                           && b < &buf[sizeof(buf) - 1];

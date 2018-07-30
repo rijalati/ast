@@ -59,7 +59,7 @@ sh_locate(const char *sp, const Shtable_t *table, int size)
     while ((c = *tp->sh_name) && (CC_NATIVE != CC_ASCII || c <= first)) {
         if (first == c && strcmp(sp, tp->sh_name) == 0)
             return (tp);
-        tp = ( Shtable_t * )(( char * )tp + size);
+        tp = ( Shtable_t * ) (( char * ) tp + size);
     }
     return (&empty);
 }
@@ -147,7 +147,7 @@ sh_lookopt(const char *sp, int *invert)
                 }
             }
         }
-        tp = ( Shtable_t * )(( char * )tp + sizeof(*shtab_options));
+        tp = ( Shtable_t * ) (( char * ) tp + sizeof(*shtab_options));
     }
     if (hit)
         *invert ^= inv;
@@ -171,7 +171,7 @@ sh_substitute(Shell_t *shp, const char *string, const char *oldsp, char *newsp)
     const char *savesp = 0;
     stkseek(shp->stk, 0);
     if (*sp == 0)
-        return (( char * )0);
+        return (( char * ) 0);
     if (*(cp = oldsp) == 0)
         goto found;
 #if SHOPT_MULTIBYTE
@@ -190,7 +190,7 @@ sh_substitute(Shell_t *shp, const char *string, const char *oldsp, char *newsp)
                 sfputc(shp->stk, *sp++);
         }
         if (*sp == 0)
-            return (( char * )0);
+            return (( char * ) 0);
         savesp = sp;
         for (; *cp; cp++) {
             if (*cp != *sp++)
@@ -202,7 +202,7 @@ sh_substitute(Shell_t *shp, const char *string, const char *oldsp, char *newsp)
         sp = savesp;
         cp = oldsp;
     } while (*sp);
-    return (( char * )0);
+    return (( char * ) 0);
 
 found:
     /* copy new */
@@ -263,7 +263,7 @@ sh_utol(char const *str1, char *str2)
 @*/
 {
     int c;
-    for (; c = *(( unsigned char * )str1); str1++, str2++) {
+    for (; c = *(( unsigned char * ) str1); str1++, str2++) {
         if (isupper(c))
             *str2 = tolower(c);
         else
@@ -282,12 +282,12 @@ sh_fmtcsv(const char *string)
     int c;
     int offset;
     if (!cp)
-        return (( char * )0);
+        return (( char * ) 0);
     offset = staktell();
     while ((c = mbchar(cp)), isaname(c))
         ;
     if (c == 0)
-        return (( char * )string);
+        return (( char * ) string);
     stakputc('"');
     stakwrite(string, cp - string);
     if (c == '"')
@@ -321,7 +321,7 @@ sh_fmtstr(const char *string, int quote)
     bool lc_unicodeliterals;
 #endif
     if (!cp)
-        return (( char * )0);
+        return (( char * ) 0);
     offset = staktell();
     mbinit();
     state = ((c = mbchar(cp)) == 0);
@@ -339,10 +339,10 @@ sh_fmtstr(const char *string, int quote)
                isaname(c) && (!lc_unicodeliterals || c <= 0x7f))
             ;
         if (c == 0)
-            return (( char * )string);
+            return (( char * ) string);
         if (c == '=') {
             if (*cp == 0)
-                return (( char * )string);
+                return (( char * ) string);
             if (*cp == '=')
                 cp++;
             c = cp - string;
@@ -389,7 +389,7 @@ sh_fmtstr(const char *string, int quote)
         mbinit();
         while (op = cp, c = mbchar(cp))
 #else
-        while (op = cp, c = *( unsigned char * )cp++)
+        while (op = cp, c = *( unsigned char * ) cp++)
 #endif
         {
             state = 1;
@@ -424,7 +424,7 @@ sh_fmtstr(const char *string, int quote)
                 default:
 #if SHOPT_MULTIBYTE
                     if (c < 0) {
-                        c = *(( unsigned char * )op);
+                        c = *(( unsigned char * ) op);
                         cp = op + 1;
                         widebyte = 1;
                     } else
@@ -470,7 +470,7 @@ sh_fmtstr(const char *string, int quote)
                                 uc = c;
                             else if (wcstoutf32s(&uc, &wc, 1) < 0) {
                                 sfprintf(
-                                staksp, "\\\\w[%lx]", ( unsigned long )c);
+                                staksp, "\\\\w[%lx]", ( unsigned long ) c);
                                 continue;
                             }
 
@@ -480,7 +480,7 @@ sh_fmtstr(const char *string, int quote)
                              */
                             if (!iswprint(c) || uc > 127) {
                                 sfprintf(
-                                staksp, "\\u[%lx]", ( unsigned long )uc);
+                                staksp, "\\u[%lx]", ( unsigned long ) uc);
                                 continue;
                             }
                         } else if (mbwide() && !iswprint(c)) {
@@ -751,13 +751,13 @@ _sh_translate(const char *message)
 char *
 sh_checkid(char *str, char *last)
 {
-    unsigned char *cp = ( unsigned char * )str;
+    unsigned char *cp = ( unsigned char * ) str;
     unsigned char *v = cp;
     int c;
     if (c = mbchar(cp), isaletter(c))
         while (c = mbchar(cp), isaname(c))
             ;
-    if (c == ']' && (!last || (( char * )cp == last))) {
+    if (c == ']' && (!last || (( char * ) cp == last))) {
         /* eliminate [ and ] */
         while (v < cp) {
             v[-1] = *v;
@@ -771,7 +771,7 @@ sh_checkid(char *str, char *last)
                 v++;
             }
             v[-2] = 0;
-            last = ( char * )v;
+            last = ( char * ) v;
         }
     }
     return (last);
@@ -781,6 +781,6 @@ sh_checkid(char *str, char *last)
 char *
 fmtident(const char *string)
 {
-    return (( char * )string);
+    return (( char * ) string);
 }
 #endif

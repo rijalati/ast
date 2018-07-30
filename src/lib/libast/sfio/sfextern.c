@@ -31,11 +31,11 @@ static Vtonce_t Sfonce = VTONCE_INITDATA;
 static void
 _sfoncef()
 {
-    ( void )vtmtxopen(_Sfmutex, VT_INIT);
-    ( void )vtmtxopen(&_Sfpool.mutex, VT_INIT);
-    ( void )vtmtxopen(sfstdin->mutex, VT_INIT);
-    ( void )vtmtxopen(sfstdout->mutex, VT_INIT);
-    ( void )vtmtxopen(sfstderr->mutex, VT_INIT);
+    ( void ) vtmtxopen(_Sfmutex, VT_INIT);
+    ( void ) vtmtxopen(&_Sfpool.mutex, VT_INIT);
+    ( void ) vtmtxopen(sfstdin->mutex, VT_INIT);
+    ( void ) vtmtxopen(sfstdout->mutex, VT_INIT);
+    ( void ) vtmtxopen(sfstderr->mutex, VT_INIT);
     _Sfdone = 1;
 }
 
@@ -49,25 +49,25 @@ _sfoncef()
 
 /* global variables used internally to the package */
 Sfextern_t _Sfextern = {
-    0,                                               /* _Sfpage	*/
-    { NIL(Sfpool_t *), 0, 0, 0, NIL(Sfio_t **) },    /* _Sfpool	*/
-    NIL(int(*) _ARG_(( Sfio_t *, int ))),            /* _Sfpmove	*/
-    NIL(Sfio_t *( * )_ARG_(( Sfio_t *, Sfio_t * ))), /* _Sfstack	*/
-    NIL(void(*) _ARG_(( Sfio_t *, int, void * ))),   /* _Sfnotify	*/
-    NIL(int(*) _ARG_(( Sfio_t * ))),                 /* _Sfstdsync	*/
-    { NIL(Sfread_f),                                 /* _Sfudisc	*/
+    0,                                                 /* _Sfpage	*/
+    { NIL(Sfpool_t *), 0, 0, 0, NIL(Sfio_t **) },      /* _Sfpool	*/
+    NIL(int(*) _ARG_(( Sfio_t *, int ) )),             /* _Sfpmove	*/
+    NIL(Sfio_t *( * ) _ARG_(( Sfio_t *, Sfio_t * ) )), /* _Sfstack	*/
+    NIL(void(*) _ARG_(( Sfio_t *, int, void * ) )),    /* _Sfnotify	*/
+    NIL(int(*) _ARG_(( Sfio_t * ) )),                  /* _Sfstdsync	*/
+    { NIL(Sfread_f),                                   /* _Sfudisc	*/
       NIL(Sfwrite_f),
       NIL(Sfseek_f),
       NIL(Sfexcept_f),
       NIL(Sfdisc_t *) },
-    NIL(void(*) _ARG_(( void ))), /* _Sfcleanup	*/
-    0,                            /* _Sfexiting	*/
-    0,                            /* _Sfdone	*/
-    &Sfonce,                      /* _Sfonce	*/
-    _sfoncef,                     /* _Sfoncef	*/
-    &Sfmutex,                     /* _Sfmutex	*/
-    SF_MAXM_DEFAULT,              /* _Sfmaxm	*/
-    SF_TEST_DEFAULT               /* _Sftest	*/
+    NIL(void(*) _ARG_(( void ) )), /* _Sfcleanup	*/
+    0,                             /* _Sfexiting	*/
+    0,                             /* _Sfdone	*/
+    &Sfonce,                       /* _Sfonce	*/
+    _sfoncef,                      /* _Sfoncef	*/
+    &Sfmutex,                      /* _Sfmutex	*/
+    SF_MAXM_DEFAULT,               /* _Sfmaxm	*/
+    SF_TEST_DEFAULT                /* _Sftest	*/
 };
 
 ssize_t _Sfi = -1;   /* value for a few fast macro functions	*/

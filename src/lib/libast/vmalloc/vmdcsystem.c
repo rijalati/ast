@@ -42,14 +42,14 @@ typedef struct Memdisc_s
 
 #define RESTARTMEM(a, f)                                                     \
     do {                                                                     \
-        a = ( Void_t * )f;                                                   \
-        if (a == ( Void_t * )(-1))                                           \
+        a = ( Void_t * ) f;                                                  \
+        if (a == ( Void_t * ) (-1))                                          \
             a = NIL(Void_t *);                                               \
     } while (a == NIL(Void_t *) && errno == EINTR)
 
 #define RESTARTSYS(r, f)                                                     \
     do {                                                                     \
-        r = ( int )f;                                                        \
+        r = ( int ) f;                                                       \
     } while (r == -1 && errno == EINTR)
 
 #define GETMEMCHK(vm, caddr, csize, nsize, disc)                             \
@@ -147,10 +147,10 @@ win32mem(Vmalloc_t *vm,
     GETMEMCHK(vm, caddr, csize, nsize, disc);
     if (csize == 0) {
         caddr
-        = ( Void_t * )VirtualAlloc(0, nsize, MEM_COMMIT, PAGE_READWRITE);
+        = ( Void_t * ) VirtualAlloc(0, nsize, MEM_COMMIT, PAGE_READWRITE);
         RETURN(vm, caddr, nsize);
     } else if (nsize == 0) {
-        ( void )VirtualFree(( LPVOID )caddr, 0, MEM_RELEASE);
+        ( void ) VirtualFree(( LPVOID ) caddr, 0, MEM_RELEASE);
         RETURN(vm, caddr, nsize);
     } else
         return NIL(Void_t *);
@@ -187,13 +187,13 @@ sbrkmem(Vmalloc_t *vm,
 
     if (csize > 0) {
         RESTARTMEM(newm, sbrk(0));
-        if (newm && newm != (( Vmuchar_t * )caddr + csize)) {
+        if (newm && newm != (( Vmuchar_t * ) caddr + csize)) {
             newm = NIL(Void_t *); /* non-contiguous memory */
             goto bad;
         }
     }
     RESTARTMEM(newm, sbrk(nsize));
-    if (newm && csize > 0 && newm != (( Vmuchar_t * )caddr + csize + nsize))
+    if (newm && csize > 0 && newm != (( Vmuchar_t * ) caddr + csize + nsize))
         newm = NIL(Void_t *); /* non-contiguous memory again */
 
 bad:
@@ -244,7 +244,7 @@ safebrkmem(Vmalloc_t *vm,
             {
                 newm = (*_Vmchkmem)(_Vmmemsbrk, nsize) ? _Vmmemsbrk
                                                        : NIL(Vmuchar_t *);
-                if (csize > 0 && newm != (( Vmuchar_t * )caddr + csize)) {
+                if (csize > 0 && newm != (( Vmuchar_t * ) caddr + csize)) {
                     newm = NIL(Vmuchar_t *);
                     break;
                 } else if (newm)
@@ -254,7 +254,7 @@ safebrkmem(Vmalloc_t *vm,
             }
             if (newm)
                 RESTARTMEM(newm,
-                           mmap(( Void_t * )newm,
+                           mmap(( Void_t * ) newm,
                                 nsize,
                                 PROT_READ | PROT_WRITE,
                                 MAP_ANON | MAP_PRIVATE | MAP_FIXED,
@@ -262,7 +262,7 @@ safebrkmem(Vmalloc_t *vm,
                                 0));
         } else
             RESTARTMEM(newm,
-                       mmap(( Void_t * )_Vmmemsbrk,
+                       mmap(( Void_t * ) _Vmmemsbrk,
                             nsize,
                             PROT_READ | PROT_WRITE,
                             MAP_ANON | MAP_PRIVATE,
@@ -272,11 +272,11 @@ safebrkmem(Vmalloc_t *vm,
         if (newm) {
             if (csize > 0
                 && newm
-                   != (( Vmuchar_t * )caddr + csize)) /* new memory is not
-                                                         contiguous */
+                   != (( Vmuchar_t * ) caddr + csize)) /* new memory is not
+                                                          contiguous */
             {
-                munmap(( Void_t * )newm, nsize); /* remove it and wait for a
-                                                    call for new memory */
+                munmap(( Void_t * ) newm, nsize); /* remove it and wait for a
+                                                     call for new memory */
                 newm = NIL(Void_t *);
             } else
                 _Vmmemsbrk = newm + nsize;
@@ -310,7 +310,7 @@ mmapanonmem(Vmalloc_t *vm,
         ADVISE(vm, caddr, nsize);
         RETURN(vm, caddr, nsize);
     } else if (nsize == 0) {
-        ( void )munmap(caddr, csize);
+        ( void ) munmap(caddr, csize);
         RETURN(vm, caddr, nsize);
     } else
         return NIL(Void_t *);
@@ -333,7 +333,7 @@ mmapzeromem(Vmalloc_t *vm,
             size_t nsize,
             Vmdisc_t *disc)
 {
-    Memdisc_t *mmdc = ( Memdisc_t * )disc;
+    Memdisc_t *mmdc = ( Memdisc_t * ) disc;
     off_t offset;
 
     GETMEMCHK(vm, caddr, csize, nsize, disc);
@@ -350,10 +350,10 @@ mmapzeromem(Vmalloc_t *vm,
         ADVISE(vm, caddr, nsize);
         RETURN(vm, caddr, nsize);
     } else if (nsize == 0) {
-        Vmuchar_t *addr = ( Vmuchar_t * )sbrk(0);
-        if (addr < ( Vmuchar_t * )caddr) /* in sbrk space */
+        Vmuchar_t *addr = ( Vmuchar_t * ) sbrk(0);
+        if (addr < ( Vmuchar_t * ) caddr) /* in sbrk space */
             return NIL(Void_t *);
-        ( void )munmap(caddr, csize);
+        ( void ) munmap(caddr, csize);
         RETURN(vm, caddr, nsize);
     } else
         return NIL(Void_t *);
@@ -367,7 +367,7 @@ mmapzeromeminit(Vmalloc_t *vm,
                 size_t nsize,
                 Vmdisc_t *disc)
 {
-    Memdisc_t *mmdc = ( Memdisc_t * )disc;
+    Memdisc_t *mmdc = ( Memdisc_t * ) disc;
     int fd;
 
     GETMEMCHK(vm, caddr, csize, nsize, disc);
@@ -439,41 +439,41 @@ getmemory(Vmalloc_t *vm,
     if ((_Vmassert & VM_safe)
         && (addr = safebrkmem(vm, caddr, csize, nsize, disc))) {
         GETMEMUSE(safebrkmem, disc);
-        return ( Void_t * )addr;
+        return ( Void_t * ) addr;
     }
 #endif
 #if _mem_mmap_anon
     if ((_Vmassert & VM_anon)
         && (addr = mmapanonmem(vm, caddr, csize, nsize, disc))) {
         GETMEMUSE(mmapanonmem, disc);
-        return ( Void_t * )addr;
+        return ( Void_t * ) addr;
     }
 #endif
 #if _mem_mmap_zero
     if ((_Vmassert & VM_zero)
         && (addr = mmapzeromeminit(vm, caddr, csize, nsize, disc))) {
         GETMEMUSE(mmapzeromem, disc);
-        return ( Void_t * )addr;
+        return ( Void_t * ) addr;
     }
 #endif
 #if _mem_sbrk
     if ((_Vmassert & VM_break)
         && (addr = sbrkmem(vm, caddr, csize, nsize, disc))) {
         GETMEMUSE(sbrkmem, disc);
-        return ( Void_t * )addr;
+        return ( Void_t * ) addr;
     }
 #endif
 #if _mem_win32
     if ((addr = win32mem(vm, caddr, csize, nsize, disc))) {
         GETMEMUSE(win32mem, disc);
-        return ( Void_t * )addr;
+        return ( Void_t * ) addr;
     }
 #endif
 #if _std_malloc
     if ((_Vmassert & VM_native)
         && (addr = mallocmem(vm, caddr, csize, nsize, disc))) {
         GETMEMUSE(mallocmem, disc);
-        return ( Void_t * )addr;
+        return ( Void_t * ) addr;
 #endif
         write(
         2, "vmalloc: panic: all memory allocation disciplines failed\n", 57);
@@ -488,8 +488,8 @@ getmemory(Vmalloc_t *vm,
                                      FD_INIT,
                                      0 };
 
-    __DEFINE__(Vmdisc_t *, Vmdcsystem, ( Vmdisc_t * )(&_Vmdcsystem));
-    __DEFINE__(Vmdisc_t *, Vmdcsbrk, ( Vmdisc_t * )(&_Vmdcsystem));
+    __DEFINE__(Vmdisc_t *, Vmdcsystem, ( Vmdisc_t * ) (&_Vmdcsystem));
+    __DEFINE__(Vmdisc_t *, Vmdcsbrk, ( Vmdisc_t * ) (&_Vmdcsystem));
 
 /* Note that the below function may be invoked from multiple threads.
 ** It initializes the Vmheap region to use the VMHEAPMETH method.
@@ -606,7 +606,7 @@ getmemory(Vmalloc_t *vm,
         NIL(char *), /* file	name	*/
         0,           /* line number	*/
         0,           /* function	*/
-        ( Vmdisc_t * )(&_Vmdcsystem),
+        ( Vmdisc_t * ) (&_Vmdcsystem),
         NIL(Vmdata_t *), /* see heapinit	*/
     };
 

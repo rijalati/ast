@@ -66,13 +66,13 @@ flash_getprologue(Pax_t *pax,
     s = e;
     for (;;) {
         if (s >= e) {
-            if (!(buf = ( unsigned char * )paxget(
+            if (!(buf = ( unsigned char * ) paxget(
                   pax, ap, -PAX_DEFBUFFER * PAX_BLOCK, &n)))
                 return -1;
             s = buf;
             e = buf + n;
         }
-        if (t = ( unsigned char * )memchr(s, '\n', e - s)) {
+        if (t = ( unsigned char * ) memchr(s, '\n', e - s)) {
             if ((t - s) == (sizeof(FLASH_DATA) - 1)
                 && !memcmp(s, FLASH_DATA, sizeof(FLASH_DATA) - 1)) {
                 if (paxseek(pax, ap, -(e - t - 1), SEEK_CUR, 0) < 0)

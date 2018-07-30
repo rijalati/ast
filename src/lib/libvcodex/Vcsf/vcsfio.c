@@ -125,14 +125,14 @@ ssize_t cdsz;
             return dtsz;          /* must be new header format */
 
         if (!Map[k].meth
-            && !(Map[k].meth = vcgetmeth(( char * )Map[k].name, 1))) {
+            && !(Map[k].meth = vcgetmeth(( char * ) Map[k].name, 1))) {
             Map[k].mtid = -1;
             return dtsz;
         }
         meth[n].meth = Map[k].meth;
 
         if (vciomore(&io) <= 0 || /* no or bad argument code */
-            (sz = ( ssize_t )vciogetu(&io)) < 0 || sz > vciomore(&io))
+            (sz = ( ssize_t ) vciogetu(&io)) < 0 || sz > vciomore(&io))
             return dtsz; /* must be new header format */
 
         meth[n].size = sz;
@@ -146,10 +146,10 @@ ssize_t cdsz;
     /* construct new header in reverse order */
     vcioinit(&io, code, cdsz);
     for (n -= 1; n >= 0; --n) { /* get and write out the method id string */
-        if (!(dt = ( unsigned char * )vcgetident(
-              meth[n].meth, ( char * )buf, sizeof(buf))))
+        if (!(dt = ( unsigned char * ) vcgetident(
+              meth[n].meth, ( char * ) buf, sizeof(buf))))
             return -1; /* error, no id string for method? */
-        if ((sz = strlen(( char * )dt) + 1) > vciomore(&io)) /* too long */
+        if ((sz = strlen(( char * ) dt) + 1) > vciomore(&io)) /* too long */
             return dtsz; /* must be new header format */
         vcioputs(&io, dt, sz);
 
@@ -163,7 +163,7 @@ ssize_t cdsz;
         else if (meth[n].meth == Vcrle || meth[n].meth == Vcmtf) {
             if (*dt == 0) /* coding rle.0 or mtf.0 */
             {
-                vcstrcode("0", ( char * )buf, sizeof(buf));
+                vcstrcode("0", ( char * ) buf, sizeof(buf));
                 vcioputu(&io, 1);
                 vcioputc(&io, buf[0]);
             } else
@@ -247,7 +247,7 @@ static int putheader(sfdc) Sfdc_t *sfdc;
         return 0;
 
     /* get the string that codes the methods */
-    if ((sz = vcextract(sfdc->vc, ( Void_t ** )&code)) <= 0)
+    if ((sz = vcextract(sfdc->vc, ( Void_t ** ) &code)) <= 0)
         return VCSFERROR(sfdc, "Transform data not encodable.");
     if ((4 + 1 + vcsizeu(sz) + sz) > vciomore(sfdc->io))
         return VCSFERROR(sfdc, "Transform data abnormally large.");
@@ -285,7 +285,7 @@ ssize_t size;
         return 0;
 
     oldbase = sfdc->base;
-    if (!(base = ( Vcchar_t * )malloc(size)))
+    if (!(base = ( Vcchar_t * ) malloc(size)))
         return -1;
 
     memcpy(base, oldbase, sfdc->endb - oldbase);
@@ -386,7 +386,7 @@ size_t dtsz;
                 return -1;
             *id++ = VC_METHSEP;
         }
-        mt = ( char * )vcionext(&io);
+        mt = ( char * ) vcionext(&io);
         for (sz = vciomore(&io), k = 0; k < sz; ++k) {
             if (id >= end && extend(&id, &buf, &end, 1))
                 return -1;
@@ -399,10 +399,10 @@ size_t dtsz;
         vcioskip(&io, k + 1);
 
         /* get the initialization data, if any */
-        if ((sz = ( ssize_t )vciogetu(&io)) < 0 || sz > vciomore(&io))
+        if ((sz = ( ssize_t ) vciogetu(&io)) < 0 || sz > vciomore(&io))
             return -1;
         if (sz) {
-            dt = ( unsigned char * )vcionext(&io);
+            dt = ( unsigned char * ) vcionext(&io);
             vcioskip(&io, sz);
             k - 2 * sz + 1;
             if ((id + k) >= end && extend(&id, &buf, &end, k))
@@ -604,7 +604,7 @@ size_t dtsz;
         {
             sz = vciosize(&io);
             bssz = ((cdsz + sz + 1023) / 1024) * 1024;
-            if (!(base = ( Vcchar_t * )malloc(bssz)))
+            if (!(base = ( Vcchar_t * ) malloc(bssz)))
                 return -1;
             memcpy(base, sfdc->base, vciosize(&io));
             if (sfdc->base)
@@ -660,12 +660,12 @@ Sfdisc_t *disc; /* discipline structure		*/
     Sfoff_t pos;
     Vcwmatch_t *wm;
     Vcio_t io;
-    Sfdc_t *sfdc = ( Sfdc_t * )disc;
+    Sfdc_t *sfdc = ( Sfdc_t * ) disc;
 
     if (!(sfdc->flags & VC_DECODE))
         return VCSFERROR(sfdc, "Handle not created for decoding data");
 
-    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n;
+    for (sz = 0, dt = ( Vcchar_t * ) buf; sz < n;
          sz += r, dt += r) { /* copy already decoded data */
         if ((r = sfdc->endd - sfdc->next) > 0) {
             r = r > (n - sz) ? (n - sz) : r;
@@ -692,8 +692,8 @@ Sfdisc_t *disc; /* discipline structure		*/
                 break;
 
             if (ctrl & (VCD_SOURCEFILE | VCD_TARGETFILE)) {
-                if (!sfdc->vcw || (d = ( ssize_t )vciogetu(&io)) < 0
-                    || (pos = ( Sfoff_t )vciogetu(&io)) < 0
+                if (!sfdc->vcw || (d = ( ssize_t ) vciogetu(&io)) < 0
+                    || (pos = ( Sfoff_t ) vciogetu(&io)) < 0
                     || !(wm = vcwapply(
                          sfdc->vcw, TYPECAST(Void_t *, ctrl), d, pos))) {
                     VCSFERROR(
@@ -784,13 +784,13 @@ Sfdisc_t *disc; /* discipline structure		*/
 {
     Vcchar_t *dt;
     ssize_t sz, w;
-    Sfdc_t *sfdc = ( Sfdc_t * )disc;
+    Sfdc_t *sfdc = ( Sfdc_t * ) disc;
 
     if (!(sfdc->flags & VC_ENCODE))
         return VCSFERROR(sfdc, "Handle was not created to encode data");
 
-    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n; sz += w, dt += w) {
-        if (buf == ( Void_t * )sfdc->data) { /* final flush */
+    for (sz = 0, dt = ( Vcchar_t * ) buf; sz < n; sz += w, dt += w) {
+        if (buf == ( Void_t * ) sfdc->data) { /* final flush */
             w = sfdc->next - sfdc->data;
             sfdc->next = sfdc->data;
 
@@ -875,12 +875,12 @@ Sfdisc_t *disc;
 {
     ssize_t sz;
     ssize_t wz;
-    Sfdc_t *sfdc = ( Sfdc_t * )disc;
+    Sfdc_t *sfdc = ( Sfdc_t * ) disc;
 
     switch (type) {
     case VCSF_DISC: /* get the discipline */
         if (data)
-            *(( Sfdc_t ** )data) = sfdc;
+            *(( Sfdc_t ** ) data) = sfdc;
         return VCSF_DISC;
     case SF_SYNC:
     case SF_DPOP:
@@ -984,7 +984,7 @@ Vcwmethod_t **vcwmt;                         /* return windowing method	*/
     if (!spec)
         spec = "";
 
-    wsize = ( ssize_t )vcatoi(spec);
+    wsize = ( ssize_t ) vcatoi(spec);
     while (isdigit(*spec))
         spec += 1;
     if (*spec == 'k' || *spec == 'K') /* kilobyte */
@@ -1049,7 +1049,7 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
         goto error;                                                          \
     } while (0)
 
-    if (!(sfdc = ( Sfdc_t * )calloc(
+    if (!(sfdc = ( Sfdc_t * ) calloc(
           1, sizeof(Sfdc_t) + (sfdt == &dflt ? sizeof(dflt) : 0)))) {
         if (!type)
             sfdt->type = -1;
@@ -1065,7 +1065,7 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
 
     sfdc->sf = sf; /* stream to do IO on */
     if (sfdt == &dflt) {
-        sfdt = ( Vcsfdata_t * )(sfdc + 1);
+        sfdt = ( Vcsfdata_t * ) (sfdc + 1);
         *sfdt = dflt;
     }
     sfdc->sfdt = sfdt; /* init parameters */
@@ -1091,14 +1091,14 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
         = wsize > 0
           ? wsize
           : sfdc->vc->meth->window > 0 ? sfdc->vc->meth->window : VCSF_WSIZE;
-        if (!(sfdc->data = ( Vcchar_t * )malloc(sfdc->dtsz)))
+        if (!(sfdc->data = ( Vcchar_t * ) malloc(sfdc->dtsz)))
             errorsfio("Out of memory for data buffer");
         sfdc->next = sfdc->data;
         sfdc->endd = sfdc->data + sfdc->dtsz;
 
         /* buffer for the encoder to output results */
         sfdc->bssz = VCSFDTSZ(sfdc->dtsz);
-        if (!(sfdc->base = ( Vcchar_t * )malloc(sfdc->bssz)))
+        if (!(sfdc->base = ( Vcchar_t * ) malloc(sfdc->bssz)))
             errorsfio("Out of memory for output buffer");
     } else /* VC_DECODE */
     {      /* make output buffer */
@@ -1106,7 +1106,7 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
             sfdc->bssz = VCSF_BUFSIZE;
         else if (sfdc->bssz < VCSF_BUFMIN)
             sfdc->bssz = VCSF_BUFMIN;
-        if (!(sfdc->base = ( Vcchar_t * )malloc(sfdc->bssz))) {
+        if (!(sfdc->base = ( Vcchar_t * ) malloc(sfdc->bssz))) {
             if (!type)
                 sfdt->type = -1;
             errorsfio("Out of memory for output buffer");
@@ -1134,7 +1134,7 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
                 free(sfdc->base);
                 free(sfdc);
                 sfdt->type = 1;
-                return ( Vcsfio_t * )sf;
+                return ( Vcsfio_t * ) sf;
             }
         }
 
@@ -1153,9 +1153,9 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
 #if _SFIO_H == 1
     sfset(sf, SF_IOCHECK, 1); /* so that sfsync() will call vcsfdcexcept() */
     sfclrerr(sf);
-    return ( Vcsfio_t * )sf;
+    return ( Vcsfio_t * ) sf;
 #else
-    return ( Vcsfio_t * )sfdc;
+    return ( Vcsfio_t * ) sfdc;
 #endif
 
 error:
@@ -1210,7 +1210,7 @@ ssize_t n; /* <0: remove, 0: find, >0: buffer size	*/
     {
         if (n <= 0)
             return NIL(Rsrv_t *);
-        if (!(r = ( Rsrv_t * )calloc(1, sizeof(Rsrv_t))))
+        if (!(r = ( Rsrv_t * ) calloc(1, sizeof(Rsrv_t))))
             return NIL(Rsrv_t *);
         r->f = f;
     } else {
@@ -1267,7 +1267,7 @@ int type;
         return NIL(Void_t *);
 
     if (type == SF_LOCKR)
-        if ((here = sfseek(f, ( Sfoff_t )0, 1)) < 0)
+        if ((here = sfseek(f, ( Sfoff_t ) 0, 1)) < 0)
             return NIL(Void_t *);
 
     if ((r->dtsz = sfread(f, r->data, n)) > 0)
@@ -1305,9 +1305,9 @@ int type;
         return NIL(char *);
     if (type > 0) {
         nl = strlen(r->data);
-        (( char * )r->data)[nl - 1] = 0;
+        (( char * ) r->data)[nl - 1] = 0;
     }
-    return ( char * )r->data;
+    return ( char * ) r->data;
 }
 
 #    if __STD_C
@@ -1330,12 +1330,12 @@ Sfoff_t sfsize(f) Sfio_t *f;
 #    endif
 {
     Sfoff_t pos, siz;
-    if (fseek(f, ( long )0, 1) < 0)
+    if (fseek(f, ( long ) 0, 1) < 0)
         return -1;
-    pos = ( Sfoff_t )ftell(f);
-    fseek(f, ( long )0, 2);
-    siz = ( Sfoff_t )ftell(f);
-    fseek(f, ( long )pos, 0);
+    pos = ( Sfoff_t ) ftell(f);
+    fseek(f, ( long ) 0, 2);
+    siz = ( Sfoff_t ) ftell(f);
+    fseek(f, ( long ) pos, 0);
     return siz;
 }
 
@@ -1348,7 +1348,7 @@ Void_t *buf;
 size_t n;
 #    endif
 {
-    return vcsfdcread((( Sfdc_t * )vcf)->sf, buf, n, ( Sfdisc_t * )vcf);
+    return vcsfdcread((( Sfdc_t * ) vcf)->sf, buf, n, ( Sfdisc_t * ) vcf);
 }
 
 #    if __STD_C
@@ -1360,7 +1360,7 @@ Void_t *buf;
 size_t n;
 #    endif
 {
-    return vcsfdcwrite((( Sfdc_t * )vcf)->sf, buf, n, ( Sfdisc_t * )vcf);
+    return vcsfdcwrite((( Sfdc_t * ) vcf)->sf, buf, n, ( Sfdisc_t * ) vcf);
 }
 
 #    if __STD_C
@@ -1370,7 +1370,8 @@ vcsfsync(Vcsfio_t *vcf)
 int vcsfsync(vcf) Vcsfio_t *vcf;
 #    endif
 {
-    return vcsfdcexcept((( Sfdc_t * )vcf)->sf, SF_SYNC, 0, ( Sfdisc_t * )vcf);
+    return vcsfdcexcept(
+    (( Sfdc_t * ) vcf)->sf, SF_SYNC, 0, ( Sfdisc_t * ) vcf);
 }
 
 #    if __STD_C
@@ -1380,9 +1381,9 @@ vcsfclose(Vcsfio_t *vcf)
 int vcsfclose(vcf) Vcsfio_t *vcf;
 #    endif
 {
-    Sfio_t *sf = (( Sfdc_t * )vcf)->sf;
+    Sfio_t *sf = (( Sfdc_t * ) vcf)->sf;
 
-    if (vcsfdcexcept(sf, SF_CLOSING, 0, ( Sfdisc_t * )vcf) < 0)
+    if (vcsfdcexcept(sf, SF_CLOSING, 0, ( Sfdisc_t * ) vcf) < 0)
         return -1;
     if (sfclose(sf) != 0)
         return -1;

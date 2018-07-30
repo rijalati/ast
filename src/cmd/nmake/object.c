@@ -122,12 +122,12 @@
  * by staterule() while marks are in use
  */
 
-#define getoldrule(r) (( Rule_t * )r->action)
+#define getoldrule(r) (( Rule_t * ) r->action)
 #define isoldrule(r) (r->status == OLDRULE)
 #define setoldrule(r, o)                                                     \
     (r->status = OLDRULE,                                                    \
-     r->action = ( char * )o,                                                \
-     r->prereqs = ( List_t * )oldrules,                                      \
+     r->action = ( char * ) o,                                               \
+     r->prereqs = ( List_t * ) oldrules,                                     \
      oldrules = r)
 
 #define MAGIC "\015\001\013\005"
@@ -328,7 +328,7 @@ putstring(Sfio_t *sp, const char *s, int sep)
     unsigned char *map;
 
     if (map = object.n2a) {
-        while (c = *( unsigned char * )s++)
+        while (c = *( unsigned char * ) s++)
             sfputc(sp, map[c]);
         if (sep >= 0)
             sfputc(sp, map[sep]);
@@ -407,7 +407,7 @@ compstring(Compstate_t *cs, char *s)
 static int
 compinit(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
 
     NoP(s);
     r->complink = 0;
@@ -432,8 +432,8 @@ compinit(const char *s, char *v, void *h)
 static int
 compselect(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
-    char *select = ( char * )h;
+    Rule_t *r = ( Rule_t * ) v;
+    char *select = ( char * ) h;
 
     NoP(s);
     if (!(r->mark & M_compile) && (r->dynamic & D_compiled)) {
@@ -456,7 +456,7 @@ compselect(const char *s, char *v, void *h)
 static int
 compstate(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
 
     NoP(s);
     NoP(h);
@@ -479,7 +479,7 @@ compstate(const char *s, char *v, void *h)
 static int
 compmark(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
     List_t *p;
 
     NoP(s);
@@ -504,7 +504,7 @@ compmark(const char *s, char *v, void *h)
 static int
 compkeep(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
 
     NoP(s);
     NoP(h);
@@ -520,9 +520,9 @@ compkeep(const char *s, char *v, void *h)
 static int
 comprule(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
     List_t *p;
-    Compstate_t *cs = ( Compstate_t * )h;
+    Compstate_t *cs = ( Compstate_t * ) h;
     Rule_t x;
 
     NoP(s);
@@ -612,7 +612,7 @@ comprule(const char *s, char *v, void *h)
 static int
 compcheck(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
     List_t *p;
     Rule_t *a;
 
@@ -638,7 +638,7 @@ compcheck(const char *s, char *v, void *h)
                               a ? "duplicate" : "dangling",
                               r->name);
                     r->dynamic &= ~D_compiled;
-                    comprule(r->name, ( char * )r, h);
+                    comprule(r->name, ( char * ) r, h);
                     if (!p->rule->complink)
                         p->rule->complink = r->complink;
                     break;
@@ -655,9 +655,9 @@ compcheck(const char *s, char *v, void *h)
 static int
 complist(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
     List_t *p;
-    Compstate_t *cs = ( Compstate_t * )h;
+    Compstate_t *cs = ( Compstate_t * ) h;
 
     /*
      * ignore aliases and rules not set up by comprule()
@@ -685,8 +685,8 @@ complist(const char *s, char *v, void *h)
 static int
 compvar(const char *s, char *u, void *h)
 {
-    Var_t *v = ( Var_t * )u;
-    Compstate_t *cs = ( Compstate_t * )h;
+    Var_t *v = ( Var_t * ) u;
+    Compstate_t *cs = ( Compstate_t * ) h;
     char *t;
     unsigned long property;
     char *value;
@@ -753,7 +753,7 @@ compvar(const char *s, char *u, void *h)
 static int
 clearmarks(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
 
     NoP(s);
     NoP(h);
@@ -802,7 +802,7 @@ compile(char *objfile, char *select)
      * skip the header until everything else is done
      */
 
-    if (sfseek(cs.fp, ( Sfoff_t )HEADERSIZE, SEEK_SET) != HEADERSIZE)
+    if (sfseek(cs.fp, ( Sfoff_t ) HEADERSIZE, SEEK_SET) != HEADERSIZE)
         error(ERROR_SYSTEM | 3,
               "%s: object file header write error",
               state.tmpfile);
@@ -896,7 +896,7 @@ compile(char *objfile, char *select)
         markcompile(p->rule);
     for (p = internal.special->prereqs; p; p = p->next)
         for (q = p->rule->prereqs; q; q = q->next)
-            comprule(q->rule->name, ( char * )q->rule, &cs);
+            comprule(q->rule->name, ( char * ) q->rule, &cs);
 #if BINDINDEX
     if (state.stateview == 0) {
         for (n = 1; n <= state.maxsource; n++) {
@@ -926,7 +926,7 @@ compile(char *objfile, char *select)
 
     for (p = internal.special->prereqs; p; p = p->next)
         for (q = p->rule->prereqs; q; q = q->next)
-            compcheck(q->rule->name, ( char * )q->rule, &cs);
+            compcheck(q->rule->name, ( char * ) q->rule, &cs);
     hashwalk(table.rule, 0, compcheck, &cs);
 
     /*
@@ -935,7 +935,7 @@ compile(char *objfile, char *select)
 
     for (p = internal.special->prereqs; p; p = p->next)
         for (q = p->rule->prereqs; q; q = q->next)
-            complist(q->rule->name, ( char * )q->rule, &cs);
+            complist(q->rule->name, ( char * ) q->rule, &cs);
     hashwalk(table.rule, 0, complist, &cs);
     if (sferror(sp))
         error(ERROR_SYSTEM | 3,
@@ -972,7 +972,7 @@ compile(char *objfile, char *select)
      * write the real header
      */
 
-    sfseek(sp, ( Sfoff_t )0, SEEK_SET);
+    sfseek(sp, ( Sfoff_t ) 0, SEEK_SET);
     sfwrite(sp, MAGIC, MAGICSIZE);
     putstring(sp, version, 0);
     sfputu(sp, HEADERSIZE);
@@ -1075,7 +1075,7 @@ compref(Rule_t *r, int type)
 static int
 promote(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
     List_t *p;
 
     NoP(s);
@@ -1101,7 +1101,7 @@ promote(const char *s, char *v, void *h)
 static int
 atomize(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
     List_t *p;
 
     NoP(s);
@@ -1128,7 +1128,7 @@ atomize(const char *s, char *v, void *h)
 static int
 repair(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
     List_t *p;
     List_t *q;
 
@@ -1261,12 +1261,12 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
              * check previous source prerequisites
              */
 
-            if (!old && !sfseek(sp, ( Sfoff_t )0, SEEK_SET)
-                && sfseek(sp, ( Sfoff_t )MAGICSIZE, SEEK_SET) == MAGICSIZE) {
+            if (!old && !sfseek(sp, ( Sfoff_t ) 0, SEEK_SET)
+                && sfseek(sp, ( Sfoff_t ) MAGICSIZE, SEEK_SET) == MAGICSIZE) {
                 if (getstring(sp) && (off = sfgetu(sp)) && sfgetu(sp))
                     while (!sfeof(sp) && sfseek(sp, off, SEEK_SET) == off
                            && (off = sfgetu(sp))) {
-                        off += sfseek(sp, ( Sfoff_t )0, SEEK_CUR);
+                        off += sfseek(sp, ( Sfoff_t ) 0, SEEK_CUR);
                         if (sfgetu(sp) == HEADER_PREREQS) {
                             /*UNDENT...*/
 
@@ -1457,14 +1457,14 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
                                         r->name,
                                         p->rule->name);
                                 }
-                            if (ok && !sfseek(sp, ( Sfoff_t )0, SEEK_SET))
+                            if (ok && !sfseek(sp, ( Sfoff_t ) 0, SEEK_SET))
                                 return 1;
 
                             /*...INDENT*/
                             break;
                         }
                     }
-                sfseek(sp, ( Sfoff_t )0, SEEK_SET);
+                sfseek(sp, ( Sfoff_t ) 0, SEEK_SET);
             }
         }
     }
@@ -1545,7 +1545,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             sfputr(internal.nam, d->rule->name, d->next ? ' ' : -1);
         s = sfstruse(internal.nam);
         if (!object.options)
-            object.options = ( char * )null;
+            object.options = ( char * ) null;
         if (!streq(object.options, s)) {
             error(state.exec || state.mam.out ? -1 : 1,
                   "%s: options changed from \"%s\" to \"%s\"",
@@ -1595,11 +1595,11 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
     if (memcmp(s, MAGIC, MAGICSIZE) || !(s = getstring(sp))
         || streq(s, OLD_VERSION)) {
         old = 1;
-        if (sfseek(sp, ( Sfoff_t )0, SEEK_SET)
-            || sfread(sp, ( char * )&old_header, sizeof(old_header))
+        if (sfseek(sp, ( Sfoff_t ) 0, SEEK_SET)
+            || sfread(sp, ( char * ) &old_header, sizeof(old_header))
                != sizeof(old_header)
-            || sfseek(sp, -( Sfoff_t )sizeof(old_trailer), SEEK_END) == -1
-            || sfread(sp, ( char * )&old_trailer, sizeof(old_trailer))
+            || sfseek(sp, -( Sfoff_t ) sizeof(old_trailer), SEEK_END) == -1
+            || sfread(sp, ( char * ) &old_trailer, sizeof(old_trailer))
                != sizeof(old_trailer))
             goto badio;
         if ((old_magic = OLD_MAGIC,
@@ -1621,12 +1621,12 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
         if ((st.st_size - sizeof(old_trailer)) & (OLD_ALIGN - 1))
             goto badversion;
         strcpy(old_stamp.version, OLD_VERSION);
-        if (memcmp((( char * )&old_header) + sizeof(old_header.magic),
-                   (( char * )&old_stamp) + sizeof(old_stamp.magic),
+        if (memcmp((( char * ) &old_header) + sizeof(old_header.magic),
+                   (( char * ) &old_stamp) + sizeof(old_stamp.magic),
                    sizeof(old_header) - sizeof(old_header.magic))) {
             strcpy(old_stamp.version, OLD_VERSION_2);
-            if (memcmp((( char * )&old_header) + sizeof(old_header.magic),
-                       (( char * )&old_stamp) + sizeof(old_stamp.magic),
+            if (memcmp((( char * ) &old_header) + sizeof(old_header.magic),
+                       (( char * ) &old_stamp) + sizeof(old_stamp.magic),
                        sizeof(old_header) - sizeof(old_header.magic)))
                 goto badversion;
             sequence = 2;
@@ -1681,7 +1681,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                 goto badio;
             if (!sequence || !(off = sfgetu(sp)))
                 break;
-            off += sfseek(sp, ( Sfoff_t )0, SEEK_CUR);
+            off += sfseek(sp, ( Sfoff_t ) 0, SEEK_CUR);
         }
     }
     message((-3,
@@ -1714,10 +1714,10 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
         error(3, "out of space");
         goto bad;
     }
-    r = or = ( Rule_t * )p;
-    d = ( List_t * )(( char * )r + rules * sizeof(Rule_t));
-    v = ov = ( Var_t * )(( char * )d + lists * sizeof(List_t));
-    s = (( char * )v + variables * sizeof(Var_t));
+    r = or = ( Rule_t * ) p;
+    d = ( List_t * ) (( char * ) r + rules * sizeof(Rule_t));
+    v = ov = ( Var_t * ) (( char * ) d + lists * sizeof(List_t));
+    s = (( char * ) v + variables * sizeof(Var_t));
 
     /*
      * read the string table
@@ -1744,16 +1744,16 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
     attrclash = scanclash = 0;
     for (xv = v + variables; v < xv; v++) {
         if (old) {
-            if (sfread(sp, ( char * )&old_var, sizeof(old_var))
+            if (sfread(sp, ( char * ) &old_var, sizeof(old_var))
                 != sizeof(old_var))
                 goto badio;
             if (old_swap)
                 swapmem(old_swap, &old_var, &old_var, sizeof(old_var));
             v->property = old_var.property;
             if (old_var.name)
-                v->name = s + ( unsigned long )old_var.name - 1;
+                v->name = s + ( unsigned long ) old_var.name - 1;
             if (old_var.value)
-                v->value = s + ( unsigned long )old_var.value - 1;
+                v->value = s + ( unsigned long ) old_var.value - 1;
             switch (sequence) {
             case 2: /* 01/24/89 */
                 v->property = (v->property & 0x000003ffL);
@@ -1870,14 +1870,14 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
         Rule_t *o;
 
         if (old) {
-            if (sfread(sp, ( char * )&old_rule, sizeof(old_rule))
+            if (sfread(sp, ( char * ) &old_rule, sizeof(old_rule))
                 != sizeof(old_rule))
                 goto badio;
             if (old_swap)
                 swapmem(old_swap,
                         &old_rule,
                         &old_rule,
-                        ( char * )&old_rule.noswap - ( char * )&old_rule);
+                        ( char * ) &old_rule.noswap - ( char * ) &old_rule);
             r->property = old_rule.property;
             r->dynamic = old_rule.dynamic;
             r->attribute = old_rule.attribute;
@@ -1892,18 +1892,18 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                 break;
             }
             if (old_rule.name)
-                r->name = s + ( unsigned long )old_rule.name - 1;
+                r->name = s + ( unsigned long ) old_rule.name - 1;
             if (r->property & P_staterule) {
                 r->dynamic |= D_lowres;
                 r->event = old_rule.old_event;
             } else if (old_rule.old_data)
-                r->statedata = s + ( unsigned long )old_rule.old_data - 1;
+                r->statedata = s + ( unsigned long ) old_rule.old_data - 1;
             if (old_rule.prereqs)
                 r->prereqs
-                = d + ( unsigned long )old_rule.prereqs / sizeof(old_list)
+                = d + ( unsigned long ) old_rule.prereqs / sizeof(old_list)
                   - 1;
             if (old_rule.action)
-                r->action = s + ( unsigned long )old_rule.action - 1;
+                r->action = s + ( unsigned long ) old_rule.action - 1;
             r->scan = old_rule.scan;
             r->semaphore = old_rule.semaphore;
             r->view = old_rule.view;
@@ -2256,14 +2256,14 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
     if (lists) {
         for (xd = d + lists; d < xd;) {
             if (old) {
-                if (sfread(sp, ( char * )&old_list, sizeof(old_list))
+                if (sfread(sp, ( char * ) &old_list, sizeof(old_list))
                     != sizeof(old_list))
                     goto badio;
                 if (old_swap)
                     swapmem(old_swap, &old_list, &old_list, sizeof(old_list));
                 if (old_list.rule)
                     d->rule
-                    = r + ( unsigned long )old_list.rule / sizeof(old_rule)
+                    = r + ( unsigned long ) old_list.rule / sizeof(old_rule)
                       - 1;
                 if (old_list.next)
                     d->next = d + 1;
@@ -2366,7 +2366,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             fp = fp->parent;
         }
         do {
-            xr = ( Rule_t * )oldrules->prereqs;
+            xr = ( Rule_t * ) oldrules->prereqs;
             freerule(oldrules);
         } while (oldrules = xr);
     }
@@ -2385,10 +2385,10 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
      */
 
     if (!state.list) {
-        state.loading = ( char * )objfile;
+        state.loading = ( char * ) objfile;
         if (old) {
             if (old_trailer.options)
-                set(s + ( unsigned long )old_trailer.options - 1, 1, NiL);
+                set(s + ( unsigned long ) old_trailer.options - 1, 1, NiL);
         } else if ((s = getstring(sp)) && *s
                    && (!streq(s, "--") || (s = getstring(sp)) && *s))
             set(s, 1, NiL);
@@ -2422,7 +2422,7 @@ badversion:
             sfsprintf(old_header.version,
                       sizeof(old_header.version),
                       "%d",
-                      ( unsigned long )old_header.version);
+                      ( unsigned long ) old_header.version);
         error(1,
               "%s: old format (%s) incompatible with make loader (%s)",
               objfile,

@@ -129,16 +129,16 @@ remote(Cs_t *state,
     char *t;
 
     *av++ = CS_REMOTE_SHELL;
-    *av++ = ( char * )host;
+    *av++ = ( char * ) host;
     if (user && *user) {
         *av++ = "-l";
-        *av++ = ( char * )user;
+        *av++ = ( char * ) user;
     }
     *av++ = CS_REMOTE_PROFILE;
     *av++ = ";";
     *av++ = CS_REMOTE_CONTROL;
     *av++ = fv;
-    *av++ = ( char * )path;
+    *av++ = ( char * ) path;
     *av = 0;
     *fv++ = '-';
     if (error_info.trace < 0)
@@ -515,7 +515,7 @@ doattach(Cs_t *state,
                       path));
             return -1;
         }
-        if (!connect(fd, ( struct sockaddr * )&nam, namlen)) {
+        if (!connect(fd, ( struct sockaddr * ) &nam, namlen)) {
             if (op & CS_OPEN_CREATE) {
                 errno = EEXIST;
                 goto badcon;
@@ -575,7 +575,7 @@ doattach(Cs_t *state,
                           path));
                 return -1;
             }
-            if (!bind(fd, ( struct sockaddr * )&nam, namlen)) {
+            if (!bind(fd, ( struct sockaddr * ) &nam, namlen)) {
                 chmod(path, mode);
                 if (listen(fd, 32)) {
                     messagef((state->id,
@@ -627,7 +627,7 @@ doattach(Cs_t *state,
 
 #if CS_LIB_SOCKET_UN || CS_LIB_STREAM || CS_LIB_V10
 
-    touch(path, ( time_t )0, ( time_t )0, 0);
+    touch(path, ( time_t ) 0, ( time_t ) 0, 0);
     strcpy(state->path, path);
 
 #endif
@@ -661,7 +661,7 @@ _cs_attach(const char *path, int op, int mode)
 int
 csopen(Cs_t *state, const char *apath, int op)
 {
-    char *path = ( char * )apath;
+    char *path = ( char * ) apath;
     char *b;
     char *s;
     int n;
@@ -849,7 +849,7 @@ csopen(Cs_t *state, const char *apath, int op)
     if (*type != 't')
         auth = 0;
     strncpy(state->type, type, sizeof(state->type) - 1);
-    qual = (qual == state->qual) ? ( char * )0 : state->qual;
+    qual = (qual == state->qual) ? ( char * ) 0 : state->qual;
     messagef((state->id,
               NiL,
               -8,
@@ -1119,7 +1119,7 @@ csopen(Cs_t *state, const char *apath, int op)
         if (strlen(s) <= CS_MNT_MAX)
             b += sfsprintf(b, sizeof(state->mount) - (b - path), "/%s", s);
         else {
-            unsigned char *a = ( unsigned char * )&addr;
+            unsigned char *a = ( unsigned char * ) &addr;
 
             b += sfsprintf(b,
                            sizeof(state->mount) - (b - path),
@@ -1292,7 +1292,7 @@ csopen(Cs_t *state, const char *apath, int op)
                               path));
                     goto unblock;
                 }
-                if ((CSTIME() - ( unsigned long )st.st_ctime) < 2 * 60) {
+                if ((CSTIME() - ( unsigned long ) st.st_ctime) < 2 * 60) {
                     errno = EEXIST;
                     messagef((state->id,
                               NiL,

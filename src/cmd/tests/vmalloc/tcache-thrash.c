@@ -44,12 +44,12 @@ static void *
 worker(void *arg)
 {
     int i, j, k;
-    Worker_t *w = ( Worker_t * )arg;
+    Worker_t *w = ( Worker_t * ) arg;
 
     for (i = 0; i < w->iteration; ++i) {
         char *obj;
 
-        if (!(obj = ( char * )malloc(w->objsize)))
+        if (!(obj = ( char * ) malloc(w->objsize)))
             terror("malloc failed");
 
         /* write into obj a bunch of times */
@@ -67,7 +67,7 @@ worker(void *arg)
 
     free(w);
 
-    return ( void * )0;
+    return ( void * ) 0;
 }
 
 tmain()
@@ -107,11 +107,12 @@ tmain()
     tresource(-1, 0);
 
     for (i = 0; i < nthreads; ++i) {
-        Worker_t *w = ( Worker_t * )malloc(sizeof(Worker_t));
+        Worker_t *w = ( Worker_t * ) malloc(sizeof(Worker_t));
         w->objsize = objsize;
         w->iteration = iteration;
         w->repetition = repetition / nthreads;
-        if ((rv = pthread_create(&thread[i], NULL, worker, ( void * )w)) != 0)
+        if ((rv = pthread_create(&thread[i], NULL, worker, ( void * ) w))
+            != 0)
             terror("Failed to create thread %d", i);
     }
     for (i = 0; i < nthreads; ++i)

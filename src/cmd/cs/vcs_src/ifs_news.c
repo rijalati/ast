@@ -64,7 +64,7 @@ int bsize;
         return -1;
     }
     debug_logit(buf);
-    return ( int )strtol(buf, ( char ** )0, 0);
+    return ( int ) strtol(buf, ( char ** ) 0, 0);
 }
 
 /*
@@ -151,8 +151,8 @@ char *lpath;
     sfsprintf(buf,
               sizeof(buf),
               "%d-%d",
-              ( int )strtol(arg[2], ( char ** )0, 0),
-              ( int )strtol(arg[3], ( char ** )0, 0));
+              ( int ) strtol(arg[2], ( char ** ) 0, 0),
+              ( int ) strtol(arg[3], ( char ** ) 0, 0));
     NewsCommand(nFile, "XOVER", buf);
     if (NewsReply(nFile, NULL, 0) != 224) {
         logit("<news>: xover error\n");
@@ -170,7 +170,8 @@ char *lpath;
     if ((fp = fopen("._dir", "r")) != NULL) {
         while (fgets(buf, sizeof(buf), fp) != NULL) {
             if (SplitFields(arg, 7, buf, '\t') == 7) {
-                MakeImageFile(arg[0], ( int )strtol(arg[6], ( char ** )0, 0));
+                MakeImageFile(arg[0],
+                              ( int ) strtol(arg[6], ( char ** ) 0, 0));
             }
         }
         fclose(fp);
@@ -305,7 +306,7 @@ int NewsNop(srv) struct server_info *srv;
  */
 int NewsInit(tbl) struct agent_item *tbl;
 {
-    tbl->localdata = ( char * )&NewsData;
+    tbl->localdata = ( char * ) &NewsData;
     tbl->connect = NewsConnect;
     tbl->disconnect = NewsDisconnect;
     tbl->listdents = NewsGetFile;

@@ -50,11 +50,11 @@ char **argv;
         fprintf(stderr, "Usage: mamstate reference [ file ... | <files ]\n");
         exit(1);
     }
-    ref = ( long )st.st_mtime;
+    ref = ( long ) st.st_mtime;
     if (s = *++argv)
         do {
             if (!stat(s, &st))
-                printf("%s %ld\n", s, ( long )st.st_mtime - ref);
+                printf("%s %ld\n", s, ( long ) st.st_mtime - ref);
         } while (s = *++argv);
     else
         do {
@@ -65,7 +65,7 @@ char **argv;
             if (s > buf) {
                 *s = 0;
                 if (!stat(buf, &st))
-                    printf("%s %ld\n", buf, ( long )st.st_mtime - ref);
+                    printf("%s %ld\n", buf, ( long ) st.st_mtime - ref);
             }
         } while (c != EOF);
     exit(0);

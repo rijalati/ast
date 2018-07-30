@@ -142,7 +142,7 @@ extern double log1p(x) double x;
             /* argument reduction */
             if (copysign(x, one) < small)
                 return (x);
-            k = ( int )logb(one + x);
+            k = ( int ) logb(one + x);
             z = scalb(x, -k);
             t = scalb(one, -k);
             if (z + t >= sqrt2) {

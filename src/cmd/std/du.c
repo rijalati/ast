@@ -79,7 +79,7 @@ static const char usage[]
 #define BLOCKS(n)                                                            \
     (Count_t)((blocksize == LS_BLOCKSIZE)                                    \
               ? (n)                                                          \
-              : ((( n )*LS_BLOCKSIZE + blocksize - 1) / blocksize))
+              : ((( n ) *LS_BLOCKSIZE + blocksize - 1) / blocksize))
 
 typedef Sfulong_t Count_t;
 
@@ -276,7 +276,7 @@ main(int argc, char **argv)
             break;
         case FTS_DP:
             if (ent->fts_pointer) {
-                n = *( Count_t * )ent->fts_pointer;
+                n = *( Count_t * ) ent->fts_pointer;
                 free(ent->fts_pointer);
             }
             break;
@@ -297,12 +297,12 @@ main(int argc, char **argv)
         count += b;
         n += b;
         if (ent->fts_parent->fts_pointer)
-            *( Count_t * )ent->fts_parent->fts_pointer += n;
+            *( Count_t * ) ent->fts_parent->fts_pointer += n;
         if (!total && (list || ent->fts_level <= 0)) {
             if (scale)
                 sfprintf(sfstdout,
                          "%s\t%s\n",
-                         fmtscale(( Sfulong_t )n * blocksize, scale),
+                         fmtscale(( Sfulong_t ) n * blocksize, scale),
                          ent->fts_path);
             else
                 sfprintf(sfstdout,

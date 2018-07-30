@@ -73,16 +73,16 @@ typedef struct _table_s
 static Vcmtarg_t _Tbldata[]
 = { { "columns",
       "Number of columns is defined as 'columns=length'.",
-      ( Void_t * )TBL_COLUMNS },
+      ( Void_t * ) TBL_COLUMNS },
     { "left",
       "Use left to right column dependency (default)",
-      ( Void_t * )TBL_LEFT },
-    { "right", "Use right to left column dependency", ( Void_t * )TBL_RIGHT },
-    { "both", "Use both sides column dependency", ( Void_t * )TBL_BOTH },
-    { "rle", "Use run-length entropy (default)", ( Void_t * )TBL_RLE },
-    { "cee", "Use conditional empirical entropy", ( Void_t * )TBL_CEE },
-    { "single", "Use a single predictor", ( Void_t * )TBL_SINGLE },
-    { 0, 0, ( Void_t * )0 } };
+      ( Void_t * ) TBL_LEFT },
+    { "right", "Use right to left column dependency", ( Void_t * ) TBL_RIGHT },
+    { "both", "Use both sides column dependency", ( Void_t * ) TBL_BOTH },
+    { "rle", "Use run-length entropy (default)", ( Void_t * ) TBL_RLE },
+    { "cee", "Use conditional empirical entropy", ( Void_t * ) TBL_CEE },
+    { "single", "Use a single predictor", ( Void_t * ) TBL_SINGLE },
+    { 0, 0, ( Void_t * ) 0 } };
 
 #if __STD_C
 static Vctblplan_t *
@@ -156,7 +156,8 @@ initindex(Table_t *tbl)
 static int initindex(tbl) Table_t *tbl;
 #endif
 {
-    if (!(tbl->cidx = ( Tblindex_t * )calloc(tbl->ncols, sizeof(Tblindex_t))))
+    if (!(tbl->cidx
+          = ( Tblindex_t * ) calloc(tbl->ncols, sizeof(Tblindex_t))))
         return -1;
     if (!(tbl->idx = malloc(tbl->nrows * sizeof(ssize_t))))
         return -1;
@@ -180,7 +181,7 @@ ssize_t pred2; /* secondary predecessor index	*/
 
     /* compute indices sorted by first predictor */
     if (!(idx = tbl->cidx[pred1].idx)) {
-        if (!(idx = ( ssize_t * )malloc((nrows + 256) * sizeof(ssize_t))))
+        if (!(idx = ( ssize_t * ) malloc((nrows + 256) * sizeof(ssize_t))))
             return NIL(ssize_t *);
         tbl->cidx[pred1].idx = idx;
         tbl->cidx[pred1].bkt = bkt = idx + nrows;
@@ -262,7 +263,7 @@ re_train: /* recurse to here if necessary to retrain data */
     }
 
     /* get header data */
-    if ((hdsz = vctblencodeplan(plan, ( Void_t ** )&hddt)) < 0)
+    if ((hdsz = vctblencodeplan(plan, ( Void_t ** ) &hddt)) < 0)
         return -1;
 
     /* get memory for rearranged data */
@@ -321,8 +322,8 @@ re_train: /* recurse to here if necessary to retrain data */
         vctblencodeplan(plan, NIL(Void_t **)); /* free header memory */
     }
 
-    if ((ratio = dtsz / ( float )sz)
-        >= (planratio = plan->dtsz / ( float )plan->cmpsz)) {
+    if ((ratio = dtsz / ( float ) sz)
+        >= (planratio = plan->dtsz / ( float ) plan->cmpsz)) {
         plan->dtsz = dtsz;
         plan->cmpsz = sz;
     } else if (trained != TRAINED && vc->coder && dtsz > ncols * ncols
@@ -368,7 +369,8 @@ Void_t **out;
         return 0;
 
     if (!ctxt
-        && !(ctxt = ( Tblctxt_t * )vcinitcontext(vc, ( Vccontext_t * )ctxt)))
+        && !(ctxt
+             = ( Tblctxt_t * ) vcinitcontext(vc, ( Vccontext_t * ) ctxt)))
         return -1;
 
     clrindex(tbl);
@@ -384,7 +386,7 @@ Void_t **out;
             return -1;
         SETPLAN(ctxt, plan);
     }
-    data = ( Void_t * )(dt + sz);
+    data = ( Void_t * ) (dt + sz);
     size -= sz;
 
     if (!(plan = ctxt->plan) || (ncols = plan->ncols) <= 0)
@@ -393,11 +395,11 @@ Void_t **out;
     tbl->ncols = ncols;
 
     /* reconstruct transformed data as necessary */
-    zipdt = ( Vcchar_t * )data;
-    sz = ( ssize_t )size;
+    zipdt = ( Vcchar_t * ) data;
+    sz = ( ssize_t ) size;
     if (vcrecode(vc, &zipdt, &sz, 0, 0) < 0)
         return -1;
-    size = ( size_t )sz;
+    size = ( size_t ) sz;
 
     /* get the unpredicted data */
     vcioinit(&io, zipdt, size);
@@ -446,7 +448,7 @@ Void_t **out;
 
     if (out)
         *out = dt;
-    return ( ssize_t )size;
+    return ( ssize_t ) size;
 }
 
 
@@ -465,7 +467,7 @@ Void_t *params;
     Table_t *tbl;
 
     if (type == VC_OPENING) {
-        if (!(tbl = ( Table_t * )calloc(1, sizeof(Table_t))))
+        if (!(tbl = ( Table_t * ) calloc(1, sizeof(Table_t))))
             return -1;
 
         if (!(tbl->trans = vcopen(0, Vctranspose, "0", 0, VC_ENCODE))) {
@@ -473,7 +475,7 @@ Void_t *params;
             return -1;
         }
         if (!(tbl->ctxt
-              = ( Tblctxt_t * )vcinitcontext(vc, NIL(Vccontext_t *)))) {
+              = ( Tblctxt_t * ) vcinitcontext(vc, NIL(Vccontext_t *)))) {
             vcclose(tbl->trans);
             free(tbl);
             return -1;
@@ -485,11 +487,11 @@ Void_t *params;
     vc_setarg:
         if (!(ctxt = vcgetcontext(vc, Tblctxt_t *)))
             return -1;
-        for (data = ( char * )params; data;) {
+        for (data = ( char * ) params; data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Tbldata, &arg);
             switch (TYPECAST(int, arg->data)) {
             case TBL_COLUMNS:
-                ctxt->ncols = ( ssize_t )vcatoi(val);
+                ctxt->ncols = ( ssize_t ) vcatoi(val);
                 break;
             case TBL_LEFT:
                 ctxt->flags |= VCTBL_LEFT;
@@ -515,12 +517,12 @@ Void_t *params;
     } else if (type == VC_INITCONTEXT) {
         if (!params)
             return 0;
-        if (!(ctxt = ( Tblctxt_t * )calloc(1, sizeof(Tblctxt_t))))
+        if (!(ctxt = ( Tblctxt_t * ) calloc(1, sizeof(Tblctxt_t))))
             return -1;
-        *(( Tblctxt_t ** )params) = ctxt;
+        *(( Tblctxt_t ** ) params) = ctxt;
         return 1;
     } else if (type == VC_FREECONTEXT) {
-        if ((ctxt = ( Tblctxt_t * )params)) {
+        if ((ctxt = ( Tblctxt_t * ) params)) {
             if (ctxt->plan)
                 vctblfreeplan(ctxt->plan);
             free(ctxt);

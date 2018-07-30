@@ -90,7 +90,7 @@ ppassert(int op, char *pred, char *args)
             a = 0;
             goto unmark;
         }
-    if (a = ( struct pplist * )hashget(pp.prdtab, pred)) {
+    if (a = ( struct pplist * ) hashget(pp.prdtab, pred)) {
         p = 0;
         q = a;
         while (q) {

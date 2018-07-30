@@ -71,7 +71,7 @@ Sfdisc_t *disc;
         return -1;
 
     if (type == SF_CLOSING) {
-        ( void )vtmtxlock(_Sfmutex);
+        ( void ) vtmtxlock(_Sfmutex);
         for (last = NIL(File_t *), ff = File; ff; last = ff, ff = ff->next)
             if (ff->f == f)
                 break;
@@ -88,9 +88,9 @@ Sfdisc_t *disc;
             while (sysremovef(ff->name) < 0 && errno == EINTR)
                 errno = 0;
 
-            free(( Void_t * )ff);
+            free(( Void_t * ) ff);
         }
-        ( void )vtmtxunlock(_Sfmutex);
+        ( void ) vtmtxunlock(_Sfmutex);
     }
 
     return 0;
@@ -106,12 +106,12 @@ _rmfiles()
 {
     reg File_t *ff, *next;
 
-    ( void )vtmtxlock(_Sfmutex);
+    ( void ) vtmtxlock(_Sfmutex);
     for (ff = File; ff; ff = next) {
         next = ff->next;
         _tmprmfile(ff->f, SF_CLOSING, NIL(Void_t *), ff->f->disc);
     }
-    ( void )vtmtxunlock(_Sfmutex);
+    ( void ) vtmtxunlock(_Sfmutex);
 }
 
 static Sfdisc_t Rmdisc = { NIL(Sfread_f),
@@ -136,14 +136,14 @@ char *file;
     if (!File)
         atexit(_rmfiles);
 
-    if (!(ff = ( File_t * )malloc(sizeof(File_t) + strlen(file))))
+    if (!(ff = ( File_t * ) malloc(sizeof(File_t) + strlen(file))))
         return -1;
-    ( void )vtmtxlock(_Sfmutex);
+    ( void ) vtmtxlock(_Sfmutex);
     ff->f = f;
     strcpy(ff->name, file);
     ff->next = File;
     File = ff;
-    ( void )vtmtxunlock(_Sfmutex);
+    ( void ) vtmtxunlock(_Sfmutex);
 
 #else /* can remove now */
     while (sysremovef(file) < 0 && errno == EINTR)
@@ -180,9 +180,9 @@ char **_sfgetpath(path) char *path;
         while (*p && *p != ':') /* skip dir name */
             ++p;
     }
-    if (n == 0 || !(dirs = ( char ** )malloc((n + 1) * sizeof(char *))))
+    if (n == 0 || !(dirs = ( char ** ) malloc((n + 1) * sizeof(char *))))
         return NIL(char **);
-    if (!(p = ( char * )malloc(strlen(path) + 1))) {
+    if (!(p = ( char * ) malloc(strlen(path) + 1))) {
         free(dirs);
         return NIL(char **);
     }
@@ -225,11 +225,11 @@ static int _tmpfd(f) Sfio_t *f;
 
     /* set up path of dirs to create temp files */
     if (!Tmppath && !(Tmppath = _sfgetpath("TMPPATH"))) {
-        if (!(Tmppath = ( char ** )malloc(2 * sizeof(char *))))
+        if (!(Tmppath = ( char ** ) malloc(2 * sizeof(char *))))
             return -1;
         if (!(file = getenv("TMPDIR")))
             file = TMPDFLT;
-        if (!(Tmppath[0] = ( char * )malloc(strlen(file) + 1))) {
+        if (!(Tmppath[0] = ( char * ) malloc(strlen(file) + 1))) {
             free(Tmppath);
             Tmppath = NIL(char **);
             return -1;
@@ -250,7 +250,7 @@ static int _tmpfd(f) Sfio_t *f;
         if (A == 0 || t > 0) /* get a quasi-random coefficient */
         {
             reg int r;
-            A = ( ulong )time(NIL(time_t *)) ^ (((ulong)(&t)) >> 3);
+            A = ( ulong ) time(NIL(time_t *)) ^ (((ulong)(&t)) >> 3);
             if (Key == 0)
                 Key = (A >> 16) | ((A & 0xffff) << 16);
             A ^= Key;
@@ -326,15 +326,15 @@ Sfdisc_t *disc;
        we are only interested in creating the file, not the stream */
     _Sfnotify = 0;
     sf = sfnew(
-    &newf, NIL(Void_t *), ( size_t )SF_UNBOUND, fd, SF_READ | SF_WRITE);
+    &newf, NIL(Void_t *), ( size_t ) SF_UNBOUND, fd, SF_READ | SF_WRITE);
     _Sfnotify = notify;
     if (!sf)
         return -1;
 
     if (newf.mutex) /* don't need a mutex for this stream */
     {
-        ( void )vtmtxclrlock(newf.mutex);
-        ( void )vtmtxclose(newf.mutex);
+        ( void ) vtmtxclrlock(newf.mutex);
+        ( void ) vtmtxclose(newf.mutex);
         newf.mutex = NIL(Vtmutex_t *);
     }
 
@@ -344,8 +344,8 @@ Sfdisc_t *disc;
     sfset(sf, (f->mode & (SF_READ | SF_WRITE)), 1);
 
     /* now remake the old stream into the new image */
-    memcpy(( Void_t * )(&savf), ( Void_t * )f, sizeof(Sfio_t));
-    memcpy(( Void_t * )f, ( Void_t * )sf, sizeof(Sfio_t));
+    memcpy(( Void_t * ) (&savf), ( Void_t * ) f, sizeof(Sfio_t));
+    memcpy(( Void_t * ) f, ( Void_t * ) sf, sizeof(Sfio_t));
     f->push = savf.push;
     f->pool = savf.pool;
     f->rsrv = savf.rsrv;
@@ -360,18 +360,19 @@ Sfdisc_t *disc;
     if (savf.data) {
         SFSTRSIZE(&savf);
         if (!(savf.flags & SF_MALLOC))
-            ( void )sfsetbuf(f, ( Void_t * )savf.data, savf.size);
+            ( void ) sfsetbuf(f, ( Void_t * ) savf.data, savf.size);
         if (savf.extent > 0)
-            ( void )sfwrite(f, ( Void_t * )savf.data, ( size_t )savf.extent);
-        ( void )sfseek(f, (Sfoff_t)(savf.next - savf.data), SEEK_SET);
+            ( void ) sfwrite(
+            f, ( Void_t * ) savf.data, ( size_t ) savf.extent);
+        ( void ) sfseek(f, (Sfoff_t)(savf.next - savf.data), SEEK_SET);
         if ((savf.flags & SF_MALLOC))
-            free(( Void_t * )savf.data);
+            free(( Void_t * ) savf.data);
     }
 
     /* announce change of status */
     f->disc = NIL(Sfdisc_t *);
     if (_Sfnotify)
-        (*_Sfnotify)(f, SF_TMPFILE, ( void * )(( long )f->file));
+        (*_Sfnotify)(f, SF_TMPFILE, ( void * ) (( long ) f->file));
 
     /* erase all traces of newf */
     newf.data = newf.endb = newf.endr = newf.endw = NIL(uchar *);
@@ -413,8 +414,8 @@ Sfio_t *sftmp(s) size_t s;
     if (!f)
         return NIL(Sfio_t *);
 
-    if (s != ( size_t )SF_UNBOUND) /* set up a discipline for out-of-bound,
-                                      etc. */
+    if (s != ( size_t ) SF_UNBOUND) /* set up a discipline for out-of-bound,
+                                       etc. */
         f->disc = &Tmpdisc;
 
     if (s == 0) /* make the file now */
@@ -429,7 +430,7 @@ Sfio_t *sftmp(s) size_t s;
     }
 
     if (_Sfnotify)
-        (*_Sfnotify)(f, SF_NEW, ( void * )(( long )f->file));
+        (*_Sfnotify)(f, SF_NEW, ( void * ) (( long ) f->file));
 
     return f;
 }

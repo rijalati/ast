@@ -161,7 +161,7 @@ openin(Archive_t *ap, File_t *f)
         error(ERROR_SYSTEM | 2, "%s: cannot read", f->path);
     else if (ap->format->checksum) {
         f->checksum = 0;
-        if (lseek(rfd, ( off_t )0, SEEK_SET) != 0)
+        if (lseek(rfd, ( off_t ) 0, SEEK_SET) != 0)
             error(ERROR_SYSTEM | 1,
                   "%s: %s checksum seek error",
                   f->path,
@@ -175,7 +175,7 @@ openin(Archive_t *ap, File_t *f)
                       "%s: %s checksum read error",
                       f->path,
                       ap->format->name);
-            if (lseek(rfd, ( off_t )0, SEEK_SET) != 0)
+            if (lseek(rfd, ( off_t ) 0, SEEK_SET) != 0)
                 error(ERROR_SYSTEM | 1,
                       "%s: %s checksum seek error",
                       f->path,
@@ -965,7 +965,7 @@ addlink(Archive_t *ap, File_t *f)
         goto linked;
     } else if (f->st->st_nlink <= 1)
         return 1;
-    if (p = ( Link_t * )hashget(state.linktab, ( char * )&id)) {
+    if (p = ( Link_t * ) hashget(state.linktab, ( char * ) &id)) {
         if (ap->format->flags & NOHARDLINKS) {
             error(1,
                   "%s: hard link information lost in %s format",
@@ -1025,7 +1025,7 @@ addlink(Archive_t *ap, File_t *f)
     if (!(p = newof(0, Link_t, 1, n)))
         goto toomany;
     f->link = p;
-    strcpy(p->name = ( char * )p + sizeof(*p), f->name);
+    strcpy(p->name = ( char * ) p + sizeof(*p), f->name);
     p->namesize = n;
     p->id.dev = f->st->st_dev;
     p->id.ino = f->st->st_ino;
@@ -1093,7 +1093,7 @@ initarchive(const char *name, int mode)
     if (!(ap = newof(0, Archive_t, 1, 0)))
         nospace();
     initfile(ap, &ap->file, &ap->st, NiL, 0);
-    ap->name = ( char * )name;
+    ap->name = ( char * ) name;
     ap->expected = ap->format = 0;
     ap->section = 0;
     ap->sum = -1;
@@ -1232,7 +1232,7 @@ setfile(Archive_t *ap, File_t *f)
     p->gid = f->st->st_gid;
     p->mode = f->perm;
     p->restoremode = f->restoremode;
-    restore(f->name, ( char * )p, NiL);
+    restore(f->name, ( char * ) p, NiL);
 }
 
 /*
@@ -1254,7 +1254,7 @@ settime(const char *name, Tv_t *ap, Tv_t *mp, Tv_t *cp)
 int
 restore(const char *name, char *ap, void *handle)
 {
-    Post_t *p = ( Post_t * )ap;
+    Post_t *p = ( Post_t * ) ap;
     int m;
     struct stat st;
 
@@ -1327,7 +1327,7 @@ prune(Archive_t *ap, File_t *f, struct stat *st)
 ssize_t
 holewrite(int fd, void *buf, size_t siz)
 {
-    char *t = ( char * )buf;
+    char *t = ( char * ) buf;
     char *e = t + siz;
     char *b = 0;
     char *s;

@@ -48,12 +48,12 @@
 
 Cxtype_t types[];
 
-#define PREFIX(a, b) ((Cxnumber_t)( a )*64 + (b))
+#define PREFIX(a, b) ((Cxnumber_t)( a ) *64 + (b))
 
 #if _typ_int64_t
 
 #    define PREFIX_ADDR(p) ((Ptaddr_t)(((Cxinteger_t)(p)) >> 6))
-#    define PREFIX_BITS(p) (( int )(((Cxinteger_t)(p)) & 0x3f))
+#    define PREFIX_BITS(p) (( int ) (((Cxinteger_t)(p)) & 0x3f))
 
 #else
 
@@ -69,7 +69,7 @@ prefix_bits(Cxnumber_t p)
     u = p / 64;
     a = u;
     a *= 64;
-    return ( int )(p - a) & 0x3f;
+    return ( int ) (p - a) & 0x3f;
 }
 
 #endif
@@ -89,7 +89,7 @@ addrv4_external(Cx_t *cx,
     char *s;
     ssize_t n;
 
-    s = fmtip4(( Ptaddr_t )value->number, -1);
+    s = fmtip4(( Ptaddr_t ) value->number, -1);
     n = strlen(s);
     if ((n + 1) > size)
         return n + 1;
@@ -118,7 +118,7 @@ addrv4_internal(Cx_t *cx,
         return -1;
     }
     ret->value.number = addr;
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 static ssize_t
@@ -136,8 +136,8 @@ addrv6_external(Cx_t *cx,
     ssize_t n;
     int i;
 
-    pp = ( unsigned char * )value->buffer.data;
-    if (!(s = ( char * )CXDETAILS(details, format, type, 0))) {
+    pp = ( unsigned char * ) value->buffer.data;
+    if (!(s = ( char * ) CXDETAILS(details, format, type, 0))) {
         s = pp ? fmtip6(pp, -1) : "(nil)";
         n = strlen(s);
         if ((n + 1) > size)
@@ -190,7 +190,7 @@ addrv6_internal(Cx_t *cx,
     memcpy(ap, &addr, sizeof(addr));
     ret->value.buffer.data = ap;
     ret->value.buffer.size = sizeof(*ap);
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 static ssize_t
@@ -207,7 +207,7 @@ addr_external(Cx_t *cx,
     ssize_t n;
 
     if (!value->buffer.data || !value->buffer.size) {
-        s = fmtip4(( Ptaddr_t )0, -1);
+        s = fmtip4(( Ptaddr_t ) 0, -1);
         n = strlen(s);
         if ((n + 1) > size)
             return n + 1;
@@ -236,13 +236,13 @@ addr_internal(Cx_t *cx,
     unsigned char addrv6[IP6ADDR];
 
     if (!strtoip4(buf, &e, &addrv4, NiL)
-        && (e >= (( char * )buf + size) || !isalnum(*e) && *e != '.')) {
+        && (e >= (( char * ) buf + size) || !isalnum(*e) && *e != '.')) {
         ret->value.number = addrv4;
         ret->type = IPV4ADDR_T;
-        return e - ( char * )buf;
+        return e - ( char * ) buf;
     }
     if (!strtoip6(buf, &e, addrv6, NiL)
-        && (e >= (( char * )buf + size) || !isalnum(*e) && *e != '.')) {
+        && (e >= (( char * ) buf + size) || !isalnum(*e) && *e != '.')) {
         if (!vm)
             vm = Vmregion;
         if (!(ap = vmnewof(vm, 0, unsigned char, IP6ADDR, 0))) {
@@ -254,7 +254,7 @@ addr_internal(Cx_t *cx,
         ret->value.buffer.data = ap;
         ret->value.buffer.size = sizeof(*ap);
         ret->type = IPV6ADDR_T;
-        return e - ( char * )buf;
+        return e - ( char * ) buf;
     }
     if (disc->errorf && !(cx->flags & CX_QUIET))
         (*disc->errorf)(cx, disc, 1, "%-.*s: invalid ip address", size, buf);
@@ -262,10 +262,10 @@ addr_internal(Cx_t *cx,
 }
 
 static Cxtype_t *addr_generic[]
-= { ( Cxtype_t * )"ipv4addr_t", ( Cxtype_t * )"ipv6addr_t", 0 };
+= { ( Cxtype_t * ) "ipv4addr_t", ( Cxtype_t * ) "ipv6addr_t", 0 };
 
 static Cxtype_t *as_generic[]
-= { ( Cxtype_t * )"as16_t", ( Cxtype_t * )"as32_t", 0 };
+= { ( Cxtype_t * ) "as16_t", ( Cxtype_t * ) "as32_t", 0 };
 
 static ssize_t
 as16path_external(Cx_t *cx,
@@ -329,10 +329,10 @@ as32_internal(Cx_t *cx,
     char *e;
     unsigned long as;
 
-    as = ( unsigned int )strtoul(buf, &e, 10);
+    as = ( unsigned int ) strtoul(buf, &e, 10);
     if (*e == '.') {
         as <<= 16;
-        as += ( unsigned int )strtoul(e, &e, 10);
+        as += ( unsigned int ) strtoul(e, &e, 10);
     }
     if (*e) {
         if (disc->errorf && !(cx->flags & CX_QUIET))
@@ -341,7 +341,7 @@ as32_internal(Cx_t *cx,
         return -1;
     }
     ret->value.number = as;
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 static ssize_t
@@ -456,7 +456,7 @@ aspath_match_exec(Cx_t *cx,
                   Cxvalue_t *val,
                   Cxdisc_t *disc)
 {
-    Path_match_t *pm = ( Path_match_t * )data;
+    Path_match_t *pm = ( Path_match_t * ) data;
     Ire_t *ire;
 
     if (type->externalf == as32path_external) {
@@ -480,7 +480,7 @@ aspath_match_exec(Cx_t *cx,
 static int
 aspath_match_free(Cx_t *cx, void *data, Cxdisc_t *disc)
 {
-    Path_match_t *pm = ( Path_match_t * )data;
+    Path_match_t *pm = ( Path_match_t * ) data;
 
     if (pm->ire16)
         irefree(pm->ire16);
@@ -829,7 +829,7 @@ prefixv4_external(Cx_t *cx,
     char *s;
     ssize_t n;
 
-    if (s = ( char * )CXDETAILS(details, format, type, 0))
+    if (s = ( char * ) CXDETAILS(details, format, type, 0))
         s
         = sfprints(s, PREFIX_ADDR(value->number), PREFIX_BITS(value->number));
     else
@@ -863,7 +863,7 @@ prefixv4_internal(Cx_t *cx,
         return -1;
     }
     ret->value.number = PREFIX(addr, bits);
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 static ssize_t
@@ -881,8 +881,8 @@ prefixv6_external(Cx_t *cx,
     ssize_t n;
     int i;
 
-    pp = ( unsigned char * )value->buffer.data;
-    if (!(s = ( char * )CXDETAILS(details, format, type, 0))) {
+    pp = ( unsigned char * ) value->buffer.data;
+    if (!(s = ( char * ) CXDETAILS(details, format, type, 0))) {
         s = pp ? fmtip6(pp, pp[IP6BITS]) : "(nil)";
         n = strlen(s);
         if ((n + 1) > size)
@@ -934,7 +934,7 @@ prefixv6_internal(Cx_t *cx,
     }
     memcpy(ret->value.buffer.data = pp, prefix, IP6PREFIX);
     ret->value.buffer.size = IP6PREFIX;
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 static ssize_t
@@ -970,13 +970,13 @@ prefix_internal(Cx_t *cx,
     unsigned char bits;
 
     if (!strtoip4(buf, &e, &prefixv4, &bits)
-        && (e >= (( char * )buf + size) || !*e || isspace(*e))) {
+        && (e >= (( char * ) buf + size) || !*e || isspace(*e))) {
         ret->value.number = PREFIX(prefixv4, bits);
         ret->type = IPV4PREFIX_T;
-        return e - ( char * )buf;
+        return e - ( char * ) buf;
     }
     if (!strtoip6(buf, &e, prefixv6, prefixv6 + IP6BITS)
-        && (e >= (( char * )buf + size) || !*e || isspace(*e))) {
+        && (e >= (( char * ) buf + size) || !*e || isspace(*e))) {
         if (!vm)
             vm = Vmregion;
         if (!(pp = vmnewof(vm, 0, unsigned char, IP6PREFIX, 0))) {
@@ -987,7 +987,7 @@ prefix_internal(Cx_t *cx,
         memcpy(ret->value.buffer.data = pp, prefixv6, IP6PREFIX);
         ret->value.buffer.size = IP6PREFIX;
         ret->type = IPV6PREFIX_T;
-        return e - ( char * )buf;
+        return e - ( char * ) buf;
     }
     if (disc->errorf && !(cx->flags & CX_QUIET))
         (*disc->errorf)(cx, disc, 1, "%-.*s: invalid ip address", size, buf);
@@ -1001,13 +1001,13 @@ match_list_exec(Cx_t *cx,
                 Cxvalue_t *val,
                 Cxdisc_t *disc)
 {
-    return ireexec(( Ire_t * )data, val->buffer.data, val->buffer.size) != 0;
+    return ireexec(( Ire_t * ) data, val->buffer.data, val->buffer.size) != 0;
 }
 
 static int
 match_list_free(Cx_t *cx, void *data, Cxdisc_t *disc)
 {
-    return irefree(( Ire_t * )data);
+    return irefree(( Ire_t * ) data);
 }
 
 static Cxmatch_t match_as16path
@@ -1043,7 +1043,7 @@ static Cxmatch_t match_aspath
     aspath_match_free };
 
 static Cxtype_t *aspath_generic[]
-= { ( Cxtype_t * )"as16path_t", ( Cxtype_t * )"as32path_t", 0 };
+= { ( Cxtype_t * ) "as16path_t", ( Cxtype_t * ) "as32path_t", 0 };
 
 static Cxmatch_t match_cluster
 = { "cluster-re",
@@ -1177,7 +1177,7 @@ ptload(int str, Cxvalue_t *val, Ptdisc_t *ptdisc, Cxdisc_t *disc)
     } else if ((meth = dssmeth("bgp", disc))
                && (dss = dssopen(0, 0, disc, meth))) {
         if (ip = dssfopen(dss, s + 1, NiL, DSS_FILE_READ, NiL)) {
-            while (rp = ( Bgproute_t * )dssfread(ip))
+            while (rp = ( Bgproute_t * ) dssfread(ip))
                 if (!ptinsert(pt,
                               PTMIN(rp->addr.v4, rp->bits),
                               PTMAX(rp->addr.v4, rp->bits))) {
@@ -1214,7 +1214,7 @@ ptvload(int str, Cxvalue_t *val, Ptdisc_t *ptdisc, Cxdisc_t *disc)
     if (!(ptv = ptvopen(ptdisc, 16)))
         return 0;
     if (!str) {
-        pp = ( unsigned char * )val->buffer.data;
+        pp = ( unsigned char * ) val->buffer.data;
         if (!ptvinsert(ptv,
                        ptvmin(ptv->size, ptv->r[0], pp, pp[IP6BITS]),
                        ptvmax(ptv->size, ptv->r[1], pp, pp[IP6BITS]))) {
@@ -1235,7 +1235,7 @@ ptvload(int str, Cxvalue_t *val, Ptdisc_t *ptdisc, Cxdisc_t *disc)
     } else if ((meth = dssmeth("bgp", disc))
                && (dss = dssopen(0, 0, disc, meth))) {
         if (ip = dssfopen(dss, s + 1, NiL, DSS_FILE_READ, NiL)) {
-            while (rp = ( Bgproute_t * )dssfread(ip))
+            while (rp = ( Bgproute_t * ) dssfread(ip))
                 if (!ptvinsert(ptv,
                                ptvmin(ptv->size,
                                       ptv->r[0],
@@ -1305,7 +1305,7 @@ prefix_match_exec(Cx_t *cx,
                   Cxvalue_t *val,
                   Cxdisc_t *disc)
 {
-    Prefix_match_t *pm = ( Prefix_match_t * )data;
+    Prefix_match_t *pm = ( Prefix_match_t * ) data;
 
     if (type->externalf == addrv6_external
         || type->externalf == prefixv6_external) {
@@ -1316,7 +1316,7 @@ prefix_match_exec(Cx_t *cx,
             if (!(pm->ptv = ptvload(pm->str, &pm->val, &pm->ptdisc, disc)))
                 return -2;
         }
-        return ptvmatch(pm->ptv, ( Ptvaddr_t )val->buffer.data) != 0;
+        return ptvmatch(pm->ptv, ( Ptvaddr_t ) val->buffer.data) != 0;
     }
     if (!pm->pt) {
         ptinit(&pm->ptdisc);
@@ -1328,14 +1328,14 @@ prefix_match_exec(Cx_t *cx,
     return ptmatch(pm->pt,
                    type->externalf == prefixv4_external
                    ? PREFIX_ADDR(val->number)
-                   : ( Ptaddr_t )val->number)
+                   : ( Ptaddr_t ) val->number)
            != 0;
 }
 
 static int
 prefix_match_free(Cx_t *cx, void *data, Cxdisc_t *disc)
 {
-    Prefix_match_t *pm = ( Prefix_match_t * )data;
+    Prefix_match_t *pm = ( Prefix_match_t * ) data;
 
     free(pm);
     return 0;
@@ -1372,7 +1372,7 @@ static Cxmatch_t match_prefix
     prefix_match_free };
 
 static Cxtype_t *prefix_generic[]
-= { ( Cxtype_t * )"ipv4prefix_t", ( Cxtype_t * )"ipv6prefix_t", 0 };
+= { ( Cxtype_t * ) "ipv4prefix_t", ( Cxtype_t * ) "ipv6prefix_t", 0 };
 
 static int
 op_match_ip4_NP(Cx_t *cx,
@@ -1412,8 +1412,8 @@ op_match_ip6_NP(Cx_t *cx,
     unsigned char r0[IP6ADDR];
     unsigned char r1[IP6ADDR];
 
-    if (!(ap = ( unsigned char * )a->value.buffer.data)
-        || !(bp = ( unsigned char * )b->value.buffer.data))
+    if (!(ap = ( unsigned char * ) a->value.buffer.data)
+        || !(bp = ( unsigned char * ) b->value.buffer.data))
         r->value.number = 0;
     else
         r->value.number = (fvcmp(16,
@@ -1445,7 +1445,7 @@ Cxtype_t types[]
 = { { "as16_t",
       "An unsigned 16 bit autonomous system number.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       0,
       0,
@@ -1458,7 +1458,7 @@ Cxtype_t types[]
     { "as32_t",
       "A 32 bit autonomous system number.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       as32_external,
       as32_internal,
@@ -1471,7 +1471,7 @@ Cxtype_t types[]
     { "as_t",
       0,
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       0,
       0,
@@ -1486,7 +1486,7 @@ Cxtype_t types[]
     { "as16path_t",
       "A sequence of as16_t 16 bit autonomous system numbers.",
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       as16path_external,
       as16path_internal,
@@ -1503,7 +1503,7 @@ Cxtype_t types[]
     { "as32path_t",
       "A sequence of as32_t 32 bit autonomous system numbers.",
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       as32path_external,
       as32path_internal,
@@ -1520,7 +1520,7 @@ Cxtype_t types[]
     { "aspath_t",
       0,
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       aspath_external,
       aspath_internal,
@@ -1535,7 +1535,7 @@ Cxtype_t types[]
     { "cluster_t",
       "A sequence of unsigned 32 bit integers.",
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       cluster_external,
       cluster_internal,
@@ -1551,7 +1551,7 @@ Cxtype_t types[]
     { "community_t",
       "A sequence of unsigned 16 bit integer pairs.",
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       community_external,
       community_internal,
@@ -1567,7 +1567,7 @@ Cxtype_t types[]
     { "extended_t",
       "A sequence of unsigned 64 bit integer tuples.",
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       extended_external,
       extended_internal,
@@ -1583,7 +1583,7 @@ Cxtype_t types[]
     { "ipv4addr_t",
       "A dotted quad ipv4 address.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       addrv4_external,
       addrv4_internal,
@@ -1597,7 +1597,7 @@ Cxtype_t types[]
       "An RFC 2373 ipv6 address. The details string \"C\" lists the prefix "
       "as 16 0x%02x comma-separated values.",
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       addrv6_external,
       addrv6_internal,
@@ -1610,7 +1610,7 @@ Cxtype_t types[]
     { "ipaddr_t",
       0,
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       addr_external,
       addr_internal,
@@ -1625,7 +1625,7 @@ Cxtype_t types[]
     { "ipv4prefix_t",
       "/length appended to an ipv4addr_t prefix.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       prefixv4_external,
       prefixv4_internal,
@@ -1646,7 +1646,7 @@ Cxtype_t types[]
       "lists the prefix as 17 0x%02x comma-separated values, the first 16 "
       "being the address, and the 17th being the number of prefix bits.",
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       prefixv6_external,
       prefixv6_internal,
@@ -1659,7 +1659,7 @@ Cxtype_t types[]
     { "ipprefix_t",
       0,
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       prefix_external,
       prefix_internal,
@@ -1674,7 +1674,7 @@ Cxtype_t types[]
     { "identifier_t",
       "A sequence of unsigned 8 bit integers.",
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       identifier_external,
       identifier_internal,
@@ -1690,7 +1690,7 @@ Cxtype_t types[]
     { "labels_t",
       "A sequence of unsigned 32 bit integer pairs.",
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       labels_external,
       labels_internal,
@@ -1706,7 +1706,7 @@ Cxtype_t types[]
     { "values_t",
       "A sequence of unsigned 32 bit integers.",
       CXH,
-      ( Cxtype_t * )"buffer",
+      ( Cxtype_t * ) "buffer",
       0,
       values_external,
       values_internal,

@@ -86,7 +86,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " ?-nonewline? ?channelId? string\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -101,7 +101,7 @@ char **argv;           /* Argument strings. */
                              "bad argument \"",
                              argv[i + 2],
                              "\": should be \"nonewline\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         newline = 0;
@@ -113,7 +113,7 @@ char **argv;           /* Argument strings. */
         i++;
     }
     chan = Tcl_GetChannel(interp, channelId, &mode);
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     if ((mode & TCL_WRITABLE) == 0) {
@@ -121,7 +121,7 @@ char **argv;           /* Argument strings. */
                          "channel \"",
                          channelId,
                          "\" wasn't opened for writing",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -142,7 +142,7 @@ error:
                      Tcl_GetChannelName(chan),
                      "\": ",
                      Tcl_PosixError(interp),
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -180,11 +180,11 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " channelId\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], &mode);
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     if ((mode & TCL_WRITABLE) == 0) {
@@ -192,7 +192,7 @@ char **argv;           /* Argument strings. */
                          "channel \"",
                          argv[1],
                          "\" wasn't opened for writing",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -203,7 +203,7 @@ char **argv;           /* Argument strings. */
                          Tcl_GetChannelName(chan),
                          "\": ",
                          Tcl_PosixError(interp),
-                         ( char * )NULL);
+                         ( char * ) NULL);
     }
     return result;
 }
@@ -247,11 +247,11 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " channelId ?varName?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], &mode);
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     if ((mode & TCL_READABLE) == 0) {
@@ -259,12 +259,12 @@ char **argv;           /* Argument strings. */
                          "channel \"",
                          argv[1],
                          "\" wasn't opened for reading",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
     if (argc != 3) {
-        varName = ( char * )NULL;
+        varName = ( char * ) NULL;
     } else {
         varName = argv[2];
     }
@@ -278,12 +278,12 @@ char **argv;           /* Argument strings. */
                              Tcl_GetChannelName(chan),
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         lineLen = -1;
     }
-    if (varName == ( char * )NULL) {
+    if (varName == ( char * ) NULL) {
         Tcl_DStringResult(interp, &ds);
     } else {
         if (Tcl_SetVar(
@@ -294,7 +294,7 @@ char **argv;           /* Argument strings. */
         }
         Tcl_ResetResult(interp);
         sprintf(buf, "%d", lineLen);
-        Tcl_AppendResult(interp, buf, ( char * )NULL);
+        Tcl_AppendResult(interp, buf, ( char * ) NULL);
     }
     Tcl_DStringFree(&ds);
 
@@ -348,7 +348,7 @@ char **argv;           /* Argument strings. */
                          " channelId ?numBytes?\" or \"",
                          argv[0],
                          " ?-nonewline? channelId\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     i = 1;
@@ -363,7 +363,7 @@ char **argv;           /* Argument strings. */
     }
 
     chan = Tcl_GetChannel(interp, argv[i], &mode);
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     if ((mode & TCL_READABLE) == 0) {
@@ -371,7 +371,7 @@ char **argv;           /* Argument strings. */
                          "channel \"",
                          argv[i],
                          "\" wasn't opened for reading",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -384,7 +384,7 @@ char **argv;           /* Argument strings. */
 
     toRead = INT_MAX;
     if (i < argc) {
-        if (isdigit(( unsigned char )(argv[i][0]))) {
+        if (isdigit(( unsigned char ) (argv[i][0]))) {
             if (Tcl_GetInt(interp, argv[i], &toRead) != TCL_OK) {
                 return TCL_ERROR;
             }
@@ -395,7 +395,7 @@ char **argv;           /* Argument strings. */
                              "bad argument \"",
                              argv[i],
                              "\": should be \"nonewline\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
     }
@@ -417,7 +417,7 @@ char **argv;           /* Argument strings. */
                              Tcl_GetChannelName(chan),
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -492,11 +492,11 @@ char **argv;           /* The argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " inChanId outChanId ?chunkSize?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     inChan = Tcl_GetChannel(interp, argv[1], &mode);
-    if (inChan == ( Tcl_Channel )NULL) {
+    if (inChan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     if ((mode & TCL_READABLE) == 0) {
@@ -504,11 +504,11 @@ char **argv;           /* The argument strings. */
                          "channel \"",
                          argv[1],
                          "\" wasn't opened for reading",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     outChan = Tcl_GetChannel(interp, argv[2], &mode);
-    if (outChan == ( Tcl_Channel )NULL) {
+    if (outChan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     if ((mode & TCL_WRITABLE) == 0) {
@@ -516,7 +516,7 @@ char **argv;           /* The argument strings. */
                          "channel \"",
                          argv[2],
                          "\" wasn't opened for writing",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -529,7 +529,7 @@ char **argv;           /* The argument strings. */
         }
     }
 
-    bufPtr = ckalloc(( unsigned )TCL_READ_CHUNK_SIZE);
+    bufPtr = ckalloc(( unsigned ) TCL_READ_CHUNK_SIZE);
     for (totalRead = 0; requested > 0;
          totalRead += actuallyRead, requested -= actuallyRead) {
         toReadNow = requested;
@@ -544,7 +544,7 @@ char **argv;           /* The argument strings. */
                              ": ",
                              Tcl_GetChannelName(inChan),
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (actuallyRead == 0) {
@@ -560,7 +560,7 @@ char **argv;           /* The argument strings. */
                              ": ",
                              Tcl_GetChannelName(outChan),
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
     }
@@ -604,11 +604,11 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " channelId offset ?origin?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], NULL);
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     if (Tcl_GetInt(interp, argv[2], &offset) != TCL_OK) {
@@ -632,7 +632,7 @@ char **argv;           /* Argument strings. */
                              "bad origin \"",
                              argv[3],
                              "\": should be start, current, or end",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
     }
@@ -644,7 +644,7 @@ char **argv;           /* Argument strings. */
                          Tcl_GetChannelName(chan),
                          "\": ",
                          Tcl_PosixError(interp),
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -681,7 +681,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " channelId\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     /*
@@ -690,7 +690,7 @@ char **argv;           /* Argument strings. */
      */
 
     chan = Tcl_GetChannel(interp, argv[1], NULL);
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     sprintf(interp->result, "%d", Tcl_Tell(chan));
@@ -730,11 +730,11 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " channelId\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], NULL);
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     if (Tcl_UnregisterChannel(interp, chan) != TCL_OK) {
@@ -796,18 +796,18 @@ char **argv;           /* Argument strings. */
         "wrong # args: should be \"",
         argv[0],
         " channelId ?optionName? ?value? ?optionName value?...\"",
-        ( char * )NULL);
+        ( char * ) NULL);
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], NULL);
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     if (argc == 2) {
         Tcl_DStringInit(&ds);
-        if (Tcl_GetChannelOption(chan, ( char * )NULL, &ds) != TCL_OK) {
+        if (Tcl_GetChannelOption(chan, ( char * ) NULL, &ds) != TCL_OK) {
             Tcl_AppendResult(
-            interp, "option retrieval failed", ( char * )NULL);
+            interp, "option retrieval failed", ( char * ) NULL);
             return TCL_ERROR;
         }
         Tcl_DStringResult(interp, &ds);
@@ -825,7 +825,7 @@ char **argv;           /* Argument strings. */
             "\": must be -blocking, -buffering, -buffersize, ",
             "-eofchar, -translation, ",
             "or a channel type specific option",
-            ( char * )NULL);
+            ( char * ) NULL);
             return TCL_ERROR;
         }
         Tcl_DStringResult(interp, &ds);
@@ -873,11 +873,11 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " channelId\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], &mode);
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     sprintf(interp->result, "%d", Tcl_Eof(chan) ? 1 : 0);
@@ -1061,11 +1061,11 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " channelId\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], &mode);
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     if ((mode & TCL_READABLE) == 0) {
@@ -1073,7 +1073,7 @@ char **argv;        /* Argument strings. */
                          "channel \"",
                          argv[1],
                          "\" wasn't opened for reading",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -1114,7 +1114,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " fileName ?access? ?permissions?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     prot = 0666;
@@ -1170,13 +1170,13 @@ char **argv;        /* Argument strings. */
             }
             chan = Tcl_OpenCommandChannel(interp, cmdArgc, cmdArgv, flags);
         }
-        ckfree(( char * )cmdArgv);
+        ckfree(( char * ) cmdArgv);
     }
-    if (chan == ( Tcl_Channel )NULL) {
+    if (chan == ( Tcl_Channel ) NULL) {
         return TCL_ERROR;
     }
     Tcl_RegisterChannel(interp, chan);
-    Tcl_AppendResult(interp, Tcl_GetChannelName(chan), ( char * )NULL);
+    Tcl_AppendResult(interp, Tcl_GetChannelName(chan), ( char * ) NULL);
     return TCL_OK;
 }
 

@@ -41,7 +41,7 @@ typedef struct Stack_s
 char *
 fmtre(const char *as)
 {
-    char *s = ( char * )as;
+    char *s = ( char * ) as;
     int c;
     char *t;
     Stack_t *p;

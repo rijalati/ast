@@ -52,7 +52,7 @@ typedef struct Ar_s
 static int
 zoo_done(Pax_t *pax, Paxarchive_t *ap)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
 
     if (!ar)
         return -1;
@@ -95,7 +95,7 @@ zoo_getprologue(Pax_t *pax,
 static int
 zoo_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     unsigned char *buf;
     char *s;
     Tm_t tm;
@@ -238,10 +238,10 @@ zoo_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         memset(&tm, 0, sizeof(tm));
         tm.tm_year = ((dosdate >> 9) & 0x7f) + 80;
         tm.tm_mon = ((dosdate >> 5) & 0x0f) - 1;
-        tm.tm_mday = (( dosdate )&0x1f);
+        tm.tm_mday = (( dosdate ) &0x1f);
         tm.tm_hour = ((dostime >> 11) & 0x1f);
         tm.tm_min = ((dostime >> 5) & 0x3f);
-        tm.tm_sec = (( dostime )&0x1f) * 2;
+        tm.tm_sec = (( dostime ) &0x1f) * 2;
         if (doszone < 127)
             tm.tm_sec += 15 * 60 * doszone;
         else if (doszone > 127)
@@ -256,7 +256,7 @@ zoo_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 static int
 zoo_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     Sfio_t *sp;
     ssize_t n;
     int r;

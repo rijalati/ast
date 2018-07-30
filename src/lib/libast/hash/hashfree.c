@@ -71,7 +71,7 @@ hashfree(Hash_table_t *tab)
                 p = b;
                 b = b->next;
                 if (freebucket)
-                    (*freebucket)(( char * )p);
+                    (*freebucket)(( char * ) p);
                 else if (freevalue && p->value)
                     (*freevalue)(p->value);
                 if (p->hash & HASH_FREENAME) {
@@ -88,7 +88,7 @@ hashfree(Hash_table_t *tab)
                         free(p);
                 } else if (p->hash & HASH_HIDES) {
                     p->hash &= ~HASH_HIDES;
-                    p->name = (( Hash_bucket_t * )p->name)->name;
+                    p->name = (( Hash_bucket_t * ) p->name)->name;
                 }
             }
         }

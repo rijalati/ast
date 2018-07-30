@@ -32,7 +32,7 @@ static __thread unsigned int _AsoThreadId; /* thread local ID		*/
 static unsigned int _AsoThreadCount = 0; /* known thread count	*/
 static unsigned int _AsoKey = 0;         /* key to construct thread ids	*/
 
-#define HIGHBIT (~((~(( unsigned int )0)) >> 1))
+#define HIGHBIT (~((~(( unsigned int ) 0)) >> 1))
 #define PRIME 17109811
 #define HALFINT (sizeof(int) * 8 / 2)
 
@@ -43,7 +43,7 @@ asothreadid(void)
 
     if (_AsoKey == 0) /* use process-id (usually < 16-bits) */
     {
-        _AsoKey = ( unsigned int )getpid();
+        _AsoKey = ( unsigned int ) getpid();
 
         /* hashing low bytes to help spread the ids out */
         hash = ((_AsoKey >> 16) & 0xff) + 31;

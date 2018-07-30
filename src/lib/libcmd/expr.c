@@ -484,7 +484,7 @@ b_expr(int argc, char **argv, Shbltin_t *context)
             error(ERROR_usage(2), "%s", opt_info.arg);
         }
         if (error_info.errors)
-            error(ERROR_usage(2), "%s", optusage(( char * )0));
+            error(ERROR_usage(2), "%s", optusage(( char * ) 0));
         state.arglist = argv + opt_info.index;
     }
     if (expr_or(&state, &node))

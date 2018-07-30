@@ -72,7 +72,8 @@ int type;
     if (!disc) /* only want to know current discipline */
         return old;
 
-    if (old->eventf && (*old->eventf)(dt, DT_DISC, ( Void_t * )disc, old) < 0)
+    if (old->eventf
+        && (*old->eventf)(dt, DT_DISC, ( Void_t * ) disc, old) < 0)
         return NIL(Dtdisc_t *);
 
     if ((type & (DT_SAMEHASH | DT_SAMECMP)) != (DT_SAMEHASH | DT_SAMECMP))

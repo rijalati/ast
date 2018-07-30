@@ -47,7 +47,7 @@ swapget(int op, const void *b, int n)
     if (op)
         swapmem(op, b, d = tmp, n);
     else
-        d = ( unsigned char * )b;
+        d = ( unsigned char * ) b;
     p = d + n;
     v = 0;
     while (d < p) {

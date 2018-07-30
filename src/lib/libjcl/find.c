@@ -104,10 +104,10 @@ expand(Jcl_t *jcl, const char *name, int flags)
     Sfio_t *vp;
 
     if (jcl)
-        for (s = ( char * )name; *s; s++)
+        for (s = ( char * ) name; *s; s++)
             if (*s == '$' && *(s + 1) == '{') {
                 p = sfstrtell(jcl->tp);
-                if (n = s - ( char * )name)
+                if (n = s - ( char * ) name)
                     sfwrite(jcl->tp, name, n);
                 while (c = *s++)
                     if (c == '$' && *s == '{') {
@@ -203,7 +203,7 @@ expand(Jcl_t *jcl, const char *name, int flags)
                     nospace(jcl, NiL);
                 return s;
             }
-    return ( char * )name;
+    return ( char * ) name;
 }
 
 /*
@@ -217,7 +217,7 @@ jclinclude(Jcl_t *jcl, const char *dir, unsigned long flags, Jcldisc_t *disc)
     Dir_t *dp;
     struct stat st;
 
-    if (dir && *(dir = ( const char * )expand(jcl, dir, 0))
+    if (dir && *(dir = ( const char * ) expand(jcl, dir, 0))
         && !streq(dir, ".") && directory(dir, &st)) {
         lp = jcl ? &jcl->dirs : &state.dirs;
         for (dp = lp->head; dp; dp = dp->next)
@@ -314,11 +314,11 @@ jclfind(Jcl_t *jcl,
                 nospace(jcl, NiL);
                 return 0;
             }
-            s = ( char * )name;
+            s = ( char * ) name;
             goto save;
         }
     }
-    name = ( const char * )expand(jcl, jclpath(jcl, name), 0);
+    name = ( const char * ) expand(jcl, jclpath(jcl, name), 0);
 
     /*
      * check the unadorned path first
@@ -349,7 +349,7 @@ jclfind(Jcl_t *jcl,
     if (flags & JCL_CREATE) {
         if (spp)
             *spp = 0;
-        s = ( char * )name;
+        s = ( char * ) name;
         goto save;
     }
     if (level && jcl->disc->errorf)

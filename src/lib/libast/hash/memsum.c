@@ -41,7 +41,7 @@
 unsigned long
 memsum(const void *ap, int n, unsigned long c)
 {
-    const unsigned char *p = ( const unsigned char * )ap;
+    const unsigned char *p = ( const unsigned char * ) ap;
     const unsigned char *e = p + n;
 
     while (p < e)

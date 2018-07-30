@@ -44,7 +44,7 @@ struct Server_s
 static int
 acceptf(Css_t *css, Cssfd_t *fp, Csid_t *ip, char **av, Cssdisc_t *disc)
 {
-    Server_t *server = ( Server_t * )disc;
+    Server_t *server = ( Server_t * ) disc;
 
     return (*server->con)(server->handle, fp->fd, ip, 0, av) ? -1 : fp->fd;
 }
@@ -52,7 +52,7 @@ acceptf(Css_t *css, Cssfd_t *fp, Csid_t *ip, char **av, Cssdisc_t *disc)
 static int
 actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 {
-    Server_t *server = ( Server_t * )disc;
+    Server_t *server = ( Server_t * ) disc;
 
     switch (fp->status) {
     case CS_POLL_READ:
@@ -70,7 +70,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 static int
 exceptf(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
 {
-    Server_t *server = ( Server_t * )disc;
+    Server_t *server = ( Server_t * ) disc;
 
     switch (op) {
     case CSS_CLOSE:
@@ -169,7 +169,7 @@ csserve(Cs_t *state,
     server->disc.exceptf = exceptf;
     server->done = done;
     close(0);
-    if (!(server->css = cssopen(path, ( Cssdisc_t * )server)))
+    if (!(server->css = cssopen(path, ( Cssdisc_t * ) server)))
         exit(1);
     error_info.id = server->css->service;
     state->id = server->css->id;

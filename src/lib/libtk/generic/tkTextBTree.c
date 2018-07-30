@@ -109,9 +109,9 @@ int tkBTreeDebug = 0;
  */
 
 #define CSEG_SIZE(chars)                                                     \
-    (( unsigned )(Tk_Offset(TkTextSegment, body) + 1 + (chars)))
+    (( unsigned ) (Tk_Offset(TkTextSegment, body) + 1 + (chars)))
 #define TSEG_SIZE                                                            \
-    (( unsigned )(Tk_Offset(TkTextSegment, body) + sizeof(TkTextToggle)))
+    (( unsigned ) (Tk_Offset(TkTextSegment, body) + sizeof(TkTextToggle)))
 
 /*
  * Forward declarations for procedures defined in this file:
@@ -156,14 +156,14 @@ static TkTextSegment *FindTagStart _ANSI_ARGS_((TkTextBTree tree,
  */
 
 Tk_SegType tkTextCharType = {
-    "character",                    /* name */
-    0,                              /* leftGravity */
-    CharSplitProc,                  /* splitProc */
-    CharDeleteProc,                 /* deleteProc */
-    CharCleanupProc,                /* cleanupProc */
-    ( Tk_SegLineChangeProc * )NULL, /* lineChangeProc */
-    TkTextCharLayoutProc,           /* layoutProc */
-    CharCheckProc                   /* checkProc */
+    "character",                     /* name */
+    0,                               /* leftGravity */
+    CharSplitProc,                   /* splitProc */
+    CharDeleteProc,                  /* deleteProc */
+    CharCleanupProc,                 /* cleanupProc */
+    ( Tk_SegLineChangeProc * ) NULL, /* lineChangeProc */
+    TkTextCharLayoutProc,            /* layoutProc */
+    CharCheckProc                    /* checkProc */
 };
 
 /*
@@ -172,14 +172,14 @@ Tk_SegType tkTextCharType = {
  */
 
 Tk_SegType tkTextToggleOnType = {
-    "toggleOn",                 /* name */
-    0,                          /* leftGravity */
-    ( Tk_SegSplitProc * )NULL,  /* splitProc */
-    ToggleDeleteProc,           /* deleteProc */
-    ToggleCleanupProc,          /* cleanupProc */
-    ToggleLineChangeProc,       /* lineChangeProc */
-    ( Tk_SegLayoutProc * )NULL, /* layoutProc */
-    ToggleCheckProc             /* checkProc */
+    "toggleOn",                  /* name */
+    0,                           /* leftGravity */
+    ( Tk_SegSplitProc * ) NULL,  /* splitProc */
+    ToggleDeleteProc,            /* deleteProc */
+    ToggleCleanupProc,           /* cleanupProc */
+    ToggleLineChangeProc,        /* lineChangeProc */
+    ( Tk_SegLayoutProc * ) NULL, /* layoutProc */
+    ToggleCheckProc              /* checkProc */
 };
 
 /*
@@ -188,14 +188,14 @@ Tk_SegType tkTextToggleOnType = {
  */
 
 Tk_SegType tkTextToggleOffType = {
-    "toggleOff",                /* name */
-    1,                          /* leftGravity */
-    ( Tk_SegSplitProc * )NULL,  /* splitProc */
-    ToggleDeleteProc,           /* deleteProc */
-    ToggleCleanupProc,          /* cleanupProc */
-    ToggleLineChangeProc,       /* lineChangeProc */
-    ( Tk_SegLayoutProc * )NULL, /* layoutProc */
-    ToggleCheckProc             /* checkProc */
+    "toggleOff",                 /* name */
+    1,                           /* leftGravity */
+    ( Tk_SegSplitProc * ) NULL,  /* splitProc */
+    ToggleDeleteProc,            /* deleteProc */
+    ToggleCleanupProc,           /* cleanupProc */
+    ToggleLineChangeProc,        /* lineChangeProc */
+    ( Tk_SegLayoutProc * ) NULL, /* layoutProc */
+    ToggleCheckProc              /* checkProc */
 };
 
 /*
@@ -229,9 +229,9 @@ TkTextBTree TkBTreeCreate(textPtr) TkText *textPtr;
      * which is also the root of the tree.
      */
 
-    rootPtr = ( Node * )ckalloc(sizeof(Node));
-    linePtr = ( TkTextLine * )ckalloc(sizeof(TkTextLine));
-    linePtr2 = ( TkTextLine * )ckalloc(sizeof(TkTextLine));
+    rootPtr = ( Node * ) ckalloc(sizeof(Node));
+    linePtr = ( TkTextLine * ) ckalloc(sizeof(TkTextLine));
+    linePtr2 = ( TkTextLine * ) ckalloc(sizeof(TkTextLine));
     rootPtr->parentPtr = NULL;
     rootPtr->nextPtr = NULL;
     rootPtr->summaryPtr = NULL;
@@ -242,7 +242,7 @@ TkTextBTree TkBTreeCreate(textPtr) TkText *textPtr;
 
     linePtr->parentPtr = rootPtr;
     linePtr->nextPtr = linePtr2;
-    segPtr = ( TkTextSegment * )ckalloc(CSEG_SIZE(1));
+    segPtr = ( TkTextSegment * ) ckalloc(CSEG_SIZE(1));
     linePtr->segPtr = segPtr;
     segPtr->typePtr = &tkTextCharType;
     segPtr->nextPtr = NULL;
@@ -252,7 +252,7 @@ TkTextBTree TkBTreeCreate(textPtr) TkText *textPtr;
 
     linePtr2->parentPtr = rootPtr;
     linePtr2->nextPtr = NULL;
-    segPtr = ( TkTextSegment * )ckalloc(CSEG_SIZE(1));
+    segPtr = ( TkTextSegment * ) ckalloc(CSEG_SIZE(1));
     linePtr2->segPtr = segPtr;
     segPtr->typePtr = &tkTextCharType;
     segPtr->nextPtr = NULL;
@@ -260,11 +260,11 @@ TkTextBTree TkBTreeCreate(textPtr) TkText *textPtr;
     segPtr->body.chars[0] = '\n';
     segPtr->body.chars[1] = 0;
 
-    treePtr = ( BTree * )ckalloc(sizeof(BTree));
+    treePtr = ( BTree * ) ckalloc(sizeof(BTree));
     treePtr->rootPtr = rootPtr;
     treePtr->textPtr = textPtr;
 
-    return ( TkTextBTree )treePtr;
+    return ( TkTextBTree ) treePtr;
 }
 
 /*
@@ -286,10 +286,10 @@ TkTextBTree TkBTreeCreate(textPtr) TkText *textPtr;
 
 void TkBTreeDestroy(tree) TkTextBTree tree; /* Pointer to tree to delete. */
 {
-    BTree *treePtr = ( BTree * )tree;
+    BTree *treePtr = ( BTree * ) tree;
 
     DestroyNode(treePtr->rootPtr);
-    ckfree(( char * )treePtr);
+    ckfree(( char * ) treePtr);
 }
 
 /*
@@ -323,7 +323,7 @@ static void DestroyNode(nodePtr) Node *nodePtr;
                 linePtr->segPtr = segPtr->nextPtr;
                 (*segPtr->typePtr->deleteProc)(segPtr, linePtr, 1);
             }
-            ckfree(( char * )linePtr);
+            ckfree(( char * ) linePtr);
         }
     } else {
         Node *childPtr;
@@ -335,7 +335,7 @@ static void DestroyNode(nodePtr) Node *nodePtr;
         }
     }
     DeleteSummaries(nodePtr->summaryPtr);
-    ckfree(( char * )nodePtr);
+    ckfree(( char * ) nodePtr);
 }
 
 /*
@@ -362,7 +362,7 @@ static void DeleteSummaries(summaryPtr) Summary *summaryPtr; /* First in list
     Summary *nextPtr;
     while (summaryPtr != NULL) {
         nextPtr = summaryPtr->nextPtr;
-        ckfree(( char * )summaryPtr);
+        ckfree(( char * ) summaryPtr);
         summaryPtr = nextPtr;
     }
 }
@@ -432,7 +432,7 @@ char *string;          /* Pointer to bytes to insert (may
             }
         }
         chunkSize = eol - string;
-        segPtr = ( TkTextSegment * )ckalloc(CSEG_SIZE(chunkSize));
+        segPtr = ( TkTextSegment * ) ckalloc(CSEG_SIZE(chunkSize));
         segPtr->typePtr = &tkTextCharType;
         if (curPtr == NULL) {
             segPtr->nextPtr = linePtr->segPtr;
@@ -442,7 +442,7 @@ char *string;          /* Pointer to bytes to insert (may
             curPtr->nextPtr = segPtr;
         }
         segPtr->size = chunkSize;
-        strncpy(segPtr->body.chars, string, ( size_t )chunkSize);
+        strncpy(segPtr->body.chars, string, ( size_t ) chunkSize);
         segPtr->body.chars[chunkSize] = 0;
         curPtr = segPtr;
 
@@ -455,7 +455,7 @@ char *string;          /* Pointer to bytes to insert (may
          * and move the remainder of the old line to it.
          */
 
-        newLinePtr = ( TkTextLine * )ckalloc(sizeof(TkTextLine));
+        newLinePtr = ( TkTextLine * ) ckalloc(sizeof(TkTextLine));
         newLinePtr->parentPtr = linePtr->parentPtr;
         newLinePtr->nextPtr = linePtr->nextPtr;
         linePtr->nextPtr = newLinePtr;
@@ -490,7 +490,7 @@ char *string;          /* Pointer to bytes to insert (may
     nodePtr = linePtr->parentPtr;
     nodePtr->numChildren += changeToLineCount;
     if (nodePtr->numChildren > MAX_CHILDREN) {
-        Rebalance(( BTree * )indexPtr->tree, nodePtr);
+        Rebalance(( BTree * ) indexPtr->tree, nodePtr);
     }
 
     if (tkBTreeDebug) {
@@ -697,7 +697,7 @@ TkTextIndex *index2Ptr; /* Indicates character just after the
                     nodePtr->numLines--;
                 }
                 curNodePtr->numChildren--;
-                ckfree(( char * )curLinePtr);
+                ckfree(( char * ) curLinePtr);
             }
             curLinePtr = nextLinePtr;
             segPtr = curLinePtr->segPtr;
@@ -721,7 +721,7 @@ TkTextIndex *index2Ptr; /* Indicates character just after the
                     prevNodePtr->nextPtr = curNodePtr->nextPtr;
                 }
                 parentPtr->numChildren--;
-                ckfree(( char * )curNodePtr);
+                ckfree(( char * ) curNodePtr);
                 curNodePtr = parentPtr;
             }
             curNodePtr = curLinePtr->parentPtr;
@@ -778,8 +778,8 @@ TkTextIndex *index2Ptr; /* Indicates character just after the
             }
             prevLinePtr->nextPtr = index2Ptr->linePtr->nextPtr;
         }
-        ckfree(( char * )index2Ptr->linePtr);
-        Rebalance(( BTree * )index2Ptr->tree, curNodePtr);
+        ckfree(( char * ) index2Ptr->linePtr);
+        Rebalance(( BTree * ) index2Ptr->tree, curNodePtr);
     }
 
     /*
@@ -792,7 +792,7 @@ TkTextIndex *index2Ptr; /* Indicates character just after the
      * Lastly, rebalance the first node of the range.
      */
 
-    Rebalance(( BTree * )index1Ptr->tree, index1Ptr->linePtr->parentPtr);
+    Rebalance(( BTree * ) index1Ptr->tree, index1Ptr->linePtr->parentPtr);
     if (tkBTreeDebug) {
         TkBTreeCheck(index1Ptr->tree);
     }
@@ -819,7 +819,7 @@ TkTextLine *TkBTreeFindLine(tree, line) TkTextBTree tree; /* B-tree in which
                                                              to find line. */
 int line; /* Index of desired line. */
 {
-    BTree *treePtr = ( BTree * )tree;
+    BTree *treePtr = ( BTree * ) tree;
     Node *nodePtr;
     TkTextLine *linePtr;
     int linesLeft;
@@ -901,7 +901,7 @@ TkTextLine *TkBTreeNextLine(linePtr) TkTextLine *linePtr; /* Pointer to
             break;
         }
         if (nodePtr->parentPtr == NULL) {
-            return ( TkTextLine * )NULL;
+            return ( TkTextLine * ) NULL;
         }
     }
     while (nodePtr->level > 0) {
@@ -946,7 +946,7 @@ TkTextLine *TkBTreePreviousLine(linePtr) TkTextLine *linePtr; /* Pointer to
             return prevPtr;
         }
         prevPtr = prevPtr->nextPtr;
-        if (prevPtr == ( TkTextLine * )NULL) {
+        if (prevPtr == ( TkTextLine * ) NULL) {
             panic("TkBTreePreviousLine ran out of lines");
         }
     }
@@ -957,9 +957,9 @@ TkTextLine *TkBTreePreviousLine(linePtr) TkTextLine *linePtr; /* Pointer to
      * node to find its last line.
      */
     for (nodePtr = linePtr->parentPtr;; nodePtr = nodePtr->parentPtr) {
-        if (nodePtr == ( Node * )NULL
-            || nodePtr->parentPtr == ( Node * )NULL) {
-            return ( TkTextLine * )NULL;
+        if (nodePtr == ( Node * ) NULL
+            || nodePtr->parentPtr == ( Node * ) NULL) {
+            return ( TkTextLine * ) NULL;
         }
         if (nodePtr != nodePtr->parentPtr->children.nodePtr) {
             break;
@@ -973,10 +973,10 @@ TkTextLine *TkBTreePreviousLine(linePtr) TkTextLine *linePtr; /* Pointer to
         if (node2Ptr->level == 0) {
             break;
         }
-        nodePtr = ( Node * )NULL;
+        nodePtr = ( Node * ) NULL;
     }
     for (prevPtr = node2Ptr->children.linePtr;; prevPtr = prevPtr->nextPtr) {
-        if (prevPtr->nextPtr == ( TkTextLine * )NULL) {
+        if (prevPtr->nextPtr == ( TkTextLine * ) NULL) {
             return prevPtr;
         }
     }
@@ -1167,7 +1167,7 @@ int add;                /* One means add tag to the given
 
     oldState = TkBTreeCharTagged(index1Ptr, tagPtr);
     if ((add != 0) ^ oldState) {
-        segPtr = ( TkTextSegment * )ckalloc(TSEG_SIZE);
+        segPtr = ( TkTextSegment * ) ckalloc(TSEG_SIZE);
         segPtr->typePtr = (add) ? &tkTextToggleOnType : &tkTextToggleOffType;
         prevPtr = SplitSeg(index1Ptr);
         if (prevPtr == NULL) {
@@ -1211,7 +1211,7 @@ int add;                /* One means add tag to the given
         } else {
             changed = 0;
         }
-        ckfree(( char * )segPtr);
+        ckfree(( char * ) segPtr);
 
         /*
          * The code below is a bit tricky.  After deleting a toggle
@@ -1237,7 +1237,7 @@ int add;                /* One means add tag to the given
         }
     }
     if ((add != 0) ^ oldState) {
-        segPtr = ( TkTextSegment * )ckalloc(TSEG_SIZE);
+        segPtr = ( TkTextSegment * ) ckalloc(TSEG_SIZE);
         segPtr->typePtr = (add) ? &tkTextToggleOffType : &tkTextToggleOnType;
         prevPtr = SplitSeg(index2Ptr);
         if (prevPtr == NULL) {
@@ -1301,7 +1301,7 @@ int delta;         /* Amount to add to current toggle
     int rootLevel; /* Level of original tag root */
 
     tagPtr->toggleCount += delta;
-    if (tagPtr->tagRootPtr == ( Node * )NULL) {
+    if (tagPtr->tagRootPtr == ( Node * ) NULL) {
         tagPtr->tagRootPtr = nodePtr;
         return;
     }
@@ -1359,7 +1359,7 @@ int delta;         /* Amount to add to current toggle
             } else {
                 prevPtr->nextPtr = summaryPtr->nextPtr;
             }
-            ckfree(( char * )summaryPtr);
+            ckfree(( char * ) summaryPtr);
         } else {
             /*
              * This tag isn't currently in the summary information list.
@@ -1379,7 +1379,7 @@ int delta;         /* Amount to add to current toggle
                  */
 
                 Node *rootNodePtr = tagPtr->tagRootPtr;
-                summaryPtr = ( Summary * )ckalloc(sizeof(Summary));
+                summaryPtr = ( Summary * ) ckalloc(sizeof(Summary));
                 summaryPtr->tagPtr = tagPtr;
                 summaryPtr->toggleCount = tagPtr->toggleCount - delta;
                 summaryPtr->nextPtr = rootNodePtr->summaryPtr;
@@ -1388,7 +1388,7 @@ int delta;         /* Amount to add to current toggle
                 rootLevel = rootNodePtr->level;
                 tagPtr->tagRootPtr = rootNodePtr;
             }
-            summaryPtr = ( Summary * )ckalloc(sizeof(Summary));
+            summaryPtr = ( Summary * ) ckalloc(sizeof(Summary));
             summaryPtr->tagPtr = tagPtr;
             summaryPtr->toggleCount = delta;
             summaryPtr->nextPtr = nodePtr->summaryPtr;
@@ -1405,7 +1405,7 @@ int delta;         /* Amount to add to current toggle
         return;
     }
     if (tagPtr->toggleCount == 0) {
-        tagPtr->tagRootPtr = ( Node * )NULL;
+        tagPtr->tagRootPtr = ( Node * ) NULL;
         return;
     }
     nodePtr = tagPtr->tagRootPtr;
@@ -1415,7 +1415,8 @@ int delta;         /* Amount to add to current toggle
          * toggles.  If so, push the root down one level.
          */
 
-        for (node2Ptr = nodePtr->children.nodePtr; node2Ptr != ( Node * )NULL;
+        for (node2Ptr = nodePtr->children.nodePtr;
+             node2Ptr != ( Node * ) NULL;
              node2Ptr = node2Ptr->nextPtr) {
             for (prevPtr = NULL, summaryPtr = node2Ptr->summaryPtr;
                  summaryPtr != NULL;
@@ -1444,7 +1445,7 @@ int delta;         /* Amount to add to current toggle
             } else {
                 prevPtr->nextPtr = summaryPtr->nextPtr;
             }
-            ckfree(( char * )summaryPtr);
+            ckfree(( char * ) summaryPtr);
             tagPtr->tagRootPtr = node2Ptr;
             break;
         }
@@ -1483,7 +1484,7 @@ TkTextIndex *indexPtr; /* Return - index information */
     int offset = 0;
 
     nodePtr = tagPtr->tagRootPtr;
-    if (nodePtr == ( Node * )NULL) {
+    if (nodePtr == ( Node * ) NULL) {
         return NULL;
     }
 
@@ -1493,7 +1494,7 @@ TkTextIndex *indexPtr; /* Return - index information */
      */
 
     while (nodePtr->level > 0) {
-        for (nodePtr = nodePtr->children.nodePtr; nodePtr != ( Node * )NULL;
+        for (nodePtr = nodePtr->children.nodePtr; nodePtr != ( Node * ) NULL;
              nodePtr = nodePtr->nextPtr) {
             for (summaryPtr = nodePtr->summaryPtr; summaryPtr != NULL;
                  summaryPtr = summaryPtr->nextPtr) {
@@ -1510,7 +1511,8 @@ TkTextIndex *indexPtr; /* Return - index information */
      * Work through the lines attached to the level-0 node.
      */
 
-    for (linePtr = nodePtr->children.linePtr; linePtr != ( TkTextLine * )NULL;
+    for (linePtr = nodePtr->children.linePtr;
+         linePtr != ( TkTextLine * ) NULL;
          linePtr = linePtr->nextPtr) {
         for (offset = 0, segPtr = linePtr->segPtr; segPtr != NULL;
              offset += segPtr->size, segPtr = segPtr->nextPtr) {
@@ -1562,7 +1564,7 @@ TkTextIndex *indexPtr; /* Return - index information */
     int lastoffset, lastoffset2, offset = 0;
 
     nodePtr = tagPtr->tagRootPtr;
-    if (nodePtr == ( Node * )NULL) {
+    if (nodePtr == ( Node * ) NULL) {
         return NULL;
     }
 
@@ -1573,7 +1575,7 @@ TkTextIndex *indexPtr; /* Return - index information */
 
     while (nodePtr->level > 0) {
         for (lastNodePtr = NULL, nodePtr = nodePtr->children.nodePtr;
-             nodePtr != ( Node * )NULL;
+             nodePtr != ( Node * ) NULL;
              nodePtr = nodePtr->nextPtr) {
             for (summaryPtr = nodePtr->summaryPtr; summaryPtr != NULL;
                  summaryPtr = summaryPtr->nextPtr) {
@@ -1593,7 +1595,7 @@ TkTextIndex *indexPtr; /* Return - index information */
     lastoffset2 = 0;
     lastoffset = 0;
     for (lastLinePtr = NULL, linePtr = nodePtr->children.linePtr;
-         linePtr != ( TkTextLine * )NULL;
+         linePtr != ( TkTextLine * ) NULL;
          linePtr = linePtr->nextPtr) {
         for (offset = 0, lastSegPtr = NULL, segPtr = linePtr->segPtr;
              segPtr != NULL;
@@ -1662,7 +1664,7 @@ TkTextSearch *searchPtr; /* Where to store information about
      */
 
     seg0Ptr = FindTagStart(index1Ptr->tree, tagPtr, &index0);
-    if (seg0Ptr == ( TkTextSegment * )NULL) {
+    if (seg0Ptr == ( TkTextSegment * ) NULL) {
         /*
          * Even though there are no toggles, the display code still
          * uses the search curIndex, so initialize that anyway.
@@ -1689,7 +1691,7 @@ TkTextSearch *searchPtr; /* Where to store information about
         searchPtr->nextPtr = TkTextIndexToSeg(index1Ptr, &offset);
         searchPtr->curIndex.charIndex -= offset;
     }
-    searchPtr->lastPtr = TkTextIndexToSeg(index2Ptr, ( int * )NULL);
+    searchPtr->lastPtr = TkTextIndexToSeg(index2Ptr, ( int * ) NULL);
     searchPtr->tagPtr = tagPtr;
     searchPtr->linesLeft = TkBTreeLineIndex(index2Ptr->linePtr) + 1
                            - TkBTreeLineIndex(index1Ptr->linePtr);
@@ -1759,7 +1761,7 @@ TkTextSearch *searchPtr; /* Where to store information about
      */
 
     seg0Ptr = FindTagEnd(index1Ptr->tree, tagPtr, &index0);
-    if (seg0Ptr == ( TkTextSegment * )NULL) {
+    if (seg0Ptr == ( TkTextSegment * ) NULL) {
         /*
          * Even though there are no toggles, the display code still
          * uses the search curIndex, so initialize that anyway.
@@ -1798,7 +1800,7 @@ TkTextSearch *searchPtr; /* Where to store information about
         searchPtr->lastPtr = NULL; /* Signals special case for 1.0 */
     } else {
         TkTextIndexBackChars(index2Ptr, 1, &backOne);
-        searchPtr->lastPtr = TkTextIndexToSeg(&backOne, ( int * )NULL);
+        searchPtr->lastPtr = TkTextIndexToSeg(&backOne, ( int * ) NULL);
     }
     searchPtr->tagPtr = tagPtr;
     searchPtr->linesLeft = TkBTreeLineIndex(index1Ptr->linePtr) + 1
@@ -2344,10 +2346,10 @@ int *numTagsPtr;       /* Store number of tags found at this
 
     tagInfo.numTags = 0;
     tagInfo.arraySize = NUM_TAG_INFOS;
-    tagInfo.tagPtrs = ( TkTextTag ** )ckalloc(( unsigned )NUM_TAG_INFOS
-                                              * sizeof(TkTextTag *));
+    tagInfo.tagPtrs = ( TkTextTag ** ) ckalloc(( unsigned ) NUM_TAG_INFOS
+                                               * sizeof(TkTextTag *));
     tagInfo.counts
-    = ( int * )ckalloc(( unsigned )NUM_TAG_INFOS * sizeof(int));
+    = ( int * ) ckalloc(( unsigned ) NUM_TAG_INFOS * sizeof(int));
 
     /*
      * Record tag toggles within the line of indexPtr but preceding
@@ -2416,9 +2418,9 @@ int *numTagsPtr;       /* Store number of tags found at this
         }
     }
     *numTagsPtr = dst;
-    ckfree(( char * )tagInfo.counts);
+    ckfree(( char * ) tagInfo.counts);
     if (dst == 0) {
-        ckfree(( char * )tagInfo.tagPtrs);
+        ckfree(( char * ) tagInfo.tagPtrs);
         return NULL;
     }
     return tagInfo.tagPtrs;
@@ -2472,18 +2474,18 @@ TagInfo *tagInfoPtr; /* Holds cumulative information about tags;
         int *newCounts, newSize;
 
         newSize = 2 * tagInfoPtr->arraySize;
-        newTags = ( TkTextTag ** )ckalloc(
-        ( unsigned )(newSize * sizeof(TkTextTag *)));
-        memcpy(( VOID * )newTags,
-               ( VOID * )tagInfoPtr->tagPtrs,
+        newTags = ( TkTextTag ** ) ckalloc(
+        ( unsigned ) (newSize * sizeof(TkTextTag *)));
+        memcpy(( VOID * ) newTags,
+               ( VOID * ) tagInfoPtr->tagPtrs,
                tagInfoPtr->arraySize * sizeof(TkTextTag *));
-        ckfree(( char * )tagInfoPtr->tagPtrs);
+        ckfree(( char * ) tagInfoPtr->tagPtrs);
         tagInfoPtr->tagPtrs = newTags;
-        newCounts = ( int * )ckalloc(( unsigned )(newSize * sizeof(int)));
-        memcpy(( VOID * )newCounts,
-               ( VOID * )tagInfoPtr->counts,
+        newCounts = ( int * ) ckalloc(( unsigned ) (newSize * sizeof(int)));
+        memcpy(( VOID * ) newCounts,
+               ( VOID * ) tagInfoPtr->counts,
                tagInfoPtr->arraySize * sizeof(int));
-        ckfree(( char * )tagInfoPtr->counts);
+        ckfree(( char * ) tagInfoPtr->counts);
         tagInfoPtr->counts = newCounts;
         tagInfoPtr->arraySize = newSize;
     }
@@ -2513,7 +2515,7 @@ TagInfo *tagInfoPtr; /* Holds cumulative information about tags;
 
 void TkBTreeCheck(tree) TkTextBTree tree; /* Tree to check. */
 {
-    BTree *treePtr = ( BTree * )tree;
+    BTree *treePtr = ( BTree * ) tree;
     Summary *summaryPtr;
     Node *nodePtr;
     TkTextLine *linePtr;
@@ -2529,9 +2531,9 @@ void TkBTreeCheck(tree) TkTextBTree tree; /* Tree to check. */
     for (entryPtr = Tcl_FirstHashEntry(&treePtr->textPtr->tagTable, &search);
          entryPtr != NULL;
          entryPtr = Tcl_NextHashEntry(&search)) {
-        tagPtr = ( TkTextTag * )Tcl_GetHashValue(entryPtr);
+        tagPtr = ( TkTextTag * ) Tcl_GetHashValue(entryPtr);
         nodePtr = tagPtr->tagRootPtr;
-        if (nodePtr == ( Node * )NULL) {
+        if (nodePtr == ( Node * ) NULL) {
             if (tagPtr->toggleCount != 0) {
                 panic(
                 "TkBTreeCheck found \"%s\" with toggles (%d) but no root",
@@ -2853,7 +2855,7 @@ Node *nodePtr; /* Node that may be out of balance. */
                  */
 
                 if (nodePtr->parentPtr == NULL) {
-                    newPtr = ( Node * )ckalloc(sizeof(Node));
+                    newPtr = ( Node * ) ckalloc(sizeof(Node));
                     newPtr->parentPtr = NULL;
                     newPtr->nextPtr = NULL;
                     newPtr->summaryPtr = NULL;
@@ -2864,7 +2866,7 @@ Node *nodePtr; /* Node that may be out of balance. */
                     RecomputeNodeCounts(newPtr);
                     treePtr->rootPtr = newPtr;
                 }
-                newPtr = ( Node * )ckalloc(sizeof(Node));
+                newPtr = ( Node * ) ckalloc(sizeof(Node));
                 newPtr->parentPtr = nodePtr->parentPtr;
                 newPtr->nextPtr = nodePtr->nextPtr;
                 nodePtr->nextPtr = newPtr;
@@ -2919,7 +2921,7 @@ Node *nodePtr; /* Node that may be out of balance. */
                     treePtr->rootPtr = nodePtr->children.nodePtr;
                     treePtr->rootPtr->parentPtr = NULL;
                     DeleteSummaries(nodePtr->summaryPtr);
-                    ckfree(( char * )nodePtr);
+                    ckfree(( char * ) nodePtr);
                 }
                 return;
             }
@@ -3009,7 +3011,7 @@ Node *nodePtr; /* Node that may be out of balance. */
                 nodePtr->nextPtr = otherPtr->nextPtr;
                 nodePtr->parentPtr->numChildren--;
                 DeleteSummaries(otherPtr->summaryPtr);
-                ckfree(( char * )otherPtr);
+                ckfree(( char * ) otherPtr);
                 continue;
             }
 
@@ -3098,7 +3100,7 @@ nodePtr) Node *nodePtr; /* Node whose tag summary information
                 for (summaryPtr = nodePtr->summaryPtr;;
                      summaryPtr = summaryPtr->nextPtr) {
                     if (summaryPtr == NULL) {
-                        summaryPtr = ( Summary * )ckalloc(sizeof(Summary));
+                        summaryPtr = ( Summary * ) ckalloc(sizeof(Summary));
                         summaryPtr->tagPtr = tagPtr;
                         summaryPtr->toggleCount = 1;
                         summaryPtr->nextPtr = nodePtr->summaryPtr;
@@ -3123,7 +3125,7 @@ nodePtr) Node *nodePtr; /* Node whose tag summary information
                 for (summaryPtr = nodePtr->summaryPtr;;
                      summaryPtr = summaryPtr->nextPtr) {
                     if (summaryPtr == NULL) {
-                        summaryPtr = ( Summary * )ckalloc(sizeof(Summary));
+                        summaryPtr = ( Summary * ) ckalloc(sizeof(Summary));
                         summaryPtr->tagPtr = summaryPtr2->tagPtr;
                         summaryPtr->toggleCount = summaryPtr2->toggleCount;
                         summaryPtr->nextPtr = nodePtr->summaryPtr;
@@ -3171,11 +3173,11 @@ nodePtr) Node *nodePtr; /* Node whose tag summary information
         }
         if (summaryPtr2 != NULL) {
             summaryPtr2->nextPtr = summaryPtr->nextPtr;
-            ckfree(( char * )summaryPtr);
+            ckfree(( char * ) summaryPtr);
             summaryPtr = summaryPtr2->nextPtr;
         } else {
             nodePtr->summaryPtr = summaryPtr->nextPtr;
-            ckfree(( char * )summaryPtr);
+            ckfree(( char * ) summaryPtr);
             summaryPtr = nodePtr->summaryPtr;
         }
     }
@@ -3202,7 +3204,7 @@ nodePtr) Node *nodePtr; /* Node whose tag summary information
 
 int TkBTreeNumLines(tree) TkTextBTree tree; /* Information about tree. */
 {
-    BTree *treePtr = ( BTree * )tree;
+    BTree *treePtr = ( BTree * ) tree;
     return treePtr->rootPtr->numLines - 1;
 }
 
@@ -3231,18 +3233,18 @@ int index;             /* Position within segment at which
 {
     TkTextSegment *newPtr1, *newPtr2;
 
-    newPtr1 = ( TkTextSegment * )ckalloc(CSEG_SIZE(index));
-    newPtr2 = ( TkTextSegment * )ckalloc(CSEG_SIZE(segPtr->size - index));
+    newPtr1 = ( TkTextSegment * ) ckalloc(CSEG_SIZE(index));
+    newPtr2 = ( TkTextSegment * ) ckalloc(CSEG_SIZE(segPtr->size - index));
     newPtr1->typePtr = &tkTextCharType;
     newPtr1->nextPtr = newPtr2;
     newPtr1->size = index;
-    strncpy(newPtr1->body.chars, segPtr->body.chars, ( size_t )index);
+    strncpy(newPtr1->body.chars, segPtr->body.chars, ( size_t ) index);
     newPtr1->body.chars[index] = 0;
     newPtr2->typePtr = &tkTextCharType;
     newPtr2->nextPtr = segPtr->nextPtr;
     newPtr2->size = segPtr->size - index;
     strcpy(newPtr2->body.chars, segPtr->body.chars + index);
-    ckfree(( char * )segPtr);
+    ckfree(( char * ) segPtr);
     return newPtr1;
 }
 
@@ -3278,14 +3280,14 @@ TkTextLine *linePtr;   /* Line containing segments (not
         return segPtr;
     }
     newPtr
-    = ( TkTextSegment * )ckalloc(CSEG_SIZE(segPtr->size + segPtr2->size));
+    = ( TkTextSegment * ) ckalloc(CSEG_SIZE(segPtr->size + segPtr2->size));
     newPtr->typePtr = &tkTextCharType;
     newPtr->nextPtr = segPtr2->nextPtr;
     newPtr->size = segPtr->size + segPtr2->size;
     strcpy(newPtr->body.chars, segPtr->body.chars);
     strcpy(newPtr->body.chars + segPtr->size, segPtr2->body.chars);
-    ckfree(( char * )segPtr);
-    ckfree(( char * )segPtr2);
+    ckfree(( char * ) segPtr);
+    ckfree(( char * ) segPtr2);
     return newPtr;
 }
 
@@ -3313,7 +3315,7 @@ int treeGone;          /* Non-zero means the entire tree is
                         * being deleted, so everything must
                         * get cleaned up. */
 {
-    ckfree(( char * )segPtr);
+    ckfree(( char * ) segPtr);
     return 0;
 }
 
@@ -3393,7 +3395,7 @@ int treeGone;          /* Non-zero means the entire tree is
                         * get cleaned up. */
 {
     if (treeGone) {
-        ckfree(( char * )segPtr);
+        ckfree(( char * ) segPtr);
         return 0;
     }
 
@@ -3467,9 +3469,9 @@ TkTextLine *linePtr;   /* Line that now contains segment. */
                 linePtr->parentPtr, segPtr->body.toggle.tagPtr, -counts);
             }
             prevPtr->nextPtr = segPtr2->nextPtr;
-            ckfree(( char * )segPtr2);
+            ckfree(( char * ) segPtr2);
             segPtr2 = segPtr->nextPtr;
-            ckfree(( char * )segPtr);
+            ckfree(( char * ) segPtr);
             return segPtr2;
         }
     }

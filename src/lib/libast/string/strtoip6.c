@@ -82,7 +82,7 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
     a = 0;
     if (*s)
         for (;;) {
-            switch (c = lex[*(( unsigned char * )s++)]) {
+            switch (c = lex[*(( unsigned char * ) s++)]) {
             case END:
             case PFX:
                 if ((x - b) < 2)
@@ -102,7 +102,7 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
                         break;
                     }
                     z = b;
-                    if ((c = lex[*(( unsigned char * )++s)]) >= 16) {
+                    if ((c = lex[*(( unsigned char * ) ++s)]) >= 16) {
                         s++;
                         break;
                     }
@@ -117,7 +117,7 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
                 = ((a >> 8) & 0xf) * 100 + ((a >> 4) & 0xf) * 10 + (a & 0xf);
                 a = 0;
                 for (;;) {
-                    switch (c = lex[*(( unsigned char * )s++)]) {
+                    switch (c = lex[*(( unsigned char * ) s++)]) {
                     case COL:
                     case END:
                     case PFX:
@@ -144,7 +144,7 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
                             break;
                         }
                         z = b;
-                        if ((c = lex[*(( unsigned char * )++s)]) >= 16) {
+                        if ((c = lex[*(( unsigned char * ) ++s)]) >= 16) {
                             s++;
                             break;
                         }
@@ -173,7 +173,7 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
         if (bits) {
             if (c == PFX) {
                 a = 0;
-                while ((c = lex[*(( unsigned char * )s++)]) < 10)
+                while ((c = lex[*(( unsigned char * ) s++)]) < 10)
                     a = a * 10 + c;
             } else
                 a = 0xff;
@@ -181,6 +181,6 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
         }
     }
     if (e)
-        *e = ( char * )(s - 1);
+        *e = ( char * ) (s - 1);
     return c == END ? 0 : -1;
 }

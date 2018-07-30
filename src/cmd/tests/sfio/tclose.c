@@ -44,7 +44,7 @@ tmain()
     int fd[2];
     Sfio_t *r, *w;
     char *s;
-    void(*handler) _ARG_(( int ));
+    void(*handler) _ARG_(( int ) );
 
 #define N_STR 10
     alarm(10);
@@ -71,10 +71,11 @@ tmain()
 
     if (!(
         w = sfnew(
-        NIL(Sfio_t *), NIL(Void_t *), ( size_t )SF_UNBOUND, fd[1], SF_WRITE)))
+        NIL(Sfio_t *), NIL(Void_t *), ( size_t ) SF_UNBOUND, fd[1], SF_WRITE)))
         terror("Opening write stream");
-    if (!(r = sfnew(
-          NIL(Sfio_t *), NIL(Void_t *), ( size_t )SF_UNBOUND, fd[0], SF_READ)))
+    if (!(
+        r = sfnew(
+        NIL(Sfio_t *), NIL(Void_t *), ( size_t ) SF_UNBOUND, fd[0], SF_READ)))
         terror("Opening read stream");
 
     sfdisc(w, &Wdisc);
@@ -147,7 +148,7 @@ tmain()
 
     /* test for stdio signal handling behavior */
     w = sfpopen(
-    ( Sfio_t * )(-1), sfprints("%s %d 2>/dev/null", argv[0], N_STR), "w+");
+    ( Sfio_t * ) (-1), sfprints("%s %d 2>/dev/null", argv[0], N_STR), "w+");
     if (w && (handler = signal(SIGPIPE, SIG_DFL)) != SIG_DFL)
         terror("SIGPIPE handler should have been SIG_DFL");
 

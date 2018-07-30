@@ -75,11 +75,11 @@ delputl(int n, long v)
     unsigned char c[4];
 
     for (i = 0; i < n; ++i) {
-        c[i] = ( unsigned char )(v % BASE);
+        c[i] = ( unsigned char ) (v % BASE);
         v /= BASE;
     }
     for (i = n - 1; i >= 0; --i)
-        if (delputc(( char )c[i]) < 0)
+        if (delputc(( char ) c[i]) < 0)
             return -1;
     return 0;
 }
@@ -124,7 +124,7 @@ putMove(Move *ip)
 static Move *
 newMove(int type, long size, long addr, Move *last)
 {
-    Move *ip = ( Move * )malloc(sizeof(Move));
+    Move *ip = ( Move * ) malloc(sizeof(Move));
     if (!ip)
         return 0;
     ip->type = type;
@@ -159,7 +159,7 @@ makeAdd(char *beg, char *end, Move *last)
 {
     Move *ip;
 
-    ip = newMove(DELTA_ADD, ( long )(end - beg), ( long )(beg - Btar), NiL);
+    ip = newMove(DELTA_ADD, ( long ) (end - beg), ( long ) (beg - Btar), NiL);
     if (!ip)
         return 0;
 
@@ -316,7 +316,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
     last = 0;
 
     /* try making suffix tree */
-    if (!(tree = n_tar > 0 ? bldsuftree(src, n_src) : ( Suftree * )0)) {
+    if (!(tree = n_tar > 0 ? bldsuftree(src, n_src) : ( Suftree * ) 0)) {
         /* not enough space for tree, remove matching prefix and suffix */
         for (; src <= esrc && tar <= etar; ++src, ++tar)
             if (*src != *tar)
@@ -355,7 +355,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
         }
 
         /* try making the tree again */
-        tree = n_tar > 0 ? bldsuftree(src, n_src) : ( Suftree * )0;
+        tree = n_tar > 0 ? bldsuftree(src, n_src) : ( Suftree * ) 0;
     }
 
     /* compute block moves */
@@ -371,7 +371,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
             return -1;
         if (size > 0)
             size = chkMove(
-            size, ( long )(match - Bsrc), ( long )(tp ? tp - tar : 0));
+            size, ( long ) (match - Bsrc), ( long ) (tp ? tp - tar : 0));
 
         /* output a block move */
         if (size > 0) {
@@ -381,7 +381,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
                     return -1;
                 tp = 0;
             }
-            moves = newMove(DELTA_MOVE, size, ( long )(match - Bsrc), moves);
+            moves = newMove(DELTA_MOVE, size, ( long ) (match - Bsrc), moves);
             if (!moves)
                 return -1;
             tar += size;
@@ -397,7 +397,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
     /* add any remaining blocks */
     if (tp) {
         if (last
-            && chkMove(last->size, last->addr, ( long )(tar - tp)) <= 0) {
+            && chkMove(last->size, last->addr, ( long ) (tar - tp)) <= 0) {
             tar += last->size;
             last = delMove(last);
         }
@@ -443,7 +443,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
     }
 
     /* write ending token */
-    delputc(( char )DELTA_TYPE);
+    delputc(( char ) DELTA_TYPE);
 
     /* flush buffer */
     return delflush();

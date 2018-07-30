@@ -53,7 +53,7 @@ typedef struct rsrasp_s
                 if (o >= endo) {                                             \
                     cr = mp;                                                 \
                     break;                                                   \
-                } else if ((cr = ( int )*o++ - ( int )*t++))                 \
+                } else if ((cr = ( int ) *o++ - ( int ) *t++))               \
                     break;                                                   \
             }                                                                \
         }                                                                    \
@@ -73,7 +73,7 @@ reg Rsobj_t *obj;
     reg uchar *endo;
     reg int index;
     Rsobj_t link;
-    reg Rsrasp_t *rasp = ( Rsrasp_t * )rs->methdata;
+    reg Rsrasp_t *rasp = ( Rsrasp_t * ) rs->methdata;
 
     obj->equal = NIL(Rsobj_t *);
 
@@ -103,14 +103,14 @@ reg Rsobj_t *obj;
     }
 
 #if SIZEOF_LONG == 8
-    obj->order = ((( ulong )k[1]) << (CHAR_BIT * 7))
-                 | ((( ulong )k[2]) << (CHAR_BIT * 6))
-                 | ((( ulong )k[3]) << (CHAR_BIT * 5))
-                 | ((( ulong )k[4]) << (CHAR_BIT * 4))
-                 | ((( ulong )k[5]) << (CHAR_BIT * 3))
-                 | ((( ulong )k[6]) << (CHAR_BIT * 2))
-                 | ((( ulong )k[7]) << (CHAR_BIT * 1))
-                 | ((( ulong )k[8]) << (CHAR_BIT * 0));
+    obj->order = ((( ulong ) k[1]) << (CHAR_BIT * 7))
+                 | ((( ulong ) k[2]) << (CHAR_BIT * 6))
+                 | ((( ulong ) k[3]) << (CHAR_BIT * 5))
+                 | ((( ulong ) k[4]) << (CHAR_BIT * 4))
+                 | ((( ulong ) k[5]) << (CHAR_BIT * 3))
+                 | ((( ulong ) k[6]) << (CHAR_BIT * 2))
+                 | ((( ulong ) k[7]) << (CHAR_BIT * 1))
+                 | ((( ulong ) k[8]) << (CHAR_BIT * 0));
 #else /* sizeof(long) == 4 */
     obj->order = (k[1] << (CHAR_BIT * 3)) | (k[2] << (CHAR_BIT * 2))
                  | (k[3] << (CHAR_BIT * 1)) | (k[4] << (CHAR_BIT * 0));
@@ -226,7 +226,7 @@ static Rsobj_t *radix(list) Rsobj_t *list;
 
         lo = maxpart;
         n = 0;
-        if ((ph = ( ssize_t )work->order) == maxph) {
+        if ((ph = ( ssize_t ) work->order) == maxph) {
             for (; work; work = work->right) {
                 bin = part + work->key[ph];
                 if (!(r = *bin)) {
@@ -303,7 +303,7 @@ static Rsobj_t *radix(list) Rsobj_t *list;
     return list;
 }
 
-#define CHARCMP(k1, k2, v, i) (v = ( int )k1[i] - ( int )k2[i])
+#define CHARCMP(k1, k2, v, i) (v = ( int ) k1[i] - ( int ) k2[i])
 #define STRNCMP(k1, k2, v, i, n)                                             \
     {                                                                        \
         if (CHARCMP(k1, k2, v, 1) == 0) {                                    \
@@ -414,7 +414,7 @@ static Rsobj_t *rasplist(rs) Rs_t *rs;
 {
     reg Rsobj_t *r, *t, *list, *endl;
     reg int n, e;
-    reg Rsrasp_t *rasp = ( Rsrasp_t * )rs->methdata;
+    reg Rsrasp_t *rasp = ( Rsrasp_t * ) rs->methdata;
 
     list = endl = rasp->empty;
     rasp->empty = NIL(Rsobj_t *);

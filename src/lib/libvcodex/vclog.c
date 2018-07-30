@@ -200,7 +200,7 @@ main()
     printf("static double _Vclog2[256] = {\n");
     for (i = 0, cnt = 0; i < 256; ++i) {
         printf(" %9.7lf%c",
-               (i == 0 ? 0 : log(( double )i) / log(2.)),
+               (i == 0 ? 0 : log(( double ) i) / log(2.)),
                (i < 255 ? ',' : ' '));
         if ((cnt += 1) % 8 == 0)
             printf("\n");

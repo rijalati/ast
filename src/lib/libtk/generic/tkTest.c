@@ -60,7 +60,7 @@ static EventInfo eventArray[] = { { "Motion", MotionNotify },
                                   { "CirculateRequest", CirculateRequest },
                                   { "ConfigureRequest", ConfigureRequest },
                                   { "MapRequest", MapRequest },
-                                  { ( char * )NULL, 0 } };
+                                  { ( char * ) NULL, 0 } };
 
 /*
  * The defines and table below are used to classify events into
@@ -180,13 +180,13 @@ static void ImageFree _ANSI_ARGS_((ClientData clientData, Display *display));
 static void ImageDelete _ANSI_ARGS_((ClientData clientData));
 
 static Tk_ImageType imageType = {
-    "test",                /* name */
-    ImageCreate,           /* createProc */
-    ImageGet,              /* getProc */
-    ImageDisplay,          /* displayProc */
-    ImageFree,             /* freeProc */
-    ImageDelete,           /* deleteProc */
-    ( Tk_ImageType * )NULL /* nextPtr */
+    "test",                 /* name */
+    ImageCreate,            /* createProc */
+    ImageGet,               /* getProc */
+    ImageDisplay,           /* displayProc */
+    ImageFree,              /* freeProc */
+    ImageDelete,            /* deleteProc */
+    ( Tk_ImageType * ) NULL /* nextPtr */
 };
 
 /*
@@ -264,35 +264,35 @@ int Tktest_Init(interp) Tcl_Interp *interp; /* Interpreter for application. */
     Tcl_CreateCommand(interp,
                       "square",
                       SquareCmd,
-                      ( ClientData )Tk_MainWindow(interp),
-                      ( Tcl_CmdDeleteProc * )NULL);
+                      ( ClientData ) Tk_MainWindow(interp),
+                      ( Tcl_CmdDeleteProc * ) NULL);
 #ifdef WIN_TCL
     Tcl_CreateCommand(interp,
                       "testclipboard",
                       TestclipboardCmd,
-                      ( ClientData )Tk_MainWindow(interp),
-                      ( Tcl_CmdDeleteProc * )NULL);
+                      ( ClientData ) Tk_MainWindow(interp),
+                      ( Tcl_CmdDeleteProc * ) NULL);
 #endif
     Tcl_CreateCommand(interp,
                       "testdeleteapps",
                       TestdeleteappsCmd,
-                      ( ClientData )Tk_MainWindow(interp),
-                      ( Tcl_CmdDeleteProc * )NULL);
+                      ( ClientData ) Tk_MainWindow(interp),
+                      ( Tcl_CmdDeleteProc * ) NULL);
     Tcl_CreateCommand(interp,
                       "testevent",
                       TesteventCmd,
-                      ( ClientData )Tk_MainWindow(interp),
-                      ( Tcl_CmdDeleteProc * )NULL);
+                      ( ClientData ) Tk_MainWindow(interp),
+                      ( Tcl_CmdDeleteProc * ) NULL);
     Tcl_CreateCommand(interp,
                       "testmakeexist",
                       TestmakeexistCmd,
-                      ( ClientData )Tk_MainWindow(interp),
-                      ( Tcl_CmdDeleteProc * )NULL);
+                      ( ClientData ) Tk_MainWindow(interp),
+                      ( Tcl_CmdDeleteProc * ) NULL);
     Tcl_CreateCommand(interp,
                       "testsend",
                       TestsendCmd,
-                      ( ClientData )Tk_MainWindow(interp),
-                      ( Tcl_CmdDeleteProc * )NULL);
+                      ( ClientData ) Tk_MainWindow(interp),
+                      ( Tcl_CmdDeleteProc * ) NULL);
 
     /*
      * Create test image type.
@@ -329,7 +329,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    TkWindow *winPtr = ( TkWindow * )clientData;
+    TkWindow *winPtr = ( TkWindow * ) clientData;
     HGLOBAL handle;
     char *data;
 
@@ -337,7 +337,7 @@ char **argv;           /* Argument strings. */
         handle = GetClipboardData(CF_TEXT);
         if (handle != NULL) {
             data = GlobalLock(handle);
-            Tcl_AppendResult(interp, data, ( char * )NULL);
+            Tcl_AppendResult(interp, data, ( char * ) NULL);
             GlobalUnlock(handle);
         }
         CloseClipboard();
@@ -376,7 +376,7 @@ char **argv;           /* Argument strings. */
     while (newAppPtr != NULL) {
         nextPtr = newAppPtr->nextPtr;
         Tcl_DeleteInterp(newAppPtr->interp);
-        ckfree(( char * )newAppPtr);
+        ckfree(( char * ) newAppPtr);
         newAppPtr = nextPtr;
     }
     return TCL_OK;
@@ -406,7 +406,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window main = ( Tk_Window )clientData;
+    Tk_Window main = ( Tk_Window ) clientData;
     Tk_Window tkwin, tkwin2;
     XEvent event;
     EventInfo *eiPtr;
@@ -419,7 +419,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " window type ?field value field value ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     tkwin = Tk_NameToWindow(interp, argv[1], main);
@@ -431,11 +431,11 @@ char **argv;           /* Argument strings. */
      * Get the type of the event.
      */
 
-    memset(( VOID * )&event, 0, sizeof(event));
+    memset(( VOID * ) &event, 0, sizeof(event));
     for (eiPtr = eventArray;; eiPtr++) {
         if (eiPtr->name == NULL) {
             Tcl_AppendResult(
-            interp, "bad event type \"", argv[2], "\"", ( char * )NULL);
+            interp, "bad event type \"", argv[2], "\"", ( char * ) NULL);
             return TCL_ERROR;
         }
         if (strcmp(eiPtr->name, argv[2]) == 0) {
@@ -507,7 +507,7 @@ char **argv;           /* Argument strings. */
                     number = NotifyDetailNone;
                 } else {
                     Tcl_AppendResult(
-                    interp, "bad detail \"", value, "\"", ( char * )NULL);
+                    interp, "bad detail \"", value, "\"", ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 if (flags & FOCUS) {
@@ -528,7 +528,7 @@ char **argv;           /* Argument strings. */
                     number = Opposite;
                 } else {
                     Tcl_AppendResult(
-                    interp, "bad detail \"", value, "\"", ( char * )NULL);
+                    interp, "bad detail \"", value, "\"", ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 event.xconfigurerequest.detail = number;
@@ -558,7 +558,7 @@ char **argv;           /* Argument strings. */
             keysym = TkStringToKeysym(value);
             if (keysym == NoSymbol) {
                 Tcl_AppendResult(
-                interp, "unknown keysym \"", value, "\"", ( char * )NULL);
+                interp, "unknown keysym \"", value, "\"", ( char * ) NULL);
                 return TCL_ERROR;
             }
             number = XKeysymToKeycode(event.xany.display, keysym);
@@ -567,7 +567,7 @@ char **argv;           /* Argument strings. */
                                  "no keycode for keysym \"",
                                  value,
                                  "\"",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
             event.xkey.keycode = number;
@@ -582,7 +582,7 @@ char **argv;           /* Argument strings. */
                 number = NotifyWhileGrabbed;
             } else {
                 Tcl_AppendResult(
-                interp, "bad mode \"", value, "\"", ( char * )NULL);
+                interp, "bad mode \"", value, "\"", ( char * ) NULL);
                 return TCL_ERROR;
             }
             if (flags & CROSSING) {
@@ -612,7 +612,7 @@ char **argv;           /* Argument strings. */
                 event.xcirculate.place = 147;
             } else {
                 Tcl_AppendResult(
-                interp, "bad place \"", value, "\"", ( char * )NULL);
+                interp, "bad place \"", value, "\"", ( char * ) NULL);
                 return TCL_ERROR;
             }
         } else if (strcmp(field, "-root") == 0) {
@@ -661,7 +661,7 @@ char **argv;           /* Argument strings. */
                     number = VisibilityFullyObscured;
                 } else {
                     Tcl_AppendResult(
-                    interp, "bad state \"", value, "\"", ( char * )NULL);
+                    interp, "bad state \"", value, "\"", ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 event.xvisibility.state = number;
@@ -677,11 +677,11 @@ char **argv;           /* Argument strings. */
                 return TCL_ERROR;
             }
             if (flags & (KEY_BUTTON_MOTION | PROP | SEL_CLEAR)) {
-                event.xkey.time = ( Time )number;
+                event.xkey.time = ( Time ) number;
             } else if (flags & SEL_REQ) {
-                event.xselectionrequest.time = ( Time )number;
+                event.xselectionrequest.time = ( Time ) number;
             } else if (flags & SEL_NOTIFY) {
-                event.xselection.time = ( Time )number;
+                event.xselection.time = ( Time ) number;
             }
         } else if (strcmp(field, "-valueMask") == 0) {
             if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
@@ -747,7 +747,7 @@ char **argv;           /* Argument strings. */
             }
         } else {
             Tcl_AppendResult(
-            interp, "bad option \"", field, "\"", ( char * )NULL);
+            interp, "bad option \"", field, "\"", ( char * ) NULL);
             return TCL_ERROR;
         }
     }
@@ -780,7 +780,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window main = ( Tk_Window )clientData;
+    Tk_Window main = ( Tk_Window ) clientData;
     int i;
     Tk_Window tkwin;
 
@@ -835,7 +835,7 @@ ClientData *clientDataPtr; /* Store manager's token for image here;
     for (i = 0; i < argc; i += 2) {
         if (strcmp(argv[i], "-variable") != 0) {
             Tcl_AppendResult(
-            interp, "bad option name \"", argv[i], "\"", ( char * )NULL);
+            interp, "bad option name \"", argv[i], "\"", ( char * ) NULL);
             return TCL_ERROR;
         }
         if ((i + 1) == argc) {
@@ -843,23 +843,26 @@ ClientData *clientDataPtr; /* Store manager's token for image here;
                              "no value given for \"",
                              argv[i],
                              "\" option",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         varName = argv[i + 1];
     }
-    timPtr = ( TImageMaster * )ckalloc(sizeof(TImageMaster));
+    timPtr = ( TImageMaster * ) ckalloc(sizeof(TImageMaster));
     timPtr->master = master;
     timPtr->interp = interp;
     timPtr->width = 30;
     timPtr->height = 15;
-    timPtr->imageName = ( char * )ckalloc(( unsigned )(strlen(name) + 1));
+    timPtr->imageName = ( char * ) ckalloc(( unsigned ) (strlen(name) + 1));
     strcpy(timPtr->imageName, name);
-    timPtr->varName = ( char * )ckalloc(( unsigned )(strlen(varName) + 1));
+    timPtr->varName = ( char * ) ckalloc(( unsigned ) (strlen(varName) + 1));
     strcpy(timPtr->varName, varName);
-    Tcl_CreateCommand(
-    interp, name, ImageCmd, ( ClientData )timPtr, ( Tcl_CmdDeleteProc * )NULL);
-    *clientDataPtr = ( ClientData )timPtr;
+    Tcl_CreateCommand(interp,
+                      name,
+                      ImageCmd,
+                      ( ClientData ) timPtr,
+                      ( Tcl_CmdDeleteProc * ) NULL);
+    *clientDataPtr = ( ClientData ) timPtr;
     Tk_ImageChanged(master, 0, 0, 30, 15, 30, 15);
     return TCL_OK;
 }
@@ -888,7 +891,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    TImageMaster *timPtr = ( TImageMaster * )clientData;
+    TImageMaster *timPtr = ( TImageMaster * ) clientData;
     int x, y, width, height;
 
     if (argc < 2) {
@@ -896,7 +899,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          "option ?arg arg ...?",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (strcmp(argv[1], "changed") == 0) {
@@ -906,7 +909,7 @@ char **argv;           /* Argument strings. */
             "wrong # args: should be \"",
             argv[0],
             " changed x y width height imageWidth imageHeight",
-            ( char * )NULL);
+            ( char * ) NULL);
             return TCL_ERROR;
         }
         if ((Tcl_GetInt(interp, argv[2], &x) != TCL_OK)
@@ -924,7 +927,7 @@ char **argv;           /* Argument strings. */
                          "bad option \"",
                          argv[1],
                          "\": must be changed",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -953,7 +956,7 @@ ImageGet(tkwin, clientData) Tk_Window tkwin; /* Token for window in which
                                               * image will be used. */
 ClientData clientData; /* Pointer to TImageMaster for image. */
 {
-    TImageMaster *timPtr = ( TImageMaster * )clientData;
+    TImageMaster *timPtr = ( TImageMaster * ) clientData;
     TImageInstance *instPtr;
     char buffer[100];
     XGCValues gcValues;
@@ -964,12 +967,12 @@ ClientData clientData; /* Pointer to TImageMaster for image. */
                buffer,
                TCL_GLOBAL_ONLY | TCL_APPEND_VALUE | TCL_LIST_ELEMENT);
 
-    instPtr = ( TImageInstance * )ckalloc(sizeof(TImageInstance));
+    instPtr = ( TImageInstance * ) ckalloc(sizeof(TImageInstance));
     instPtr->masterPtr = timPtr;
     instPtr->fg = Tk_GetColor(timPtr->interp, tkwin, "#ff0000");
     gcValues.foreground = instPtr->fg->pixel;
     instPtr->gc = Tk_GetGC(tkwin, GCForeground, &gcValues);
-    return ( ClientData )instPtr;
+    return ( ClientData ) instPtr;
 }
 
 /*
@@ -1008,7 +1011,7 @@ int width, height;        /* Dimensions of area to redraw. */
 int drawableX, drawableY; /* Coordinates in drawable corresponding to
                            * imageX and imageY. */
 {
-    TImageInstance *instPtr = ( TImageInstance * )clientData;
+    TImageInstance *instPtr = ( TImageInstance * ) clientData;
     char buffer[200];
 
     sprintf(buffer,
@@ -1035,21 +1038,21 @@ int drawableX, drawableY; /* Coordinates in drawable corresponding to
                    instPtr->gc,
                    drawableX,
                    drawableY,
-                   ( unsigned )(width - 1),
-                   ( unsigned )(height - 1));
+                   ( unsigned ) (width - 1),
+                   ( unsigned ) (height - 1));
     XDrawLine(display,
               drawable,
               instPtr->gc,
               drawableX,
               drawableY,
-              ( int )(drawableX + width - 1),
-              ( int )(drawableY + height - 1));
+              ( int ) (drawableX + width - 1),
+              ( int ) (drawableY + height - 1));
     XDrawLine(display,
               drawable,
               instPtr->gc,
               drawableX,
-              ( int )(drawableY + height - 1),
-              ( int )(drawableX + width - 1),
+              ( int ) (drawableY + height - 1),
+              ( int ) (drawableX + width - 1),
               drawableY);
 }
 
@@ -1074,7 +1077,7 @@ static void ImageFree(clientData, display)
 ClientData clientData; /* Pointer to TImageInstance for instance. */
 Display *display;      /* Display where image was to be drawn. */
 {
-    TImageInstance *instPtr = ( TImageInstance * )clientData;
+    TImageInstance *instPtr = ( TImageInstance * ) clientData;
     char buffer[200];
 
     sprintf(buffer, "%s free", instPtr->masterPtr->imageName);
@@ -1084,7 +1087,7 @@ Display *display;      /* Display where image was to be drawn. */
                TCL_GLOBAL_ONLY | TCL_APPEND_VALUE | TCL_LIST_ELEMENT);
     Tk_FreeColor(instPtr->fg);
     Tk_FreeGC(display, instPtr->gc);
-    ckfree(( char * )instPtr);
+    ckfree(( char * ) instPtr);
 }
 
 /*
@@ -1109,7 +1112,7 @@ ClientData clientData; /* Pointer to TImageMaster for image.  When
                         * this procedure is called, no more
                         * instances exist. */
 {
-    TImageMaster *timPtr = ( TImageMaster * )clientData;
+    TImageMaster *timPtr = ( TImageMaster * ) clientData;
     char buffer[100];
 
     sprintf(buffer, "%s delete", timPtr->imageName);
@@ -1121,7 +1124,7 @@ ClientData clientData; /* Pointer to TImageMaster for image.  When
     Tcl_DeleteCommand(timPtr->interp, timPtr->imageName);
     ckfree(timPtr->imageName);
     ckfree(timPtr->varName);
-    ckfree(( char * )timPtr);
+    ckfree(( char * ) timPtr);
 }
 
 /*
@@ -1149,14 +1152,14 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    TkWindow *winPtr = ( TkWindow * )clientData;
+    TkWindow *winPtr = ( TkWindow * ) clientData;
 
     if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args;  must be \"",
                          argv[0],
                          " option ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -1168,7 +1171,7 @@ char **argv;           /* Argument strings. */
                         XA_INTEGER,
                         32,
                         PropModeReplace,
-                        ( unsigned char * )"This is bogus information",
+                        ( unsigned char * ) "This is bogus information",
                         6);
     } else if (strcmp(argv[1], "prop") == 0) {
         int result, actualFormat, length;
@@ -1182,7 +1185,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args;  must be \"",
                              argv[0],
                              " prop window name ?value ?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (strcmp(argv[2], "root") == 0) {
@@ -1192,7 +1195,7 @@ char **argv;           /* Argument strings. */
         } else {
             w = strtoul(argv[2], &end, 0);
         }
-        propName = Tk_InternAtom(( Tk_Window )winPtr, argv[3]);
+        propName = Tk_InternAtom(( Tk_Window ) winPtr, argv[3]);
         if (argc == 4) {
             property = NULL;
             result = XGetWindowProperty(winPtr->dispPtr->display,
@@ -1204,9 +1207,9 @@ char **argv;           /* Argument strings. */
                                         XA_STRING,
                                         &actualType,
                                         &actualFormat,
-                                        ( unsigned long * )&length,
+                                        ( unsigned long * ) &length,
                                         &bytesAfter,
-                                        ( unsigned char ** )&property);
+                                        ( unsigned char ** ) &property);
             if ((result == Success) && (actualType != None)
                 && (actualFormat == 8) && (actualType == XA_STRING)) {
                 for (p = property; (p - property) < length; p++) {
@@ -1234,7 +1237,7 @@ char **argv;           /* Argument strings. */
                                 XA_STRING,
                                 8,
                                 PropModeReplace,
-                                ( unsigned char * )argv[4],
+                                ( unsigned char * ) argv[4],
                                 p - argv[4]);
             }
         }
@@ -1245,7 +1248,7 @@ char **argv;           /* Argument strings. */
                          "bad option \"",
                          argv[1],
                          "\": must be bogus, prop, or serial",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 #endif

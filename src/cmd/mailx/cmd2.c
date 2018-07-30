@@ -484,9 +484,9 @@ undelete(struct msg *msgvec)
 static int
 ignoreshow(Dt_t *dt, void *object, void *context)
 {
-    if ((( struct name * )object)->flags & *(( int * )context)) {
-        *(( int * )context) |= HIT;
-        printf("%s\n", (( struct name * )object)->name);
+    if ((( struct name * ) object)->flags & *(( int * ) context)) {
+        *(( int * ) context) |= HIT;
+        printf("%s\n", (( struct name * ) object)->name);
     }
     return 0;
 }
@@ -571,7 +571,7 @@ mail(char *str)
 static int
 maplist(Dt_t *dt, void *object, void *context)
 {
-    printf("%s ", (( struct name * )object)->name);
+    printf("%s ", (( struct name * ) object)->name);
     return 0;
 }
 
@@ -680,7 +680,7 @@ getatt(struct part *ap,
     filecopy(NiL, ip, name, op, NiL, ap->size, lines, chars, 0);
     fileclose(op);
     if (flags & GDISPLAY)
-        note(0, "\"%s\" %ld/%ld", name, ( long )*lines, ( long )*chars);
+        note(0, "\"%s\" %ld/%ld", name, ( long ) *lines, ( long ) *chars);
     return 0;
 }
 
@@ -839,8 +839,8 @@ split1(char *str, Dt_t **ignore, long num, char *dir, int verbose, int flag)
                          "%s %ld %ld %ld",
                          file,
                          num,
-                         ( long )mp->m_lines,
-                         ( long )mp->m_size);
+                         ( long ) mp->m_lines,
+                         ( long ) mp->m_size);
                 if (ap = state.part.in.head) {
                     do {
                         if (!(ap->flags & PART_body)) {
@@ -854,8 +854,8 @@ split1(char *str, Dt_t **ignore, long num, char *dir, int verbose, int flag)
                                      ap->count,
                                      ap->name,
                                      ap->type,
-                                     ( long )lc,
-                                     ( long )cc);
+                                     ( long ) lc,
+                                     ( long ) cc);
                         }
                     } while (ap = ap->next);
                 }

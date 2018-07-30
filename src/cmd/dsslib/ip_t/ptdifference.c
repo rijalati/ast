@@ -37,27 +37,27 @@ ptdifference(Pt_t *a, Pt_t *b)
     if (!(t = ptopen(a->disc)))
         return 0;
     m = 0;
-    ap = ( Ptprefix_t * )dtfirst(a->dict);
-    bp = ( Ptprefix_t * )dtfirst(b->dict);
+    ap = ( Ptprefix_t * ) dtfirst(a->dict);
+    bp = ( Ptprefix_t * ) dtfirst(b->dict);
     while (ap) {
         if (!bp || ap->max < bp->min) {
             if (!ptinsert(t, ap->min, ap->max))
                 break;
-            ap = ( Ptprefix_t * )dtnext(a->dict, ap);
+            ap = ( Ptprefix_t * ) dtnext(a->dict, ap);
         } else if (ap->min > bp->max)
-            bp = ( Ptprefix_t * )dtnext(b->dict, bp);
+            bp = ( Ptprefix_t * ) dtnext(b->dict, bp);
         else {
             if (ap->min < bp->min && !ptinsert(t, ap->min, bp->min - 1))
                 break;
             if (ap->max < bp->max)
-                ap = ( Ptprefix_t * )dtnext(a->dict, ap);
+                ap = ( Ptprefix_t * ) dtnext(a->dict, ap);
             else if (ap->max == bp->max) {
-                ap = ( Ptprefix_t * )dtnext(a->dict, ap);
-                bp = ( Ptprefix_t * )dtnext(b->dict, bp);
+                ap = ( Ptprefix_t * ) dtnext(a->dict, ap);
+                bp = ( Ptprefix_t * ) dtnext(b->dict, bp);
             } else {
                 while (ap->max > bp->max) {
                     m = bp->max + 1;
-                    if (!(bp = ( Ptprefix_t * )dtnext(b->dict, bp))
+                    if (!(bp = ( Ptprefix_t * ) dtnext(b->dict, bp))
                         || bp->min > ap->max) {
                         if (!ptinsert(t, m, ap->max))
                             goto done;
@@ -66,7 +66,7 @@ ptdifference(Pt_t *a, Pt_t *b)
                     if (bp->min > m && !ptinsert(t, m, bp->min - 1))
                         goto done;
                 }
-                ap = ( Ptprefix_t * )dtnext(a->dict, ap);
+                ap = ( Ptprefix_t * ) dtnext(a->dict, ap);
             }
         }
     }

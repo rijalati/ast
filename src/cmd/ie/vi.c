@@ -85,8 +85,8 @@ static int bigvi;
 #    define digit(c) ((c & ~STRIP) == 0 && isdigit(c))
 #    define is_print(c) ((c & ~STRIP) || isprint(c))
 #else
-#    define gencpy(a, b) strcpy(( char * )(a), ( char * )(b))
-#    define genncpy(a, b, n) strncpy(( char * )(a), ( char * )(b), n)
+#    define gencpy(a, b) strcpy(( char * ) (a), ( char * ) (b))
+#    define genncpy(a, b, n) strncpy(( char * ) (a), ( char * ) (b), n)
 #    define genlen(str) strlen(str)
 #    define isalph(v) isalnum(virtual[v])
 #    define isblank(v) isspace(virtual[v])
@@ -355,9 +355,9 @@ unsigned nchar;                       /* number of chars to read */
 
     /*** Initialize some things ***/
 
-    virtual = ( genchar * )shbuf;
+    virtual = ( genchar * ) shbuf;
 #undef virtual
-#define virtual(( genchar * )shbuf)
+#define virtual(( genchar * ) shbuf)
 #ifdef MULTIBYTE
     shbuf[i + 1] = 0;
     i = ed_internal(shbuf, virtual) - 1;
@@ -389,13 +389,13 @@ unsigned nchar;                       /* number of chars to read */
     yankbuf = shbuf + MAXLINE * sizeof(genchar);
 #else
     if (yankbuf == 0)
-        yankbuf = ( genchar * )malloc(sizeof(genchar) * (MAXLINE));
+        yankbuf = ( genchar * ) malloc(sizeof(genchar) * (MAXLINE));
 #endif
 #if KSHELL && (3 * CHARSIZE * MAXLINE) < IOBSIZE
     lastline = shbuf + (MAXLINE + MAXLINE) * sizeof(genchar);
 #else
     if (lastline == 0)
-        lastline = ( genchar * )malloc(sizeof(genchar) * (MAXLINE));
+        lastline = ( genchar * ) malloc(sizeof(genchar) * (MAXLINE));
 #endif
     if (last_cmd == '\0') {
         /*** first time for this shell ***/
@@ -852,11 +852,11 @@ cntlmode()
             }
             save_v();
         newhist:
-            hist_copy(( char * )virtual, curhline, -1);
+            hist_copy(( char * ) virtual, curhline, -1);
 #ifdef MULTIBYTE
-            ed_internal(( char * )virtual, virtual);
+            ed_internal(( char * ) virtual, virtual);
 #endif /* MULTIBYTE */
-            if ((last_virt = genlen(( char * )virtual) - 1) >= 0)
+            if ((last_virt = genlen(( char * ) virtual) - 1) >= 0)
                 cur_virt = 0;
             else
                 cur_virt = INVALID;
@@ -1503,7 +1503,7 @@ static int mvcursor(motion) int motion;
         int nextc;
         tcur_virt = cur_virt;
         while (tcur_virt <= last_virt
-               && strchr(paren_chars, virtual[tcur_virt]) == ( char * )0)
+               && strchr(paren_chars, virtual[tcur_virt]) == ( char * ) 0)
             tcur_virt++;
         if (tcur_virt > last_virt)
             return (BAD);
@@ -1899,10 +1899,10 @@ static int search(mode) char mode;
     if (cur_virt == 0 || fold(mode) == 'N') {
         /*** user wants repeat of last search ***/
         del_line(BAD);
-        strcpy((( char * )virtual) + 1, lsearch);
+        strcpy((( char * ) virtual) + 1, lsearch);
 #ifdef MULTIBYTE
-        *(( char * )virtual) = '/';
-        ed_internal(( char * )virtual, virtual);
+        *(( char * ) virtual) = '/';
+        ed_internal(( char * ) virtual, virtual);
 #endif /* MULTIBYTE */
     }
 
@@ -1918,10 +1918,11 @@ static int search(mode) char mode;
 
     oldcurhline = curhline;
 #ifdef MULTIBYTE
-    ed_external(virtual, ( char * )virtual);
+    ed_external(virtual, ( char * ) virtual);
 #endif /* MULTIBYTE */
-    location = hist_find((( char * )virtual) + 1, curhline, 1, new_direction);
-    strncpy(lsearch, (( char * )virtual) + 1, SEARCHSIZE);
+    location
+    = hist_find((( char * ) virtual) + 1, curhline, 1, new_direction);
+    strncpy(lsearch, (( char * ) virtual) + 1, SEARCHSIZE);
     if ((curhline = location.his_command) >= 0) {
         return (GOOD);
     }
@@ -2049,7 +2050,7 @@ addin:
         i = last_virt;
         ++last_virt;
         virtual[last_virt] = 0;
-        if (ed_expand(( char * )virtual, &cur_virt, &last_virt, c)) {
+        if (ed_expand(( char * ) virtual, &cur_virt, &last_virt, c)) {
             last_virt = i;
             bell;
         } else if (c == '=') {
@@ -2087,7 +2088,7 @@ addin:
             genchar tmpbuf[MAXLINE];
             if (repeat_set == 0)
                 repeat = -1;
-            p = ( genchar * )hist_word(tmpbuf, repeat);
+            p = ( genchar * ) hist_word(tmpbuf, repeat);
 #ifndef KSHELL
             if (p == 0) {
                 bell;
@@ -2095,7 +2096,7 @@ addin:
             }
 #endif /* KSHELL */
 #ifdef MULTIBYTE
-            ed_internal(( char * )p, tmpbuf);
+            ed_internal(( char * ) p, tmpbuf);
             p = tmpbuf;
 #endif /* MULTIBYTE */
             i = ' ';

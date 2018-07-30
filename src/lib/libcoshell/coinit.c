@@ -92,8 +92,8 @@ putexport(Coshell_t *co, Sfio_t *sp, char *n, int old, int coex, int flags)
                 coquote(sp, v, cvt);
             if (coex && !(flags & CO_EXPORT)) {
                 v = v ? ":" : "";
-                for (ex = ( Coexport_t * )dtfirst(co->export); ex;
-                     ex = ( Coexport_t * )dtnext(co->export, ex)) {
+                for (ex = ( Coexport_t * ) dtfirst(co->export); ex;
+                     ex = ( Coexport_t * ) dtnext(co->export, ex)) {
                     sfprintf(sp, "%s%s", v, ex->name);
                     exid(sp, v, ex->name, "");
                     v = ":";
@@ -195,7 +195,7 @@ coinitialize(Coshell_t *co, int flags)
                     while (e = *ep++)
                         if ((t = strsubmatch(e, s, 1))
                             && (*t == '=' || !*t && (t = strchr(e, '=')))) {
-                            m = ( int )(t - e);
+                            m = ( int ) (t - e);
                             if (!strneq(e, "PATH=", 5)
                                 && !strneq(e, "_=", 2)) {
                                 for (n = 0; xs = co_export[n]; n++) {
@@ -234,8 +234,8 @@ coinitialize(Coshell_t *co, int flags)
                     }
             }
             if (co->export)
-                for (ex = ( Coexport_t * )dtfirst(co->export); ex;
-                     ex = ( Coexport_t * )dtnext(co->export, ex)) {
+                for (ex = ( Coexport_t * ) dtfirst(co->export); ex;
+                     ex = ( Coexport_t * ) dtnext(co->export, ex)) {
                     if (!old)
                         sfprintf(sp, "\\\n");
                     exid(sp, " ", ex->name, "='");
@@ -333,7 +333,7 @@ coinitialize(Coshell_t *co, int flags)
              * VPATH
              */
 
-            p = ( int )sfstrtell(sp);
+            p = ( int ) sfstrtell(sp);
             sfprintf(sp, "vpath ");
             n = PATH_MAX;
             if (fs3d(FS3D_TEST))
@@ -372,7 +372,7 @@ coinitialize(Coshell_t *co, int flags)
                 sfprintf(sp, "export %s\n", CO_ENV_TEMP);
         }
         sfputc(sp, 0);
-        n = ( int )sfstrtell(sp);
+        n = ( int ) sfstrtell(sp);
         if (co->vm) {
             if (co->init.script)
                 vmfree(co->vm, co->init.script);

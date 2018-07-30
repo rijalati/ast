@@ -28,11 +28,11 @@
 #define MAXSIZE (1 << 16) /* max record size		*/
 #define GETSIZE(dt) (((dt)[0] << 8) + (dt)[1]) /* get AMA size	*/
 #define PUTSIZE(dt, v)                                                       \
-    (((dt)[0] = (((v) >> 8) & 0377)), ((dt)[1] = (( v )&0377)))
+    (((dt)[0] = (((v) >> 8) & 0377)), ((dt)[1] = (( v ) &0377)))
 
 /* Fast string xor-ing. Assumption: sizeof(type) is a power-of-2 <= 8 */
 #define ALIGN(ptr, type)                                                     \
-    ((( unsigned char * )ptr - ( unsigned char * )0) & (sizeof(type) - 1))
+    ((( unsigned char * ) ptr - ( unsigned char * ) 0) & (sizeof(type) - 1))
 #define XOR(sx, s1, s2, sk, sn, algn, type)                                  \
     do {                                                                     \
         if ((sk + algn + sizeof(type)) <= sn) {                              \
@@ -40,15 +40,15 @@
             if (algn > 0)                                                    \
                 for (algn = sk + sizeof(type) - algn; sk < algn; ++sk)       \
                     *sx++ = *s1++ ^ *s2++;                                   \
-            tx = ( unsigned type * )sx;                                      \
-            t1 = ( unsigned type * )s1;                                      \
-            t2 = ( unsigned type * )s2;                                      \
+            tx = ( unsigned type * ) sx;                                     \
+            t1 = ( unsigned type * ) s1;                                     \
+            t2 = ( unsigned type * ) s2;                                     \
             for (sn -= sizeof(type); sk <= sn; sk += sizeof(type))           \
                 *tx++ = *t1++ ^ *t2++;                                       \
             sn += sizeof(type);                                              \
-            sx = ( Vcchar_t * )tx;                                           \
-            s1 = ( Vcchar_t * )t1;                                           \
-            s2 = ( Vcchar_t * )t2;                                           \
+            sx = ( Vcchar_t * ) tx;                                          \
+            s1 = ( Vcchar_t * ) t1;                                          \
+            s2 = ( Vcchar_t * ) t2;                                          \
         }                                                                    \
         for (; sk < sn; ++sk)                                                \
             *sx++ = *s1++ ^ *s2++;                                           \
@@ -84,7 +84,7 @@ Void_t **out;
         return -1;
 
     df = output;
-    enddt = (dt = ( Vcchar_t * )data) + size;
+    enddt = (dt = ( Vcchar_t * ) data) + size;
     if (ncols > 0) /* fixed-length rows */
     {
         if ((sz = (size / ncols) * ncols) > 0) {
@@ -142,7 +142,7 @@ Void_t **out;
     }
 
     vc->undone = enddt - dt;
-    if ((sz = dt - ( Vcchar_t * )data) == 0)
+    if ((sz = dt - ( Vcchar_t * ) data) == 0)
         return 0;
 
     dt = output;

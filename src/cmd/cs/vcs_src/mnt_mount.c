@@ -184,6 +184,6 @@ char *reply;
     if (vcs_write(buf) <= 0 || vcs_read(reply, 1024) <= 0)
         return (-1);
     if (strstr(reply, "ok ") != NULL)
-        ( void )add_entry(mpoint, buf);
+        ( void ) add_entry(mpoint, buf);
     return (0);
 }

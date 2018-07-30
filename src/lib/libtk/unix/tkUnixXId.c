@@ -124,7 +124,7 @@ static XID AllocXId(display) Display *display; /* Display for which to
     if (stackPtr != NULL) {
         while (stackPtr->numUsed == 0) {
             dispPtr->idStackPtr = stackPtr->nextPtr;
-            ckfree(( char * )stackPtr);
+            ckfree(( char * ) stackPtr);
             stackPtr = dispPtr->idStackPtr;
             if (stackPtr == NULL) {
                 goto defAlloc;
@@ -181,7 +181,7 @@ XID xid; /* Identifier that is no longer
 
     stackPtr = dispPtr->idStackPtr;
     if ((stackPtr == NULL) || (stackPtr->numUsed >= IDS_PER_STACK)) {
-        stackPtr = ( TkIdStack * )ckalloc(sizeof(TkIdStack));
+        stackPtr = ( TkIdStack * ) ckalloc(sizeof(TkIdStack));
         stackPtr->numUsed = 0;
         stackPtr->dispPtr = dispPtr;
         stackPtr->nextPtr = dispPtr->idStackPtr;
@@ -266,7 +266,7 @@ Window w; /* X identifier for window on dispPtr. */
 
     stackPtr = dispPtr->windowStackPtr;
     if ((stackPtr == NULL) || (stackPtr->numUsed >= IDS_PER_STACK)) {
-        stackPtr = ( TkIdStack * )ckalloc(sizeof(TkIdStack));
+        stackPtr = ( TkIdStack * ) ckalloc(sizeof(TkIdStack));
         stackPtr->numUsed = 0;
         stackPtr->dispPtr = dispPtr;
         stackPtr->nextPtr = dispPtr->windowStackPtr;
@@ -287,7 +287,8 @@ Window w; /* X identifier for window on dispPtr. */
 
     if (!dispPtr->idCleanupScheduled) {
         dispPtr->idCleanupScheduled = 1;
-        Tcl_CreateTimerHandler(100, WindowIdCleanup, ( ClientData * )dispPtr);
+        Tcl_CreateTimerHandler(
+        100, WindowIdCleanup, ( ClientData * ) dispPtr);
     }
 }
 
@@ -314,7 +315,7 @@ Window w; /* X identifier for window on dispPtr. */
 static void WindowIdCleanup(clientData)
 ClientData clientData; /* Pointer to TkDisplay for display */
 {
-    TkDisplay *dispPtr = ( TkDisplay * )clientData;
+    TkDisplay *dispPtr = ( TkDisplay * ) clientData;
     int anyEvents, delta;
     Tk_RestrictProc *oldProc;
     ClientData oldData;
@@ -342,7 +343,7 @@ ClientData clientData; /* Pointer to TkDisplay for display */
     }
     anyEvents = 0;
     oldProc = Tk_RestrictEvents(
-    CheckRestrictProc, ( ClientData )&anyEvents, &oldData);
+    CheckRestrictProc, ( ClientData ) &anyEvents, &oldData);
     Tcl_DoOneEvent(TCL_DONT_WAIT | TCL_WINDOW_EVENTS);
     Tk_RestrictEvents(oldProc, oldData, &oldData);
     if (anyEvents) {
@@ -356,7 +357,7 @@ ClientData clientData; /* Pointer to TkDisplay for display */
 
     if (dispPtr->windowStackPtr != NULL) {
         Tcl_CreateTimerHandler(
-        5000, WindowIdCleanup2, ( ClientData )dispPtr->windowStackPtr);
+        5000, WindowIdCleanup2, ( ClientData ) dispPtr->windowStackPtr);
         dispPtr->windowStackPtr = NULL;
     }
     return;
@@ -367,7 +368,7 @@ ClientData clientData; /* Pointer to TkDisplay for display */
 
 tryAgain:
     dispPtr->idCleanupScheduled = 1;
-    Tcl_CreateTimerHandler(500, WindowIdCleanup, ( ClientData * )dispPtr);
+    Tcl_CreateTimerHandler(500, WindowIdCleanup, ( ClientData * ) dispPtr);
 }
 
 /*
@@ -391,7 +392,7 @@ tryAgain:
 static void WindowIdCleanup2(clientData)
 ClientData clientData; /* Pointer to TkIdStack list. */
 {
-    TkIdStack *stackPtr = ( TkIdStack * )clientData;
+    TkIdStack *stackPtr = ( TkIdStack * ) clientData;
     TkIdStack *lastPtr;
 
     lastPtr = stackPtr;
@@ -425,7 +426,7 @@ static Tk_RestrictAction CheckRestrictProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to flag to set. */
 XEvent *eventPtr;      /* Event to filter;  not used. */
 {
-    int *flag = ( int * )clientData;
+    int *flag = ( int * ) clientData;
     *flag = 1;
     return TK_DEFER_EVENT;
 }
@@ -457,7 +458,7 @@ int width, height; /* Dimensions of pixmap. */
 int depth;         /* Bits per pixel for pixmap. */
 {
     return XCreatePixmap(
-    display, d, ( unsigned )width, ( unsigned )height, ( unsigned )depth);
+    display, d, ( unsigned ) width, ( unsigned ) height, ( unsigned ) depth);
 }
 
 /*
@@ -484,5 +485,5 @@ void Tk_FreePixmap(display,
 Pixmap pixmap;                               /* Identifier for pixmap. */
 {
     XFreePixmap(display, pixmap);
-    Tk_FreeXId(display, ( XID )pixmap);
+    Tk_FreeXId(display, ( XID ) pixmap);
 }

@@ -80,7 +80,7 @@ flatopen(Dssfile_t *file, Dssdisc_t *disc)
 {
     if ((file->flags & DSS_FILE_READ)
         && !(file->data
-             = ( void * )vmnewof(file->dss->vm, 0, State_t, 1, 0))) {
+             = ( void * ) vmnewof(file->dss->vm, 0, State_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -95,7 +95,7 @@ flatopen(Dssfile_t *file, Dssdisc_t *disc)
 static int
 flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Netflow_t *rp = &(( State_t * )file->data)->record;
+    Netflow_t *rp = &(( State_t * ) file->data)->record;
     char *a;
     char *b;
     char *s;
@@ -169,8 +169,8 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     rp->flow_sequence = strtoul(b, &a, 10);
     if (*a++ != '\n')
         goto bad;
-    rp->start = ( Nftime_t )rp->first * NS;
-    rp->end = ( Nftime_t )rp->last * NS;
+    rp->start = ( Nftime_t ) rp->first * NS;
+    rp->end = ( Nftime_t ) rp->last * NS;
     record->data = rp;
     record->size = sizeof(*rp);
     return 1;
@@ -194,12 +194,13 @@ bad:
  * writef
  */
 
-#define IPQ(a) (a >> 24) & 0xff, (a >> 16) & 0xff, (a >> 8) & 0xff, ( a )&0xff
+#define IPQ(a)                                                               \
+    (a >> 24) & 0xff, (a >> 16) & 0xff, (a >> 8) & 0xff, ( a ) &0xff
 
 static int
 flatwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Netflow_t *rp = ( Netflow_t * )record->data;
+    Netflow_t *rp = ( Netflow_t * ) record->data;
 
     if (sfprintf(file->io,
                  "%d.%d.%d.%d|%d.%d.%d.%d|%d.%d.%d.%d|%u|%u|%u|%u|%u|%u|%u|%"
@@ -211,8 +212,8 @@ flatwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                  rp->output,
                  rp->packets,
                  rp->bytes,
-                 ( unsigned long )(rp->start / NS),
-                 ( unsigned long )(rp->end / NS),
+                 ( unsigned long ) (rp->start / NS),
+                 ( unsigned long ) (rp->end / NS),
                  rp->src_port,
                  rp->dst_port,
                  rp->flags,

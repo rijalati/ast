@@ -182,7 +182,8 @@ vcat(char *states, Sfio_t *ip, Sfio_t *op, Reserve_f reserve, int flags)
                                     *(cp = cur = end) = 0;
                                 } else {
                                     memcpy(tmp, pp, c);
-                                    if (!(nxt = ( unsigned char * )(*reserve)(
+                                    if (!(nxt
+                                          = ( unsigned char * ) (*reserve)(
                                           ip, SF_UNBOUND, 0))) {
                                         states[0]
                                         = sfvalue(ip) ? T_ERROR : T_EOF;
@@ -257,7 +258,7 @@ vcat(char *states, Sfio_t *ip, Sfio_t *op, Reserve_f reserve, int flags)
                 goto flush;
             }
             c = last;
-            if (!(nxt = ( unsigned char * )(*reserve)(ip, SF_UNBOUND, 0))) {
+            if (!(nxt = ( unsigned char * ) (*reserve)(ip, SF_UNBOUND, 0))) {
                 *(cp = end = tmp + sizeof(tmp) - 1) = 0;
                 states[0] = (m = sfvalue(ip)) ? T_ERROR : T_EOF;
                 last = -1;
@@ -298,14 +299,14 @@ vcat(char *states, Sfio_t *ip, Sfio_t *op, Reserve_f reserve, int flags)
             do {
                 n = c & ~0200;
                 meta[2] = printof(n);
-                sfwrite(op, ( char * )meta, 3);
+                sfwrite(op, ( char * ) meta, 3);
             } while (states[c = *++cp] == T_CNTL8BIT && raw);
             break;
         case T_EIGHTBIT:
             meta[1] = '-';
             do {
                 meta[2] = c & ~0200;
-                sfwrite(op, ( char * )meta, 3);
+                sfwrite(op, ( char * ) meta, 3);
             } while (states[c = *++cp] == T_EIGHTBIT && raw);
             break;
         case T_NEWLINE:
@@ -321,7 +322,7 @@ vcat(char *states, Sfio_t *ip, Sfio_t *op, Reserve_f reserve, int flags)
                 if ((n = states[*++cp]) == T_ENDBUF) {
                     if (cp < end || last != '\n')
                         break;
-                    if (!(nxt = ( unsigned char * )(*reserve)(
+                    if (!(nxt = ( unsigned char * ) (*reserve)(
                           ip, SF_UNBOUND, 0))) {
                         states[0] = sfvalue(ip) ? T_ERROR : T_EOF;
                         cp = end = tmp;
@@ -484,7 +485,7 @@ b_cat(int argc, char **argv, Shbltin_t *context)
             continue;
         }
         if (flags & U_FLAG)
-            sfsetbuf(fp, ( void * )fp, -1);
+            sfsetbuf(fp, ( void * ) fp, -1);
         if (dovcat)
             n = vcat(states, fp, sfstdout, reserve, flags);
         else if (sfmove(fp, sfstdout, SF_UNBOUND, -1) >= 0 && sfeof(fp))

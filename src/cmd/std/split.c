@@ -184,7 +184,7 @@ getop(struct op **prev, Sfoff_t size, size_t repeat, int flags, int re)
         op->size = size;
         op->next = 0;
         if (re)
-            op->re = ( regex_t * )(op + 1);
+            op->re = ( regex_t * ) (op + 1);
         *prev = op;
     }
     return op;
@@ -198,7 +198,7 @@ getop(struct op **prev, Sfoff_t size, size_t repeat, int flags, int re)
 static struct op *
 getexpr(struct op **prev, const char *arg)
 {
-    char *cp = ( char * )arg;
+    char *cp = ( char * ) arg;
     char *ep;
     int n;
     struct op *op;
@@ -242,7 +242,7 @@ setfname(const char *prefix, char *format, int suflen, int low, int high)
     } else
         slen = 0;
     if (fp = newof(0, struct fname, 1, len)) {
-        cp = ( char * )(fp + 1);
+        cp = ( char * ) (fp + 1);
         if (format) {
             strcpy(fp->format = cp, prefix);
             cp += flen;
@@ -267,13 +267,13 @@ setfname(const char *prefix, char *format, int suflen, int low, int high)
             if (len > flen) {
                 *(cp - 1) = 0;
                 flen
-                = ( int )strtol(astconf("NAME_MAX", fp->fname, NiL), NiL, 0);
+                = ( int ) strtol(astconf("NAME_MAX", fp->fname, NiL), NiL, 0);
                 *(cp - 1) = '/';
             }
         } else {
             cp = fp->fname;
             if (len > flen)
-                flen = ( int )strtol(astconf("NAME_MAX", ".", NiL), NiL, 0);
+                flen = ( int ) strtol(astconf("NAME_MAX", ".", NiL), NiL, 0);
         }
         if (len > flen)
             error(ERROR_exit(1), "%s: filename too long", prefix);
@@ -425,7 +425,7 @@ split(Sfio_t *in, struct fname *fp, struct op *op, int flags)
                 }
             }
             if (out) {
-                size = sfseek(out, ( Sfoff_t )0, SEEK_END);
+                size = sfseek(out, ( Sfoff_t ) 0, SEEK_END);
                 if (!(flags & S_FLAG))
                     sfprintf(sfstdout, "%I*d\n", sizeof(size), size);
                 sfclose(out);

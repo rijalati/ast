@@ -48,7 +48,7 @@ Vmdisc_t *disc;
 #endif
 {
     if (!Avail) {
-        Avail = Buf = ( Vmuchar_t * )(&Algn[0]);
+        Avail = Buf = ( Vmuchar_t * ) (&Algn[0]);
         Endbuf = Buf + sizeof(Algn);
     }
 
@@ -56,7 +56,7 @@ Vmdisc_t *disc;
         return NIL(Void_t *);
 
     Count += 1;
-    caddr = ( Void_t * )Avail;
+    caddr = ( Void_t * ) Avail;
     Avail += newsize;
     if (Avail >= Endbuf)
         terror("No more buffer");
@@ -69,7 +69,7 @@ except(Vmalloc_t *vm, int type, Void_t *data, Vmdisc_t *disc)
 {
     /* make the eventual handle be a part of our memory */
     if (type == VM_OPEN && data)
-        *(( Void_t ** )data) = data;
+        *(( Void_t ** ) data) = data;
     return 0;
 }
 
@@ -99,23 +99,23 @@ tmain()
 
     if (!(vm1 = vmopen(&Disc, Vmbest, 0)))
         terror("Failed to open vm1");
-    if (( Vmuchar_t * )vm1 < Buf || ( Vmuchar_t * )vm1 >= Endbuf)
+    if (( Vmuchar_t * ) vm1 < Buf || ( Vmuchar_t * ) vm1 >= Endbuf)
         terror("Failed to get vm1 memory to be ours");
 
     if (!(vm2 = vmopen(&Disc, Vmbest, 0)))
         terror("Failed to open vm2");
-    if (( Vmuchar_t * )vm2 < Buf || ( Vmuchar_t * )vm2 >= Endbuf)
+    if (( Vmuchar_t * ) vm2 < Buf || ( Vmuchar_t * ) vm2 >= Endbuf)
         terror("Failed to get vm2 memory to be ours");
 
     if (!(vm3 = vmopen(&Disc, Vmbest, 0)))
         terror("Failed to open vm3");
-    if (( Vmuchar_t * )vm3 < Buf || ( Vmuchar_t * )vm3 >= Endbuf)
+    if (( Vmuchar_t * ) vm3 < Buf || ( Vmuchar_t * ) vm3 >= Endbuf)
         terror("Failed to get vm3 memory to be ours");
 
     Disc.exceptf = NIL(Vmexcept_f);
     if (!(vm4 = vmopen(&Disc, Vmbest, 0)))
         terror("Failed to open vm4");
-    if (( Vmuchar_t * )vm4 >= Buf && ( Vmuchar_t * )vm4 < Endbuf)
+    if (( Vmuchar_t * ) vm4 >= Buf && ( Vmuchar_t * ) vm4 < Endbuf)
         terror("vm4 memory should not be ours");
 
     if (!(m1 = vmalloc(vm1, 1024)))

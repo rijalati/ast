@@ -83,7 +83,7 @@
 
 #    define imapfree(sp, op) ((op)->state = (op)->retain = 0)
 
-#    define IMAP (( Imap_t * )state.msg.imap.state)
+#    define IMAP (( Imap_t * ) state.msg.imap.state)
 
 #    define IMAP_VERSION 4  /* at least this		*/
 #    define IMAP_REVISION 1 /* at least this		*/
@@ -422,7 +422,7 @@ imapname(const Imaplex_t *tab, int n, int code)
 
     for (end = tab + n; tab < end; tab++)
         if (code == tab->code)
-            return ( char * )tab->name;
+            return ( char * ) tab->name;
     return "[ERROR]";
 }
 
@@ -503,12 +503,12 @@ imapset(Imap_t *imap, Imaparg_t *ap, int code)
         imapflags[i].code &= ~code;
     for (; ap; ap = ap->next)
         if (ap->type == IMAP_name
-            && (fp = ( Imapflag_t * )strsearch(imapflags,
-                                               elementsof(imapflags),
-                                               sizeof(imapflags[0]),
-                                               stracmp,
-                                               ap->value.name,
-                                               NiL))) {
+            && (fp = ( Imapflag_t * ) strsearch(imapflags,
+                                                elementsof(imapflags),
+                                                sizeof(imapflags[0]),
+                                                stracmp,
+                                                ap->value.name,
+                                                NiL))) {
             if (fp->code == IMAP_FLAG_LOCAL)
                 for (i = 0; i < elementsof(imapflags); i++)
                     if (imapflags[i].code & IMAP_FLAG_LOCAL)
@@ -648,7 +648,7 @@ imapputarg(Imap_t *imap, Imaparg_t *ap)
     case IMAP_data:
         t = s = ap->value.data.buffer;
         e = s + ap->value.data.length;
-        while (t = ( char * )memchr(t, '\r', e - t)) {
+        while (t = ( char * ) memchr(t, '\r', e - t)) {
             if (++t >= e)
                 break;
             if (*t != '\n')
@@ -718,7 +718,7 @@ imapop(Imap_t *imap)
         op = imap->op;
         op->state = IMAP_STATE_sent;
     } else {
-        n = ( int )strtol(s, &e, 10);
+        n = ( int ) strtol(s, &e, 10);
         s = e;
         op = imap->op + n;
     }
@@ -741,7 +741,7 @@ imapop(Imap_t *imap)
     for (; isspace(*s); s++)
         ;
     if (isdigit(*s)) {
-        n = ( int )strtol(s, &e, 10);
+        n = ( int ) strtol(s, &e, 10);
         for (s = e; isspace(*s); s++)
             ;
     } else
@@ -756,12 +756,12 @@ imapop(Imap_t *imap)
     if (*s)
         for (*s++ = 0; isspace(*s); s++)
             ;
-    op->code = (xp = ( Imaplex_t * )strsearch(imapresponse,
-                                              elementsof(imapresponse),
-                                              sizeof(Imaplex_t),
-                                              stracmp,
-                                              b,
-                                              NiL))
+    op->code = (xp = ( Imaplex_t * ) strsearch(imapresponse,
+                                               elementsof(imapresponse),
+                                               sizeof(Imaplex_t),
+                                               stracmp,
+                                               b,
+                                               NiL))
                ? xp->code
                : IMAP_UNKNOWN;
     op->count = n;
@@ -784,7 +784,7 @@ imapop(Imap_t *imap)
         n = z - s + 1;
         if (!(bp = vmnewof(op->vm, 0, Imapblock_t, 1, n)))
             note(FATAL | SYSTEM, "Out of space [imap block]");
-        memcpy(bp->data = ( char * )(bp + 1), s, n);
+        memcpy(bp->data = ( char * ) (bp + 1), s, n);
         if (bt)
             bt->next = bp;
         else
@@ -792,11 +792,11 @@ imapop(Imap_t *imap)
         bt = bp;
         for (z -= 2; z > s && *z != '{'; z--)
             ;
-        n = ( size_t )strtol(z + 1, NiL, 10);
+        n = ( size_t ) strtol(z + 1, NiL, 10);
         if (!(bp = vmnewof(op->vm, 0, Imapblock_t, 1, n)))
             note(FATAL | SYSTEM, "Out of space [imap block]");
         if ((bp->length = n)
-            && sfread(imap->rp, bp->data = ( char * )(bp + 1), n) != n)
+            && sfread(imap->rp, bp->data = ( char * ) (bp + 1), n) != n)
             return 0;
         bt = bt->next = bp;
         if (!(s = sfgetr(imap->rp, '\n', 1)))
@@ -840,7 +840,7 @@ imap_ENVELOPE(Imap_t *imap, Imaparg_t *vp, Msg_t *mp)
     Imapmsg_t *ip;
     char *s;
 
-    ip = ( Imapmsg_t * )mp->m_info;
+    ip = ( Imapmsg_t * ) mp->m_info;
     if (!vp)
         return;
     if (s = vp->value.string) {
@@ -889,7 +889,7 @@ imap_BODYSTRUCTURE(Imap_t *imap, Imaparg_t *ap, Msg_t *mp, Imapbody_t *bp)
     if (bp->lastpart)
         bp->lastpart->next = pp;
     else
-        (( Imapmsg_t * )mp->m_info)->parts = pp;
+        (( Imapmsg_t * ) mp->m_info)->parts = pp;
     bp->lastpart = pp;
     (*bp->id)++;
     if (ap->type == IMAP_list) {
@@ -982,7 +982,7 @@ imap_BODYSTRUCTURE(Imap_t *imap, Imaparg_t *ap, Msg_t *mp, Imapbody_t *bp)
             if (!pp->name) {
                 sfprintf(imap->tp,
                          "%d.att",
-                         (( Imapmsg_t * )mp->m_info)->attachments + 1);
+                         (( Imapmsg_t * ) mp->m_info)->attachments + 1);
                 pp->name = vmstrdup(imap->vm, struse(imap->tp));
             }
             break;
@@ -990,7 +990,7 @@ imap_BODYSTRUCTURE(Imap_t *imap, Imaparg_t *ap, Msg_t *mp, Imapbody_t *bp)
         if (pp->name) {
             mp->m_lines += 2;
             pp->content = IMAP_CONTENT_attachment;
-            pp->attachment = ++(( Imapmsg_t * )mp->m_info)->attachments;
+            pp->attachment = ++(( Imapmsg_t * ) mp->m_info)->attachments;
         } else
             mp->m_lines += pp->lines;
     }
@@ -1018,27 +1018,27 @@ imap_FETCH(Imap_t *imap, Imapop_t *op)
              op->count,
              state.msg.count);
     mp = state.msg.list + op->count - 1;
-    ip = ( Imapmsg_t * )mp->m_info;
+    ip = ( Imapmsg_t * ) mp->m_info;
     if (ap = op->args.head) {
         if (ap->type == IMAP_list)
             ap = ap->value.list.head;
         while (ap) {
             if (ap->type != IMAP_name)
                 xp = 0;
-            else if (!(xp = ( Imaplex_t * )strsearch(imapfetch,
-                                                     elementsof(imapfetch),
-                                                     sizeof(Imaplex_t),
-                                                     stracmp,
-                                                     ap->value.name,
-                                                     NiL))) {
+            else if (!(xp = ( Imaplex_t * ) strsearch(imapfetch,
+                                                      elementsof(imapfetch),
+                                                      sizeof(Imaplex_t),
+                                                      stracmp,
+                                                      ap->value.name,
+                                                      NiL))) {
                 if (s = strchr(ap->value.name, '[')) {
                     *s = 0;
-                    xp = ( Imaplex_t * )strsearch(imapfetch,
-                                                  elementsof(imapfetch),
-                                                  sizeof(Imaplex_t),
-                                                  stracmp,
-                                                  ap->value.name,
-                                                  NiL);
+                    xp = ( Imaplex_t * ) strsearch(imapfetch,
+                                                   elementsof(imapfetch),
+                                                   sizeof(Imaplex_t),
+                                                   stracmp,
+                                                   ap->value.name,
+                                                   NiL);
                     *s = '[';
                 }
                 if ((TRACING('u')) && !xp)
@@ -1063,7 +1063,7 @@ imap_FETCH(Imap_t *imap, Imapop_t *op)
                     case IMAP_FETCH_FLAGS:
                         for (vp = ap->value.list.head; vp; vp = vp->next)
                             if (vp->type == IMAP_name
-                                && (fp = ( Imapflag_t * )strsearch(
+                                && (fp = ( Imapflag_t * ) strsearch(
                                     imapflags,
                                     elementsof(imapflags),
                                     sizeof(imapflags[0]),
@@ -1182,19 +1182,19 @@ imaprecv(Imap_t *imap, Imapop_t *wp)
 
                             if (strneq(s, "IMAP", 4)) {
                                 s += 4;
-                                if ((i = ( int )strtol(s, &s, 10))
+                                if ((i = ( int ) strtol(s, &s, 10))
                                     >= imap->version) {
                                     if (i > imap->version)
                                         imap->revision = 0;
                                     imap->version = i;
                                     for (; *s && !isdigit(*s); s++)
                                         ;
-                                    i = ( int )strtol(s, NiL, 10);
+                                    i = ( int ) strtol(s, NiL, 10);
                                     if (i > imap->revision)
                                         imap->revision = i;
                                 }
                             } else if (strneq(s, "AUTH=", 5))
-                                if (xp = ( Imaplex_t * )strsearch(
+                                if (xp = ( Imaplex_t * ) strsearch(
                                     imapauth,
                                     elementsof(imapauth),
                                     sizeof(Imaplex_t),
@@ -1257,7 +1257,7 @@ imaprecv(Imap_t *imap, Imapop_t *wp)
                         if (ap->type == IMAP_list
                             && (sp = ap->value.list.head)
                             && sp->type == IMAP_name
-                            && (xp = ( Imaplex_t * )strsearch(
+                            && (xp = ( Imaplex_t * ) strsearch(
                                 imapstatus,
                                 elementsof(imapstatus),
                                 sizeof(Imaplex_t),
@@ -1689,7 +1689,7 @@ imapinit(void)
         return 0;
     }
     imap->copy.fp = sfstdout;
-    return state.msg.imap.state = ( void * )imap;
+    return state.msg.imap.state = ( void * ) imap;
 }
 
 /*
@@ -1807,7 +1807,7 @@ imap_msg(int m)
     mp = state.msg.list + m - 1;
     if (!mp->m_info) {
         imap = IMAP;
-        if (!(mp->m_info = ( void * )vmnewof(imap->vm, 0, Imapmsg_t, 1, 0)))
+        if (!(mp->m_info = ( void * ) vmnewof(imap->vm, 0, Imapmsg_t, 1, 0)))
             note(FATAL, "out of space [imap msg info]");
         if (imapexec(imap,
                      "FETCH %d (RFC822.SIZE FLAGS ENVELOPE BODYSTRUCTURE "
@@ -1820,7 +1820,7 @@ imap_msg(int m)
             Imapmsg_t *ip;
             Imappart_t *pp;
 
-            ip = ( Imapmsg_t * )mp->m_info;
+            ip = ( Imapmsg_t * ) mp->m_info;
             for (pp = ip->parts; pp; pp = pp->next)
                 note(
                 ERROR,
@@ -1855,7 +1855,7 @@ imap_setinput(Msg_t *mp)
         note(FATAL, "imap: %d: cannot fetch message header", m);
     imap->copy.fp = sfstdout;
     imap->mp->_endb = imap->mp->_next;
-    sfseek(imap->mp, ( Sfoff_t )0, SEEK_SET);
+    sfseek(imap->mp, ( Sfoff_t ) 0, SEEK_SET);
     return imap->mp;
 }
 
@@ -1891,11 +1891,11 @@ imap_command(char *s)
                     break;
                 if (items++)
                     sfprintf(sfstdout, "\n");
-                if (!(xp = ( Imaplex_t * )strpsearch(imapdump,
-                                                     elementsof(imapdump),
-                                                     sizeof(imapdump[0]),
-                                                     s,
-                                                     &e))) {
+                if (!(xp = ( Imaplex_t * ) strpsearch(imapdump,
+                                                      elementsof(imapdump),
+                                                      sizeof(imapdump[0]),
+                                                      s,
+                                                      &e))) {
                     note(ERROR, "%s: unknown dump item", s);
                     goto list;
                 }
@@ -1973,7 +1973,7 @@ imap_command(char *s)
                                                imapmflags,
                                                elementsof(imapmflags),
                                                mp->m_flag));
-                        if (ip = ( Imapmsg_t * )mp->m_info)
+                        if (ip = ( Imapmsg_t * ) mp->m_info)
                             for (pp = ip->parts; pp; pp = pp->next)
                                 sfprintf(sfstdout,
                                          "%12s content=%s type=%s "
@@ -2065,7 +2065,7 @@ imap_copy(struct msg *mp,
 
     i = mp - state.msg.list + 1;
     mp = imap_msg(i);
-    ip = ( Imapmsg_t * )mp->m_info;
+    ip = ( Imapmsg_t * ) mp->m_info;
     imap->copy.fp = op;
     if (imap->copy.prefix = prefix) {
         imap->copy.prefixlen = strlen(prefix);
@@ -2090,8 +2090,8 @@ imap_copy(struct msg *mp,
                 sfprintf(imap->tp, ".FIELDS.NOT (From");
                 s = " ";
             }
-            for (np = ( struct name * )dtfirst(*ignore); np;
-                 np = ( struct name * )dtnext(*ignore, np))
+            for (np = ( struct name * ) dtfirst(*ignore); np;
+                 np = ( struct name * ) dtnext(*ignore, np))
                 if (np->flags & i) {
                     sfprintf(imap->tp, "%s%s", s, np->name);
                     s = " ";
@@ -2298,7 +2298,7 @@ imap_get1(char **argv, unsigned long flags)
         return 1;
     }
     mp = imap_msg(state.msg.dot - state.msg.list + 1);
-    ip = ( Imapmsg_t * )mp->m_info;
+    ip = ( Imapmsg_t * ) mp->m_info;
     if (!ip->attachments || !(pp = ip->parts)) {
         note(ERROR, "No attachments in current message");
         return 1;
@@ -2399,7 +2399,7 @@ imap_printhead(int m, int who)
     mp = imap_msg(m);
     if (mp->m_flag & (MDELETE | MNONE))
         return;
-    ip = ( Imapmsg_t * )mp->m_info;
+    ip = ( Imapmsg_t * ) mp->m_info;
     current = state.msg.dot == mp && !state.var.justheaders ? '>' : ' ';
     if (mp->m_flag & MBOX)
         disposition = 'M';

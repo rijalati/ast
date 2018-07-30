@@ -38,15 +38,15 @@ msggetu(char **buf, char *end)
     unsigned long v;
 
     v = 0;
-    s = ( unsigned char * )*buf;
-    e = ( unsigned char * )end;
+    s = ( unsigned char * ) *buf;
+    e = ( unsigned char * ) end;
     do {
         if (s >= e)
             return -1L;
         c = *s++;
         v = (v << 7) | (c & 0177);
     } while (c & 0200);
-    *buf = ( char * )s;
+    *buf = ( char * ) s;
     return v;
 }
 

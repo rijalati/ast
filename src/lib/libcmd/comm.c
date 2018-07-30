@@ -115,7 +115,7 @@ comm(Sfio_t *in1, Sfio_t *in2, Sfio_t *out, int mode)
         mode &= C_FILE1;
     if (!mode || !cp1) {
         if (cp1 && in1 == sfstdin)
-            sfseek(in1, ( Sfoff_t )0, SEEK_END);
+            sfseek(in1, ( Sfoff_t ) 0, SEEK_END);
         return (0);
     }
     /* process the remaining stream */
@@ -177,7 +177,7 @@ b_comm(int argc, char *argv[], Shbltin_t *context)
         if (comm(f1, f2, sfstdout, mode) < 0)
             error(ERROR_system(1), " write error");
     } else if (f1 == sfstdin || f2 == sfstdin)
-        sfseek(sfstdin, ( Sfoff_t )0, SEEK_END);
+        sfseek(sfstdin, ( Sfoff_t ) 0, SEEK_END);
     if (f1 != sfstdin)
         sfclose(f1);
     if (f2 != sfstdin)

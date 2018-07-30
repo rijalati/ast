@@ -48,7 +48,7 @@ Vccontext_t *ctxt; /* if NULL, make a new one */
             p->next = ctxt->next;
     } else {
         if (!vc->meth->eventf
-            || (*vc->meth->eventf)(vc, VC_INITCONTEXT, ( Void_t * )(&ctxt))
+            || (*vc->meth->eventf)(vc, VC_INITCONTEXT, ( Void_t * ) (&ctxt))
                < 0
             || !ctxt)
             return NIL(Vccontext_t *);
@@ -82,7 +82,7 @@ Vccontext_t *ctxt; /* if NULL, free all */
     for (; ctxt; ctxt = next) {
         next = ctxt->next;
         if (vc->meth->eventf
-            && (*vc->meth->eventf)(vc, VC_FREECONTEXT, ( Void_t * )ctxt) < 0)
+            && (*vc->meth->eventf)(vc, VC_FREECONTEXT, ( Void_t * ) ctxt) < 0)
             return -1;
     }
 

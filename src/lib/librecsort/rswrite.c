@@ -58,10 +58,10 @@
             if (rsrv && sfwrite(f, rsrv, cur - rsrv) != cur - rsrv)          \
                 return -1;                                                   \
             rw = w < RS_RESERVE ? RS_RESERVE : ((w / 1024) + 1) * 1024;      \
-            if (!(rsrv = ( uchar * )sfreserve(f, rw, SF_LOCKR))) {           \
+            if (!(rsrv = ( uchar * ) sfreserve(f, rw, SF_LOCKR))) {          \
                 if ((rw = sfvalue(f)) < w)                                   \
                     rw = w;                                                  \
-                if (!(rsrv = ( uchar * )sfreserve(f, rw, SF_LOCKR)))         \
+                if (!(rsrv = ( uchar * ) sfreserve(f, rw, SF_LOCKR)))        \
                     return -1;                                               \
             }                                                                \
             endrsrv = (cur = rsrv) + rw;                                     \
@@ -210,7 +210,7 @@ int type;                          /* RS_TEXT 		*/
             }
         }
     } else if (local) {
-        n = ( ssize_t )r->order; /* chain size already calculated */
+        n = ( ssize_t ) r->order; /* chain size already calculated */
         if (n > 0 && (rs->type & RS_DATA))
             n = -n;
         goto write_size;
@@ -221,7 +221,7 @@ int type;                          /* RS_TEXT 		*/
     write_size:
         if (n != 0) {
             RESERVE(rs, f, rsrv, endrsrv, cur, sizeof(ssize_t));
-            WRITE(rs, cur, ( uchar * )(&n), sizeof(ssize_t), d);
+            WRITE(rs, cur, ( uchar * ) (&n), sizeof(ssize_t), d);
         }
 
         if ((rs->type & RS_UNIQ) && (rs->events & RS_SUMMARY)) {
@@ -244,7 +244,7 @@ int type;                          /* RS_TEXT 		*/
                 w = (n = r->datalen) + (head > 0 ? head : 0);
                 RESERVE(rs, f, rsrv, endrsrv, cur, w);
                 if (head > 0)
-                    WRITE(rs, cur, ( uchar * )(&n), sizeof(ssize_t), d);
+                    WRITE(rs, cur, ( uchar * ) (&n), sizeof(ssize_t), d);
                 WRITE(rs, cur, r->data, n, d);
             }
         } else if (head >= 0) {
@@ -252,7 +252,7 @@ int type;                          /* RS_TEXT 		*/
                 w = (n = r->datalen) + head;
                 RESERVE(rs, f, rsrv, endrsrv, cur, w);
                 if (head)
-                    WRITE(rs, cur, ( uchar * )(&n), sizeof(ssize_t), d);
+                    WRITE(rs, cur, ( uchar * ) (&n), sizeof(ssize_t), d);
                 WRITE(rs, cur, r->data, n, d);
             }
         } else {
@@ -276,9 +276,9 @@ int type;                          /* RS_TEXT 		*/
 
             w = r->datalen + (head > 0 ? head : 0) + sizeof(ssize_t);
             RESERVE(rs, f, rsrv, endrsrv, cur, w);
-            WRITE(rs, cur, ( uchar * )(&n), sizeof(ssize_t), d);
+            WRITE(rs, cur, ( uchar * ) (&n), sizeof(ssize_t), d);
             if (head > 0)
-                WRITE(rs, cur, ( uchar * )(&r->datalen), sizeof(ssize_t), d);
+                WRITE(rs, cur, ( uchar * ) (&r->datalen), sizeof(ssize_t), d);
             WRITE(rs, cur, r->data, r->datalen, d);
 
             if ((o = r->equal))
@@ -293,7 +293,7 @@ int type;                          /* RS_TEXT 		*/
                     w = (n = o->datalen) + head;
                     RESERVE(rs, f, rsrv, endrsrv, cur, w);
                     if (head)
-                        WRITE(rs, cur, ( uchar * )(&n), sizeof(ssize_t), d);
+                        WRITE(rs, cur, ( uchar * ) (&n), sizeof(ssize_t), d);
                     WRITE(rs, cur, o->data, n, d);
                 }
             } else {

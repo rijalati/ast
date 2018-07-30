@@ -427,7 +427,7 @@ main(int argc, char **argv)
 
     readenv();
     if (v = getvar(external.nproc))
-        state.jobs = ( int )strtol(v->value, NiL, 0);
+        state.jobs = ( int ) strtol(v->value, NiL, 0);
     if ((v = getvar(external.pwd)) && !streq(v->value, internal.pwd)) {
         if (!stat(v->value, &st) && !stat(internal.pwd, &ds)
             && st.st_ino == ds.st_ino && st.st_dev == ds.st_dev) {

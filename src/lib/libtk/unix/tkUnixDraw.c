@@ -71,8 +71,8 @@ TkRegion damageRgn;      /* Region to accumulate damage in. */
               gc,
               x,
               y,
-              ( unsigned int )width,
-              ( unsigned int )height,
+              ( unsigned int ) width,
+              ( unsigned int ) height,
               x + dx,
               y + dy);
 
@@ -91,13 +91,13 @@ TkRegion damageRgn;      /* Region to accumulate damage in. */
 
     XSync(info.display, False);
     oldProc
-    = Tk_RestrictEvents(ScrollRestrictProc, ( ClientData )&info, &oldArg);
+    = Tk_RestrictEvents(ScrollRestrictProc, ( ClientData ) &info, &oldArg);
     while (!info.done) {
         Tcl_DoOneEvent(TCL_WINDOW_EVENTS | TCL_DONT_WAIT);
     }
     Tk_RestrictEvents(oldProc, oldArg, &dummy);
 
-    return XEmptyRegion(( Region )damageRgn) ? 0 : 1;
+    return XEmptyRegion(( Region ) damageRgn) ? 0 : 1;
 }
 
 /*
@@ -123,7 +123,7 @@ TkRegion damageRgn;      /* Region to accumulate damage in. */
 static Tk_RestrictAction ScrollRestrictProc(arg, eventPtr) ClientData arg;
 XEvent *eventPtr;
 {
-    ScrollInfo *info = ( ScrollInfo * )arg;
+    ScrollInfo *info = ( ScrollInfo * ) arg;
     XRectangle rect;
 
     /*
@@ -143,7 +143,7 @@ XEvent *eventPtr;
         rect.width = eventPtr->xgraphicsexpose.width;
         rect.height = eventPtr->xgraphicsexpose.height;
         XUnionRectWithRegion(
-        &rect, ( Region )info->region, ( Region )info->region);
+        &rect, ( Region ) info->region, ( Region ) info->region);
 
         if (eventPtr->xgraphicsexpose.count == 0) {
             info->done = 1;
@@ -163,11 +163,11 @@ XEvent *eventPtr;
         rect.width = eventPtr->xexpose.width;
         rect.height = eventPtr->xexpose.height;
         XUnionRectWithRegion(
-        &rect, ( Region )info->region, ( Region )info->region);
+        &rect, ( Region ) info->region, ( Region ) info->region);
         rect.x += info->dx;
         rect.y += info->dy;
         XUnionRectWithRegion(
-        &rect, ( Region )info->region, ( Region )info->region);
+        &rect, ( Region ) info->region, ( Region ) info->region);
     } else {
         return TK_DEFER_EVENT;
     }

@@ -9,8 +9,8 @@ typedef struct _graph_s Graph_t;
 typedef struct _grdisc_s Grdisc_t;
 typedef struct _grdata_s Grdata_t;
 typedef struct _gralgo_s Gralgo_t;
-typedef Grdata_t *( *Grdata_f )_ARG_(( Gralgo_t *, int, Grdata_t * ));
-typedef int(*Grevent_f) _ARG_(( Graph_t *, int, Void_t *, Grdisc_t * ));
+typedef Grdata_t *( *Grdata_f ) _ARG_(( Gralgo_t *, int, Grdata_t * ) );
+typedef int(*Grevent_f) _ARG_(( Graph_t *, int, Void_t *, Grdisc_t * ) );
 
 struct _grnode_s
 {
@@ -97,9 +97,9 @@ struct _gralgo_s
 ** GROFFSETOF returns the offset of e_t in s_t, and
 ** GRSTRUCTOF returns the address of the struct that contains e_t.
 */
-#    define GROFFSETOF(_st, _e) ((ssize_t)(&(( _st * )0)->_e))
+#    define GROFFSETOF(_st, _e) ((ssize_t)(&(( _st * ) 0)->_e))
 #    define GRSTRUCTOF(_st, _e, _a)                                          \
-        ( _st * )(( unsigned char * )( _a )-GROFFSETOF(_st, _e))
+        ( _st * ) (( unsigned char * ) ( _a ) -GROFFSETOF(_st, _e))
 
 /* to initialize a discipline structure */
 #    define GRDISC(dc, nsz, esz, gsz, evf)                                   \
@@ -109,12 +109,12 @@ struct _gralgo_s
          (dc)->eventf = (evf))
 
 /* big number */
-#    define GR_INFINITY ((~(( unsigned int )0)) >> 1)
+#    define GR_INFINITY ((~(( unsigned int ) 0)) >> 1)
 
 /* for internal use of node,edge,graph types */
-#    define _Grnode(oo) (( Grnode_t * )(oo))
-#    define _Gredge(oo) (( Gredge_t * )(oo))
-#    define _Grgraph(oo) (( Grgraph_t * )(oo))
+#    define _Grnode(oo) (( Grnode_t * ) (oo))
+#    define _Gredge(oo) (( Gredge_t * ) (oo))
+#    define _Grgraph(oo) (( Grgraph_t * ) (oo))
 
 _BEGIN_EXTERNS_
 
@@ -122,18 +122,18 @@ _BEGIN_EXTERNS_
 #        define extern __EXPORT__
 #    endif
 
-extern Graph_t *gropen _ARG_(( Grdisc_t *, int ));
-extern int grclose _ARG_(( Graph_t * ));
-extern int grrestore _ARG_(( Graph_t * ));
+extern Graph_t *gropen _ARG_(( Grdisc_t *, int ) );
+extern int grclose _ARG_(( Graph_t * ) );
+extern int grrestore _ARG_(( Graph_t * ) );
 
-extern Grnode_t *grnode _ARG_(( Graph_t *, Void_t *, int ));
+extern Grnode_t *grnode _ARG_(( Graph_t *, Void_t *, int ) );
 extern Gredge_t *
-gredge _ARG_(( Graph_t *, Grnode_t *, Grnode_t *, Void_t *, int ));
+gredge _ARG_(( Graph_t *, Grnode_t *, Grnode_t *, Void_t *, int ) );
 
-extern Grnode_t *grfold _ARG_(( Grnode_t *, Grnode_t * ));
-extern Grnode_t *_grfind _ARG_(( Grnode_t * ));
+extern Grnode_t *grfold _ARG_(( Grnode_t *, Grnode_t * ) );
+extern Grnode_t *_grfind _ARG_(( Grnode_t * ) );
 
-extern Grdata_t *_grdata _ARG_(( Grdata_t **, Gralgo_t *, int ));
+extern Grdata_t *_grdata _ARG_(( Grdata_t **, Gralgo_t *, int ) );
 
 #    undef extern
 
@@ -185,8 +185,8 @@ extern Gralgo_t *Grbranching;
 #        define extern __EXPORT__
 #    endif
 
-extern ssize_t grbranching _ARG_(( Graph_t * ));
-extern ssize_t grbrgreedy _ARG_(( Graph_t * ));
+extern ssize_t grbranching _ARG_(( Graph_t * ) );
+extern ssize_t grbrgreedy _ARG_(( Graph_t * ) );
 extern ssize_t grbrweight _ARG_((Gredge_t *, ssize_t));
 
 #    undef extern

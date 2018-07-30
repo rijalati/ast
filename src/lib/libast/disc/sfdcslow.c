@@ -65,7 +65,7 @@ int sfdcslow(f) Sfio_t *f;
 {
     Sfdisc_t *disc;
 
-    if (!(disc = ( Sfdisc_t * )malloc(sizeof(Sfdisc_t))))
+    if (!(disc = ( Sfdisc_t * ) malloc(sizeof(Sfdisc_t))))
         return (-1);
 
     disc->readf = NIL(Sfread_f);

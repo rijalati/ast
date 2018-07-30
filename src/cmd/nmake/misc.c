@@ -119,7 +119,7 @@ newchunk(char **head, size_t unit)
     v = p = newof(0, char, n, 0);
     e = p + n - unit;
     x = head;
-    while ((( char * )(x = ( char ** )(*x = p += unit))) < e)
+    while ((( char * ) (x = ( char ** ) (*x = p += unit))) < e)
         ;
     return v;
 #endif
@@ -226,7 +226,7 @@ timenum(const char *s, char **p)
 
     if ((t = strtoull(s, &e, 10)) == (Time_t)(-1)) {
         if (p)
-            *p = ( char * )s;
+            *p = ( char * ) s;
         return TMX_NOTIME;
     }
     n = 0;
@@ -300,8 +300,8 @@ typedef struct Fmt_s
 static int
 printext(Sfio_t *sp, void *vp, Sffmt_t *dp)
 {
-    Fmt_t *fp = ( Fmt_t * )dp;
-    Value_t *value = ( Value_t * )vp;
+    Fmt_t *fp = ( Fmt_t * ) dp;
+    Value_t *value = ( Value_t * ) vp;
     char *s;
     char *txt;
     char *e;
@@ -353,7 +353,7 @@ printext(Sfio_t *sp, void *vp, Sffmt_t *dp)
         value->q = strtoull(s, NiL, 0);
         break;
     case 'p':
-        value->p = ( char ** )strtol(s, NiL, 0);
+        value->p = ( char ** ) strtol(s, NiL, 0);
         break;
     case 'S':
         error(1, "%%%c: obsolete: use the %%s format", dp->fmt);
@@ -405,7 +405,7 @@ printext(Sfio_t *sp, void *vp, Sffmt_t *dp)
         value->c = 0;
         break;
     case '.':
-        value->i = ( int )strtol(s, NiL, 0);
+        value->i = ( int ) strtol(s, NiL, 0);
         break;
     default:
         tmpname[0] = dp->fmt;

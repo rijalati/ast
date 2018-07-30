@@ -163,7 +163,7 @@ cmdopen_20120411(char **argv,
         argmax = c;
     s = cmd->buf;
     if (!(exe = argv[0])) {
-        exe = *(argv = ( char ** )echo);
+        exe = *(argv = ( char ** ) echo);
         cmd->echo = 1;
     } else if (streq(exe, echo[0])) {
         cmd->echo = 1;
@@ -188,7 +188,7 @@ cmdopen_20120411(char **argv,
         s += m;
     }
     s += sizeof(char **) - (s - cmd->buf) % sizeof(char **);
-    p = ( char ** )s;
+    p = ( char ** ) s;
     n -= strlen(*p++ = sh) + 1;
     cmd->argv = p;
     *p++ = exe;
@@ -204,7 +204,7 @@ cmdopen_20120411(char **argv,
             while ((s = strchr(s, c))
                    && strncmp(cmd->insert, s, cmd->insertlen))
                 s++;
-            *p++ = s ? *argv : ( char * )0;
+            *p++ = s ? *argv : ( char * ) 0;
             argv++;
         }
         *p++ = 0;
@@ -256,7 +256,7 @@ cmdflush(Cmdarg_t *cmd)
         int m;
 
         a = cmd->firstarg[0];
-        b = ( char * )&cmd->nextarg[1];
+        b = ( char * ) &cmd->nextarg[1];
         e = cmd->nextstr;
         c = *s;
         m = cmd->insertlen;
@@ -288,7 +288,7 @@ cmdflush(Cmdarg_t *cmd)
             return -1;
         }
     }
-    n = ( int )(cmd->nextarg - cmd->argv);
+    n = ( int ) (cmd->nextarg - cmd->argv);
     cmd->nextarg = cmd->firstarg;
     cmd->nextstr = cmd->laststr;
     if (cmd->flags & (CMD_QUERY | CMD_TRACE)) {
@@ -339,7 +339,7 @@ cmdarg(Cmdarg_t *cmd, const char *file, int len)
     r = 0;
     if (len > 0) {
         while ((cmd->nextstr -= len + 1)
-               < ( char * )(cmd->nextarg + cmd->offset)) {
+               < ( char * ) (cmd->nextarg + cmd->offset)) {
             if (cmd->nextarg == cmd->firstarg) {
                 if (cmd->errorf)
                     (*cmd->errorf)(

@@ -297,7 +297,7 @@ strexpr(const char *s,
     long n;
     Expr_t ex;
 
-    ex.nextchr = ( char * )s;
+    ex.nextchr = ( char * ) s;
     ex.errmsg = 0;
     ex.convert = convert;
     ex.handle = handle;

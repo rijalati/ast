@@ -9,8 +9,8 @@
 static int
 nodecmp(Dt_t *nodes, Void_t *one, Void_t *two, Dtdisc_t *disc)
 {
-    Grnode_t *n1 = ( Grnode_t * )one;
-    Grnode_t *n2 = ( Grnode_t * )two;
+    Grnode_t *n1 = ( Grnode_t * ) one;
+    Grnode_t *n2 = ( Grnode_t * ) two;
 
     if (n1->label != n2->label)
         return n1->label < n2->label ? -1 : 1;
@@ -28,7 +28,7 @@ nodefree(Dt_t *nodes, Void_t *node, Dtdisc_t *disc)
         if (gr->disc && gr->disc->eventf)
             (*gr->disc->eventf)(gr, GR_NODE | GR_CLOSING, node, gr->disc);
 
-        for (dt = (( Grnode_t * )node)->data; dt; dt = next) {
+        for (dt = (( Grnode_t * ) node)->data; dt; dt = next) {
             next = dt->next;
             (*dt->algo->dataf)(dt->algo, GR_NODE | GR_CLOSING, dt);
         }
@@ -41,8 +41,8 @@ nodefree(Dt_t *nodes, Void_t *node, Dtdisc_t *disc)
 static int
 edgecmp(Dt_t *edges, Void_t *one, Void_t *two, Dtdisc_t *disc)
 {
-    Gredge_t *e1 = ( Gredge_t * )one;
-    Gredge_t *e2 = ( Gredge_t * )two;
+    Gredge_t *e1 = ( Gredge_t * ) one;
+    Gredge_t *e2 = ( Gredge_t * ) two;
 
     if (e1->tail != e2->tail)
         return e1->tail < e2->tail ? -1 : 1;
@@ -64,7 +64,7 @@ edgefree(Dt_t *edges, Void_t *edge, Dtdisc_t *disc)
         if (gr->disc && gr->disc->eventf)
             (*gr->disc->eventf)(gr, GR_EDGE | GR_CLOSING, edge, gr->disc);
 
-        for (dt = (( Gredge_t * )edge)->data; dt; dt = next) {
+        for (dt = (( Gredge_t * ) edge)->data; dt; dt = next) {
             next = dt->next;
             (*dt->algo->dataf)(dt->algo, GR_EDGE | GR_CLOSING, dt);
         }
@@ -110,7 +110,7 @@ grnode(Graph_t *gr, Void_t *label, int type)
     /* making a new node */
     if ((sz = gr->disc ? gr->disc->nodesz : 0) < sizeof(Grnode_t))
         sz = sizeof(Grnode_t);
-    if (!(nd = ( Grnode_t * )calloc(1, sz)))
+    if (!(nd = ( Grnode_t * ) calloc(1, sz)))
         return NIL(Grnode_t *);
 
     nd->label = label;
@@ -119,7 +119,7 @@ grnode(Graph_t *gr, Void_t *label, int type)
     if (gr->disc && gr->disc->eventf)
         (*gr->disc->eventf)(gr, GR_NODE | GR_OPENING, nd, gr->disc);
 
-    return ( Grnode_t * )dtinsert(gr->nodes, nd);
+    return ( Grnode_t * ) dtinsert(gr->nodes, nd);
 }
 
 /* function to find/create/delete edges */
@@ -178,7 +178,7 @@ gredge(Graph_t *gr, Grnode_t *tail, Grnode_t *head, Void_t *label, int type)
 
     if ((sz = gr->disc ? gr->disc->edgesz : 0) < sizeof(Gredge_t))
         sz = sizeof(Gredge_t);
-    if (!(ed = ( Gredge_t * )calloc(1, sz)))
+    if (!(ed = ( Gredge_t * ) calloc(1, sz)))
         return NIL(Gredge_t *);
 
     ed->label = label;
@@ -192,7 +192,7 @@ gredge(Graph_t *gr, Grnode_t *tail, Grnode_t *head, Void_t *label, int type)
     if (gr->disc && gr->disc->eventf)
         (*gr->disc->eventf)(gr, GR_EDGE | GR_OPENING, ed, gr->disc);
 
-    return ( Gredge_t * )dtinsert(gr->edges, ed);
+    return ( Gredge_t * ) dtinsert(gr->edges, ed);
 }
 
 /* contruct/return the data associated with an algorithm */
@@ -230,14 +230,14 @@ grrestore(Graph_t *gr)
     Grnode_t *nd;
     Gredge_t *ed;
 
-    for (nd = ( Grnode_t * )dtflatten(gr->nodes); nd;
-         nd = ( Grnode_t * )dtlink(gr, nd)) {
+    for (nd = ( Grnode_t * ) dtflatten(gr->nodes); nd;
+         nd = ( Grnode_t * ) dtlink(gr, nd)) {
         nd->oedge = nd->iedge = NIL(Gredge_t *);
         nd->fold = nd;
         nd->link = NIL(Grnode_t *);
     }
-    for (ed = ( Gredge_t * )dtflatten(gr->edges); ed;
-         ed = ( Gredge_t * )dtlink(gr, ed)) {
+    for (ed = ( Gredge_t * ) dtflatten(gr->edges); ed;
+         ed = ( Gredge_t * ) dtlink(gr, ed)) {
         ed->onext = ed->tail->oedge;
         ed->tail->oedge = ed;
         ed->inext = ed->head->iedge;
@@ -283,7 +283,7 @@ gropen(Grdisc_t *disc, int type)
 
     if ((sz = disc ? disc->graphsz : 0) < sizeof(Graph_t))
         sz = sizeof(Graph_t);
-    if (!(gr = ( Graph_t * )calloc(1, sz)))
+    if (!(gr = ( Graph_t * ) calloc(1, sz)))
         return NIL(Graph_t *);
 
     gr->type = type;

@@ -151,7 +151,7 @@ cc_open(Codex_t *p, char *const args[], Codexnum_t flags)
 static int
 cc_close(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
     int r;
 
     if (!state)
@@ -166,7 +166,7 @@ cc_close(Codex_t *p)
 static ssize_t
 cc_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 {
-    State_t *state = ( State_t * )(( Codex_t * )disc)->data;
+    State_t *state = ( State_t * ) (( Codex_t * ) disc)->data;
     char *fb;
     char *tb;
     size_t fn;
@@ -203,18 +203,18 @@ cc_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 static ssize_t
 cc_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
 {
-    State_t *state = ( State_t * )(( Codex_t * )disc)->data;
+    State_t *state = ( State_t * ) (( Codex_t * ) disc)->data;
     char *fb;
     char *tb;
     size_t fn;
     size_t tn;
     size_t r;
 
-    fb = ( char * )buf;
+    fb = ( char * ) buf;
     fn = n;
     n = 0;
     while (fn > 0) {
-        tb = ( char * )state->buf;
+        tb = ( char * ) state->buf;
         tn = sizeof(buf);
         if ((r = iconv(state->cvt, &fb, &fn, &tb, &tn)) == (size_t)(-1))
             return n ? n : -1;
@@ -228,9 +228,9 @@ cc_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
 static int
 cc_sync(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
 
-    ( void )iconv(state->cvt, NiL, NiL, NiL, NiL);
+    ( void ) iconv(state->cvt, NiL, NiL, NiL, NiL);
     return 0;
 }
 

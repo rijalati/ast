@@ -53,7 +53,7 @@
  *	 make sure future usage follows suit
  */
 
-typedef void(*Sighandler_f) _ARG_(( int ));
+typedef void(*Sighandler_f) _ARG_(( int ) );
 
 static volatile int peek;
 static sigjmp_buf jmp;
@@ -73,7 +73,7 @@ _vmchkmem(Vmuchar_t *area, size_t size)
 
     if (!(_Vmassert & VM_check_seg))
         return 1;
-    oldsigsegv = ( Sighandler_f )signal(SIGSEGV, sigsegv);
+    oldsigsegv = ( Sighandler_f ) signal(SIGSEGV, sigsegv);
     if (!(available = sigsetjmp(jmp, 1)))
         peek = area[0];
     if (available && !(available = sigsetjmp(jmp, 1)))
@@ -128,17 +128,19 @@ _vmboundaries(void)
         memz = ROUND(memz, _Vmpagesize);
     else { /**/
         DEBUG_MESSAGE("shmget() failed");
-        return ( int )_Vmpagesize;
+        return ( int ) _Vmpagesize;
     }
 
     /* the stack and the heap in Unix programs are conventionally set
     ** at opposite ends of the available address space. So, we use them
     ** as candidate boundaries for mappable memory.
     */
-    min = ( Vmuchar_t * )sbrk(0);
-    min = ( Vmuchar_t * )ROUND(( unsigned long )min, _Vmpagesize); /* heap  */
-    max = ( Vmuchar_t * )(&max);
-    max = ( Vmuchar_t * )ROUND(( unsigned long )max, _Vmpagesize); /* stack */
+    min = ( Vmuchar_t * ) sbrk(0);
+    min
+    = ( Vmuchar_t * ) ROUND(( unsigned long ) min, _Vmpagesize); /* heap  */
+    max = ( Vmuchar_t * ) (&max);
+    max
+    = ( Vmuchar_t * ) ROUND(( unsigned long ) max, _Vmpagesize); /* stack */
     if (min > max) {
         tmp = min;
         min = max;
@@ -147,11 +149,11 @@ _vmboundaries(void)
 
     /* now attach a segment to see where it falls in the range */
     if (!(shm = shmat(shmid, NIL(Void_t *), 0600))
-        || shm == ( Vmuchar_t * )(-1)) { /**/
+        || shm == ( Vmuchar_t * ) (-1)) { /**/
         DEBUG_MESSAGE("shmat() failed first NULL attachment");
         goto done;
     } else
-        shmdt(( Void_t * )shm);
+        shmdt(( Void_t * ) shm);
     if (shm < min || shm > max) { /**/
         DEBUG_MESSAGE("shmat() got an out-of-range address");
         goto done;
@@ -166,7 +168,7 @@ _vmboundaries(void)
         size = ROUND(size, _Vmpagesize);
         shm = left > rght ? max - size : min + size;
         if ((tmp = shmat(shmid, shm, 0600)) == shm) {
-            shmdt(( Void_t * )tmp);
+            shmdt(( Void_t * ) tmp);
             if (left > rght)
                 min = shm;
             else
@@ -185,7 +187,7 @@ _vmboundaries(void)
     for (z = memz; z < size; z *= 2) {
         shm = left > rght ? min - z : max + z;
         if ((tmp = shmat(shmid, shm, 0600)) == shm)
-            shmdt(( Void_t * )tmp);
+            shmdt(( Void_t * ) tmp);
         else /* failing to attach means at limit or close to it */
         {
             if (left > rght)
@@ -210,25 +212,25 @@ _vmboundaries(void)
 #    if _mem_mmap_anon /* see if we can simulate sbrk(): memory grows from   \
                           low to high */
     /* map two consecutive pages to see if they come out adjacent */
-    tmp = ( Void_t * )mmap(( Void_t * )(min + z),
-                           _Vmpagesize,
-                           PROT_READ | PROT_WRITE,
-                           MAP_PRIVATE | MAP_ANON,
-                           -1,
-                           0);
-    shm = ( Void_t * )mmap(( Void_t * )(tmp + _Vmpagesize),
-                           _Vmpagesize,
-                           PROT_READ | PROT_WRITE,
-                           MAP_PRIVATE | MAP_ANON,
-                           -1,
-                           0);
-    if (tmp && tmp != ( Vmuchar_t * )(-1))
-        munmap(( Void_t * )tmp, _Vmpagesize);
-    if (shm && shm != ( Vmuchar_t * )(-1))
-        munmap(( Void_t * )shm, _Vmpagesize);
+    tmp = ( Void_t * ) mmap(( Void_t * ) (min + z),
+                            _Vmpagesize,
+                            PROT_READ | PROT_WRITE,
+                            MAP_PRIVATE | MAP_ANON,
+                            -1,
+                            0);
+    shm = ( Void_t * ) mmap(( Void_t * ) (tmp + _Vmpagesize),
+                            _Vmpagesize,
+                            PROT_READ | PROT_WRITE,
+                            MAP_PRIVATE | MAP_ANON,
+                            -1,
+                            0);
+    if (tmp && tmp != ( Vmuchar_t * ) (-1))
+        munmap(( Void_t * ) tmp, _Vmpagesize);
+    if (shm && shm != ( Vmuchar_t * ) (-1))
+        munmap(( Void_t * ) shm, _Vmpagesize);
 
-    if (tmp && tmp != ( Vmuchar_t * )(-1) && shm
-        && shm != ( Vmuchar_t * )(-1)) {
+    if (tmp && tmp != ( Vmuchar_t * ) (-1) && shm
+        && shm != ( Vmuchar_t * ) (-1)) {
         _Vmmemsbrk = shm + _Vmpagesize; /* mmap starts from here */
 
         if (tmp >= (_Vmmemmin + (_Vmmemmax - _Vmmemmin) / 2)
@@ -246,7 +248,7 @@ _vmboundaries(void)
 #endif /*!_WINIX*/
 
 done:
-    ( void )shmctl(shmid, IPC_RMID, 0);
+    ( void ) shmctl(shmid, IPC_RMID, 0);
     return 0;
 }
 

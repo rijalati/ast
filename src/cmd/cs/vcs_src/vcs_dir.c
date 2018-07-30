@@ -51,8 +51,8 @@ tag_t *tp;
                 && markermatch(dp->tag->version, tp->version)) {
                 *prev_posn = dp->next;
                 ndp = dp->next;
-                free(( char * )dp->tag);
-                free(( char * )dp);
+                free(( char * ) dp->tag);
+                free(( char * ) dp);
                 dp = ndp;
                 continue;
             }
@@ -62,18 +62,18 @@ tag_t *tp;
             if (dp->tag->domain == tp->domain) {
                 if (dp->tag->stat.st_ctime > tp->stat.st_ctime)
                     return (head);
-                ntp = ( tag_t * )malloc(tp->length);
-                memcpy(( char * )ntp, ( char * )tp, tp->length);
-                free(( char * )dp->tag);
+                ntp = ( tag_t * ) malloc(tp->length);
+                memcpy(( char * ) ntp, ( char * ) tp, tp->length);
+                free(( char * ) dp->tag);
                 dp->tag = ntp;
                 if (R_ISLINK(tp) && link)
                     dp->link = strdup(link);
                 return (head);
             }
         } else if (result > 0) {
-            ndp = ( rdirent_t * )malloc(sizeof(rdirent_t));
-            ntp = ( tag_t * )malloc(tp->length);
-            memcpy(( char * )ntp, ( char * )tp, tp->length);
+            ndp = ( rdirent_t * ) malloc(sizeof(rdirent_t));
+            ntp = ( tag_t * ) malloc(tp->length);
+            memcpy(( char * ) ntp, ( char * ) tp, tp->length);
             ndp->tag = ntp;
             ndp->next = dp;
             if (R_ISLINK(tp) && link)
@@ -84,9 +84,9 @@ tag_t *tp;
         prev_posn = &(dp->next);
         dp = dp->next;
     }
-    ndp = ( rdirent_t * )malloc(sizeof(rdirent_t));
-    ntp = ( tag_t * )malloc(tp->length);
-    memcpy(( char * )ntp, ( char * )tp, tp->length);
+    ndp = ( rdirent_t * ) malloc(sizeof(rdirent_t));
+    ntp = ( tag_t * ) malloc(tp->length);
+    memcpy(( char * ) ntp, ( char * ) tp, tp->length);
     ndp->tag = ntp;
     ndp->next = NULL;
     if (R_ISLINK(tp) && link)
@@ -127,8 +127,8 @@ attr_t *ap;
         if (R_ISMARKER(dp->tag) && dp->tag->stat.st_mtime < now) {
             *prev_posn = dp->next;
             ndp = dp->next;
-            free(( char * )dp->tag);
-            free(( char * )dp);
+            free(( char * ) dp->tag);
+            free(( char * ) dp);
             dp = ndp;
         } else {
             prev_posn = &(dp->next);

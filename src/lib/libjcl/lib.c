@@ -69,19 +69,20 @@ lookup(Jcl_t *jcl, const char *name, const char *value, int flags, int set)
 
     if (!value) {
         if (jcl->step->syms
-            && (v = ( Jclsym_t * )dtmatch(jcl->step->syms, name)))
+            && (v = ( Jclsym_t * ) dtmatch(jcl->step->syms, name)))
             goto found;
         for (scope = jcl; scope; scope = scope->scope) {
             if (scope->scope && scope->scope->step->syms
                 && (v
-                    = ( Jclsym_t * )dtmatch(scope->scope->step->syms, name)))
+                    = ( Jclsym_t * ) dtmatch(scope->scope->step->syms, name)))
                 goto found;
-            if (scope->syms && (v = ( Jclsym_t * )dtmatch(scope->syms, name)))
+            if (scope->syms
+                && (v = ( Jclsym_t * ) dtmatch(scope->syms, name)))
                 goto found;
         }
     } else if (!jcl->syms)
         return 0;
-    else if ((v = ( Jclsym_t * )dtmatch(jcl->syms, name))
+    else if ((v = ( Jclsym_t * ) dtmatch(jcl->syms, name))
              && (!(flags & (JCL_SYM_EXPORT | JCL_SYM_SET))
                  || (v->flags & (JCL_SYM_EXPORT | JCL_SYM_SET)))) {
         if (!(set & DEFAULT))
@@ -90,7 +91,7 @@ lookup(Jcl_t *jcl, const char *name, const char *value, int flags, int set)
     }
     if (!value) {
         if (strneq(name, JCL_AUTO, sizeof(JCL_AUTO) - 1)) {
-            b = ( char * )name + sizeof(JCL_AUTO) - 1;
+            b = ( char * ) name + sizeof(JCL_AUTO) - 1;
             if ((s = getenv(name)) || (s = internal(jcl, b)))
                 return s;
             s = b;
@@ -147,7 +148,7 @@ lookup(Jcl_t *jcl, const char *name, const char *value, int flags, int set)
             switch (*b) {
             case 'B':
                 if (!strncmp(b, "BLANK", 5)) {
-                    if (!(j = ( int )strtol(b, &s, 10)))
+                    if (!(j = ( int ) strtol(b, &s, 10)))
                         j = 1;
                     if (!*s) {
                         s = fmtbuf(j + 1);

@@ -119,7 +119,7 @@ pathcanon_20100601(char *path, size_t size, int flags)
                 n = n * 10 + (*s - '0');                                     \
     } while (0)
 
-#define OFLAG(s) s, ( unsigned char )sizeof(s) - 1
+#define OFLAG(s) s, ( unsigned char ) sizeof(s) - 1
 
 /* /dev/file/flags@... O_flag table */
 
@@ -262,12 +262,12 @@ pathdev(int dfd,
     if (!size)
         size = strlen(path) + 1;
     e = canon + size;
-    p = ( char * )path;
+    p = ( char * ) path;
     inplace = p == canon;
 again:
     r = x = 0;
     if (path[0] == '/') {
-        for (s = ( char * )path; s[1] == '/'; s++)
+        for (s = ( char * ) path; s[1] == '/'; s++)
             ;
         if (!s[1]) {
             if (flags & PATH_DEV) {
@@ -365,7 +365,7 @@ again:
                             dev->path.offset = s - p;
                         } else if (!(flags & PATH_CANON)) {
                             flags &= ~PATH_DEV;
-                            path = ( const char * )s;
+                            path = ( const char * ) s;
                             if (!canon)
                                 dev->path.offset = s - p;
                             goto again;
@@ -504,7 +504,7 @@ again:
                     for (r = t + 3; *r == '/'; r++)
                         ;
                     dev->pid = -1;
-                    dev->path.offset = r - ( char * )path;
+                    dev->path.offset = r - ( char * ) path;
                     return r + strlen(r);
                 }
 #endif
@@ -521,7 +521,7 @@ again:
     if (r)
         s = r;
     else {
-        s = ( char * )path;
+        s = ( char * ) path;
         t = p;
     }
     b = s;
@@ -531,8 +531,9 @@ again:
         && (x && *x != '/' || *s != '/')
         || (flags & PATH_PHYSICAL) && dev->fd >= 0) {
         if (inplace) {
-            z = x || (flags & PATH_PHYSICAL) && dev->fd >= 0 ? s
-                                                             : ( char * )path;
+            z = x || (flags & PATH_PHYSICAL) && dev->fd >= 0
+                ? s
+                : ( char * ) path;
             n = strlen(z) + 1;
             a = fmtbuf(n);
             memcpy(a, z, n);

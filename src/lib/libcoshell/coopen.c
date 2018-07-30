@@ -86,7 +86,7 @@ stop(int sig)
 static int
 setopt(void *handle, const void *p, int n, const char *v)
 {
-    Coshell_t *co = ( Coshell_t * )handle;
+    Coshell_t *co = ( Coshell_t * ) handle;
     Coservice_t *cs;
     char *s;
     char **a;
@@ -94,11 +94,11 @@ setopt(void *handle, const void *p, int n, const char *v)
     NoP(v);
     if (p) {
         if (n) {
-            co->flags |= (( Namval_t * )p)->value;
-            if ((( Namval_t * )p)->value == CO_SERVICE && v
+            co->flags |= (( Namval_t * ) p)->value;
+            if ((( Namval_t * ) p)->value == CO_SERVICE && v
                 && (cs = vmnewof(co->vm, 0, Coservice_t, 1, 2 * strlen(v)))) {
                 a = cs->argv;
-                *a++ = s = cs->path = cs->name = ( char * )(cs + 1);
+                *a++ = s = cs->path = cs->name = ( char * ) (cs + 1);
                 while (*s = *v++)
                     if (*s++ == ':') {
                         *(s - 1) = 0;
@@ -127,7 +127,7 @@ setopt(void *handle, const void *p, int n, const char *v)
                 co->service = cs;
             }
         } else
-            co->mask |= (( Namval_t * )p)->value;
+            co->mask |= (( Namval_t * ) p)->value;
     }
     return 0;
 }
@@ -212,7 +212,7 @@ coopen(const char *path, int flags, const char *attributes)
         sfsprintf(devfd, sizeof(devfd), "/dev/fd/%d", pio[0]);
         flags = !access(devfd, F_OK);
     }
-    sh[0] = ( char * )path;
+    sh[0] = ( char * ) path;
     sh[1] = getenv(CO_ENV_SHELL);
     for (i = 0; i < elementsof(sh); i++)
         if ((s = sh[i]) && *s && (s = strdup(s))) {

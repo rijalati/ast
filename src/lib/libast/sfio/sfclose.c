@@ -111,7 +111,7 @@ int sfclose(f) Sfio_t *f;
         else
 #endif
         if (f->flags & SF_MALLOC)
-            data = ( Void_t * )f->data;
+            data = ( Void_t * ) f->data;
 
         f->data = NIL(uchar *);
         f->size = -1;
@@ -119,7 +119,7 @@ int sfclose(f) Sfio_t *f;
 
     /* zap the file descriptor */
     if (_Sfnotify)
-        (*_Sfnotify)(f, SF_CLOSING, ( void * )(( long )f->file));
+        (*_Sfnotify)(f, SF_CLOSING, ( void * ) (( long ) f->file));
     if (f->file >= 0 && !(f->flags & SF_STRING)) {
         while (sysclosef(f->file) < 0) {
             if (errno == EINTR)
@@ -150,9 +150,9 @@ int sfclose(f) Sfio_t *f;
 
     /* destroy the mutex */
     if (f->mutex) {
-        ( void )vtmtxclrlock(f->mutex);
+        ( void ) vtmtxclrlock(f->mutex);
         if (f != sfstdin && f != sfstdout && f != sfstderr) {
-            ( void )vtmtxclose(f->mutex);
+            ( void ) vtmtxclose(f->mutex);
             f->mutex = NIL(Vtmutex_t *);
         }
     }

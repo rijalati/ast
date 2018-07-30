@@ -34,11 +34,11 @@ tmain()
     if (sfopen(sfstdin, tstfile("sf", 0), "r") != sfstdin)
         terror("Can't open %s to read", tstfile("sf", 0));
 
-    if ((m = sfmove(sfstdin, sfstdout, ( Sfoff_t )SF_UNBOUND, -1)) != 10)
+    if ((m = sfmove(sfstdin, sfstdout, ( Sfoff_t ) SF_UNBOUND, -1)) != 10)
         terror("Moving data from %s to %s m=%lld",
                tstfile("sf", 0),
                tstfile("sf", 1),
-               ( Sflong_t )m);
+               ( Sflong_t ) m);
 
     texit(0);
 }

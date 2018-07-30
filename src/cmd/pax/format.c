@@ -72,7 +72,7 @@ getprologue(Archive_t *ap)
      * first check if input is compressed
      */
 
-    if ((n = bread(ap, ( char * )buf, ( off_t )0, ( off_t )sizeof(buf), 0))
+    if ((n = bread(ap, ( char * ) buf, ( off_t ) 0, ( off_t ) sizeof(buf), 0))
         <= MINID
         && !bcount(ap)) {
         if (n && ap->volume <= 0)
@@ -96,8 +96,8 @@ getprologue(Archive_t *ap)
 
                 message((-1, "%s compression", fp->name));
                 ap->compress = fp;
-                cp = ( Compress_format_t * )fp->data;
-                if (bseek(ap, ( off_t )0, SEEK_SET, 1))
+                cp = ( Compress_format_t * ) fp->data;
+                if (bseek(ap, ( off_t ) 0, SEEK_SET, 1))
                     error(3,
                           "%s: %s input must be seekable",
                           ap->name,
@@ -158,12 +158,13 @@ getprologue(Archive_t *ap)
                     ap->io->fd = proc->rfd;
                     if (!(p = newof(0, List_t, 1, 0)))
                         nospace();
-                    p->item = ( void * )proc;
+                    p->item = ( void * ) proc;
                     p->next = state.proc;
                     state.proc = p;
                 }
-                if ((n = bread(
-                     ap, ( char * )buf, ( off_t )0, ( off_t )sizeof(buf), 0))
+                if ((
+                    n = bread(
+                    ap, ( char * ) buf, ( off_t ) 0, ( off_t ) sizeof(buf), 0))
                     <= MINID
                     && !bcount(ap))
                     return 0;
@@ -213,7 +214,7 @@ getprologue(Archive_t *ap)
                 break;
             convert(ap, SECTION_CONTROL, CC_NATIVE, CC_NATIVE);
             if (!state.keepgoing || ap->io->eof
-                || bread(ap, buf, ( off_t )0, ( off_t )1, 0) < 1) {
+                || bread(ap, buf, ( off_t ) 0, ( off_t ) 1, 0) < 1) {
             unknown:
                 if (ap->expected)
                     error(3,
@@ -365,7 +366,7 @@ putinfo(Archive_t *ap, char *file, unsigned long mtime, unsigned long checksum)
                      INFO_SEP,
                      ap->delta->compress ? TYPE_COMPRESS : TYPE_DELTA,
                      INFO_SEP,
-                     (dp = ( Delta_format_t * )ap->delta->format->data)
+                     (dp = ( Delta_format_t * ) ap->delta->format->data)
                      ? dp->variant
                      : "");
             if (state.ordered)
@@ -456,7 +457,7 @@ getepilogue(Archive_t *ap)
         z = 0;
         i = 0;
         if (!(n = roundof(ap->io->count, BLOCKSIZE) - ap->io->count)
-            || bread(ap, buf, ( off_t )0, ( off_t )n, 0) > 0)
+            || bread(ap, buf, ( off_t ) 0, ( off_t ) n, 0) > 0)
             do {
                 for (s = buf; s < buf + n && !*s; s++)
                     ;
@@ -488,7 +489,7 @@ getepilogue(Archive_t *ap)
                 }
                 n = BLOCKSIZE;
                 i++;
-            } while (bread(ap, buf, ( off_t )0, n, 0) > 0);
+            } while (bread(ap, buf, ( off_t ) 0, n, 0) > 0);
         bflushin(ap, 0);
     }
 done:
@@ -894,7 +895,7 @@ gettrailer(Archive_t *ap, File_t *f)
     getdeltatrailer(ap, f);
     if ((n = ap->format->align)
         && (n = roundof(ap->io->count, n) - ap->io->count))
-        bread(ap, state.tmp.buffer, ( off_t )0, n, 1);
+        bread(ap, state.tmp.buffer, ( off_t ) 0, n, 1);
     if (!(ap->format->flags & SUM) && ap->sum >= 0) {
         ap->memsum = 0;
         ap->old.memsum = 0;

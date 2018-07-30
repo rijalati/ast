@@ -107,7 +107,7 @@ static const char usage2[] =
 
 #define PATH(f) ((f)->fts_path)
 
-#define DAY ( unsigned long )(24 * 60 * 60)
+#define DAY ( unsigned long ) (24 * 60 * 60)
 
 /*
  * this is the list of operations
@@ -985,7 +985,7 @@ lookup(char *word)
         word++;
     if (*word) {
         second = word[1];
-        for (argp = ( Args_t * )commands; argp->name; argp++)
+        for (argp = ( Args_t * ) commands; argp->name; argp++)
             if (second == argp->name[1] && streq(word, argp->name))
                 return argp;
     }
@@ -1017,10 +1017,10 @@ quotex(Sfio_t *sp, const char *s, int term)
 static int
 print(Sfio_t *sp, void *vp, Sffmt_t *dp)
 {
-    Fmt_t *fp = ( Fmt_t * )dp;
+    Fmt_t *fp = ( Fmt_t * ) dp;
     FTSENT *ent = fp->ent;
     State_t *state = fp->state;
-    Value_t *value = ( Value_t * )vp;
+    Value_t *value = ( Value_t * ) vp;
 
     char *s;
 
@@ -1588,12 +1588,12 @@ compile(State_t *state, char **argv, Node_t *np, int nested)
                 error(ERROR_SYSTEM | 2, "out of space");
                 return -1;
             }
-            redisc = ( regdisc_t * )(np->second.re + 1);
+            redisc = ( regdisc_t * ) (np->second.re + 1);
             redisc->re_version = REG_VERSION;
             redisc->re_flags = REG_NOFREE;
-            redisc->re_errorf = ( regerror_t )errorf;
-            redisc->re_resizef = ( regresize_t )vmgetmem;
-            redisc->re_resizehandle = ( void * )state->vm;
+            redisc->re_errorf = ( regerror_t ) errorf;
+            redisc->re_resizef = ( regresize_t ) vmgetmem;
+            redisc->re_resizehandle = ( void * ) state->vm;
             np->second.re->re_disc = redisc;
             i = REG_EXTENDED | REG_LENIENT | REG_NOSUB | REG_NULL | REG_LEFT
                 | REG_RIGHT | REG_DISCIPLINE;
@@ -1627,13 +1627,13 @@ compile(State_t *state, char **argv, Node_t *np, int nested)
             np->first.l = *b;
             break;
         case CPIO:
-            com = ( char ** )cpio;
+            com = ( char ** ) cpio;
             goto common;
         case NCPIO: {
             long ops[2];
             int fd;
 
-            com = ( char ** )ncpio;
+            com = ( char ** ) ncpio;
         common:
             /*
              * set up cpio
@@ -1928,16 +1928,16 @@ execute(State_t *state, FTSENT *ent)
             val = u >= np->first.u && u <= np->second.u;
             break;
         case NEWER:
-            val = ( unsigned long )ent->fts_statp->st_mtime
-                  > ( unsigned long )np->first.u;
+            val = ( unsigned long ) ent->fts_statp->st_mtime
+                  > ( unsigned long ) np->first.u;
             break;
         case ANEWER:
-            val = ( unsigned long )ent->fts_statp->st_atime
-                  > ( unsigned long )np->first.u;
+            val = ( unsigned long ) ent->fts_statp->st_atime
+                  > ( unsigned long ) np->first.u;
             break;
         case CNEWER:
-            val = ( unsigned long )ent->fts_statp->st_ctime
-                  > ( unsigned long )np->first.u;
+            val = ( unsigned long ) ent->fts_statp->st_ctime
+                  > ( unsigned long ) np->first.u;
             break;
         case SIZE:
             u = ent->fts_statp->st_size;
@@ -1981,7 +1981,7 @@ execute(State_t *state, FTSENT *ent)
         case NAME:
         case INAME:
             if (bp
-                = ent->fts_level ? ( char * )0 : strchr(ent->fts_name, '/'))
+                = ent->fts_level ? ( char * ) 0 : strchr(ent->fts_name, '/'))
                 *bp = 0;
             val = strgrpmatch(
                   ent->fts_name,
@@ -2274,7 +2274,7 @@ main(int argc, char **argv)
         error(ERROR_SYSTEM | 2, "out of space");
         goto done;
     }
-    state.day = state.now = ( unsigned long )time(NiL);
+    state.day = state.now = ( unsigned long ) time(NiL);
     state.output = sfstdout;
     if (!(state.topnode = vmnewof(state.vm, 0, Node_t, argc + 3, 0))) {
         error(2, "not enough space for expressions");
@@ -2300,7 +2300,7 @@ main(int argc, char **argv)
         opt_info.index++;
     }
     if (!*op)
-        op = ( char ** )defpath;
+        op = ( char ** ) defpath;
     while (state.topnode && state.topnode->action == IGNORE)
         state.topnode = state.topnode->next;
     if (!(state.walkflags & FTS_PHYSICAL))
@@ -2319,7 +2319,7 @@ main(int argc, char **argv)
                 if (!state.topnode)
                     sfputr(sfstdout, cp, '\n');
                 else if (find(&state,
-                              ( char ** )cp,
+                              ( char ** ) cp,
                               FTS_ONEPATH | state.walkflags,
                               NiL))
                     goto done;

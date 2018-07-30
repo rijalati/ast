@@ -134,7 +134,7 @@ cokill(Coshell_t *co, Cojob_t *cj, int sig)
     n = 0;
     do {
         if (!cj || !cj->service)
-            cowait(co, ( Cojob_t * )co, 0);
+            cowait(co, ( Cojob_t * ) co, 0);
         n |= cokillshell(co, cj, sig);
     } while (any && (co = co->next));
     return n;

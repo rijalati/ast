@@ -197,7 +197,7 @@ main(int argc, char *argv[])
         }
     argv += opt_info.index;
     if (error_info.errors || !*argv)
-        error(ERROR_usage(2), "%s", optusage(( char * )0));
+        error(ERROR_usage(2), "%s", optusage(( char * ) 0));
     sfset(sfstdout, SF_LINE, 0);
     while (cp = *argv++)
         banner(cp, delim, width);

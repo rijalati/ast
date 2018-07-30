@@ -36,15 +36,15 @@ ptvdifference(Ptv_t *a, Ptv_t *b)
 
     if (!(t = ptvopen(a->disc, a->size)))
         return 0;
-    ap = ( Ptvprefix_t * )dtfirst(a->dict);
-    bp = ( Ptvprefix_t * )dtfirst(b->dict);
+    ap = ( Ptvprefix_t * ) dtfirst(a->dict);
+    bp = ( Ptvprefix_t * ) dtfirst(b->dict);
     while (ap) {
         if (!bp || fvcmp(a->size, ap->max, bp->min) < 0) {
             if (!ptvinsert(t, ap->min, ap->max))
                 break;
-            ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
+            ap = ( Ptvprefix_t * ) dtnext(a->dict, ap);
         } else if (fvcmp(a->size, ap->min, bp->max) > 0)
-            bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
+            bp = ( Ptvprefix_t * ) dtnext(b->dict, bp);
         else {
             if (fvcmp(a->size, ap->min, bp->min) < 0) {
                 fvset(a->size, a->r[0], 1);
@@ -53,15 +53,15 @@ ptvdifference(Ptv_t *a, Ptv_t *b)
                     break;
             }
             if ((c = fvcmp(a->size, ap->max, bp->max)) < 0)
-                ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
+                ap = ( Ptvprefix_t * ) dtnext(a->dict, ap);
             else if (!c) {
-                ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
-                bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
+                ap = ( Ptvprefix_t * ) dtnext(a->dict, ap);
+                bp = ( Ptvprefix_t * ) dtnext(b->dict, bp);
             } else {
                 fvset(a->size, a->r[0], 1);
                 while (fvcmp(a->size, ap->max, bp->max) > 0) {
                     fvadd(a->size, a->r[1], bp->max, a->r[0]);
-                    if (!(bp = ( Ptvprefix_t * )dtnext(b->dict, bp))
+                    if (!(bp = ( Ptvprefix_t * ) dtnext(b->dict, bp))
                         || fvcmp(a->size, bp->min, ap->max) > 0) {
                         if (!ptvinsert(t, a->r[1], ap->max))
                             goto done;
@@ -73,7 +73,7 @@ ptvdifference(Ptv_t *a, Ptv_t *b)
                             goto done;
                     }
                 }
-                ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
+                ap = ( Ptvprefix_t * ) dtnext(a->dict, ap);
             }
         }
     }

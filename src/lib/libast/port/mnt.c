@@ -75,7 +75,7 @@ set(Header_t *hp,
     const char *x;
 
     hp->mnt.flags = 0;
-    if (x = ( const char * )strchr(fs, ':')) {
+    if (x = ( const char * ) strchr(fs, ':')) {
         if (*++x && *x != '\\') {
             hp->mnt.flags |= MNT_REMOTE;
             if (*x == '(') {
@@ -83,19 +83,19 @@ set(Header_t *hp,
                 type = "auto";
             }
         }
-    } else if (x = ( const char * )strchr(fs, '@')) {
+    } else if (x = ( const char * ) strchr(fs, '@')) {
         hp->mnt.flags |= MNT_REMOTE;
         sfsprintf(
         hp->buf, sizeof(hp->buf) - 1, "%s:%*.*s", x + 1, x - fs, x - fs, fs);
-        fs = ( const char * )hp->buf;
+        fs = ( const char * ) hp->buf;
     } else if (strmatch(type, "[aAnN][fF][sS]*"))
         hp->mnt.flags |= MNT_REMOTE;
     if (streq(fs, "none"))
         fs = dir;
-    hp->mnt.fs = ( char * )fs;
-    hp->mnt.dir = ( char * )dir;
-    hp->mnt.type = ( char * )type;
-    hp->mnt.options = ( char * )options;
+    hp->mnt.fs = ( char * ) fs;
+    hp->mnt.dir = ( char * ) dir;
+    hp->mnt.type = ( char * ) type;
+    hp->mnt.options = ( char * ) options;
 #    if __CYGWIN__
     if (streq(type, "system") || streq(type, "user")) {
         char *s;
@@ -172,11 +172,11 @@ typedef struct
 #            define TYPE(f) ((f)->f_fstypename)
 #        else
 #            ifdef INITMOUNTNAMES
-#                define TYPE(f) (( char * )type[(f)->f_type])
+#                define TYPE(f) (( char * ) type[(f)->f_type])
 static const char *type[] = INITMOUNTNAMES;
 #            else
 #                if _sys_fs_types
-#                    define TYPE(f) (( char * )mnt_names[(f)->f_type])
+#                    define TYPE(f) (( char * ) mnt_names[(f)->f_type])
 #                    include <sys/fs_types.h>
 #                else
 #                    define TYPE(f)                                          \
@@ -308,13 +308,13 @@ mntopen(const char *path, const char *mode)
         return 0;
     }
     mp->last = mp->next + n;
-    return ( void * )mp;
+    return ( void * ) mp;
 }
 
 Mnt_t *
 mntread(void *handle)
 {
-    Handle_t *mp = ( Handle_t * )handle;
+    Handle_t *mp = ( Handle_t * ) handle;
     int i;
     int n;
     unsigned long flags;
@@ -330,7 +330,7 @@ mntread(void *handle)
             mp->next->f_mntfromname,
             mp->next->f_mntonname,
             TYPE(mp->next),
-            n ? (mp->opt + 1) : ( char * )0);
+            n ? (mp->opt + 1) : ( char * ) 0);
         mp->next++;
         return &mp->hdr.mnt;
     }
@@ -340,7 +340,7 @@ mntread(void *handle)
 int
 mntclose(void *handle)
 {
-    Handle_t *mp = ( Handle_t * )handle;
+    Handle_t *mp = ( Handle_t * ) handle;
 
     if (!mp)
         return -1;
@@ -387,13 +387,13 @@ mntopen(const char *path, const char *mode)
         return 0;
     }
     mp->next = mp->info;
-    return ( void * )mp;
+    return ( void * ) mp;
 }
 
 Mnt_t *
 mntread(void *handle)
 {
-    Handle_t *mp = ( Handle_t * )handle;
+    Handle_t *mp = ( Handle_t * ) handle;
     char *s;
     char *t;
     char *o;
@@ -461,8 +461,8 @@ mntread(void *handle)
         }
         set(&mp->hdr, s, vmt2dataptr(mp->next, VMT_STUB), t, o);
         if (--mp->count > 0)
-            mp->next
-            = ( struct vmount * )(( char * )mp->next + mp->next->vmt_length);
+            mp->next = ( struct vmount * ) (( char * ) mp->next
+                                            + mp->next->vmt_length);
         return &mp->hdr.mnt;
     }
     return 0;
@@ -471,7 +471,7 @@ mntread(void *handle)
 int
 mntclose(void *handle)
 {
-    Handle_t *mp = ( Handle_t * )handle;
+    Handle_t *mp = ( Handle_t * ) handle;
 
     if (!mp)
         return -1;
@@ -575,13 +575,13 @@ mntopen(const char *path, const char *mode)
         free(mp);
         return 0;
     }
-    return ( void * )mp;
+    return ( void * ) mp;
 }
 
 Mnt_t *
 mntread(void *handle)
 {
-    Handle_t *mp = ( Handle_t * )handle;
+    Handle_t *mp = ( Handle_t * ) handle;
     struct mntent *mnt;
 
     if (mnt = getmntent(mp->fp)) {
@@ -595,7 +595,7 @@ mntread(void *handle)
 int
 mntclose(void *handle)
 {
-    Handle_t *mp = ( Handle_t * )handle;
+    Handle_t *mp = ( Handle_t * ) handle;
 
     if (!mp)
         return -1;
@@ -687,23 +687,23 @@ mntopen(const char *path, const char *mode)
         return 0;
 #                if _lib_w_getmntent
     if ((mp->count = w_getmntent(mp->buf, sizeof(mp->buf))) > 0)
-        mp->mnt = ( struct mntent * )((( struct w_mnth * )mp->buf) + 1);
+        mp->mnt = ( struct mntent * ) ((( struct w_mnth * ) mp->buf) + 1);
     else
 #                else
-    mp->mnt = ( struct mntent * )mp->buf;
+    mp->mnt = ( struct mntent * ) mp->buf;
     if (!(mp->fp = sfopen(NiL, path, mode)))
 #                endif
     {
         free(mp);
         return 0;
     }
-    return ( void * )mp;
+    return ( void * ) mp;
 }
 
 Mnt_t *
 mntread(void *handle)
 {
-    Handle_t *mp = ( Handle_t * )handle;
+    Handle_t *mp = ( Handle_t * ) handle;
 
 #                if _lib_w_getmntent
 
@@ -711,7 +711,7 @@ mntread(void *handle)
         if ((mp->count = w_getmntent(mp->buf, sizeof(mp->buf))) <= 0)
             return 0;
         mp->count--;
-        mp->mnt = ( struct mntent * )((( struct w_mnth * )mp->buf) + 1);
+        mp->mnt = ( struct mntent * ) ((( struct w_mnth * ) mp->buf) + 1);
     }
     set(&mp->hdr,
         mp->mnt->mnt_fsname,
@@ -828,7 +828,7 @@ again:
 int
 mntclose(void *handle)
 {
-    Handle_t *mp = ( Handle_t * )handle;
+    Handle_t *mp = ( Handle_t * ) handle;
 
     if (!mp)
         return -1;

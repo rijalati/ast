@@ -37,12 +37,12 @@
 static int
 bsd_block(Sum_t *p, const void *s, size_t n)
 {
-    uint32_t c = (( Integral_t * )p)->sum;
-    unsigned char *b = ( unsigned char * )s;
+    uint32_t c = (( Integral_t * ) p)->sum;
+    unsigned char *b = ( unsigned char * ) s;
     unsigned char *e = b + n;
 
     while (b < e)
         c = ((c >> 1) + *b++ + ((c & 01) ? 0x8000 : 0)) & 0xffff;
-    (( Integral_t * )p)->sum = c;
+    (( Integral_t * ) p)->sum = c;
     return 0;
 }

@@ -73,7 +73,7 @@ Void_t *disc;
         return -1;
 
     for (i = 0; _Vcwmethods[i]; ++i) {
-        rv = (*walkf)(( Void_t * )_Vcwmethods[i],
+        rv = (*walkf)(( Void_t * ) _Vcwmethods[i],
                       _Vcwmethods[i]->name,
                       _Vcwmethods[i]->desc,
                       disc);

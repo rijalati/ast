@@ -45,8 +45,8 @@ char *s;
     size_t n;
 
     return (s && (t = vmalloc(v, n = strlen(s) + 1)))
-           ? ( char * )memcpy(t, s, n)
-           : ( char * )0;
+           ? ( char * ) memcpy(t, s, n)
+           : ( char * ) 0;
 }
 
 #endif

@@ -35,7 +35,7 @@
 
 #if defined(S_IFMT) && defined(S_IFIFO)
 #    undef S_ISFIFO
-#    define S_ISFIFO(m) ((( m )&S_IFMT) == S_IFIFO)
+#    define S_ISFIFO(m) ((( m ) &S_IFMT) == S_IFIFO)
 #endif
 
 /*
@@ -169,11 +169,11 @@ cspath(Cs_t *state, int fd, int flags)
     }
 #endif
 #if CS_LIB_SOCKET
-    else if (!getsockname(fd, ( struct sockaddr * )&lcl, &namlen)
+    else if (!getsockname(fd, ( struct sockaddr * ) &lcl, &namlen)
              && namlen == sizeof(lcl) && lcl.sin_family == AF_INET) {
         s = "tcp";
 #    ifdef SO_TYPE
-        if (!getsockopt(fd, SOL_SOCKET, SO_TYPE, ( char * )&typ, &typlen))
+        if (!getsockopt(fd, SOL_SOCKET, SO_TYPE, ( char * ) &typ, &typlen))
             switch (typ) {
             case SOCK_DGRAM:
                 s = "udp";
@@ -186,7 +186,7 @@ cspath(Cs_t *state, int fd, int flags)
             }
 #    endif
         namlen = sizeof(rmt);
-        if (!getpeername(fd, ( struct sockaddr * )&rmt, &namlen)
+        if (!getpeername(fd, ( struct sockaddr * ) &rmt, &namlen)
             && namlen == sizeof(rmt) && rmt.sin_family == AF_INET) {
             if (!rmt.sin_addr.s_addr)
                 rmt.sin_addr.s_addr = csaddr(state, NiL);
@@ -195,10 +195,10 @@ cspath(Cs_t *state, int fd, int flags)
                       "/dev/%s/%s/%d.%d",
                       s,
                       (flags & CS_PATH_NAME)
-                      ? csname(state, ( unsigned long )rmt.sin_addr.s_addr)
-                      : csntoa(state, ( unsigned long )rmt.sin_addr.s_addr),
-                      ntohs(( unsigned short )rmt.sin_port),
-                      ntohs(( unsigned short )lcl.sin_port));
+                      ? csname(state, ( unsigned long ) rmt.sin_addr.s_addr)
+                      : csntoa(state, ( unsigned long ) rmt.sin_addr.s_addr),
+                      ntohs(( unsigned short ) rmt.sin_port),
+                      ntohs(( unsigned short ) lcl.sin_port));
         } else {
             if (!lcl.sin_addr.s_addr)
                 lcl.sin_addr.s_addr = csaddr(state, NiL);
@@ -207,9 +207,9 @@ cspath(Cs_t *state, int fd, int flags)
                       "/dev/%s/%s/%d",
                       s,
                       (flags & CS_PATH_NAME)
-                      ? csname(state, ( unsigned long )lcl.sin_addr.s_addr)
-                      : csntoa(state, ( unsigned long )lcl.sin_addr.s_addr),
-                      ntohs(( unsigned short )lcl.sin_port));
+                      ? csname(state, ( unsigned long ) lcl.sin_addr.s_addr)
+                      : csntoa(state, ( unsigned long ) lcl.sin_addr.s_addr),
+                      ntohs(( unsigned short ) lcl.sin_port));
         }
     }
 #endif

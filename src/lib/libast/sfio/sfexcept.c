@@ -85,9 +85,9 @@ Sfdisc_t *disc; /* discipline in use */
                 io = SF_GRAIN;
             size = ((size + io + SF_GRAIN - 1) / SF_GRAIN) * SF_GRAIN;
             if (f->size > 0)
-                data = ( uchar * )realloc(( char * )f->data, size);
+                data = ( uchar * ) realloc(( char * ) f->data, size);
             else
-                data = ( uchar * )malloc(size);
+                data = ( uchar * ) malloc(size);
             if (!data)
                 goto chk_stack;
             f->endb = data + size;

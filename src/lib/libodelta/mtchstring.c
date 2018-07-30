@@ -94,25 +94,25 @@ mtchstring(char *src, long n_src, char *tar, long n_tar, char **match)
     if (src != Cursrc) {
         Cursrc = src;
         Alloced = 1;
-        if (N_index = ( long * )malloc(ALPHA * sizeof(long))) {
+        if (N_index = ( long * ) malloc(ALPHA * sizeof(long))) {
             char *sp;
 
             memzero(N_index, ALPHA * sizeof(long));
-            if (!(Index = ( char *** )malloc(ALPHA * sizeof(char **)))) {
+            if (!(Index = ( char *** ) malloc(ALPHA * sizeof(char **)))) {
                 free(N_index);
                 N_index = 0;
                 Alloced = 0;
             } else
                 for (sp = src; sp < endsrc; ++sp) {
-                    i = ( int )(*(( unsigned char * )(sp)));
+                    i = ( int ) (*(( unsigned char * ) (sp)));
                     ind = Index[i];
                     n_ind = N_index[i];
 
                     /* make sure we have space */
                     if ((n_ind % ALPHA) == 0) {
                         ind = n_ind == 0
-                              ? ( char ** )malloc(ALPHA * sizeof(char *))
-                              : ( char ** )realloc(
+                              ? ( char ** ) malloc(ALPHA * sizeof(char *))
+                              : ( char ** ) realloc(
                                 ind, (n_ind + ALPHA) * sizeof(char *));
                         Index[i] = ind;
                     }
@@ -131,8 +131,8 @@ mtchstring(char *src, long n_src, char *tar, long n_tar, char **match)
     }
 
     /* find longest matching prefix */
-    i = ( int )(*(( unsigned char * )(tar)));
-    ind = Alloced ? Index[i] : ( char ** )0;
+    i = ( int ) (*(( unsigned char * ) (tar)));
+    ind = Alloced ? Index[i] : ( char ** ) 0;
     n_ind = Alloced ? N_index[i] : -1;
     n_match = 0;
     while (1) {

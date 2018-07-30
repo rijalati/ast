@@ -153,7 +153,7 @@ tmain()
     tinfo("Starting test...");
     for (i = 1; i <= thread_count; i++)
         if (pthread_create(
-            &(thread[i]), pthread_attr_default, ( void * )&run_test, NULL))
+            &(thread[i]), pthread_attr_default, ( void * ) &run_test, NULL))
             terror("pthread_create() error");
 
     /*

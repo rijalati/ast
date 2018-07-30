@@ -72,7 +72,7 @@ fmtgid(int gid)
         disc.key = offsetof(Id_t, id);
         disc.size = sizeof(int);
         dict = dtopen(&disc, Dtset);
-    } else if (ip = ( Id_t * )dtmatch(dict, &gid))
+    } else if (ip = ( Id_t * ) dtmatch(dict, &gid))
         return ip->name;
     if (gr = getgrgid(gid)) {
         name = gr->gr_name;

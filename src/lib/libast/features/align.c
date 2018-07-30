@@ -53,7 +53,7 @@ struct _s_
     union _u_ s2;
 };
 
-#define roundof(x, y) (((x) + (( y )-1)) & ~(( y )-1))
+#define roundof(x, y) (((x) + (( y ) -1)) & ~(( y ) -1))
 
 static union _u_ u;
 static union _u_ v;

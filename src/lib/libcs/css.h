@@ -57,7 +57,8 @@
 #    define CS_POLL_MASK 0x00007fff
 
 #    define CS_POLL_CMD(f, c)                                                \
-        (CS_POLL_ARG | (c) | ((( long )( f )&CS_POLL_MASK) << CS_POLL_SHIFT))
+        (CS_POLL_ARG | (c)                                                   \
+         | ((( long ) ( f ) &CS_POLL_MASK) << CS_POLL_SHIFT))
 
 #    include <cs.h>
 

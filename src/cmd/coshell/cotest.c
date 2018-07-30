@@ -49,7 +49,7 @@ init(void)
     state.toss = state.start = cs.time;
     for (n = 0; n < 10; n++)
         TOSS;
-    state.fdtotal = ( int )strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0);
+    state.fdtotal = ( int ) strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0);
     if (!(state.con = newof(0, Connection_t, state.fdtotal, 0)))
         error(3, "out of space [con]");
     state.con[0].type = POLL;
@@ -65,7 +65,7 @@ init(void)
     state.busy = BUSY;
     state.grace = GRACE;
     state.pool
-    = ((s = getenv(CO_ENV_PROC)) && *s) ? ( int )strtol(s, NiL, 0) : POOL;
+    = ((s = getenv(CO_ENV_PROC)) && *s) ? ( int ) strtol(s, NiL, 0) : POOL;
     if (!(state.home = search(DEF | NEW, csname(0), NiL, NiL)))
         error(3, "cannot get local host address");
     state.shell = state.shellnext = state.home;

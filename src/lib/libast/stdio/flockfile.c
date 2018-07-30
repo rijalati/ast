@@ -28,5 +28,5 @@ flockfile(Sfio_t *f)
 {
     STDIO_VOID(f, "flockfile", void, ( Sfio_t * ), (f))
 
-    ( void )sfmutex(f, SFMTX_LOCK);
+    ( void ) sfmutex(f, SFMTX_LOCK);
 }

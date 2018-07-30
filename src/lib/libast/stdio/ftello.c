@@ -32,7 +32,7 @@ ftello(Sfio_t *f)
 {
     STDIO_INT(f, "ftello", off_t, ( Sfio_t * ), (f))
 
-    return sfseek(f, ( Sfoff_t )0, SEEK_CUR);
+    return sfseek(f, ( Sfoff_t ) 0, SEEK_CUR);
 }
 
 #ifdef _typ_int64_t
@@ -42,7 +42,7 @@ ftello64(Sfio_t *f)
 {
     STDIO_INT(f, "ftello64", int64_t, ( Sfio_t * ), (f))
 
-    return sfseek(f, ( Sfoff_t )0, SEEK_CUR) >= 0 ? 0 : -1;
+    return sfseek(f, ( Sfoff_t ) 0, SEEK_CUR) >= 0 ? 0 : -1;
 }
 
 #endif

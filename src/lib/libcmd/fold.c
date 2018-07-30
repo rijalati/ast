@@ -112,7 +112,7 @@ fold(Sfio_t *in,
         col = 0;
         last_space = 0;
         for (;;) {
-            while ((n = cols[*( unsigned char * )cp++]) == 0)
+            while ((n = cols[*( unsigned char * ) cp++]) == 0)
                 ;
             while ((cp - first) > (width - col)) {
                 if (last_space)

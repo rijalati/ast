@@ -111,7 +111,7 @@ size_t dtsz;    /* buffer size (need >= 256)	*/
     Vcio_t io;
 
     nl = 2 * nsym;
-    if (!(len = ( Vcchar_t * )malloc(nl * sizeof(Vcchar_t *))))
+    if (!(len = ( Vcchar_t * ) malloc(nl * sizeof(Vcchar_t *))))
         return -1;
 
     /* # of bits used to output the code table for this coding */
@@ -132,7 +132,7 @@ size_t dtsz;    /* buffer size (need >= 256)	*/
     for (k = 0; k < nl; ++k) {
         if ((n + cs) > VC_BITSIZE)
             vcioflsb(&io, b, n);
-        vcioaddb(&io, b, n, ((( Vcbit_t )len[k]) << (VC_BITSIZE - cs)), cs);
+        vcioaddb(&io, b, n, ((( Vcbit_t ) len[k]) << (VC_BITSIZE - cs)), cs);
     }
     vcioendb(&io, b, n, VC_ENCODE);
 
@@ -162,7 +162,7 @@ size_t dtsz;    /* size of above data buffer		*/
     Vcbit_t b;
     Vcio_t io;
 
-    if (!(len = ( Vcchar_t * )malloc(nsym * sizeof(Vcchar_t *))))
+    if (!(len = ( Vcchar_t * ) malloc(nsym * sizeof(Vcchar_t *))))
         return -1;
 
     /* # of bits used to output the code table for this coding */

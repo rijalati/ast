@@ -44,8 +44,8 @@ int set;
         SFMTXRETURN(f, (f->flags & SF_FLAGS));
 
     if ((oflags = (f->mode & SF_RDWR))
-        != ( int )f->mode) { /* avoid sfsetbuf() isatty() call if user sets
-                                (SF_LINE|SF_WCWIDTH) */
+        != ( int ) f->mode) { /* avoid sfsetbuf() isatty() call if user sets
+                                 (SF_LINE|SF_WCWIDTH) */
         if (set && (flags & (SF_LINE | SF_WCWIDTH))
             && !(f->flags & (SF_LINE | SF_WCWIDTH))) {
             tflags = (SF_LINE | SF_WCWIDTH);
@@ -91,7 +91,7 @@ int set;
         }
         if ((flags == SF_WRITE && !(f->mode & SF_WRITE))
             || (flags == SF_READ && !(f->mode & (SF_READ | SF_SYNCED))))
-            ( void )_sfmode(f, flags, 1);
+            ( void ) _sfmode(f, flags, 1);
     }
 
     /* if not shared or unseekable, public means nothing */

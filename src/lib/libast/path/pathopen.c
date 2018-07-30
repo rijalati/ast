@@ -95,9 +95,9 @@ getaddrinfo(const char *node,
         errno = EADDRNOTAVAIL;
         return EAI_SYSTEM;
     }
-    ip_addr = ( unsigned long )(( struct in_addr * )hp->h_addr)->s_addr;
+    ip_addr = ( unsigned long ) (( struct in_addr * ) hp->h_addr)->s_addr;
     if ((n = strtol(service, &prot, 10)) > 0 && n <= USHRT_MAX && !*prot)
-        ip_port = htons(( unsigned short )n);
+        ip_port = htons(( unsigned short ) n);
     else {
         struct servent *sp;
         const char *protocol = 0;
@@ -137,8 +137,8 @@ getaddrinfo(const char *node,
         *ap = *hint;
     ap->ai_family = hp->h_addrtype;
     ap->ai_addrlen = sizeof(struct sockaddr_in);
-    ap->ai_addr = ( struct sockaddr * )(ap + 1);
-    ip = ( struct sockaddr_in * )ap->ai_addr;
+    ap->ai_addr = ( struct sockaddr * ) (ap + 1);
+    ip = ( struct sockaddr_in * ) ap->ai_addr;
     ip->sin_family = AF_INET;
     ip->sin_port = ip_port;
     ip->sin_addr.s_addr = ip_addr;
@@ -170,7 +170,7 @@ pathopen(int dfd,
     int fd;
     int oerrno;
 
-    b = canon ? canon : ( char * )path;
+    b = canon ? canon : ( char * ) path;
     if (!pathdev(dfd, path, canon, size, flags, &dev))
         return 0;
     if (dev.path.offset) {

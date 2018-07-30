@@ -97,13 +97,13 @@ spawnvpe(const char *name, char *const argv[], char *const envv[])
         char **ov;
         char **nv;
 
-        for (ov = ( char ** )argv; *ov++;)
+        for (ov = ( char ** ) argv; *ov++;)
             ;
-        if (newargv = newof(0, char *, ov + 1 - ( char ** )argv, 0)) {
+        if (newargv = newof(0, char *, ov + 1 - ( char ** ) argv, 0)) {
             nv = newargv;
             *nv++ = "sh";
-            *nv++ = ( char * )path;
-            ov = ( char ** )argv;
+            *nv++ = ( char * ) path;
+            ov = ( char ** ) argv;
             while (*nv++ = *++ov)
                 ;
             path = pathshell();
@@ -144,7 +144,7 @@ spawnlp(const char *name, const char *arg, ...)
     pid_t pid;
 
     va_start(ap, arg);
-    pid = spawnvp(name, ( char *const * )&arg);
+    pid = spawnvp(name, ( char *const * ) &arg);
     va_end(ap);
     return pid;
 }

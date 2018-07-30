@@ -85,7 +85,7 @@ acceptf(Css_t *css, Cssfd_t *fp, Csid_t *ip, char **av, Cssdisc_t *disc)
 static int
 actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Connection_t *con;
     char *s;
     char *t;
@@ -94,14 +94,14 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 
     switch (fp->status) {
     case CS_POLL_CLOSE:
-        if (con = ( Connection_t * )fp->data) {
+        if (con = ( Connection_t * ) fp->data) {
             if (con->service)
                 error(ERROR_SYSTEM | 3, "service termination exit");
             free(con);
         }
         return 0;
     case CS_POLL_READ:
-        con = ( Connection_t * )fp->data;
+        con = ( Connection_t * ) fp->data;
         if ((n = csread(css->state, fp->fd, buf, sizeof(buf) - 1, CS_LINE))
             <= 0) {
             if (con->service)

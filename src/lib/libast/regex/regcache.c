@@ -127,9 +127,9 @@ regcache(const char *pattern, regflags_t reflags, int *status)
      */
 
     for (i = 0; i < sizeof(key) && pattern[i]; i++)
-        (( char * )&key)[i] = pattern[i];
+        (( char * ) &key)[i] = pattern[i];
     for (; i < sizeof(key); i++)
-        (( char * )&key)[i] = 0;
+        (( char * ) &key)[i] = 0;
     empty = unused = -1;
     old = 0;
     for (i = matchstate.size; i--;)
@@ -137,7 +137,7 @@ regcache(const char *pattern, regflags_t reflags, int *status)
             empty = i;
         else if (!matchstate.cache[i]->keep)
             unused = i;
-        else if (*( Key_t * )matchstate.cache[i]->pattern == key
+        else if (*( Key_t * ) matchstate.cache[i]->pattern == key
                  && !strcmp(matchstate.cache[i]->pattern, pattern)
                  && matchstate.cache[i]->reflags == reflags)
             break;
@@ -173,7 +173,7 @@ regcache(const char *pattern, regflags_t reflags, int *status)
         strcpy(cp->pattern, pattern);
         while (++i < sizeof(Key_t))
             cp->pattern[i] = 0;
-        pattern = ( const char * )cp->pattern;
+        pattern = ( const char * ) cp->pattern;
         if (i = regcomp(&cp->re, pattern, reflags)) {
             if (status)
                 *status = i;

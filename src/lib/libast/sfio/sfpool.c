@@ -46,7 +46,7 @@ static int delpool(p) reg Sfpool_t *p;
     POOLMTXENTER(p);
 
     if (p->s_sf && p->sf != p->array)
-        free(( Void_t * )p->sf);
+        free(( Void_t * ) p->sf);
     p->mode = SF_AVAIL;
 
     POOLMTXRETURN(p, 0);
@@ -72,12 +72,12 @@ static Sfpool_t *newpool(mode) reg int mode;
     if (!p) {
         POOLMTXLOCK(last);
 
-        if (!(p = ( Sfpool_t * )malloc(sizeof(Sfpool_t)))) {
+        if (!(p = ( Sfpool_t * ) malloc(sizeof(Sfpool_t)))) {
             POOLMTXUNLOCK(last);
             return NIL(Sfpool_t *);
         }
 
-        ( void )vtmtxopen(&p->mutex, VT_INIT); /* initialize mutex */
+        ( void ) vtmtxopen(&p->mutex, VT_INIT); /* initialize mutex */
 
         p->mode = 0;
         p->n_sf = 0;
@@ -281,7 +281,7 @@ reg int mode;
             return NIL(Sfio_t *);
         }
         if (f->disc == _Sfudisc)
-            ( void )sfclose((*_Sfstack)(f, NIL(Sfio_t *)));
+            ( void ) sfclose((*_Sfstack)(f, NIL(Sfio_t *)));
     }
     if (pf) {
         SFMTXLOCK(pf);
@@ -292,7 +292,7 @@ reg int mode;
             return NIL(Sfio_t *);
         }
         if (pf->disc == _Sfudisc)
-            ( void )sfclose((*_Sfstack)(pf, NIL(Sfio_t *)));
+            ( void ) sfclose((*_Sfstack)(pf, NIL(Sfio_t *)));
     }
 
     /* f already in the same pool with pf */

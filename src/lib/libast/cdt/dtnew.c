@@ -37,7 +37,7 @@ typedef struct Dc_s
 static int
 eventf(Dt_t *dt, int op, void *data, Dtdisc_t *disc)
 {
-    Dc_t *dc = ( Dc_t * )disc;
+    Dc_t *dc = ( Dc_t * ) disc;
     int r;
 
     if (dc->odisc->eventf
@@ -49,7 +49,7 @@ eventf(Dt_t *dt, int op, void *data, Dtdisc_t *disc)
 static void *
 memoryf(Dt_t *dt, void *addr, size_t size, Dtdisc_t *disc)
 {
-    return vmresize((( Dc_t * )disc)->vm, addr, size, VM_RSMOVE);
+    return vmresize((( Dc_t * ) disc)->vm, addr, size, VM_RSMOVE);
 }
 
 /*

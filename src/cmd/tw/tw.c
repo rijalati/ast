@@ -340,8 +340,8 @@ static const char usage[]
 #include <proc.h>
 #include <wait.h>
 
-#define ALL (( Exnode_t * )0)
-#define LIST (( Exnode_t * )1)
+#define ALL (( Exnode_t * ) 0)
+#define LIST (( Exnode_t * ) 1)
 
 #define FTW_LIST (FTW_USER << 0)      /* files listed on stdin	*/
 #define FTW_RECURSIVE (FTW_USER << 1) /* walk files listed on stdin	*/
@@ -372,11 +372,11 @@ urlcmp(const char *p, const char *s, int d)
         if ((sc = *s++) == d)
             return 1;
         if (pc == '%') {
-            pc = ( int )strntol(p, 2, NiL, 16);
+            pc = ( int ) strntol(p, 2, NiL, 16);
             p += 2;
         }
         if (sc == '%') {
-            sc = ( int )strntol(s, 2, NiL, 16);
+            sc = ( int ) strntol(s, 2, NiL, 16);
             s += 2;
         }
         if (pc < sc)
@@ -415,7 +415,7 @@ act(Ftw_t *ftw, int op)
         if (findwrite(state.find,
                       ftw->path,
                       ftw->pathlen,
-                      (ftw->info & FTW_D) ? "system/dir" : ( char * )0))
+                      (ftw->info & FTW_D) ? "system/dir" : ( char * ) 0))
             state.finderror = 1;
         break;
     case ACT_CODETYPE:
@@ -455,7 +455,7 @@ act(Ftw_t *ftw, int op)
                     if (!(k = memcmp(state.snapshot.prev + i, s + i, j - i)
                               || state.snapshot.prev[j]
                                  != state.snapshot.format.delim)) {
-                        if ((n = ( int )sfvalue(sfstdin)) > 4
+                        if ((n = ( int ) sfvalue(sfstdin)) > 4
                             && state.snapshot.prev[n - 2]
                                == state.snapshot.format.delim) {
                             sfwrite(sfstdout, state.snapshot.prev, n - 4);
@@ -465,7 +465,7 @@ act(Ftw_t *ftw, int op)
                     }
                 } else if (k > 0)
                     break;
-                else if (k < 0 && (n = ( int )sfvalue(sfstdin)) > 4
+                else if (k < 0 && (n = ( int ) sfvalue(sfstdin)) > 4
                          && (state.snapshot.prev[n - 2]
                              != state.snapshot.format.delim
                              || state.snapshot.prev[n - 3]
@@ -599,7 +599,7 @@ tw(Ftw_t *ftw)
             || eval(state.select, ftw) && ftw->status != FTW_SKIP)
             act(ftw, state.act);
     pop:
-        if (state.localmem && (lp = ( Local_t * )ftw->local.pointer)) {
+        if (state.localmem && (lp = ( Local_t * ) ftw->local.pointer)) {
             lp->next = state.local;
             state.local = lp;
         }
@@ -970,7 +970,7 @@ main(int argc, char **argv)
                 compile("1", 0);
             if (!(state.sortkey = newof(0, Exnode_t, 1, 0))
                 || !(state.sortkey->data.variable.symbol
-                     = ( Exid_t * )dtmatch(state.program->symbols, "name")))
+                     = ( Exid_t * ) dtmatch(state.program->symbols, "name")))
                 error(ERROR_SYSTEM | 3, "out of space");
             state.sortkey->op = ID;
             s = p = 0;
@@ -1057,7 +1057,7 @@ main(int argc, char **argv)
                 *ap++ = firstdir->name;
             *ap = 0;
             ftwalk(
-            ( char * )av, tw, state.ftwflags | FTW_MULTIPLE, state.sort);
+            ( char * ) av, tw, state.ftwflags | FTW_MULTIPLE, state.sort);
         }
         if (state.cmd && (i = cmdflush(state.cmd)) >= state.errexit)
             exit(i);

@@ -28,13 +28,13 @@ tmain()
         terror("Can't open temp file");
 
     for (i = -5448; i <= 5448; i += 101)
-        if (sfputl(fp, ( long )i) < 0)
+        if (sfputl(fp, ( long ) i) < 0)
             terror("Writing %d", i);
 
-    sfseek(fp, ( Sfoff_t )0, 0);
+    sfseek(fp, ( Sfoff_t ) 0, 0);
 
     for (i = -5448; i <= 5448; i += 101)
-        if ((r = ( int )sfgetl(fp)) != i)
+        if ((r = ( int ) sfgetl(fp)) != i)
             terror("Input=%d, Expect=%d", r, i);
 
     texit(0);

@@ -64,7 +64,7 @@ Mbstate_t *_sfmbstate(f) Sfio_t *f;
 
     for (disc = f->disc; disc; disc = disc->disc)
         if (disc->exceptf == _sfmbexcept)
-            return &(( Sfmbstate_t * )disc)->mbs;
+            return &(( Sfmbstate_t * ) disc)->mbs;
     if (mbs = newof(0, Sfmbstate_t, 1, 0)) {
         mbs->disc.exceptf = _sfmbexcept;
         sfdisc(f, &mbs->disc);
@@ -95,7 +95,7 @@ int w;                       /* the unsigned value to be written */
     n = mbtconv(buf, w, SFMBSTATE(f));
 
     if (n > 8 || SFWPEEK(f, s, m) < n)
-        n = SFWRITE(f, ( Void_t * )s, n); /* write the hard way */
+        n = SFWRITE(f, ( Void_t * ) s, n); /* write the hard way */
     else {
         b = buf;
         switch (n) {
@@ -120,5 +120,5 @@ int w;                       /* the unsigned value to be written */
     }
 
     SFOPEN(f, 0);
-    SFMTXRETURN(f, ( int )n);
+    SFMTXRETURN(f, ( int ) n);
 }

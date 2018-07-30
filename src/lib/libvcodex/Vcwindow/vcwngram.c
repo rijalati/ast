@@ -106,7 +106,7 @@ double stop;    /* stop search criterion	*/
     }
 
     bestp = pos;
-    bestd = rdif / ( double )rmax;
+    bestd = rdif / ( double ) rmax;
     if (bestd < stop || dtsz == 0)
         goto done;
 
@@ -152,8 +152,8 @@ double stop;    /* stop search criterion	*/
                 } else
                     ldif -= 1;
 
-                if ((ldif / ( double )lmax) < bestd) {
-                    bestd = ldif / ( double )lmax;
+                if ((ldif / ( double ) lmax) < bestd) {
+                    bestd = ldif / ( double ) lmax;
                     bestp = lldt - data;
                     if (bestd < stop)
                         goto done;
@@ -182,8 +182,8 @@ double stop;    /* stop search criterion	*/
                 } else
                     rdif -= 1;
 
-                if ((rdif / ( double )rmax) < bestd) {
-                    bestd = rdif / ( double )rmax;
+                if ((rdif / ( double ) rmax) < bestd) {
+                    bestd = rdif / ( double ) rmax;
                     bestp = rldt - data;
                     if (bestd < stop)
                         goto done;

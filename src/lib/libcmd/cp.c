@@ -424,8 +424,8 @@ visit(State_t *state, FTSENT *ent)
     if ((*state->stat)(state->path, &st))
         st.st_mode = 0;
     else if (state->update && !S_ISDIR(st.st_mode)
-             && ( unsigned long )ent->fts_statp->st_mtime
-                < ( unsigned long )st.st_mtime) {
+             && ( unsigned long ) ent->fts_statp->st_mtime
+                < ( unsigned long ) st.st_mtime) {
         fts_set(NiL, ent, FTS_SKIP);
         return 0;
     } else if (!state->fs3d || !iview(&st)) {
@@ -522,12 +522,12 @@ visit(State_t *state, FTSENT *ent)
                 e = state->path;
                 *s++ = 0;
             } else {
-                e = ( char * )dot;
+                e = ( char * ) dot;
                 s = state->path;
             }
             n = strlen(s);
             if (fts
-                = fts_open(( char ** )e,
+                = fts_open(( char ** ) e,
                            FTS_NOCHDIR | FTS_ONEPATH | FTS_PHYSICAL
                            | FTS_NOPOSTORDER | FTS_NOSTAT | FTS_NOSEEDOTDIR,
                            NiL)) {
@@ -656,7 +656,7 @@ operate:
                     return 0;
                 }
                 n = 0;
-                if (sfmove(ip, op, ( Sfoff_t )SF_UNBOUND, -1) < 0)
+                if (sfmove(ip, op, ( Sfoff_t ) SF_UNBOUND, -1) < 0)
                     n |= 3;
                 if (!sfeof(ip))
                     n |= 1;
@@ -746,7 +746,7 @@ b_cp(int argc, char **argv, Shbltin_t *context)
     Shbltin_t *cleanup = context;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_NOTIFY);
-    if (!(sh = CMD_CONTEXT(context)) || !(state = ( State_t * )sh->ptr)) {
+    if (!(sh = CMD_CONTEXT(context)) || !(state = ( State_t * ) sh->ptr)) {
         if (!(state = newof(0, State_t, 1, 0)))
             error(ERROR_SYSTEM | 3, "out of space");
         if (sh)
@@ -930,7 +930,7 @@ b_cp(int argc, char **argv, Shbltin_t *context)
         argc--;
         argv++;
     }
-    if (!(v = ( char ** )stkalloc(stkstd, (argc + 2) * sizeof(char *))))
+    if (!(v = ( char ** ) stkalloc(stkstd, (argc + 2) * sizeof(char *))))
         error(ERROR_SYSTEM | 3, "out of space");
     memcpy(v, argv, (argc + 1) * sizeof(char *));
     argv = v;
@@ -938,7 +938,7 @@ b_cp(int argc, char **argv, Shbltin_t *context)
         state->wflags |= O_EXCL;
         if (!argc) {
             argc++;
-            argv[1] = ( char * )dot;
+            argv[1] = ( char * ) dot;
         }
     }
     if (state->backup) {
@@ -1007,7 +1007,7 @@ b_cp(int argc, char **argv, Shbltin_t *context)
         if (!(!*s || *s == '.' && (!*++s || *s == '.' && !*++s)))
             s = 0;
     }
-    if (file != ( char * )dot)
+    if (file != ( char * ) dot)
         pathcanon(file, 0, 0);
     if (!(state->directory = !stat(file, &st) && S_ISDIR(st.st_mode))
         && argc > 1)

@@ -99,7 +99,7 @@ strngrpmatch(const char *b,
     if (!*p) {
         if (sub && n > 0) {
             if (flags & STR_INT) {
-                int *subi = ( int * )sub;
+                int *subi = ( int * ) sub;
 
                 subi[0] = subi[1] = 0;
             } else
@@ -149,7 +149,7 @@ strngrpmatch(const char *b,
         return 1;
     i = re->re_nsub;
     if (flags & STR_INT) {
-        int *subi = ( int * )sub;
+        int *subi = ( int * ) sub;
         int *endi = subi + n * 2;
 
         for (n = 0; subi < endi && n <= i; n++) {
@@ -203,8 +203,8 @@ strsubmatch(const char *s, const char *p, int flags)
 
     return strngrpmatch(
            s, strlen(s), p, match, 1, (flags ? STR_MAXIMAL : 0) | STR_LEFT)
-           ? ( char * )s + match[1]
-           : ( char * )0;
+           ? ( char * ) s + match[1]
+           : ( char * ) 0;
 }
 
 #undef strgrpmatch
@@ -216,5 +216,5 @@ int
 strgrpmatch(const char *b, const char *p, int *sub, int n, int flags)
 {
     return strngrpmatch(
-    b, strlen(b), p, ( ssize_t * )sub, n, flags | STR_INT);
+    b, strlen(b), p, ( ssize_t * ) sub, n, flags | STR_INT);
 }

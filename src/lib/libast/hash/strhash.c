@@ -36,7 +36,7 @@
 unsigned int
 strhash(const char *as)
 {
-    const unsigned char *s = ( const unsigned char * )as;
+    const unsigned char *s = ( const unsigned char * ) as;
     unsigned int i = 0;
     unsigned int c;
 

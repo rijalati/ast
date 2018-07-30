@@ -64,7 +64,7 @@ static int initialized = 0; /* 0 means static structures haven't been
  * Forward declarations for procedures defined in this file:
  */
 
-static void GCInit _ANSI_ARGS_(( void ));
+static void GCInit _ANSI_ARGS_(( void ) );
 
 /*
  *----------------------------------------------------------------------
@@ -114,7 +114,7 @@ XGCValues *valuePtr;
      * part of structure on some systems.
      */
 
-    memset(( VOID * )&valueKey, 0, sizeof(valueKey));
+    memset(( VOID * ) &valueKey, 0, sizeof(valueKey));
 
     /*
      * First, check to see if there's already a GC that will work
@@ -129,7 +129,7 @@ XGCValues *valuePtr;
     if (valueMask & GCPlaneMask) {
         valueKey.values.plane_mask = valuePtr->plane_mask;
     } else {
-        valueKey.values.plane_mask = ( unsigned )~0;
+        valueKey.values.plane_mask = ( unsigned ) ~0;
     }
     if (valueMask & GCForeground) {
         valueKey.values.foreground = valuePtr->foreground;
@@ -240,9 +240,9 @@ XGCValues *valuePtr;
     valueKey.screenNum = Tk_ScreenNumber(tkwin);
     valueKey.depth = Tk_Depth(tkwin);
     valueHashPtr
-    = Tcl_CreateHashEntry(&valueTable, ( char * )&valueKey, &new);
+    = Tcl_CreateHashEntry(&valueTable, ( char * ) &valueKey, &new);
     if (!new) {
-        gcPtr = ( TkGC * )Tcl_GetHashValue(valueHashPtr);
+        gcPtr = ( TkGC * ) Tcl_GetHashValue(valueHashPtr);
         gcPtr->refCount++;
         return gcPtr->gc;
     }
@@ -252,7 +252,7 @@ XGCValues *valuePtr;
      * new GC and add a new structure to the database.
      */
 
-    gcPtr = ( TkGC * )ckalloc(sizeof(TkGC));
+    gcPtr = ( TkGC * ) ckalloc(sizeof(TkGC));
 
     /*
      * Find or make a drawable to use to specify the screen and depth
@@ -281,7 +281,7 @@ XGCValues *valuePtr;
     gcPtr->valueHashPtr = valueHashPtr;
     idKey.display = valueKey.display;
     idKey.gc = gcPtr->gc;
-    idHashPtr = Tcl_CreateHashEntry(&idTable, ( char * )&idKey, &new);
+    idHashPtr = Tcl_CreateHashEntry(&idTable, ( char * ) &idKey, &new);
     if (!new) {
         panic("GC already registered in Tk_GetGC");
     }
@@ -326,18 +326,18 @@ GC gc;                               /* Graphics context to be released. */
 
     idKey.display = display;
     idKey.gc = gc;
-    idHashPtr = Tcl_FindHashEntry(&idTable, ( char * )&idKey);
+    idHashPtr = Tcl_FindHashEntry(&idTable, ( char * ) &idKey);
     if (idHashPtr == NULL) {
         panic("Tk_FreeGC received unknown gc argument");
     }
-    gcPtr = ( TkGC * )Tcl_GetHashValue(idHashPtr);
+    gcPtr = ( TkGC * ) Tcl_GetHashValue(idHashPtr);
     gcPtr->refCount--;
     if (gcPtr->refCount == 0) {
-        Tk_FreeXId(gcPtr->display, ( XID )XGContextFromGC(gcPtr->gc));
+        Tk_FreeXId(gcPtr->display, ( XID ) XGContextFromGC(gcPtr->gc));
         XFreeGC(gcPtr->display, gcPtr->gc);
         Tcl_DeleteHashEntry(gcPtr->valueHashPtr);
         Tcl_DeleteHashEntry(idHashPtr);
-        ckfree(( char * )gcPtr);
+        ckfree(( char * ) gcPtr);
     }
 }
 

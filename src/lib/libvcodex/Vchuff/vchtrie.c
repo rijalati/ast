@@ -76,7 +76,7 @@ ssize_t lev;     /* level in the trie		*/
 
     if ((trie->next + (1 << p)) > trie->trsz) {
         s = trie->next + ((1 << p) < (1 << 8) ? (1 << 8) : (1 << p));
-        if (!(node = ( short * )malloc(2 * s * sizeof(short))))
+        if (!(node = ( short * ) malloc(2 * s * sizeof(short))))
             return -1;
         size = node + s;
         memcpy(node, trie->node, trie->next * sizeof(short));
@@ -151,7 +151,7 @@ Void_t *two;
 Void_t *disc;
 #endif
 {
-    Vcbit_t *o = *(( Vcbit_t ** )one), *t = *(( Vcbit_t ** )two);
+    Vcbit_t *o = *(( Vcbit_t ** ) one), *t = *(( Vcbit_t ** ) two);
     return *o < *t ? -1 : 1;
 }
 
@@ -170,10 +170,10 @@ Vcbit_t *bits; /* array of code bits		*/
     Vchtrie_t *trie;
     Node_t root;
 
-    if (!(sort = ( Vcbit_t ** )malloc(nsym * sizeof(Vcbit_t *))))
+    if (!(sort = ( Vcbit_t ** ) malloc(nsym * sizeof(Vcbit_t *))))
         return NIL(Vchtrie_t *);
 
-    if (!(trie = ( Vchtrie_t * )malloc(sizeof(Vchtrie_t)))) {
+    if (!(trie = ( Vchtrie_t * ) malloc(sizeof(Vchtrie_t)))) {
         free(sort);
         return NIL(Vchtrie_t *);
     }

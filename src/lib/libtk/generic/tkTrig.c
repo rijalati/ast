@@ -402,7 +402,7 @@ double *rectPtr;           /* Rectangular area to check against. */
             if (TkGetMiterPoints(coordPtr,
                                  coordPtr + 2,
                                  coordPtr + 4,
-                                 ( double )width,
+                                 ( double ) width,
                                  poly + 4,
                                  poly + 6)
                 == 0) {
@@ -966,7 +966,7 @@ XPoint *xPointPtr; /* Where to put new points. */
     double u, u2, u3, t, t2, t3;
 
     for (i = 1; i <= numSteps; i++, xPointPtr++) {
-        t = (( double )i) / (( double )numSteps);
+        t = (( double ) i) / (( double ) numSteps);
         t2 = t * t;
         t3 = t2 * t;
         u = 1.0 - t;
@@ -1018,7 +1018,7 @@ double *coordPtr;                               /* Where to put new points. */
     double u, u2, u3, t, t2, t3;
 
     for (i = 1; i <= numSteps; i++, coordPtr += 2) {
-        t = (( double )i) / (( double )numSteps);
+        t = (( double ) i) / (( double ) numSteps);
         t2 = t * t;
         t3 = t2 * t;
         u = 1.0 - t;
@@ -1276,7 +1276,7 @@ int numPoints;      /* Number of points at pointPtr. */
                 control[6],
                 Tk_CanvasPsY(canvas, control[7]));
     }
-    Tcl_AppendResult(interp, buffer, ( char * )NULL);
+    Tcl_AppendResult(interp, buffer, ( char * ) NULL);
 
     /*
      * Cycle through all the remaining points in the curve, generating
@@ -1311,7 +1311,7 @@ int numPoints;      /* Number of points at pointPtr. */
                 Tk_CanvasPsY(canvas, control[5]),
                 control[6],
                 Tk_CanvasPsY(canvas, control[7]));
-        Tcl_AppendResult(interp, buffer, ( char * )NULL);
+        Tcl_AppendResult(interp, buffer, ( char * ) NULL);
     }
 }
 

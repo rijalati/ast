@@ -432,7 +432,7 @@ type(char *file, char *comment)
         if (suffix && strlen(suffix) <= 3)
             for (i = 0; i < sizeof(sufcom) / sizeof(sufcom[0]); i++)
                 if (!strcmp(suffix, sufcom[i].suffix))
-                    return ( char * )sufcom[i].comment;
+                    return ( char * ) sufcom[i].comment;
     }
     return comment;
 }

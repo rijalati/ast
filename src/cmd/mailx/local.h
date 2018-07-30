@@ -142,15 +142,15 @@
 #    if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
 #        define NiL 0
 #    else
-#        define NiL (( char * )0)
+#        define NiL (( char * ) 0)
 #    endif
 
 #    define elementsof(x) (sizeof(x) / sizeof(x[0]))
 #    define newof(p, t, n, x)                                                \
-        ((p) ? ( t * )realloc(( char * )(p), sizeof(t) * (n) + (x))          \
-             : ( t * )calloc(1, sizeof(t) * (n) + (x)))
+        ((p) ? ( t * ) realloc(( char * ) (p), sizeof(t) * (n) + (x))        \
+             : ( t * ) calloc(1, sizeof(t) * (n) + (x)))
 #    ifndef offsetof
-#        define offsetof(type, member) ((size_t) & ((( type * )0)->member))
+#        define offsetof(type, member) ((size_t) & ((( type * ) 0)->member))
 #    endif
 #    define stracmp strcmp
 #    define streq(a, b) (*(a) == *(b) && !strcmp(a, b))

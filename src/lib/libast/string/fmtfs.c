@@ -70,7 +70,7 @@ fmtfs(struct stat *st)
         disc.key = offsetof(Id_t, id);
         disc.size = sizeof(dev_t);
         dict = dtopen(&disc, Dtset);
-    } else if (ip = ( Id_t * )dtmatch(dict, &st->st_dev))
+    } else if (ip = ( Id_t * ) dtmatch(dict, &st->st_dev))
         return ip->name;
     s = FS_default;
     if (mp = mntopen(NiL, "r")) {

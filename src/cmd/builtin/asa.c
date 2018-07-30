@@ -110,7 +110,7 @@ b_asa(int argc, char **argv, Shbltin_t *context)
     Sfio_t *fp;
     int n, reclen = 0;
 
-    cmdinit(argc, argv, ( void * )0, ( const char * )0, 0);
+    cmdinit(argc, argv, ( void * ) 0, ( const char * ) 0, 0);
     while (n = optget(argv, usage))
         switch (n) {
         case 'r':
@@ -125,7 +125,7 @@ b_asa(int argc, char **argv, Shbltin_t *context)
         }
     argv += opt_info.index;
     if (error_info.errors)
-        error(ERROR_usage(2), "%s", optusage(( char * )0));
+        error(ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (cp = *argv)
         argv++;
     do {

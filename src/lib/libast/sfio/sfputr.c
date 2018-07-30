@@ -47,12 +47,12 @@ int rc;                             /* record separator.	*/
     SFLOCK(f, 0);
 
     f->val = sn = -1;
-    ss = ( char * )s;
+    ss = ( char * ) s;
     for (w = 0; (*s || rc >= 0);) { /* need to communicate string size to
                                        exception handler */
         if ((f->flags & SF_STRING) && f->next >= f->endb) {
             sn = sn < 0 ? strlen(s) : (sn - (s - ss));
-            ss = ( char * )s;                /* save current checkpoint */
+            ss = ( char * ) s;               /* save current checkpoint */
             f->val = sn + (rc >= 0 ? 1 : 0); /* space requirement */
             f->bits |= SF_PUTR;              /* tell sfflsbuf to use f->val */
         }
@@ -119,7 +119,7 @@ int rc;                             /* record separator.	*/
 
     /* sync unseekable shared streams */
     if (f->extent < 0 && (f->flags & SF_SHARE))
-        ( void )SFFLSBUF(f, -1);
+        ( void ) SFFLSBUF(f, -1);
 
     /* check for line buffering */
     else if ((f->flags & SF_LINE) && !(f->flags & SF_STRING)
@@ -127,7 +127,7 @@ int rc;                             /* record separator.	*/
         if (n > w)
             n = w;
         f->next -= n;
-        ( void )SFWRITE(f, ( Void_t * )f->next, n);
+        ( void ) SFWRITE(f, ( Void_t * ) f->next, n);
     }
 
     SFOPEN(f, 0);

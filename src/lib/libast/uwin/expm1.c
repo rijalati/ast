@@ -138,7 +138,7 @@ extern double expm1(x) double x;
         if (x >= -40.0) {
 
             /* argument reduction : x - k*ln2 */
-            k = ( int )(invln2 * x) + copysign(0.5, x); /* k=NINT(x/ln2) */
+            k = ( int ) (invln2 * x) + copysign(0.5, x); /* k=NINT(x/ln2) */
             hi = x - k * ln2hi;
             z = hi - (lo = k * ln2lo);
             c = (hi - z) - lo;

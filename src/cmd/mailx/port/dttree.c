@@ -108,7 +108,7 @@ int type;
                     if (disc->freef)
                         (*disc->freef)(dt, OBJ(root, disc), disc);
                     if (disc->link < 0)
-                        (*dt->memoryf)(dt, ( Void_t * )root, 0, disc);
+                        (*dt->memoryf)(dt, ( Void_t * ) root, 0, disc);
                 } while ((root = t));
             }
 
@@ -133,10 +133,10 @@ int type;
 
     /* object and key */
     if (type & DT_MATCH)
-        key = ( char * )obj;
+        key = ( char * ) obj;
     else {
         if (type & DT_RENEW) {
-            me = ( Dtlink_t * )obj;
+            me = ( Dtlink_t * ) obj;
             obj = OBJ(me, disc);
         }
         key = KEY(obj, disc);
@@ -148,15 +148,15 @@ int type;
     if (root && obj != OBJ(root, disc)) {
         do /* top-down splaying */
         {
-            k = ( char * )OBJ(root, disc);
-            k = KEY(( Void_t * )k, disc);
+            k = ( char * ) OBJ(root, disc);
+            k = KEY(( Void_t * ) k, disc);
             if ((cmp = CMP(dt, key, k, disc)) == 0)
                 break;
             else if (cmp < 0) /* left turn */
             {
                 if ((t = root->left)) {
-                    k = ( char * )OBJ(t, disc);
-                    k = KEY(( Void_t * )k, disc);
+                    k = ( char * ) OBJ(t, disc);
+                    k = KEY(( Void_t * ) k, disc);
                     if ((cmp = CMP(dt, key, k, disc)) <= 0) {
                         RROTATE(root, t);
                         if (cmp == 0)
@@ -172,8 +172,8 @@ int type;
             } else /* right turn */
             {
                 if ((t = root->right)) {
-                    k = ( char * )OBJ(t, disc);
-                    k = KEY(( Void_t * )k, disc);
+                    k = ( char * ) OBJ(t, disc);
+                    k = KEY(( Void_t * ) k, disc);
                     if ((cmp = CMP(dt, key, k, disc)) >= 0) {
                         LROTATE(root, t);
                         if (cmp == 0)
@@ -201,7 +201,7 @@ int type;
             if (disc->freef)
                 (*disc->freef)(dt, obj, disc);
             if (disc->link < 0)
-                (*dt->memoryf)(dt, ( Void_t * )root, 0, disc);
+                (*dt->memoryf)(dt, ( Void_t * ) root, 0, disc);
             if ((dt->data->size -= 1) < 0)
                 dt->data->size = -1;
             root = NIL(Dtlink_t *);
@@ -221,7 +221,7 @@ int type;
             if (disc->freef)
                 (*disc->freef)(dt, obj, disc);
             if (disc->link < 0)
-                (*dt->memoryf)(dt, ( Void_t * )me, 0, disc);
+                (*dt->memoryf)(dt, ( Void_t * ) me, 0, disc);
             root = NIL(Dtlink_t *);
         }
     } else { /* not found, finish up LEFT and RIGHT trees */
@@ -238,10 +238,10 @@ int type;
                 obj = (*disc->makef)(dt, obj, disc);
             if (obj) {
                 if (disc->link < 0) {
-                    root = ( Dtlink_t * )(*dt->memoryf)(
+                    root = ( Dtlink_t * ) (*dt->memoryf)(
                     dt, NIL(Void_t *), sizeof(Dthold_t), disc);
                     if (root)
-                        (( Dthold_t * )root)->obj = obj;
+                        (( Dthold_t * ) root)->obj = obj;
                     else if (disc->makef && disc->freef)
                         (*disc->freef)(dt, obj, disc);
                 } else

@@ -48,7 +48,7 @@ coexport(Coshell_t *co, const char *name, const char *value)
             return -1;
         }
     }
-    if (!(ex = ( Coexport_t * )dtmatch(co->export, name))) {
+    if (!(ex = ( Coexport_t * ) dtmatch(co->export, name))) {
         if (!value)
             return 0;
         if (!(ex = vmnewof(co->vm, 0, Coexport_t, 1, strlen(name))))

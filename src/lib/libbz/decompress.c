@@ -98,7 +98,7 @@ makeMaps_d(DState *s)
             if (s->strm->avail_in == 0)                                      \
                 RETURN(BZ_OK);                                               \
             s->bsBuff = (s->bsBuff << 8)                                     \
-                        | ((UInt32)(*(( UChar * )(s->strm->next_in))));      \
+                        | ((UInt32)(*(( UChar * ) (s->strm->next_in))));     \
             s->bsLive += 8;                                                  \
             s->strm->next_in++;                                              \
             s->strm->avail_in--;                                             \
@@ -283,23 +283,23 @@ decompress(DState *s)
 
         s->storedBlockCRC = 0;
         GET_UCHAR(BZ_X_BCRC_1, uc);
-        s->storedBlockCRC = (s->storedBlockCRC << 8) | (( UInt32 )uc);
+        s->storedBlockCRC = (s->storedBlockCRC << 8) | (( UInt32 ) uc);
         GET_UCHAR(BZ_X_BCRC_2, uc);
-        s->storedBlockCRC = (s->storedBlockCRC << 8) | (( UInt32 )uc);
+        s->storedBlockCRC = (s->storedBlockCRC << 8) | (( UInt32 ) uc);
         GET_UCHAR(BZ_X_BCRC_3, uc);
-        s->storedBlockCRC = (s->storedBlockCRC << 8) | (( UInt32 )uc);
+        s->storedBlockCRC = (s->storedBlockCRC << 8) | (( UInt32 ) uc);
         GET_UCHAR(BZ_X_BCRC_4, uc);
-        s->storedBlockCRC = (s->storedBlockCRC << 8) | (( UInt32 )uc);
+        s->storedBlockCRC = (s->storedBlockCRC << 8) | (( UInt32 ) uc);
 
         GET_BITS(BZ_X_RANDBIT, s->blockRandomised, 1);
 
         s->origPtr = 0;
         GET_UCHAR(BZ_X_ORIGPTR_1, uc);
-        s->origPtr = (s->origPtr << 8) | (( Int32 )uc);
+        s->origPtr = (s->origPtr << 8) | (( Int32 ) uc);
         GET_UCHAR(BZ_X_ORIGPTR_2, uc);
-        s->origPtr = (s->origPtr << 8) | (( Int32 )uc);
+        s->origPtr = (s->origPtr << 8) | (( Int32 ) uc);
         GET_UCHAR(BZ_X_ORIGPTR_3, uc);
-        s->origPtr = (s->origPtr << 8) | (( Int32 )uc);
+        s->origPtr = (s->origPtr << 8) | (( Int32 ) uc);
 
         /*--- Receive the mapping table ---*/
         for (i = 0; i < 16; i++) {
@@ -449,13 +449,13 @@ decompress(DState *s)
 
                 if (s->smallDecompress)
                     while (es > 0) {
-                        s->ll16[nblock] = ( UInt16 )uc;
+                        s->ll16[nblock] = ( UInt16 ) uc;
                         nblock++;
                         es--;
                     }
                 else
                     while (es > 0) {
-                        s->tt[nblock] = ( UInt32 )uc;
+                        s->tt[nblock] = ( UInt32 ) uc;
                         nblock++;
                         es--;
                     };
@@ -480,10 +480,10 @@ decompress(DState *s)
                         uc = s->mtfa[pp + nn];
                         while (nn > 3) {
                             Int32 z = pp + nn;
-                            s->mtfa[(z)] = s->mtfa[( z )-1];
-                            s->mtfa[( z )-1] = s->mtfa[( z )-2];
-                            s->mtfa[( z )-2] = s->mtfa[( z )-3];
-                            s->mtfa[( z )-3] = s->mtfa[( z )-4];
+                            s->mtfa[(z)] = s->mtfa[( z ) -1];
+                            s->mtfa[( z ) -1] = s->mtfa[( z ) -2];
+                            s->mtfa[( z ) -2] = s->mtfa[( z ) -3];
+                            s->mtfa[( z ) -3] = s->mtfa[( z ) -4];
                             nn -= 4;
                         }
                         while (nn > 0) {
@@ -632,13 +632,13 @@ decompress(DState *s)
 
         s->storedCombinedCRC = 0;
         GET_UCHAR(BZ_X_CCRC_1, uc);
-        s->storedCombinedCRC = (s->storedCombinedCRC << 8) | (( UInt32 )uc);
+        s->storedCombinedCRC = (s->storedCombinedCRC << 8) | (( UInt32 ) uc);
         GET_UCHAR(BZ_X_CCRC_2, uc);
-        s->storedCombinedCRC = (s->storedCombinedCRC << 8) | (( UInt32 )uc);
+        s->storedCombinedCRC = (s->storedCombinedCRC << 8) | (( UInt32 ) uc);
         GET_UCHAR(BZ_X_CCRC_3, uc);
-        s->storedCombinedCRC = (s->storedCombinedCRC << 8) | (( UInt32 )uc);
+        s->storedCombinedCRC = (s->storedCombinedCRC << 8) | (( UInt32 ) uc);
         GET_UCHAR(BZ_X_CCRC_4, uc);
-        s->storedCombinedCRC = (s->storedCombinedCRC << 8) | (( UInt32 )uc);
+        s->storedCombinedCRC = (s->storedCombinedCRC << 8) | (( UInt32 ) uc);
 
         s->state = BZ_X_IDLE;
         RETURN(BZ_STREAM_END);

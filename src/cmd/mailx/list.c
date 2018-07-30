@@ -656,7 +656,7 @@ addarg(struct argvec *vp, const char *s)
         note(0, "Too many arguments; excess discarded");
         return -1;
     }
-    *vp->argp++ = ( char * )s;
+    *vp->argp++ = ( char * ) s;
     return 0;
 }
 

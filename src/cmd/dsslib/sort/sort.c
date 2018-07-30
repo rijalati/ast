@@ -78,7 +78,7 @@ key(Rs_t *rs,
     size_t keysize,
     Rsdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Rskeyfield_t *field;
     Cxoperand_t r;
     unsigned char *k;
@@ -89,14 +89,14 @@ key(Rs_t *rs,
     for (field = state->sortkey->head; field; field = field->next) {
         if (cxcast(state->cx,
                    &r,
-                   ( Cxvariable_t * )field->user,
+                   ( Cxvariable_t * ) field->user,
                    state->cx->state->type_string,
                    state->data,
                    NiL))
             return -1;
         k += field->coder(state->sortkey,
                           field,
-                          ( unsigned char * )r.value.string.data,
+                          ( unsigned char * ) r.value.string.data,
                           r.value.string.size,
                           k,
                           e);
@@ -112,7 +112,7 @@ rev(Rs_t *rs,
     size_t keysize,
     Rsdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
 
     return state->sortkey->head->coder(
     state->sortkey, state->sortkey->head, data, datasize, key, key + keysize);
@@ -121,7 +121,7 @@ rev(Rs_t *rs,
 static int
 count(Rs_t *rs, int op, void *data, void *arg, Rsdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Rsobj_t *r;
     Rsobj_t *q;
     char *s;
@@ -131,7 +131,7 @@ count(Rs_t *rs, int op, void *data, void *arg, Rsdisc_t *disc)
     case RS_POP:
         break;
     case RS_WRITE:
-        r = ( Rsobj_t * )data;
+        r = ( Rsobj_t * ) data;
         n = 1;
         for (q = r->equal; q; q = q->right)
             n++;
@@ -158,7 +158,7 @@ count(Rs_t *rs, int op, void *data, void *arg, Rsdisc_t *disc)
 static int
 sort_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     int errors = error_info.errors;
     int n;
     int uniq;
@@ -202,7 +202,7 @@ sort_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         case 0:
             break;
         case 'c':
-            state->count = ( size_t )opt_info.number;
+            state->count = ( size_t ) opt_info.number;
             continue;
         case 'u':
             uniq = 1;
@@ -331,8 +331,8 @@ bad:
 static int
 sort_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
-    Dssrecord_t *record = ( Dssrecord_t * )data;
+    State_t *state = ( State_t * ) expr->data;
+    Dssrecord_t *record = ( Dssrecord_t * ) data;
     char *s;
     ssize_t n;
 
@@ -353,7 +353,7 @@ sort_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 static int
 sort_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
     int r;
 
     r = 0;

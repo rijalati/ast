@@ -198,7 +198,7 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
         inChannel = Tcl_GetStdChannel(TCL_STDIN);
         if (inChannel) {
             Tcl_CreateChannelHandler(
-            inChannel, TCL_READABLE, StdinProc, ( ClientData )inChannel);
+            inChannel, TCL_READABLE, StdinProc, ( ClientData ) inChannel);
         }
         if (tty) {
             Prompt(interp, 0);
@@ -266,7 +266,7 @@ int mask;                                                      /* Not used. */
     static int gotPartial = 0;
     char *cmd;
     int code, count;
-    Tcl_Channel chan = ( Tcl_Channel )clientData;
+    Tcl_Channel chan = ( Tcl_Channel ) clientData;
 
     count = Tcl_Gets(chan, &line);
 
@@ -275,7 +275,8 @@ int mask;                                                      /* Not used. */
             if (tty) {
                 Tcl_Exit(0);
             } else {
-                Tcl_DeleteChannelHandler(chan, StdinProc, ( ClientData )chan);
+                Tcl_DeleteChannelHandler(
+                chan, StdinProc, ( ClientData ) chan);
             }
             return;
         } else {
@@ -283,7 +284,7 @@ int mask;                                                      /* Not used. */
         }
     }
 
-    ( void )Tcl_DStringAppend(&command, Tcl_DStringValue(&line), -1);
+    ( void ) Tcl_DStringAppend(&command, Tcl_DStringValue(&line), -1);
     cmd = Tcl_DStringAppend(&command, "\n", -1);
     Tcl_DStringFree(&line);
 
@@ -301,10 +302,10 @@ int mask;                                                      /* Not used. */
      * command being evaluated.
      */
 
-    Tcl_CreateChannelHandler(chan, 0, StdinProc, ( ClientData )chan);
+    Tcl_CreateChannelHandler(chan, 0, StdinProc, ( ClientData ) chan);
     code = Tcl_RecordAndEval(interp, cmd, TCL_EVAL_GLOBAL);
     Tcl_CreateChannelHandler(
-    chan, TCL_READABLE, StdinProc, ( ClientData )chan);
+    chan, TCL_READABLE, StdinProc, ( ClientData ) chan);
     Tcl_DStringFree(&command);
     if (*interp->result != 0) {
         if ((code != TCL_OK) || (tty)) {
@@ -373,7 +374,7 @@ int partial; /* Non-zero means there already
              */
 
             outChannel = Tcl_GetChannel(interp, "stdout", NULL);
-            if (outChannel != ( Tcl_Channel )NULL) {
+            if (outChannel != ( Tcl_Channel ) NULL) {
                 Tcl_Write(outChannel, "% ", 2);
             }
         }
@@ -388,7 +389,7 @@ int partial; /* Non-zero means there already
              */
 
             errChannel = Tcl_GetChannel(interp, "stderr", NULL);
-            if (errChannel != ( Tcl_Channel )NULL) {
+            if (errChannel != ( Tcl_Channel ) NULL) {
                 Tcl_Write(errChannel, interp->result, -1);
                 Tcl_Write(errChannel, "\n", 1);
             }
@@ -396,7 +397,7 @@ int partial; /* Non-zero means there already
         }
     }
     outChannel = Tcl_GetChannel(interp, "stdout", NULL);
-    if (outChannel != ( Tcl_Channel )NULL) {
+    if (outChannel != ( Tcl_Channel ) NULL) {
         Tcl_Flush(outChannel);
     }
 }

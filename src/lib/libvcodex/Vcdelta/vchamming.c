@@ -44,16 +44,16 @@ Void_t **out;
     vc->undone = 0;
 
     /* target data to be transformed */
-    if ((tarsz = ( ssize_t )size) <= 0)
+    if ((tarsz = ( ssize_t ) size) <= 0)
         return tarsz;
-    if (tarsz > 0 && !(tardt = ( Vcchar_t * )data))
+    if (tarsz > 0 && !(tardt = ( Vcchar_t * ) data))
         return -1;
 
     /* source data to diff against */
     disc = vcgetdisc(vc);
-    srcsz = disc ? ( ssize_t )disc->size : 0;
+    srcsz = disc ? ( ssize_t ) disc->size : 0;
     if (srcsz > 0
-        && !(srcdt = disc ? ( Vcchar_t * )disc->data : NIL(Vcchar_t *)))
+        && !(srcdt = disc ? ( Vcchar_t * ) disc->data : NIL(Vcchar_t *)))
         return -1;
 
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), tarsz, 0)))
@@ -78,7 +78,7 @@ Void_t **out;
         vcbuffer(vc, dt, -1, -1);
 
     if (out)
-        *out = ( Void_t * )output;
+        *out = ( Void_t * ) output;
     return tarsz;
 }
 
@@ -103,18 +103,18 @@ Void_t **out;
     vc->undone = 0;
 
     /* retrieve transformed target data */
-    if ((tarsz = ( ssize_t )size) <= 0)
+    if ((tarsz = ( ssize_t ) size) <= 0)
         return tarsz;
-    if (tarsz > 0 && !(tardt = ( Vcchar_t * )data))
+    if (tarsz > 0 && !(tardt = ( Vcchar_t * ) data))
         return -1;
     if (vcrecode(vc, &tardt, &tarsz, 0, 0) < 0)
         return -1;
 
     /* source data to diff against */
     disc = vcgetdisc(vc);
-    srcsz = disc ? ( ssize_t )disc->size : 0;
+    srcsz = disc ? ( ssize_t ) disc->size : 0;
     if (srcsz > 0
-        && !(srcdt = disc ? ( Vcchar_t * )disc->data : NIL(Vcchar_t *)))
+        && !(srcdt = disc ? ( Vcchar_t * ) disc->data : NIL(Vcchar_t *)))
         return -1;
 
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), tarsz, 0)))
@@ -132,7 +132,7 @@ Void_t **out;
     }
 
     if (out)
-        *out = ( Void_t * )output;
+        *out = ( Void_t * ) output;
     return tarsz;
 }
 

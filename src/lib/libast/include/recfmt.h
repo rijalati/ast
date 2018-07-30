@@ -56,7 +56,7 @@ typedef uint32_t Recfmt_t;
 
 #    define REC_V_TYPE(h, o, z, l, i)                                        \
         ((REC_variable << 28) | ((h) << 23) | ((o) << 19)                    \
-         | ((( z )-1) << 18) | ((l) << 17) | ((i) << 16))
+         | ((( z ) -1) << 18) | ((l) << 17) | ((i) << 16))
 #    define REC_V_RECORD(f, s) (((f) & (((1 << 16) - 1) << 16)) | (s))
 #    define REC_V_HEADER(f) (((f) >> 23) & ((1 << 5) - 1))
 #    define REC_V_OFFSET(f) (((f) >> 19) & ((1 << 4) - 1))

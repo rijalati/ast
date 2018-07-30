@@ -47,10 +47,10 @@ static const char usage[]
 #endif
 
 #ifndef minor
-#    define minor(x) ( int )(( x )&0xff)
+#    define minor(x) ( int ) (( x ) &0xff)
 #endif
 #ifndef major
-#    define major(x) ( int )((( unsigned int )(x) >> 8) & 0xff)
+#    define major(x) ( int ) ((( unsigned int ) (x) >> 8) & 0xff)
 #endif
 
 #ifdef S_IFSOCK
@@ -248,7 +248,7 @@ b_fds(int argc, char **argv, Shbltin_t *context)
             sfprintf(sp, "%d\n", i);
             continue;
         }
-        if ((flags = fcntl(i, F_GETFL, ( char * )0)) == -1)
+        if ((flags = fcntl(i, F_GETFL, ( char * ) 0)) == -1)
             m = "--";
         else
             switch (flags & (O_RDONLY | O_WRONLY | O_RDWR)) {
@@ -265,7 +265,7 @@ b_fds(int argc, char **argv, Shbltin_t *context)
                 m = "??";
                 break;
             }
-        x = (fcntl(i, F_GETFD, ( char * )0) > 0) ? "x" : "-";
+        x = (fcntl(i, F_GETFD, ( char * ) 0) > 0) ? "x" : "-";
         if (isatty(i) && (s = ttyname(i))) {
             sfprintf(
             sp, "%02d %s%s %s %s\n", i, m, x, fmtmode(st.st_mode, 0), s);
@@ -274,19 +274,23 @@ b_fds(int argc, char **argv, Shbltin_t *context)
 #ifdef S_IFSOCK
         addrlen = sizeof(addr);
         memset(&addr, 0, addrlen);
-        if (!getsockname(i, ( struct sockaddr * )&addr, ( void * )&addrlen)) {
+        if (!getsockname(
+            i, ( struct sockaddr * ) &addr, ( void * ) &addrlen)) {
             type = 0;
             prot = 0;
 #    ifdef SO_TYPE
             len = sizeof(type);
             if (getsockopt(
-                i, SOL_SOCKET, SO_TYPE, ( void * )&type, ( void * )&len))
+                i, SOL_SOCKET, SO_TYPE, ( void * ) &type, ( void * ) &len))
                 type = -1;
 #    endif
 #    ifdef SO_PROTOTYPE
             len = sizeof(prot);
-            if (getsockopt(
-                i, SOL_SOCKET, SO_PROTOTYPE, ( void * )&prot, ( void * )&len))
+            if (getsockopt(i,
+                           SOL_SOCKET,
+                           SO_PROTOTYPE,
+                           ( void * ) &prot,
+                           ( void * ) &len))
                 prot = -1;
 #    endif
             if (!st.st_mode)
@@ -339,13 +343,13 @@ b_fds(int argc, char **argv, Shbltin_t *context)
                                && family[type].value != addr.sin_family;
                      type++)
                     ;
-                if (!(s = ( char * )family[type].name))
+                if (!(s = ( char * ) family[type].name))
                     sfsprintf(
                     s = num, sizeof(num), "family.%d", addr.sin_family);
             }
             port = 0;
 #    ifdef INET6_ADDRSTRLEN
-            if (a = ( char * )inet_ntop(
+            if (a = ( char * ) inet_ntop(
                 addr.sin_family, &addr.sin_addr, nam, sizeof(nam)))
                 port = ntohs(addr.sin_port);
             else
@@ -355,7 +359,7 @@ b_fds(int argc, char **argv, Shbltin_t *context)
                 port = ntohs(addr.sin_port);
             } else {
                 a = fam;
-                e = (b = ( unsigned char * )&addr) + addrlen;
+                e = (b = ( unsigned char * ) &addr) + addrlen;
                 while (b < e && a < &fam[sizeof(fam) - 1])
                     a += sfsprintf(a, &fam[sizeof(fam)] - a - 1, ".%d", *b++);
                 a = a == fam ? "0" : fam + 1;

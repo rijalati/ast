@@ -25,11 +25,11 @@
 */
 
 typedef struct _rle_s Rle_t;
-typedef ssize_t(*Rle_f) _ARG_(( Rle_t *, int ));
-static ssize_t rle0 _ARG_(( Rle_t *, int ));
-static ssize_t rle1 _ARG_(( Rle_t *, int ));
-static ssize_t rle2 _ARG_(( Rle_t *, int ));
-static ssize_t rleg _ARG_(( Rle_t *, int ));
+typedef ssize_t(*Rle_f) _ARG_(( Rle_t *, int ) );
+static ssize_t rle0 _ARG_(( Rle_t *, int ) );
+static ssize_t rle1 _ARG_(( Rle_t *, int ) );
+static ssize_t rle2 _ARG_(( Rle_t *, int ) );
+static ssize_t rleg _ARG_(( Rle_t *, int ) );
 
 struct _rle_s
 {
@@ -74,12 +74,12 @@ struct _rle_s
 
 /* arguments to select type of run length coder */
 static Vcmtarg_t _Rleargs[]
-= { { "0", "Run-length-encoding: 0-sequences only", ( Void_t * )rle0 },
-    { "1", "Run-length-encoding: 0&1-sequences only", ( Void_t * )rle1 },
+= { { "0", "Run-length-encoding: 0-sequences only", ( Void_t * ) rle0 },
+    { "1", "Run-length-encoding: 0&1-sequences only", ( Void_t * ) rle1 },
     { "2",
       "Run-length-encoding: Alphabet has only two letters",
-      ( Void_t * )rle2 },
-    { 0, "General run-length-encoding", ( Void_t * )rleg } };
+      ( Void_t * ) rle2 },
+    { 0, "General run-length-encoding", ( Void_t * ) rleg } };
 
 /* Encoding 0-run's only. Useful for sequences undergone entropy reduction
    transforms such as Burrows-Wheele + MTF or the column prediction method.
@@ -409,8 +409,8 @@ Void_t **out;
         return 0;
 
     /* input data to encode */
-    rle->ibuf = ( Vcchar_t * )data;
-    rle->isiz = ( ssize_t )size;
+    rle->ibuf = ( Vcchar_t * ) data;
+    rle->isiz = ( ssize_t ) size;
 
     /* size of header in transformed data */
     hd = vcsizeu(size);
@@ -535,7 +535,7 @@ Void_t **out;
         rle->run2 = vciogetc(&io);
     }
 
-    if (!(output = vcbuffer(vc, ( Vcchar_t * )0, sz, 0)))
+    if (!(output = vcbuffer(vc, ( Vcchar_t * ) 0, sz, 0)))
         RETURN(-1);
     rle->obuf = output;
     rle->endo = rle->obuf + sz;
@@ -572,12 +572,12 @@ Void_t **out;
 
     /* free temporary data */
     if (rle->ibuf
-        && (rle->ibuf < ( Vcchar_t * )data
-            || rle->ibuf >= ( Vcchar_t * )data + size))
+        && (rle->ibuf < ( Vcchar_t * ) data
+            || rle->ibuf >= ( Vcchar_t * ) data + size))
         vcbuffer(vc, rle->ibuf, -1, -1);
     if (rle->abuf
-        && (rle->abuf < ( Vcchar_t * )data
-            || rle->abuf >= ( Vcchar_t * )data + size))
+        && (rle->abuf < ( Vcchar_t * ) data
+            || rle->abuf >= ( Vcchar_t * ) data + size))
         vcbuffer(vc, rle->abuf, -1, -1);
 
     if (out)
@@ -599,19 +599,19 @@ Vcchar_t **datap; /* basis string for persistence	*/
     Rle_t *rle = vcgetmtdata(vc, Rle_t *);
 
     for (arg = _Rleargs;; ++arg)
-        if (!arg->name || arg->data == ( Void_t * )rle->rlef)
+        if (!arg->name || arg->data == ( Void_t * ) rle->rlef)
             break;
     if (!arg->name)
         return 0;
 
     n = strlen(arg->name);
     if (!(ident
-          = ( char * )vcbuffer(vc, NIL(Vcchar_t *), sizeof(int) * n + 1, 0)))
+          = ( char * ) vcbuffer(vc, NIL(Vcchar_t *), sizeof(int) * n + 1, 0)))
         RETURN(-1);
     if (!(ident = vcstrcode(arg->name, ident, sizeof(int) * n + 1)))
         RETURN(-1);
     if (datap)
-        *datap = ( Void_t * )ident;
+        *datap = ( Void_t * ) ident;
     return n;
 }
 
@@ -629,11 +629,11 @@ static int rlerestore(mtcd) Vcmtcode_t *mtcd;
         if (!(ident = vcstrcode(arg->name, buf, sizeof(buf))))
             return -1;
         if (mtcd->size == strlen(ident)
-            && strncmp(ident, ( char * )mtcd->data, mtcd->size) == 0)
+            && strncmp(ident, ( char * ) mtcd->data, mtcd->size) == 0)
             break;
     }
     mtcd->coder
-    = vcopen(0, Vcrle, ( Void_t * )arg->name, mtcd->coder, VC_DECODE);
+    = vcopen(0, Vcrle, ( Void_t * ) arg->name, mtcd->coder, VC_DECODE);
     return mtcd->coder ? 1 : -1;
 }
 
@@ -652,7 +652,7 @@ Void_t *params;
     char *data;
 
     if (type == VC_OPENING) {
-        for (arg = NIL(Vcmtarg_t *), data = ( char * )params;
+        for (arg = NIL(Vcmtarg_t *), data = ( char * ) params;
              data && *data;) {
             data = vcgetmtarg(data, 0, 0, _Rleargs, &arg);
             if (arg && arg->name)
@@ -663,9 +663,9 @@ Void_t *params;
                 if (!arg->name)
                     break;
 
-        if (!(rle = ( Rle_t * )calloc(1, sizeof(Rle_t))))
+        if (!(rle = ( Rle_t * ) calloc(1, sizeof(Rle_t))))
             RETURN(-1);
-        rle->rlef = ( Rle_f )arg->data;
+        rle->rlef = ( Rle_f ) arg->data;
 
         vcsetmtdata(vc, rle);
         return 0;
@@ -674,13 +674,13 @@ Void_t *params;
             free(rle);
         return 0;
     } else if (type == VC_EXTRACT) {
-        if (!(mtcd = ( Vcmtcode_t * )params))
+        if (!(mtcd = ( Vcmtcode_t * ) params))
             RETURN(-1);
         if ((mtcd->size = rleextract(vc, &mtcd->data)) < 0)
             RETURN(-1);
         return 1;
     } else if (type == VC_RESTORE) {
-        if (!(mtcd = ( Vcmtcode_t * )params))
+        if (!(mtcd = ( Vcmtcode_t * ) params))
             RETURN(-1);
         return rlerestore(mtcd) < 0 ? -1 : 1;
     }

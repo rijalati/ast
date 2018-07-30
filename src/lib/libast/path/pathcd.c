@@ -62,7 +62,7 @@ vchdir(const char *path)
 int
 pathcd(const char *path, const char *home)
 {
-    char *p = ( char * )path;
+    char *p = ( char * ) path;
     char *s;
     int n;
     int i;
@@ -131,7 +131,7 @@ pathcd(const char *path, const char *home)
          * try to recover back to home
          */
 
-        if (!(p = ( char * )home))
+        if (!(p = ( char * ) home))
             return -1;
         home = 0;
         r = -1;

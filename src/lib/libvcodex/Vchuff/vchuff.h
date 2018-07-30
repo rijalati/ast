@@ -62,10 +62,10 @@ extern Vcmethod_t *Vchuffpart;  /* Huffman with partitioning	*/
 #        define extern __EXPORT__
 #    endif
 
-extern ssize_t vchsize _ARG_(( ssize_t, ssize_t *, ssize_t *, int * ));
-extern ssize_t vchbits _ARG_(( ssize_t, ssize_t *, Vcbit_t * ));
-extern Vchtrie_t *vchbldtrie _ARG_(( ssize_t, ssize_t *, Vcbit_t * ));
-extern Void_t vchdeltrie _ARG_(( Vchtrie_t * ));
+extern ssize_t vchsize _ARG_(( ssize_t, ssize_t *, ssize_t *, int * ) );
+extern ssize_t vchbits _ARG_(( ssize_t, ssize_t *, Vcbit_t * ) );
+extern Vchtrie_t *vchbldtrie _ARG_(( ssize_t, ssize_t *, Vcbit_t * ) );
+extern Void_t vchdeltrie _ARG_(( Vchtrie_t * ) );
 extern ssize_t
 vchgetcode _ARG_((ssize_t, ssize_t *, ssize_t, Vcchar_t *, size_t));
 extern ssize_t

@@ -30,7 +30,7 @@
 #include "make.h"
 #include "options.h"
 
-#define ANON(name, flags) ( void )rinternal(name, P_attribute | (flags))
+#define ANON(name, flags) ( void ) rinternal(name, P_attribute | (flags))
 #define ASOC(field, name, flags) internal.field = rassociate(name, flags)
 #define ATTR(field, name, flags)                                             \
     internal.field = rinternal(name, P_attribute | (flags))
@@ -142,9 +142,9 @@ nametype(const char *name, char **e)
     }
     if ((q & NAME_context) && *s == MARK_CONTEXT) {
         if (e)
-            *e = ( char * )(s + 1);
+            *e = ( char * ) (s + 1);
         if (e)
-            *e = ( char * )(s + 1);
+            *e = ( char * ) (s + 1);
         return NAME_context;
     }
     if (q & NAME_staterule) {
@@ -193,9 +193,9 @@ maprule(char *s, Rule_t *r)
                 1, "%d maprule() calls -- should not happen", UCHAR_MAX + 1);
         }
         while (hashnext(pos)) {
-            q = ( Rule_t * )pos->bucket->value;
+            q = ( Rule_t * ) pos->bucket->value;
             if (q == o)
-                pos->bucket->value = ( char * )r;
+                pos->bucket->value = ( char * ) r;
             for (p = q->prereqs; p; p = p->next)
                 if (p->rule == o)
                     p->rule = r;
@@ -229,7 +229,7 @@ makerule(char *name)
     newrule(r);
     r->name = putrule(0, r);
     if (state.compnew)
-        (*state.compnew)(r->name, ( char * )r, state.comparg);
+        (*state.compnew)(r->name, ( char * ) r, state.comparg);
     if (!name)
         n = nametype(r->name, NiL);
     if (n & (NAME_staterule | NAME_altstate)) {
@@ -517,7 +517,7 @@ getimmediate(Rule_t *r, List_t **prereqs, char **action)
 static int
 reset(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
     Stat_t st;
 
     if (!(r->property & P_state)) {
@@ -667,7 +667,7 @@ immediate(Rule_t *r)
                   prereqs->rule->name);
         else
             compile(prereqs->rule->name,
-                    prereqs->next ? prereqs->next->rule->name : ( char * )0);
+                    prereqs->next ? prereqs->next->rule->name : ( char * ) 0);
     } else if (r == internal.reset) {
         getimmediate(r, &prereqs, &action);
         hashwalk(table.rule, 0, reset, NiL);
@@ -1280,7 +1280,7 @@ rassociate(char *s, int flags)
 static int
 diratom(const char *s, char *v, void *h)
 {
-    Dir_t *d = ( Dir_t * )v;
+    Dir_t *d = ( Dir_t * ) v;
 
     NoP(s);
     NoP(h);
@@ -1397,9 +1397,9 @@ typedef struct Systab_s
 } Systab_t;
 
 static const Systab_t systab[]
-= { "getegid", ( Systab_f )getegid, "geteuid", ( Systab_f )geteuid,
-    "getgid",  ( Systab_f )getgid,  "getpid",  ( Systab_f )getpid,
-    "getppid", ( Systab_f )getppid, "getuid",  ( Systab_f )getuid,
+= { "getegid", ( Systab_f ) getegid, "geteuid", ( Systab_f ) geteuid,
+    "getgid",  ( Systab_f ) getgid,  "getpid",  ( Systab_f ) getpid,
+    "getppid", ( Systab_f ) getppid, "getuid",  ( Systab_f ) getuid,
     { 0 } };
 
 /*
@@ -1415,7 +1415,7 @@ b_syscall(char **args)
         return null;
     sfprintf(internal.val,
              "%d",
-             (call = ( Systab_t * )strlook(systab, sizeof(systab[0]), *args))
+             (call = ( Systab_t * ) strlook(systab, sizeof(systab[0]), *args))
              ? (*call->call)()
              : -1);
     return sfstruse(internal.val);

@@ -77,7 +77,7 @@ default_getenv(const char *name)
         if (*(sp - 1) != *(cp - 1))
             continue;
         if (*sp == 0 && *cp == '=')
-            return ( char * )(cp + 1);
+            return ( char * ) (cp + 1);
     }
     return 0;
 }
@@ -103,7 +103,7 @@ getenv(const char *name)
     if (!posix_getenv) {
         if (dll = GetModuleHandle("posix.dll"))
             posix_getenv
-            = ( char *( * )( const char * ))GetProcAddress(dll, "getenv");
+            = ( char *( * ) ( const char * ) ) GetProcAddress(dll, "getenv");
         if (!posix_getenv)
             posix_getenv = default_getenv;
     }

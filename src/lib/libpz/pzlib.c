@@ -39,7 +39,7 @@ pzlib(Pz_t *pz, const char *name, int ignore)
     if (id = strrchr(state.id, ':'))
         id++;
     else
-        id = ( char * )state.id;
+        id = ( char * ) state.id;
 
     /*
      * see if the dll is already loaded
@@ -54,7 +54,7 @@ pzlib(Pz_t *pz, const char *name, int ignore)
 
         if (!(dll = newof(0, Pzdll_t, 1, strlen(name) + 1)))
             return -1;
-        dll->name = strcpy(( char * )(dll + 1), name);
+        dll->name = strcpy(( char * ) (dll + 1), name);
         dll->next = state.dll;
         state.dll = dll;
         if (ignore)
@@ -82,7 +82,7 @@ pzlib(Pz_t *pz, const char *name, int ignore)
          */
 
         sfsprintf(buf, sizeof(buf), "%s_init", id);
-        if (!(dll->initf = ( Pzinit_f )dlllook(dll->dll, buf))) {
+        if (!(dll->initf = ( Pzinit_f ) dlllook(dll->dll, buf))) {
             if (pz->disc && pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz,

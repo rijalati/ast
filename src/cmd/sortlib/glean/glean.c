@@ -130,8 +130,8 @@ save(Vmalloc_t *vm, Data_t *p, void *data, size_t len)
 static int
 gleancmp(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 {
-    Category_t *x = ( Category_t * )a;
-    Category_t *y = ( Category_t * )b;
+    Category_t *x = ( Category_t * ) a;
+    Category_t *y = ( Category_t * ) b;
 
     message((-4,
              "gleancmp a:%d:%-.*s: b:%d:%-.*s:",
@@ -157,14 +157,14 @@ fmtdata(void *data, size_t size)
 
     s = b = fmtbuf(2 * size + 1);
     for (i = 0; i < size; i++)
-        s += sfsprintf(s, 3, "%02x", (( unsigned char * )data)[i]);
+        s += sfsprintf(s, 3, "%02x", (( unsigned char * ) data)[i]);
     return b;
 }
 
 static int
 glean(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Rsobj_t *r;
     Category_t *p;
     Field_t *f;
@@ -191,11 +191,11 @@ glean(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         vmclose(state->vm);
         return 0;
     case RS_READ:
-        r = ( Rsobj_t * )data;
+        r = ( Rsobj_t * ) data;
         x.key.data = r->key;
         x.key.len = r->keylen;
         if (state->categories
-            && !(p = ( Category_t * )dtsearch(state->categories, &x))
+            && !(p = ( Category_t * ) dtsearch(state->categories, &x))
             || !state->categories && !(p = state->all)) {
             if (!(p = vmnewof(state->vm,
                               0,
@@ -209,7 +209,7 @@ glean(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
             p->index = ++state->index;
             p->key.len = r->keylen;
             p->key.data
-            = ( char * )(p + 1) + (state->fields - 1) * sizeof(Data_t);
+            = ( char * ) (p + 1) + (state->fields - 1) * sizeof(Data_t);
             memcpy(p->key.data, r->key, r->keylen);
             if (state->categories)
                 dtinsert(state->categories, p);
@@ -356,7 +356,7 @@ rs_disc(Rskey_t *key, const char *options)
                     if (!(f = vmnewof(vm, 0, Field_t, 1, 0))
                         || !(f->lim = rskeyopen(&state->kydisc, NiL)))
                         error(ERROR_SYSTEM | 3, "out of space");
-                    strcpy(( char * )f->lim->tab, ( char * )key->tab);
+                    strcpy(( char * ) f->lim->tab, ( char * ) key->tab);
                     f->lim->type = key->type;
                     f->mm = i;
                     f->index = state->fields++;

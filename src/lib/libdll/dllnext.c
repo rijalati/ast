@@ -77,18 +77,18 @@ _dll_next(int flags, _DLL_RLD_SYM_TYPE *here)
 
 #    if DEBUG
     if (getenv("DLL_DEBUG")
-        && (vp = ( char * )_rld_new_interface(_RLD_FIRST_PATHNAME))) {
+        && (vp = ( char * ) _rld_new_interface(_RLD_FIRST_PATHNAME))) {
         do {
             if (strcmp(vp, "MAIN") && (lp = dllopen(vp, flags))) {
-                if (xr = ( Write_f )dlsym(lp, "write"))
+                if (xr = ( Write_f ) dlsym(lp, "write"))
                     wr = xr;
             }
-        } while (vp = ( char * )_rld_new_interface(_RLD_NEXT_PATHNAME));
+        } while (vp = ( char * ) _rld_new_interface(_RLD_NEXT_PATHNAME));
     }
 #    endif
-    if (vp = ( char * )_rld_new_interface(_RLD_FIRST_PATHNAME)) {
+    if (vp = ( char * ) _rld_new_interface(_RLD_FIRST_PATHNAME)) {
         do {
-            if (lp = dllopen(strcmp(vp, "MAIN") ? vp : ( char * )0, flags)) {
+            if (lp = dllopen(strcmp(vp, "MAIN") ? vp : ( char * ) 0, flags)) {
                 if (found) {
                     b = e = 0;
                     s = vp;
@@ -140,7 +140,7 @@ _dll_next(int flags, _DLL_RLD_SYM_TYPE *here)
                         buf,
                         sfsprintf(buf, sizeof(buf), "dll: skip %s\n", vp));
 #    endif
-                } else if (( _DLL_RLD_SYM_TYPE * )dlsym(lp, _DLL_RLD_SYM_STR)
+                } else if (( _DLL_RLD_SYM_TYPE * ) dlsym(lp, _DLL_RLD_SYM_STR)
                            == here) {
 #    if DEBUG
                     if (wr)
@@ -152,7 +152,7 @@ _dll_next(int flags, _DLL_RLD_SYM_TYPE *here)
                     found = 1;
                 }
             }
-        } while (vp = ( char * )_rld_new_interface(_RLD_NEXT_PATHNAME));
+        } while (vp = ( char * ) _rld_new_interface(_RLD_NEXT_PATHNAME));
     }
     return dllnext(flags);
 }

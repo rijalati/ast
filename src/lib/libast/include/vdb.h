@@ -39,8 +39,8 @@
 #    define VDB_DELIMITER ';'
 #    define VDB_IGNORE '_'
 #    define VDB_FIXED 10
-#    define VDB_LENGTH (( int )sizeof(VDB_DIRECTORY) + 2 * (VDB_FIXED + 1))
-#    define VDB_OFFSET (( int )sizeof(VDB_DIRECTORY))
+#    define VDB_LENGTH (( int ) sizeof(VDB_DIRECTORY) + 2 * (VDB_FIXED + 1))
+#    define VDB_OFFSET (( int ) sizeof(VDB_DIRECTORY))
 #    define VDB_SIZE (VDB_OFFSET + VDB_FIXED + 1)
 
 #endif

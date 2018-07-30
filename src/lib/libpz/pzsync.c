@@ -50,11 +50,11 @@ pzsync(Pz_t *pz)
         pp = pz->part;
         if (pz->flags & PZ_SORT) {
             pz->flags &= ~PZ_SORT;
-            elt = ( Pzelt_t * )dtfirst(pz->sort.order);
+            elt = ( Pzelt_t * ) dtfirst(pz->sort.order);
             n = pp->row;
             while (elt && pzwrite(pz, op, elt->buf, n) == n) {
                 old = elt;
-                elt = ( Pzelt_t * )dtnext(pz->sort.order, elt);
+                elt = ( Pzelt_t * ) dtnext(pz->sort.order, elt);
                 dtdelete(pz->sort.order, old);
                 dtinsert(pz->sort.free, old);
             }

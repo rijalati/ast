@@ -746,21 +746,21 @@ static void
 form_int16(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
 {
     sfprintf(
-    op, fp->form, ( int16_t )swapget(state->swap, u, fp->size.external));
+    op, fp->form, ( int16_t ) swapget(state->swap, u, fp->size.external));
 }
 
 static void
 form_int32(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
 {
     sfprintf(
-    op, fp->form, ( int32_t )swapget(state->swap, u, fp->size.external));
+    op, fp->form, ( int32_t ) swapget(state->swap, u, fp->size.external));
 }
 
 static void
 form_intmax(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
 {
     sfprintf(
-    op, fp->form, ( intmax_t )swapget(state->swap, u, fp->size.external));
+    op, fp->form, ( intmax_t ) swapget(state->swap, u, fp->size.external));
 }
 
 static void
@@ -773,21 +773,21 @@ static void
 form_uint16(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
 {
     sfprintf(
-    op, fp->form, ( uint16_t )swapget(state->swap, u, fp->size.external));
+    op, fp->form, ( uint16_t ) swapget(state->swap, u, fp->size.external));
 }
 
 static void
 form_uint32(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
 {
     sfprintf(
-    op, fp->form, ( uint32_t )swapget(state->swap, u, fp->size.external));
+    op, fp->form, ( uint32_t ) swapget(state->swap, u, fp->size.external));
 }
 
 static void
 form_uintmax(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
 {
     sfprintf(
-    op, fp->form, ( uintmax_t )swapget(state->swap, u, fp->size.external));
+    op, fp->form, ( uintmax_t ) swapget(state->swap, u, fp->size.external));
 }
 
 static void
@@ -862,7 +862,7 @@ format(State_t *state, char *t)
         xp = 0;
         if (isdigit(*t)) {
             c = 0;
-            n = ( int )strton(t, &e, NiL, 1);
+            n = ( int ) strton(t, &e, NiL, 1);
             t = e;
         } else {
             c = isupper(*t) ? *t++ : 0;
@@ -937,7 +937,7 @@ format(State_t *state, char *t)
         if (!(fp->fun = tp->fun)) {
             e = fp->form;
             *e++ = '%';
-            if (s = ( char * )tp->fill)
+            if (s = ( char * ) tp->fill)
                 while (*e = *s++)
                     e++;
             e += sfsprintf(
@@ -951,7 +951,7 @@ format(State_t *state, char *t)
                                "%s.%d",
                                prec ? "" : ".",
                                base);
-            if (s = ( char * )zp->qual)
+            if (s = ( char * ) zp->qual)
                 while (*e = *s++)
                     e++;
             *e = zp->map ? zp->map : tp->name;
@@ -1023,7 +1023,7 @@ init(State_t *state, char ***p)
         if (state->buffer.size)
             sfsetbuf(ip, state->buffer.base, state->buffer.size);
         if (state->skip) {
-            if ((offset = sfseek(ip, ( off_t )0, SEEK_END)) > 0) {
+            if ((offset = sfseek(ip, ( off_t ) 0, SEEK_END)) > 0) {
                 if (offset <= state->skip) {
                     state->skip -= offset;
                     state->offset += offset;
@@ -1089,13 +1089,13 @@ block(State_t *state, Sfio_t *op, char *bp, char *ep, intmax_t base)
             else
                 sfprintf(op, "%-*.*s ", BASE_WIDTH, BASE_WIDTH, "");
         }
-        u = ( unsigned char * )bp;
+        u = ( unsigned char * ) bp;
         for (;;) {
             z = fp->per - fp->width;
             while (z-- > 0)
                 sfputc(op, ' ');
             (*fp->fun)(state, fp, op, u);
-            if ((u += fp->size.external) < ( unsigned char * )ep)
+            if ((u += fp->size.external) < ( unsigned char * ) ep)
                 sfputc(op, ' ');
             else {
                 if (state->printable && fp == state->form) {
@@ -1108,8 +1108,8 @@ block(State_t *state, Sfio_t *op, char *bp, char *ep, intmax_t base)
                         sfprintf(op, "%*s", c, "");
                     sfputc(op, ' ');
                     if (state->mbmax)
-                        for (u = ( unsigned char * )bp;
-                             u < ( unsigned char * )ep;
+                        for (u = ( unsigned char * ) bp;
+                             u < ( unsigned char * ) ep;
                              u++) {
                             if (state->mbp) {
                                 state->mbp--;
@@ -1129,8 +1129,8 @@ block(State_t *state, Sfio_t *op, char *bp, char *ep, intmax_t base)
                             }
                         }
                     else
-                        for (u = ( unsigned char * )bp;
-                             u < ( unsigned char * )ep;) {
+                        for (u = ( unsigned char * ) bp;
+                             u < ( unsigned char * ) ep;) {
                             if ((c = ccmapchr(state->map, *u++)) < 040
                                 || c >= 0177)
                                 c = '.';
@@ -1184,7 +1184,7 @@ od(State_t *state, char **files)
                     break;
                 }
             }
-        state->eob = ( unsigned char * )s + n;
+        state->eob = ( unsigned char * ) s + n;
         if (state->count) {
             if (state->total >= state->count) {
                 s = 0;
@@ -1211,7 +1211,7 @@ od(State_t *state, char **files)
                 while (m--)
                     *span++ = 0;
             }
-            state->eob = ( unsigned char * )span;
+            state->eob = ( unsigned char * ) span;
             if ((m = span - state->span) > state->block)
                 m = state->block;
             if (block(
@@ -1627,7 +1627,7 @@ b_od(int argc, char **argv, Shbltin_t *context)
     }
     if (*state.base && !state.strings) {
         *(state.base + strlen(state.base) - 1) = '\n';
-        sfprintf(sfstdout, state.base, ( intmax_t )state.offset);
+        sfprintf(sfstdout, state.base, ( intmax_t ) state.offset);
     }
     if (sfsync(sfstdout) && !ERROR_PIPE(errno))
         error(ERROR_SYSTEM | 2, "write error");

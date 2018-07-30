@@ -256,7 +256,7 @@ int port;
     }
     if ((fd = csbind("tcp", addr, port, 0)) < 0)
         return NULL;
-    if (!(nFile = ( NetFile * )malloc(sizeof(NetFile))))
+    if (!(nFile = ( NetFile * ) malloc(sizeof(NetFile))))
         return NULL;
     nFile->socket = fd;
     nFile->head = 0;

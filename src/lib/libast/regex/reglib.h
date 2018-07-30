@@ -129,7 +129,7 @@ typedef struct regsubop_s
 #    define REX_WORD 43             /* word boundary		*/
 #    define REX_WORD_NOT 44         /* not word boundary		*/
 
-#    define T_META (( int )UCHAR_MAX + 1)
+#    define T_META (( int ) UCHAR_MAX + 1)
 #    define T_STAR (T_META + 0)
 #    define T_PLUS (T_META + 1)
 #    define T_QUES (T_META + 2)
@@ -176,9 +176,9 @@ typedef struct regsubop_s
 
 #    define HIT SSIZE_MAX
 
-#    define bitclr(p, c) ((p)[(c) >> 3] &= (~(1 << (( c )&07))))
-#    define bitset(p, c) ((p)[(c) >> 3] |= (1 << (( c )&07)))
-#    define bittst(p, c) ((p)[(c) >> 3] & (1 << (( c )&07)))
+#    define bitclr(p, c) ((p)[(c) >> 3] &= (~(1 << (( c ) &07))))
+#    define bitset(p, c) ((p)[(c) >> 3] |= (1 << (( c ) &07)))
+#    define bittst(p, c) ((p)[(c) >> 3] & (1 << (( c ) &07)))
 
 #    define setadd(p, c) bitset((p)->bits, c)
 #    define setclr(p, c) bitclr((p)->bits, c)

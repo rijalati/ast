@@ -33,8 +33,8 @@ ptvrebit(Ptv_t *a, int m)
     Ptvprefix_t *ap;
 
     if (b = ptvopen(a->disc, a->size))
-        for (ap = ( Ptvprefix_t * )dtfirst(a->dict); ap;
-             ap = ( Ptvprefix_t * )dtnext(a->dict, ap))
+        for (ap = ( Ptvprefix_t * ) dtfirst(a->dict); ap;
+             ap = ( Ptvprefix_t * ) dtnext(a->dict, ap))
             if (!ptvinsert(b,
                            ptvmin(a->size, b->r[0], ap->min, m),
                            ptvmin(a->size, b->r[1], ap->max, m))) {

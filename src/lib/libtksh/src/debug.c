@@ -25,7 +25,7 @@ __dprintfLevel()
 void
 __dprintfInterp(Tcl_Interp *interp)
 {
-    debugInterp = ( Interp * )interp;
+    debugInterp = ( Interp * ) interp;
 }
 
 int

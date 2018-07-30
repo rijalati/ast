@@ -48,10 +48,10 @@ tmain()
 
     if (write(fd, buf, sizeof(buf)) != sizeof(buf))
         terror("Writing to file");
-    if (lseek(fd, ( off_t )0, 0) < 0)
+    if (lseek(fd, ( off_t ) 0, 0) < 0)
         terror("Seeking back to origin");
 
-    if (!(f = sfnew(( Sfio_t * )0, buf, sizeof(buf), fd, SF_WRITE)))
+    if (!(f = sfnew(( Sfio_t * ) 0, buf, sizeof(buf), fd, SF_WRITE)))
         terror("Making stream");
 
     if (!(s = sfreserve(f, SF_UNBOUND, SF_LOCKR)) || s != buf)
@@ -82,7 +82,7 @@ tmain()
         terror("sfreserve2 returns the wrong pointer");
     sfwrite(f, s, 0);
 
-    if (sfsetbuf(f, NIL(Void_t *), ( size_t )SF_UNBOUND) != buf)
+    if (sfsetbuf(f, NIL(Void_t *), ( size_t ) SF_UNBOUND) != buf)
         terror("sfsetbuf didnot returns last buffer");
 
     sfsetbuf(f, buf, sizeof(buf));

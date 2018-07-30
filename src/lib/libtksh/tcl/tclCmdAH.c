@@ -51,7 +51,7 @@ char **argv;        /* Argument strings. */
 {
     if (argc != 1) {
         Tcl_AppendResult(
-        interp, "wrong # args: should be \"", argv[0], "\"", ( char * )NULL);
+        interp, "wrong # args: should be \"", argv[0], "\"", ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_BREAK;
@@ -91,7 +91,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " string ?in? patList body ... ?default body?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     string = argv[1];
@@ -166,7 +166,7 @@ char **argv;        /* Argument strings. */
                 break;
             }
         }
-        ckfree(( char * )patArgv);
+        ckfree(( char * ) patArgv);
         if (j < patArgc) {
             break;
         }
@@ -194,7 +194,7 @@ match:
 
 cleanup:
     if (splitArgs) {
-        ckfree(( char * )caseArgv);
+        ckfree(( char * ) caseArgv);
     }
     return result;
 }
@@ -229,7 +229,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " command ?varName?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     result = Tcl_Eval(interp, argv[1]);
@@ -277,7 +277,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " dirName\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -351,7 +351,7 @@ char **argv;        /* Argument strings. */
 {
     if (argc != 1) {
         Tcl_AppendResult(
-        interp, "wrong # args: should be \"", argv[0], "\"", ( char * )NULL);
+        interp, "wrong # args: should be \"", argv[0], "\"", ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_CONTINUE;
@@ -380,14 +380,14 @@ Tcl_Interp *interp; /* Current interpreter. */
 int argc;           /* Number of arguments. */
 char **argv;        /* Argument strings. */
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
 
     if ((argc < 2) || (argc > 4)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
                          " message ?errorInfo? ?errorCode?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if ((argc >= 3) && (argv[2][0] != 0)) {
@@ -396,7 +396,7 @@ char **argv;        /* Argument strings. */
     }
     if (argc == 4) {
         Tcl_SetVar2(
-        interp, "errorCode", ( char * )NULL, argv[3], TCL_GLOBAL_ONLY);
+        interp, "errorCode", ( char * ) NULL, argv[3], TCL_GLOBAL_ONLY);
         iPtr->flags |= ERROR_CODE_SET;
     }
     Tcl_SetResult(interp, argv[1], TCL_VOLATILE);
@@ -434,7 +434,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " arg ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (argc == 2) {
@@ -488,7 +488,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " ?returnCode?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (argc == 1) {
@@ -532,7 +532,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " arg ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -586,7 +586,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option name ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -616,7 +616,7 @@ char **argv;        /* Argument strings. */
 
         Tcl_SplitPath(fileName, &pargc, &pargv);
         if ((pargc == 1) && (*fileName == '~')) {
-            ckfree(( char * )pargv);
+            ckfree(( char * ) pargv);
             fileName = Tcl_TranslateFileName(interp, fileName, &buffer);
             if (fileName == NULL) {
                 result = TCL_ERROR;
@@ -646,7 +646,7 @@ char **argv;        /* Argument strings. */
         } else {
             Tcl_SetResult(interp, pargv[0], TCL_VOLATILE);
         }
-        ckfree(( char * )pargv);
+        ckfree(( char * ) pargv);
         goto done;
     } else if ((c == 't') && (strncmp(argv[1], "tail", length) == 0)
                && (length >= 2)) {
@@ -667,7 +667,7 @@ char **argv;        /* Argument strings. */
 
         Tcl_SplitPath(fileName, &pargc, &pargv);
         if ((pargc == 1) && (*fileName == '~')) {
-            ckfree(( char * )pargv);
+            ckfree(( char * ) pargv);
             fileName = Tcl_TranslateFileName(interp, fileName, &buffer);
             if (fileName == NULL) {
                 result = TCL_ERROR;
@@ -688,7 +688,7 @@ char **argv;        /* Argument strings. */
                 Tcl_SetResult(interp, pargv[pargc - 1], TCL_VOLATILE);
             }
         }
-        ckfree(( char * )pargv);
+        ckfree(( char * ) pargv);
         goto done;
     } else if ((c == 'r') && (strncmp(argv[1], "rootname", length) == 0)
                && (length >= 2)) {
@@ -750,7 +750,7 @@ char **argv;        /* Argument strings. */
         for (i = 0; i < pargc; i++) {
             Tcl_AppendElement(interp, pargvList[i]);
         }
-        ckfree(( char * )pargvList);
+        ckfree(( char * ) pargvList);
         goto done;
     } else if ((c == 'j') && (strncmp(argv[1], "join", length) == 0)) {
         Tcl_JoinPath(argc - 2, argv + 2, &buffer);
@@ -819,7 +819,7 @@ char **argv;        /* Argument strings. */
         if (stat(fileName, &statBuf) == -1) {
             goto badStat;
         }
-        sprintf(interp->result, "%ld", ( long )statBuf.st_atime);
+        sprintf(interp->result, "%ld", ( long ) statBuf.st_atime);
         goto done;
     } else if ((c == 'i') && (strncmp(argv[1], "isdirectory", length) == 0)
                && (length >= 3)) {
@@ -841,7 +841,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " lstat name varName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -852,7 +852,7 @@ char **argv;        /* Argument strings. */
                              argv[2],
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -866,7 +866,7 @@ char **argv;        /* Argument strings. */
         if (stat(fileName, &statBuf) == -1) {
             goto badStat;
         }
-        sprintf(interp->result, "%ld", ( long )statBuf.st_mtime);
+        sprintf(interp->result, "%ld", ( long ) statBuf.st_mtime);
         goto done;
     } else if ((c == 'o') && (strncmp(argv[1], "owned", length) == 0)) {
         if (argc != 3) {
@@ -904,7 +904,7 @@ char **argv;        /* Argument strings. */
                              argv[2],
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -920,7 +920,7 @@ char **argv;        /* Argument strings. */
         if (stat(fileName, &statBuf) == -1) {
             goto badStat;
         }
-        sprintf(interp->result, "%lu", ( unsigned long )statBuf.st_size);
+        sprintf(interp->result, "%lu", ( unsigned long ) statBuf.st_size);
         goto done;
     } else if ((c == 's') && (strncmp(argv[1], "stat", length) == 0)
                && (length >= 2)) {
@@ -929,7 +929,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " stat name varName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -941,7 +941,7 @@ char **argv;        /* Argument strings. */
                              argv[2],
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -956,7 +956,7 @@ char **argv;        /* Argument strings. */
         if (lstat(fileName, &statBuf) == -1) {
             goto badStat;
         }
-        interp->result = GetTypeFromMode(( int )statBuf.st_mode);
+        interp->result = GetTypeFromMode(( int ) statBuf.st_mode);
         goto done;
     } else {
         Tcl_AppendResult(
@@ -968,7 +968,7 @@ char **argv;        /* Argument strings. */
         "lstat, mtime, owned, pathtype, readable, readlink, ",
         "root, size, split, stat, tail, type, ",
         "or writable",
-        ( char * )NULL);
+        ( char * ) NULL);
         result = TCL_ERROR;
         goto done;
     }
@@ -1013,7 +1013,7 @@ not3Args:
                      " ",
                      argv[1],
                      " name\"",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     result = TCL_ERROR;
     goto done;
 }
@@ -1046,52 +1046,52 @@ struct stat *statPtr; /* Pointer to buffer containing
 {
     char string[30];
 
-    sprintf(string, "%ld", ( long )statPtr->st_dev);
+    sprintf(string, "%ld", ( long ) statPtr->st_dev);
     if (Tcl_SetVar2(interp, varName, "dev", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%ld", ( long )statPtr->st_ino);
+    sprintf(string, "%ld", ( long ) statPtr->st_ino);
     if (Tcl_SetVar2(interp, varName, "ino", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%ld", ( long )statPtr->st_mode);
+    sprintf(string, "%ld", ( long ) statPtr->st_mode);
     if (Tcl_SetVar2(interp, varName, "mode", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%ld", ( long )statPtr->st_nlink);
+    sprintf(string, "%ld", ( long ) statPtr->st_nlink);
     if (Tcl_SetVar2(interp, varName, "nlink", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%ld", ( long )statPtr->st_uid);
+    sprintf(string, "%ld", ( long ) statPtr->st_uid);
     if (Tcl_SetVar2(interp, varName, "uid", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%ld", ( long )statPtr->st_gid);
+    sprintf(string, "%ld", ( long ) statPtr->st_gid);
     if (Tcl_SetVar2(interp, varName, "gid", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%lu", ( unsigned long )statPtr->st_size);
+    sprintf(string, "%lu", ( unsigned long ) statPtr->st_size);
     if (Tcl_SetVar2(interp, varName, "size", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%ld", ( long )statPtr->st_atime);
+    sprintf(string, "%ld", ( long ) statPtr->st_atime);
     if (Tcl_SetVar2(interp, varName, "atime", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%ld", ( long )statPtr->st_mtime);
+    sprintf(string, "%ld", ( long ) statPtr->st_mtime);
     if (Tcl_SetVar2(interp, varName, "mtime", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%ld", ( long )statPtr->st_ctime);
+    sprintf(string, "%ld", ( long ) statPtr->st_ctime);
     if (Tcl_SetVar2(interp, varName, "ctime", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
@@ -1099,7 +1099,7 @@ struct stat *statPtr; /* Pointer to buffer containing
     if (Tcl_SetVar2(interp,
                     varName,
                     "type",
-                    GetTypeFromMode(( int )statPtr->st_mode),
+                    GetTypeFromMode(( int ) statPtr->st_mode),
                     TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
@@ -1174,7 +1174,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " start test next command\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -1269,7 +1269,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " varList list ?varList list ...? command\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -1283,18 +1283,18 @@ char **argv;        /* Argument strings. */
 
     numLists = (argc - 2) / 2;
     if (numLists > STATIC_SIZE) {
-        index = ( int * )ckalloc(numLists * sizeof(int));
-        varcList = ( int * )ckalloc(numLists * sizeof(int));
-        varvList = ( char *** )ckalloc(numLists * sizeof(char **));
-        argcList = ( int * )ckalloc(numLists * sizeof(int));
-        argvList = ( char *** )ckalloc(numLists * sizeof(char **));
+        index = ( int * ) ckalloc(numLists * sizeof(int));
+        varcList = ( int * ) ckalloc(numLists * sizeof(int));
+        varvList = ( char *** ) ckalloc(numLists * sizeof(char **));
+        argcList = ( int * ) ckalloc(numLists * sizeof(int));
+        argvList = ( char *** ) ckalloc(numLists * sizeof(char **));
     }
     for (i = 0; i < numLists; i++) {
         index[i] = 0;
         varcList[i] = 0;
-        varvList[i] = ( char ** )NULL;
+        varvList[i] = ( char ** ) NULL;
         argcList[i] = 0;
-        argvList[i] = ( char ** )NULL;
+        argvList[i] = ( char ** ) NULL;
     }
 
     /*
@@ -1339,7 +1339,7 @@ char **argv;        /* Argument strings. */
                                      "couldn't set loop variable: \"",
                                      varvList[i][v],
                                      "\"",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     result = TCL_ERROR;
                     goto errorReturn;
                 }
@@ -1369,19 +1369,19 @@ char **argv;        /* Argument strings. */
     }
 errorReturn:
     for (i = 0; i < numLists; i++) {
-        if (argvList[i] != ( char ** )NULL) {
-            ckfree(( char * )argvList[i]);
+        if (argvList[i] != ( char ** ) NULL) {
+            ckfree(( char * ) argvList[i]);
         }
-        if (varvList[i] != ( char ** )NULL) {
-            ckfree(( char * )varvList[i]);
+        if (varvList[i] != ( char ** ) NULL) {
+            ckfree(( char * ) varvList[i]);
         }
     }
     if (numLists > STATIC_SIZE) {
-        ckfree(( char * )index);
-        ckfree(( char * )varcList);
-        ckfree(( char * )argcList);
-        ckfree(( char * )varvList);
-        ckfree(( char * )argvList);
+        ckfree(( char * ) index);
+        ckfree(( char * ) varcList);
+        ckfree(( char * ) argcList);
+        ckfree(( char * ) varvList);
+        ckfree(( char * ) argvList);
     }
 #undef STATIC_SIZE
     return result;
@@ -1471,7 +1471,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " formatString ?arg arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     argIndex = 2;
@@ -1630,7 +1630,7 @@ char **argv;        /* Argument strings. */
         case 'u':
         case 'x':
         case 'X':
-            if (Tcl_GetInt(interp, argv[argIndex], ( int * )&intValue)
+            if (Tcl_GetInt(interp, argv[argIndex], ( int * ) &intValue)
                 != TCL_OK) {
                 goto fmtError;
             }
@@ -1642,7 +1642,7 @@ char **argv;        /* Argument strings. */
             size = strlen(argv[argIndex]);
             break;
         case 'c':
-            if (Tcl_GetInt(interp, argv[argIndex], ( int * )&intValue)
+            if (Tcl_GetInt(interp, argv[argIndex], ( int * ) &intValue)
                 != TCL_OK) {
                 goto fmtError;
             }
@@ -1689,9 +1689,9 @@ char **argv;        /* Argument strings. */
             int newSpace;
 
             newSpace = 2 * (dstSize + size);
-            newDst = ( char * )ckalloc(( unsigned )newSpace + 1);
+            newDst = ( char * ) ckalloc(( unsigned ) newSpace + 1);
             if (dstSize != 0) {
-                memcpy(( VOID * )newDst, ( VOID * )dst, ( size_t )dstSize);
+                memcpy(( VOID * ) newDst, ( VOID * ) dst, ( size_t ) dstSize);
             }
             if (dstSpace != TCL_RESULT_SIZE) {
                 ckfree(dst);
@@ -1701,7 +1701,7 @@ char **argv;        /* Argument strings. */
         }
         if (noPercent) {
             memcpy(
-            ( VOID * )(dst + dstSize), ( VOID * )ptrValue, ( size_t )size);
+            ( VOID * ) (dst + dstSize), ( VOID * ) ptrValue, ( size_t ) size);
             dstSize += size;
             dst[dstSize] = 0;
         } else {
@@ -1709,7 +1709,7 @@ char **argv;        /* Argument strings. */
                 sprintf(dst + dstSize, newFormat, doubleValue);
             } else if (whichValue == INT_VALUE) {
                 if (useShort) {
-                    sprintf(dst + dstSize, newFormat, ( short )intValue);
+                    sprintf(dst + dstSize, newFormat, ( short ) intValue);
                 } else {
                     sprintf(dst + dstSize, newFormat, intValue);
                 }

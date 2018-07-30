@@ -78,7 +78,7 @@
 #    define reg register
 #endif
 #ifndef NIL
-#    define NIL(type) (( type )0)
+#    define NIL(type) (( type ) 0)
 #endif
 
 #ifndef UCHAR_MAX
@@ -88,7 +88,7 @@
 #    define UINT_MAX ((uint)(~0))
 #endif
 #ifndef INT_MAX
-#    define INT_MAX (( int )(UINT_MAX >> 1))
+#    define INT_MAX (( int ) (UINT_MAX >> 1))
 #endif
 
 /* splay tree operations */
@@ -110,21 +110,21 @@
             reg ulong h = 0;                                                 \
             switch (obj->keylen) {                                           \
             default:                                                         \
-                h = (( ulong )k[7]);                                         \
+                h = (( ulong ) k[7]);                                        \
             case 7:                                                          \
-                h |= (( ulong )k[6]) << (1 * CHAR_BIT);                      \
+                h |= (( ulong ) k[6]) << (1 * CHAR_BIT);                     \
             case 6:                                                          \
-                h |= (( ulong )k[5]) << (2 * CHAR_BIT);                      \
+                h |= (( ulong ) k[5]) << (2 * CHAR_BIT);                     \
             case 5:                                                          \
-                h |= (( ulong )k[4]) << (3 * CHAR_BIT);                      \
+                h |= (( ulong ) k[4]) << (3 * CHAR_BIT);                     \
             case 4:                                                          \
-                h |= (( ulong )k[3]) << (4 * CHAR_BIT);                      \
+                h |= (( ulong ) k[3]) << (4 * CHAR_BIT);                     \
             case 3:                                                          \
-                h |= (( ulong )k[2]) << (5 * CHAR_BIT);                      \
+                h |= (( ulong ) k[2]) << (5 * CHAR_BIT);                     \
             case 2:                                                          \
-                h |= (( ulong )k[1]) << (6 * CHAR_BIT);                      \
+                h |= (( ulong ) k[1]) << (6 * CHAR_BIT);                     \
             case 1:                                                          \
-                h |= (( ulong )k[0]) << (7 * CHAR_BIT);                      \
+                h |= (( ulong ) k[0]) << (7 * CHAR_BIT);                     \
             case 0:                                                          \
                 obj->order = h;                                              \
             }                                                                \
@@ -213,10 +213,11 @@ _END_EXTERNS_
 #endif
 
 #define RSNOTIFY(r, o, v, x, d)                                              \
-    ((r->events & o) ? rsnotify(r, o, ( Void_t * )v, ( Void_t * )x, d) : (0))
+    ((r->events & o) ? rsnotify(r, o, ( Void_t * ) v, ( Void_t * ) x, d)     \
+                     : (0))
 
 #define rsnotify _rs_notify
 
-extern int rsnotify _ARG_(( Rs_t *, int, Void_t *, Void_t *, Rsdisc_t * ));
+extern int rsnotify _ARG_(( Rs_t *, int, Void_t *, Void_t *, Rsdisc_t * ) );
 
 #endif /*_RSHDR_H*/

@@ -40,7 +40,7 @@ version_t *vp;
     sbuf = dbuf = tbuf = NULL;
     ap = rp->ap;
     if (vp->tp == NULL) {
-        vp->tp = tp = ( tag_t * )malloc(sizeof(tag_t));
+        vp->tp = tp = ( tag_t * ) malloc(sizeof(tag_t));
 
         TOBEGIN(rp->fd);
 
@@ -67,20 +67,20 @@ version_t *vp;
         tp = vp->tp;
 
     /* get the base */
-    ( void )TOBASE(rp->fd, ap);
+    ( void ) TOBASE(rp->fd, ap);
     nsrc = ap->basesize;
-    if ((sbuf = ( char * )malloc(nsrc)) == NULL
+    if ((sbuf = ( char * ) malloc(nsrc)) == NULL
         || sfread(rp->fd, sbuf, nsrc) != nsrc
         || !(fsrc = sfnew(NULL, sbuf, nsrc, -1, SF_STRING | SF_READ))) {
         rserrno = ERRBASE;
         goto ERR_EXIT;
     }
-    ( void )sfseek(fsrc, 0L, 0);
+    ( void ) sfseek(fsrc, 0L, 0);
 
     if (ISBASE(tp)) {
         sfmove(fsrc, vp->fd, -1, -1);
         sfclose(fsrc);
-        free(( char * )sbuf);
+        free(( char * ) sbuf);
         vp->tp = tp;
         message((1, "check out from the base"));
         return (0);
@@ -88,7 +88,7 @@ version_t *vp;
 
     /* get the delta */
     len = tp->dsize;
-    if (((dbuf = ( char * )malloc(len)) == NULL)
+    if (((dbuf = ( char * ) malloc(len)) == NULL)
         || sfseek(rp->fd, tp->del, 0) != tp->del
         || sfread(rp->fd, dbuf, len) != len
         || !(fdel = sfnew(NULL, dbuf, len, -1, SF_STRING | SF_READ))) {
@@ -96,17 +96,17 @@ version_t *vp;
         goto ERR_EXIT;
     }
     /* get sizes */
-    ( void )TOBEGIN(fdel);
+    ( void ) TOBEGIN(fdel);
     if (sfread(fdel, magic, 4) != 4 || sfgetc(fdel) < 0
         || (nsrc = sfgetu(fdel)) < 0 || (ntar = sfgetu(fdel)) < 0) {
         rserrno = ERRDELTA;
         goto ERR_EXIT;
     }
-    ( void )TOBEGIN(fdel);
+    ( void ) TOBEGIN(fdel);
 
 
     /* set buffer for target */
-    tbuf = ( char * )malloc(ntar);
+    tbuf = ( char * ) malloc(ntar);
     if (!(rtar = sfnew(NULL, tbuf, ntar, -1, SF_STRING | SF_READ))
         || !(wtar = sfnew(NULL, tbuf, ntar, -1, SF_STRING | SF_WRITE))) {
         rserrno = NOMEM;
@@ -124,19 +124,19 @@ version_t *vp;
     sfclose(fdel);
     sfclose(rtar);
     sfclose(fsrc);
-    free(( char * )dbuf);
-    free(( char * )sbuf);
-    free(( char * )tbuf);
+    free(( char * ) dbuf);
+    free(( char * ) sbuf);
+    free(( char * ) tbuf);
 
     return (0);
 
 ERR_EXIT:
     if (dbuf)
-        free(( char * )dbuf);
+        free(( char * ) dbuf);
     if (sbuf)
-        free(( char * )sbuf);
+        free(( char * ) sbuf);
     if (tbuf)
-        free(( char * )tbuf);
+        free(( char * ) tbuf);
     if (fdel)
         sfclose(fdel);
     if (rtar)

@@ -205,7 +205,7 @@ ndfsreadlink(const char *path, char *buf, size_t bufsiz)
     SETFSOWNER;
     if (*++path == 0)
         path = ".";
-    pp = ( char * )path;
+    pp = ( char * ) path;
 
     utilisspecialpid(fuse_get_context()->pid, &pf);
     if (NDFS_HASFLAG_OFF(pf))
@@ -215,7 +215,7 @@ ndfsreadlink(const char *path, char *buf, size_t bufsiz)
         return -ENOENT;
 
     if ((n = strlen(path)) >= 3) {
-        s = ( char * )path + strlen(path);
+        s = ( char * ) path + strlen(path);
         if (s[-1] == '.' && s[-2] == '.' && s[-3] == '.'
             && (n == 3 || s[-4] == '/')) {
             if (n == 3) {
@@ -356,7 +356,7 @@ ndfsaccess(const char *path, int mask)
     SETFSOWNER;
     if (*++path == 0)
         path = ".";
-    pp = ( char * )path;
+    pp = ( char * ) path;
 
     utilisspecialpid(fuse_get_context()->pid, &pf);
     if (NDFS_HASFLAG_OFF(pf))
@@ -389,7 +389,7 @@ ndfsgetattr(const char *path, struct stat *stp)
     SETFSOWNER;
     if (*++path == 0)
         path = ".";
-    pp = ( char * )path;
+    pp = ( char * ) path;
 
     utilisspecialpid(fuse_get_context()->pid, &pf);
     if (NDFS_HASFLAG_OFF(pf))
@@ -417,7 +417,7 @@ ndfsgetattr(const char *path, struct stat *stp)
     }
 
     if ((n = strlen(path)) >= 3) {
-        s = ( char * )path + strlen(path);
+        s = ( char * ) path + strlen(path);
         if (s[-1] == '.' && s[-2] == '.' && s[-3] == '.'
             && (n == 3 || s[-4] == '/')) {
             if (n == 3) {
@@ -456,7 +456,7 @@ ndfsfgetattr(const char *path, struct stat *stp, struct fuse_file_info *fip)
 {
     Ndfsfile_t *fp;
 
-    fp = ( Ndfsfile_t * )fip->fh;
+    fp = ( Ndfsfile_t * ) fip->fh;
     log(LOG(2, "ndfsfgetattr"), "getattr %s %d", path, fp->fd);
     SETFSOWNER;
 
@@ -483,7 +483,7 @@ ndfsopendir(const char *path, struct fuse_file_info *fip)
     SETFSOWNER;
     if (*++path == 0)
         path = ".";
-    pp = ( char * )path;
+    pp = ( char * ) path;
 
     utilisspecialpid(fuse_get_context()->pid, &pf);
     if (NDFS_HASFLAG_OFF(pf))
@@ -509,7 +509,7 @@ doit:
         vmfree(ndfs.vm, fp);
         return -errno;
     }
-    fip->fh = ( unsigned long )fp;
+    fip->fh = ( unsigned long ) fp;
     return 0;
 }
 
@@ -526,7 +526,7 @@ ndfsreaddir(const char *path,
     struct stat st;
     int pf;
 
-    fp = ( Ndfsfile_t * )fip->fh;
+    fp = ( Ndfsfile_t * ) fip->fh;
     log(LOG(2, "ndfsreaddir"), "readdir %s %d %ld", path, fp->fd, off);
     SETFSOWNER;
     if (*++path == 0)
@@ -544,7 +544,7 @@ ndfsreaddir(const char *path,
         if (utilgetbottomfile(path, p1) == -1)
             pp = NULL;
         LOCK(ndfs.mutex);
-        if (utilinitdir(fp, ( char * )path, pp) == -1) {
+        if (utilinitdir(fp, ( char * ) path, pp) == -1) {
             UNLOCK(ndfs.mutex);
             return -ENOENT;
         }
@@ -559,7 +559,7 @@ ndfsreaddir(const char *path,
     for (;;) {
         if (off == fp->u.d.dirinfopn)
             break;
-        dip = fp->u.d.dirinfops[( int )off];
+        dip = fp->u.d.dirinfops[( int ) off];
         memset(&st, 0, sizeof(struct stat));
         st.st_ino = dip->ino;
         st.st_mode = dip->type << 12; /* must check this */
@@ -575,7 +575,7 @@ ndfsreleasedir(const char *path, struct fuse_file_info *fip)
 {
     Ndfsfile_t *fp;
 
-    fp = ( Ndfsfile_t * )fip->fh;
+    fp = ( Ndfsfile_t * ) fip->fh;
     log(LOG(2, "ndfsreleasedir"), "releasedir %s %d", path, fp->fd);
     SETFSOWNER;
 
@@ -621,7 +621,7 @@ doit:
         vmfree(ndfs.vm, fp);
         return -errno;
     }
-    fip->fh = ( unsigned long )fp;
+    fip->fh = ( unsigned long ) fp;
     return 0;
 }
 
@@ -636,7 +636,7 @@ ndfsopen(const char *path, struct fuse_file_info *fip)
     SETFSOWNER;
     if (*++path == 0)
         path = ".";
-    pp = ( char * )path;
+    pp = ( char * ) path;
 
     utilisspecialpid(fuse_get_context()->pid, &pf);
     if (NDFS_HASFLAG_OFF(pf))
@@ -655,7 +655,7 @@ ndfsopen(const char *path, struct fuse_file_info *fip)
             fp->type = NDFS_ISREG;
             fp->fd = -1;
             fp->u.r.flags = NDFS_FLAG_OFF;
-            fip->fh = ( unsigned long )fp;
+            fip->fh = ( unsigned long ) fp;
             return 0;
         }
         return -ENOENT;
@@ -682,7 +682,7 @@ doit:
         vmfree(ndfs.vm, fp);
         return -errno;
     }
-    fip->fh = ( unsigned long )fp;
+    fip->fh = ( unsigned long ) fp;
     return 0;
 }
 
@@ -691,7 +691,7 @@ ndfsflush(const char *path, struct fuse_file_info *fip)
 {
     Ndfsfile_t *fp;
 
-    fp = ( Ndfsfile_t * )fip->fh;
+    fp = ( Ndfsfile_t * ) fip->fh;
     log(LOG(2, "ndfsflush"), "flush %s %d", path, fp->fd);
     SETFSOWNER;
 
@@ -709,7 +709,7 @@ ndfsrelease(const char *path, struct fuse_file_info *fip)
 {
     Ndfsfile_t *fp;
 
-    fp = ( Ndfsfile_t * )fip->fh;
+    fp = ( Ndfsfile_t * ) fip->fh;
     log(LOG(2, "ndfsrelease"), "release %s %d", path, fp->fd);
     SETFSOWNER;
 
@@ -733,7 +733,7 @@ ndfsread(const char *path,
     int ret;
 
     SETFSOWNER;
-    fp = ( Ndfsfile_t * )fip->fh;
+    fp = ( Ndfsfile_t * ) fip->fh;
     if (fp->type == NDFS_ISREG && fp->u.r.flags)
         return -EIO;
 
@@ -753,7 +753,7 @@ ndfswrite(const char *path,
     int ret;
 
     SETFSOWNER;
-    fp = ( Ndfsfile_t * )fip->fh;
+    fp = ( Ndfsfile_t * ) fip->fh;
     if (fp->type == NDFS_ISREG && fp->u.r.flags)
         return -EIO;
 
@@ -795,7 +795,7 @@ ndfsftruncate(const char *path, off_t off, struct fuse_file_info *fip)
 {
     Ndfsfile_t *fp;
 
-    fp = ( Ndfsfile_t * )fip->fh;
+    fp = ( Ndfsfile_t * ) fip->fh;
     log(LOG(2, "ndfsftruncate"), "ftruncate %s %d %ld", path, fp->fd, off);
     SETFSOWNER;
 
@@ -813,7 +813,7 @@ ndfsfsync(const char *path, int flag, struct fuse_file_info *fip)
 {
     Ndfsfile_t *fp;
 
-    fp = ( Ndfsfile_t * )fip->fh;
+    fp = ( Ndfsfile_t * ) fip->fh;
     log(LOG(2, "ndfsync"), "fsync %s %d %d", path, fp->fd, flag);
     SETFSOWNER;
 
@@ -845,7 +845,7 @@ ndfsioctl(const char *path,
 {
     Ndfsfile_t *fp;
 
-    fp = ( Ndfsfile_t * )fip->fh;
+    fp = ( Ndfsfile_t * ) fip->fh;
     log(LOG(2, "ndfsioctl"), "ioctl %s %d %d", path, fp->fd, cmd);
     SETFSOWNER;
     if (*++path == 0)

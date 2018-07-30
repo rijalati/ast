@@ -143,7 +143,7 @@ identf_lsar_lsa_file(Dssfile_t *fp, void *data, size_t size, Dssdisc_t *disc)
         }
         return 0;
     }
-    mrt_hdr = ( mrt_hdr_t * )data;
+    mrt_hdr = ( mrt_hdr_t * ) data;
     if (ntohs(mrt_hdr->type) != MRT_TYPE_PROTO_OSPFv2) {
         if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(NULL,
@@ -200,7 +200,7 @@ open_lsar_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
         /* Create 'lsar_lsa_state_t' object and store it in 'fp->data'. */
         MD_CALLOC(fp->data, void *, 1, sizeof(lsar_lsa_state_t));
         ASSERT(fp->data);
-        state_p = ( lsar_lsa_state_t * )(fp->data);
+        state_p = ( lsar_lsa_state_t * ) (fp->data);
 
         /*
          * Allocate space to store LSU packet in '*state_p'.
@@ -228,7 +228,7 @@ close_lsar_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
 #if 0
 	sfprintf(sfstderr, "close_lsar_lsa_file() file: %s\n", fp->path);
 #endif
-    state_p = ( lsar_lsa_state_t * )(fp->data);
+    state_p = ( lsar_lsa_state_t * ) (fp->data);
     if (!state_p) {
         return -1;
     }
@@ -268,7 +268,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     ASSERT(fp);
     ASSERT(rp);
     ASSERT(disc);
-    state_p = ( lsar_lsa_state_t * )(fp->data);
+    state_p = ( lsar_lsa_state_t * ) (fp->data);
     ASSERT(state_p);
     lsa_can_p = &(state_p->lsa_can);
 
@@ -322,7 +322,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
 
         /* Got a valid record */
         state_p->valid_rec = TRUE;
-        lsu_pkt_p = ( ospf_lsu_pkt_t * )(state_p->lsu_pkt_p);
+        lsu_pkt_p = ( ospf_lsu_pkt_t * ) (state_p->lsu_pkt_p);
         state_p->no_lsas = NTOH_LSU_NO_LSAS(lsu_pkt_p->pkt_lsu_no_lsas);
         if ((state_p->no_lsas) <= 0) {
 
@@ -338,7 +338,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     init_lsa_can(lsa_can_p);
     mrt_hdr_p = &(state_p->mrt_hdr);
     lsar_lsu_hdr_p = &(state_p->lsar_lsu_hdr);
-    lsu_pkt_p = ( ospf_lsu_pkt_t * )(state_p->lsu_pkt_p);
+    lsu_pkt_p = ( ospf_lsu_pkt_t * ) (state_p->lsu_pkt_p);
     lsap = state_p->lsap;
 
     /* Start storing '*lsap' in '*lsa_can_p' */
@@ -372,7 +372,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
 			 lsa_can_p->lsa_seq,
 			 lsa_can_p->lsa_len);
 #endif
-    instp = ((( uint8_t * )lsap) + (lsa_can_p->lsa_len));
+    instp = ((( uint8_t * ) lsap) + (lsa_can_p->lsa_len));
     switch (*instp) {
     case STAT_NEW_LSA:
         lsa_can_p->lsa_inst_type = LSA_INST_NEW;
@@ -422,7 +422,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     lsa_data_len = lsa_can_p->lsa_len - sizeof(ospf_lsa_hdr_t);
     calloc_lsa_can_data(lsa_can_p, lsa_data_len);
     memcpy(lsa_can_p->lsa_data_p,
-           ((( uint8_t * )lsap) + sizeof(ospf_lsa_hdr_t)),
+           ((( uint8_t * ) lsap) + sizeof(ospf_lsa_hdr_t)),
            lsa_data_len);
 
     /*
@@ -431,8 +431,8 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
      */
     state_p->no_lsas_processed++;
     state_p->lsap
-    = ( ospf_lsa_t * )((( uint8_t * )lsap) + (lsa_can_p->lsa_len)
-                       + sizeof(uint32_t));
+    = ( ospf_lsa_t * ) ((( uint8_t * ) lsap) + (lsa_can_p->lsa_len)
+                        + sizeof(uint32_t));
     if ((state_p->no_lsas_processed) >= (state_p->no_lsas)) {
         init_lsar_state_rec(state_p);
     }

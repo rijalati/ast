@@ -62,13 +62,13 @@ pzread(Pz_t *pz, void *buf, size_t z)
         ob = pz->wrk;
         w = -1;
     } else {
-        ob = ( unsigned char * )buf;
+        ob = ( unsigned char * ) buf;
         om = ob + n;
     }
     if (pz->flags & PZ_FORCE) {
         if (writef) {
             m = pz->part->row;
-            if (!(ob = ( unsigned char * )sfreserve(pz->io, m, 0))) {
+            if (!(ob = ( unsigned char * ) sfreserve(pz->io, m, 0))) {
                 if (sfvalue(pz->io)) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(
@@ -83,7 +83,7 @@ pzread(Pz_t *pz, void *buf, size_t z)
                 return -1;
             w = (z / n) * n;
             while ((w -= n) > 0) {
-                if (!(ob = ( unsigned char * )sfreserve(pz->io, m, 0))) {
+                if (!(ob = ( unsigned char * ) sfreserve(pz->io, m, 0))) {
                     if (sfvalue(pz->io)) {
                         if (pz->disc->errorf)
                             (*pz->disc->errorf)(
@@ -95,7 +95,7 @@ pzread(Pz_t *pz, void *buf, size_t z)
                 if ((n = (*writef)(pz, pz->str, ob, pz->disc)) <= 0)
                     return -1;
             }
-            return ( ssize_t )sfstrtell(pz->str);
+            return ( ssize_t ) sfstrtell(pz->str);
         } else
             return sfread(pz->io, buf, n);
     }
@@ -118,13 +118,14 @@ pzread(Pz_t *pz, void *buf, size_t z)
                 if ((k = sfgetc(pz->io)) == PZ_MARK_PART) {
                     if ((m = sfgetu(pz->io)) && !sferror(pz->io)
                         && !sfeof(pz->io)
-                        && (x = ( unsigned char * )sfreserve(pz->io, m, 0))) {
+                        && (x
+                            = ( unsigned char * ) sfreserve(pz->io, m, 0))) {
                         r = om - ob;
                         if (m > r) {
                             sfungetc(pz->io, 0);
                             memcpy(ob, x, r);
                             pz->prefix.count = m - r;
-                            pz->prefix.data = ( char * )x + r;
+                            pz->prefix.data = ( char * ) x + r;
                             return z;
                         }
                         memcpy(ob, x, m);
@@ -226,6 +227,6 @@ pzread(Pz_t *pz, void *buf, size_t z)
         pz->rs.hi = 0;
     }
 done:
-    return writef ? ( ssize_t )sfstrtell(pz->str)
-                  : (ob - ( unsigned char * )buf);
+    return writef ? ( ssize_t ) sfstrtell(pz->str)
+                  : (ob - ( unsigned char * ) buf);
 }

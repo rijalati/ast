@@ -85,7 +85,7 @@ int type;       /* encoding or decoding		*/
     rcrd = tbl->fld[f].rcrd; /* records being processed */
 
     /* temp space for sorting */
-    if (!(vtmp = ( ssize_t * )malloc(2 * tbl->recn * sizeof(ssize_t))))
+    if (!(vtmp = ( ssize_t * ) malloc(2 * tbl->recn * sizeof(ssize_t))))
         err_return(-1);
 
     flen = 0;
@@ -109,7 +109,7 @@ int type;       /* encoding or decoding		*/
         vect = tbl->fld[f].vect;
         clsz = vtmp + tbl->recn;
 
-        if (!(cldt = ( int * )malloc(tbl->recn * sizeof(int))))
+        if (!(cldt = ( int * ) malloc(tbl->recn * sizeof(int))))
             err_return(-1);
         for (r = 0; r < tbl->recn; ++r) {
             cldt[r] = 0; /* data for a column while being decoded */
@@ -130,7 +130,7 @@ int type;       /* encoding or decoding		*/
     }
 
     /* start with the entire range */
-    if (!(csort = ( Sort_t * )malloc(sizeof(Sort_t))))
+    if (!(csort = ( Sort_t * ) malloc(sizeof(Sort_t))))
         err_return(-1);
     csort->next = NIL(Sort_t *);
     csort->vect = vect;
@@ -250,7 +250,7 @@ int type;       /* encoding or decoding		*/
                 for (r = freq[-1], c = cmin; c <= cmax; r = freq[c], c += 1) {
                     if ((freq[c] - r) <= 1)
                         continue;
-                    if (!(nv = ( Sort_t * )malloc(sizeof(Sort_t))))
+                    if (!(nv = ( Sort_t * ) malloc(sizeof(Sort_t))))
                         err_return(-1);
                     nv->vect = so->vect + r;
                     nv->size = freq[c] - r;
@@ -268,7 +268,7 @@ int type;       /* encoding or decoding		*/
 
     if (type == VC_DECODE) /* turn data from column-major to row-major */
     {
-        if (!(rdt = ( Vcchar_t * )malloc(tbl->parz)))
+        if (!(rdt = ( Vcchar_t * ) malloc(tbl->parz)))
             err_return(-1);
         if (tbl->fld[f].data)
             free(tbl->fld[f].data);

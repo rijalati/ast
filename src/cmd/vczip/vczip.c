@@ -150,8 +150,8 @@ USAGE_LICENSE
 static int
 optmethod(Void_t *obj, char *name, char *desc, Void_t *handle)
 {
-    Sfio_t *sp = ( Sfio_t * )handle;
-    Vcmethod_t *mt = ( Vcmethod_t * )obj;
+    Sfio_t *sp = ( Sfio_t * ) handle;
+    Vcmethod_t *mt = ( Vcmethod_t * ) obj;
     int i;
 
     sfprintf(sp, "[+%s?", name);
@@ -180,7 +180,7 @@ optmethod(Void_t *obj, char *name, char *desc, Void_t *handle)
 static int
 optalias(Void_t *obj, char *name, char *desc, Void_t *handle)
 {
-    Sfio_t *sp = ( Sfio_t * )handle;
+    Sfio_t *sp = ( Sfio_t * ) handle;
 
     sfprintf(sp, "[+%s?Equivalent to \b%s\b.]", name, desc);
     return 0;
@@ -189,7 +189,7 @@ optalias(Void_t *obj, char *name, char *desc, Void_t *handle)
 static int
 optfname(Void_t *obj, char *pattern, char *transform, Void_t *handle)
 {
-    Sfio_t *sp = ( Sfio_t * )handle;
+    Sfio_t *sp = ( Sfio_t * ) handle;
 
     sfprintf(sp,
              "[+%s?File name pattern match encoding method \b%s\b.]",
@@ -201,7 +201,7 @@ optfname(Void_t *obj, char *pattern, char *transform, Void_t *handle)
 static int
 optwindow(Void_t *obj, char *name, char *desc, Void_t *handle)
 {
-    Sfio_t *sp = ( Sfio_t * )handle;
+    Sfio_t *sp = ( Sfio_t * ) handle;
 
     sfprintf(sp, "[+%s?", name);
     optesc(sp, desc, 0);
@@ -300,7 +300,7 @@ apply(int action,
      */
 
     if (!input || streq(input, "-") || streq(input, devstdin)) {
-        input = ( char * )devstdin;
+        input = ( char * ) devstdin;
         ip = sfstdin, sfopen(ip, NiL, "rb");
         flags |= VC_cat;
     } else if (!(ip = sfopen(NiL, input, "rb"))) {
@@ -359,7 +359,7 @@ apply(int action,
         }
     }
     if (!output || streq(output, "-") || streq(output, devstdout)) {
-        output = ( char * )devstdout;
+        output = ( char * ) devstdout;
         op = sfstdout, sfopen(op, NiL, "wb");
     }
     sfset(op, SF_SHARE, 0);
@@ -405,7 +405,8 @@ apply(int action,
             unsigned char *e;
 
             if (data.buf) {
-                for (e = (u = ( unsigned char * )data.buf) + data.size; u < e;
+                for (e = (u = ( unsigned char * ) data.buf) + data.size;
+                     u < e;
                      u++)
                     sfprintf(sfstderr, "%02x", *u);
                 sfprintf(sfstderr, "\n");
@@ -487,7 +488,7 @@ main(int argc, char **argv)
     for (;;) {
         switch (optget(argv, usage)) {
         case 'b':
-            bufsize = ( size_t )opt_info.number;
+            bufsize = ( size_t ) opt_info.number;
             continue;
         case 'c':
             action = VC_DECODE;
@@ -519,7 +520,7 @@ main(int argc, char **argv)
             codexdisc.window = opt_info.arg;
             continue;
         case 'D':
-            error_info.trace = -( int )opt_info.num;
+            error_info.trace = -( int ) opt_info.num;
             continue;
         case ':':
             error(2, "%s", opt_info.arg);

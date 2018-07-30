@@ -49,7 +49,7 @@ r_comarg(Shell_t *, struct comnod *);
 
 static Sfio_t *infile;
 
-#define getnode(s, type) (( Shnode_t * )stkalloc((s), sizeof(struct type)))
+#define getnode(s, type) (( Shnode_t * ) stkalloc((s), sizeof(struct type)))
 
 Shnode_t *
 sh_trestore(Shell_t *shp, Sfio_t *in)
@@ -80,7 +80,7 @@ r_tree(Shell_t *shp)
     case TCOM:
         t = getnode(shp->stk, comnod);
         t->tre.tretyp = type;
-        r_comarg(shp, ( struct comnod * )t);
+        r_comarg(shp, ( struct comnod * ) t);
         break;
     case TSETIO:
     case TFORK:
@@ -97,7 +97,7 @@ r_tree(Shell_t *shp)
         break;
     case TWH:
         t = getnode(shp->stk, whnod);
-        t->wh.whinc = ( struct arithnod * )r_tree(shp);
+        t->wh.whinc = ( struct arithnod * ) r_tree(shp);
         t->wh.whtre = r_tree(shp);
         t->wh.dotre = r_tree(shp);
         break;
@@ -124,7 +124,7 @@ r_tree(Shell_t *shp)
             t->for_.forline = sfgetu(infile);
         t->for_.fortre = r_tree(shp);
         t->for_.fornam = r_string(shp->stk);
-        t->for_.forlst = ( struct comnod * )r_tree(shp);
+        t->for_.forlst = ( struct comnod * ) r_tree(shp);
         break;
     case TSW:
         t = getnode(shp->stk, swnod);
@@ -148,19 +148,19 @@ r_tree(Shell_t *shp)
         t->funct.functnam = r_string(shp->stk);
         savstak = stakcreate(STAK_SMALL);
         savstak = stakinstall(savstak, 0);
-        slp = ( struct slnod * )stkalloc(
+        slp = ( struct slnod * ) stkalloc(
         shp->stk, sizeof(struct slnod) + sizeof(struct functnod));
         slp->slchild = 0;
         slp->slnext = shp->st.staklist;
         shp->st.staklist = 0;
-        fp = ( struct functnod * )(slp + 1);
+        fp = ( struct functnod * ) (slp + 1);
         memset(fp, 0, sizeof(*fp));
         fp->functtyp = TFUN | FAMP;
         if (shp->st.filename)
             fp->functnam = stkcopy(shp->stk, shp->st.filename);
         t->funct.functtre = r_tree(shp);
         t->funct.functstak = slp;
-        t->funct.functargs = ( struct comnod * )r_tree(shp);
+        t->funct.functargs = ( struct comnod * ) r_tree(shp);
         slp->slptr = stakinstall(savstak, 0);
         slp->slchild = shp->st.staklist;
         break;
@@ -171,9 +171,9 @@ r_tree(Shell_t *shp)
         if ((type & TPAREN) == TPAREN)
             t->lst.lstlef = r_tree(shp);
         else {
-            t->lst.lstlef = ( Shnode_t * )r_arg(shp);
+            t->lst.lstlef = ( Shnode_t * ) r_arg(shp);
             if ((type & TBINARY))
-                t->lst.lstrit = ( Shnode_t * )r_arg(shp);
+                t->lst.lstrit = ( Shnode_t * ) r_arg(shp);
         }
     }
     if (t)
@@ -188,13 +188,13 @@ r_arg(Shell_t *shp)
     long l;
     Stk_t *stkp = shp->stk;
     while ((l = sfgetu(infile)) > 0) {
-        ap = ( struct argnod * )stkseek(stkp, ( unsigned )l + ARGVAL);
+        ap = ( struct argnod * ) stkseek(stkp, ( unsigned ) l + ARGVAL);
         if (!aptop)
             aptop = ap;
         else
             apold->argnxt.ap = ap;
         if (--l > 0) {
-            sfread(infile, ap->argval, ( size_t )l);
+            sfread(infile, ap->argval, ( size_t ) l);
             ccmaps(ap->argval, l, CC_ASCII, CC_NATIVE);
         }
         ap->argval[l] = 0;
@@ -217,18 +217,18 @@ r_arg(Shell_t *shp)
 		}
 		else
 #endif
-        ap = ( struct argnod * )stkfreeze(stkp, 0);
+        ap = ( struct argnod * ) stkfreeze(stkp, 0);
         if (*ap->argval == 0 && (ap->argflag & ARG_EXP))
-            ap->argchn.ap = ( struct argnod * )r_tree(shp);
+            ap->argchn.ap = ( struct argnod * ) r_tree(shp);
         else if (*ap->argval == 0
                  && (ap->argflag
                      & ~(ARG_APPEND | ARG_MESSAGE | ARG_QUOTED | ARG_ARRAY))
                     == 0) {
-            struct fornod *fp = ( struct fornod * )getnode(shp->stk, fornod);
+            struct fornod *fp = ( struct fornod * ) getnode(shp->stk, fornod);
             fp->fortyp = sfgetu(infile);
             fp->fortre = r_tree(shp);
             fp->fornam = ap->argval + 1;
-            ap->argchn.ap = ( struct argnod * )fp;
+            ap->argchn.ap = ( struct argnod * ) fp;
         }
         apold = ap;
     }
@@ -243,7 +243,7 @@ r_redirect(Shell_t *shp)
     long l;
     struct ionod *iop = 0, *iopold, *ioptop = 0;
     while ((l = sfgetl(infile)) >= 0) {
-        iop = ( struct ionod * )getnode(shp->stk, ionod);
+        iop = ( struct ionod * ) getnode(shp->stk, ionod);
         if (!ioptop)
             ioptop = iop;
         else
@@ -253,7 +253,7 @@ r_redirect(Shell_t *shp)
         if (iop->iodelim = r_string(shp->stk)) {
             iop->iosize = sfgetl(infile);
             if (shp->heredocs)
-                iop->iooffset = sfseek(shp->heredocs, ( off_t )0, SEEK_END);
+                iop->iooffset = sfseek(shp->heredocs, ( off_t ) 0, SEEK_END);
             else {
                 shp->heredocs = sftmp(512);
                 iop->iooffset = 0;
@@ -283,16 +283,16 @@ r_comarg(Shell_t *shp, struct comnod *com)
         com->comarg = r_arg(shp);
         if (com->comarg->argflag == ARG_RAW)
             cmdname = com->comarg->argval;
-    } else if (com->comarg = ( struct argnod * )r_comlist(shp))
-        cmdname = (( struct dolnod * )(com->comarg))->dolval[ARG_SPARE];
+    } else if (com->comarg = ( struct argnod * ) r_comlist(shp))
+        cmdname = (( struct dolnod * ) (com->comarg))->dolval[ARG_SPARE];
     com->comline = sfgetu(infile);
     com->comnamq = 0;
     if (cmdname) {
         char *cp;
-        com->comnamp = ( void * )nv_search(cmdname, shp->fun_tree, 0);
+        com->comnamp = ( void * ) nv_search(cmdname, shp->fun_tree, 0);
         if (com->comnamp && (cp = strrchr(cmdname + 1, '.'))) {
             *cp = 0;
-            com->comnamp = ( void * )nv_open(
+            com->comnamp = ( void * ) nv_open(
             cmdname, shp->var_tree, NV_VARNAME | NV_NOADD | NV_NOARRAY);
             *cp = '.';
         }
@@ -307,7 +307,7 @@ r_comlist(Shell_t *shp)
     long l;
     char **argv;
     if ((l = sfgetl(infile)) > 0) {
-        dol = ( struct dolnod * )stkalloc(
+        dol = ( struct dolnod * ) stkalloc(
         shp->stk, sizeof(struct dolnod) + sizeof(char *) * (l + ARG_SPARE));
         dol->dolnum = l;
         dol->dolbot = ARG_SPARE;
@@ -324,7 +324,7 @@ r_switch(Shell_t *shp)
     long l;
     struct regnod *reg = 0, *regold, *regtop = 0;
     while ((l = sfgetl(infile)) >= 0) {
-        reg = ( struct regnod * )getnode(shp->stk, regnod);
+        reg = ( struct regnod * ) getnode(shp->stk, regnod);
         if (!regtop)
             regtop = reg;
         else
@@ -347,9 +347,9 @@ r_string(Stk_t *stkp)
     char *ptr;
     if (l == 0)
         return (NIL(char *));
-    ptr = stkalloc(stkp, ( unsigned )l);
+    ptr = stkalloc(stkp, ( unsigned ) l);
     if (--l > 0) {
-        if (sfread(in, ptr, ( size_t )l) != ( size_t )l)
+        if (sfread(in, ptr, ( size_t ) l) != ( size_t ) l)
             return (NIL(char *));
         ccmaps(ptr, l, CC_ASCII, CC_NATIVE);
     }

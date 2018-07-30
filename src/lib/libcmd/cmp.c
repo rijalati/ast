@@ -157,7 +157,7 @@ cmp(const char *file1,
         if ((c1 = e1 - p1) <= 0) {
             if (count > 0 && !(count -= n1))
                 return ret;
-            if (!(p1 = ( unsigned char * )sfreserve(f1, SF_UNBOUND, 0))
+            if (!(p1 = ( unsigned char * ) sfreserve(f1, SF_UNBOUND, 0))
                 || (c1 = sfvalue(f1)) <= 0) {
                 if ((e2 - p2) > 0
                     || sfreserve(f2, SF_UNBOUND, 0) && sfvalue(f2) > 0) {
@@ -168,12 +168,12 @@ cmp(const char *file1,
                 return ret;
             }
             if (count > 0 && c1 > count)
-                c1 = ( int )count;
+                c1 = ( int ) count;
             e1 = p1 + c1;
             n1 = c1;
         }
         if ((c2 = e2 - p2) <= 0) {
-            if (!(p2 = ( unsigned char * )sfreserve(f2, SF_UNBOUND, 0))
+            if (!(p2 = ( unsigned char * ) sfreserve(f2, SF_UNBOUND, 0))
                 || (c2 = sfvalue(f2)) <= 0) {
                 if (!(flags & CMP_SILENT))
                     error(ERROR_exit(1), "EOF on %s", file2);

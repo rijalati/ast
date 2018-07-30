@@ -24,7 +24,7 @@
 
 #define NG_BYTE 4
 #define H0 (1)
-#define H1 (( Grint_t )0x101)
+#define H1 (( Grint_t ) 0x101)
 #define H2 (H1 * H1)
 #define H3 (H1 * H2)
 #define NGINIT(s, g) (g = H3 * s[0] + H2 * s[1] + H1 * s[2] + H0 * s[3])
@@ -64,11 +64,11 @@ typedef struct _vcwfile_s
 _BEGIN_EXTERNS_
 extern int vcwngfreq _ARG_((size_t *, Vcchar_t *, size_t));
 extern double vcwngmatch
-_ARG_(( int *, size_t *, size_t, Vcchar_t *, size_t, size_t, double ));
+_ARG_(( int *, size_t *, size_t, Vcchar_t *, size_t, size_t, double ) );
 extern Grint_t vcwngsig _ARG_((Vcchar_t *, size_t));
 
-extern Vcwfile_t *vcwfopen _ARG_(( Sfio_t * ));
-extern void vcwfclose _ARG_(( Vcwfile_t * ));
+extern Vcwfile_t *vcwfopen _ARG_(( Sfio_t * ) );
+extern void vcwfclose _ARG_(( Vcwfile_t * ) );
 extern int vcwfsearch _ARG_((Vcwfile_t *, Vcchar_t *, size_t));
 
 extern Vcwmethod_t *Vcwdecode; /* special windowing method for decoding */

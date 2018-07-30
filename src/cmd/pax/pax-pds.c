@@ -76,7 +76,7 @@ pds_getprologue(Pax_t *pax,
         nospace();
     pds->map = ccmap(CC_EBCDIC_O, CC_NATIVE);
     links = 0;
-    while ((b = ( unsigned char * )paxget(pax, ap, -256, NiL)) && !b[0]) {
+    while ((b = ( unsigned char * ) paxget(pax, ap, -256, NiL)) && !b[0]) {
         n = b[1];
         b += 2;
         e = b + n;
@@ -160,7 +160,7 @@ pds_done(Pax_t *pax, Archive_t *ap)
 static int
 pds_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
 {
-    Pds_t *pds = ( Pds_t * )ap->data;
+    Pds_t *pds = ( Pds_t * ) ap->data;
     Pdsdir_t *dp;
 
     if (pds->index >= pds->size)

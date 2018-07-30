@@ -37,5 +37,5 @@ exnospace(void)
     static const char null[1];
 
     exerror("out of space");
-    return ( char * )null;
+    return ( char * ) null;
 }

@@ -40,7 +40,7 @@ static int copyinsert(rs, obj) Rs_t *rs;
 reg Rsobj_t *obj;
 #endif
 {
-    reg Copy_t *copy = ( Copy_t * )rs->methdata;
+    reg Copy_t *copy = ( Copy_t * ) rs->methdata;
 
     if (copy->tail)
         copy->tail->right = obj;
@@ -57,7 +57,7 @@ copylist(Rs_t *rs)
 static Rsobj_t *copylist(rs) Rs_t *rs;
 #endif
 {
-    reg Copy_t *copy = ( Copy_t * )rs->methdata;
+    reg Copy_t *copy = ( Copy_t * ) rs->methdata;
 
     if (copy->tail) {
         copy->tail->right = 0;

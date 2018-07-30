@@ -26,7 +26,7 @@ tmain()
 
     f = sfnew(NIL(Sfio_t *),
               NIL(Void_t *),
-              ( size_t )SF_UNBOUND,
+              ( size_t ) SF_UNBOUND,
               -1,
               SF_WRITE | SF_STRING);
     sfsetbuf(sfstdout, buf, sizeof(buf));
@@ -45,7 +45,7 @@ tmain()
     if (sfputc(f, '\0') < 0)
         terror("Writing to string stream");
 
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (!(s = sfreserve(f, SF_UNBOUND, 1)))
         terror("Peeking");
     sfwrite(f, s, 0);

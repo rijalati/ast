@@ -22,7 +22,7 @@
 /*
  * generate sfio _Sftable static initializers
  */
-#include "config_ast.h"  // IWYU pragma: keep
+#include "config_ast.h"    // IWYU pragma: keep
 
 #include "ast_float.h"
 #include <ast_common.h>

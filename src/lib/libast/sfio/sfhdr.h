@@ -309,8 +309,8 @@
 #        define _has_multibyte 1
 
 #        define SFMBMAX mbmax()
-#        define SFMBCPY(to, fr) (*( Mbstate_t * )(to) = *(fr))
-#        define SFMBCLR(mb) mbtinit((( Mbstate_t * )(mb)))
+#        define SFMBCPY(to, fr) (*( Mbstate_t * ) (to) = *(fr))
+#        define SFMBCLR(mb) mbtinit((( Mbstate_t * ) (mb)))
 #        define SFMBSET(lhs, v) (lhs = (v))
 #        define SFMBLEN(s, mb) mbtsize((s), MB_LEN_MAX, (mb))
 #        define SFMBDCL(ms) Mbstate_t ms;
@@ -348,7 +348,7 @@
 #        endif /*!_has_multibyte && _hdr_wchar && _lib_mbtowc &&             \
                   _lib_wctomb*/
 
-#        define SFMBSTATE(f) (( Mbstate_t * )0)
+#        define SFMBSTATE(f) (( Mbstate_t * ) 0)
 
 #        ifdef MB_CUR_MAX
 #            define SFMBMAX MB_CUR_MAX
@@ -379,7 +379,7 @@
                         return (rv);                                         \
                     if (_Sfnotify) {                                         \
                         (*_Sfnotify)(                                        \
-                        (_mf_), SF_MTACCESS, ( Void_t * )(&(ff)));           \
+                        (_mf_), SF_MTACCESS, ( Void_t * ) (&(ff)));          \
                         if (!(ff))                                           \
                             (ff) = (_mf_);                                   \
                     }                                                        \
@@ -534,7 +534,7 @@
 
 /* to get rid of pesky compiler warnings */
 #    if __STD_C
-#        define NOTUSED(x) ( void )(x)
+#        define NOTUSED(x) ( void ) (x)
 #    else
 #        define NOTUSED(x) (&x, 1)
 #    endif
@@ -596,7 +596,7 @@
 #    endif
 
 /* short-hands */
-#    define NIL(t) (( t )0)
+#    define NIL(t) (( t ) 0)
 #    define reg register
 #    ifndef uchar
 #        define uchar unsigned char
@@ -635,18 +635,18 @@
 #    endif
 
 #    ifndef S_ISDIR
-#        define S_ISDIR(m) ((( m )&S_IFMT) == S_IFDIR)
+#        define S_ISDIR(m) ((( m ) &S_IFMT) == S_IFDIR)
 #    endif
 #    ifndef S_ISREG
-#        define S_ISREG(m) ((( m )&S_IFMT) == S_IFREG)
+#        define S_ISREG(m) ((( m ) &S_IFMT) == S_IFREG)
 #    endif
 #    ifndef S_ISCHR
-#        define S_ISCHR(m) ((( m )&S_IFMT) == S_IFCHR)
+#        define S_ISCHR(m) ((( m ) &S_IFMT) == S_IFCHR)
 #    endif
 
 #    ifndef S_ISFIFO
 #        if S_IFIFO
-#            define S_ISFIFO(m) ((( m )&S_IFMT) == S_IFIFO)
+#            define S_ISFIFO(m) ((( m ) &S_IFMT) == S_IFIFO)
 #        else
 #            define S_ISFIFO(m) (0)
 #        endif
@@ -664,10 +664,10 @@
 #        ifndef FD_CLOEXEC
 #            define FD_CLOEXEC 1
 #        endif /*FD_CLOEXEC*/
-#        define SETCLOEXEC(fd) (( void )fcntl((fd), F_SETFD, FD_CLOEXEC))
+#        define SETCLOEXEC(fd) (( void ) fcntl((fd), F_SETFD, FD_CLOEXEC))
 #    else
 #        ifdef FIOCLEX
-#            define SETCLOEXEC(fd) (( void )ioctl((fd), FIOCLEX, 0))
+#            define SETCLOEXEC(fd) (( void ) ioctl((fd), FIOCLEX, 0))
 #        else
 #            define SETCLOEXEC(fd)
 #        endif /*FIOCLEX*/
@@ -709,7 +709,7 @@
             do                                                               \
                 if (*(dp) == 0) {                                            \
                     Lc_numeric_t *lv                                         \
-                    = ( Lc_numeric_t * )LCINFO(AST_LC_NUMERIC)->data;        \
+                    = ( Lc_numeric_t * ) LCINFO(AST_LC_NUMERIC)->data;       \
                     *(dp) = lv->decimal;                                     \
                     *(tp) = lv->thousand;                                    \
                 }                                                            \
@@ -727,10 +727,10 @@
                     if ((lv = localeconv())) {                               \
                         if (lv->decimal_point && *lv->decimal_point)         \
                             *(decimal)                                       \
-                            = *( unsigned char * )lv->decimal_point;         \
+                            = *( unsigned char * ) lv->decimal_point;        \
                         if (lv->thousands_sep && *lv->thousands_sep)         \
                             *(thousand)                                      \
-                            = *( unsigned char * )lv->thousands_sep;         \
+                            = *( unsigned char * ) lv->thousands_sep;        \
                     }                                                        \
                 }                                                            \
             } while (0)
@@ -842,7 +842,7 @@ struct _fmtpos_s
 #    endif
 
 #    define FMTSET(ft, frm, ags, fv, sz, flgs, wid, pr, bs, ts, ns)          \
-        ((ft->form = ( char * )frm),                                         \
+        ((ft->form = ( char * ) frm),                                        \
          va_copy(ft->args, ags),                                             \
          (ft->fmt = fv),                                                     \
          (ft->size = sz),                                                    \
@@ -885,7 +885,7 @@ struct _fmtpos_s
 /* _Sftest SF_TEST_* bitmasks -- 0x0001..0x0080 are unnamed */
 
 /* local variables used across sf-functions */
-typedef void(*Sfnotify_f) _ARG_(( Sfio_t *, int, void * ));
+typedef void(*Sfnotify_f) _ARG_(( Sfio_t *, int, void * ) );
 #    define _Sfpage (_Sfextern.sf_page)
 #    define _Sfpool (_Sfextern.sf_pool)
 #    define _Sfpmove (_Sfextern.sf_pmove)
@@ -905,16 +905,16 @@ typedef struct _sfextern_s
 {
     ssize_t sf_page;
     struct _sfpool_s sf_pool;
-    int(*sf_pmove) _ARG_(( Sfio_t *, int ));
-    Sfio_t *( *sf_stack )_ARG_(( Sfio_t *, Sfio_t * ));
-    void(*sf_notify) _ARG_(( Sfio_t *, int, void * ));
-    int(*sf_stdsync) _ARG_(( Sfio_t * ));
+    int(*sf_pmove) _ARG_(( Sfio_t *, int ) );
+    Sfio_t *( *sf_stack ) _ARG_(( Sfio_t *, Sfio_t * ) );
+    void(*sf_notify) _ARG_(( Sfio_t *, int, void * ) );
+    int(*sf_stdsync) _ARG_(( Sfio_t * ) );
     struct _sfdisc_s sf_udisc;
-    void(*sf_cleanup) _ARG_(( void ));
+    void(*sf_cleanup) _ARG_(( void ) );
     int sf_exiting;
     int sf_done;
     Vtonce_t *sf_once;
-    void(*sf_oncef) _ARG_(( void ));
+    void(*sf_oncef) _ARG_(( void ) );
     Vtmutex_t *sf_mutex;
     size_t sf_maxm;
     unsigned long sf_test;
@@ -922,7 +922,7 @@ typedef struct _sfextern_s
 
 /* get the real value of a byte in a coded long or ulong */
 #    define SFUVALUE(v) (((ulong)(v)) & (SF_MORE - 1))
-#    define SFSVALUE(v) ((( long )(v)) & (SF_SIGN - 1))
+#    define SFSVALUE(v) ((( long ) (v)) & (SF_SIGN - 1))
 #    define SFBVALUE(v) (((ulong)(v)) & (SF_BYTE - 1))
 
 /* pick this many bits in each iteration of double encoding */
@@ -958,13 +958,14 @@ typedef struct _sfextern_s
 #        define SFMMSEQON(f, a, s)                                           \
             do {                                                             \
                 int oerrno = errno;                                          \
-                ( void )madvise((caddr_t)(a), (size_t)(s), MADV_SEQUENTIAL); \
+                ( void ) madvise(                                            \
+                (caddr_t)(a), (size_t)(s), MADV_SEQUENTIAL);                 \
                 errno = oerrno;                                              \
             } while (0)
 #        define SFMMSEQOFF(f, a, s)                                          \
             do {                                                             \
                 int oerrno = errno;                                          \
-                ( void )madvise((caddr_t)(a), (size_t)(s), MADV_NORMAL);     \
+                ( void ) madvise((caddr_t)(a), (size_t)(s), MADV_NORMAL);    \
                 errno = oerrno;                                              \
             } while (0)
 #    else
@@ -1006,9 +1007,9 @@ typedef struct _sfextern_s
 #    define SFISALL(f, v)                                                    \
         ((((v) = (f)->mode & SF_RV) ? ((f)->mode &= ~SF_RV) : 0),            \
          ((v) || ((f)->flags & (SF_SHARE | SF_APPENDWR | SF_WHOLE))))
-#    define SFSK(f, a, o, d) (SETLOCAL(f), sfsk(f, ( Sfoff_t )a, o, d))
-#    define SFRD(f, b, n, d) (SETLOCAL(f), sfrd(f, ( Void_t * )b, n, d))
-#    define SFWR(f, b, n, d) (SETLOCAL(f), sfwr(f, ( Void_t * )b, n, d))
+#    define SFSK(f, a, o, d) (SETLOCAL(f), sfsk(f, ( Sfoff_t ) a, o, d))
+#    define SFRD(f, b, n, d) (SETLOCAL(f), sfrd(f, ( Void_t * ) b, n, d))
+#    define SFWR(f, b, n, d) (SETLOCAL(f), sfwr(f, ( Void_t * ) b, n, d))
 #    define SFSYNC(f) (SETLOCAL(f), sfsync(f))
 #    define SFCLOSE(f) (SETLOCAL(f), sfclose(f))
 #    define SFFLSBUF(f, n) (SETLOCAL(f), _sfflsbuf(f, n))
@@ -1023,7 +1024,7 @@ typedef struct _sfextern_s
 /* lock/open a stream */
 #    define SFMODE(f, l) ((f)->mode & ~(SF_RV | SF_RC | ((l) ? SF_LOCK : 0)))
 #    define SFLOCK(f, l)                                                     \
-        ( void )((f)->mode |= SF_LOCK, (f)->endr = (f)->endw = (f)->data)
+        ( void ) ((f)->mode |= SF_LOCK, (f)->endr = (f)->endw = (f)->data)
 #    define _SFOPENRD(f)                                                     \
         ((f)->endr = ((f)->flags & SF_MTSAFE) ? (f)->data : (f)->endb)
 #    define _SFOPENWR(f)                                                     \
@@ -1035,9 +1036,10 @@ typedef struct _sfextern_s
          : (f)->mode == SF_WRITE ? _SFOPENWR(f)                              \
                                  : ((f)->endw = (f)->endr = (f)->data))
 #    define SFOPEN(f, l)                                                     \
-        ( void )((l)                                                         \
-                 ? 0                                                         \
-                 : ((f)->mode &= ~(SF_LOCK | SF_RC | SF_RV), _SFOPEN(f), 0))
+        (                                                                    \
+        void ) ((l)                                                          \
+                ? 0                                                          \
+                : ((f)->mode &= ~(SF_LOCK | SF_RC | SF_RV), _SFOPEN(f), 0))
 
 /* check to see if the stream can be accessed */
 #    define SFFROZEN(f)                                                      \
@@ -1148,8 +1150,8 @@ typedef struct _sfextern_s
 #        define SF_MAXINT INT_MAX
 #        define SF_MAXLONG LONG_MAX
 #    else
-#        define SF_MAXINT (( int )((( uint )~0) >> 1))
-#        define SF_MAXLONG (( long )((( ulong )~0L) >> 1))
+#        define SF_MAXINT (( int ) ((( uint ) ~0) >> 1))
+#        define SF_MAXLONG (( long ) ((( ulong ) ~0L) >> 1))
 #    endif
 
 #    define SF_MAXCHAR ((uchar)(~0))
@@ -1208,8 +1210,8 @@ typedef struct _sftab_
     int (*sf_cvinitf)();              /* initialization function	*/
     int sf_cvinit;                    /* initialization state		*/
     Fmtpos_t *( *sf_fmtposf )
-    _ARG_(( Sfio_t *, const char *, va_list, Sffmt_t *, int ));
-    char *( *sf_fmtintf )_ARG_(( const char *, int * ));
+    _ARG_(( Sfio_t *, const char *, va_list, Sffmt_t *, int ) );
+    char *( *sf_fmtintf ) _ARG_(( const char *, int * ) );
     float *sf_flt_pow10;           /* float powers of 10		*/
     double *sf_dbl_pow10;          /* double powers of 10		*/
     Sfdouble_t *sf_ldbl_pow10;     /* Sfdouble_t powers of 10	*/
@@ -1264,36 +1266,36 @@ typedef struct _sftab_
         }
 #    define sfucvt(v, s, n, list, type, utype)                               \
         {                                                                    \
-            while (( utype )v >= 10000) {                                    \
+            while (( utype ) v >= 10000) {                                   \
                 n = v;                                                       \
-                v = (type)((( utype )v) / 10000);                            \
-                n = (type)(( utype )n - (( utype )v) * 10000);               \
+                v = (type)((( utype ) v) / 10000);                           \
+                n = (type)(( utype ) n - (( utype ) v) * 10000);             \
                 s -= 4;                                                      \
                 SFDIGIT(n, 1000, s[0]);                                      \
                 SFDIGIT(n, 100, s[1]);                                       \
-                s[2] = *(list = ( char * )_Sfdec + (n <<= 1));               \
+                s[2] = *(list = ( char * ) _Sfdec + (n <<= 1));              \
                 s[3] = *(list + 1);                                          \
             }                                                                \
             if (v < 100) {                                                   \
                 if (v < 10) {                                                \
                     s -= 1;                                                  \
-                    s[0] = ( char )('0' + v);                                \
+                    s[0] = ( char ) ('0' + v);                               \
                 } else {                                                     \
                     s -= 2;                                                  \
-                    s[0] = *(list = ( char * )_Sfdec + (v <<= 1));           \
+                    s[0] = *(list = ( char * ) _Sfdec + (v <<= 1));          \
                     s[1] = *(list + 1);                                      \
                 }                                                            \
             } else {                                                         \
                 if (v < 1000) {                                              \
                     s -= 3;                                                  \
                     SFDIGIT(v, 100, s[0]);                                   \
-                    s[1] = *(list = ( char * )_Sfdec + (v <<= 1));           \
+                    s[1] = *(list = ( char * ) _Sfdec + (v <<= 1));          \
                     s[2] = *(list + 1);                                      \
                 } else {                                                     \
                     s -= 4;                                                  \
                     SFDIGIT(v, 1000, s[0]);                                  \
                     SFDIGIT(v, 100, s[1]);                                   \
-                    s[2] = *(list = ( char * )_Sfdec + (v <<= 1));           \
+                    s[2] = *(list = ( char * ) _Sfdec + (v <<= 1));          \
                     s[3] = *(list + 1);                                      \
                 }                                                            \
             }                                                                \
@@ -1323,7 +1325,7 @@ typedef struct _sftab_
 #    define MEMCPY(to, fr, n)                                                \
         switch (n) {                                                         \
         default:                                                             \
-            memcpy(( Void_t * )to, ( Void_t * )fr, n);                       \
+            memcpy(( Void_t * ) to, ( Void_t * ) fr, n);                     \
             to += n;                                                         \
             fr += n;                                                         \
             break;                                                           \
@@ -1345,7 +1347,7 @@ typedef struct _sftab_
 #    define MEMSET(s, c, n)                                                  \
         switch (n) {                                                         \
         default:                                                             \
-            memset(( Void_t * )s, ( int )c, n);                              \
+            memset(( Void_t * ) s, ( int ) c, n);                            \
             s += n;                                                          \
             break;                                                           \
         case 7:                                                              \
@@ -1368,15 +1370,15 @@ _BEGIN_EXTERNS_
 
 extern Sftab_t _Sftable;
 
-extern int _sfpopen _ARG_(( Sfio_t *, int, int, int ));
-extern int _sfpclose _ARG_(( Sfio_t * ));
-extern int _sfexcept _ARG_(( Sfio_t *, int, ssize_t, Sfdisc_t * ));
+extern int _sfpopen _ARG_(( Sfio_t *, int, int, int ) );
+extern int _sfpclose _ARG_(( Sfio_t * ) );
+extern int _sfexcept _ARG_(( Sfio_t *, int, ssize_t, Sfdisc_t * ) );
 extern Sfrsrv_t *_sfrsrv _ARG_((Sfio_t *, ssize_t));
-extern int _sfsetpool _ARG_(( Sfio_t * ));
+extern int _sfsetpool _ARG_(( Sfio_t * ) );
 extern char *
-_sfcvt _ARG_(( Void_t *, char *, size_t, int, int *, int *, int *, int ));
-extern char **_sfgetpath _ARG_(( char * ));
-extern Mbstate_t *_sfmbstate _ARG_(( Sfio_t * ));
+_sfcvt _ARG_(( Void_t *, char *, size_t, int, int *, int *, int *, int ) );
+extern char **_sfgetpath _ARG_(( char * ) );
+extern Mbstate_t *_sfmbstate _ARG_(( Sfio_t * ) );
 
 #    if _BLD_sfio && defined(__EXPORT__)
 #        define extern __EXPORT__
@@ -1387,8 +1389,8 @@ extern Mbstate_t *_sfmbstate _ARG_(( Sfio_t * ));
 
 extern Sfextern_t _Sfextern;
 
-extern int _sfmode _ARG_(( Sfio_t *, int, int ));
-extern int _sftype _ARG_(( const char *, int *, int *, int * ));
+extern int _sfmode _ARG_(( Sfio_t *, int, int ) );
+extern int _sftype _ARG_(( const char *, int *, int *, int * ) );
 
 #    undef extern
 
@@ -1402,7 +1404,7 @@ extern int errno;
 #            define frexpl frexp
 #        endif
 #        if !_lib_frexpl
-extern Sfdouble_t frexpl _ARG_(( Sfdouble_t, int * ));
+extern Sfdouble_t frexpl _ARG_(( Sfdouble_t, int * ) );
 #        endif
 #    endif
 #    ifndef ldexpl
@@ -1410,21 +1412,21 @@ extern Sfdouble_t frexpl _ARG_(( Sfdouble_t, int * ));
 #            define ldexpl ldexp
 #        endif
 #        if !_lib_ldexpl
-extern Sfdouble_t ldexpl _ARG_(( Sfdouble_t, int ));
+extern Sfdouble_t ldexpl _ARG_(( Sfdouble_t, int ) );
 #        endif
 #    endif
 
 #    if !_PACKAGE_ast
 
 #        if !__STDC__ && !_hdr_stdlib
-extern void abort _ARG_(( void ));
+extern void abort _ARG_(( void ) );
 extern int atexit _ARG_((void (*)(void)));
-extern char *getenv _ARG_(( const char * ));
+extern char *getenv _ARG_(( const char * ) );
 extern void *malloc _ARG_((size_t));
 extern void *realloc _ARG_((void *, size_t));
-extern void free _ARG_(( void * ));
-extern size_t strlen _ARG_(( const char * ));
-extern char *strcpy _ARG_(( char *, const char * ));
+extern void free _ARG_(( void * ) );
+extern size_t strlen _ARG_(( const char * ) );
+extern char *strcpy _ARG_(( char *, const char * ) );
 
 extern Void_t *memset _ARG_((void *, int, size_t));
 extern Void_t *memchr _ARG_((const void *, int, size_t));
@@ -1433,10 +1435,10 @@ extern Void_t *memccpy _ARG_((void *, const void *, int, size_t));
 extern Void_t *memcpy _ARG_((void *, const void *, size_t));
 #            endif
 #            if !defined(strtod)
-extern double strtod _ARG_(( const char *, char ** ));
+extern double strtod _ARG_(( const char *, char ** ) );
 #            endif
 #            if !defined(remove)
-extern int sysremovef _ARG_(( const char * ));
+extern int sysremovef _ARG_(( const char * ) );
 #            endif
 #        endif /* !__STDC__ && !_hdr_stdlib */
 
@@ -1444,28 +1446,28 @@ extern int sysremovef _ARG_(( const char * ));
 #            if _proto_open && __cplusplus
 extern int sysopenf _ARG_((const char *, int, ...));
 #            endif
-extern int sysclosef _ARG_(( int ));
+extern int sysclosef _ARG_(( int ) );
 extern ssize_t sysreadf _ARG_((int, void *, size_t));
 extern ssize_t syswritef _ARG_((int, const void *, size_t));
-extern sfoff_t syslseekf _ARG_(( int, sfoff_t, int ));
-extern int sysdupf _ARG_(( int ));
-extern int syspipef _ARG_(( int * ));
-extern int sysaccessf _ARG_(( const char *, int ));
-extern int sysremovef _ARG_(( const char * ));
-extern int sysfstatf _ARG_(( int, sfstat_t * ));
-extern int sysstatf _ARG_(( const char *, sfstat_t * ));
+extern sfoff_t syslseekf _ARG_(( int, sfoff_t, int ) );
+extern int sysdupf _ARG_(( int ) );
+extern int syspipef _ARG_(( int * ) );
+extern int sysaccessf _ARG_(( const char *, int ) );
+extern int sysremovef _ARG_(( const char * ) );
+extern int sysfstatf _ARG_(( int, sfstat_t * ) );
+extern int sysstatf _ARG_(( const char *, sfstat_t * ) );
 
-extern int isatty _ARG_(( int ));
+extern int isatty _ARG_(( int ) );
 
-extern int wait _ARG_(( int * ));
+extern int wait _ARG_(( int * ) );
 extern uint sleep _ARG_((uint));
 extern int execl _ARG_((const char *, const char *, ...));
-extern int execv _ARG_(( const char *, char ** ));
+extern int execv _ARG_(( const char *, char ** ) );
 #            if !defined(fork)
-extern int fork _ARG_(( void ));
+extern int fork _ARG_(( void ) );
 #            endif
 #            if _lib_unlink
-extern int unlink _ARG_(( const char * ));
+extern int unlink _ARG_(( const char * ) );
 #            endif
 
 #        endif /*_hdr_unistd*/
@@ -1477,21 +1479,21 @@ extern void bcopy _ARG_((const void *, void *, size_t));
 extern void bzero _ARG_((void *, size_t));
 #        endif
 
-extern time_t time _ARG_(( time_t * ));
-extern int waitpid _ARG_(( int, int *, int ));
-extern void _exit _ARG_(( int ));
-typedef int(*Onexit_f) _ARG_(( void ));
+extern time_t time _ARG_(( time_t * ) );
+extern int waitpid _ARG_(( int, int *, int ) );
+extern void _exit _ARG_(( int ) );
+typedef int(*Onexit_f) _ARG_(( void ) );
 extern Onexit_f onexit _ARG_((Onexit_f));
 
 #        if _lib_vfork && !_hdr_vfork && !_sys_vfork
-extern pid_t vfork _ARG_(( void ));
+extern pid_t vfork _ARG_(( void ) );
 #        endif /*_lib_vfork*/
 
 #        if _lib_poll
 #            if _lib_poll_fd_1
-extern int poll _ARG_(( struct pollfd *, ulong, int ));
+extern int poll _ARG_(( struct pollfd *, ulong, int ) );
 #            else
-extern int poll _ARG_(( ulong, struct pollfd *, int ));
+extern int poll _ARG_(( ulong, struct pollfd *, int ) );
 #            endif
 #        endif /*_lib_poll*/
 

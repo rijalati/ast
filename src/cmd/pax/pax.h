@@ -80,7 +80,7 @@ typedef struct Tarheader_s Tarheader_t;
 #    define getbuffer(n)                                                     \
         (((n) >= BUFFER_FD_MIN && (n) <= BUFFER_FD_MAX)                      \
          ? &state.buffer[BUFFER_FD_MAX - (n)]                                \
-         : ( Buffer_t * )0)
+         : ( Buffer_t * ) 0)
 #    undef setbuffer
 #    define setbuffer(n) (BUFFER_FD_MAX - (n))
 
@@ -203,7 +203,7 @@ typedef struct Tarheader_s Tarheader_t;
 
 #    define DELTA_WINDOW (128 * 1024L) /* delta window buffer size	*/
 
-#    define DELTA_LO(c) (( c )&0xffff)    /* lo order checksum bits	*/
+#    define DELTA_LO(c) (( c ) &0xffff)   /* lo order checksum bits	*/
 #    define DELTA_HI(c) DELTA_LO(c >> 16) /* hi order checksum bits	*/
 
 #    define HEADER_EXTENDED "@PaxHeaders/%(sequence)s"

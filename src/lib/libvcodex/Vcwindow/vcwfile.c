@@ -35,7 +35,7 @@ typedef struct _cand_s /* a candidate index		*/
 } Cand_t;
 
 /* distance between two signatures */
-#define DIST(big, small) (big == 0 ? 0. : (big - small) / (( double )big))
+#define DIST(big, small) (big == 0 ? 0. : (big - small) / (( double ) big))
 
 /* the below criterion for accepting the closeness of two signatures is based
 ** on the magnitude of the signatures. It lessens the distortion from very
@@ -54,8 +54,8 @@ Void_t *two;
 Void_t *disc;
 #endif
 {
-    Grint_t **o = ( Grint_t ** )one;
-    Grint_t **t = ( Grint_t ** )two;
+    Grint_t **o = ( Grint_t ** ) one;
+    Grint_t **t = ( Grint_t ** ) two;
 
     return **o < **t ? -1 : **o == **t ? 0 : 1;
 }
@@ -69,8 +69,8 @@ Void_t *two;
 Void_t *disc;
 #endif
 {
-    Cand_t *o = ( Cand_t * )one;
-    Cand_t *t = ( Cand_t * )two;
+    Cand_t *o = ( Cand_t * ) one;
+    Cand_t *t = ( Cand_t * ) two;
 
     return t->vote - o->vote;
 }
@@ -84,7 +84,7 @@ Void_t *two;
 Void_t *disc;
 #endif
 {
-    return *(( int * )one) - *(( int * )two);
+    return *(( int * ) one) - *(( int * ) two);
 }
 
 #if __STD_C
@@ -99,12 +99,12 @@ Vcwfile_t *vcwfopen(f) Sfio_t *f; /* file to match against	*/
 
     if (!f)
         return NIL(Vcwfile_t *);
-    if (sfseek(f, ( Sfoff_t )0, 1) < 0)
+    if (sfseek(f, ( Sfoff_t ) 0, 1) < 0)
         return NIL(Vcwfile_t *);
     if ((size = sfsize(f)) <= 0)
         return NIL(Vcwfile_t *);
 
-    if (!(vcwf = ( Vcwfile_t * )malloc(sizeof(Vcwfile_t))))
+    if (!(vcwf = ( Vcwfile_t * ) malloc(sizeof(Vcwfile_t))))
         return NIL(Vcwfile_t *);
     vcwf->file = f;
     vcwf->size = size;
@@ -151,16 +151,16 @@ static int vcwfsig(vcwf) Vcwfile_t *vcwf;
 
     vcwf->done = -1;
 
-    if ((nsig = ( int )(vcwf->size / (( Sfoff_t )NG_SIZE))) <= 0)
+    if ((nsig = ( int ) (vcwf->size / (( Sfoff_t ) NG_SIZE))) <= 0)
         return -1;
-    if (!(vcwf->sig = ( Grint_t * )malloc(nsig * sizeof(Grint_t)))
-        || !(vcwf->ssig = ( Grint_t ** )malloc(nsig * sizeof(Grint_t *))))
+    if (!(vcwf->sig = ( Grint_t * ) malloc(nsig * sizeof(Grint_t)))
+        || !(vcwf->ssig = ( Grint_t ** ) malloc(nsig * sizeof(Grint_t *))))
         return -1;
 
     vcwf->nsig = nsig;
 
-    if ((cpos = sfseek(vcwf->file, ( Sfoff_t )0, 1)) < 0
-        || sfseek(vcwf->file, ( Sfoff_t )0, 0) != ( Sfoff_t )0)
+    if ((cpos = sfseek(vcwf->file, ( Sfoff_t ) 0, 1)) < 0
+        || sfseek(vcwf->file, ( Sfoff_t ) 0, 0) != ( Sfoff_t ) 0)
         return -1;
 
     ssig = vcwf->ssig;
@@ -277,7 +277,7 @@ size_t size;    /* size of data		*/
     if ((nwork = size / NG_SIZE) > vcwf->nwork) {
         if (vcwf->work)
             free(vcwf->work);
-        if (!(vcwf->work = ( Grint_t * )malloc(nwork * sizeof(Grint_t))))
+        if (!(vcwf->work = ( Grint_t * ) malloc(nwork * sizeof(Grint_t))))
             return -1;
     }
 

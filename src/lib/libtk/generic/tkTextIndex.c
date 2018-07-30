@@ -252,7 +252,7 @@ TkTextIndex *indexPtr; /* Index structure to fill in. */
         if (hPtr == NULL) {
             goto tryxy;
         }
-        tagPtr = ( TkTextTag * )Tcl_GetHashValue(hPtr);
+        tagPtr = ( TkTextTag * ) Tcl_GetHashValue(hPtr);
         TkTextMakeIndex(textPtr->tree, 0, 0, &first);
         TkTextMakeIndex(
         textPtr->tree, TkBTreeNumLines(textPtr->tree), 0, &last);
@@ -263,7 +263,7 @@ TkTextIndex *indexPtr; /* Index structure to fill in. */
             "text doesn't contain any characters tagged with \"",
             Tcl_GetHashKey(&textPtr->tagTable, hPtr),
             "\"",
-            ( char * )NULL);
+            ( char * ) NULL);
             return TCL_ERROR;
         }
         *indexPtr = search.curIndex;
@@ -399,7 +399,7 @@ gotBase:
 
 error:
     Tcl_AppendResult(
-    interp, "bad text index \"", string, "\"", ( char * )NULL);
+    interp, "bad text index \"", string, "\"", ( char * ) NULL);
     return TCL_ERROR;
 }
 

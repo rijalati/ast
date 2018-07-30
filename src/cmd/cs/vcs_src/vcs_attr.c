@@ -27,7 +27,7 @@
 int get_attr(f, ap) Sfio_t *f;
 attr_t *ap;
 {
-    if (sfread(f, ( char * )ap, sizeof(attr_t)) != sizeof(attr_t)
+    if (sfread(f, ( char * ) ap, sizeof(attr_t)) != sizeof(attr_t)
         || !ISRSCS(ap)) {
         rserrno = NOTRSCS;
         return (-1);

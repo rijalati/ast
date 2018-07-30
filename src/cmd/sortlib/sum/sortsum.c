@@ -277,7 +277,7 @@ record(State_t *state, Rsobj_t *r, int op)
                                        NiL,
                                        &sum->format,
                                        &v,
-                                       ( char * )x,
+                                       ( char * ) x,
                                        w,
                                        cx->rm,
                                        cx->disc)
@@ -329,14 +329,15 @@ record(State_t *state, Rsobj_t *r, int op)
                 for (;;) {
                     y = n + 1;
                     ASSURE(state, &state->tmp, y);
-                    if ((n = (*sum->type->externalf)(cx,
-                                                     sum->type,
-                                                     NiL,
-                                                     &sum->format,
-                                                     &v.value,
-                                                     ( char * )state->tmp.buf,
-                                                     y,
-                                                     cx->disc))
+                    if ((n
+                         = (*sum->type->externalf)(cx,
+                                                   sum->type,
+                                                   NiL,
+                                                   &sum->format,
+                                                   &v.value,
+                                                   ( char * ) state->tmp.buf,
+                                                   y,
+                                                   cx->disc))
                         < 0) {
                         error(2,
                               "%s value %I*g conversion error",
@@ -399,7 +400,7 @@ record(State_t *state, Rsobj_t *r, int op)
 static int
 summary(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Rsobj_t *r;
     Rsobj_t *q;
 
@@ -408,7 +409,7 @@ summary(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         dssclose(state->dss);
         break;
     case RS_SUMMARY:
-        r = ( Rsobj_t * )data;
+        r = ( Rsobj_t * ) data;
         for (op = -1, q = r->equal; q; op = 0, q = q->right)
             if (record(state, q, op))
                 return -1;
@@ -709,7 +710,7 @@ rs_disc(Rskey_t *key, const char *options)
     key->type |= RS_UNIQ;
     state->fmt = key->disc->data;
     if (!*key->tab || *key->tab == ' ') {
-        state->tab = ( unsigned char * )" ";
+        state->tab = ( unsigned char * ) " ";
         for (n = 0; n < elementsof(state->delim); n++)
             if (isspace(n))
                 state->delim[n] = 1;

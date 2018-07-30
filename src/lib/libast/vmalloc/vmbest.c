@@ -61,7 +61,7 @@ _STUB_vmbest()
 
 #    define KEY_BEST (0x19770825) /* locked together forever - ILUN	*/
 
-#    define PK_INITIALIZING (( Pack_t * )(~(( unsigned long )0)))
+#    define PK_INITIALIZING (( Pack_t * ) (~(( unsigned long ) 0)))
 #    define PK_ARRAY 256 /* size of pack array			*/
 #    define PK_ALLOW 128 /* min #packs allowed to be created	*/
 
@@ -298,29 +298,29 @@ bestfree(Vmalloc_t *vm, Void_t *data, int local)
     asospindecl();
 
 #    if _BLD_DEBUG /* special use for debugging */
-    if (data == ( Void_t * )(1) || data == ( Void_t * )(-1)) {
+    if (data == ( Void_t * ) (1) || data == ( Void_t * ) (-1)) {
         int save = _Vmassert;
         _Vmassert |= VM_check_reg;
-        chkregion(( Vmbest_t * )vm->data, 0);
+        chkregion(( Vmbest_t * ) vm->data, 0);
         _Vmassert = save;
         return 0;
     }
 #    endif
     /**/ DEBUG_COUNT(N_free);
-    /**/ DEBUG_ASSERT(chkregion(( Vmbest_t * )vm->data, local) >= 0);
+    /**/ DEBUG_ASSERT(chkregion(( Vmbest_t * ) vm->data, local) >= 0);
 
     if (!data) /* ANSI-ism */
         return 0;
 
     /* quick sanity check */
-    if (( Vmuchar_t * )data < vm->data->segmin
-        || ( Vmuchar_t * )data >= vm->data->segmax)
+    if (( Vmuchar_t * ) data < vm->data->segmin
+        || ( Vmuchar_t * ) data >= vm->data->segmax)
         return -1;
 
     blk = BLOCK(data); /**/
     DEBUG_ASSERT((SIZE(blk) & BUSY) && (BDSZ(blk) % MEM_ALIGN) == 0);
     pack = PACK(blk); /**/
-    DEBUG_ASSERT(pack->best == ( Vmbest_t * )vm->data);
+    DEBUG_ASSERT(pack->best == ( Vmbest_t * ) vm->data);
     if ((sz = SIZE(blk)) & SMALL)
         listp = &pack->small[SMDECODE(sz)].free;
     else
@@ -335,7 +335,7 @@ bestfree(Vmalloc_t *vm, Void_t *data, int local)
 
     if (!local && _Vmtrace)
         (*_Vmtrace)(
-        vm, ( Vmuchar_t * )data, NIL(Vmuchar_t *), TRUESIZE(sz), 0);
+        vm, ( Vmuchar_t * ) data, NIL(Vmuchar_t *), TRUESIZE(sz), 0);
 
     return 0;
 }
@@ -347,7 +347,7 @@ bestpackget(Vmalloc_t *vm, unsigned int ppos, unsigned int tid)
     unsigned int lpos;
     Block_t *blk, *pb, *nb;
     Pack_t *pack;
-    Vmbest_t *best = ( Vmbest_t * )vm->data;
+    Vmbest_t *best = ( Vmbest_t * ) vm->data;
 
     if ((pack = asocasptr(&best->pack[ppos], NIL(Pack_t *), PK_INITIALIZING))
         != NIL(Pack_t *)) {
@@ -377,8 +377,8 @@ bestpackget(Vmalloc_t *vm, unsigned int ppos, unsigned int tid)
         return best->list[0];
     }
 
-    pb = ( Block_t * )DATA(blk); /* block holding pack structure */
-    pack = ( Pack_t * )DATA(pb);
+    pb = ( Block_t * ) DATA(blk); /* block holding pack structure */
+    pack = ( Pack_t * ) DATA(pb);
 
     PACK(pb) = pack;
     SIZE(pb) = ROUND(sizeof(Pack_t), BODYSIZE) | BUSY;
@@ -486,11 +486,11 @@ bestpackextend(Vmalloc_t *vm,
                              BDSZ(wild));
         }
         if ((_Vmassert & VM_debug)
-            && ( Vmuchar_t * )wild
-               > (( Vmuchar_t * )ENDB(pblk)
+            && ( Vmuchar_t * ) wild
+               > (( Vmuchar_t * ) ENDB(pblk)
                   - sizeof(Head_t))) /* heisus in _Vmsegalloc */
         {
-            wild = ( Block_t * )(( char * )DATA(pblk) + blkz);
+            wild = ( Block_t * ) (( char * ) DATA(pblk) + blkz);
             if (_Vmassert & VM_debug)
                 debug_printf(2,
                              "%s:%d: PACK(%p) WILD(%p)=%zd\n",
@@ -507,7 +507,7 @@ bestpackextend(Vmalloc_t *vm,
         SIZE(endb) = BUSY;
 
         /* new size for wild */
-        size = (( Vmuchar_t * )endb - ( Vmuchar_t * )wild) - sizeof(Head_t);
+        size = (( Vmuchar_t * ) endb - ( Vmuchar_t * ) wild) - sizeof(Head_t);
         if (_Vmassert & VM_debug)
             debug_printf(2,
                          "%s:%d: PACK(%p) pblk=%p endb=%p wild=%p size=%zu\n",
@@ -752,7 +752,7 @@ bestpackalloc(Vmalloc_t *vm, Pack_t *pack, size_t size, size_t minz)
 {
     ssize_t sz;
     Block_t *tp, *np, *pblk;
-    Vmbest_t *best = ( Vmbest_t * )vm->data;
+    Vmbest_t *best = ( Vmbest_t * ) vm->data;
     /**/ DEBUG_ASSERT(size >= sizeof(Body_t) && size % MEM_ALIGN == 0);
 
     if ((tp = pack->alloc)) /* fast allocation from recent memory */
@@ -889,7 +889,7 @@ bestpackalloc(Vmalloc_t *vm, Pack_t *pack, size_t size, size_t minz)
         return NIL(Block_t *);
     } else /* got a new superblock */
     {
-        tp = ( Block_t * )DATA(pblk);
+        tp = ( Block_t * ) DATA(pblk);
         PACK(tp) = pack;
         SIZE(tp) = (BDSZ(pblk) - 2 * sizeof(Head_t)) | BUSY;
         if (_Vmassert & VM_debug)
@@ -925,8 +925,8 @@ bestpackalloc(Vmalloc_t *vm, Pack_t *pack, size_t size, size_t minz)
 
 a_lloc: /**/
     DEBUG_ASSERT(tp && BDSZ(tp) >= minz && PACK(tp) == pack);
-    if ((sz = ( ssize_t )BDSZ(tp) - ( ssize_t )size)
-        >= ( ssize_t )sizeof(Block_t)) {
+    if ((sz = ( ssize_t ) BDSZ(tp) - ( ssize_t ) size)
+        >= ( ssize_t ) sizeof(Block_t)) {
         SIZE(tp) = size | (SIZE(tp) & (BUSY | PFREE));
         if (_Vmassert & VM_debug)
             debug_printf(2,
@@ -987,7 +987,7 @@ bestsmallalloc(Vmalloc_t *vm, Pack_t *pack, ssize_t size)
                 last = blk;
                 PACK(blk) = pack;
                 SIZE(blk) = smiz; /* Note: small blocks code index and size */
-                LINK(last) = blk = ( Block_t * )(( Vmuchar_t * )blk + blkz);
+                LINK(last) = blk = ( Block_t * ) (( Vmuchar_t * ) blk + blkz);
             } /**/
             DEBUG_ASSERT(last > list && last < blk);
             SIZE(list) |= memz & PFREE;
@@ -1020,7 +1020,7 @@ bestalloc(Vmalloc_t *vm, size_t size, int local)
     ssize_t smsz, pksz;
     Block_t *blk;
     Pack_t *pk;
-    Vmbest_t *best = ( Vmbest_t * )vm->data;
+    Vmbest_t *best = ( Vmbest_t * ) vm->data;
     asospindecl();
 
     /**/ DEBUG_COUNT(N_alloc);
@@ -1028,7 +1028,7 @@ bestalloc(Vmalloc_t *vm, size_t size, int local)
     /**/ DEBUG_ASSERT((sizeof(Head_t) % MEM_ALIGN) == 0);
     /**/ DEBUG_ASSERT((sizeof(Body_t) % MEM_ALIGN) == 0);
     /**/ DEBUG_ASSERT(sizeof(Block_t) == (sizeof(Body_t) + sizeof(Head_t)));
-    /**/ DEBUG_ASSERT(chkregion(( Vmbest_t * )vm->data, local) >= 0);
+    /**/ DEBUG_ASSERT(chkregion(( Vmbest_t * ) vm->data, local) >= 0);
 
     /* start with thread-specific pack but will cycle through all */
     tid = asothreadid();
@@ -1079,7 +1079,7 @@ bestalloc(Vmalloc_t *vm, size_t size, int local)
     }
 
     if (_Vmtrace && !local)
-        (*_Vmtrace)(vm, NIL(Vmuchar_t *), ( Vmuchar_t * )DATA(blk), size, 0);
+        (*_Vmtrace)(vm, NIL(Vmuchar_t *), ( Vmuchar_t * ) DATA(blk), size, 0);
     return DATA(blk);
 }
 
@@ -1091,7 +1091,7 @@ bestresize(Vmalloc_t *vm, Void_t *data, size_t size, int type, int local)
     ssize_t sz, oldz, newz, incz;
     Pack_t *pack;
     Void_t *rsdt = data;
-    /**/ DEBUG_DECLARE(Vmbest_t, *best = ( Vmbest_t * )vm->data)
+    /**/ DEBUG_DECLARE(Vmbest_t, *best = ( Vmbest_t * ) vm->data)
 
     /**/ DEBUG_COUNT(N_resize);
     /**/ DEBUG_ASSERT(chkregion(best, local) >= 0);
@@ -1100,19 +1100,19 @@ bestresize(Vmalloc_t *vm, Void_t *data, size_t size, int type, int local)
     {
         if ((rsdt = bestalloc(vm, size, local)) && (type & VM_RSZERO)) {
             rp = BLOCK(rsdt);
-            memset(( Void_t * )rsdt, 0, TRUEBDSZ(rp));
+            memset(( Void_t * ) rsdt, 0, TRUEBDSZ(rp));
         }
         return rsdt;
     }
     if (size == 0) /* resizing to zero size is the same as freeing */
     {
-        ( void )bestfree(vm, rsdt, local);
+        ( void ) bestfree(vm, rsdt, local);
         return NIL(Void_t *);
     }
 
     /* quick sanity check */
-    if (( Vmuchar_t * )rsdt < vm->data->segmin
-        || ( Vmuchar_t * )rsdt >= vm->data->segmax)
+    if (( Vmuchar_t * ) rsdt < vm->data->segmin
+        || ( Vmuchar_t * ) rsdt >= vm->data->segmax)
         return NIL(Void_t *);
 
     rp = BLOCK(rsdt); /**/
@@ -1134,8 +1134,8 @@ bestresize(Vmalloc_t *vm, Void_t *data, size_t size, int type, int local)
 
     /* resized blocks may get extra space to reduce future work */
     incz = sizeof(Head_t); /* add tail space for block info */
-    np = ( Block_t * )(( Vmuchar_t * )NEXT(rp) - sizeof(Head_t));
-    if (( Block_t * )PACK(np) == rp && (SIZE(np) & MARK)) {
+    np = ( Block_t * ) (( Vmuchar_t * ) NEXT(rp) - sizeof(Head_t));
+    if (( Block_t * ) PACK(np) == rp && (SIZE(np) & MARK)) {
         if (newz <= oldz && newz >= BDSZ(np)) /* increasing within bound */
         {
             SIZE(np) = newz | MARK; /* easy work, just update current size */
@@ -1177,7 +1177,8 @@ bestresize(Vmalloc_t *vm, Void_t *data, size_t size, int type, int local)
         }
 
         /* release left-over if large enough */
-        if ((sz = ( ssize_t )BDSZ(rp) - newz) >= ( ssize_t )sizeof(Block_t)) {
+        if ((sz = ( ssize_t ) BDSZ(rp) - newz)
+            >= ( ssize_t ) sizeof(Block_t)) {
             SIZE(rp) = newz | (SIZE(rp) & BITS);
             np = NEXT(rp);
             PACK(np) = pack;
@@ -1203,18 +1204,18 @@ bestresize(Vmalloc_t *vm, Void_t *data, size_t size, int type, int local)
 
     /* if get here, resizing was successful */
     if ((type & VM_RSZERO) && sz > oldz) /* zero out new mememory */
-        memset(( Void_t * )(( Vmuchar_t * )rsdt + oldz), 0, sz - oldz);
+        memset(( Void_t * ) (( Vmuchar_t * ) rsdt + oldz), 0, sz - oldz);
 
     if (incz > 0) /* add information to tell that we added more space */
     {
-        np = ( Block_t * )(( Vmuchar_t * )NEXT(rp) - sizeof(Head_t));
-        PACK(np) = ( Pack_t * )rp;
+        np = ( Block_t * ) (( Vmuchar_t * ) NEXT(rp) - sizeof(Head_t));
+        PACK(np) = ( Pack_t * ) rp;
         SIZE(np) = (newz - incz) | MARK; /* !!!actual requested size */
     }
 
 done:
     if (!local && _Vmtrace)
-        (*_Vmtrace)(vm, ( Vmuchar_t * )data, ( Vmuchar_t * )rsdt, size, 0);
+        (*_Vmtrace)(vm, ( Vmuchar_t * ) data, ( Vmuchar_t * ) rsdt, size, 0);
     return rsdt;
 }
 
@@ -1226,7 +1227,7 @@ bestalign(Vmalloc_t *vm, size_t size, size_t align, int local)
     Block_t *tp, *np;
     ssize_t sz, remz, algz, algn, extra;
     Pack_t *pack;
-    Vmbest_t *best = ( Vmbest_t * )vm->data;
+    Vmbest_t *best = ( Vmbest_t * ) vm->data;
     asospindecl();
     /**/ DEBUG_ASSERT(chkregion(best, local) >= 0);
 
@@ -1245,7 +1246,7 @@ bestalign(Vmalloc_t *vm, size_t size, size_t align, int local)
         extra = 0;
 
     sz = algz + 2 * (algn + sizeof(Head_t) + extra);
-    if (!(data = ( Vmuchar_t * )KPVALLOC(vm, sz, bestalloc)))
+    if (!(data = ( Vmuchar_t * ) KPVALLOC(vm, sz, bestalloc)))
         return NIL(Void_t *);
 
     tp = BLOCK(data);
@@ -1260,14 +1261,14 @@ bestalign(Vmalloc_t *vm, size_t size, size_t align, int local)
         data += algn - remz; /**/
         DEBUG_ASSERT(((VMLONG(data) + extra) % algn) == 0);
         np = BLOCK(data);
-        if ((( Vmuchar_t * )np - ( Vmuchar_t * )tp)
+        if ((( Vmuchar_t * ) np - ( Vmuchar_t * ) tp)
             < (ssize_t)(sizeof(Block_t) + extra)) {
             data += algn;
             np = BLOCK(data);
         } /**/
         DEBUG_ASSERT(((VMLONG(data) + extra) % algn) == 0);
 
-        sz = ( Vmuchar_t * )np - ( Vmuchar_t * )tp; /**/
+        sz = ( Vmuchar_t * ) np - ( Vmuchar_t * ) tp; /**/
         DEBUG_ASSERT(sz >= sizeof(Block_t));
         PACK(np) = pack;
         SIZE(np) = (BDSZ(tp) - sz) | BUSY;
@@ -1291,7 +1292,7 @@ bestalign(Vmalloc_t *vm, size_t size, size_t align, int local)
 
     if (!local && _Vmtrace)
         (*_Vmtrace)(vm, NIL(Vmuchar_t *), data, size, align);
-    return ( Void_t * )data;
+    return ( Void_t * ) data;
 }
 
 static int
@@ -1301,14 +1302,14 @@ beststat(Vmalloc_t *vm, Vmstat_t *st, int local)
     Block_t *sgb, *bp, *endbp;
     Pack_t *pack;
     Seg_t *seg;
-    Vmbest_t *best = ( Vmbest_t * )vm->data;
+    Vmbest_t *best = ( Vmbest_t * ) vm->data;
 
     if (!st)
         return 0;
 
     st->n_pack = best->pkcnt;
     for (seg = best->vmdt.seg; seg; seg = seg->next)
-        for (sgb = ( Block_t * )SEGDATA(seg); sgb < seg->endb;
+        for (sgb = ( Block_t * ) SEGDATA(seg); sgb < seg->endb;
              sgb = NEXT(sgb)) { /**/
             DEBUG_ASSERT(BDSZ(sgb) < seg->size);
             if (!(SIZE(sgb) & BUSY)) {
@@ -1318,7 +1319,7 @@ beststat(Vmalloc_t *vm, Vmstat_t *st, int local)
             }
 
             /* make sure that block is well-defined */
-            bp = ( Block_t * )DATA(sgb);
+            bp = ( Block_t * ) DATA(sgb);
             pack = PACK(bp);
             for (k = 0; k < best->pkcnt; ++k)
                 if (pack == best->list[k])
@@ -1328,8 +1329,8 @@ beststat(Vmalloc_t *vm, Vmstat_t *st, int local)
 
             for (endbp = ENDB(sgb); bp < endbp; bp = TRUENEXT(bp)) {
                 pack = PACK(bp);
-                if (DATA(bp) == ( Void_t * )pack) /* administrative data for
-                                                     the pack */
+                if (DATA(bp) == ( Void_t * ) pack) /* administrative data for
+                                                      the pack */
                     continue;
 
                 sz = TRUEBDSZ(bp); /**/
@@ -1387,13 +1388,13 @@ beststat(Vmalloc_t *vm, Vmstat_t *st, int local)
 static int
 bestevent(Vmalloc_t *vm, int event, Void_t *arg)
 {
-    Vmbest_t *best = ( Vmbest_t * )vm->data;
+    Vmbest_t *best = ( Vmbest_t * ) vm->data;
 
     if (event == VM_OPEN) /* return the size of Vmbest_t */
     {
         if (!arg) /* bad call */
             return -1;
-        *(( ssize_t * )arg) = sizeof(Vmbest_t);
+        *(( ssize_t * ) arg) = sizeof(Vmbest_t);
     } else if (event == VM_ENDOPEN) {
         if ((best->pkmax = asoactivecpu()) < 2)
             best->pkmax = 2;
@@ -1403,7 +1404,7 @@ bestevent(Vmalloc_t *vm, int event, Void_t *arg)
             best->pkmax = PK_ALLOW;
     } else if (event == VM_CHECKARENA) /* check integrity of the arena */
     {
-        if (chkregion(( Vmbest_t * )vm->data, 0) < 0)
+        if (chkregion(( Vmbest_t * ) vm->data, 0) < 0)
             return -1;
     }
 
@@ -1433,15 +1434,15 @@ _vmchkall(int tag) /* check to see if some region may have a bad free list or
         if (!vh->vm || !(vh->vm->meth.meth & VM_MTBEST))
             continue;
 
-        best = ( Vmbest_t * )vh->vm->data;
+        best = ( Vmbest_t * ) vh->vm->data;
         for (p = 0; p < best->pkcnt; ++p) {
             if (!(pack = best->list[p]))
                 continue;
 
-            _vmchkaddress(vh->vm, ( Vmuchar_t * )pack->free, tag);
+            _vmchkaddress(vh->vm, ( Vmuchar_t * ) pack->free, tag);
             for (k = 0; k < SM_SLOT; ++k)
                 _vmchkaddress(
-                vh->vm, ( Vmuchar_t * )pack->small[k].free, tag);
+                vh->vm, ( Vmuchar_t * ) pack->small[k].free, tag);
         }
     }
 }
@@ -1457,11 +1458,11 @@ vmregion(Void_t *addr)
     Block_t *blk = BLOCK(addr);
 
 #    define VMHOLD(vm, b)                                                    \
-        (( Vmuchar_t * )(b) >= (vm)->data->segmin                            \
-         && ( Vmuchar_t * )(b) < (vm)->data->segmax)
+        (( Vmuchar_t * ) (b) >= (vm)->data->segmin                           \
+         && ( Vmuchar_t * ) (b) < (vm)->data->segmax)
 #    define SGHOLD(sg, b)                                                    \
-        (( Vmuchar_t * )(b) >= (sg)->base                                    \
-         && ( Vmuchar_t * )(b) < (sg)->base + (sg)->size)
+        (( Vmuchar_t * ) (b) >= (sg)->base                                   \
+         && ( Vmuchar_t * ) (b) < (sg)->base + (sg)->size)
 
 #    define CAREFUL                                                          \
         1 /* 1 for any system where different malloc packages may be mixed   \
@@ -1470,27 +1471,27 @@ vmregion(Void_t *addr)
                       SEG() is invoked */
     if (VMHOLD(Vmheap, addr))
         for (seg = (vmdt = Vmheap->data)->seg; seg; seg = seg->next)
-            if (SGHOLD(seg, blk) && (pack = ( Pack_t * )PACK(blk))
-                && pack->best == ( Vmbest_t * )vmdt)
+            if (SGHOLD(seg, blk) && (pack = ( Pack_t * ) PACK(blk))
+                && pack->best == ( Vmbest_t * ) vmdt)
                 return Vmheap;
 
     for (vh = _Vmhold; vh; vh = vh->next)
         if (vh->vm && VMHOLD(vh->vm, addr)) /* could be in region vh->vm */
             for (seg = (vmdt = vh->vm->data)->seg; seg; seg = seg->next)
-                if (SGHOLD(seg, blk) && (pack = ( Pack_t * )PACK(blk))
-                    && pack->best == ( Vmbest_t * )vmdt)
+                if (SGHOLD(seg, blk) && (pack = ( Pack_t * ) PACK(blk))
+                    && pack->best == ( Vmbest_t * ) vmdt)
                     return vh->vm;
 
 #    else /* !CAREFUL: blk is (optimistically) assumed to be allocated by    \
              Vmalloc */
     if (VMHOLD(Vmheap, addr))
-        if ((pack = ( Pack_t * )PACK(blk))->best
-            == ( Vmbest_t * )Vmheap->data)
+        if ((pack = ( Pack_t * ) PACK(blk))->best
+            == ( Vmbest_t * ) Vmheap->data)
             return Vmheap;
 
     for (vh = _Vmhold; vh; vh = vh->next)
         if (VMHOLD(vh->vm, addr))
-            if (pack->best == ( Vmbest_t * )vh->vm->data)
+            if (pack->best == ( Vmbest_t * ) vh->vm->data)
                 return vh->vm;
 #    endif
 

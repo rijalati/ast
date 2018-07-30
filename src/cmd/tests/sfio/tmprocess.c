@@ -44,10 +44,10 @@ Sfdisc_t *disc;
     char *s;
     Sfio_t *sf;
 
-    if (*(( char * )buf + n - 1) != '\n')
+    if (*(( char * ) buf + n - 1) != '\n')
         terror("Not writing a whole record");
 
-    sf = sfnew(NIL(Sfio_t *), ( Void_t * )buf, n, -1, SF_STRING | SF_READ);
+    sf = sfnew(NIL(Sfio_t *), ( Void_t * ) buf, n, -1, SF_STRING | SF_READ);
     while ((s = sfgetr(sf, '\n', 0))) {
         w = sfvalue(sf) - 1;
         if (s[0] != s[w - 1] - 1)
@@ -58,7 +58,7 @@ Sfdisc_t *disc;
     }
     sfclose(sf);
 
-    if ((w = write(sffileno(f), buf, n)) != ( int )n)
+    if ((w = write(sffileno(f), buf, n)) != ( int ) n)
         terror("Write %d returns %d", n, w);
 
     return w;
@@ -109,10 +109,10 @@ tmain()
 #    define FORK() fork()
 #    define RETURN(v) texit(v)
 #endif
-        if ((pid = ( int )FORK()) < 0)
+        if ((pid = ( int ) FORK()) < 0)
             terror("Creating process %d", i);
         else if (pid == 0) { /* write to file */
-            sfsetbuf(fa[i], ( Void_t * )buf[i], sizeof(buf[i]));
+            sfsetbuf(fa[i], ( Void_t * ) buf[i], sizeof(buf[i]));
             sfset(fa[i], SF_WHOLE, 1);
             Disc[i].writef = inspect;
             sfdisc(fa[i], &Disc[i]);

@@ -102,7 +102,7 @@ bad:
 static int
 info_read(Pss_t *pss, Pss_id_t pid)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     int count;
 
     if (pid) {
@@ -122,14 +122,14 @@ info_read(Pss_t *pss, Pss_id_t pid)
 static int
 info_part(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     struct pentry *pr = state->pr;
 
     pe->pid = pr->pid;
     pe->pgrp = pr->pgroup;
     pe->tty = pr->cdevnum == -1 ? PSS_NODEV : pr->cdevnum;
     pe->uid = pr->uid;
-    switch (( int )(pr->pstate & 0xf)) {
+    switch (( int ) (pr->pstate & 0xf)) {
     case PRREADY:
         pe->state = 'I';
         break;
@@ -158,7 +158,7 @@ info_part(Pss_t *pss, Pssent_t *pe)
 static int
 info_full(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     struct pentry *pr = state->pr;
     unsigned long fields = pss->disc->fields & pss->meth->fields;
     char *s;
@@ -168,16 +168,16 @@ info_full(Pss_t *pss, Pssent_t *pe)
 
     if (pe->state != PSS_ZOMBIE) {
         if ((fields & (PSS_sid | PSS_size | PSS_time))
-            && lseek(state->mem, ( unsigned long )pr->pss, SEEK_SET)
-               == ( unsigned long )pr->pss
+            && lseek(state->mem, ( unsigned long ) pr->pss, SEEK_SET)
+               == ( unsigned long ) pr->pss
             && read(state->mem, &px, sizeof(px)) == sizeof(px)) {
             pe->sid = px.sid;
             pe->size = (pr->stack_total + (px.brk - px.data_start)) / 1024;
             pe->time = (px.pss_utime + px.stime) / 5;
         }
         if ((fields & (PSS_pri))
-            && lseek(state->mem, ( unsigned long )pr->i, SEEK_SET)
-               == ( unsigned long )pr->i
+            && lseek(state->mem, ( unsigned long ) pr->i, SEEK_SET)
+               == ( unsigned long ) pr->i
             && read(state->mem, &st, sizeof(st)) == sizeof(st)) {
             pe->pri = st.pprio;
             pe->nice = st.rprio;
@@ -196,7 +196,7 @@ info_full(Pss_t *pss, Pssent_t *pe)
 static int
 info_done(Pss_t *pss)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
 
     close(state->mem);
     free(state);

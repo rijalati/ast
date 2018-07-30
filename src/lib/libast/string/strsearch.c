@@ -44,17 +44,17 @@ strsearch(const void *tab,
           const char *name,
           void *context)
 {
-    char *lo = ( char * )tab;
+    char *lo = ( char * ) tab;
     char *hi = lo + (num - 1) * siz;
     char *mid;
     int v;
 
     while (lo <= hi) {
         mid = lo + (((hi - lo) / siz) / 2) * siz;
-        if (!(v = context ? (*( Strcmp_context_f )comparf)(
-                            name, *(( char ** )mid), context)
-                          : (*comparf)(name, *(( char ** )mid))))
-            return ( void * )mid;
+        if (!(v = context ? (*( Strcmp_context_f ) comparf)(
+                            name, *(( char ** ) mid), context)
+                          : (*comparf)(name, *(( char ** ) mid))))
+            return ( void * ) mid;
         else if (v > 0)
             lo = mid + siz;
         else

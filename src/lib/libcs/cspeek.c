@@ -61,7 +61,7 @@ cspeek(Cs_t *state, int fd, void *buf, size_t siz)
         pk.ctlbuf.len = 0;
         pk.ctlbuf.buf = 0;
         pk.databuf.maxlen = siz;
-        pk.databuf.buf = ( char * )buf;
+        pk.databuf.buf = ( char * ) buf;
         pk.databuf.len = 0;
         if ((n = ioctl(fd, I_PEEK, &pk)) >= 0) {
             state->nostream = -1;
@@ -75,7 +75,7 @@ cspeek(Cs_t *state, int fd, void *buf, size_t siz)
 #endif
 #if _socket_peek
     if (fd != state->nosocket) {
-        if ((n = recv(fd, ( char * )buf, siz, MSG_PEEK)) >= 0) {
+        if ((n = recv(fd, ( char * ) buf, siz, MSG_PEEK)) >= 0) {
             state->nosocket = -1;
             return n;
         }

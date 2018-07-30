@@ -45,5 +45,5 @@ resolvepath(const char *, char *, size_t);
 extern char *
 realpath(const char *file, char *path)
 {
-    return resolvepath(file, path, PATH_MAX) > 0 ? path : ( char * )0;
+    return resolvepath(file, path, PATH_MAX) > 0 ? path : ( char * ) 0;
 }

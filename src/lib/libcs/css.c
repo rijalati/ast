@@ -128,7 +128,7 @@ cssopen(const char *path, Cssdisc_t *disc)
 
     if (!state.servers) {
         csprotect(&cs);
-        if ((n = ( int )strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0))
+        if ((n = ( int ) strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0))
             < OPEN_MIN)
             n = OPEN_MIN;
         if (!(s = newof(
@@ -137,16 +137,16 @@ cssopen(const char *path, Cssdisc_t *disc)
               n *(sizeof(Cssfd_t) + sizeof(Cspoll_t) + sizeof(Auth_t)),
               0)))
             return 0;
-        state.fdpoll = ( Cspoll_t * )(s);
-        state.fdinfo = ( Cssfd_t * )(state.fdpoll + n);
-        state.auth = ( Auth_t * )(state.fdinfo + n);
+        state.fdpoll = ( Cspoll_t * ) (s);
+        state.fdinfo = ( Cssfd_t * ) (state.fdpoll + n);
+        state.auth = ( Auth_t * ) (state.fdinfo + n);
         state.fdmax = n;
         state.fdnext = -1;
         state.pid = getpid();
         if (!(css = newof(0, Css_t, 1, sizeof(Cssdisc_t))))
             return 0;
         css->id = cs.id;
-        css->disc = ( Cssdisc_t * )(css + 1);
+        css->disc = ( Cssdisc_t * ) (css + 1);
         css->disc->version = CSS_VERSION;
         state.servers = state.main = css;
         atexit(done);
@@ -160,7 +160,7 @@ cssopen(const char *path, Cssdisc_t *disc)
     state.servers = css;
     if (!(css->state = csalloc(NiL)))
         goto bad;
-    css->service = ( char * )(css + 1);
+    css->service = ( char * ) (css + 1);
     css->path = css->service + n;
     css->id = state.main->id;
     css->disc = disc;
@@ -195,7 +195,7 @@ cssopen(const char *path, Cssdisc_t *disc)
         css->disc->flags &= ~CSS_AUTHENTICATE;
     } else {
         sfsprintf(css->service, n, "/dev/fdp/local/%s", path);
-        path = ( char * )cspath(css->state, 0, 0);
+        path = ( char * ) cspath(css->state, 0, 0);
         type = strmatch(path, "/dev/??p/*/*") ? path[5] : 'f';
         css->perm = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
         if ((css->disc->flags & CSS_AUTHENTICATE)
@@ -474,7 +474,7 @@ again:
         return 0;
     ip = state.fdinfo + fd;
     if (op == 0)
-        return ip->events ? ip : ( Cssfd_t * )0;
+        return ip->events ? ip : ( Cssfd_t * ) 0;
     if (op & CS_POLL_ARG) {
         cmd = op & CS_POLL_MASK;
         nfd = (op >> CS_POLL_SHIFT) & CS_POLL_MASK;
@@ -917,8 +917,8 @@ csspoll(unsigned long ms, unsigned long flags)
                         n = sfsprintf(css->tmp,
                                       sizeof(css->tmp),
                                       "%lu %lu\n",
-                                      ( unsigned long )ap->atime,
-                                      ( unsigned long )ap->mtime);
+                                      ( unsigned long ) ap->atime,
+                                      ( unsigned long ) ap->mtime);
                         if (cswrite(css->state, fd, css->tmp, n) != n)
                             goto reject;
                         ap->expire = cs.time + EXPIRE;
@@ -990,7 +990,7 @@ csspoll(unsigned long ms, unsigned long flags)
                              = (*css->disc->acceptf)(css,
                                                      ip,
                                                      &ap->id,
-                                                     *va ? va : ( char ** )0,
+                                                     *va ? va : ( char ** ) 0,
                                                      css->disc))
                             != ip->fd)
                             cssfd(css,

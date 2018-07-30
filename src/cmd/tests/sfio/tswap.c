@@ -33,7 +33,7 @@ tmain()
     sfclose(sfstdin);
     if (sfswap(f1, sfstdin) != sfstdin)
         terror("Can't swap with sfstdin");
-    sfseek(sfstdin, ( Sfoff_t )0, 0);
+    sfseek(sfstdin, ( Sfoff_t ) 0, 0);
     if (!(s = sfgetr(sfstdin, '\n', 1)))
         terror("sfgetr failed");
     if (strcmp(s, "0123456789") != 0)

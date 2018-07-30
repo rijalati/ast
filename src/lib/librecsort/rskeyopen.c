@@ -81,7 +81,7 @@ rskeyopen(keydisc) Rskeydisc_t *keydisc;
     if (!(kp = vmnewof(Vmheap, 0, Rskey_t, 1, disc ? 0 : sizeof(Rsdisc_t))))
         return 0;
     kp->id = lib;
-    kp->disc = disc ? disc : ( Rsdisc_t * )(kp + 1);
+    kp->disc = disc ? disc : ( Rsdisc_t * ) (kp + 1);
     kp->disc->version = keydisc->version;
     kp->disc->keylen = -1;
     kp->disc->data = REC_D_TYPE('\n');

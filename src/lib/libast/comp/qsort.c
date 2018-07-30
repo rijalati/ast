@@ -40,12 +40,12 @@ _STUB_qsort()
 typedef long WORD;
 #    define W sizeof(WORD) /* must be a power of 2 */
 #    define SWAPINIT(a, es)                                                  \
-        swaptype = (a - ( char * )0 | es) % W ? 2 : es > W ? 1 : 0
+        swaptype = (a - ( char * ) 0 | es) % W ? 2 : es > W ? 1 : 0
 
 #    define exch(a, b, t) (t = a, a = b, b = t);
 #    define swap(a, b)                                                       \
         swaptype != 0 ? swapfunc(a, b, es, swaptype)                         \
-                      : ( void )exch(*( WORD * )(a), *( WORD * )(b), t)
+                      : ( void ) exch(*( WORD * ) (a), *( WORD * ) (b), t)
 
 #    define vecswap(a, b, n)                                                 \
         if (n > 0)                                                           \
@@ -57,7 +57,7 @@ swapfunc(char *a, char *b, size_t n, int swaptype)
     if (swaptype <= 1) {
         WORD t;
         for (; n > 0; a += W, b += W, n -= W)
-            exch(*( WORD * )a, *( WORD * )b, t);
+            exch(*( WORD * ) a, *( WORD * ) b, t);
     } else {
         char t;
         for (; n > 0; a += 1, b += 1, n -= 1)
@@ -70,8 +70,8 @@ swapfunc(char *a, char *b, size_t n, int swaptype)
             pv = a;                                                          \
             swap(pv, pm);                                                    \
         } else {                                                             \
-            pv = ( char * )&v;                                               \
-            v = *( WORD * )pm;                                               \
+            pv = ( char * ) &v;                                              \
+            v = *( WORD * ) pm;                                              \
         }
 
 #    define min(a, b) ((a) < (b) ? (a) : (b))

@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 #ifndef NIL
-#    define NIL(t) (( t )0)
+#    define NIL(t) (( t ) 0)
 #endif
 
 #if _hdr_stdlib
@@ -50,7 +50,7 @@
 #    define elementsof(x) (sizeof(x) / sizeof(x[0]))
 #endif
 #ifndef integralof
-#    define integralof(x) ((( char * )(x)) - (( char * )0))
+#    define integralof(x) ((( char * ) (x)) - (( char * ) 0))
 #endif
 
 #ifndef TIMEOUT
@@ -63,21 +63,21 @@ extern int sprintf _ARG_((char *, const char *, ...));
 
 #if !__STD_C && !_hdr_stdlib
 extern int atexit _ARG_((void (*)(void)));
-extern void exit _ARG_(( int ));
+extern void exit _ARG_(( int ) );
 extern Void_t *malloc _ARG_((size_t));
-extern char *getenv _ARG_(( const char * ));
-extern int system _ARG_(( const char * ));
+extern char *getenv _ARG_(( const char * ) );
+extern int system _ARG_(( const char * ) );
 #endif
 
 #if !_hdr_unistd
-extern int alarm _ARG_(( int ));
-extern int sleep _ARG_(( int ));
+extern int alarm _ARG_(( int ) );
+extern int sleep _ARG_(( int ) );
 extern int
 fork();
-extern int access _ARG_(( const char *, int ));
-extern int write _ARG_(( int, const void *, int ));
-extern int unlink _ARG_(( const char * ));
-extern Void_t *sbrk _ARG_(( int ));
+extern int access _ARG_(( const char *, int ) );
+extern int write _ARG_(( int, const void *, int ) );
+extern int unlink _ARG_(( const char * ) );
+extern Void_t *sbrk _ARG_(( int ) );
 extern int
 getpid();
 extern int
@@ -479,7 +479,7 @@ int n;
     }
 
     if (n < 0)
-        for (n = 0; n < ( int )(sizeof(Tstfile) / sizeof(Tstfile[0])); ++n)
+        for (n = 0; n < ( int ) (sizeof(Tstfile) / sizeof(Tstfile[0])); ++n)
             if (Tstfile[n][0] == 0)
                 break;
     if (n >= sizeof(Tstfile) / sizeof(Tstfile[0]))
@@ -504,9 +504,9 @@ int n;
         static int pid;
         static char *tmp;
         if (!tmp) {
-            if (!(tmp = ( char * )getenv("TMPDIR")) || access(tmp, 0) != 0)
+            if (!(tmp = ( char * ) getenv("TMPDIR")) || access(tmp, 0) != 0)
                 tmp = "/tmp";
-            pid = ( int )getpid() % 10000;
+            pid = ( int ) getpid() % 10000;
         }
 #    if _SFIO_H
         sfsprintf(Tstfile[n],
@@ -591,7 +591,7 @@ static int tstchild(argv) char **argv;
         if (strcmp(a, "--all") == 0)
             Tstall++;
         else if (strcmp(a, "--child") == 0)
-            return ( int )(v - argv + 1);
+            return ( int ) (v - argv + 1);
         else if (strncmp(a, "--timeout=", 10) == 0)
             Tsttimeout = atoi(a + 10);
         else if (strcmp(a, "--") == 0)
@@ -618,11 +618,11 @@ static int tstopts(argv) char **argv;
         else if (strncmp(a, "--timeout=", 10) == 0)
             Tsttimeout = atoi(a + 10);
         else if (strcmp(a, "--") == 0)
-            return ( int )(v - argv + 1);
+            return ( int ) (v - argv + 1);
         else if (strncmp(a, "--", 2) != 0)
             break;
     tstintr();
-    return ( int )(v - argv);
+    return ( int ) (v - argv);
 }
 
 static unsigned int Rand = 0xdeadbeef;
@@ -661,7 +661,7 @@ static Void_t *tstshared(n) size_t n;
 
     if ((z = open("/dev/zero", O_RDWR)) >= 0) {
         p = mmap(0, n, PROT_READ | PROT_WRITE, MAP_SHARED, z, 0);
-        if (!p || p == ( Void_t * )(-1)) {
+        if (!p || p == ( Void_t * ) (-1)) {
             p = 0;
             close(z);
         }
@@ -670,7 +670,7 @@ static Void_t *tstshared(n) size_t n;
 #ifdef MAP_ANONYMOUS
         p = mmap(
         0, n, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
-        if (!p || p == ( Void_t * )(-1))
+        if (!p || p == ( Void_t * ) (-1))
 #endif
             tsterror("mmap failed on %zu bytes", n);
     }

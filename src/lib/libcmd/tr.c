@@ -237,7 +237,7 @@ next:
         c = tr->level ? -2 : tr->type && !tr->truncate ? tr->prev : -1;
         break;
     case '\\':
-        c = chresc(( char * )tr->next - 1, ( char ** )&tr->next);
+        c = chresc(( char * ) tr->next - 1, ( char ** ) &tr->next);
         break;
     case '[':
         switch (*tr->next) {
@@ -248,8 +248,8 @@ next:
                 if (tr->convert == c || tr->type && !tr->position) {
                     c = *tr->next;
                     goto member;
-                } else if (!strncmp(( char * )tr->next, ":lower:", 7)
-                           || !strncmp(( char * )tr->next, ":upper:", 7)) {
+                } else if (!strncmp(( char * ) tr->next, ":lower:", 7)
+                           || !strncmp(( char * ) tr->next, ":upper:", 7)) {
                     f = tr->isit;
                     tr->convert = c;
                     c = tr->next - tr->base;
@@ -259,7 +259,7 @@ next:
                         return -2;
                 }
             }
-            if (!(tr->isit = regclass(( char * )tr->next, ( char ** )&e))) {
+            if (!(tr->isit = regclass(( char * ) tr->next, ( char ** ) &e))) {
                 if (f)
                     tr->isit = f;
                 c = ':';
@@ -274,7 +274,7 @@ next:
         case '.':
         case '=':
             if ((q = regcollate(
-                 ( char * )tr->next, ( char ** )&e, buf, sizeof(buf), &w))
+                 ( char * ) tr->next, ( char ** ) &e, buf, sizeof(buf), &w))
                 >= 0) {
                 if (*tr->next == '=' && q > 0) {
                     sfsprintf(
@@ -305,8 +305,8 @@ next:
                 c = nextchar(tr);
                 if (tr->type == 1 && *tr->next == '*') {
                     e = tr->next + 1;
-                    if (!(tr->count = ( int )strtol(
-                          ( char * )tr->next + 1, ( char ** )&tr->next, 0))
+                    if (!(tr->count = ( int ) strtol(
+                          ( char * ) tr->next + 1, ( char ** ) &tr->next, 0))
                         && tr->next == e)
                         tr->count = -1;
                     if (*tr->next++ != ']')
@@ -460,7 +460,7 @@ tropen(unsigned char *src,
                 col[n].chr = set[n];
                 wcsxfrm(col[n].seq, w, sizeof(col[n].seq));
             }
-            qsort(col, c, sizeof(col[0]), ( Compare_f )wcscmp);
+            qsort(col, c, sizeof(col[0]), ( Compare_f ) wcscmp);
             for (n = 0; n < c; n++)
                 set[n] = col[n].chr;
         }
@@ -593,7 +593,7 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
                         w = -1;
                     } else if ((c = &side[sizeof(side)] - inend) <= 0)
                         w = -1;
-                    else if (!(pushbuf = ( unsigned char * )sfreserve(
+                    else if (!(pushbuf = ( unsigned char * ) sfreserve(
                                ip, SF_UNBOUND, 0))
                              || (n = sfvalue(ip)) <= 0) {
                         eof = 1;
@@ -618,7 +618,7 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
                     } else
                         o = 0;
                     if (!(inp
-                          = ( unsigned char * )sfreserve(ip, SF_UNBOUND, 0))
+                          = ( unsigned char * ) sfreserve(ip, SF_UNBOUND, 0))
                         || (n = sfvalue(ip)) <= 0) {
                         eof = 1;
                         inp = side;
@@ -661,8 +661,8 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
         }
     } else {
         while (nwrite != ncopy && !sh_checksig(tr->context)) {
-            if (!(inbuf
-                  = ( unsigned char * )sfreserve(ip, SF_UNBOUND, SF_LOCKR))) {
+            if (!(inbuf = ( unsigned char * ) sfreserve(
+                  ip, SF_UNBOUND, SF_LOCKR))) {
                 if (sfvalue(ip)) {
                     error(2, ERROR_SYSTEM | 2, "read error");
                     return -1;
@@ -692,7 +692,7 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
                      * get write buffer space
                      */
 
-                    if (!(outbuf = ( unsigned char * )sfreserve(
+                    if (!(outbuf = ( unsigned char * ) sfreserve(
                           op,
                           (ncopy < 0) ? SF_UNBOUND : (ncopy - nwrite),
                           SF_LOCKR)))
@@ -761,9 +761,9 @@ b_tr(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    if (tr = tropen(( unsigned char * )argv[0],
-                    ( unsigned char * )argv[0] ? ( unsigned char * )argv[1]
-                                               : ( unsigned char * )0,
+    if (tr = tropen(( unsigned char * ) argv[0],
+                    ( unsigned char * ) argv[0] ? ( unsigned char * ) argv[1]
+                                                : ( unsigned char * ) 0,
                     flags,
                     context)) {
         trcopy(tr, sfstdin, sfstdout, SF_UNBOUND);

@@ -20,7 +20,7 @@
 #include "tclPort.h"
 
 extern Tcl_Channel TclCreateCommandChannel
-_ANSI_ARGS_(( Tcl_File, Tcl_File, Tcl_File, int, int * ));
+_ANSI_ARGS_(( Tcl_File, Tcl_File, Tcl_File, int, int * ) );
 
 /*
  * A linked list of the following structures is used to keep track
@@ -227,12 +227,12 @@ int *seekFlagPtr;   /* Set this to 1 if the caller
             break;
         default:
         error:
-            if (interp != ( Tcl_Interp * )NULL) {
+            if (interp != ( Tcl_Interp * ) NULL) {
                 Tcl_AppendResult(interp,
                                  "illegal access mode \"",
                                  string,
                                  "\"",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
             }
             return -1;
         }
@@ -257,7 +257,7 @@ int *seekFlagPtr;   /* Set this to 1 if the caller
      */
 
     if (Tcl_SplitList(interp, string, &modeArgc, &modeArgv) != TCL_OK) {
-        if (interp != ( Tcl_Interp * )NULL) {
+        if (interp != ( Tcl_Interp * ) NULL) {
             Tcl_AddErrorInfo(interp,
                              "\n    while processing open access modes \"");
             Tcl_AddErrorInfo(interp, string);
@@ -290,14 +290,14 @@ int *seekFlagPtr;   /* Set this to 1 if the caller
 #ifdef O_NOCTTY
             mode |= O_NOCTTY;
 #else
-            if (interp != ( Tcl_Interp * )NULL) {
+            if (interp != ( Tcl_Interp * ) NULL) {
                 Tcl_AppendResult(interp,
                                  "access mode \"",
                                  flag,
                                  "\" not supported by this system",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
             }
-            ckfree(( char * )modeArgv);
+            ckfree(( char * ) modeArgv);
             return -1;
 #endif
         } else if ((c == 'N') && (strcmp(flag, "NONBLOCK") == 0)) {
@@ -308,39 +308,39 @@ int *seekFlagPtr;   /* Set this to 1 if the caller
             mode |= O_NDELAY;
 #    endif
 #else
-            if (interp != ( Tcl_Interp * )NULL) {
+            if (interp != ( Tcl_Interp * ) NULL) {
                 Tcl_AppendResult(interp,
                                  "access mode \"",
                                  flag,
                                  "\" not supported by this system",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
             }
-            ckfree(( char * )modeArgv);
+            ckfree(( char * ) modeArgv);
             return -1;
 #endif
         } else if ((c == 'T') && (strcmp(flag, "TRUNC") == 0)) {
             mode |= O_TRUNC;
         } else {
-            if (interp != ( Tcl_Interp * )NULL) {
+            if (interp != ( Tcl_Interp * ) NULL) {
                 Tcl_AppendResult(
                 interp,
                 "invalid access mode \"",
                 flag,
                 "\": must be RDONLY, WRONLY, RDWR, APPEND, CREAT",
                 " EXCL, NOCTTY, NONBLOCK, or TRUNC",
-                ( char * )NULL);
+                ( char * ) NULL);
             }
-            ckfree(( char * )modeArgv);
+            ckfree(( char * ) modeArgv);
             return -1;
         }
     }
-    ckfree(( char * )modeArgv);
+    ckfree(( char * ) modeArgv);
     if (!gotRW) {
-        if (interp != ( Tcl_Interp * )NULL) {
+        if (interp != ( Tcl_Interp * ) NULL) {
             Tcl_AppendResult(interp,
                              "access mode must include either",
                              " RDONLY, WRONLY, or RDWR",
-                             ( char * )NULL);
+                             ( char * ) NULL);
         }
         return -1;
     }
@@ -1314,7 +1314,7 @@ char *Tcl_PosixError(interp) Tcl_Interp *interp; /* Interpreter whose
 
     msg = Tcl_ErrnoMsg(errno);
     id = Tcl_ErrnoId();
-    Tcl_SetErrorCode(interp, "POSIX", id, msg, ( char * )NULL);
+    Tcl_SetErrorCode(interp, "POSIX", id, msg, ( char * ) NULL);
     return msg;
 }
 
@@ -1389,14 +1389,14 @@ int flags;          /* Or'ed combination of TCL_STDIN, TCL_STDOUT,
             Tcl_AppendResult(interp,
                              "can't read output from command:",
                              " standard output was redirected",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         if ((flags & TCL_STDIN) && (inPipe == NULL)) {
             Tcl_AppendResult(interp,
                              "can't write input to command:",
                              " standard input was redirected",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
     }
@@ -1404,9 +1404,9 @@ int flags;          /* Or'ed combination of TCL_STDIN, TCL_STDOUT,
     channel
     = TclCreateCommandChannel(outPipe, inPipe, errFile, numPids, pidPtr);
 
-    if (channel == ( Tcl_Channel )NULL) {
+    if (channel == ( Tcl_Channel ) NULL) {
         Tcl_AppendResult(
-        interp, "pipe for command could not be created", ( char * )NULL);
+        interp, "pipe for command could not be created", ( char * ) NULL);
         goto error;
     }
     return channel;

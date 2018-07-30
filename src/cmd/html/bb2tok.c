@@ -139,7 +139,7 @@ token(State_t *state,
             state->keep = 1;
             break;
         }
-        state->prev = ( Header_t * )head;
+        state->prev = ( Header_t * ) head;
         state->push = push;
     } else {
         if (state->keep && state->prev) {
@@ -157,7 +157,7 @@ token(State_t *state,
                      state->push ? "" : "/",
                      state->prev->out);
         }
-        state->prev = ( Header_t * )head;
+        state->prev = ( Header_t * ) head;
         state->push = push;
     }
 }
@@ -194,7 +194,7 @@ parse(const char *path, Sfio_t *ip, Sfio_t *op)
 
     State_t state;
 
-    state.prev = ( Header_t * )&header[*(state.lex = lex) = LINE];
+    state.prev = ( Header_t * ) &header[*(state.lex = lex) = LINE];
     state.push = 1;
     state.keep = 0;
     t = tok;

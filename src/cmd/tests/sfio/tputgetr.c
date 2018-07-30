@@ -26,11 +26,11 @@ writef(Sfio_t *f, const void *data, size_t n, Sfdisc_t *disc)
     char *dt;
     ssize_t k;
 
-    for (dt = ( char * )data + n - 1; dt >= ( char * )data; --dt)
+    for (dt = ( char * ) data + n - 1; dt >= ( char * ) data; --dt)
         if (*dt == '\n')
             break;
 
-    if ((k = (dt - ( char * )data) + 1) == 0)
+    if ((k = (dt - ( char * ) data) + 1) == 0)
         tinfo("Processing a partial line, ok");
 
     return k;
@@ -55,7 +55,7 @@ tmain()
             terror("Writing %s", buf);
     }
 
-    sfseek(fp, ( Sfoff_t )0, 0);
+    sfseek(fp, ( Sfoff_t ) 0, 0);
 
     for (i = 0; i < 1000; ++i) {
         sfsprintf(buf, sizeof(buf), "Number: %d", i);
@@ -65,7 +65,7 @@ tmain()
             terror("Input=%s, Expect=%s", s, buf);
     }
 
-    sfseek(fp, ( Sfoff_t )0, 0);
+    sfseek(fp, ( Sfoff_t ) 0, 0);
     s = sfgetr(fp, '\0', 1);
     if (s)
         terror("Expecting a null string");

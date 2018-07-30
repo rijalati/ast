@@ -207,7 +207,7 @@ matchcmp(Dt_t *dt, void *k1, void *k2, Dtdisc_t *disc)
 {
     NoP(dt);
     NoP(disc);
-    return strcasecmp(( char * )k1, ( char * )k2);
+    return strcasecmp(( char * ) k1, ( char * ) k2);
 }
 
 static void
@@ -237,7 +237,7 @@ matchset(char *s, int flags)
             break;
         if (c)
             *s = 0;
-        if (!(p = ( Match_t * )dtmatch(state.match, b))) {
+        if (!(p = ( Match_t * ) dtmatch(state.match, b))) {
             if (!(p = newof(0, Match_t, 1, s - b)))
                 error(ERROR_SYSTEM | 3, "out of space [match entry]");
             memcpy(p->name, b, s - b);
@@ -263,10 +263,10 @@ matchhost(char *s)
     if (!(t = strchr(s, ':')))
         return 0;
     *t = 0;
-    if (!(p = ( Match_t * )dtmatch(state.match, s)))
+    if (!(p = ( Match_t * ) dtmatch(state.match, s)))
         for (u = s; v = strchr(u, '.'); u = v) {
             *v = 0;
-            p = ( Match_t * )dtmatch(state.match, s);
+            p = ( Match_t * ) dtmatch(state.match, s);
             *v++ = '.';
             if (p)
                 break;
@@ -285,7 +285,7 @@ matchtype(char *s)
 
     if (!state.match || !(state.matchflags & (MATCH_TYPE | MATCH_NOTYPE)))
         return 1;
-    p = ( Match_t * )dtmatch(state.match, s);
+    p = ( Match_t * ) dtmatch(state.match, s);
     if (state.matchflags & MATCH_TYPE)
         return p && (p->flags & MATCH_TYPE);
     return !p || !(p->flags & MATCH_NOTYPE);
@@ -456,13 +456,13 @@ main(int argc, char **argv)
     } else if (!*argv) {
         for (;;) {
             while (mnt = mntread(mp)) {
-                cmp = ( Cmp_f )strcmp;
+                cmp = ( Cmp_f ) strcmp;
                 if (p = mnt->options)
                     while (*p) {
                         if (*p == 'i'
                             && (!memcmp(p, "ic", 2) || !memcmp(p, "icase", 5)
                                 || !memcmp(p, "ignorecase", 10))) {
-                            cmp = ( Cmp_f )strcasecmp;
+                            cmp = ( Cmp_f ) strcasecmp;
                             break;
                         }
                         while (*p && *p++ != ',')

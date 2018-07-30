@@ -72,7 +72,7 @@ chktodo(Vcsfx_t *sfx, Vcinx_t lo, Vcinx_t hi)
 static int
 intcmp(void *one, void *two, void *disc)
 {
-    return ( int )(*(( Vcinx_t * )one) - *(( Vcinx_t * )two));
+    return ( int ) (*(( Vcinx_t * ) one) - *(( Vcinx_t * ) two));
 }
 static int
 chkdata(Vcsfx_t *sfx, Vcinx_t lo, Vcinx_t hi)
@@ -84,11 +84,11 @@ chkdata(Vcsfx_t *sfx, Vcinx_t lo, Vcinx_t hi)
     if (lo > hi || !chktodo(sfx, lo, hi))
         return 1;
 
-    if (!(ary = ( Vcinx_t * )malloc((hi - lo + 1) * sizeof(Vcinx_t))))
+    if (!(ary = ( Vcinx_t * ) malloc((hi - lo + 1) * sizeof(Vcinx_t))))
         return 0;
     for (k = 0, i = lo; i <= hi; ++i, ++k)
         ary[k] = idx[i];
-    vcqsort(ary, k, sizeof(Vcinx_t), intcmp, ( Void_t * )0);
+    vcqsort(ary, k, sizeof(Vcinx_t), intcmp, ( Void_t * ) 0);
     for (i = 1; i < k; ++i) /* check distinctness */
         /**/ DEBUG_ASSERT(ary[i] != ary[i - 1]);
     free(ary);
@@ -157,7 +157,7 @@ chkone2one(Vcinx_t *list, Vcinx_t size)
     Vcinx_t i;
     Vcchar_t *chk;
 
-    if (!(chk = ( Vcchar_t * )calloc(size, 1)))
+    if (!(chk = ( Vcchar_t * ) calloc(size, 1)))
         return 0;
     for (i = 0; i < size; ++i) /* see if list[] is one-to-one */
     {                          /**/
@@ -579,7 +579,7 @@ int dir;                                     /* itoh-tanaka sort dir	*/
                 || (dir < 0 && z > x))
                 continue;
             if (!(tl = grnode(gr, TYPECAST(Void_t *, z), 1))
-                || !(e = gredge(gr, tl, hd, ( Void_t * )0, 1)))
+                || !(e = gredge(gr, tl, hd, ( Void_t * ) 0, 1)))
                 goto done;
             grbrweight(e, grbrweight(e, -1) + 1);
         }
@@ -589,8 +589,8 @@ int dir;                                     /* itoh-tanaka sort dir	*/
 
     /* now sort xy-groups in their top-sort order */
     hd = tl = NIL(Grnode_t *); /* first build the list of root nodes */
-    for (nd = ( Grnode_t * )dtfirst(gr->nodes); nd;
-         nd = ( Grnode_t * )dtnext(gr->nodes, nd)) {
+    for (nd = ( Grnode_t * ) dtfirst(gr->nodes); nd;
+         nd = ( Grnode_t * ) dtnext(gr->nodes, nd)) {
         if (!nd->iedge) /* no incoming edge, hence a root */
         {
             if (!hd)
@@ -633,18 +633,18 @@ ssize_t nstr;                                /* length of string	*/
     Vcsfx_t *sfx;       /* suffix array structure	*/
     int error = 1;
 
-    if (!(str = ( Vcchar_t * )astr) || nstr <= 0) {
+    if (!(str = ( Vcchar_t * ) astr) || nstr <= 0) {
         str = NIL(Vcchar_t *);
         nstr = 0;
     }
 
-    if (!(sfx = ( Vcsfx_t * )malloc(sizeof(Vcsfx_t)
-                                    + 2 * (nstr + 1) * sizeof(Vcinx_t))))
+    if (!(sfx = ( Vcsfx_t * ) malloc(sizeof(Vcsfx_t)
+                                     + 2 * (nstr + 1) * sizeof(Vcinx_t))))
         return NIL(Vcsfx_t *);
-    sfx->idx = idx = ( Vcinx_t * )(sfx + 1);
+    sfx->idx = idx = ( Vcinx_t * ) (sfx + 1);
     sfx->inv = inv = idx + nstr + 1;
     sfx->str = str;
-    sfx->nstr = ( Vcinx_t )nstr;
+    sfx->nstr = ( Vcinx_t ) nstr;
     idx[sfx->nstr] = inv[sfx->nstr] = sfx->nstr; /* the infinite eos byte */
     if (sfx->nstr <= 1)                          /* the easy sorting case */
     {
@@ -702,7 +702,7 @@ ssize_t nstr;                                /* length of string	*/
                     || (l = GMIN(grp, x, y)) >= (r = GMAX(grp, x, y, endc)))
                     continue;
                 if (!(tl = grnode(gr, TYPECAST(Void_t *, y), 1))
-                    || !(e = gredge(gr, tl, hd, ( Void_t * )0, 1)))
+                    || !(e = gredge(gr, tl, hd, ( Void_t * ) 0, 1)))
                     goto ob_err;
                 grbrweight(e, r - l + 1);
             }
@@ -712,8 +712,8 @@ ssize_t nstr;                                /* length of string	*/
         DEBUG_PRINT(2, "Branching weight=%d\n", r);
 
         hd = tl = NIL(Grnode_t *); /* first build the list of root nodes */
-        for (nd = ( Grnode_t * )dtfirst(gr->nodes); nd;
-             nd = ( Grnode_t * )dtnext(gr->nodes, nd)) {
+        for (nd = ( Grnode_t * ) dtfirst(gr->nodes); nd;
+             nd = ( Grnode_t * ) dtnext(gr->nodes, nd)) {
             if (!nd->iedge) /* no incoming edge, hence a root */
             {
                 if (!hd)

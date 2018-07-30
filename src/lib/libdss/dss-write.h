@@ -38,7 +38,7 @@ USAGE_LICENSE
 static int
 write_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     int errors = error_info.errors;
     Dssformat_t *format;
 
@@ -69,7 +69,7 @@ write_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         if (!(format = dssformat(expr->data, disc, DSS(cx)->meth))) {
             if (disc->errorf)
                 (*disc->errorf)(
-                NiL, disc, 2, "%s: unknown format", ( char * )expr->data);
+                NiL, disc, 2, "%s: unknown format", ( char * ) expr->data);
             return -1;
         }
     } else
@@ -83,13 +83,13 @@ write_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 static int
 write_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    return dssfwrite(( Dssfile_t * )expr->data, data);
+    return dssfwrite(( Dssfile_t * ) expr->data, data);
 }
 
 static int
 write_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    return dssfclose(( Dssfile_t * )expr->data);
+    return dssfclose(( Dssfile_t * ) expr->data);
 }
 
 static int

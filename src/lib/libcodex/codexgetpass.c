@@ -57,7 +57,7 @@ codexgetpass(const char *prompt, void *buf, size_t n)
         sfsync(wp);
     }
     if (s = sfgetr(rp, '\n', 1))
-        r = strncopy(( char * )buf, s, n) - ( char * )buf;
+        r = strncopy(( char * ) buf, s, n) - ( char * ) buf;
     else
         r = -1;
     sfprintf(wp, "\n");

@@ -34,7 +34,7 @@ char *path;
 #endif
 {
     if ((rs->events & RS_FILE_WRITE)
-        && rsnotify(rs, RS_FILE_WRITE, sp, ( Void_t * )path, rs->disc) < 0)
+        && rsnotify(rs, RS_FILE_WRITE, sp, ( Void_t * ) path, rs->disc) < 0)
         return -1;
     return 0;
 }
@@ -53,7 +53,7 @@ char *path;
 #endif
 {
     if ((rs->events & RS_FILE_READ)
-        && rsnotify(rs, RS_FILE_READ, sp, ( Void_t * )path, rs->disc) < 0)
+        && rsnotify(rs, RS_FILE_READ, sp, ( Void_t * ) path, rs->disc) < 0)
         return -1;
     return 0;
 }
@@ -73,7 +73,7 @@ Sfio_t *sp;
     int n;
 
     if (rs->events & RS_FILE_CLOSE) {
-        if ((n = rsnotify(rs, RS_FILE_CLOSE, sp, ( Void_t * )0, rs->disc))
+        if ((n = rsnotify(rs, RS_FILE_CLOSE, sp, ( Void_t * ) 0, rs->disc))
             < 0)
             return -1;
         if (n)

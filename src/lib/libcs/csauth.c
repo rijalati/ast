@@ -79,7 +79,7 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
             goto sorry;
         }
         buf[n - 1] = 0;
-        path = ( const char * )buf;
+        path = ( const char * ) buf;
     }
     if (stat(path, &st)) {
         if (errno == ENOENT)
@@ -99,8 +99,8 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
     m = getpid();
     s = tmp
         + sfsprintf(
-          tmp, sizeof(tmp) - 1, "%lu %d", ( unsigned long )st.st_mtime, m);
-    if ((t = ( char * )arg) && !(st.st_mode & S_IXOTH)) {
+          tmp, sizeof(tmp) - 1, "%lu %d", ( unsigned long ) st.st_mtime, m);
+    if ((t = ( char * ) arg) && !(st.st_mode & S_IXOTH)) {
         b = tmp + sizeof(tmp) - 1;
         if (s < b) {
             *s++ = ' ';
@@ -130,8 +130,8 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
                             csvar(state, CS_VAR_LOCAL, 0),
                             m);
         else {
-            s = ( char * )path + strlen(path);
-            while (s > ( char * )path)
+            s = ( char * ) path + strlen(path);
+            while (s > ( char * ) path)
                 if (*--s == '/' && ++n >= 4)
                     break;
             if (n != 4)
@@ -158,7 +158,7 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
         m += t1 + getppid();
         t1 -= CS_STAT_DOWN;
         if (auth < 0)
-            auth = ( unsigned int )CSTOSS(m, 0) % AUTH_BASE;
+            auth = ( unsigned int ) CSTOSS(m, 0) % AUTH_BASE;
         n = auth;
         for (;;) {
             if (++auth >= AUTH_BASE)
@@ -173,7 +173,7 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
             }
             s = b + sfsprintf(b, sizeof(tmp) - (b - tmp), "%03d", auth);
             if ((stat(tmp, &st)
-                 || t1 <= ( unsigned long )st.st_ctime && !remove(tmp))
+                 || t1 <= ( unsigned long ) st.st_ctime && !remove(tmp))
                 && !close(open(tmp,
                                O_CREAT | O_TRUNC | O_cloexec,
                                S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)))

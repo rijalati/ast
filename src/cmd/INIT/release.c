@@ -67,9 +67,9 @@ static const char usage[]
 
 #else
 
-#    define elementsof(x) (( int )(sizeof(x) / sizeof(x[0])))
+#    define elementsof(x) (( int ) (sizeof(x) / sizeof(x[0])))
 
-#    define NiL (( char * )0)
+#    define NiL (( char * ) 0)
 
 #endif
 

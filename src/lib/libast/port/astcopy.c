@@ -64,20 +64,20 @@ astcopy(int rfd, int wfd, off_t n)
     if (n <= 0 || n >= BUFSIZ * 2) {
 #if MAPSIZE
         if (!fstat(rfd, &st) && S_ISREG(st.st_mode)
-            && (pos = lseek(rfd, ( off_t )0, 1)) != (( off_t )-1)) {
+            && (pos = lseek(rfd, ( off_t ) 0, 1)) != (( off_t ) -1)) {
             if (pos >= st.st_size)
                 return (0);
             mapsize = st.st_size - pos;
             if (mapsize > MAPSIZE)
                 mapsize = (mapsize > n && n > 0) ? n : MAPSIZE;
             if (mapsize >= BUFSIZ * 2
-                && (mapbuf = ( char * )mmap(
+                && (mapbuf = ( char * ) mmap(
                     NiL, mapsize, PROT_READ, MAP_SHARED, rfd, pos))
-                   != (( caddr_t )-1)) {
+                   != (( caddr_t ) -1)) {
                 if (write(wfd, mapbuf, mapsize) != mapsize
-                    || lseek(rfd, mapsize, 1) == (( off_t )-1))
+                    || lseek(rfd, mapsize, 1) == (( off_t ) -1))
                     return (-1);
-                munmap(( caddr_t )mapbuf, mapsize);
+                munmap(( caddr_t ) mapbuf, mapsize);
                 return (mapsize);
             }
         }
@@ -92,8 +92,8 @@ astcopy(int rfd, int wfd, off_t n)
         if (!(buf = newof(0, char, bufsiz, 0)))
             return (-1);
     }
-    if ((c = read(rfd, buf, ( size_t )n)) > 0
-        && write(wfd, buf, ( size_t )c) != c)
+    if ((c = read(rfd, buf, ( size_t ) n)) > 0
+        && write(wfd, buf, ( size_t ) c) != c)
         c = -1;
     return (c);
 }

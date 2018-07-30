@@ -194,7 +194,7 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
         skip = s;
         s = empty;
     }
-    f = ( char * )fmt;
+    f = ( char * ) fmt;
     for (;;)
         switch (c = *f++) {
         case 0:
@@ -281,7 +281,7 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
                 switch (q) {
                 case 'h':
                     if (p_short = va_arg(ap, short *))
-                        *p_short = ( short )val;
+                        *p_short = ( short ) val;
                     break;
                 case 'l':
                     if (p_long = va_arg(ap, long *))
@@ -289,7 +289,7 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
                     break;
                 default:
                     if (p_int = va_arg(ap, int *))
-                        *p_int = ( int )val;
+                        *p_int = ( int ) val;
                     break;
                 }
                 if (s != p_char) {

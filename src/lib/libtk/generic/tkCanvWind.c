@@ -41,49 +41,49 @@ typedef struct WindowItem
  */
 
 static Tk_CustomOption tagsOption
-= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData )NULL };
+= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData ) NULL };
 
 static Tk_ConfigSpec configSpecs[] = { { TK_CONFIG_ANCHOR,
                                          "-anchor",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          "center",
                                          Tk_Offset(WindowItem, anchor),
                                          TK_CONFIG_DONT_SET_DEFAULT },
                                        { TK_CONFIG_PIXELS,
                                          "-height",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          "0",
                                          Tk_Offset(WindowItem, height),
                                          TK_CONFIG_DONT_SET_DEFAULT },
                                        { TK_CONFIG_CUSTOM,
                                          "-tags",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          0,
                                          TK_CONFIG_NULL_OK,
                                          &tagsOption },
                                        { TK_CONFIG_PIXELS,
                                          "-width",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          "0",
                                          Tk_Offset(WindowItem, width),
                                          TK_CONFIG_DONT_SET_DEFAULT },
                                        { TK_CONFIG_WINDOW,
                                          "-window",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          Tk_Offset(WindowItem, tkwin),
                                          TK_CONFIG_NULL_OK },
                                        { TK_CONFIG_END,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          0,
                                          0 } };
 
@@ -147,26 +147,26 @@ static double WinItemToPoint _ANSI_ARGS_((Tk_Canvas canvas,
  */
 
 Tk_ItemType tkWindowType = {
-    "window",                        /* name */
-    sizeof(WindowItem),              /* itemSize */
-    CreateWinItem,                   /* createProc */
-    configSpecs,                     /* configSpecs */
-    ConfigureWinItem,                /* configureProc */
-    WinItemCoords,                   /* coordProc */
-    DeleteWinItem,                   /* deleteProc */
-    DisplayWinItem,                  /* displayProc */
-    1,                               /* alwaysRedraw */
-    WinItemToPoint,                  /* pointProc */
-    WinItemToArea,                   /* areaProc */
-    ( Tk_ItemPostscriptProc * )NULL, /* postscriptProc */
-    ScaleWinItem,                    /* scaleProc */
-    TranslateWinItem,                /* translateProc */
-    ( Tk_ItemIndexProc * )NULL,      /* indexProc */
-    ( Tk_ItemCursorProc * )NULL,     /* cursorProc */
-    ( Tk_ItemSelectionProc * )NULL,  /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL,     /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL,     /* dTextProc */
-    ( Tk_ItemType * )NULL            /* nextPtr */
+    "window",                         /* name */
+    sizeof(WindowItem),               /* itemSize */
+    CreateWinItem,                    /* createProc */
+    configSpecs,                      /* configSpecs */
+    ConfigureWinItem,                 /* configureProc */
+    WinItemCoords,                    /* coordProc */
+    DeleteWinItem,                    /* deleteProc */
+    DisplayWinItem,                   /* displayProc */
+    1,                                /* alwaysRedraw */
+    WinItemToPoint,                   /* pointProc */
+    WinItemToArea,                    /* areaProc */
+    ( Tk_ItemPostscriptProc * ) NULL, /* postscriptProc */
+    ScaleWinItem,                     /* scaleProc */
+    TranslateWinItem,                 /* translateProc */
+    ( Tk_ItemIndexProc * ) NULL,      /* indexProc */
+    ( Tk_ItemCursorProc * ) NULL,     /* cursorProc */
+    ( Tk_ItemSelectionProc * ) NULL,  /* selectionProc */
+    ( Tk_ItemInsertProc * ) NULL,     /* insertProc */
+    ( Tk_ItemDCharsProc * ) NULL,     /* dTextProc */
+    ( Tk_ItemType * ) NULL            /* nextPtr */
 };
 
 
@@ -210,7 +210,7 @@ Tk_Item *itemPtr;   /* Record to hold new item;  header
 int argc;           /* Number of arguments in argv. */
 char **argv;        /* Arguments describing rectangle. */
 {
-    WindowItem *winItemPtr = ( WindowItem * )itemPtr;
+    WindowItem *winItemPtr = ( WindowItem * ) itemPtr;
 
     if (argc < 2) {
         Tcl_AppendResult(interp,
@@ -219,7 +219,7 @@ char **argv;        /* Arguments describing rectangle. */
                          " create ",
                          itemPtr->typePtr->name,
                          " x y ?options?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -279,13 +279,13 @@ int argc;           /* Number of coordinates supplied in
 char **argv;        /* Array of coordinates: x1, y1,
                      * x2, y2, ... */
 {
-    WindowItem *winItemPtr = ( WindowItem * )itemPtr;
+    WindowItem *winItemPtr = ( WindowItem * ) itemPtr;
     char x[TCL_DOUBLE_SPACE], y[TCL_DOUBLE_SPACE];
 
     if (argc == 0) {
         Tcl_PrintDouble(interp, winItemPtr->x, x);
         Tcl_PrintDouble(interp, winItemPtr->y, y);
-        Tcl_AppendResult(interp, x, " ", y, ( char * )NULL);
+        Tcl_AppendResult(interp, x, " ", y, ( char * ) NULL);
     } else if (argc == 2) {
         if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &winItemPtr->x)
              != TCL_OK)
@@ -328,7 +328,7 @@ int argc;           /* Number of elements in argv.  */
 char **argv;        /* Arguments describing things to configure. */
 int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
-    WindowItem *winItemPtr = ( WindowItem * )itemPtr;
+    WindowItem *winItemPtr = ( WindowItem * ) itemPtr;
     Tk_Window oldWindow;
     Tk_Window canvasTkwin;
 
@@ -339,7 +339,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                            configSpecs,
                            argc,
                            argv,
-                           ( char * )winItemPtr,
+                           ( char * ) winItemPtr,
                            flags)
         != TCL_OK) {
         return TCL_ERROR;
@@ -354,9 +354,9 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
             Tk_DeleteEventHandler(oldWindow,
                                   StructureNotifyMask,
                                   WinItemStructureProc,
-                                  ( ClientData )winItemPtr);
+                                  ( ClientData ) winItemPtr);
             Tk_ManageGeometry(
-            oldWindow, ( Tk_GeomMgr * )NULL, ( ClientData )NULL);
+            oldWindow, ( Tk_GeomMgr * ) NULL, ( ClientData ) NULL);
             Tk_UnmaintainGeometry(oldWindow, canvasTkwin);
             Tk_UnmapWindow(oldWindow);
         }
@@ -375,18 +375,19 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                 if (ancestor == parent) {
                     break;
                 }
-                if ((( Tk_FakeWin * )(ancestor))->flags & TK_TOP_LEVEL) {
+                if ((( Tk_FakeWin * ) (ancestor))->flags & TK_TOP_LEVEL) {
                 badWindow:
                     Tcl_AppendResult(interp,
                                      "can't use ",
                                      Tk_PathName(winItemPtr->tkwin),
                                      " in a window item of this canvas",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     winItemPtr->tkwin = NULL;
                     return TCL_ERROR;
                 }
             }
-            if ((( Tk_FakeWin * )(winItemPtr->tkwin))->flags & TK_TOP_LEVEL) {
+            if ((( Tk_FakeWin * ) (winItemPtr->tkwin))->flags
+                & TK_TOP_LEVEL) {
                 goto badWindow;
             }
             if (winItemPtr->tkwin == canvasTkwin) {
@@ -395,9 +396,9 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
             Tk_CreateEventHandler(winItemPtr->tkwin,
                                   StructureNotifyMask,
                                   WinItemStructureProc,
-                                  ( ClientData )winItemPtr);
+                                  ( ClientData ) winItemPtr);
             Tk_ManageGeometry(
-            winItemPtr->tkwin, &canvasGeomType, ( ClientData )winItemPtr);
+            winItemPtr->tkwin, &canvasGeomType, ( ClientData ) winItemPtr);
         }
     }
 
@@ -430,16 +431,16 @@ Tk_Item *itemPtr; /* Item that is being deleted. */
 Display *display; /* Display containing window for
                    * canvas. */
 {
-    WindowItem *winItemPtr = ( WindowItem * )itemPtr;
+    WindowItem *winItemPtr = ( WindowItem * ) itemPtr;
     Tk_Window canvasTkwin = Tk_CanvasTkwin(canvas);
 
     if (winItemPtr->tkwin != NULL) {
         Tk_DeleteEventHandler(winItemPtr->tkwin,
                               StructureNotifyMask,
                               WinItemStructureProc,
-                              ( ClientData )winItemPtr);
+                              ( ClientData ) winItemPtr);
         Tk_ManageGeometry(
-        winItemPtr->tkwin, ( Tk_GeomMgr * )NULL, ( ClientData )NULL);
+        winItemPtr->tkwin, ( Tk_GeomMgr * ) NULL, ( ClientData ) NULL);
         if (canvasTkwin != Tk_Parent(winItemPtr->tkwin)) {
             Tk_UnmaintainGeometry(winItemPtr->tkwin, canvasTkwin);
         }
@@ -591,7 +592,7 @@ int regionX, regionY, regionWidth, regionHeight;
 /* Describes region of canvas that
  * must be redisplayed (not used). */
 {
-    WindowItem *winItemPtr = ( WindowItem * )itemPtr;
+    WindowItem *winItemPtr = ( WindowItem * ) itemPtr;
     int width, height;
     short x, y;
     Tk_Window canvasTkwin = Tk_CanvasTkwin(canvas);
@@ -601,8 +602,8 @@ int regionX, regionY, regionWidth, regionHeight;
     }
 
     Tk_CanvasWindowCoords(canvas,
-                          ( double )winItemPtr->header.x1,
-                          ( double )winItemPtr->header.y1,
+                          ( double ) winItemPtr->header.x1,
+                          ( double ) winItemPtr->header.y1,
                           &x,
                           &y);
     width = winItemPtr->header.x2 - winItemPtr->header.x1;
@@ -653,7 +654,7 @@ static double WinItemToPoint(canvas,
 Tk_Item *itemPtr; /* Item to check against point. */
 double *pointPtr; /* Pointer to x and y coordinates. */
 {
-    WindowItem *winItemPtr = ( WindowItem * )itemPtr;
+    WindowItem *winItemPtr = ( WindowItem * ) itemPtr;
     double x1, x2, y1, y2, xDiff, yDiff;
 
     x1 = winItemPtr->header.x1;
@@ -712,7 +713,7 @@ double *rectPtr;  /* Pointer to array of four coordinates
                    * (x1, y1, x2, y2) describing rectangular
                    * area.  */
 {
-    WindowItem *winItemPtr = ( WindowItem * )itemPtr;
+    WindowItem *winItemPtr = ( WindowItem * ) itemPtr;
 
     if ((rectPtr[2] <= winItemPtr->header.x1)
         || (rectPtr[0] >= winItemPtr->header.x2)
@@ -757,7 +758,7 @@ double originX, originY; /* Origin about which to scale rect. */
 double scaleX;           /* Amount to scale in X direction. */
 double scaleY;           /* Amount to scale in Y direction. */
 {
-    WindowItem *winItemPtr = ( WindowItem * )itemPtr;
+    WindowItem *winItemPtr = ( WindowItem * ) itemPtr;
 
     winItemPtr->x = originX + scaleX * (winItemPtr->x - originX);
     winItemPtr->y = originY + scaleY * (winItemPtr->y - originY);
@@ -795,7 +796,7 @@ Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
-    WindowItem *winItemPtr = ( WindowItem * )itemPtr;
+    WindowItem *winItemPtr = ( WindowItem * ) itemPtr;
 
     winItemPtr->x += deltaX;
     winItemPtr->y += deltaY;
@@ -826,7 +827,7 @@ static void WinItemStructureProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to record describing window item. */
 XEvent *eventPtr;      /* Describes what just happened. */
 {
-    WindowItem *winItemPtr = ( WindowItem * )clientData;
+    WindowItem *winItemPtr = ( WindowItem * ) clientData;
 
     if (eventPtr->type == DestroyNotify) {
         winItemPtr->tkwin = NULL;
@@ -856,13 +857,13 @@ ClientData clientData; /* Pointer to record for window item. */
 Tk_Window tkwin;       /* Window that changed its desired
                         * size. */
 {
-    WindowItem *winItemPtr = ( WindowItem * )clientData;
+    WindowItem *winItemPtr = ( WindowItem * ) clientData;
 
     ComputeWindowBbox(winItemPtr->canvas, winItemPtr);
     DisplayWinItem(winItemPtr->canvas,
-                   ( Tk_Item * )winItemPtr,
-                   ( Display * )NULL,
-                   ( Drawable )None,
+                   ( Tk_Item * ) winItemPtr,
+                   ( Display * ) NULL,
+                   ( Drawable ) None,
                    0,
                    0,
                    0,
@@ -892,13 +893,13 @@ ClientData clientData; /* WindowItem structure for slave window that
                         * was stolen away. */
 Tk_Window tkwin;       /* Tk's handle for the slave window. */
 {
-    WindowItem *winItemPtr = ( WindowItem * )clientData;
+    WindowItem *winItemPtr = ( WindowItem * ) clientData;
     Tk_Window canvasTkwin = Tk_CanvasTkwin(winItemPtr->canvas);
 
     Tk_DeleteEventHandler(winItemPtr->tkwin,
                           StructureNotifyMask,
                           WinItemStructureProc,
-                          ( ClientData )winItemPtr);
+                          ( ClientData ) winItemPtr);
     if (canvasTkwin != Tk_Parent(winItemPtr->tkwin)) {
         Tk_UnmaintainGeometry(winItemPtr->tkwin, canvasTkwin);
     }

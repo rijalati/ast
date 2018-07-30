@@ -318,7 +318,7 @@ bash_init(Shell_t *shp, int mode)
     if (mode < 0) {
         /* termination code */
         if (sh_isoption(shp, SH_LOGIN_SHELL) && !sh_isoption(shp, SH_POSIX))
-            sh_source(shp, NiL, sh_mactry(shp, ( char * )e_bash_logout));
+            sh_source(shp, NiL, sh_mactry(shp, ( char * ) e_bash_logout));
         return;
     }
 
@@ -405,10 +405,10 @@ bash_init(Shell_t *shp, int mode)
     n = 0;
     if (sh_isoption(shp, SH_LOGIN_SHELL)) {
         if (!sh_isoption(shp, SH_POSIX)) {
-            shp->gd->login_files[n++] = ( char * )e_bash_profile;
-            shp->gd->login_files[n++] = ( char * )e_bash_login;
+            shp->gd->login_files[n++] = ( char * ) e_bash_profile;
+            shp->gd->login_files[n++] = ( char * ) e_bash_login;
         }
-        shp->gd->login_files[n++] = ( char * )e_profile;
+        shp->gd->login_files[n++] = ( char * ) e_profile;
     }
     shp->gd->login_files = login_files;
 reinit:

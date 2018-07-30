@@ -238,7 +238,7 @@ exec:
             && !in_dir("/usr/local/bin", shell)))
         shell = DEFSHELL;
     argv[0] = command;
-    argv[1] = ( char * )devfd;
+    argv[1] = ( char * ) devfd;
     execv(shell, argv);
     error_exit(badexec);
 }
@@ -318,7 +318,7 @@ eaccess(const char *name, int mode)
                     maxgroups = getconf("NGROUPS_MAX");
                 }
             }
-            groups = ( gid_t * )malloc((maxgroups + 1) * sizeof(gid_t));
+            groups = ( gid_t * ) malloc((maxgroups + 1) * sizeof(gid_t));
             n = getgroups(maxgroups, groups);
             while (--n >= 0) {
                 if (groups[n] == statb.st_gid) {
@@ -437,7 +437,7 @@ setids(int mode, uid_t owner, gid_t group)
     } else if (n == -1)
         error_exit(badexec);
     else {
-        arglist[0] = ( char * )tmpname;
+        arglist[0] = ( char * ) tmpname;
         close(pv[0]);
         /* move write end of pipe into FDSYNC */
         if (pv[1] != FDSYNC) {

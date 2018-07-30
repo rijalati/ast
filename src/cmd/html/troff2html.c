@@ -142,7 +142,7 @@ static const char usage[]
 
 #define END(x) ((x) | OP_END)
 #define LABEL(x) ((x) | OP_LABEL)
-#define OP(x) (( x )&077)
+#define OP(x) (( x ) &077)
 
 #define OP_END 0200
 #define OP_LABEL 0100
@@ -185,8 +185,8 @@ static const char usage[]
 
 #define OP_ft (OP_ft1 - 1)
 
-#define ARG_ALIGN(a) ((( a )&3) - 1)
-#define ARG_ATTR(a) (( a )&0x0fff)
+#define ARG_ALIGN(a) ((( a ) &3) - 1)
+#define ARG_ATTR(a) (( a ) &0x0fff)
 
 #define ARG_left 0x0001
 #define ARG_center 0x0002
@@ -195,7 +195,7 @@ static const char usage[]
 #define ARG_compact 0x0010
 #define ARG_wide 0x0020
 
-#define ATT_INDEX(a) ((( a )&0x0fff) - 1)
+#define ATT_INDEX(a) ((( a ) &0x0fff) - 1)
 
 #define ATT_NUMBER 0x8000
 
@@ -257,7 +257,7 @@ pushin(char *name, int line, Sfio_t *ip, char *data, Arg_t *arg)
     pp = state.in_top++;
     pp->in = state.in;
     if (!(pp->ip = ip)) {
-        if (!(state.in = ( unsigned char * )data) || !*state.in) {
+        if (!(state.in = ( unsigned char * ) data) || !*state.in) {
             state.in = pp->in;
             --state.in_top;
             return;
@@ -681,7 +681,7 @@ popin(void)
     }
     pp = state.in_top;
     if (pp->loop) {
-        state.in = ( unsigned char * )sfstrbase(pp->loop);
+        state.in = ( unsigned char * ) sfstrbase(pp->loop);
         return 0;
     }
     if (--pp == state.in_stack) {
@@ -753,8 +753,8 @@ num(char *s)
     Num_t *np;
     char buf[MAXNAME];
 
-    if (!(np = ( Num_t * )hashget(state.symbols,
-                                  nam('n', s, buf, sizeof(buf))))) {
+    if (!(np = ( Num_t * ) hashget(state.symbols,
+                                   nam('n', s, buf, sizeof(buf))))) {
         if (!(np = newof(0, Num_t, 1, 0)))
             error(ERROR_SYSTEM | 3, "out of space [number]");
         np->name = hashput(state.symbols, NiL, np);
@@ -774,8 +774,8 @@ iop(char *s, int force)
     Stream_t *sp;
     char buf[MAXNAME];
 
-    if (!(sp = ( Stream_t * )hashget(state.symbols,
-                                     nam('s', s, buf, sizeof(buf))))) {
+    if (!(sp = ( Stream_t * ) hashget(state.symbols,
+                                      nam('s', s, buf, sizeof(buf))))) {
         if (!force)
             error(1, "iop %s lookup failed", buf);
         if (!force)
@@ -948,8 +948,8 @@ mac(char *name)
     Tag_t *mp;
     char buf[MAXNAME];
 
-    if (!(mp = ( Tag_t * )hashget(state.symbols,
-                                  nam('.', name, buf, sizeof(buf))))) {
+    if (!(mp = ( Tag_t * ) hashget(state.symbols,
+                                   nam('.', name, buf, sizeof(buf))))) {
         if (!(mp = newof(0, Tag_t, 1, 0)))
             error(ERROR_SYSTEM | 3, "out of space [mac]");
         mp->name = hashput(state.symbols, NiL, mp);
@@ -970,7 +970,7 @@ env(char *s)
         sfsprintf(buf, sizeof(buf), "E%s", s);
     else
         sfsprintf(buf, sizeof(buf), "E%d", n);
-    if (!(v = ( Env_t * )hashget(state.symbols, buf))) {
+    if (!(v = ( Env_t * ) hashget(state.symbols, buf))) {
         if (!(v = newof(0, Env_t, 1, 0)))
             error(ERROR_SYSTEM | 3, "out of space [environment]");
         v->name = hashput(state.symbols, NiL, v);
@@ -1277,7 +1277,7 @@ value(char *name, int type, int i)
     b = hashget(state.symbols, name);
     switch (type) {
     case 'g':
-        if (!(np = ( Num_t * )b))
+        if (!(np = ( Num_t * ) b))
             return "";
         b = np->value;
         if (isalnum(np->format))
@@ -1294,7 +1294,7 @@ value(char *name, int type, int i)
     case 'n':
         break;
     case '.':
-        if (!(tp = ( Tag_t * )b))
+        if (!(tp = ( Tag_t * ) b))
             return 0;
         if (tp->flags & TAG_TRACE_GET)
             error(2, "get macro %s `%s'", tp->name + 1, tp->body);
@@ -1304,10 +1304,10 @@ value(char *name, int type, int i)
     }
     if (!b) {
         name = strcpy(buf, "n");
-        if (!(b = ( char * )hashget(state.symbols, name)))
+        if (!(b = ( char * ) hashget(state.symbols, name)))
             return "0";
     }
-    np = ( Num_t * )b;
+    np = ( Num_t * ) b;
     if (np->flags & TAG_TRACE_GET)
         error(2, "get %s %d %d", np->name + 1, np->number, np->increment);
     if (np->internal) {
@@ -2018,7 +2018,7 @@ rm(char *s)
     char buf[MAXNAME];
 
     if (mp
-        = ( Tag_t * )hashget(state.symbols, nam('.', s, buf, sizeof(buf)))) {
+        = ( Tag_t * ) hashget(state.symbols, nam('.', s, buf, sizeof(buf)))) {
         if (mp->flags & TAG_TRACE_SET)
             error(2, "remove macro %s", mp->name + 1);
         if (mp->size)
@@ -2028,7 +2028,7 @@ rm(char *s)
         hashput(state.symbols, NiL, NiL);
     }
     if (mp
-        = ( Tag_t * )hashget(state.symbols, nam('n', s, buf, sizeof(buf)))) {
+        = ( Tag_t * ) hashget(state.symbols, nam('n', s, buf, sizeof(buf)))) {
         if (mp->flags & TAG_TRACE_SET)
             error(2, "remove %s", mp->name + 1);
         if (mp->size)
@@ -2148,7 +2148,7 @@ groff_aln(Tag_t *tp, Arg_t *ap)
 
     if (ap->argc != 2)
         error(1, "%s: two arguments expected", ap->argv[0]);
-    else if (!(xp = ( Tag_t * )hashget(
+    else if (!(xp = ( Tag_t * ) hashget(
                state.symbols, nam('n', ap->argv[2], buf, sizeof(buf)))))
         error(1, "%s: not defined", buf);
     else
@@ -2163,7 +2163,7 @@ groff_als(Tag_t *tp, Arg_t *ap)
 
     if (ap->argc != 2)
         error(1, "%s: two arguments expected", ap->argv[0]);
-    else if (!(xp = ( Tag_t * )hashget(
+    else if (!(xp = ( Tag_t * ) hashget(
                state.symbols, nam('.', ap->argv[2], buf, sizeof(buf)))))
         error(1, "%s: not defined", buf);
     else
@@ -2230,7 +2230,7 @@ groff_continue(Tag_t *tp, Arg_t *ap)
 
     for (pp = state.in_top; pp >= state.in_stack; pp--)
         if (pp->loop) {
-            pp->in = ( unsigned char * )sfstrbase(pp->loop);
+            pp->in = ( unsigned char * ) sfstrbase(pp->loop);
             return;
         }
     error(1, "%s: outside of loop", tp->name);
@@ -2330,7 +2330,7 @@ groff_sy(Tag_t *tp, Arg_t *ap)
 {
     char *s;
 
-    nr("systat", ( long )((s = join(ap, 1)) ? system(s) : 0), 0, 0);
+    nr("systat", ( long ) ((s = join(ap, 1)) ? system(s) : 0), 0, 0);
 }
 
 static void
@@ -2552,7 +2552,7 @@ troff_de(Tag_t *tp, Arg_t *ap)
         mp->flags |= TAG_PASS;
         mp->call = macro;
         state.define = mp;
-        state.end = ( Tag_t * )hashget(state.symbols, "..");
+        state.end = ( Tag_t * ) hashget(state.symbols, "..");
         state.pass = 1;
         pushout(state.tmp);
     }
@@ -2701,7 +2701,7 @@ troff_ft(Tag_t *tp, Arg_t *ap)
     if (ap->argc >= 1) {
         s = ap->argv[1];
         *--s = 'f';
-        s = ( char * )hashget(state.symbols, s);
+        s = ( char * ) hashget(state.symbols, s);
     } else
         s = 0;
     ft(s);
@@ -2833,9 +2833,9 @@ troff_ignore(Tag_t *tp, Arg_t *ap)
 
     if (!state.end) {
         *tp->name = 'e';
-        state.end = (s = ( char * )hashget(state.symbols, tp->name))
-                    ? ( Tag_t * )hashget(state.symbols, s)
-                    : ( Tag_t * )0;
+        state.end = (s = ( char * ) hashget(state.symbols, tp->name))
+                    ? ( Tag_t * ) hashget(state.symbols, s)
+                    : ( Tag_t * ) 0;
         *tp->name = '.';
         if (state.end) {
             sfprintf(state.out,
@@ -3055,8 +3055,8 @@ rr(char *name)
     Num_t *np;
     char buf[MAXNAME];
 
-    if (np = ( Num_t * )hashget(state.symbols,
-                                nam('.', name, buf, sizeof(buf)))) {
+    if (np = ( Num_t * ) hashget(state.symbols,
+                                 nam('.', name, buf, sizeof(buf)))) {
         if (np->internal)
             return;
         if (np->flags & TAG_TRACE_SET)
@@ -3116,7 +3116,7 @@ troff_ta(Tag_t *tp, Arg_t *ap)
             ta[i] = expression(ap->argv[i + 1], NiL, 'u');
     }
     ta[i] = 0;
-    code_n(OP_ta, ( char * )ta);
+    code_n(OP_ta, ( char * ) ta);
 }
 
 static void
@@ -3300,7 +3300,7 @@ hot(char *s, int add)
     if (add) {
         if (!(x = newof(0, Dir_t, 1, strlen(s) + 1)))
             error(ERROR_SYSTEM | 3, "out of space [hot]");
-        strcpy(x->name = ( char * )x + sizeof(*x), s);
+        strcpy(x->name = ( char * ) x + sizeof(*x), s);
         x->next = state.hot;
         state.hot = x;
     }
@@ -3390,7 +3390,7 @@ static Option_t options[] = { "author",
                               &state.toolbar,
                               OPT_toolbar,
                               "verbose",
-                              ( char ** )&state.verbose,
+                              ( char ** ) &state.verbose,
                               OPT_SWITCH,
                               0,
                               0,
@@ -3405,7 +3405,7 @@ setopt(void *a, const void *x, int n, const char *v)
 {
     char *s;
     char *t;
-    Option_t *p = ( Option_t * )x;
+    Option_t *p = ( Option_t * ) x;
     int f;
 
     if (p)
@@ -3415,7 +3415,7 @@ setopt(void *a, const void *x, int n, const char *v)
             code_n(OP_RAW, use(state.tmp));
             break;
         case OPT_debug:
-            error_info.trace = n ? -expression(( char * )v, NiL, 'u') : 0;
+            error_info.trace = n ? -expression(( char * ) v, NiL, 'u') : 0;
             break;
         case OPT_end:
             sfprintf(state.tmp, "<!-- /%s -->", v + n);
@@ -3474,7 +3474,7 @@ setopt(void *a, const void *x, int n, const char *v)
                 f = TAG_TRACE_SET;
                 break;
             }
-            s = ( char * )v;
+            s = ( char * ) v;
             do {
                 while (isspace(*s))
                     s++;
@@ -3515,21 +3515,21 @@ setopt(void *a, const void *x, int n, const char *v)
             if (!state.out)
                 error(1, "%s: option valid from document body only", p->name);
             else if (n)
-                code_n(OP_link, ( char * )v);
+                code_n(OP_link, ( char * ) v);
             break;
         case OPT_test:
             if (n)
-                state.test |= expression(( char * )v, NiL, 'u');
+                state.test |= expression(( char * ) v, NiL, 'u');
             else
-                state.test &= ~expression(( char * )v, NiL, 'u');
+                state.test &= ~expression(( char * ) v, NiL, 'u');
             break;
         case OPT_SWITCH:
-            *(( int * )p->value) = n && expression(( char * )v, NiL, 'u');
+            *(( int * ) p->value) = n && expression(( char * ) v, NiL, 'u');
             break;
         default:
             if (*p->value)
                 free(*p->value);
-            *p->value = n && v ? strdup(v) : ( char * )0;
+            *p->value = n && v ? strdup(v) : ( char * ) 0;
             break;
         }
     else if (a) {
@@ -4226,7 +4226,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     }
                 }
                 *s = 0;
-                tp = ( Tag_t * )hashget(state.symbols, buf);
+                tp = ( Tag_t * ) hashget(state.symbols, buf);
                 if (tp && (tp->flags & TAG_DO)) {
                     state.groff |= 2;
                     c = n;
@@ -5352,7 +5352,7 @@ init(void)
     hot("see", 1);
     hot("refer", 1);
     state.ec = state.eo = DEFAULT_ec;
-    state.in = ( unsigned char * )"";
+    state.in = ( unsigned char * ) "";
     state.in_top = state.in_stack;
     state.out_top = state.out_stack;
     state.tag_top = state.tag_stack;
@@ -5605,10 +5605,10 @@ html(unsigned char *s, Sfio_t *op)
     sfputr(op, "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">", '\n');
     tag(op, OP_html, STACK | LINE, 0, NiL, 0);
     tag(op, OP_head, STACK | LINE, 0, NiL, 0);
-    t = ( unsigned char * )strchr(usage, '\n') + 5;
+    t = ( unsigned char * ) strchr(usage, '\n') + 5;
     sfprintf(op,
              "<META name=\"generator\" content=\"%-.*s",
-             strchr(( char * )t, '\n') - ( char * )t,
+             strchr(( char * ) t, '\n') - ( char * ) t,
              t);
     for (x = state.macros; x; x = x->next)
         sfprintf(op, " -m%s", x->name);
@@ -5622,11 +5622,11 @@ html(unsigned char *s, Sfio_t *op)
         sfputr(subject, state.title, -1);
     else {
         if (state.input) {
-            if (t = ( unsigned char * )strrchr(state.input, '/'))
+            if (t = ( unsigned char * ) strrchr(state.input, '/'))
                 t++;
             else
-                t = ( unsigned char * )state.input;
-            sfputr(subject, ( char * )t, -1);
+                t = ( unsigned char * ) state.input;
+            sfputr(subject, ( char * ) t, -1);
         }
         if (state.macros)
             sfprintf(subject, " m%s document", state.macros->name);
@@ -5900,14 +5900,14 @@ html(unsigned char *s, Sfio_t *op)
                 if (label) {
                     label = 0;
                     n = sfstrtell(state.tmp);
-                    v = ( unsigned char * )use(state.tmp);
+                    v = ( unsigned char * ) use(state.tmp);
                     while (--n > 0 && (isspace(v[n]) || v[n] == '.'))
                         ;
                     v[n + 1] = 0;
                     if (isdigit(*v))
                         tag(op, OP_hr, LINE, 0, NiL, 0);
                     tag(op, OP_h3, STACK, 0, NiL, 0);
-                    tag(op, OP_a, STACK, ATT_name, ( char * )v, 0);
+                    tag(op, OP_a, STACK, ATT_name, ( char * ) v, 0);
                 }
                 break;
             case END(OP_fn):
@@ -6003,14 +6003,14 @@ html(unsigned char *s, Sfio_t *op)
                         break;
                     }
                     n = sfstrtell(state.tmp);
-                    if (!*(t = ( unsigned char * )use(state.tmp)))
+                    if (!*(t = ( unsigned char * ) use(state.tmp)))
                         hot = 0;
                     if (hot) {
                         hot = 0;
                         while (--n > 0 && (isspace(t[n]) || t[n] == '.'))
                             ;
                         t[n + 1] = 0;
-                        tag(op, OP_a, STACK, r, ( char * )t, 0);
+                        tag(op, OP_a, STACK, r, ( char * ) t, 0);
                         a[0] = v[0];
                         v[0] = CODE_1;
                         a[1] = v[1];
@@ -6019,7 +6019,7 @@ html(unsigned char *s, Sfio_t *op)
                 }
                 c = m - OP_ft;
                 if (c != ft) {
-                    peeklist(op, ( char * )s);
+                    peeklist(op, ( char * ) s);
                     if (ft != 1)
                         tag(op, END(OP_ft + ft), STACK, 0, NiL, 0);
                     ft = c;
@@ -6079,7 +6079,7 @@ html(unsigned char *s, Sfio_t *op)
                 goto compact;
             case OP_ps:
                 if (c != ps) {
-                    peeklist(op, ( char * )s);
+                    peeklist(op, ( char * ) s);
                     if (ps_set) {
                         ps = ps_set;
                         ps_set = 0;
@@ -6114,9 +6114,9 @@ html(unsigned char *s, Sfio_t *op)
                 tag(op, m, c, 0, NiL, 0);
                 break;
             default:
-                if (!(v = ( unsigned char * )tag_name[OP(m)])) {
+                if (!(v = ( unsigned char * ) tag_name[OP(m)])) {
                     sfprintf(state.tmp, "(%d)", OP(m));
-                    v = ( unsigned char * )use(state.tmp);
+                    v = ( unsigned char * ) use(state.tmp);
                 }
                 error(2,
                       "internal error: <%s%s%s %d> ignored",
@@ -6201,11 +6201,11 @@ html(unsigned char *s, Sfio_t *op)
                 sfprintf(op, "<!--\"%s\"-->\n", v);
                 break;
             case OP_fn:
-                tag(op, c, STACK, ATT_id, ( char * )v, 0);
+                tag(op, c, STACK, ATT_id, ( char * ) v, 0);
                 break;
             case OP_link:
                 DATA();
-                if (u = ( unsigned char * )strchr(( char * )v, '\t'))
+                if (u = ( unsigned char * ) strchr(( char * ) v, '\t'))
                     *u++ = 0;
                 else
                     u = 0;
@@ -6217,24 +6217,24 @@ html(unsigned char *s, Sfio_t *op)
                 if (*v == ':' || *v == '/' || *v == '.' || *(v + 1) == '/') {
                     if (!u)
                         u = v + 1;
-                    v = ( unsigned char * )"";
+                    v = ( unsigned char * ) "";
                 } else {
                     if (!u)
                         u = t;
-                    v = ( unsigned char * )"#";
+                    v = ( unsigned char * ) "#";
                 }
                 sfprintf(op, "<A href=\"%s%s\">%s</A>", v, t, u);
                 break;
             case LABEL(OP_link):
                 DATA();
-                if (u = ( unsigned char * )strchr(( char * )v, '\t'))
+                if (u = ( unsigned char * ) strchr(( char * ) v, '\t'))
                     *u++ = 0;
                 else
                     u = v;
                 sfprintf(op, "<A name=\"%s\">%s</A>", v, u);
                 break;
             case OP_ta:
-                strcpy(( char * )state.ta, ( char * )v);
+                strcpy(( char * ) state.ta, ( char * ) v);
                 break;
             case OP_RAW:
                 DATA();
@@ -6242,7 +6242,7 @@ html(unsigned char *s, Sfio_t *op)
                     col = 0;
                     sfputc(op, '\n');
                 }
-                sfputr(op, ( char * )v, '\n');
+                sfputr(op, ( char * ) v, '\n');
                 break;
             }
             continue;
@@ -6331,7 +6331,7 @@ html(unsigned char *s, Sfio_t *op)
             else
                 for (x = state.hot; x; x = x->next) {
                     v = s;
-                    u = ( unsigned char * )x->name;
+                    u = ( unsigned char * ) x->name;
                     do {
                         if (!*u) {
                             if (isspace(*v)) {
@@ -6376,8 +6376,8 @@ html(unsigned char *s, Sfio_t *op)
                  sfstrbase(subject));
     if (state.author || state.corporation || state.company
         || state.location) {
-        t = ( unsigned char * )"<P>";
-        u = ( unsigned char * )"<BR>";
+        t = ( unsigned char * ) "<P>";
+        u = ( unsigned char * ) "<BR>";
         if (state.author) {
             sfprintf(op, "%s%s\n", t, state.author);
             t = u;
@@ -6387,7 +6387,7 @@ html(unsigned char *s, Sfio_t *op)
             t = u;
         }
         if (state.corporation || state.company) {
-            sfputr(op, ( char * )t, -1);
+            sfputr(op, ( char * ) t, -1);
             t = u;
             if (state.corporation)
                 sfputr(op, state.corporation, state.company ? ' ' : '\n');
@@ -6544,7 +6544,7 @@ main(int argc, char **argv)
         code_1(OP_hr);
         trigger(&state.fini);
         process(NiL, NiL, op);
-        html(( unsigned char * )use(op), sfstdout);
+        html(( unsigned char * ) use(op), sfstdout);
     }
     exit(error_info.errors != 0);
 }

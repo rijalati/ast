@@ -24,9 +24,9 @@
 **	Written by Kiem-Phong Vo
 */
 
-typedef ssize_t(*Mtf_f) _ARG_(( Vcchar_t *, Vcchar_t *, Vcchar_t *, int ));
-static ssize_t mtfp _ARG_(( Vcchar_t *, Vcchar_t *, Vcchar_t *, int ));
-static ssize_t mtf0 _ARG_(( Vcchar_t *, Vcchar_t *, Vcchar_t *, int ));
+typedef ssize_t(*Mtf_f) _ARG_(( Vcchar_t *, Vcchar_t *, Vcchar_t *, int ) );
+static ssize_t mtfp _ARG_(( Vcchar_t *, Vcchar_t *, Vcchar_t *, int ) );
+static ssize_t mtf0 _ARG_(( Vcchar_t *, Vcchar_t *, Vcchar_t *, int ) );
 
 #define MTFC(c, p, m, n) /* know byte, need to compute position */           \
     {                                                                        \
@@ -52,8 +52,8 @@ static ssize_t mtf0 _ARG_(( Vcchar_t *, Vcchar_t *, Vcchar_t *, int ));
 
 /* arguments to select move-to-front coder */
 static Vcmtarg_t _Mtfargs[]
-= { { "0", "Pure move-to-front strategy.", ( Void_t * )mtf0 },
-    { 0, "Move-to-front with prediction.", ( Void_t * )mtfp } };
+= { { "0", "Pure move-to-front strategy.", ( Void_t * ) mtf0 },
+    { 0, "Move-to-front with prediction.", ( Void_t * ) mtfp } };
 
 #if __STD_C
 static ssize_t
@@ -165,7 +165,7 @@ Void_t **out;
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
         RETURN(-1);
 
-    if ((*mtff)(( Vcchar_t * )data, (( Vcchar_t * )data) + sz, output, 1)
+    if ((*mtff)(( Vcchar_t * ) data, (( Vcchar_t * ) data) + sz, output, 1)
         != sz)
         RETURN(-1);
 
@@ -197,7 +197,7 @@ Void_t **out;
     if (size == 0)
         return 0;
 
-    dt = ( Vcchar_t * )data;
+    dt = ( Vcchar_t * ) data;
     sz = size;
     if (vcrecode(vc, &dt, &sz, 0, 0) < 0)
         RETURN(-1);
@@ -208,7 +208,7 @@ Void_t **out;
     if ((*mtff)(dt, dt + sz, output, 0) != sz)
         RETURN(-1);
 
-    if (dt != ( Vcchar_t * )data)
+    if (dt != ( Vcchar_t * ) data)
         vcbuffer(vc, dt, -1, -1);
 
     if (out)
@@ -237,12 +237,12 @@ Vcchar_t **datap; /* basis string for persistence	*/
 
     n = strlen(arg->name);
     if (!(ident
-          = ( char * )vcbuffer(vc, NIL(Vcchar_t *), sizeof(int) * n + 1, 0)))
+          = ( char * ) vcbuffer(vc, NIL(Vcchar_t *), sizeof(int) * n + 1, 0)))
         RETURN(-1);
     if (!(ident = vcstrcode(arg->name, ident, sizeof(int) * n + 1)))
         RETURN(-1);
     if (datap)
-        *datap = ( Void_t * )ident;
+        *datap = ( Void_t * ) ident;
     return n;
 }
 
@@ -260,11 +260,11 @@ static int mtfrestore(mtcd) Vcmtcode_t *mtcd;
         if (!(ident = vcstrcode(arg->name, buf, sizeof(buf))))
             return -1;
         if (mtcd->size == strlen(ident)
-            && strncmp(ident, ( char * )mtcd->data, mtcd->size) == 0)
+            && strncmp(ident, ( char * ) mtcd->data, mtcd->size) == 0)
             break;
     }
     mtcd->coder
-    = vcopen(0, Vcmtf, ( Void_t * )arg->name, mtcd->coder, VC_DECODE);
+    = vcopen(0, Vcmtf, ( Void_t * ) arg->name, mtcd->coder, VC_DECODE);
     return mtcd->coder ? 1 : -1;
 }
 
@@ -282,7 +282,7 @@ Void_t *params;
     char *data;
 
     if (type == VC_OPENING) {
-        for (arg = NIL(Vcmtarg_t *), data = ( char * )params;
+        for (arg = NIL(Vcmtarg_t *), data = ( char * ) params;
              data && *data;) {
             data = vcgetmtarg(data, 0, 0, _Mtfargs, &arg);
             if (arg && arg->name)
@@ -295,13 +295,13 @@ Void_t *params;
         vcsetmtdata(vc, arg->data);
         return 0;
     } else if (type == VC_EXTRACT) {
-        if (!(mtcd = ( Vcmtcode_t * )params))
+        if (!(mtcd = ( Vcmtcode_t * ) params))
             return -1;
         if ((mtcd->size = mtfextract(vc, &mtcd->data)) < 0)
             return -1;
         return 1;
     } else if (type == VC_RESTORE) {
-        if (!(mtcd = ( Vcmtcode_t * )params))
+        if (!(mtcd = ( Vcmtcode_t * ) params))
             return -1;
         return mtfrestore(mtcd) < 0 ? -1 : 1;
     }

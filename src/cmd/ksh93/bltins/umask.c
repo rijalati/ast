@@ -60,7 +60,7 @@ b_umask(int argc, char *argv[], Shbltin_t *context)
             break;
         }
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     argv += opt_info.index;
     if (mask = *argv) {
         int c;

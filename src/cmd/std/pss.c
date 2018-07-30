@@ -358,11 +358,11 @@ pssttydev(Pss_t *pss, const char *name)
         return PSS_NODEV;
     if (pss->meth->ttydevf)
         return (*pss->meth->ttydevf)(pss, s);
-    if (tty = ( Tty_t * )dtmatch(pss->ttybyname, s))
+    if (tty = ( Tty_t * ) dtmatch(pss->ttybyname, s))
         return tty->dev;
     if (stat(s, &st)) {
         sfsprintf(pss->buf, sizeof(pss->buf), "/dev/%s", name);
-        s = ( const char * )pss->buf;
+        s = ( const char * ) pss->buf;
         if (stat(s, &st)) {
             sfsprintf(pss->buf, sizeof(pss->buf), "/dev/tty%s", name);
             if (stat(s, &st)) {
@@ -394,11 +394,11 @@ pssttyname(Pss_t *pss, Pssent_t *pe)
     dev = pe->tty;
     if (dev == PSS_NODEV)
         return "?";
-    if (tty = ( Tty_t * )dtmatch(pss->ttybydev, &dev))
+    if (tty = ( Tty_t * ) dtmatch(pss->ttybydev, &dev))
         return tty->name;
     if (!pss->ttyscan)
         ttyscan(pss);
-    if (tty = ( Tty_t * )dtmatch(pss->ttybydev, &dev))
+    if (tty = ( Tty_t * ) dtmatch(pss->ttybydev, &dev))
         return tty->name;
     sfsprintf(
     pss->buf, sizeof(pss->buf), "%03d,%03d", major(dev), minor(dev));

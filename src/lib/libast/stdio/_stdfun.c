@@ -37,13 +37,13 @@ _STUB_stdfun()
 #    include <uwin.h>
 
 #    if _lib___iob_func
-#        define IOB (( char * )__iob_func())
+#        define IOB (( char * ) __iob_func())
 #    elif _lib___p__iob
-#        define IOB (( char * )__p__iob())
+#        define IOB (( char * ) __p__iob())
 #    elif _dat__iob
-#        define IOB (( char * )_iob)
+#        define IOB (( char * ) _iob)
 #    else
-#        define IOB (( char * )_p__iob())
+#        define IOB (( char * ) _p__iob())
 #    endif
 
 #    define IOBMAX (512 * 32)
@@ -60,18 +60,18 @@ _stdfun(Sfio_t *f, Funvec_t *vp)
 
     if (!iob && !(iob = IOB))
         return 0;
-    if (f && (( char * )f < iob || ( char * )f > iob + IOBMAX))
+    if (f && (( char * ) f < iob || ( char * ) f > iob + IOBMAX))
         return 0;
     if (!vp->vec[1]) {
         if (!init) {
             init = 1;
             bp = dlopen("/usr/bin/stdio.dll", 0);
         }
-        if (bp && (vp->vec[1] = ( Fun_f )dlsym(bp, vp->name)))
+        if (bp && (vp->vec[1] = ( Fun_f ) dlsym(bp, vp->name)))
             return 1;
         if (!np && !(np = dlopen("/sys/msvcrt.dll", 0)))
             return -1;
-        if (!(vp->vec[1] = ( Fun_f )dlsym(np, vp->name)))
+        if (!(vp->vec[1] = ( Fun_f ) dlsym(np, vp->name)))
             return -1;
     }
     return 1;

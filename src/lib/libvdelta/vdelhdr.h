@@ -47,7 +47,7 @@ _END_EXTERNS_
 #endif
 
 /* short-hand notations */
-#define NIL(t) (( t )0)
+#define NIL(t) (( t ) 0)
 #define reg register
 #define uchar unsigned char
 #define uint unsigned int
@@ -55,7 +55,7 @@ _END_EXTERNS_
 
 /* default window size - Chosen to suit malloc() even on 16-bit machines. */
 #undef MAXINT
-#define MAXINT (( int )((( uint )~0) >> 1))
+#define MAXINT (( int ) ((( uint ) ~0) >> 1))
 #define DFLTWINDOW (MAXINT <= 0x7fff ? 0x7fff : (1 << 17))
 #define HEADER(w) ((w) / 4)
 
@@ -159,8 +159,8 @@ _END_EXTERNS_
 #define A_LPUT(s) (s)                 /* coded local value	*/
 #define A_PUT(s) ((s) - (A_SIZE + 1)) /* coded normal value	*/
 
-#define A_ISHERE(i) (( i )&A_SIZE) /* locally coded size	*/
-#define A_LGET(i) (( i )&A_SIZE)
+#define A_ISHERE(i) (( i ) &A_SIZE) /* locally coded size	*/
+#define A_LGET(i) (( i ) &A_SIZE)
 #define A_GET(s) ((s) + (A_SIZE + 1))
 
 #define C_SIZE ((1 << S_BITS) + M_MIN - 2) /* max local COPY size	*/
@@ -179,13 +179,13 @@ _END_EXTERNS_
 #define A_TINY 2                 /* bits for tiny ADD		*/
 #define A_TINYSIZE (1 << A_TINY) /* max tiny ADD size	*/
 #define A_ISTINY(s) ((s) <= A_TINYSIZE)
-#define A_TPUT(s) (( s )-1)
+#define A_TPUT(s) (( s ) -1)
 #define A_TGET(i) (((i) & (A_TINYSIZE - 1)) + 1)
 
 #define C_TINY 2                               /* bits for tiny COPY		*/
 #define C_TINYSIZE ((1 << C_TINY) + M_MIN - 1) /* max tiny COPY size	*/
 #define C_ISTINY(s) ((s) <= C_TINYSIZE)
-#define C_TPUT(s) ((( s )-M_MIN) << A_TINY)
+#define C_TPUT(s) ((( s ) -M_MIN) << A_TINY)
 #define C_TGET(i) ((((i) >> A_TINY) & ((1 << C_TINY) - 1)) + M_MIN)
 
 #define K_TPUT(k) (((k) + K_MERGE) << S_BITS)
@@ -193,7 +193,7 @@ _END_EXTERNS_
 #define MEMCPY(to, from, n)                                                  \
     switch (n) {                                                             \
     default:                                                                 \
-        memcpy(( Void_t * )to, ( Void_t * )from, ( size_t )n);               \
+        memcpy(( Void_t * ) to, ( Void_t * ) from, ( size_t ) n);            \
         to += n;                                                             \
         from += n;                                                           \
         break;                                                               \
@@ -250,10 +250,10 @@ typedef struct _vdio_s
      (io)->delta = (delta))
 #define VDPUTC(io, c)                                                        \
     ((REMAIN(io) > 0 || (*_Vdflsbuf)(io) > 0)                                \
-     ? ( int )(*(io)->next++ = (uchar)(c))                                   \
+     ? ( int ) (*(io)->next++ = (uchar)(c))                                  \
      : -1)
 #define VDGETC(io)                                                           \
-    ((REMAIN(io) > 0 || (*_Vdfilbuf)(io) > 0) ? ( int )(*(io)->next++) : -1)
+    ((REMAIN(io) > 0 || (*_Vdfilbuf)(io) > 0) ? ( int ) (*(io)->next++) : -1)
 #define VDREWIND(io) ((io)->next = (io)->data)
 
 /* fast string I/O */
@@ -294,12 +294,12 @@ typedef struct _vdio_s
 
 typedef struct _vdbufio_s
 {
-    int(*vdfilbuf) _ARG_(( Vdio_t * ));
-    int(*vdflsbuf) _ARG_(( Vdio_t * ));
+    int(*vdfilbuf) _ARG_(( Vdio_t * ) );
+    int(*vdflsbuf) _ARG_(( Vdio_t * ) );
     ulong(*vdgetu) _ARG_((Vdio_t *, ulong));
     int(*vdputu) _ARG_((Vdio_t *, ulong));
-    int(*vdread) _ARG_(( Vdio_t *, uchar *, int ));
-    int(*vdwrite) _ARG_(( Vdio_t *, uchar *, int ));
+    int(*vdread) _ARG_(( Vdio_t *, uchar *, int ) );
+    int(*vdwrite) _ARG_(( Vdio_t *, uchar *, int ) );
 } Vdbufio_t;
 #define _Vdfilbuf _Vdbufio.vdfilbuf
 #define _Vdflsbuf _Vdbufio.vdflsbuf
@@ -310,11 +310,11 @@ typedef struct _vdbufio_s
 
 _BEGIN_EXTERNS_
 extern Vdbufio_t _Vdbufio;
-extern long _vdupdate_01 _ARG_(( Vddisc_t *, Vddisc_t *, Vddisc_t * ));
+extern long _vdupdate_01 _ARG_(( Vddisc_t *, Vddisc_t *, Vddisc_t * ) );
 #if !_PACKAGE_ast
 extern Void_t *memcpy _ARG_((Void_t *, const Void_t *, size_t));
 extern Void_t *malloc _ARG_((size_t));
-extern void free _ARG_(( Void_t * ));
+extern void free _ARG_(( Void_t * ) );
 #endif
 _END_EXTERNS_
 

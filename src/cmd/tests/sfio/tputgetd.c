@@ -36,7 +36,7 @@ tmain()
         if (sfputd(fp, f) < 0)
             terror("Writing %.12Lf", f);
 
-    sfseek(fp, ( Sfoff_t )0, 0);
+    sfseek(fp, ( Sfoff_t ) 0, 0);
     for (flag = 0, f = BEGV, i = 0; f < ENDV; ++i, f += INCR) {
         if ((v = sfgetd(fp)) == f)
             continue;

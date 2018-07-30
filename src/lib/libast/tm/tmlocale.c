@@ -103,7 +103,7 @@ fixup(Lc_info_t *li, char **b)
     tm_info.format = b;
     if (!(tm_info.deformat = state.format))
         tm_info.deformat = tm_info.format[TM_DEFAULT];
-    li->data = ( void * )b;
+    li->data = ( void * ) b;
 }
 
 #if _WINIX
@@ -374,7 +374,7 @@ native_lc_time(Lc_info_t *li)
         n += GetLocaleInfo(lcid, map[i].native, 0, 0);
     if (!(b = newof(0, char *, TM_NFORM, n)))
         return;
-    s = ( char * )(b + TM_NFORM);
+    s = ( char * ) (b + TM_NFORM);
     for (i = 0; i < elementsof(map); i++) {
         if (!(m = GetLocaleInfo(lcid, map[i].native, s, n)))
             goto bad;
@@ -535,7 +535,7 @@ native_lc_time(Lc_info_t *li)
     }
     if (!(b = newof(0, char *, TM_NFORM, n)))
         return;
-    s = ( char * )(b + TM_NFORM);
+    s = ( char * ) (b + TM_NFORM);
     for (i = 0; i < elementsof(map); i++) {
         b[map[i].local] = s;
         if (!(t = nl_langinfo(map[i].native)))
@@ -549,7 +549,7 @@ native_lc_time(Lc_info_t *li)
 #    else
 
 #        define native_lc_time(li)                                           \
-            ((li->data = ( void * )(tm_info.format = tm_data.format)),       \
+            ((li->data = ( void * ) (tm_info.format = tm_data.format)),      \
              (tm_info.deformat = tm_info.format[TM_DEFAULT]))
 
 #    endif
@@ -574,7 +574,7 @@ load(Lc_info_t *li)
     Sfio_t *tp;
     char path[PATH_MAX];
 
-    if (b = ( char ** )li->data) {
+    if (b = ( char ** ) li->data) {
         tm_info.format = b;
         if (!(tm_info.deformat = state.format))
             tm_info.deformat = tm_info.format[TM_DEFAULT];
@@ -587,7 +587,7 @@ load(Lc_info_t *li)
         && (sp = sfopen(NiL, path, "r"))) {
         n = sfsize(sp);
         tp = 0;
-        if (u = ( unsigned char * )sfreserve(sp, 3, 1)) {
+        if (u = ( unsigned char * ) sfreserve(sp, 3, 1)) {
             if (u[0] == 0xef && u[1] == 0xbb && u[2] == 0xbf
                 && (cvt = iconv_open("", "utf")) != (iconv_t)(-1)) {
                 if (tp = sfstropen()) {
@@ -602,7 +602,7 @@ load(Lc_info_t *li)
         if (b = newof(0, char *, TM_NFORM, n + 2)) {
             v = b;
             e = b + TM_NFORM;
-            s = ( char * )e;
+            s = ( char * ) e;
             if (tp && memcpy(s, sfstrbase(tp), n)
                 || !tp && sfread(sp, s, n) == n) {
                 s[n] = '\n';

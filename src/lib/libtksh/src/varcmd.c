@@ -64,7 +64,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " varName ?newValue?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 }
@@ -80,7 +80,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " varName ?varName ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -122,7 +122,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " varName ?varName ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     for (i = 1; i < argc; i++) {
@@ -166,7 +166,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " varName value ?value ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 #else
@@ -175,7 +175,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " varName ?value value ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (argc == 2) {
@@ -232,7 +232,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " varName ?value value ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (argc == 2) {
@@ -260,7 +260,7 @@ char **argv;        /* Argument strings. */
 
 #define MakeUpvar(iPtr, framePtr, nm1, nm2, newname, notused2)               \
     TkshUpVar(                                                               \
-    ( Tcl_Interp * )iPtr, (newname), (nm1), (nm2), (framePtr)->var_tree)
+    ( Tcl_Interp * ) iPtr, (newname), (nm1), (nm2), (framePtr)->var_tree)
 
 int TclGetFrame(interp, string, framePtr) Tcl_Interp *interp;
 char *string;
@@ -281,7 +281,7 @@ CallFrame **framePtr;
         if (level < 0) {
         levelError:
             Tcl_AppendResult(
-            interp, "bad level \"", string, "\"", ( char * )NULL);
+            interp, "bad level \"", string, "\"", ( char * ) NULL);
             return -1;
         }
     } else if (isdigit(UCHAR(*string))) {
@@ -326,7 +326,7 @@ Tcl_Interp *interp; /* Current interpreter. */
 int argc;           /* Number of arguments. */
 char **argv;        /* Argument strings. */
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     int result;
     CallFrame *framePtr;
     char *p;
@@ -338,7 +338,7 @@ char **argv;        /* Argument strings. */
         "wrong # args: should be \"",
         argv[0],
         " ?level? otherVar localVar ?otherVar localVar ...?\"",
-        ( char * )NULL);
+        ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -386,7 +386,7 @@ char **argv;        /* Argument strings. */
         }
     scalar:
         result
-        = MakeUpvar(iPtr, framePtr, argv[0], ( char * )NULL, argv[1], 0);
+        = MakeUpvar(iPtr, framePtr, argv[0], ( char * ) NULL, argv[1], 0);
 
     checkResult:
         if (result != TCL_OK) {
@@ -433,7 +433,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " ?level? command ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -554,7 +554,7 @@ int flags;          /* Either 0 or TCL_GLOBAL_ONLY;  indicates
             }
             *openParen = '\0';
             *p = '\0';
-            result = MakeUpvar(( Interp * )interp,
+            result = MakeUpvar(( Interp * ) interp,
                                framePtr,
                                varName,
                                openParen + 1,
@@ -568,7 +568,7 @@ int flags;          /* Either 0 or TCL_GLOBAL_ONLY;  indicates
 
 scalar:
     return MakeUpvar(
-    ( Interp * )interp, framePtr, varName, ( char * )NULL, localName, flags);
+    ( Interp * ) interp, framePtr, varName, ( char * ) NULL, localName, flags);
 }
 
 /*
@@ -609,7 +609,7 @@ int flags;           /* TCL_GLOBAL_ONLY or 0. */
         return TCL_ERROR;
     }
     return MakeUpvar(
-    ( Interp * )interp, framePtr, part1, part2, localName, flags);
+    ( Interp * ) interp, framePtr, part1, part2, localName, flags);
 }
 
 
@@ -646,7 +646,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option arrayName ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -673,7 +673,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " anymore arrayName searchId\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (notArray) {
@@ -699,7 +699,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " donesearch arrayName searchId\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (notArray) {
@@ -710,7 +710,7 @@ char **argv;        /* Argument strings. */
         if ((searchPtr == NULL) || (arrayInfo == NULL)) {
             return TCL_ERROR;
         }
-        if (searchPtr == ( ArraySearch * )arrayInfo->clientData) {
+        if (searchPtr == ( ArraySearch * ) arrayInfo->clientData) {
             arrayInfo->clientData = searchPtr->nextPtr;
         } else {
             for (prevPtr = arrayInfo->clientData;;
@@ -721,14 +721,14 @@ char **argv;        /* Argument strings. */
                 }
             }
         }
-        ckfree(( char * )searchPtr);
+        ckfree(( char * ) searchPtr);
     } else if ((c == 'e') && (strncmp(argv[1], "exists", length) == 0)) {
         if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
                              " exists arrayName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         interp->result = (notArray) ? "0" : "1";
@@ -740,7 +740,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " get arrayName ?pattern?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (notArray) {
@@ -767,7 +767,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " names arrayName ?pattern?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (notArray) {
@@ -793,7 +793,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " nextelement arrayName searchId\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (notArray) {
@@ -841,7 +841,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " set arrayName list\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (Tcl_SplitList(interp, argv[3], &valueArgc, &valueArgv)
@@ -866,7 +866,7 @@ char **argv;        /* Argument strings. */
             }
         }
     setDone:
-        ckfree(( char * )valueArgv);
+        ckfree(( char * ) valueArgv);
         return result;
     } else if ((c == 's') && (strncmp(argv[1], "size", length) == 0)
                && (length >= 2)) {
@@ -877,7 +877,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " size arrayName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (!notArray) {
@@ -900,7 +900,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " startsearch arrayName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (notArray) {
@@ -936,14 +936,14 @@ char **argv;        /* Argument strings. */
                          "\": should be anymore, donesearch, exists, ",
                          "get, names, nextelement, ",
                          "set, size, or startsearch",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
 
 error:
     Tcl_AppendResult(
-    interp, "\"", argv[2], "\" isn't an array", ( char * )NULL);
+    interp, "\"", argv[2], "\" isn't an array", ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -960,7 +960,7 @@ char *string;
     if ((string[0] != 's') || (string[1] != '-')) {
     syntax:
         Tcl_AppendResult(
-        interp, "illegal search identifier \"", string, "\"", ( char * )NULL);
+        interp, "illegal search identifier \"", string, "\"", ( char * ) NULL);
         return NULL;
     }
     id = strtoul(string + 2, &end, 10);
@@ -973,11 +973,11 @@ char *string;
                          "\" isn't for variable \"",
                          varName,
                          "\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return NULL;
     }
     if ((arrayInfo = TkshArrayData(varPtr))) {
-        ArraySearch *searchPtr = ( ArraySearch * )arrayInfo->clientData;
+        ArraySearch *searchPtr = ( ArraySearch * ) arrayInfo->clientData;
         while (searchPtr != NULL) {
             if (searchPtr->id == id)
                 return searchPtr;
@@ -985,8 +985,8 @@ char *string;
         }
     }
     Tcl_AppendResult(
-    interp, "couldn't find search \"", string, "\"", ( char * )NULL);
-    return ( ArraySearch * )NULL;
+    interp, "couldn't find search \"", string, "\"", ( char * ) NULL);
+    return ( ArraySearch * ) NULL;
 }
 
 static ArraySearch *MakeSearchId(interp, nv, varName) Tcl_Interp *interp;
@@ -997,12 +997,12 @@ char *varName;
     TkshArrayInfo *arrayInfo;
     char string[20];
 
-    as = ( ArraySearch * )malloc(sizeof(ArraySearch));
+    as = ( ArraySearch * ) malloc(sizeof(ArraySearch));
     as->id = 1;
     as->nextPtr = NULL;
 
     if ((arrayInfo = TkshArrayData(nv))) {
-        if ((searchPtr = ( ArraySearch * )arrayInfo->clientData)) {
+        if ((searchPtr = ( ArraySearch * ) arrayInfo->clientData)) {
             as->id = searchPtr->id + 1;
             as->nextPtr = searchPtr;
         }
@@ -1010,14 +1010,14 @@ char *varName;
     arrayInfo->clientData = as;
     sprintf(string, "%d", as->id);
     Tcl_ResetResult(interp);
-    Tcl_AppendResult(interp, "s-", string, "-", varName, ( char * )NULL);
+    Tcl_AppendResult(interp, "s-", string, "-", varName, ( char * ) NULL);
     return as;
 }
 
 void TkshDeleteSearches(arrayInfo) TkshArrayInfo *arrayInfo;
 {
     ArraySearch *searchPtr;
-    searchPtr = ( ArraySearch * )arrayInfo->clientData;
+    searchPtr = ( ArraySearch * ) arrayInfo->clientData;
     for (; searchPtr; searchPtr = searchPtr->nextPtr)
         free(searchPtr);
     arrayInfo->clientData = NULL;

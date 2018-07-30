@@ -45,7 +45,7 @@ execlp(const char *, const char *, ...);
 extern int
 execlp(const char *name, const char *arg, ...)
 {
-    return execvp(name, ( char *const * )&arg);
+    return execvp(name, ( char *const * ) &arg);
 }
 
 #endif

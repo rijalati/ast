@@ -62,7 +62,7 @@ subold(Sfio_t *dp,
         case '\\':
             if (sre) {
                 sfputc(dp, chresc(sp - 1, &s));
-                sp = ( const char * )s;
+                sp = ( const char * ) s;
                 continue;
             }
             if (*sp == '&') {
@@ -182,7 +182,7 @@ subold(Sfio_t *dp,
         default:
             if (!sre) {
                 sfputc(dp, chresc(sp - 2, &s));
-                sp = ( const char * )s;
+                sp = ( const char * ) s;
                 continue;
             }
             sp--;
@@ -199,8 +199,8 @@ subold(Sfio_t *dp,
         }
         if (c >= nmatch)
             return REG_ESUBREG;
-        s = ( char * )op + match[c].rm_so;
-        e = ( char * )op + match[c].rm_eo;
+        s = ( char * ) op + match[c].rm_so;
+        e = ( char * ) op + match[c].rm_eo;
         while (s < e) {
             c = *s++;
             switch (flags) {

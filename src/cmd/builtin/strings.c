@@ -139,13 +139,13 @@ strings(Sfio_t *in, Sfio_t *out, int width, char *format, int flags)
         else
             sfsprintf(
             fmt, sizeof(fmt), "%%%.*sI*%c %%.*s\n", c, format, format[c]);
-        if ((offset = sfseek(in, ( off_t )0, SEEK_CUR)) < 0)
+        if ((offset = sfseek(in, ( off_t ) 0, SEEK_CUR)) < 0)
             offset = 0;
         offset--;
     }
     sep = (flags & MULTILINE) ? 0 : '\n';
-    while ((inp = ( unsigned char * )sfgetr(in, sep, 0))
-           || (inp = ( unsigned char * )sfgetr(in, sep, -1))) {
+    while ((inp = ( unsigned char * ) sfgetr(in, sep, 0))
+           || (inp = ( unsigned char * ) sfgetr(in, sep, -1))) {
         c = sfvalue(in);
         inend = inp + c;
         offset += c;
@@ -162,7 +162,7 @@ strings(Sfio_t *in, Sfio_t *out, int width, char *format, int flags)
                                 < 0)
                                 return 0;
                             n = outstring(out,
-                                          ( char * )inp
+                                          ( char * ) inp
                                           - ((flags & MULTIBYTE) + 1) * n - 1,
                                           n,
                                           flags);
@@ -175,7 +175,7 @@ strings(Sfio_t *in, Sfio_t *out, int width, char *format, int flags)
                                          inp - n - 1);
                     } else if (flags & (MULTIBYTE | MULTILINE))
                         n = outstring(out,
-                                      ( char * )inp
+                                      ( char * ) inp
                                       - ((flags & MULTIBYTE) + 1) * n - 1,
                                       n,
                                       flags);

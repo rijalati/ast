@@ -42,7 +42,7 @@
 int
 strperm(const char *aexpr, char **e, int perm)
 {
-    char *expr = ( char * )aexpr;
+    char *expr = ( char * ) aexpr;
     int c;
     int typ;
     int who;

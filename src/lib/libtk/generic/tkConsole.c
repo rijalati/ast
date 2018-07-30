@@ -95,21 +95,21 @@ TkConsoleCreate()
     Tcl_Channel consoleChannel;
 
     consoleChannel = Tcl_CreateChannel(
-    &consoleChannelType, "console0", ( ClientData )TCL_STDIN, TCL_READABLE);
+    &consoleChannelType, "console0", ( ClientData ) TCL_STDIN, TCL_READABLE);
     if (consoleChannel != NULL) {
         Tcl_SetChannelOption(NULL, consoleChannel, "-translation", "lf");
         Tcl_SetChannelOption(NULL, consoleChannel, "-buffering", "none");
     }
     Tcl_SetStdChannel(consoleChannel, TCL_STDIN);
     consoleChannel = Tcl_CreateChannel(
-    &consoleChannelType, "console1", ( ClientData )TCL_STDOUT, TCL_WRITABLE);
+    &consoleChannelType, "console1", ( ClientData ) TCL_STDOUT, TCL_WRITABLE);
     if (consoleChannel != NULL) {
         Tcl_SetChannelOption(NULL, consoleChannel, "-translation", "lf");
         Tcl_SetChannelOption(NULL, consoleChannel, "-buffering", "none");
     }
     Tcl_SetStdChannel(consoleChannel, TCL_STDOUT);
     consoleChannel = Tcl_CreateChannel(
-    &consoleChannelType, "console2", ( ClientData )TCL_STDERR, TCL_WRITABLE);
+    &consoleChannelType, "console2", ( ClientData ) TCL_STDERR, TCL_WRITABLE);
     if (consoleChannel != NULL) {
         Tcl_SetChannelOption(NULL, consoleChannel, "-translation", "lf");
         Tcl_SetChannelOption(NULL, consoleChannel, "-buffering", "none");
@@ -167,29 +167,29 @@ int TkConsoleInit(interp) Tcl_Interp *interp; /* Interpreter to use for
     /*
      * Add console commands to the interp
      */
-    info = ( ConsoleInfo * )ckalloc(sizeof(ConsoleInfo));
+    info = ( ConsoleInfo * ) ckalloc(sizeof(ConsoleInfo));
     info->interp = interp;
     info->consoleInterp = consoleInterp;
     Tcl_CreateCommand(interp,
                       "console",
                       ConsoleCmd,
-                      ( ClientData )info,
-                      ( Tcl_CmdDeleteProc * )ConsoleDeleteProc);
+                      ( ClientData ) info,
+                      ( Tcl_CmdDeleteProc * ) ConsoleDeleteProc);
     Tcl_CreateCommand(consoleInterp,
                       "interp",
                       InterpreterCmd,
-                      ( ClientData )info,
-                      ( Tcl_CmdDeleteProc * )NULL);
+                      ( ClientData ) info,
+                      ( Tcl_CmdDeleteProc * ) NULL);
 
     Tk_CreateEventHandler(
-    mainWindow, StructureNotifyMask, ConsoleEventProc, ( ClientData )info);
+    mainWindow, StructureNotifyMask, ConsoleEventProc, ( ClientData ) info);
 
-    Tcl_Preserve(( ClientData )consoleInterp);
+    Tcl_Preserve(( ClientData ) consoleInterp);
     if (Tcl_Eval(consoleInterp, initCmd) == TCL_ERROR) {
         /* goto error; -- no problem for now... */
         printf("Eval error: %s", consoleInterp->result);
     }
-    Tcl_Release(( ClientData )consoleInterp);
+    Tcl_Release(( ClientData ) consoleInterp);
     return TCL_OK;
 
 error:
@@ -227,7 +227,7 @@ int *errorCode;          /* Where to store error code. */
     Tcl_SetErrno(0);
 
     if (gStdoutInterp != NULL) {
-        TkConsolePrint(gStdoutInterp, ( int )instanceData, buf, toWrite);
+        TkConsolePrint(gStdoutInterp, ( int ) instanceData, buf, toWrite);
     }
 
     return toWrite;
@@ -368,7 +368,7 @@ int direction;           /* TCL_READABLE or TCL_WRITABLE
                           * to indicate which direction of
                           * the channel is being requested. */
 {
-    return ( Tcl_File )NULL;
+    return ( Tcl_File ) NULL;
 }
 
 /*
@@ -394,7 +394,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    ConsoleInfo *info = ( ConsoleInfo * )clientData;
+    ConsoleInfo *info = ( ConsoleInfo * ) clientData;
     char c;
     int length;
     int result;
@@ -405,7 +405,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option ?arg arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -413,7 +413,7 @@ char **argv;           /* Argument strings. */
     length = strlen(argv[1]);
     result = TCL_OK;
     consoleInterp = info->consoleInterp;
-    Tcl_Preserve(( ClientData )consoleInterp);
+    Tcl_Preserve(( ClientData ) consoleInterp);
     if ((c == 't') && (strncmp(argv[1], "title", length)) == 0) {
         Tcl_DString dString;
         char *wmCmd = "wm title . {";
@@ -435,10 +435,10 @@ char **argv;           /* Argument strings. */
                          "bad option \"",
                          argv[1],
                          "\": should be hide, show, or title",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         result = TCL_ERROR;
     }
-    Tcl_Release(( ClientData )consoleInterp);
+    Tcl_Release(( ClientData ) consoleInterp);
     return result;
 }
 
@@ -465,7 +465,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    ConsoleInfo *info = ( ConsoleInfo * )clientData;
+    ConsoleInfo *info = ( ConsoleInfo * ) clientData;
     char c;
     int length;
     int result;
@@ -476,7 +476,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option ?arg arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -484,23 +484,23 @@ char **argv;           /* Argument strings. */
     length = strlen(argv[1]);
     result = TCL_OK;
     otherInterp = info->interp;
-    Tcl_Preserve(( ClientData )otherInterp);
+    Tcl_Preserve(( ClientData ) otherInterp);
     if ((c == 'e') && (strncmp(argv[1], "eval", length)) == 0) {
         result = Tcl_GlobalEval(otherInterp, argv[2]);
-        Tcl_AppendResult(interp, otherInterp->result, ( char * )NULL);
+        Tcl_AppendResult(interp, otherInterp->result, ( char * ) NULL);
     } else if ((c == 'r') && (strncmp(argv[1], "record", length)) == 0) {
         Tcl_RecordAndEval(otherInterp, argv[2], TCL_EVAL_GLOBAL);
         result = TCL_OK;
-        Tcl_AppendResult(interp, otherInterp->result, ( char * )NULL);
+        Tcl_AppendResult(interp, otherInterp->result, ( char * ) NULL);
     } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],
                          "\": should be eval or record",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         result = TCL_ERROR;
     }
-    Tcl_Release(( ClientData )otherInterp);
+    Tcl_Release(( ClientData ) otherInterp);
     return result;
 }
 
@@ -523,7 +523,7 @@ char **argv;           /* Argument strings. */
 
 static void ConsoleDeleteProc(clientData) ClientData clientData;
 {
-    ConsoleInfo *info = ( ConsoleInfo * )clientData;
+    ConsoleInfo *info = ( ConsoleInfo * ) clientData;
 
     Tcl_DeleteInterp(info->consoleInterp);
     info->consoleInterp = NULL;
@@ -551,14 +551,14 @@ static void ConsoleDeleteProc(clientData) ClientData clientData;
 static void ConsoleEventProc(clientData, eventPtr) ClientData clientData;
 XEvent *eventPtr;
 {
-    ConsoleInfo *info = ( ConsoleInfo * )clientData;
+    ConsoleInfo *info = ( ConsoleInfo * ) clientData;
     Tcl_Interp *consoleInterp;
 
     if (eventPtr->type == DestroyNotify) {
         consoleInterp = info->consoleInterp;
-        Tcl_Preserve(( ClientData )consoleInterp);
+        Tcl_Preserve(( ClientData ) consoleInterp);
         Tcl_Eval(consoleInterp, "tkConsoleExit");
-        Tcl_Release(( ClientData )consoleInterp);
+        Tcl_Release(( ClientData ) consoleInterp);
     }
 }
 
@@ -608,7 +608,7 @@ long size;          /* Size of text buffer. */
     if (result == 0) {
         return;
     }
-    info = ( ConsoleInfo * )cmdInfo.clientData;
+    info = ( ConsoleInfo * ) cmdInfo.clientData;
 
     Tcl_DStringInit(&output);
     Tcl_DStringAppend(&output, buffer, size);
@@ -618,9 +618,9 @@ long size;          /* Size of text buffer. */
     Tcl_DStringAppendElement(&command, output.string);
 
     consoleInterp = info->consoleInterp;
-    Tcl_Preserve(( ClientData )consoleInterp);
+    Tcl_Preserve(( ClientData ) consoleInterp);
     Tcl_Eval(consoleInterp, command.string);
-    Tcl_Release(( ClientData )consoleInterp);
+    Tcl_Release(( ClientData ) consoleInterp);
 
     Tcl_DStringFree(&command);
     Tcl_DStringFree(&output);

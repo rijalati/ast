@@ -105,7 +105,7 @@ static const char ident_name[] = "EVEN";
 #define IDENT_SWAP 0x01020304
 #define IDENT_VERSION ((EVENT_MAJOR << 16) | (EVENT_MINOR))
 
-#define EVENT(s) (*(( char * )(s)) != ident_key[0])
+#define EVENT(s) (*(( char * ) (s)) != ident_key[0])
 #define log _log /* gnu builtin? you've got to be kidding */
 
 #include <ast.h>
@@ -286,7 +286,7 @@ log(State_t *state, Connection_t *con, int type, const char *format, ...)
 static int
 acceptf(Css_t *css, Cssfd_t *fp, Csid_t *ip, char **av, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Connection_t *con;
 
     if (!(con = newof(0, Connection_t, 1, 0)))
@@ -313,9 +313,9 @@ notify(State_t *state, Event_t *ep)
     char *s;
     size_t n;
 
-    for (cp = ( Connection_t * )dtfirst(state->connections); cp;
-         cp = ( Connection_t * )dtnext(state->connections, cp))
-        if (cp->waiting && (wp = ( Waiting_t * )dtmatch(cp->waiting, &ep))) {
+    for (cp = ( Connection_t * ) dtfirst(state->connections); cp;
+         cp = ( Connection_t * ) dtnext(state->connections, cp))
+        if (cp->waiting && (wp = ( Waiting_t * ) dtmatch(cp->waiting, &ep))) {
             if (wp->id >= 0) {
                 log(state, cp, 'x', "%d 0", wp->id);
                 n = sfstrtell(state->usrf);
@@ -390,12 +390,12 @@ info(State_t *state, Connection_t *con, Css_t *css)
         geteuid(),
         getegid());
     log(state, con, 'I', "info active=%d", state->active);
-    for (cp = ( Connection_t * )dtfirst(state->connections); cp;
-         cp = ( Connection_t * )dtnext(state->connections, cp))
+    for (cp = ( Connection_t * ) dtfirst(state->connections); cp;
+         cp = ( Connection_t * ) dtnext(state->connections, cp))
         if (cp->waiting && (n = dtsize(cp->waiting)) > 0) {
             log(state, con, 0, "waiting connection=%d count=%d", cp->fd, n);
-            for (wp = ( Waiting_t * )dtfirst(cp->waiting); wp;
-                 wp = ( Waiting_t * )dtnext(cp->waiting, wp))
+            for (wp = ( Waiting_t * ) dtfirst(cp->waiting); wp;
+                 wp = ( Waiting_t * ) dtnext(cp->waiting, wp))
                 log(state, con, 0, " %s", wp->event->name);
             log(state, con, 'I', 0);
         }
@@ -432,7 +432,7 @@ apply(State_t *state,
     case REQ_clear:
         dat->flags |= DATA_clear;
         dat->time = time(NiL);
-        val.dptr = ( void * )dat;
+        val.dptr = ( void * ) dat;
         val.dsize = sizeof(*dat);
         if (!(n = dbm_store(state->dbm, key, val, DBM_INSERT))
             || n > 0 && !dbm_store(state->dbm, key, val, DBM_REPLACE))
@@ -458,7 +458,7 @@ apply(State_t *state,
     case REQ_hold:
         dat->flags |= DATA_hold;
         dat->time = time(NiL);
-        val.dptr = ( void * )dat;
+        val.dptr = ( void * ) dat;
         val.dsize = sizeof(*dat);
         if (!(n = dbm_store(state->dbm, key, val, DBM_INSERT))
             || n > 0 && !dbm_store(state->dbm, key, val, DBM_REPLACE))
@@ -474,12 +474,12 @@ apply(State_t *state,
         dat->flags &= ~DATA_clear;
         dat->time = time(NiL);
         dat->raise++;
-        val.dptr = ( void * )dat;
+        val.dptr = ( void * ) dat;
         val.dsize = sizeof(*dat);
         if (!(n = dbm_store(state->dbm, key, val, DBM_INSERT))
             || n > 0 && !dbm_store(state->dbm, key, val, DBM_REPLACE)) {
             if (!state->hold
-                && (e = ( Event_t * )dtmatch(state->events, key.dptr)))
+                && (e = ( Event_t * ) dtmatch(state->events, key.dptr)))
                 notify(state, e);
             log(state, con, 'I', "%s raised", key.dptr);
         } else if (!dbm_error(state->dbm))
@@ -493,7 +493,7 @@ apply(State_t *state,
         if (dat->flags & DATA_hold) {
             dat->flags &= ~DATA_hold;
             if (dat->raise) {
-                val.dptr = ( void * )dat;
+                val.dptr = ( void * ) dat;
                 val.dsize = sizeof(*dat);
                 if (!(n = dbm_store(state->dbm, key, val, DBM_INSERT))
                     || n > 0 && !dbm_store(state->dbm, key, val, DBM_REPLACE))
@@ -504,7 +504,7 @@ apply(State_t *state,
                     dbm_clearerr(state->dbm);
                     log(state, con, 'E', "%s io error", key.dptr);
                 }
-                if (e = ( Event_t * )dtmatch(state->events, key.dptr))
+                if (e = ( Event_t * ) dtmatch(state->events, key.dptr))
                     notify(state, e);
             } else if (!dbm_delete(state->dbm, key))
                 log(state, con, 'L', "%s deleted", key.dptr);
@@ -570,7 +570,7 @@ request(State_t *state,
                 log(state, con, 'E', "%s invalid event name", s);
                 return -1;
             }
-            key.dptr = ( void * )s;
+            key.dptr = ( void * ) s;
             key.dsize = strlen(s) + 1;
             if (key.dsize >= sizeof(e->name))
                 s[(key.dsize = sizeof(e->name)) - 1] = 0;
@@ -618,7 +618,7 @@ date(State_t *state, Connection_t *con, const char *s)
     datum val;
     Data_t dat;
 
-    key.dptr = ( void * )s;
+    key.dptr = ( void * ) s;
     key.dsize = strlen(s) + 1;
     val = dbm_fetch(state->dbm, key);
     if (val.dptr) {
@@ -641,7 +641,7 @@ date(State_t *state, Connection_t *con, const char *s)
 static int
 actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Connection_t *con;
     char *s;
     char *t;
@@ -664,11 +664,11 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 
     switch (fp->status) {
     case CS_POLL_CLOSE:
-        if (con = ( Connection_t * )fp->data)
+        if (con = ( Connection_t * ) fp->data)
             dtdelete(state->connections, con);
         return 0;
     case CS_POLL_READ:
-        con = ( Connection_t * )fp->data;
+        con = ( Connection_t * ) fp->data;
         if ((n = csread(
              css->state, fp->fd, state->req, sizeof(state->req), CS_LINE))
             <= 0)
@@ -687,11 +687,11 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                 if (*s != '=')
                     break;
                 if ((s - *q) == 2 && *(s - 1) == 'd' && *(s - 2) == 'i')
-                    id = ( int )strtol(s + 1, NiL, 0);
+                    id = ( int ) strtol(s + 1, NiL, 0);
             }
             s = *(a = q);
             if (!(
-                r = ( Request_t * )strpsearch(
+                r = ( Request_t * ) strpsearch(
                 requests, elementsof(requests), sizeof(requests[0]), s, NiL)))
                 log(state, con, 'E', "%s: unknown request", s);
             else {
@@ -771,7 +771,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                     else
                         switch (r->index) {
                         case REQ_all:
-                            n = ( int )strtol(a[0], &t, 0);
+                            n = ( int ) strtol(a[0], &t, 0);
                             if (*t) {
                                 log(state,
                                     con,
@@ -780,7 +780,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                                     a[0]);
                                 break;
                             } else if (!(f = cssfd(css, n, 0))
-                                       || !(x = ( Connection_t * )f->data)) {
+                                       || !(x = ( Connection_t * ) f->data)) {
                                 log(state,
                                     con,
                                     'E',
@@ -792,10 +792,10 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                                 n = x->quiet;
                                 x->quiet = 1;
                                 a = state->cmd;
-                                for (w = ( Waiting_t * )dtfirst(x->waiting);
+                                for (w = ( Waiting_t * ) dtfirst(x->waiting);
                                      w;
-                                     w
-                                     = ( Waiting_t * )dtnext(x->waiting, w)) {
+                                     w = ( Waiting_t * ) dtnext(x->waiting,
+                                                                w)) {
                                     if (a
                                         >= &state->cmd[elementsof(state->cmd)
                                                        - 1]) {
@@ -940,7 +940,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                                     state->swap, val.dptr, &data, val.dsize);
                                     if (!(data.flags
                                           & (DATA_clear | DATA_hold))
-                                        && (e = ( Event_t * )dtmatch(
+                                        && (e = ( Event_t * ) dtmatch(
                                             state->events, key.dptr)))
                                         notify(state, e);
                                     key = dbm_nextkey(state->dbm);
@@ -986,7 +986,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 static int
 exceptf(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
 
     switch (op) {
     case CSS_CLOSE:
@@ -1014,8 +1014,8 @@ static void
 confree(Dt_t *dt, void *obj, Dtdisc_t *disc)
 {
     State_t *state
-    = ( State_t * )(( char * )disc - offsetof(State_t, condisc));
-    Connection_t *con = ( Connection_t * )obj;
+    = ( State_t * ) (( char * ) disc - offsetof(State_t, condisc));
+    Connection_t *con = ( Connection_t * ) obj;
 
     NoP(dt);
     NoP(disc);
@@ -1046,8 +1046,8 @@ static void
 waitfree(Dt_t *dt, void *obj, Dtdisc_t *disc)
 {
     State_t *state
-    = ( State_t * )(( char * )disc - offsetof(State_t, waitdisc));
-    Waiting_t *p = ( Waiting_t * )obj;
+    = ( State_t * ) (( char * ) disc - offsetof(State_t, waitdisc));
+    Waiting_t *p = ( Waiting_t * ) obj;
 
     NoP(dt);
     if (--p->event->waiting == 0)
@@ -1074,7 +1074,7 @@ db(State_t *state)
         error(ERROR_SYSTEM | 3,
               "%s: cannot open database for read/write",
               state->path);
-    key.dptr = ( void * )ident_key;
+    key.dptr = ( void * ) ident_key;
     key.dsize = sizeof(ident_key);
     val = dbm_fetch(state->dbm, key);
     if (val.dptr) {
@@ -1105,7 +1105,7 @@ db(State_t *state)
         memcpy(&data.expire, ident_name, sizeof(data.expire));
         data.time = IDENT_SWAP;
         data.raise = IDENT_VERSION;
-        val.dptr = ( void * )&data;
+        val.dptr = ( void * ) &data;
         val.dsize = sizeof(data);
         if (dbm_store(state->dbm, key, val, DBM_INSERT)) {
             dbm_clearerr(state->dbm);
@@ -1138,7 +1138,7 @@ main(int argc, char **argv)
     setlocale(LC_ALL, "");
     opt_info.argv = argv;
     state.log = 1;
-    error_info.id = ( char * )command;
+    error_info.id = ( char * ) command;
     if (!(state.usrf = sfstropen()) || !(state.tmp = sfstropen()))
         error(3, "out of space [buf]");
 

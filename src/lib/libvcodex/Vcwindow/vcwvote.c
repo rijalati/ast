@@ -70,7 +70,7 @@ Sfoff_t l, r;  /* interval to search		*/
     size_t dtsz;
     double dif;
     int mtch;
-    Freq_t *fr = ( Freq_t * )vcw->mtdata;
+    Freq_t *fr = ( Freq_t * ) vcw->mtdata;
     Vcwmatch_t *wm = &vcw->match;
 
     if (l < 0)
@@ -106,11 +106,11 @@ size_t size;   /* size of data			*/
 {
     Sfoff_t pos, l, r, max;
     int i;
-    Freq_t *fr = ( Freq_t * )vcw->mtdata;
+    Freq_t *fr = ( Freq_t * ) vcw->mtdata;
 
     max = fr->srcf->size - size;
     for (i = 0; i < fr->srcf->nidx;) {
-        pos = (( Sfoff_t )fr->srcf->idx[i]) * (( Sfoff_t )NG_SIZE);
+        pos = (( Sfoff_t ) fr->srcf->idx[i]) * (( Sfoff_t ) NG_SIZE);
         if ((l = pos - IDXITVL) < 0)
             l = 0;
         if ((r = pos + IDXITVL) > max)
@@ -118,7 +118,7 @@ size_t size;   /* size of data			*/
 
         /* glom together all overlapping intervals */
         for (i = i + 1; i < fr->srcf->nidx; ++i) {
-            pos = (( Sfoff_t )fr->srcf->idx[i]) * (( Sfoff_t )NG_SIZE);
+            pos = (( Sfoff_t ) fr->srcf->idx[i]) * (( Sfoff_t ) NG_SIZE);
             if (pos - IDXITVL >= r)
                 break;
             if ((r = pos + IDXITVL) > max)
@@ -148,7 +148,7 @@ Sfoff_t here;  /* current location		*/
     int mtch;
     Vcchar_t *data;
     double dif;
-    Freq_t *fr = ( Freq_t * )vcw->mtdata;
+    Freq_t *fr = ( Freq_t * ) vcw->mtdata;
     Vcwmatch_t *wm = &vcw->match;
 
     /* if has not been successful, stop doing it */
@@ -158,7 +158,7 @@ Sfoff_t here;  /* current location		*/
     fr->ntar += 1;
 
     /* unseekable */
-    if ((cpos = sfseek(fr->tarf, ( Sfoff_t )0, 1)) < 0)
+    if ((cpos = sfseek(fr->tarf, ( Sfoff_t ) 0, 1)) < 0)
         goto f_err;
 
     /* search a neighborhood in target file */
@@ -207,7 +207,7 @@ Sfoff_t here; /* current target position	*/
     Freq_t *fr;
     Vcwmatch_t *wm = &vcw->match;
 
-    if (!vcw || !(fr = ( Freq_t * )vcw->mtdata) || (!fr->srcf && !fr->tarf))
+    if (!vcw || !(fr = ( Freq_t * ) vcw->mtdata) || (!fr->srcf && !fr->tarf))
         return NIL(Vcwmatch_t *);
 
     /* size of result from last compression */
@@ -220,18 +220,19 @@ Sfoff_t here; /* current target position	*/
     vcwngfreq(dfreq, data, dtsz); /* n-gram frequencies of given data */
 
     /* search back an area in target file for matches */
-    if (fr->tarf && here > ( Sfoff_t )dtsz
+    if (fr->tarf && here > ( Sfoff_t ) dtsz
         && frtarget(vcw, dfreq, dtsz, here) < TARMATCH)
         goto done;
 
     /* if last compression result is good, try next sequential position */
-    if (fr->srcf && (fr->dtsz == 0 || (comp / ( double )fr->dtsz) < SEQSEARCH)
+    if (fr->srcf
+        && (fr->dtsz == 0 || (comp / ( double ) fr->dtsz) < SEQSEARCH)
         && frinterval(vcw, dfreq, dtsz, fr->next - SEQITVL, fr->next + SEQITVL)
            < SEQMATCH)
         goto done;
 
     /* find places in source file likely to have matches */
-    if (fr->srcf && vcwfsearch(fr->srcf, ( Vcchar_t * )data, dtsz) > 0
+    if (fr->srcf && vcwfsearch(fr->srcf, ( Vcchar_t * ) data, dtsz) > 0
         && frsearch(vcw, dfreq, dtsz) < SRCHMATCH)
         goto done;
 
@@ -268,7 +269,7 @@ done:
         wm->wpos = 0;
     if ((wm->wpos + wm->wsize) > high && (wm->wpos = high - wm->wsize) < 0) {
         wm->wpos = 0;
-        wm->wsize = ( ssize_t )high;
+        wm->wsize = ( ssize_t ) high;
     }
 
     /* get window data */
@@ -281,11 +282,11 @@ done:
     wm->msize = dtsz;
     wm->more = 0;
 
-    /**/ DEBUG_PRINT(2, "here=%8d ", ( ssize_t )here);
-    /**/ DEBUG_PRINT(2, "dtsz=%8d ", ( ssize_t )dtsz);
-    /**/ DEBUG_PRINT(2, "mtch=%8d ", ( ssize_t )wm->msize);
-    /**/ DEBUG_PRINT(2, "wpos=%8d ", ( ssize_t )wm->wpos);
-    /**/ DEBUG_PRINT(2, "wsiz=%8d \n", ( ssize_t )wm->wsize);
+    /**/ DEBUG_PRINT(2, "here=%8d ", ( ssize_t ) here);
+    /**/ DEBUG_PRINT(2, "dtsz=%8d ", ( ssize_t ) dtsz);
+    /**/ DEBUG_PRINT(2, "mtch=%8d ", ( ssize_t ) wm->msize);
+    /**/ DEBUG_PRINT(2, "wpos=%8d ", ( ssize_t ) wm->wpos);
+    /**/ DEBUG_PRINT(2, "wsiz=%8d \n", ( ssize_t ) wm->wsize);
 
     return wm;
 }
@@ -303,7 +304,7 @@ int type;
 
     switch (type) {
     case VCW_OPENING:
-        if (!(fr = ( Freq_t * )calloc(1, sizeof(Freq_t))))
+        if (!(fr = ( Freq_t * ) calloc(1, sizeof(Freq_t))))
             return -1;
 
         if (vcw->disc && vcw->disc->srcf)
@@ -312,7 +313,7 @@ int type;
             fr->srcf = NIL(Vcwfile_t *);
 
         if (vcw->disc && vcw->disc->tarf
-            && sfseek(vcw->disc->tarf, ( Sfoff_t )0, 1) >= 0)
+            && sfseek(vcw->disc->tarf, ( Sfoff_t ) 0, 1) >= 0)
             fr->tarf = vcw->disc->tarf;
         else
             fr->tarf = NIL(Sfio_t *);
@@ -327,11 +328,11 @@ int type;
         fr->bestd = 1.;
         fr->ntar = fr->star = 0;
 
-        vcw->mtdata = ( Void_t * )fr;
+        vcw->mtdata = ( Void_t * ) fr;
         break;
 
     case VCW_CLOSING:
-        if ((fr = ( Freq_t * )vcw->mtdata)) {
+        if ((fr = ( Freq_t * ) vcw->mtdata)) {
             if (fr->srcf)
                 vcwfclose(fr->srcf);
             free(fr);

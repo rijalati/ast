@@ -75,16 +75,16 @@ multadd(unsigned short x[3], unsigned short a[3], unsigned short c)
     unsigned short x2 = x[2];
     unsigned short x1 = x[1];
     r += a[2] * x2;
-    x[2] = ( unsigned short )r;
+    x[2] = ( unsigned short ) r;
     r >>= 16;
     r += a[1] * x2;
     r += a[2] * x1;
-    x[1] = ( unsigned short )r;
+    x[1] = ( unsigned short ) r;
     r >>= 16;
     r += a[2] * x[0];
     r += a[1] * x1;
     r += a[0] * x2;
-    x[0] = ( unsigned short )r;
+    x[0] = ( unsigned short ) r;
 }
 
 extern double
@@ -115,7 +115,7 @@ jrand48(unsigned short xsubi[3])
     long u;
     multadd(xsubi, a, c);
     u = (xsubi[0] << 16) | xsubi[1];
-    return (( long )u);
+    return (( long ) u);
 }
 
 extern void
@@ -145,7 +145,7 @@ mrand48(void)
     unsigned long u;
     multadd(X, a, c);
     u = (X[0] << 16) | X[1];
-    return (( long )u);
+    return (( long ) u);
 }
 
 extern long
@@ -160,7 +160,7 @@ nrand48(unsigned short xsubi[3])
 extern unsigned short *
 seed48(unsigned short seed[3])
 {
-    unsigned short *sp = ( unsigned short * )&X;
+    unsigned short *sp = ( unsigned short * ) &X;
     a[0] = A0;
     a[1] = A1;
     a[2] = A2;
@@ -181,8 +181,8 @@ srand48(long seedval)
     a[1] = A1;
     a[2] = A2;
     c = C;
-    X[0] = ( unsigned short )((( unsigned long )seedval) >> 16);
-    X[1] = ( unsigned short )seedval;
+    X[0] = ( unsigned short ) ((( unsigned long ) seedval) >> 16);
+    X[1] = ( unsigned short ) seedval;
     X[2] = XINIT;
 }
 

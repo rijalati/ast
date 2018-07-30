@@ -54,7 +54,7 @@ Sfdisc_t *disc;
 #endif
 {
     if (type == SF_SYNC)
-        (( Mydisc_t * )disc)->sync = integralof(arg);
+        (( Mydisc_t * ) disc)->sync = integralof(arg);
     return 0;
 }
 
@@ -69,10 +69,10 @@ Sfdisc_t *disc;
 #endif
 {
     size_t i;
-    char *s = ( char * )buf;
+    char *s = ( char * ) buf;
 
-    if ((( Mydisc_t * )disc)->sync) /* for synchronization, write everything
-                                     */
+    if ((( Mydisc_t * ) disc)->sync) /* for synchronization, write everything
+                                      */
         i = n;
     else /* only write entire lines */
     {
@@ -87,7 +87,7 @@ Sfdisc_t *disc;
 }
 
 Mydisc_t Mydisc
-= { { ( Sfread_f )0, newline, ( Sfseek_f )0, event, ( Sfdisc_t * )0 }, 0 };
+= { { ( Sfread_f ) 0, newline, ( Sfseek_f ) 0, event, ( Sfdisc_t * ) 0 }, 0 };
 
 tmain()
 {
@@ -118,7 +118,7 @@ tmain()
         terror("Premature eof");
     if (sferror(sfstdout))
         terror("Weird error1");
-    if ((off = sfmove(sfstdin, sfstdout, ( Sfoff_t )SF_UNBOUND, -1)) != 4)
+    if ((off = sfmove(sfstdin, sfstdout, ( Sfoff_t ) SF_UNBOUND, -1)) != 4)
         terror("Wrong # of bytes %lld", off);
     if (!sfeof(sfstdin))
         terror("Should be eof");
@@ -166,17 +166,17 @@ tmain()
 
     sfdisc(f1, NIL(Sfdisc_t *));
 
-    sfseek(f2, ( Sfoff_t )0, 0);
+    sfseek(f2, ( Sfoff_t ) 0, 0);
     sfgetc(f2);
     if ((off = sftell(f2)) != 1)
         terror("Wrong sfseek location %lld", off);
     sfsync(0);
-    if ((off = ( Sfoff_t )lseek(sffileno(f2), ( off_t )0, 1)) != 1)
+    if ((off = ( Sfoff_t ) lseek(sffileno(f2), ( off_t ) 0, 1)) != 1)
         terror("Wrong lseek location %lld", off);
 
     dupf2 = dup(sffileno(f2));
     sfclose(f2);
-    if ((off = ( Sfoff_t )lseek(dupf2, ( off_t )0, 1)) != 1)
+    if ((off = ( Sfoff_t ) lseek(dupf2, ( off_t ) 0, 1)) != 1)
         terror("Wrong lseek location %lld", off);
 
     /* test to see if data is written correctly */
@@ -196,7 +196,7 @@ tmain()
     if (sfsync(f) != 0)
         terror("Bad sfsync call");
 
-    if (sfseek(f, ( Sfoff_t )0, 0) != ( Sfoff_t )0)
+    if (sfseek(f, ( Sfoff_t ) 0, 0) != ( Sfoff_t ) 0)
         terror("Bad sfseek call");
 
     for (n = 0; n < 10; ++n) {

@@ -57,7 +57,7 @@ int vmclear(vm) Vmalloc_t *vm;
     /* memory obtained from discipline can be deallocated */
     for (; seg; seg = next) {
         next = seg->next;
-        ( void )(*disc->memoryf)(vm, seg->base, seg->size, 0, disc);
+        ( void ) (*disc->memoryf)(vm, seg->base, seg->size, 0, disc);
     }
 
     return _vmopen(vm, vm->disc, &vm->meth, 0) ? 0 : -1;

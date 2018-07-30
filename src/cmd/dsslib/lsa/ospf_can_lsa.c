@@ -195,7 +195,7 @@ free_lsa_can_data(ospf_lsa_can_t *lsa_can_p)
 static int
 identf_can_lsa_file(Dssfile_t *fp, void *data, size_t size, Dssdisc_t *disc)
 {
-    Magicid_t *mp = ( Magicid_t * )data;
+    Magicid_t *mp = ( Magicid_t * ) data;
     Magicid_data_t magic;
     int swap;
 
@@ -315,8 +315,8 @@ open_can_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
                     MAGIC_TYPE,
                     (sizeof(magic_hdr.type) / sizeof(char)) - 1);
             magic_hdr.version = MAGIC_VERSION;
-            magic_hdr.size
-            = ( uint8_t * )(&(lsa_can.lsa_data_p)) - ( uint8_t * )(&lsa_can);
+            magic_hdr.size = ( uint8_t * ) (&(lsa_can.lsa_data_p))
+                             - ( uint8_t * ) (&lsa_can);
             /*
              sfprintf(sfstderr, "writing record size %d\n", magic_hdr.size);
             */
@@ -324,7 +324,7 @@ open_can_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
             sfwrite(fp->io, m_struct_align_p, sizeof(uint32_t) * NO_S_I);
         } /* End of if not appending */
     } else {
-        if (!(mp = ( Magicid_t * )sfreserve(fp->io, sizeof(Magicid_t), 0))) {
+        if (!(mp = ( Magicid_t * ) sfreserve(fp->io, sizeof(Magicid_t), 0))) {
             if (disc->errorf) {
                 (*disc->errorf)(NULL,
                                 disc,
@@ -341,7 +341,7 @@ open_can_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
 
         /* Determine structure alignment in the file. */
         f_struct_align_p = can_state_p->f_struct_align;
-        if (!(buff_p = ( uint32_t * )sfreserve(
+        if (!(buff_p = ( uint32_t * ) sfreserve(
               fp->io, (sizeof(uint32_t) * NO_S_I), 0))) {
             if (disc->errorf) {
                 (*disc->errorf)(NULL,
@@ -395,7 +395,7 @@ read_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     ASSERT(fp);
     ASSERT(rp);
     ASSERT(disc);
-    can_state_p = ( ospf_can_lsa_state_t * )(fp->data);
+    can_state_p = ( ospf_can_lsa_state_t * ) (fp->data);
     ASSERT(can_state_p);
 
     /* Read LSA */
@@ -444,7 +444,7 @@ read_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     }
 
     /* Read authentication part as is */
-    buff_p = ( uint8_t * )sfreserve(fp->io, f_struct_align_p[AUTH_S_I], 0);
+    buff_p = ( uint8_t * ) sfreserve(fp->io, f_struct_align_p[AUTH_S_I], 0);
     if (buff_p == NULL) {
         if (sfvalue(fp->io)) {
             if (disc->errorf) {
@@ -463,7 +463,7 @@ read_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     memcpy(&(crp->lsu_auth), buff_p, size);
 
     /* Read LSA data as is */
-    buff_p = ( uint8_t * )sfreserve(fp->io, crp->lsa_data_size, 0);
+    buff_p = ( uint8_t * ) sfreserve(fp->io, crp->lsa_data_size, 0);
     if (buff_p == NULL) {
         if (sfvalue(fp->io)) {
             if (disc->errorf) {
@@ -561,11 +561,11 @@ fill_struct_align(uint32_t *struct_align_p)
 
     ASSERT(struct_align_p);
     struct_align_p[CAN_U32_S_I]
-    = ( uint8_t * )(&(lsa_can.lsu_len)) - ( uint8_t * )(&lsa_can);
-    struct_align_p[CAN_U16_S_I] = ( uint8_t * )(&(lsa_can.lsu_version))
-                                  - ( uint8_t * )(&(lsa_can.lsu_len));
-    struct_align_p[CAN_U8_S_I] = ( uint8_t * )(&(lsa_can.lsu_auth))
-                                 - ( uint8_t * )(&(lsa_can.lsu_version));
+    = ( uint8_t * ) (&(lsa_can.lsu_len)) - ( uint8_t * ) (&lsa_can);
+    struct_align_p[CAN_U16_S_I] = ( uint8_t * ) (&(lsa_can.lsu_version))
+                                  - ( uint8_t * ) (&(lsa_can.lsu_len));
+    struct_align_p[CAN_U8_S_I] = ( uint8_t * ) (&(lsa_can.lsu_auth))
+                                 - ( uint8_t * ) (&(lsa_can.lsu_version));
     struct_align_p[AUTH_S_I] = sizeof(ospf_pkt_auth_t);
     return;
 }
@@ -600,7 +600,7 @@ read_aligned_words(Dssfile_t *fp,
     ASSERT(m_struct_align_p);
     ASSERT(disc);
     ASSERT(align_i < NO_S_I);
-    buff_p = ( uint8_t * )sfreserve(fp->io, f_struct_align_p[align_i], 0);
+    buff_p = ( uint8_t * ) sfreserve(fp->io, f_struct_align_p[align_i], 0);
     if (buff_p == NULL) {
         if (sfvalue(fp->io)) {
             if (disc->errorf) {

@@ -49,7 +49,7 @@ ciscoident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
     Bgpnum_t addr;
     unsigned char bits;
 
-    s = ( char * )buf;
+    s = ( char * ) buf;
     e = s + n;
     for (;;) {
         for (;;) {
@@ -89,7 +89,7 @@ static int
 ciscoopen(Dssfile_t *file, Dssdisc_t *disc)
 {
     if (!(file->data
-          = ( void * )vmnewof(file->dss->vm, 0, Ciscostate_t, 1, 0))) {
+          = ( void * ) vmnewof(file->dss->vm, 0, Ciscostate_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -114,7 +114,7 @@ ciscoopen(Dssfile_t *file, Dssdisc_t *disc)
 static int
 ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Ciscostate_t *state = ( Ciscostate_t * )file->data;
+    Ciscostate_t *state = ( Ciscostate_t * ) file->data;
     Bgproute_t *rp;
     char *s;
     int i;
@@ -202,7 +202,7 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             rp->med = isdigit(s[25]) ? strtol(s + 20, NiL, 10) : 0;
             rp->local = isdigit(s[32]) ? strtol(s + 27, NiL, 10) : 0;
             rp->weight = isdigit(s[39]) ? strtol(s + 34, NiL, 10) : 0;
-            bgp = ( Bgp_t * )file->dss->data;
+            bgp = ( Bgp_t * ) file->dss->data;
             if ((i = (*bgp->type_as16path->internalf)(
                  file->dss->cx,
                  bgp->type_as16path,
@@ -217,7 +217,7 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 break;
             p += i;
             if (r.value.buffer.size > elementsof(rp->data)) {
-                ap = ( Bgpasn_t * )r.value.buffer.data;
+                ap = ( Bgpasn_t * ) r.value.buffer.data;
                 n = r.value.buffer.size / sizeof(Bgpasn_t);
                 for (o = 0, i = 1; i < n; i++)
                     if (ap[i] != ap[o])
@@ -344,7 +344,8 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             }
             memset(rp->data + o, 0, elementsof(rp->data) - o);
             record->data = rp;
-            record->size = rp->size = ( char * )(rp->data + o) - ( char * )rp;
+            record->size = rp->size
+            = ( char * ) (rp->data + o) - ( char * ) rp;
             return 1;
         }
     }
@@ -358,8 +359,8 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 static int
 ciscowrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Ciscostate_t *state = ( Ciscostate_t * )file->data;
-    Bgproute_t *rp = ( Bgproute_t * )record->data;
+    Ciscostate_t *state = ( Ciscostate_t * ) file->data;
+    Bgproute_t *rp = ( Bgproute_t * ) record->data;
     Sfio_t *io = file->io;
     int i;
     int j;

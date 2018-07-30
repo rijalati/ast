@@ -54,7 +54,7 @@ static Lc_t default_lc = { "C",
                              { &default_lc, 0, 0 },
                              { &default_lc, 0, 0 },
                              { &default_lc, 0, 0 },
-                             { &default_lc, 0, ( void * )&default_numeric },
+                             { &default_lc, 0, ( void * ) &default_numeric },
                              { &default_lc, 0, 0 },
                              { &default_lc, 0, 0 },
                              { &default_lc, 0, 0 },
@@ -79,7 +79,7 @@ static Lc_t debug_lc = { "debug",
                            { &debug_lc, 0, 0 },
                            { &debug_lc, 0, 0 },
                            { &debug_lc, 0, 0 },
-                           { &debug_lc, 0, ( void * )&debug_numeric },
+                           { &debug_lc, 0, ( void * ) &debug_numeric },
                            { &debug_lc, 0, 0 },
                            { &debug_lc, 0, 0 },
                            { &debug_lc, 0, 0 },
@@ -146,7 +146,7 @@ lcindex(int category, int min)
 Lc_category_t *
 lccategories(void)
 {
-    return ( Lc_category_t * )&lc_categories[0];
+    return ( Lc_category_t * ) &lc_categories[0];
 }
 
 /*
@@ -586,13 +586,13 @@ lcmake(const char *name)
                  * handle the validity checks
                  */
 
-                s = ( char * )name;
+                s = ( char * ) name;
                 z = strlen(s) + 1;
                 if (!(lp = newof(0, Lc_language_t, 1, z)))
                     return 0;
-                name = (( Lc_language_t * )lp)->code
-                = (( Lc_language_t * )lp)->name = ( const char * )(lp + 1);
-                memcpy(( char * )lp->code, s, z - 1);
+                name = (( Lc_language_t * ) lp)->code
+                = (( Lc_language_t * ) lp)->name = ( const char * ) (lp + 1);
+                memcpy(( char * ) lp->code, s, z - 1);
                 tp = &lc_territories[0];
                 cp = &lc_charsets[0];
                 if (charset_name)
@@ -601,7 +601,7 @@ lcmake(const char *name)
                             cp = ppa;
                             break;
                         }
-                (( Lc_language_t * )lp)->charset = cp;
+                (( Lc_language_t * ) lp)->charset = cp;
                 al = 0;
                 goto override;
             }
@@ -628,7 +628,7 @@ lcmake(const char *name)
                 }
             if (n == 1)
                 tp = primary;
-            s = ( char * )lp->code;
+            s = ( char * ) lp->code;
         }
         if (!tp || !tp->code) {
             n = strlen(s);
@@ -695,9 +695,9 @@ lcmake(const char *name)
                                 Lc_attribute_t,
                                 1,
                                 sizeof(Lc_attribute_list_t) + s - w + 1))) {
-                    ai = ( Lc_attribute_list_t * )(ap + 1);
-                    strcpy(( char * )((( Lc_attribute_t * )ap)->name
-                                      = ( const char * )(ai + 1)),
+                    ai = ( Lc_attribute_list_t * ) (ap + 1);
+                    strcpy(( char * ) ((( Lc_attribute_t * ) ap)->name
+                                       = ( const char * ) (ai + 1)),
                            w);
                     ai->attribute = ap;
                     ai->next = al;
@@ -757,14 +757,14 @@ override:
         }
     if (!(lc = newof(0, Lc_t, 1, n + z)))
         return 0;
-    strcpy(( char * )(lc->name = ( const char * )(lc + 1)), name);
+    strcpy(( char * ) (lc->name = ( const char * ) (lc + 1)), name);
     lc->code = lc->name + n;
     if (i >= 0) {
         lc->flags |= LC_local;
-        strcpy(( char * )lc->code, local[!i].name);
-        strcpy(( char * )lc->code + local[!i].size, name + local[i].size);
+        strcpy(( char * ) lc->code, local[!i].name);
+        strcpy(( char * ) lc->code + local[!i].size, name + local[i].size);
     } else
-        strcpy(( char * )lc->code, s);
+        strcpy(( char * ) lc->code, s);
     lc->language = lp ? lp : &lc_languages[0];
     lc->territory = tp ? tp : &lc_territories[0];
     lc->charset = cp ? cp : &lc_charsets[0];
@@ -823,7 +823,7 @@ lcscan(Lc_t *lc)
 {
     Lc_scan_t *ls;
 
-    if (!(ls = ( Lc_scan_t * )lc)) {
+    if (!(ls = ( Lc_scan_t * ) lc)) {
         if (!(ls = newof(0, Lc_scan_t, 1, 0)))
             return 0;
         ls->lc.code = ls->lc.name = ls->buf;
@@ -856,7 +856,7 @@ lcscan(Lc_t *lc)
         }
     }
     ls->lc.attributes
-    = ls->list.attribute ? &ls->list : ( Lc_attribute_list_t * )0;
+    = ls->list.attribute ? &ls->list : ( Lc_attribute_list_t * ) 0;
 #if _WINIX
     if (!ls->lc.language || !ls->lc.language->index)
         ls->lc.index = 0;
@@ -877,5 +877,5 @@ lcscan(Lc_t *lc)
               0,
               ls->buf,
               sizeof(ls->buf));
-    return ( Lc_t * )ls;
+    return ( Lc_t * ) ls;
 }

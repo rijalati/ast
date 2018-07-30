@@ -166,7 +166,7 @@ else if (cwd != AT_FDCWD && *path != '/')
 
 #    define ATPATH(cwd, path)                                                \
         ((_at_works)                                                         \
-         ? ((cwd == AT_FDCWD) ? path : ( const char * )_at_##path)           \
+         ? ((cwd == AT_FDCWD) ? path : ( const char * ) _at_##path)          \
          : (path))
 
 #    define ATEND() }
@@ -405,7 +405,7 @@ openat(int cwd, const char *path, int flags, ...)
     va_list ap;
 
     va_start(ap, flags);
-    mode = (flags & O_CREAT) ? ( mode_t )va_arg(ap, int) : ( mode_t )0;
+    mode = (flags & O_CREAT) ? ( mode_t ) va_arg(ap, int) : ( mode_t ) 0;
     va_end(ap);
     ATBEG(cwd, path, _fd_dir_open);
     r = open(ATPATH(cwd, path), flags, mode);

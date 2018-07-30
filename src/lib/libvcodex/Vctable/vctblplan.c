@@ -46,7 +46,7 @@ typedef struct _plnode_s
 } Plnode_t;
 
 typedef ssize_t(*Plentropy_f)
-_ARG_(( Vcchar_t *, Plnode_t *, Vcchar_t *, ssize_t, int *, ssize_t * ));
+_ARG_(( Vcchar_t *, Plnode_t *, Vcchar_t *, ssize_t, int *, ssize_t * ) );
 
 /* compute run-length compressive entropy */
 #if __STD_C
@@ -228,7 +228,7 @@ Void_t *arg;
 Grdisc_t *disc;
 #endif
 {
-    Plnode_t *node = ( Plnode_t * )arg;
+    Plnode_t *node = ( Plnode_t * ) arg;
 
     switch (type) {
     case GR_NODE | GR_CLOSING:
@@ -252,15 +252,15 @@ Void_t *two;
 Dtdisc_t *disc;
 #endif
 {
-    Plnode_t *n1 = ( Plnode_t * )one;
-    Plnode_t *n2 = ( Plnode_t * )two;
+    Plnode_t *n1 = ( Plnode_t * ) one;
+    Plnode_t *n2 = ( Plnode_t * ) two;
     int d;
 
 #define ISROOT(nn) (!(nn)->node.iedge)
     if (ISROOT(n1) && ISROOT(n2)) {
         if ((d = n1->repc - n2->repc) != 0)
             return d;
-        if ((d = ( int )(n2->repn - n1->repn)) != 0)
+        if ((d = ( int ) (n2->repn - n1->repn)) != 0)
             return d;
     } else if (ISROOT(n1))
         return -1;
@@ -293,7 +293,7 @@ int flags;    /* control flags	*/
     Dt_t *dt = NIL(Dt_t *);
     Vcodex_t *vc = NIL(Vcodex_t *);
     Graph_t *gr = NIL(Graph_t *);
-    Vcchar_t *data = ( Vcchar_t * )train;
+    Vcchar_t *data = ( Vcchar_t * ) train;
     int error = 1;
     /**/ DEBUG_DECLARE(ssize_t, wght)
     /**/ DEBUG_PRINT(2, "dtsz=%d, ", dtsz); /**/
@@ -310,11 +310,11 @@ int flags;    /* control flags	*/
     entropyf = (flags & VCTBL_CEE) ? cdEntropy : rlEntropy;
 
     /* initialize plan structure */
-    if (!(pl = ( Vctblplan_t * )malloc(sizeof(Vctblplan_t)
-                                       + ncols * sizeof(Vctblcolumn_t))))
+    if (!(pl = ( Vctblplan_t * ) malloc(sizeof(Vctblplan_t)
+                                        + ncols * sizeof(Vctblcolumn_t))))
         goto done;
     pl->ncols = ncols;
-    pl->trans = trans = ( Vctblcolumn_t * )(pl + 1);
+    pl->trans = trans = ( Vctblcolumn_t * ) (pl + 1);
     pl->train = dtsz;
     pl->dtsz = pl->cmpsz = 1;
     pl->zip = NIL(Vcodex_t *);
@@ -338,11 +338,11 @@ int flags;    /* control flags	*/
         goto done;
     for (n = 0; n < ncols;
          ++n) { /* create the node corresponding to this column */
-        if (!(nd = ( Plnode_t * )grnode(gr, ( Void_t * )n, 1)))
+        if (!(nd = ( Plnode_t * ) grnode(gr, ( Void_t * ) n, 1)))
             goto done;
 
         /* compute the sorted indices for fast entropy calculations */
-        if (!(nd->srti = ( ssize_t * )malloc(nrows * sizeof(ssize_t))))
+        if (!(nd->srti = ( ssize_t * ) malloc(nrows * sizeof(ssize_t))))
             goto done;
         vcbcktsort(nd->srti, NIL(ssize_t *), nrows, data + n * nrows, bckt);
 
@@ -359,7 +359,7 @@ int flags;    /* control flags	*/
 
         for (p = 0; p < n; ++p) /* build graph edges */
         {
-            if (!(pd = ( Plnode_t * )grnode(gr, ( Void_t * )p, 0)))
+            if (!(pd = ( Plnode_t * ) grnode(gr, ( Void_t * ) p, 0)))
                 goto done;
             if (pd->repn
                 >= nrows) /* single-run, not involved in prediction */
@@ -378,7 +378,7 @@ int flags;    /* control flags	*/
                                 NIL(ssize_t *));
                 if (w > nd->wght) {
                     if (!(ed = gredge(
-                          gr, &pd->node, &nd->node, ( Void_t * )0, 1)))
+                          gr, &pd->node, &nd->node, ( Void_t * ) 0, 1)))
                         goto done;
                     grbrweight(ed, w);
                 }
@@ -394,7 +394,7 @@ int flags;    /* control flags	*/
                                 NIL(ssize_t *));
                 if (w > pd->wght) {
                     if (!(ed = gredge(
-                          gr, &nd->node, &pd->node, ( Void_t * )0, 1)))
+                          gr, &nd->node, &pd->node, ( Void_t * ) 0, 1)))
                         goto done;
                     grbrweight(ed, w);
                 }
@@ -411,8 +411,8 @@ int flags;    /* control flags	*/
     DTDISC(&dtdc, 0, 0, GROFFSETOF(Plnode_t, link), 0, 0, plnodecmp, 0, 0, 0);
     if (!(dt = dtopen(&dtdc, Dtoset)))
         goto done;
-    for (nd = ( Plnode_t * )dtfirst(gr->nodes); nd;
-         nd = ( Plnode_t * )dtnext(gr->nodes, nd))
+    for (nd = ( Plnode_t * ) dtfirst(gr->nodes); nd;
+         nd = ( Plnode_t * ) dtnext(gr->nodes, nd))
         if (!nd->node.iedge)
             dtinsert(dt, nd);
 
@@ -420,31 +420,31 @@ int flags;    /* control flags	*/
     n = -1;
     list = tail = NIL(Plnode_t *);
     memset(map, 0, sizeof(map));
-    while ((nd = ( Plnode_t * )dtfirst(dt))) {
+    while ((nd = ( Plnode_t * ) dtfirst(dt))) {
         dtdelete(dt, nd); /* top-sort tree nodes */
         for (ed = nd->node.oedge; ed; ed = ed->onext)
             dtinsert(dt, ed->head);
 
         if (tail) /* build link list of nodes seen so far */
-            tail = ( Plnode_t * )(tail->node.link = ( Grnode_t * )nd);
+            tail = ( Plnode_t * ) (tail->node.link = ( Grnode_t * ) nd);
         else
             tail = list = nd;
 
         n += 1;
-        trans[n].index = ( ssize_t )nd->node.label;
+        trans[n].index = ( ssize_t ) nd->node.label;
         trans[n].pred1 = trans[n].pred2 = -1;
 
         if ((ed = nd->node.iedge)) /* has a primary predictor */
         {
             trans[n].pred1
-            = ( ssize_t )ed->tail->label; /* set primary predictor */
+            = ( ssize_t ) ed->tail->label; /* set primary predictor */
 
             nd->wadj = grbrweight(ed, 0);
             if (!(flags & VCTBL_SINGLE)) /* add supportive secondary predictor
                                           */
             {
                 for (p = -1, pd = list; pd != nd;
-                     pd = ( Plnode_t * )pd->node.link) {
+                     pd = ( Plnode_t * ) pd->node.link) {
                     if (pd->repn >= nrows
                         || pd->node.label == ed->tail->label)
                         continue;
@@ -455,13 +455,13 @@ int flags;    /* control flags	*/
                         && pd->node.label > nd->node.label)
                         continue;
                     w = rlTwo(data + trans[n].pred1 * nrows,
-                              data + (( ssize_t )pd->node.label) * nrows,
+                              data + (( ssize_t ) pd->node.label) * nrows,
                               data + trans[n].index * nrows,
                               nrows,
                               map);
                     if (w > nd->wadj) {
                         nd->wadj = w;
-                        p = ( ssize_t )pd->node.label;
+                        p = ( ssize_t ) pd->node.label;
                     }
                 }
                 trans[n].pred2 = p;
@@ -531,7 +531,7 @@ Void_t **codep; /* to return the coded string	*/
 
     /* buffer to code the plan */
     size = (3 * plan->ncols + 1) * (sizeof(ssize_t) + 1) + 1;
-    if (!(code = ( Vcchar_t * )malloc(size)))
+    if (!(code = ( Vcchar_t * ) malloc(size)))
         return -1;
     vcioinit(&io, code, size);
 
@@ -587,16 +587,16 @@ size_t size;
         goto done;
 
     s = sizeof(Vctblplan_t) + ncols * sizeof(Vctblcolumn_t);
-    if (!(plan = ( Vctblplan_t * )malloc(s)))
+    if (!(plan = ( Vctblplan_t * ) malloc(s)))
         goto done;
     plan->ncols = ncols;
-    plan->trans = trans = ( Vctblcolumn_t * )(plan + 1);
+    plan->trans = trans = ( Vctblcolumn_t * ) (plan + 1);
     plan->zip = NIL(Vcodex_t *);
 
     for (i = 0; i < ncols; ++i) {
         trans[i].index = vciogetu(&io);
-        trans[i].pred1 = ( ssize_t )vciogetu(&io) - 1;
-        trans[i].pred2 = ( ssize_t )vciogetu(&io) - 1;
+        trans[i].pred1 = ( ssize_t ) vciogetu(&io) - 1;
+        trans[i].pred2 = ( ssize_t ) vciogetu(&io) - 1;
 
         if (trans[i].index < 0 || trans[i].index >= ncols
             || trans[i].pred1 < -1 || trans[i].pred1 >= ncols

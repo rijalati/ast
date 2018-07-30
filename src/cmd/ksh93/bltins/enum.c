@@ -111,8 +111,8 @@ enuminfo(Opt_t *op, Sfio_t *out, const char *str, Optdisc_t *fp)
     struct Enum *ep;
     int n = 0;
     const char *v;
-    np = *( Namval_t ** )(fp + 1);
-    ep = ( struct Enum * )np->nvfun;
+    np = *( Namval_t ** ) (fp + 1);
+    ep = ( struct Enum * ) np->nvfun;
     if (strcmp(str, "default") == 0)
         sfprintf(out, "\b%s\b", ep->values[0]);
     else if (strcmp(str, "case") == 0) {
@@ -128,10 +128,10 @@ enuminfo(Opt_t *op, Sfio_t *out, const char *str, Optdisc_t *fp)
 static Namfun_t *
 clone_enum(Namval_t *np, Namval_t *mp, int flags, Namfun_t *fp)
 {
-    struct Enum *ep, *pp = ( struct Enum * )fp;
+    struct Enum *ep, *pp = ( struct Enum * ) fp;
     ep = newof(0, struct Enum, 1, pp->nelem * sizeof(char *));
-    memcpy(( void * )ep,
-           ( void * )pp,
+    memcpy(( void * ) ep,
+           ( void * ) pp,
            sizeof(struct Enum) + pp->nelem * sizeof(char *));
     return (&ep->hdr);
 }
@@ -139,14 +139,14 @@ clone_enum(Namval_t *np, Namval_t *mp, int flags, Namfun_t *fp)
 static void
 put_enum(Namval_t *np, const char *val, int flags, Namfun_t *fp)
 {
-    struct Enum *ep = ( struct Enum * )fp;
+    struct Enum *ep = ( struct Enum * ) fp;
     const char *v;
     unsigned short i = 0, n;
     if (!val && !(flags & NV_INTEGER)) {
         nv_putv(np, val, flags, fp);
         nv_disc(np, &ep->hdr, NV_POP);
         if (!ep->hdr.nofree)
-            free(( void * )ep);
+            free(( void * ) ep);
         return;
     }
     if (flags & NV_INTEGER) {
@@ -159,7 +159,7 @@ put_enum(Namval_t *np, const char *val, int flags, Namfun_t *fp)
         else
             n = strcmp(v, val);
         if (n == 0) {
-            nv_putv(np, ( char * )&i, NV_UINT16, fp);
+            nv_putv(np, ( char * ) &i, NV_UINT16, fp);
             return;
         }
         i++;
@@ -172,12 +172,12 @@ static char *
 get_enum(Namval_t *np, Namfun_t *fp)
 {
     static char buff[6];
-    struct Enum *ep = ( struct Enum * )fp;
+    struct Enum *ep = ( struct Enum * ) fp;
     long n = nv_getn(np, fp);
     if (nv_isattr(np, NV_NOTSET) == NV_NOTSET)
         return ("");
     if (n < ep->nelem)
-        return (( char * )ep->values[n]);
+        return (( char * ) ep->values[n]);
     sfsprintf(buff, sizeof(buff), "%u%c", n, 0);
     return (buff);
 }
@@ -192,12 +192,12 @@ get_nenum(Namval_t *np, Namfun_t *fp)
 static Namval_t *
 create_enum(Namval_t *np, const char *name, int flags, Namfun_t *fp)
 {
-    struct Enum *ep = ( struct Enum * )fp;
+    struct Enum *ep = ( struct Enum * ) fp;
     Namval_t *mp;
     const char *v;
     int i, n;
     mp = nv_namptr(ep->node, 0);
-    mp->nvenv = ( char * )np;
+    mp->nvenv = ( char * ) np;
     for (i = 0; v = ep->values[i]; i++) {
         if (ep->iflag)
             n = strcasecmp(v, name);
@@ -205,8 +205,8 @@ create_enum(Namval_t *np, const char *name, int flags, Namfun_t *fp)
             n = strcmp(v, name);
         if (n == 0) {
             mp->nvalue.s = i;
-            mp->nvname = ( char * )v;
-            fp->last = ( char * )(name + strlen(name));
+            mp->nvname = ( char * ) v;
+            fp->last = ( char * ) (name + strlen(name));
             return (mp);
         }
     }
@@ -219,8 +219,8 @@ create_enum(Namval_t *np, const char *name, int flags, Namfun_t *fp)
         else
             i = 0;
         mp->nvalue.s = i;
-        mp->nvname = ( char * )name;
-        fp->last = ( char * )(name + strlen(name));
+        mp->nvname = ( char * ) name;
+        fp->last = ( char * ) (name + strlen(name));
         return (mp);
     }
     error(
@@ -244,10 +244,11 @@ sh_outenum(Shell_t *shp, Sfio_t *iop, Namval_t *tp)
         if (!(mp = nv_open(nvtype, shp->var_tree, NV_NOADD | NV_VARNAME)))
             return (0);
         dp = nv_dict(mp);
-        tp = ( Namval_t * )dtfirst(dp);
+        tp = ( Namval_t * ) dtfirst(dp);
     }
     while (tp) {
-        if (!tp->nvfun || !(ep = ( struct Enum * )nv_hasdisc(tp, &ENUM_disc)))
+        if (!tp->nvfun
+            || !(ep = ( struct Enum * ) nv_hasdisc(tp, &ENUM_disc)))
             continue;
         sfprintf(iop, "enum %s%s=(\n", (ep->iflag ? "-i " : ""), tp->nvname);
         for (i = 0; i < ep->nelem; i++)
@@ -255,7 +256,7 @@ sh_outenum(Shell_t *shp, Sfio_t *iop, Namval_t *tp)
         sfprintf(iop, ")\n");
         if (!dp)
             break;
-        tp = ( Namval_t * )dtnext(dp, tp);
+        tp = ( Namval_t * ) dtnext(dp, tp);
     }
     return (0);
 }
@@ -306,7 +307,7 @@ b_enum(int argc, char **argv, Shbltin_t *context)
         return 1;
     }
     if (!*argv)
-        sh_outenum(shp, sfstdout, ( Namval_t * )0);
+        sh_outenum(shp, sfstdout, ( Namval_t * ) 0);
     while (cp = *argv++) {
         if (!(np = nv_open(cp, shp->var_tree, NV_VARNAME | NV_NOADD))
             || !(ap = nv_arrayptr(np)) || ap->fun || (sz = ap->nelem) < 2)
@@ -324,8 +325,8 @@ b_enum(int argc, char **argv, Shbltin_t *context)
         n = sz;
         i = 0;
         nv_onattr(tp, NV_UINT16);
-        nv_putval(tp, ( char * )&i, NV_INTEGER);
-        nv_putsub(np, ( char * )0, 0L, ARRAY_SCAN);
+        nv_putval(tp, ( char * ) &i, NV_INTEGER);
+        nv_putsub(np, ( char * ) 0, 0L, ARRAY_SCAN);
         do {
             sz += strlen(nv_getval(np));
         } while (nv_nextsub(np));
@@ -338,8 +339,8 @@ b_enum(int argc, char **argv, Shbltin_t *context)
         nv_onattr(mp, NV_UINT16);
         ep->iflag = iflag;
         ep->nelem = n;
-        cp = ( char * )&ep->values[n + 1];
-        nv_putsub(np, ( char * )0, 0L, ARRAY_SCAN);
+        cp = ( char * ) &ep->values[n + 1];
+        nv_putsub(np, ( char * ) 0, 0L, ARRAY_SCAN);
         ep->values[n] = 0;
         i = 0;
         do {
@@ -368,11 +369,11 @@ b_enum(int argc, char **argv, Shbltin_t *context)
 void
 lib_init(int flag, void *context)
 {
-    Shell_t *shp = (( Shbltin_t * )context)->shp;
+    Shell_t *shp = (( Shbltin_t * ) context)->shp;
     Namval_t *mp, *bp;
     if (flag)
         return;
-    bp = sh_addbuiltin(shp, "Enum", enum_create, ( void * )0);
+    bp = sh_addbuiltin(shp, "Enum", enum_create, ( void * ) 0);
     mp = nv_search("typeset", shp->bltin_tree, 0);
     nv_onattr(bp, nv_isattr(mp, NV_PUBLIC));
 }

@@ -69,7 +69,7 @@ int local;
     Pool_t *pl, *last, *list, *free;
     Block_t *blk;
     Vmuchar_t *dt, *enddt;
-    Vmpool_t *pool = ( Vmpool_t * )vm->data;
+    Vmpool_t *pool = ( Vmpool_t * ) vm->data;
 
     if (size <= 0)
         return NIL(Void_t *);
@@ -102,9 +102,9 @@ int local;
         dt = DATA(blk);
         enddt = dt + BDSZ(blk);
         list = NIL(Pool_t *);
-        last = ( Pool_t * )dt;
+        last = ( Pool_t * ) dt;
         for (; dt + size <= enddt; dt += size) {
-            pl = ( Pool_t * )dt;
+            pl = ( Pool_t * ) dt;
             pl->foo = FOOBAR;
             pl->next = list;
             list = pl;
@@ -128,9 +128,9 @@ int local;
     }
 
     if (!local && pl && _Vmtrace)
-        (*_Vmtrace)(vm, NIL(Vmuchar_t *), ( Vmuchar_t * )pl, pool->size, 0);
+        (*_Vmtrace)(vm, NIL(Vmuchar_t *), ( Vmuchar_t * ) pl, pool->size, 0);
 
-    return ( Void_t * )pl;
+    return ( Void_t * ) pl;
 }
 
 #    if __STD_C
@@ -143,14 +143,14 @@ int local;
 #    endif
 {
     Pool_t *pl, *free;
-    Vmpool_t *pool = ( Vmpool_t * )vm->data;
+    Vmpool_t *pool = ( Vmpool_t * ) vm->data;
 
     if (!data)
         return 0;
     if (pool->size <= 0)
         return -1;
 
-    pl = ( Pool_t * )data;
+    pl = ( Pool_t * ) data;
     pl->foo = FOOBAR;
     for (;;) {
         pl->next = free = pool->free;
@@ -159,7 +159,8 @@ int local;
     }
 
     if (!local && _Vmtrace)
-        (*_Vmtrace)(vm, ( Vmuchar_t * )data, NIL(Vmuchar_t *), pool->size, 0);
+        (*_Vmtrace)(
+        vm, ( Vmuchar_t * ) data, NIL(Vmuchar_t *), pool->size, 0);
 
     return 0;
 }
@@ -183,7 +184,7 @@ int local;
             memset(data, 0, size);
         return data;
     } else if (size == 0) {
-        ( void )poolfree(vm, data, local);
+        ( void ) poolfree(vm, data, local);
         return NIL(Void_t *);
     } else
         return NIL(Void_t *);
@@ -211,7 +212,7 @@ poolstat(Vmalloc_t *vm, Vmstat_t *st, int local)
 {
     size_t size;
     Pool_t *pl;
-    Vmpool_t *pool = ( Vmpool_t * )vm->data;
+    Vmpool_t *pool = ( Vmpool_t * ) vm->data;
 
     if (!st) /* just checking lock state */
         return 0;
@@ -240,10 +241,10 @@ poolevent(Vmalloc_t *vm, int event, Void_t *arg)
     {
         if (!arg)
             return -1;
-        *(( ssize_t * )arg) = sizeof(Vmpool_t);
+        *(( ssize_t * ) arg) = sizeof(Vmpool_t);
     } else if (event == VM_ENDOPEN) /* start as if region was cleared */
     {
-        if (!(pool = ( Vmpool_t * )vm->data))
+        if (!(pool = ( Vmpool_t * ) vm->data))
             return -1;
         pool->size = 0;
         pool->free = NIL(Pool_t *);

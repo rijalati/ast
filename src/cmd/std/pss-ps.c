@@ -70,7 +70,7 @@ ps_init(Pss_t *pss)
             pss, pss->disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    state->now = ( unsigned long )time(NiL) + 60;
+    state->now = ( unsigned long ) time(NiL) + 60;
     if ((s = getenv("_AST_PSS_ps")) && *s == 'd')
         state->debug = 1;
     fields = 0;
@@ -84,7 +84,7 @@ ps_init(Pss_t *pss)
 static int
 ps_done(Pss_t *pss)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
 
     if (state->ps)
         sfclose(state->ps);
@@ -94,7 +94,7 @@ ps_done(Pss_t *pss)
 static int
 ps_read(Pss_t *pss, Pss_id_t pid)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     Pso_t *po;
     char *s;
     char *e;
@@ -140,7 +140,7 @@ ps_read(Pss_t *pss, Pss_id_t pid)
             }
         if (pid) {
             state->scan = 0;
-            s += sfsprintf(s, e - s, " -p %lu", ( unsigned long )pid);
+            s += sfsprintf(s, e - s, " -p %lu", ( unsigned long ) pid);
         } else
             state->scan = 1;
         if ((pss->disc->flags & PSS_VERBOSE) && pss->disc->errorf)
@@ -186,7 +186,7 @@ number(char *s, char **p, int base)
 static int
 ps_part(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     Pso_t *po;
     unsigned long fields;
     char *s;
@@ -209,7 +209,7 @@ ps_part(Pss_t *pss, Pssent_t *pe)
                 pss, pss->disc, 2, "%s: %s", po->name, s);
             switch (po->field) {
             case PSS_addr:
-                pe->addr = ( void * )number(s, &e, 16);
+                pe->addr = ( void * ) number(s, &e, 16);
                 break;
             case PSS_args:
                 pe->args = e = s;
@@ -282,7 +282,7 @@ ps_part(Pss_t *pss, Pssent_t *pe)
                 c = *s;
                 *s = 0;
                 pe->start = tmdate(t, &e, NiL);
-                if (( unsigned long )pe->start > state->now) {
+                if (( unsigned long ) pe->start > state->now) {
                     sfsprintf(pss->buf, sizeof(pss->buf), "last %s", t);
                     pe->start = tmdate(pss->buf, NiL, NiL);
                 }
@@ -317,7 +317,7 @@ ps_part(Pss_t *pss, Pssent_t *pe)
                 pe->uid = struid(s);
                 break;
             case PSS_wchan:
-                pe->wchan = ( void * )number(s, &e, 16);
+                pe->wchan = ( void * ) number(s, &e, 16);
                 break;
             }
             if (e == s)

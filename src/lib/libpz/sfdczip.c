@@ -60,7 +60,7 @@ sfdczip(Sfio_t *sp, const char *path, const char *meth, Error_f errorf)
     Pzdisc_t disc;
 
     if (meth) {
-        if (part = ( const char * )strchr(meth, ' '))
+        if (part = ( const char * ) strchr(meth, ' '))
             len = part - meth;
         else
             len = strlen(meth);
@@ -129,7 +129,7 @@ sfdczip(Sfio_t *sp, const char *path, const char *meth, Error_f errorf)
                     r = 0;
                 } else
                     r = 1;
-                if (!(meth = ( const char * )strchr(part, ' ')))
+                if (!(meth = ( const char * ) strchr(part, ' ')))
                     meth = part + strlen(part);
                 switch (meth - part) {
                 case 3:

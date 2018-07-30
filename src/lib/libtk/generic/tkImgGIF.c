@@ -184,7 +184,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
                          "GIF image file \"",
                          fileName,
                          "\" has dimension(s) <= 0",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -196,7 +196,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
     if (BitSet(buf[0], LOCALCOLORMAP)) { /* Global Colormap */
         if (!ReadColorMap(f, bitPixel, colorMap)) {
             Tcl_AppendResult(
-            interp, "error reading color map", ( char * )NULL);
+            interp, "error reading color map", ( char * ) NULL);
             return TCL_ERROR;
         }
     }
@@ -222,7 +222,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
     block.offset[1] = 1;
     block.offset[2] = 2;
     nBytes = fileHeight * block.pitch;
-    block.pixelPtr = ( unsigned char * )ckalloc(( unsigned )nBytes);
+    block.pixelPtr = ( unsigned char * ) ckalloc(( unsigned ) nBytes);
 
     while (1) {
         if (fread(buf, 1, 1, f) != 1) {
@@ -279,11 +279,11 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
         if (!useGlobalColormap) {
             if (!ReadColorMap(f, bitPixel, localColorMap)) {
                 Tcl_AppendResult(
-                interp, "error reading color map", ( char * )NULL);
+                interp, "error reading color map", ( char * ) NULL);
                 goto error;
             }
             if (ReadImage(interp,
-                          ( char * )block.pixelPtr,
+                          ( char * ) block.pixelPtr,
                           f,
                           fileWidth,
                           fileHeight,
@@ -295,7 +295,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
             }
         } else {
             if (ReadImage(interp,
-                          ( char * )block.pixelPtr,
+                          ( char * ) block.pixelPtr,
                           f,
                           fileWidth,
                           fileHeight,
@@ -311,11 +311,11 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
 
     Tk_PhotoPutBlock(
     imageHandle, &block, destX, destY, fileWidth, fileHeight);
-    ckfree(( char * )block.pixelPtr);
+    ckfree(( char * ) block.pixelPtr);
     return TCL_OK;
 
 error:
-    ckfree(( char * )block.pixelPtr);
+    ckfree(( char * ) block.pixelPtr);
     return TCL_ERROR;
 }
 
@@ -348,8 +348,8 @@ int *widthPtr, *heightPtr; /* The dimensions of the image are
     unsigned char buf[7];
 
     if ((fread(buf, 1, 6, f) != 6)
-        || ((strncmp("GIF87a", ( char * )buf, 6) != 0)
-            && (strncmp("GIF89a", ( char * )buf, 6) != 0))) {
+        || ((strncmp("GIF87a", ( char * ) buf, 6) != 0)
+            && (strncmp("GIF89a", ( char * ) buf, 6) != 0))) {
         return 0;
     }
 
@@ -404,12 +404,12 @@ int *transparent;
 
     case 0xfe: /* Comment Extension */
         do {
-            count = GetDataBlock(fd, ( unsigned char * )buf);
+            count = GetDataBlock(fd, ( unsigned char * ) buf);
         } while (count > 0);
         return count;
 
     case 0xf9: /* Graphic Control Extension */
-        count = GetDataBlock(fd, ( unsigned char * )buf);
+        count = GetDataBlock(fd, ( unsigned char * ) buf);
         if (count < 0) {
             return 1;
         }
@@ -418,13 +418,13 @@ int *transparent;
         }
 
         do {
-            count = GetDataBlock(fd, ( unsigned char * )buf);
+            count = GetDataBlock(fd, ( unsigned char * ) buf);
         } while (count > 0);
         return count;
     }
 
     do {
-        count = GetDataBlock(fd, ( unsigned char * )buf);
+        count = GetDataBlock(fd, ( unsigned char * ) buf);
     } while (count > 0);
     return count;
 }
@@ -473,7 +473,7 @@ int transparent;
         Tcl_AppendResult(interp,
                          "error reading GIF image: ",
                          Tcl_PosixError(interp),
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 

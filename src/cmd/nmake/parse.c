@@ -79,13 +79,13 @@
     do {                                                                     \
         for (p = pp->local; p; p = p->next)                                  \
             if (!(p->newv.property & V_scope))                               \
-                p->bucket->value = ( char * )p->oldv;                        \
+                p->bucket->value = ( char * ) p->oldv;                       \
     } while (0)
 #define POPLOCAL(p)                                                          \
     do {                                                                     \
         for (p = pp->local; p; p = p->next)                                  \
             if (!(p->newv.property & V_scope))                               \
-                p->bucket->value = ( char * )&p->newv;                       \
+                p->bucket->value = ( char * ) &p->newv;                      \
     } while (0)
 
 #define freelocal(x)                                                         \
@@ -216,7 +216,7 @@ unparse(int level)
         if (lcl = pp->local) {
             pp->local = 0;
             while (lcl) {
-                lcl->bucket->value = ( char * )lcl->oldv;
+                lcl->bucket->value = ( char * ) lcl->oldv;
                 olcl = lcl;
                 lcl = lcl->next;
                 freelocal(olcl);
@@ -291,7 +291,7 @@ declare(char *t, int line, long flags)
         p->newv.property |= V_free;
     }
     p->bucket = hashlast(table.var);
-    p->bucket->value = ( char * )&p->newv;
+    p->bucket->value = ( char * ) &p->newv;
     p->line = line;
     if (d) {
         *d++ = '=';
@@ -918,12 +918,12 @@ again:
                     ;
                 if (istype(c = *t, C_SEP)) {
                     *t = 0;
-                    i = (nv = ( Namval_t * )strsearch(controls,
-                                                      elementsof(controls),
-                                                      sizeof(*controls),
-                                                      stracmp,
-                                                      s,
-                                                      NiL))
+                    i = (nv = ( Namval_t * ) strsearch(controls,
+                                                       elementsof(controls),
+                                                       sizeof(*controls),
+                                                       stracmp,
+                                                       s,
+                                                       NiL))
                         ? nv->value
                         : 0;
                     for (*t = c; isspace(*t); t++)
@@ -1864,7 +1864,7 @@ fds(int details)
     int open_max;
     struct stat st;
 
-    if ((open_max = ( int )strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0))
+    if ((open_max = ( int ) strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0))
         <= 0)
         open_max = OPEN_MAX;
     for (i = 0; i <= open_max; i++) {
@@ -1876,7 +1876,7 @@ fds(int details)
             sfprintf(sfstdout, "%d\n", i);
             continue;
         }
-        if ((flags = fcntl(i, F_GETFL, ( char * )0)) == -1)
+        if ((flags = fcntl(i, F_GETFL, ( char * ) 0)) == -1)
             m = "--";
         else
             switch (flags & (O_RDONLY | O_WRONLY | O_RDWR)) {
@@ -1893,7 +1893,7 @@ fds(int details)
                 m = "??";
                 break;
             }
-        x = (fcntl(i, F_GETFD, ( char * )0) > 0) ? "x" : "-";
+        x = (fcntl(i, F_GETFD, ( char * ) 0) > 0) ? "x" : "-";
         if (isatty(i) && (s = ttyname(i))) {
             sfprintf(
             sfstdout, "%02d %s%s %s %s\n", i, m, x, fmtmode(st.st_mode, 0), s);
@@ -1902,19 +1902,23 @@ fds(int details)
 #    if defined(S_IFSOCK) && 0
         addrlen = sizeof(addr);
         memset(&addr, 0, addrlen);
-        if (!getsockname(i, ( struct sockaddr * )&addr, ( void * )&addrlen)) {
+        if (!getsockname(
+            i, ( struct sockaddr * ) &addr, ( void * ) &addrlen)) {
             type = 0;
             prot = 0;
 #        ifdef SO_TYPE
             len = sizeof(type);
             if (getsockopt(
-                i, SOL_SOCKET, SO_TYPE, ( void * )&type, ( void * )&len))
+                i, SOL_SOCKET, SO_TYPE, ( void * ) &type, ( void * ) &len))
                 type = -1;
 #        endif
 #        ifdef SO_PROTOTYPE
             len = sizeof(prot);
-            if (getsockopt(
-                i, SOL_SOCKET, SO_PROTOTYPE, ( void * )&prot, ( void * )&len))
+            if (getsockopt(i,
+                           SOL_SOCKET,
+                           SO_PROTOTYPE,
+                           ( void * ) &prot,
+                           ( void * ) &len))
                 prot = -1;
 #        endif
             if (!st.st_mode)
@@ -1967,13 +1971,13 @@ fds(int details)
                                && family[type].value != addr.sin_family;
                      type++)
                     ;
-                if (!(s = ( char * )family[type].name))
+                if (!(s = ( char * ) family[type].name))
                     sfsprintf(
                     s = num, sizeof(num), "family.%d", addr.sin_family);
             }
             port = 0;
 #        ifdef INET6_ADDRSTRLEN
-            if (a = ( char * )inet_ntop(
+            if (a = ( char * ) inet_ntop(
                 addr.sin_family, &addr.sin_addr, nam, sizeof(nam)))
                 port = ntohs(addr.sin_port);
             else
@@ -1983,7 +1987,7 @@ fds(int details)
                 port = ntohs(addr.sin_port);
             } else {
                 a = fam;
-                e = (b = ( unsigned char * )&addr) + addrlen;
+                e = (b = ( unsigned char * ) &addr) + addrlen;
                 while (b < e && a < &fam[sizeof(fam) - 1])
                     a += sfsprintf(a, &fam[sizeof(fam)] - a - 1, ".%d", *b++);
                 a = a == fam ? "0" : fam + 1;
@@ -2801,7 +2805,7 @@ pushlocal(void)
     Local_t *p;
 
     PUSHLOCAL(p);
-    return ( void * )pp->local;
+    return ( void * ) pp->local;
 }
 
 /*
@@ -2815,9 +2819,9 @@ poplocal(void *pos)
     Local_t *p;
     Local_t *t;
 
-    p = ( Local_t * )pos;
+    p = ( Local_t * ) pos;
     while (pp->local != p) {
-        pp->local->bucket->value = ( char * )pp->local->oldv;
+        pp->local->bucket->value = ( char * ) pp->local->oldv;
         t = pp->local;
         pp->local = pp->local->next;
         freelocal(t);
@@ -2950,7 +2954,7 @@ nextarg(char *s, char **p, char **end, long *val)
 static long
 makeexpr(const char *cs, char **p, void *handle)
 {
-    char *s = ( char * )cs;
+    char *s = ( char * ) cs;
     int c;
     int q;
     int c1;
@@ -3340,7 +3344,7 @@ quit:
     } else if (lcl = pp->local) {
         pp->local = 0;
         while (lcl) {
-            lcl->bucket->value = ( char * )lcl->oldv;
+            lcl->bucket->value = ( char * ) lcl->oldv;
             olcl = lcl;
             lcl = lcl->next;
             freelocal(olcl);

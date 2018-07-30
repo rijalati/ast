@@ -32,7 +32,7 @@
 #    include <ctype.h>
 #    include <hash.h>
 
-#    define twips(x) (( x )*2)
+#    define twips(x) (( x ) *2)
 
 #    define FONTSIZE 12 /* default font size		*/
 

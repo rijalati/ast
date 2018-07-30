@@ -44,7 +44,7 @@ tmain()
 
     if (!tchild()) {
         setenv("VMALLOC_OPTIONS", "method=debug,period=1,start=1", 1);
-        execl(argv[0], argv[0], "--child", ( char * )0);
+        execl(argv[0], argv[0], "--child", ( char * ) 0);
     }
 
     err = tstfile("err", 0);
@@ -55,12 +55,12 @@ tmain()
     for (k = 0; k < 10; ++k) {
         if (!(addr[k] = malloc(ALLOCSZ)))
             terror("Allocation of block[%d] failed", k);
-        if (((( Vmulong_t )addr[k]) % ALIGN) != 0)
+        if (((( Vmulong_t ) addr[k]) % ALIGN) != 0)
             terror("Unaligned addr");
     }
 
     /* error for freeing something non-existent */
-    free(( Void_t * )1);
+    free(( Void_t * ) 1);
     TMESSAGE();
 
     /* error for freeing something twice */
@@ -76,7 +76,7 @@ tmain()
     TMESSAGE();
 
     /* resize a non-existent block */
-    if (realloc(( Void_t * )3, 256) != NIL(Void_t *))
+    if (realloc(( Void_t * ) 3, 256) != NIL(Void_t *))
         terror("Resizing a nonexistent block succeeded");
     TMESSAGE();
 

@@ -171,18 +171,18 @@ dllinfo(void)
 static int
 vercmp(FTSENT *const *ap, FTSENT *const *bp)
 {
-    unsigned char *a = ( unsigned char * )(*ap)->fts_name;
-    unsigned char *b = ( unsigned char * )(*bp)->fts_name;
+    unsigned char *a = ( unsigned char * ) (*ap)->fts_name;
+    unsigned char *b = ( unsigned char * ) (*bp)->fts_name;
     int n;
     int m;
     char *e;
 
     for (;;) {
         if (isdigit(*a) && isdigit(*b)) {
-            m = strtol(( char * )a, &e, 10);
-            a = ( unsigned char * )e;
-            n = strtol(( char * )b, &e, 10);
-            b = ( unsigned char * )e;
+            m = strtol(( char * ) a, &e, 10);
+            a = ( unsigned char * ) e;
+            n = strtol(( char * ) b, &e, 10);
+            b = ( unsigned char * ) e;
             if (n -= m)
                 return n;
         }
@@ -221,7 +221,7 @@ dllsopen(const char *lib, const char *name, const char *version)
          */
 
         if (s = strrchr(lib, ':'))
-            lib = ( const char * )(s + 1);
+            lib = ( const char * ) (s + 1);
         i = 2 * sizeof(char **) + strlen(lib) + 5;
     } else {
         lib = 0;
@@ -238,20 +238,20 @@ dllsopen(const char *lib, const char *name, const char *version)
     info = dllinfo();
     scan->flags = info->flags;
     if (lib) {
-        scan->lib = ( char ** )(scan + 1);
-        s = *scan->lib = ( char * )(scan->lib + 2);
+        scan->lib = ( char ** ) (scan + 1);
+        s = *scan->lib = ( char * ) (scan->lib + 2);
         sfsprintf(s, i, "lib/%s", lib);
         if (!version && streq(info->suffix, ".dylib"))
             version = "0.0";
     }
     if (!name || !*name || *name == '-' && !*(name + 1)) {
-        name = ( const char * )"?*";
+        name = ( const char * ) "?*";
         scan->flags |= DLL_MATCH_NAME;
     } else if (t = strrchr(name, '/')) {
-        if (!(scan->pb = vmnewof(vm, 0, char, t - ( char * )name, 2)))
+        if (!(scan->pb = vmnewof(vm, 0, char, t - ( char * ) name, 2)))
             goto bad;
-        memcpy(scan->pb, name, t - ( char * )name);
-        name = ( const char * )(t + 1);
+        memcpy(scan->pb, name, t - ( char * ) name);
+        name = ( const char * ) (t + 1);
     }
     if (name) {
         i = strlen(name);
@@ -264,20 +264,20 @@ dllsopen(const char *lib, const char *name, const char *version)
                     goto bad;
                 memcpy(t, name + j, i);
                 t[i] = 0;
-                name = ( const char * )t;
+                name = ( const char * ) t;
             }
         }
         if (!version)
-            for (t = ( char * )name; *t; t++)
+            for (t = ( char * ) name; *t; t++)
                 if ((*t == '-' || *t == '.' || *t == '?')
                     && isdigit(*(t + 1))) {
                     if (*t != '-')
                         scan->flags |= DLL_MATCH_VERSION;
                     version = t + 1;
-                    if (!(s = vmnewof(vm, 0, char, t - ( char * )name, 1)))
+                    if (!(s = vmnewof(vm, 0, char, t - ( char * ) name, 1)))
                         goto bad;
-                    memcpy(s, name, t - ( char * )name);
-                    name = ( const char * )s;
+                    memcpy(s, name, t - ( char * ) name);
+                    name = ( const char * ) s;
                     break;
                 }
     }
@@ -291,7 +291,7 @@ dllsopen(const char *lib, const char *name, const char *version)
                   info->suffix);
     } else if (scan->flags & DLL_INFO_PREVER) {
         sfprintf(scan->tmp, "%s%s", info->prefix, name);
-        for (s = ( char * )version; *s; s++)
+        for (s = ( char * ) version; *s; s++)
             if (isdigit(*s))
                 sfputc(scan->tmp, *s);
         sfprintf(scan->tmp, "%s", info->suffix);
@@ -312,11 +312,11 @@ dllsopen(const char *lib, const char *name, const char *version)
                 version = "*([0-9_])";
             else {
                 t = buf;
-                for (s = ( char * )version; *s; s++)
+                for (s = ( char * ) version; *s; s++)
                     if (isdigit(*s) && t < &buf[sizeof(buf) - 1])
                         *t++ = *s;
                 *t = 0;
-                version = ( const char * )buf;
+                version = ( const char * ) buf;
             }
             sfsprintf(scan->pat,
                       sizeof(scan->pat),
@@ -439,7 +439,7 @@ again:
                 if (!(t = sfstruse(scan->tmp)))
                     return 0;
                 if ((scan->fts
-                     = fts_open(( char ** )t,
+                     = fts_open(( char ** ) t,
                                 FTS_LOGICAL | FTS_NOPOSTORDER | FTS_ONEPATH,
                                 vercmp))
                     && (scan->ent = fts_read(scan->fts))

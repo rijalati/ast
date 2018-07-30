@@ -51,11 +51,11 @@
 
 #    define FF_SET_TYPE(p, i)                                                \
         ((p)->decode.bigram1[((i) >> 3) & ((1 << CHAR_BIT) - 1)]             \
-         |= (1 << (( i )&07)))
+         |= (1 << (( i ) &07)))
 #    define FF_OK_TYPE(p, i)                                                 \
         (!(p)->types                                                         \
          || ((p)->decode.bigram1[((i) >> 3) & ((1 << CHAR_BIT) - 1)]         \
-             & (1 << (( i )&07))))
+             & (1 << (( i ) &07))))
 
 typedef struct
 {

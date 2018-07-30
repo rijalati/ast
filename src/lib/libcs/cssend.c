@@ -144,10 +144,10 @@ cssend(Cs_t *state, int fd, int *fds, int n)
     msg.msg_namelen = 0;
     msg.msg_iov = &iov;
     msg.msg_iovlen = 1;
-    iov.iov_base = ( caddr_t )&id;
+    iov.iov_base = ( caddr_t ) &id;
     iov.iov_len = sizeof(id);
-    msg.msg_control = ( caddr_t )&ctl;
-    msg.msg_controllen = ( char * )&ctl.fds[n + 1] - ( char * )&ctl;
+    msg.msg_control = ( caddr_t ) &ctl;
+    msg.msg_controllen = ( char * ) &ctl.fds[n + 1] - ( char * ) &ctl;
 #        if _mem_msg_control_msghdr
     ctl.hdr.cmsg_len = msg.msg_controllen;
     ctl.hdr.cmsg_level = SOL_SOCKET;

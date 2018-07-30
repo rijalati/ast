@@ -76,7 +76,7 @@ pzopen(Pzdisc_t *disc, const char *path, unsigned long flags)
     struct stat st;
 
     if (flags & PZ_AGAIN) {
-        pz = ( Pz_t * )path;
+        pz = ( Pz_t * ) path;
         pz->mainpart = 0;
         pz->flags &= ~PZ_HEAD;
     } else {
@@ -113,7 +113,7 @@ pzopen(Pzdisc_t *disc, const char *path, unsigned long flags)
                 pz->flags |= PZ_STREAM;
         } else if (pz->flags & PZ_STREAM) {
             pz->path = "stream";
-            pz->io = ( Sfio_t * )path;
+            pz->io = ( Sfio_t * ) path;
         } else if (!(pz->io = strneq(path, "pipe://", 7)
                               ? sfpopen(NiL, path + 7, "r")
                               : sfopen(NiL, path, "r"))) {
@@ -128,7 +128,7 @@ pzopen(Pzdisc_t *disc, const char *path, unsigned long flags)
          */
 
         if (!(pz->test & 0x00001000))
-            sfsetbuf(pz->io, ( void * )pz->io, SF_UNBOUND);
+            sfsetbuf(pz->io, ( void * ) pz->io, SF_UNBOUND);
         if (pz->flags & PZ_DIO)
             sfdcdio(pz->io, 0);
 
@@ -145,7 +145,7 @@ pzopen(Pzdisc_t *disc, const char *path, unsigned long flags)
                      && sfdcgzip(pz->io, (pz->flags & PZ_CRC) ? 0 : SFGZ_NOCRC)
                         > 0
                      || (pz->flags & (PZ_PUSHED | PZ_WRITE)) == PZ_WRITE
-                        && sfdcpzip(( Sfio_t * )pz,
+                        && sfdcpzip(( Sfio_t * ) pz,
                                     pz->path,
                                     pz->flags | PZ_FORCE | PZ_PUSHED
                                     | PZ_HANDLE,
@@ -289,10 +289,10 @@ pzclose(Pz_t *pz)
             e = 100;
         else {
             tvgettime(&now);
-            if (!(e = (( unsigned long )now.tv_sec
-                       - ( unsigned long )pz->start.tv_sec)
+            if (!(e = (( unsigned long ) now.tv_sec
+                       - ( unsigned long ) pz->start.tv_sec)
                       * 100
-                      + (( long )now.tv_nsec - ( long )pz->start.tv_nsec)
+                      + (( long ) now.tv_nsec - ( long ) pz->start.tv_nsec)
                         / 10000000L))
                 e = 1;
         }
@@ -300,11 +300,11 @@ pzclose(Pz_t *pz)
                  _("total %s rate %.2f time %s bpr %.2f bps %s size "
                    "%I*u/%I*u windows %I*u"),
                  pz->path,
-                 ( double )(( Sflong_t )pz->count.uncompressed)
-                 / ( double )(( Sflong_t )pz->count.compressed),
+                 ( double ) (( Sflong_t ) pz->count.uncompressed)
+                 / ( double ) (( Sflong_t ) pz->count.compressed),
                  fmtelapsed(e, 100),
-                 ( double )(( Sflong_t )pz->count.compressed)
-                 / ( double )(( Sflong_t )pz->count.records),
+                 ( double ) (( Sflong_t ) pz->count.compressed)
+                 / ( double ) (( Sflong_t ) pz->count.records),
                  fmtnum((pz->count.uncompressed * 100) / e, 0),
                  sizeof(pz->count.uncompressed),
                  pz->count.uncompressed,

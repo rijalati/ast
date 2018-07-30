@@ -360,7 +360,7 @@ get_compound_revents(Shell_t *shp,
         SH_DICT, ERROR_ERROR, "missing pollfd %s[%s].fd", parrayname, subname);
         return false;
     }
-    fd = ( int )nv_getnum(np);
+    fd = ( int ) nv_getnum(np);
     nv_close(np);
     if ((fd < -1) || (fd > OPEN_MAX)) {
         errormsg(SH_DICT,
@@ -507,7 +507,7 @@ b_poll(int argc, char *argv[], Shbltin_t *context)
         switch (n) {
         case 't':
             errno = 0;
-            timeout = strtod(opt_info.arg, ( char ** )NULL);
+            timeout = strtod(opt_info.arg, ( char ** ) NULL);
             if (errno != 0)
                 errormsg(SH_DICT,
                          ERROR_system(1),
@@ -537,7 +537,7 @@ b_poll(int argc, char *argv[], Shbltin_t *context)
     argc -= opt_info.index;
     argv += opt_info.index;
     if (argc != 1)
-        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * ) 0));
 
     parrayname = argv[0];
 
@@ -576,9 +576,9 @@ b_poll(int argc, char *argv[], Shbltin_t *context)
     /*
      * Done with counting, now we need to allocate a work area big enough
      */
-    pollfd = ( struct pollfd * )stkalloc(strstk,
-                                         (sizeof(struct pollfd) * numpollfd));
-    pollstat = ( struct pollstat * )stkalloc(
+    pollfd = ( struct pollfd * ) stkalloc(
+    strstk, (sizeof(struct pollfd) * numpollfd));
+    pollstat = ( struct pollstat * ) stkalloc(
     strstk, (sizeof(struct pollstat) * numpollfd));
     if (!pollfd || !pollstat) {
         errormsg(SH_DICT, ERROR_ERROR, e_nospace);
@@ -621,8 +621,8 @@ b_poll(int argc, char *argv[], Shbltin_t *context)
         int fd;
         int num_sfd = 0, active_sfd = 0;
 
-        sfd
-        = ( Sfio_t ** )stkalloc(strstk, (sizeof(Sfio_t *) * (numpollfd + 1)));
+        sfd = ( Sfio_t ** ) stkalloc(strstk,
+                                     (sizeof(Sfio_t *) * (numpollfd + 1)));
         if (!sfd) {
             errormsg(SH_DICT, ERROR_ERROR, e_nospace);
             goto done_error;

@@ -51,7 +51,7 @@ readdir(DIR *dirp)
                 <= 0)
                 return (0);
         }
-        dp = ( struct dirent * )(( char * )dirp->dd_buf + dirp->dd_loc);
+        dp = ( struct dirent * ) (( char * ) dirp->dd_buf + dirp->dd_loc);
         if (dp->d_reclen <= 0)
             return (0);
         dirp->dd_loc += dp->d_reclen;

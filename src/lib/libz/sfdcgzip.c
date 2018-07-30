@@ -83,7 +83,7 @@ typedef struct
 static int
 sfgzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
 {
-    Sfgzip_t *gz = ( Sfgzip_t * )dp;
+    Sfgzip_t *gz = ( Sfgzip_t * ) dp;
     int f;
     int r;
 
@@ -131,12 +131,12 @@ sfgzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
             sp->_flags |= SF_ERROR;
         return 0;
     case SFGZ_HANDLE:
-        return (*(( gzFile ** )val) = gz->gz) ? 1 : -1;
+        return (*(( gzFile ** ) val) = gz->gz) ? 1 : -1;
     case SFGZ_GETPOS:
-        return (*(( Sfoff_t * )val) = gzsync(gz->gz, (z_off_t)(-1))) < 0 ? -1
-                                                                         : 0;
+        return (*(( Sfoff_t * ) val) = gzsync(gz->gz, (z_off_t)(-1))) < 0 ? -1
+                                                                          : 0;
     case SFGZ_SETPOS:
-        return gzsync(gz->gz, (z_off_t)(*(( Sfoff_t * )val))) < 0 ? -1 : 0;
+        return gzsync(gz->gz, (z_off_t)(*(( Sfoff_t * ) val))) < 0 ? -1 : 0;
     }
     return 0;
 }
@@ -158,7 +158,7 @@ sfgzseek(Sfio_t *fp, Sfoff_t off, int op, Sfdisc_t *dp)
 static ssize_t
 sfgzread(Sfio_t *fp, Void_t *buf, size_t size, Sfdisc_t *dp)
 {
-    Sfgzip_t *gz = ( Sfgzip_t * )dp;
+    Sfgzip_t *gz = ( Sfgzip_t * ) dp;
 
     return gzread(gz->gz, buf, size);
 }
@@ -170,9 +170,9 @@ sfgzread(Sfio_t *fp, Void_t *buf, size_t size, Sfdisc_t *dp)
 static ssize_t
 sfgzwrite(Sfio_t *fp, const Void_t *buf, size_t size, Sfdisc_t *dp)
 {
-    Sfgzip_t *gz = ( Sfgzip_t * )dp;
+    Sfgzip_t *gz = ( Sfgzip_t * ) dp;
 
-    return gzwrite(gz->gz, ( void * )buf, size);
+    return gzwrite(gz->gz, ( void * ) buf, size);
 }
 
 /*
@@ -219,7 +219,7 @@ sfdcgzip(Sfio_t *sp, int flags)
         if (!(n = sfset(sp, 0, 0) & SF_SHARE))
             sfset(sp, SF_SHARE, 1);
 #endif
-        s = ( unsigned char * )sfreserve(sp, 4, SF_LOCKR);
+        s = ( unsigned char * ) sfreserve(sp, 4, SF_LOCKR);
 #if PRIVATE
         if (!n)
             sfset(sp, SF_SHARE, 0);
@@ -280,10 +280,10 @@ sfdcgzip(Sfio_t *sp, int flags)
     if (!rd) {
         m = 0;
         z = 0;
-    } else if (!(z = sfreserve(sp, 0, -1) ? ( size_t )sfvalue(sp) : 0))
+    } else if (!(z = sfreserve(sp, 0, -1) ? ( size_t ) sfvalue(sp) : 0))
         m = 0;
     else if (m = sfreserve(sp, z, 0))
-        z = ( size_t )sfvalue(sp);
+        z = ( size_t ) sfvalue(sp);
     else
         z = 0;
     fd = sffileno(sp);

@@ -37,6 +37,6 @@ _sfgetl(reg Sfio_t *f)
 Sflong_t _sfgetl(f) reg Sfio_t *f;
 #endif
 {
-    sfungetc(f, ( unsigned char )_SF_(f)->val);
+    sfungetc(f, ( unsigned char ) _SF_(f)->val);
     return sfgetl(f);
 }

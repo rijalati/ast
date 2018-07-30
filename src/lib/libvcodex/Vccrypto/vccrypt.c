@@ -57,16 +57,16 @@ typedef struct _crypt_s
 static Vcmtarg_t _Cryptargs[]
 = { { "aes128",
       "128-bit Advanced Encryption Standard",
-      ( Void_t * )CR_AES128 },
+      ( Void_t * ) CR_AES128 },
     { "aes192",
       "192-bit Advanced Encryption Standard",
-      ( Void_t * )CR_AES192 },
+      ( Void_t * ) CR_AES192 },
     { "aes256",
       "256-bit Advanced Encryption Standard",
-      ( Void_t * )CR_AES256 },
+      ( Void_t * ) CR_AES256 },
     { 0,
       "Default 128-bit Advanced Encryption Standard",
-      ( Void_t * )CR_AES128 } };
+      ( Void_t * ) CR_AES128 } };
 
 static int
 crinit(Vcodex_t *vc, Crypt_t *cr)
@@ -82,17 +82,17 @@ crinit(Vcodex_t *vc, Crypt_t *cr)
 
     if (vc->disc && vc->disc->eventf) /* invoke discipline for passkey */
     {
-        if ((*vc->disc->eventf)(vc, VC_DATA, ( Void_t * )1, vc->disc) < 0)
+        if ((*vc->disc->eventf)(vc, VC_DATA, ( Void_t * ) 1, vc->disc) < 0)
             return -1;
     }
 
     if (vc->disc && vc->disc->data) {
-        key = ( Vcchar_t * )vc->disc->data;
-        keyz = ( ssize_t )vc->disc->size;
+        key = ( Vcchar_t * ) vc->disc->data;
+        keyz = ( ssize_t ) vc->disc->size;
     } else /* invoke Vcxpasskeyf to ask for a key */
     {
         if (Vcxpasskeyf
-            && (keyz = (*Vcxpasskeyf)(( char * )buf, sizeof(buf), type)) > 0)
+            && (keyz = (*Vcxpasskeyf)(( char * ) buf, sizeof(buf), type)) > 0)
             key = buf;
         else
             key = NIL(Vcchar_t *);
@@ -105,7 +105,7 @@ crinit(Vcodex_t *vc, Crypt_t *cr)
         return -1;
 
     if (vc->disc && vc->disc->eventf) {
-        if ((*vc->disc->eventf)(vc, VC_DATA, ( Void_t * )2, vc->disc) < 0) {
+        if ((*vc->disc->eventf)(vc, VC_DATA, ( Void_t * ) 2, vc->disc) < 0) {
             vcxstop(&cr->xx);
             return -1;
         }
@@ -130,7 +130,7 @@ vcencrypt(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
         return -1;
     vc->undone = 0;
 
-    if (!(dt = ( Vcchar_t * )data) || (sz = ( ssize_t )size) <= 0)
+    if (!(dt = ( Vcchar_t * ) data) || (sz = ( ssize_t ) size) <= 0)
         return 0;
 
     /* secondary processing before encryption */
@@ -139,7 +139,7 @@ vcencrypt(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
 
     if (vc->undone == size) {
         type = VC_RAW; /* encrypting the given raw input data */
-        dt = ( Vcchar_t * )data;
+        dt = ( Vcchar_t * ) data;
         sz = size;
         vc->undone = 0;
     }
@@ -177,7 +177,7 @@ vcdecrypt(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
         return -1;
     vc->undone = 0;
 
-    if (!(dt = ( Vcchar_t * )data) || (sz = ( ssize_t )size) <= 0)
+    if (!(dt = ( Vcchar_t * ) data) || (sz = ( ssize_t ) size) <= 0)
         return 0;
 
     /* status of raw or processed by a secondary coder */
@@ -225,9 +225,9 @@ cryptheader(Vcodex_t *vc, Vcmtcode_t *mtcd)
             return -1;
 
         /* code the method name in ASCII-portable code */
-        if (!vcstrcode(arg->name, ( char * )buf, sizeof(buf)))
+        if (!vcstrcode(arg->name, ( char * ) buf, sizeof(buf)))
             return -1;
-        sz = strlen(( char * )buf) + 1;
+        sz = strlen(( char * ) buf) + 1;
         if (!(dt = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
             return -1;
         memcpy(dt, buf, sz - 1);
@@ -246,21 +246,22 @@ cryptheader(Vcodex_t *vc, Vcmtcode_t *mtcd)
         mtcd->size = sz;
     } else /* reconstructing a handle from header code */
     {
-        dt = ( Vcchar_t * )mtcd->data;
-        if ((sz = ( ssize_t )mtcd->size - 1) <= 0)
+        dt = ( Vcchar_t * ) mtcd->data;
+        if ((sz = ( ssize_t ) mtcd->size - 1) <= 0)
             return -1;
 
         for (arg = _Cryptargs; arg->name; ++arg) {
-            if (!vcstrcode(arg->name, ( char * )buf, sizeof(buf)))
+            if (!vcstrcode(arg->name, ( char * ) buf, sizeof(buf)))
                 return -1;
-            if (strncmp(( char * )buf, ( char * )dt, sz) == 0 && buf[sz] == 0)
+            if (strncmp(( char * ) buf, ( char * ) dt, sz) == 0
+                && buf[sz] == 0)
                 break;
         }
         if (!arg->name)
             return -1;
 
         if (!(mtcd->coder = vcopen(
-              0, Vccrypt, ( Void_t * )arg->name, mtcd->coder, VC_DECODE)))
+              0, Vccrypt, ( Void_t * ) arg->name, mtcd->coder, VC_DECODE)))
             return -1;
 
         if (!(cr = vcgetmtdata(mtcd->coder, Crypt_t *)))
@@ -279,13 +280,13 @@ cryptevent(Vcodex_t *vc, int type, Void_t *param)
     Crypt_t *cr = NIL(Crypt_t *);
 
     if (type == VC_OPENING) {
-        if (!(cr = ( Crypt_t * )calloc(1, sizeof(Crypt_t))))
+        if (!(cr = ( Crypt_t * ) calloc(1, sizeof(Crypt_t))))
             return -1;
 
         cr->type = CR_AES128 | CR_INIT;
         cr->head = 1;         /* 1 control byte */
         cr->meth = Vcxaes128; /* default encryption method */
-        for (data = ( char * )param; data;) {
+        for (data = ( char * ) param; data;) {
             val[0] = 0;
             data = vcgetmtarg(data, val, sizeof(val), _Cryptargs, &arg);
 
@@ -308,7 +309,7 @@ cryptevent(Vcodex_t *vc, int type, Void_t *param)
         vcsetmtdata(vc, cr);
         return 0;
     } else if (type == VC_EXTRACT || type == VC_RESTORE)
-        return cryptheader(vc, ( Vcmtcode_t * )param) < 0 ? -1 : 1;
+        return cryptheader(vc, ( Vcmtcode_t * ) param) < 0 ? -1 : 1;
     else if (type == VC_CLOSING) {
         if ((cr = vcgetmtdata(vc, Crypt_t *))) {
             if (!(cr->type & CR_INIT))

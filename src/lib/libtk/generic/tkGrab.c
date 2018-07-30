@@ -134,7 +134,7 @@ typedef struct NewGrabWinEvent
  * server from those that we generated.
  */
 
-#define GENERATED_EVENT_MAGIC (( Bool )0x147321ac)
+#define GENERATED_EVENT_MAGIC (( Bool ) 0x147321ac)
 
 /*
  * Mask that selects any of the state bits corresponding to buttons,
@@ -204,7 +204,7 @@ char **argv;           /* Argument strings. */
                          " ?-global? window\" or \"",
                          argv[0],
                          " option ?arg arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -213,7 +213,7 @@ char **argv;           /* Argument strings. */
         if (argc != 2) {
             goto badArgs;
         }
-        tkwin = Tk_NameToWindow(interp, argv[1], ( Tk_Window )clientData);
+        tkwin = Tk_NameToWindow(interp, argv[1], ( Tk_Window ) clientData);
         if (tkwin == NULL) {
             return TCL_ERROR;
         }
@@ -223,7 +223,7 @@ char **argv;           /* Argument strings. */
         if (argc != 3) {
             goto badArgs;
         }
-        tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window )clientData);
+        tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window ) clientData);
         if (tkwin == NULL) {
             return TCL_ERROR;
         }
@@ -234,15 +234,16 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " current ?window?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (argc == 3) {
-            tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window )clientData);
+            tkwin
+            = Tk_NameToWindow(interp, argv[2], ( Tk_Window ) clientData);
             if (tkwin == NULL) {
                 return TCL_ERROR;
             }
-            dispPtr = (( TkWindow * )tkwin)->dispPtr;
+            dispPtr = (( TkWindow * ) tkwin)->dispPtr;
             if (dispPtr->eventualGrabWinPtr != NULL) {
                 interp->result = dispPtr->eventualGrabWinPtr->pathName;
             }
@@ -262,10 +263,10 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " release window\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
-        tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window )clientData);
+        tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window ) clientData);
         if (tkwin == NULL) {
             Tcl_ResetResult(interp);
         } else {
@@ -278,12 +279,13 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " set ?-global? window\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (argc == 3) {
             globalGrab = 0;
-            tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window )clientData);
+            tkwin
+            = Tk_NameToWindow(interp, argv[2], ( Tk_Window ) clientData);
         } else {
             globalGrab = 1;
             length = strlen(argv[2]);
@@ -294,10 +296,11 @@ char **argv;           /* Argument strings. */
                                  "\": must be \"",
                                  argv[0],
                                  " set ?-global? window\"",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
-            tkwin = Tk_NameToWindow(interp, argv[3], ( Tk_Window )clientData);
+            tkwin
+            = Tk_NameToWindow(interp, argv[3], ( Tk_Window ) clientData);
         }
         if (tkwin == NULL) {
             return TCL_ERROR;
@@ -312,11 +315,11 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " status window\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
-        winPtr = ( TkWindow * )Tk_NameToWindow(
-        interp, argv[2], ( Tk_Window )clientData);
+        winPtr = ( TkWindow * ) Tk_NameToWindow(
+        interp, argv[2], ( Tk_Window ) clientData);
         if (winPtr == NULL) {
             return TCL_ERROR;
         }
@@ -333,7 +336,7 @@ char **argv;           /* Argument strings. */
                          "unknown or ambiguous option \"",
                          argv[1],
                          "\": must be current, release, set, or status",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -373,7 +376,7 @@ int grabGlobal;  /* Non-zero means issue a grab to the
                   * within this application. */
 {
     int grabResult, numTries;
-    TkWindow *winPtr = ( TkWindow * )tkwin;
+    TkWindow *winPtr = ( TkWindow * ) tkwin;
     TkDisplay *dispPtr = winPtr->dispPtr;
     TkWindow *winPtr2;
     unsigned int serial;
@@ -389,7 +392,7 @@ int grabGlobal;  /* Non-zero means issue a grab to the
             interp->result = "grab failed: another application has grab";
             return TCL_ERROR;
         }
-        Tk_Ungrab(( Tk_Window )dispPtr->eventualGrabWinPtr);
+        Tk_Ungrab(( Tk_Window ) dispPtr->eventualGrabWinPtr);
     }
 
     Tk_MakeWindowExist(tkwin);
@@ -477,7 +480,7 @@ int grabGlobal;  /* Non-zero means issue a grab to the
 
                 sprintf(
                 msg, "grab failed for unknown reason (code %d)", grabResult);
-                Tcl_AppendResult(interp, msg, ( char * )NULL);
+                Tcl_AppendResult(interp, msg, ( char * ) NULL);
             }
             return TCL_ERROR;
         }
@@ -558,13 +561,13 @@ void Tk_Ungrab(tkwin) Tk_Window tkwin; /* Window whose grab should be
     TkWindow *grabWinPtr, *winPtr;
     unsigned int serial;
 
-    grabWinPtr = ( TkWindow * )tkwin;
+    grabWinPtr = ( TkWindow * ) tkwin;
     dispPtr = grabWinPtr->dispPtr;
     if (grabWinPtr != dispPtr->eventualGrabWinPtr) {
         return;
     }
     ReleaseButtonGrab(dispPtr);
-    QueueGrabWindowChange(dispPtr, ( TkWindow * )NULL);
+    QueueGrabWindowChange(dispPtr, ( TkWindow * ) NULL);
     if (dispPtr->grabFlags & (GRAB_GLOBAL | GRAB_TEMP_GLOBAL)) {
         dispPtr->grabFlags &= ~(GRAB_GLOBAL | GRAB_TEMP_GLOBAL);
         serial = NextRequest(dispPtr->display);
@@ -914,7 +917,7 @@ TkWindow *winPtr; /* New target window for event. */
     eventPtr->xmotion.window = Tk_WindowId(winPtr);
     if (eventPtr->xmotion.root
         == RootWindow(winPtr->display, winPtr->screenNum)) {
-        Tk_GetRootCoords(( Tk_Window )winPtr, &x, &y);
+        Tk_GetRootCoords(( Tk_Window ) winPtr, &x, &y);
         eventPtr->xmotion.x = eventPtr->xmotion.x_root - x;
         eventPtr->xmotion.y = eventPtr->xmotion.y_root - y;
         eventPtr->xmotion.subwindow = None;
@@ -1206,7 +1209,7 @@ void TkGrabDeadWindow(winPtr) TkWindow *winPtr; /* Window that is in the
          * Grab window was deleted.  Release the grab.
          */
 
-        Tk_Ungrab(( Tk_Window )dispPtr->eventualGrabWinPtr);
+        Tk_Ungrab(( Tk_Window ) dispPtr->eventualGrabWinPtr);
     } else if (dispPtr->buttonWinPtr == winPtr) {
         ReleaseButtonGrab(dispPtr);
     }
@@ -1257,7 +1260,7 @@ unsigned int serial; /* Only discard events that have a serial
     info.serial = serial;
     XSync(dispPtr->display, False);
     oldProc
-    = Tk_RestrictEvents(GrabRestrictProc, ( ClientData )&info, &oldArg);
+    = Tk_RestrictEvents(GrabRestrictProc, ( ClientData ) &info, &oldArg);
     while (Tcl_DoOneEvent(TCL_DONT_WAIT | TCL_WINDOW_EVENTS)) {
     }
     Tk_RestrictEvents(oldProc, oldArg, &dummy);
@@ -1285,7 +1288,7 @@ unsigned int serial; /* Only discard events that have a serial
 static Tk_RestrictAction GrabRestrictProc(arg, eventPtr) ClientData arg;
 XEvent *eventPtr;
 {
-    GrabInfo *info = ( GrabInfo * )arg;
+    GrabInfo *info = ( GrabInfo * ) arg;
     int mode, diff;
 
     /*
@@ -1341,7 +1344,7 @@ TkWindow *grabWinPtr; /* Window that is to become the new grab
 {
     NewGrabWinEvent *grabEvPtr;
 
-    grabEvPtr = ( NewGrabWinEvent * )ckalloc(sizeof(NewGrabWinEvent));
+    grabEvPtr = ( NewGrabWinEvent * ) ckalloc(sizeof(NewGrabWinEvent));
     grabEvPtr->header.proc = GrabWinEventProc;
     grabEvPtr->dispPtr = dispPtr;
     if (grabWinPtr == NULL) {
@@ -1380,9 +1383,9 @@ int flags; /* Flags argument to Tk_DoOneEvent: indicates
             * what kinds of events are being processed
             * right now. */
 {
-    NewGrabWinEvent *grabEvPtr = ( NewGrabWinEvent * )evPtr;
+    NewGrabWinEvent *grabEvPtr = ( NewGrabWinEvent * ) evPtr;
 
-    grabEvPtr->dispPtr->grabWinPtr = ( TkWindow * )Tk_IdToWindow(
+    grabEvPtr->dispPtr->grabWinPtr = ( TkWindow * ) Tk_IdToWindow(
     grabEvPtr->dispPtr->display, grabEvPtr->grabWindow);
     return 1;
 }

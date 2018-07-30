@@ -107,7 +107,7 @@ chrexp(const char *s, char **p, int *m, int flags)
                     s++;
                     if (c == '\\') {
                         c = chrexp(s - 1, &r, 0, flags);
-                        s = ( const char * )r;
+                        s = ( const char * ) r;
                     }
                     if (islower(c))
                         c = toupper(c);
@@ -229,7 +229,7 @@ chrexp(const char *s, char **p, int *m, int flags)
                             if (!*(s + 1)
                                 || *(s + 2) != '}' && *(s + 2) != ']')
                                 break;
-                            x = *( unsigned char * )(s + 1);
+                            x = *( unsigned char * ) (s + 1);
                             s += 2;
                         } else {
                             x = -1;
@@ -301,7 +301,7 @@ done:
     if (m)
         *m = w;
     if (p)
-        *p = ( char * )s;
+        *p = ( char * ) s;
     return c;
 }
 

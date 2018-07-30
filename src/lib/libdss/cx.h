@@ -157,7 +157,7 @@
 #    define CXMAX(a, b) (((a) > (b)) ? (a) : (b))
 
 #    define CXINTEGER(n) ((Cxinteger_t)(n))
-#    define CXUNSIGNED(n) (( Cxunsigned_t )CXINTEGER(n))
+#    define CXUNSIGNED(n) (( Cxunsigned_t ) CXINTEGER(n))
 
 #    define CXDETAILS(d, f, t, v)                                            \
         ((d) ? (d)                                                           \
@@ -174,21 +174,21 @@
             { 0 }, CX_SCHEMA                                                 \
         }
 #    define CX_CALLOUT_INIT(op, type1, type2, callout, description)          \
-        { 0,      description,         CX_HEADER_INIT,                       \
-          op,     ( Cxtype_t * )type1, ( Cxtype_t * )type2,                  \
+        { 0,      description,          CX_HEADER_INIT,                      \
+          op,     ( Cxtype_t * ) type1, ( Cxtype_t * ) type2,                \
           callout },
 #    define CX_FUNCTION_INIT(name, type, function, prototype, description)   \
-        { name,     description,        CX_HEADER_INIT,                      \
-          function, ( Cxtype_t * )type, prototype },
+        { name,     description,         CX_HEADER_INIT,                     \
+          function, ( Cxtype_t * ) type, prototype },
 #    define CX_RECODE_INIT(op, type1, type2, recode, description)            \
-        { 0,     description,         CX_HEADER_INIT,                        \
-          op,    ( Cxtype_t * )type1, ( Cxtype_t * )type2,                   \
+        { 0,     description,          CX_HEADER_INIT,                       \
+          op,    ( Cxtype_t * ) type1, ( Cxtype_t * ) type2,                 \
           recode },
 #    define CX_TYPE_INIT(name, base, external, internal, match, description) \
         { name,                                                              \
           description,                                                       \
           CX_HEADER_INIT,                                                    \
-          ( Cxtype_t * )base,                                                \
+          ( Cxtype_t * ) base,                                               \
           0,                                                                 \
           external,                                                          \
           internal,                                                          \
@@ -198,9 +198,10 @@
           0,                                                                 \
           CX_HEADER_INIT,                                                    \
           match },
-#    define CX_VARIABLE_INIT(name, type, index, description)                   \
-        {                                                                      \
-            name, description, CX_HEADER_INIT, 0, ( Cxtype_t * )type, 0, index \
+#    define CX_VARIABLE_INIT(name, type, index, description)                 \
+        {                                                                    \
+            name, description, CX_HEADER_INIT, 0, ( Cxtype_t * ) type,       \
+            0,    index                                                      \
         },
 
 #    define cxrepresentation(t) ((t)->representation)

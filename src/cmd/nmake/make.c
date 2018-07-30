@@ -912,7 +912,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                              */
 
                             t = (r4 = bindfile(NiL, s, 0)) ? r4->time
-                                                           : ( Time_t )0;
+                                                           : ( Time_t ) 0;
                             if (!(r5 = staterule(RULE, r4, s, 0)))
                                 i = state.accept;
                             else if (t) {
@@ -926,8 +926,8 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                                 (1,
                                  "joint metarule target %s [%s] changed [%s]",
                                  s,
-                                 timestr(r4 ? r4->time : ( Time_t )0),
-                                 timestr(r5 ? r5->time : ( Time_t )0)));
+                                 timestr(r4 ? r4->time : ( Time_t ) 0),
+                                 timestr(r5 ? r5->time : ( Time_t ) 0)));
                             }
                             x->status = r->status;
                             message((-1, "time(%s) = %s", s, timestr(t)));

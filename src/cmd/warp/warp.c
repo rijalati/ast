@@ -255,10 +255,10 @@ typedef int (*Setitimer_f)(int, const struct itimerval *, struct itimerval *);
 #endif
 
 #define WARP_ABS(t)                                                          \
-    ((t)                                                                     \
-     += (t) ? (state.warp + (state.factor ? mix(( t )-state.base) : 0)) : 0)
+    ((t) += (t) ? (state.warp + (state.factor ? mix(( t ) -state.base) : 0)) \
+                : 0)
 #define UNWARP_ABS(t)                                                        \
-    ((t) = (t) ? ((( t )-state.warp) / (state.factor + 1)                    \
+    ((t) = (t) ? ((( t ) -state.warp) / (state.factor + 1)                   \
                   + state.base / (state.factor + 1) * state.factor)          \
                : 0)
 
@@ -437,7 +437,7 @@ intercept(Call_t *p)
             exit(2);
         }
     }
-    if (!p->call && !(p->call = ( Syscall_f )dlsym(state.dll, p->mangled))) {
+    if (!p->call && !(p->call = ( Syscall_f ) dlsym(state.dll, p->mangled))) {
         write(2, "warp: ", 6);
         write(2, p->mangled, strlen(p->mangled));
         write(2, ": cannot intercept\n", 1);
@@ -458,9 +458,9 @@ warp_alarm(Call_t *p, unsigned int s)
 
     intercept(p);
     if (p->warped || !state.factor)
-        return (*( Alarm_f )p->call)(s);
+        return (*( Alarm_f ) p->call)(s);
     UNWARP_REL(s);
-    r = (*( Alarm_f )p->call)(s);
+    r = (*( Alarm_f ) p->call)(s);
     if (p->level != state.level)
         p->warped = 1;
     else
@@ -518,7 +518,7 @@ warp_gettimeofday(Call_t *p, struct timeval *tv, void *tz)
     int r;
 
     intercept(p);
-    if ((r = (*( Gettimeofday_f )p->call)(tv, tz)) != -1 && !p->warped) {
+    if ((r = (*( Gettimeofday_f ) p->call)(tv, tz)) != -1 && !p->warped) {
         if (p->level != state.level)
             p->warped = 1;
         else if (tv)
@@ -578,11 +578,11 @@ warp_poll(Call_t *p, void *f, int n, int to)
 
     intercept(p);
     if (p->warped || !state.factor || to <= 1000)
-        return (*( Poll_f )p->call)(f, n, to);
+        return (*( Poll_f ) p->call)(f, n, to);
     to /= 1000;
     UNWARP_REL(to);
     to *= 1000;
-    if ((r = (*( Poll_f )p->call)(f, n, to)) != -1 && !p->warped
+    if ((r = (*( Poll_f ) p->call)(f, n, to)) != -1 && !p->warped
         && p->level != state.level)
         p->warped = 1;
     return r;
@@ -645,7 +645,7 @@ warp_select(Call_t *p,
 
     intercept(p);
     if (p->warped || !state.factor || !tv || !tv->tv_sec && !tv->tv_usec)
-        return (*( Select_f )p->call)(n, rp, wp, ep, tv);
+        return (*( Select_f ) p->call)(n, rp, wp, ep, tv);
     x = *tv;
     if (x.tv_sec) {
         UNWARP_REL(x.tv_sec);
@@ -654,7 +654,7 @@ warp_select(Call_t *p,
         else if (!(x.tv_usec /= state.factor))
             x.tv_usec = 10;
     }
-    if ((r = (*( Select_f )p->call)(n, rp, wp, ep, &x)) != -1 && !p->warped
+    if ((r = (*( Select_f ) p->call)(n, rp, wp, ep, &x)) != -1 && !p->warped
         && p->level != state.level)
         p->warped = 1;
     return r;
@@ -710,7 +710,7 @@ warp_time(Call_t *p, time_t *clock)
     time_t t;
 
     intercept(p);
-    if ((t = (*( Time_f )p->call)(clock)) != (time_t)(-1) && !p->warped) {
+    if ((t = (*( Time_f ) p->call)(clock)) != (time_t)(-1) && !p->warped) {
         if (p->level != state.level)
             p->warped = 1;
         else {
@@ -772,7 +772,7 @@ warp_times(Call_t *p, struct tms *tv)
     clock_t t;
 
     intercept(p);
-    if ((t = (*( Times_f )p->call)(tv)) != (clock_t)(-1) && !p->warped) {
+    if ((t = (*( Times_f ) p->call)(tv)) != (clock_t)(-1) && !p->warped) {
         if (p->level != state.level)
             p->warped = 1;
         else
@@ -833,14 +833,14 @@ warp_utime(Call_t *p, const char *path, const struct utimbuf *tv)
 
     intercept(p);
     if (!tv || p->warped)
-        return (*( Utime_f )p->call)(path, tv);
+        return (*( Utime_f ) p->call)(path, tv);
     tb = *tv;
     UNWARP_ABS(tb.actime);
     UNWARP_ABS(tb.modtime);
-    r = (*( Utime_f )p->call)(path, &tb);
+    r = (*( Utime_f ) p->call)(path, &tb);
     if (p->level != state.level) {
         p->warped = 1;
-        r = (*( Utime_f )p->call)(path, tv);
+        r = (*( Utime_f ) p->call)(path, tv);
     }
     return r;
 }
@@ -902,15 +902,15 @@ warp_utimensat(int dirfd,
 
     intercept(p);
     if (!tv || p->warped)
-        return (*( Utimensat_f )p->call)(dirfd, path, tv, flags);
+        return (*( Utimensat_f ) p->call)(dirfd, path, tv, flags);
     for (i = 0; i < elementsof(tb); i++) {
         tb[i] = tv[i];
         UNWARP_ABS(tb[i].tv_sec);
     }
-    r = (*( Utimensat_f )p->call)(dirfd, path, tb, flags);
+    r = (*( Utimensat_f ) p->call)(dirfd, path, tb, flags);
     if (p->level != state.level) {
         p->warped = 1;
-        r = (*( Utimensat_f )p->call)(dirfd, path, tv, flags);
+        r = (*( Utimensat_f ) p->call)(dirfd, path, tv, flags);
     }
     return r;
 }
@@ -974,15 +974,15 @@ warp_utimes(Call_t *p, const char *path, const struct timeval *tv)
 
     intercept(p);
     if (!tv || p->warped)
-        return (*( Utimes_f )p->call)(path, tv);
+        return (*( Utimes_f ) p->call)(path, tv);
     for (i = 0; i < elementsof(tb); i++) {
         tb[i] = tv[i];
         UNWARP_ABS(tb[i].tv_sec);
     }
-    r = (*( Utimes_f )p->call)(path, tb);
+    r = (*( Utimes_f ) p->call)(path, tb);
     if (p->level != state.level) {
         p->warped = 1;
-        r = (*( Utimes_f )p->call)(path, tv);
+        r = (*( Utimes_f ) p->call)(path, tv);
     }
     return r;
 }
@@ -1040,15 +1040,15 @@ warp_utimets(Call_t *p, const char *path, const struct timespec *tv)
 
     intercept(p);
     if (!tv || p->warped)
-        return (*( Utimets_f )p->call)(path, tv);
+        return (*( Utimets_f ) p->call)(path, tv);
     for (i = 0; i < elementsof(tb); i++) {
         tb[i] = tv[i];
         UNWARP_ABS(tb[i].tv_sec);
     }
-    r = (*( Utimets_f )p->call)(path, tb);
+    r = (*( Utimets_f ) p->call)(path, tb);
     if (p->level != state.level) {
         p->warped = 1;
-        r = (*( Utimets_f )p->call)(path, tv);
+        r = (*( Utimets_f ) p->call)(path, tv);
     }
     return r;
 }
@@ -1109,7 +1109,7 @@ warp_xst(Call_t *p, const int ver, struct stat *st)
             p->warped = 1;
 #    if defined(_STAT64_VER)
         else if (ver >= _STAT64_VER) {
-            struct stat64 *st64 = ( struct stat64 * )st;
+            struct stat64 *st64 = ( struct stat64 * ) st;
             static const char msg64[] = "warp: _STAT64_VER\n";
 
             if (state.trace)
@@ -1142,7 +1142,7 @@ _fxstat(const int ver, int fd, struct stat *st)
     static Call_t call = { "_fxstat", "_fxstat" };
 
     intercept(&call);
-    if ((r = (*( Fxstat_f )call.call)(ver, fd, st)) != -1)
+    if ((r = (*( Fxstat_f ) call.call)(ver, fd, st)) != -1)
         warp_xst(&call, ver, st);
     return r;
 }
@@ -1155,7 +1155,7 @@ __fxstat(const int ver, int fd, struct stat *st)
     static Call_t call = { "_fxstat", "__fxstat" };
 
     intercept(&call);
-    if ((r = (*( Fxstat_f )call.call)(ver, fd, st)) != -1)
+    if ((r = (*( Fxstat_f ) call.call)(ver, fd, st)) != -1)
         warp_xst(&call, ver, st);
     return r;
 }
@@ -1168,7 +1168,7 @@ _lxstat(const int ver, const char *path, struct stat *st)
     static Call_t call = { "_lxstat", "_lxstat" };
 
     intercept(&call);
-    if ((r = (*( Lxstat_f )call.call)(ver, path, st)) != -1)
+    if ((r = (*( Lxstat_f ) call.call)(ver, path, st)) != -1)
         warp_xst(&call, ver, st);
     return r;
 }
@@ -1181,7 +1181,7 @@ __lxstat(const int ver, const char *path, struct stat *st)
     static Call_t call = { "_lxstat", "__lxstat" };
 
     intercept(&call);
-    if ((r = (*( Lxstat_f )call.call)(ver, path, st)) != -1)
+    if ((r = (*( Lxstat_f ) call.call)(ver, path, st)) != -1)
         warp_xst(&call, ver, st);
     return r;
 }
@@ -1194,7 +1194,7 @@ _xstat(const int ver, const char *path, struct stat *st)
     static Call_t call = { "_xstat", "_xstat" };
 
     intercept(&call);
-    if ((r = (*( Xstat_f )call.call)(ver, path, st)) != -1)
+    if ((r = (*( Xstat_f ) call.call)(ver, path, st)) != -1)
         warp_xst(&call, ver, st);
     return r;
 }
@@ -1207,7 +1207,7 @@ __xstat(const int ver, const char *path, struct stat *st)
     static Call_t call = { "_xstat", "__xstat" };
 
     intercept(&call);
-    if ((r = (*( Xstat_f )call.call)(ver, path, st)) != -1)
+    if ((r = (*( Xstat_f ) call.call)(ver, path, st)) != -1)
         warp_xst(&call, ver, st);
     return r;
 }
@@ -1224,7 +1224,7 @@ warp_xst64(Call_t *p, const int ver, struct stat64 *st)
             p->warped = 1;
 #        if defined(_STAT64_VER)
         else if (ver >= _STAT64_VER) {
-            struct stat64 *st64 = ( struct stat64 * )st;
+            struct stat64 *st64 = ( struct stat64 * ) st;
             static const char msg64[] = "warp: _STAT64_VER\n";
 
             if (state.trace)
@@ -1257,7 +1257,7 @@ _fxstat64(const int ver, int fd, struct stat64 *st)
     static Call_t call = { "_fxstat64", "_fxstat64" };
 
     intercept(&call);
-    if ((r = (*( Fxstat64_f )call.call)(ver, fd, st)) != -1)
+    if ((r = (*( Fxstat64_f ) call.call)(ver, fd, st)) != -1)
         warp_xst64(&call, ver, st);
     return r;
 }
@@ -1270,7 +1270,7 @@ __fxstat64(const int ver, int fd, struct stat64 *st)
     static Call_t call = { "_fxstat64", "__fxstat64" };
 
     intercept(&call);
-    if ((r = (*( Fxstat64_f )call.call)(ver, fd, st)) != -1)
+    if ((r = (*( Fxstat64_f ) call.call)(ver, fd, st)) != -1)
         warp_xst64(&call, ver, st);
     return r;
 }
@@ -1283,7 +1283,7 @@ _lxstat64(const int ver, const char *path, struct stat64 *st)
     static Call_t call = { "_lxstat64", "_lxstat64" };
 
     intercept(&call);
-    if ((r = (*( Lxstat64_f )call.call)(ver, path, st)) != -1)
+    if ((r = (*( Lxstat64_f ) call.call)(ver, path, st)) != -1)
         warp_xst64(&call, ver, st);
     return r;
 }
@@ -1296,7 +1296,7 @@ __lxstat64(const int ver, const char *path, struct stat64 *st)
     static Call_t call = { "_lxstat64", "__lxstat64" };
 
     intercept(&call);
-    if ((r = (*( Lxstat64_f )call.call)(ver, path, st)) != -1)
+    if ((r = (*( Lxstat64_f ) call.call)(ver, path, st)) != -1)
         warp_xst64(&call, ver, st);
     return r;
 }
@@ -1309,7 +1309,7 @@ _xstat64(const int ver, const char *path, struct stat64 *st)
     static Call_t call = { "_xstat64", "_xstat64" };
 
     intercept(&call);
-    if ((r = (*( Xstat64_f )call.call)(ver, path, st)) != -1)
+    if ((r = (*( Xstat64_f ) call.call)(ver, path, st)) != -1)
         warp_xst64(&call, ver, st);
     return r;
 }
@@ -1322,7 +1322,7 @@ __xstat64(const int ver, const char *path, struct stat64 *st)
     static Call_t call = { "_xstat64", "__xstat64" };
 
     intercept(&call);
-    if ((r = (*( Xstat64_f )call.call)(ver, path, st)) != -1)
+    if ((r = (*( Xstat64_f ) call.call)(ver, path, st)) != -1)
         warp_xst64(&call, ver, st);
     return r;
 }
@@ -1350,7 +1350,7 @@ warp_fstat(Call_t *p, int fd, struct stat *st)
     int r;
 
     intercept(p);
-    if ((r = (*( Fstat_f )p->call)(fd, st)) != -1)
+    if ((r = (*( Fstat_f ) p->call)(fd, st)) != -1)
         warp_st(p, st);
     return r;
 }
@@ -1417,7 +1417,7 @@ warp_lstat(Call_t *p, const char *path, struct stat *st)
     int r;
 
     intercept(p);
-    if ((r = (*( Lstat_f )p->call)(path, st)) != -1)
+    if ((r = (*( Lstat_f ) p->call)(path, st)) != -1)
         warp_st(p, st);
     return r;
 }
@@ -1492,7 +1492,7 @@ warp_stat(Call_t *p, const char *path, struct stat *st)
     int r;
 
     intercept(p);
-    if ((r = (*( Lstat_f )p->call)(path, st)) != -1)
+    if ((r = (*( Lstat_f ) p->call)(path, st)) != -1)
         warp_st(p, st);
     return r;
 }
@@ -1577,7 +1577,7 @@ warp_fstat64(Call_t *p, int fd, struct stat64 *st)
     int r;
 
     intercept(p);
-    if ((r = (*( Fstat64_f )p->call)(fd, st)) != -1)
+    if ((r = (*( Fstat64_f ) p->call)(fd, st)) != -1)
         warp_st64(p, st);
     return r;
 }
@@ -1632,7 +1632,7 @@ warp_lstat64(Call_t *p, const char *path, struct stat64 *st)
     int r;
 
     intercept(p);
-    if ((r = (*( Lstat64_f )p->call)(path, st)) != -1)
+    if ((r = (*( Lstat64_f ) p->call)(path, st)) != -1)
         warp_st64(p, st);
     return r;
 }
@@ -1687,7 +1687,7 @@ warp_stat64(Call_t *p, const char *path, struct stat64 *st)
     int r;
 
     intercept(p);
-    if ((r = (*( Stat64_f )p->call)(path, st)) != -1)
+    if ((r = (*( Stat64_f ) p->call)(path, st)) != -1)
         warp_st64(p, st);
     return r;
 }
@@ -1746,7 +1746,7 @@ warp_clock_gettime(Call_t *p, int clock, struct timespec *tv)
     int r;
 
     intercept(p);
-    if ((r = (*( Clock_gettime_f )p->call)(clock, tv)) != -1 && !p->warped) {
+    if ((r = (*( Clock_gettime_f ) p->call)(clock, tv)) != -1 && !p->warped) {
         if (p->level != state.level)
             p->warped = 1;
         else if (tv)
@@ -1809,7 +1809,7 @@ warp_getitimer(Call_t *p, int i, struct itimerval *v)
     int r;
 
     intercept(p);
-    if ((r = (*( Getitimer_f )p->call)(i, v)) != -1 && !p->warped
+    if ((r = (*( Getitimer_f ) p->call)(i, v)) != -1 && !p->warped
         && state.factor) {
         if (p->level != state.level)
             p->warped = 1;
@@ -1880,7 +1880,7 @@ warp_setitimer(Call_t *p,
 
     intercept(p);
     if (p->warped || !state.factor)
-        return (*( Setitimer_f )p->call)(i, v, o);
+        return (*( Setitimer_f ) p->call)(i, v, o);
     x = *v;
     if (x.it_interval.tv_sec) {
         UNWARP_REL(x.it_interval.tv_sec);
@@ -1896,7 +1896,7 @@ warp_setitimer(Call_t *p,
         else if (!(x.it_value.tv_usec /= state.factor))
             x.it_value.tv_usec = 10;
     }
-    if ((r = (*( Setitimer_f )p->call)(i, &x, o)) != -1 && !p->warped) {
+    if ((r = (*( Setitimer_f ) p->call)(i, &x, o)) != -1 && !p->warped) {
         if (p->level != state.level)
             p->warped = 1;
         else if (o) {
@@ -1967,7 +1967,7 @@ warp_env(char *const arge[])
     char **env;
     int n;
 
-    env = ( char ** )arge;
+    env = ( char ** ) arge;
     if (*state.env) {
         if (e = env) {
             while (s = *e++) {
@@ -1999,7 +1999,7 @@ warp_env(char *const arge[])
             while (*e++)
                 ;
             n += (e - state.env) - 1;
-            if (!(z = ( char ** )malloc(n * sizeof(char **)))) {
+            if (!(z = ( char ** ) malloc(n * sizeof(char **)))) {
                 s = "warp: execve env malloc error\n";
                 write(2, s, strlen(s));
                 _exit(125);
@@ -2044,10 +2044,10 @@ warp_execve(Call_t *p,
     static int level;
 
     intercept(p);
-    env = (!p->warped && !level) ? warp_env(arge) : ( char ** )arge;
+    env = (!p->warped && !level) ? warp_env(arge) : ( char ** ) arge;
     p->warped++;
     level++;
-    n = (*( Execve_f )p->call)(path, argv, env);
+    n = (*( Execve_f ) p->call)(path, argv, env);
     level--;
     p->warped--;
     return n;
@@ -2065,10 +2065,10 @@ warp_execvpe(Call_t *p,
     static int level;
 
     intercept(p);
-    env = (!p->warped && !level) ? warp_env(arge) : ( char ** )arge;
+    env = (!p->warped && !level) ? warp_env(arge) : ( char ** ) arge;
     p->warped++;
     level++;
-    n = (*( Execvpe_f )p->call)(path, argv, env);
+    n = (*( Execvpe_f ) p->call)(path, argv, env);
     level--;
     p->warped--;
     return n;
@@ -2239,7 +2239,7 @@ execl(const char *path, const char *arg, ...)
 {
     static Call_t call = { "execl", "execl" };
 
-    return warp_execve(&call, path, ( char *const * )&arg, environ);
+    return warp_execve(&call, path, ( char *const * ) &arg, environ);
 }
 
 extern int
@@ -2247,7 +2247,7 @@ _execl(const char *path, const char *arg, ...)
 {
     static Call_t call = { "execl", "_execl" };
 
-    return warp_execve(&call, path, ( char *const * )&arg, environ);
+    return warp_execve(&call, path, ( char *const * ) &arg, environ);
 }
 
 extern int
@@ -2255,7 +2255,7 @@ __execl(const char *path, const char *arg, ...)
 {
     static Call_t call = { "execl", "__execl" };
 
-    return warp_execve(&call, path, ( char *const * )&arg, environ);
+    return warp_execve(&call, path, ( char *const * ) &arg, environ);
 }
 
 extern int
@@ -2263,7 +2263,7 @@ _libc_execl(const char *path, const char *arg, ...)
 {
     static Call_t call = { "execl", "_libc_execl" };
 
-    return warp_execve(&call, path, ( char *const * )&arg, environ);
+    return warp_execve(&call, path, ( char *const * ) &arg, environ);
 }
 
 extern int
@@ -2271,7 +2271,7 @@ __libc_execl(const char *path, const char *arg, ...)
 {
     static Call_t call = { "execl", "__libc_execl" };
 
-    return warp_execve(&call, path, ( char *const * )&arg, environ);
+    return warp_execve(&call, path, ( char *const * ) &arg, environ);
 }
 
 extern int
@@ -2279,7 +2279,7 @@ execlp(const char *path, const char *arg, ...)
 {
     static Call_t call = { "execlp", "execlp" };
 
-    return warp_execvpe(&call, path, ( char *const * )&arg, environ);
+    return warp_execvpe(&call, path, ( char *const * ) &arg, environ);
 }
 
 extern int
@@ -2287,7 +2287,7 @@ _execlp(const char *path, const char *arg, ...)
 {
     static Call_t call = { "execlp", "_execlp" };
 
-    return warp_execvpe(&call, path, ( char *const * )&arg, environ);
+    return warp_execvpe(&call, path, ( char *const * ) &arg, environ);
 }
 
 extern int
@@ -2295,7 +2295,7 @@ __execlp(const char *path, const char *arg, ...)
 {
     static Call_t call = { "execlp", "__execlp" };
 
-    return warp_execvpe(&call, path, ( char *const * )&arg, environ);
+    return warp_execvpe(&call, path, ( char *const * ) &arg, environ);
 }
 
 extern int
@@ -2303,7 +2303,7 @@ _libc_execlp(const char *path, const char *arg, ...)
 {
     static Call_t call = { "execlp", "_libc_execlp" };
 
-    return warp_execvpe(&call, path, ( char *const * )&arg, environ);
+    return warp_execvpe(&call, path, ( char *const * ) &arg, environ);
 }
 
 extern int
@@ -2311,7 +2311,7 @@ __libc_execlp(const char *path, const char *arg, ...)
 {
     static Call_t call = { "execlp", "__libc_execlp" };
 
-    return warp_execvpe(&call, path, ( char *const * )&arg, environ);
+    return warp_execvpe(&call, path, ( char *const * ) &arg, environ);
 }
 
 #endif

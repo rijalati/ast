@@ -102,7 +102,7 @@ pzinflate(Pz_t *pz, Sfio_t *op)
         if (writef = pz->disc->writef) {
             n = pz->part->row;
             do {
-                if (!(pat = ( unsigned char * )sfreserve(pz->io, n, 0))) {
+                if (!(pat = ( unsigned char * ) sfreserve(pz->io, n, 0))) {
                     if (sfvalue(pz->io)) {
                         if (pz->disc->errorf)
                             (*pz->disc->errorf)(
@@ -245,7 +245,8 @@ pzinflate(Pz_t *pz, Sfio_t *op)
                 if ((k = sfgetc(pz->io)) == PZ_MARK_PART) {
                     if ((m = sfgetu(pz->io)) && !sferror(pz->io)
                         && !sfeof(pz->io)
-                        && (pat = ( unsigned char * )sfreserve(pz->io, m, 0)))
+                        && (pat
+                            = ( unsigned char * ) sfreserve(pz->io, m, 0)))
                         sfwrite(op, pat, m);
                 } else if (k != EOF)
                     sfungetc(pz->io, k);

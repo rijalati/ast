@@ -66,12 +66,12 @@ Sfdisc_t *disc; /* discipline */
     Sfoff_t addr;
     ssize_t r, w, p;
 
-    sk = ( Seek_t * )disc;
+    sk = ( Seek_t * ) disc;
     sf = sk->shadow;
     if (sk->eof)
         return sfread(sf, buf, n);
 
-    addr = sfseek(sf, ( Sfoff_t )0, SEEK_CUR);
+    addr = sfseek(sf, ( Sfoff_t ) 0, SEEK_CUR);
 
     if (addr + n <= sk->extent)
         return sfread(sf, buf, n);
@@ -79,7 +79,7 @@ Sfdisc_t *disc; /* discipline */
     if ((r = (ssize_t)(sk->extent - addr)) > 0) {
         if ((w = sfread(sf, buf, r)) != r)
             return w;
-        buf = ( char * )buf + r;
+        buf = ( char * ) buf + r;
         n -= r;
     }
 
@@ -112,7 +112,7 @@ Sfdisc_t *disc;
     char buf[SF_BUFSIZE];
     ssize_t r, w;
 
-    sk = ( Seek_t * )disc;
+    sk = ( Seek_t * ) disc;
     sf = sk->shadow;
 
     switch (type) {
@@ -140,7 +140,7 @@ Sfdisc_t *disc;
             if (addr > sk->extent + sizeof(buf))
                 w = sizeof(buf);
             else
-                w = ( int )(addr - sk->extent);
+                w = ( int ) (addr - sk->extent);
             if ((r = sfrd(f, buf, w, disc)) <= 0)
                 w = r - 1;
             else if ((w = sfwrite(sf, buf, r)) > 0)
@@ -171,7 +171,7 @@ Sfdisc_t *disc;
 {
     Seek_t *sk;
 
-    sk = ( Seek_t * )disc;
+    sk = ( Seek_t * ) disc;
 
     switch (type) {
     case SF_FINAL:
@@ -183,7 +183,7 @@ Sfdisc_t *disc;
         sk->eof = 0;
         sk->discard += sk->extent;
         sk->extent = 0;
-        sfseek(sk->shadow, ( Sfoff_t )0, SEEK_SET);
+        sfseek(sk->shadow, ( Sfoff_t ) 0, SEEK_SET);
         break;
     }
     return 0;
@@ -199,10 +199,10 @@ int sfdcseekable(f) Sfio_t *f;
     reg Seek_t *sk;
 
     /* see if already seekable */
-    if (sfseek(f, ( Sfoff_t )0, SEEK_CUR) >= 0)
+    if (sfseek(f, ( Sfoff_t ) 0, SEEK_CUR) >= 0)
         return 0;
 
-    if (!(sk = ( Seek_t * )malloc(sizeof(Seek_t))))
+    if (!(sk = ( Seek_t * ) malloc(sizeof(Seek_t))))
         return -1;
     memset(sk, 0, sizeof(*sk));
 
@@ -215,7 +215,7 @@ int sfdcseekable(f) Sfio_t *f;
     sk->extent = 0;
     sk->eof = 0;
 
-    if (sfdisc(f, ( Sfdisc_t * )sk) != ( Sfdisc_t * )sk) {
+    if (sfdisc(f, ( Sfdisc_t * ) sk) != ( Sfdisc_t * ) sk) {
         sfclose(sk->shadow);
         free(sk);
         return -1;

@@ -42,11 +42,11 @@
 #    define STK_SMALL 1 /* small stkopen stack		*/
 #    define STK_NULL 2  /* return NULL on overflow	*/
 
-#    define stkptr(sp, n) (( char * )((sp)->_data) + (n))
-#    define stktop(sp) (( char * )(sp)->_next)
+#    define stkptr(sp, n) (( char * ) ((sp)->_data) + (n))
+#    define stktop(sp) (( char * ) (sp)->_next)
 #    define stktell(sp) ((sp)->_next - (sp)->_data)
 #    define stkseek(sp, n)                                                   \
-        ((n) == 0 ? ( char * )((sp)->_next = (sp)->_data) : _stkseek(sp, n))
+        ((n) == 0 ? ( char * ) ((sp)->_next = (sp)->_data) : _stkseek(sp, n))
 
 #    if _BLD_ast && defined(__EXPORT__)
 #        define extern extern __EXPORT__
@@ -66,7 +66,7 @@ extern Sfio_t _Stk_data;
 extern Stk_t *
 stkopen(int);
 extern Stk_t *
-stkinstall(Stk_t *, char *( * )( int ));
+stkinstall(Stk_t *, char *( * ) ( int ) );
 extern int
 stkclose(Stk_t *);
 extern int

@@ -46,7 +46,7 @@
 #    define VCSF_FREE 000010   /* free sfdt on disc pop	*/
 
 /* application-defined function to process error messages */
-typedef void(*Vcsferror_f) _ARG_(( const char * ));
+typedef void(*Vcsferror_f) _ARG_(( const char * ) );
 
 /* data passed to vcsfio() to initialize a stream */
 typedef struct _vcsfdata_s
@@ -64,13 +64,13 @@ _BEGIN_EXTERNS_
 #        define extern __EXPORT__
 #    endif
 
-extern Vcsfio_t *vcsfio _ARG_(( Sfio_t *, Vcsfdata_t *, int ));
+extern Vcsfio_t *vcsfio _ARG_(( Sfio_t *, Vcsfdata_t *, int ) );
 
 #    if !_SFIO_H
 extern ssize_t vcsfread _ARG_((Vcsfio_t *, Void_t *, size_t));
 extern ssize_t vcsfwrite _ARG_((Vcsfio_t *, const Void_t *, size_t));
-extern int vcsfsync _ARG_(( Vcsfio_t * ));
-extern int vcsfclose _ARG_(( Vcsfio_t * ));
+extern int vcsfsync _ARG_(( Vcsfio_t * ) );
+extern int vcsfclose _ARG_(( Vcsfio_t * ) );
 #    endif
 
 #    undef extern

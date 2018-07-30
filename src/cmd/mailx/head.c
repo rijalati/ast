@@ -150,7 +150,7 @@ static const struct content contents[] = {
 static int
 content(Mime_t *mp, void *entry, char *data, size_t size, Mimedisc_t *disc)
 {
-    struct content *cp = ( struct content * )entry;
+    struct content *cp = ( struct content * ) entry;
     struct part *ap;
     struct bound *bp;
     char *s;
@@ -162,7 +162,7 @@ content(Mime_t *mp, void *entry, char *data, size_t size, Mimedisc_t *disc)
          cp->name,
          size,
          data);
-    if (!(ap = (( struct state_part * )disc)->head))
+    if (!(ap = (( struct state_part * ) disc)->head))
         ap = &state.part.global;
     switch (cp->index) {
     case CONTENT_boundary:
@@ -398,9 +398,9 @@ attach(struct part *ap)
     note(DEBUG,
          "part %d offset=%ld size=%ld lines=%ld flags=0x%08x type=%s name=%s",
          ap->count,
-         ( long )ap->offset,
-         ( long )ap->size,
-         ( long )ap->lines,
+         ( long ) ap->offset,
+         ( long ) ap->size,
+         ( long ) ap->lines,
          ap->flags,
          ap->type,
          ap->name);
@@ -495,8 +495,8 @@ multipart(struct parse *pp)
                 attach(ap);
                 note(DEBUG,
                      "raw offset=%ld size=%ld",
-                     ( long )ap->raw.offset,
-                     ( long )ap->raw.size);
+                     ( long ) ap->raw.offset,
+                     ( long ) ap->raw.size);
             }
             if (!(ap = newof(0, struct part, 1, 0))) {
                 note(ERROR | SYSTEM, "Out of space");
@@ -520,7 +520,7 @@ multipart(struct parse *pp)
         } else if (header) {
             state.part.head = ap;
             if (!mimehead(state.part.mime,
-                          ( void * )contents,
+                          ( void * ) contents,
                           elementsof(contents),
                           sizeof(*contents),
                           s)) {
@@ -667,7 +667,7 @@ headget(struct parse *pp)
         }
         if ((pp->flags & GMIME)
             && mimehead(state.part.mime,
-                        ( void * )contents,
+                        ( void * ) contents,
                         elementsof(contents),
                         sizeof(*contents),
                         s))
@@ -774,7 +774,7 @@ headget(struct parse *pp)
                     for (lp = state.hdrtab; lp->name; lp++)
                         if (pp->flags & (lp->type | GMISC)) {
                             s = pp->name;
-                            t = ( char * )lp->name;
+                            t = ( char * ) lp->name;
                             if (upper(*s) == *t) {
                                 while (lower(*++s) == *++t)
                                     ;
@@ -886,7 +886,7 @@ grabtype(struct parse *pp, struct msg *mp, unsigned long type)
     e = namebuf + sizeof(namebuf);
     for (i = 0; i < elementsof(fields); i++)
         if ((fields[i].type & type)
-            && (s = grabname(pp, mp, ( char * )fields[i].name, type))
+            && (s = grabname(pp, mp, ( char * ) fields[i].name, type))
             && ((type & (GNEWS | GSUB)) || (s = skin(s, type)))
             && yankword(s, namebuf)) {
             if ((type & GNEWS) && (t = strchr(s, ',')))
@@ -1015,7 +1015,7 @@ wordnext(char **p, char *b)
             s++;
     *p = s;
     *t = 0;
-    return *b ? b : ( char * )0;
+    return *b ? b : ( char * ) 0;
 }
 
 /*

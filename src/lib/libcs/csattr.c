@@ -63,7 +63,7 @@ load(Cs_t *state)
             if (*s) {
                 c = *s;
                 *s++ = 0;
-                if (!(ip = ( Info_t * )hashlook(
+                if (!(ip = ( Info_t * ) hashlook(
                       tp,
                       h,
                       HASH_CREATE | HASH_SIZE(sizeof(Info_t) + strlen(s) + 1),
@@ -116,7 +116,7 @@ csattr(Cs_t *state, const char *name, const char *attr)
             return 0;
         n = attr && streq(attr, "name");
         do
-            if (!(ip = ( Info_t * )hashnext(pt))) {
+            if (!(ip = ( Info_t * ) hashnext(pt))) {
                 hashdone(pt);
                 pt = 0;
                 return 0;
@@ -129,8 +129,8 @@ csattr(Cs_t *state, const char *name, const char *attr)
         b += sfsprintf(b, x - b, "%s", ip->name);
     } else {
         if (streq(name, CS_HOST_LOCAL))
-            name = ( const char * )csname(state, 0);
-        if (!(ip = ( Info_t * )hashlook(tp, name, HASH_LOOKUP, NiL)))
+            name = ( const char * ) csname(state, 0);
+        if (!(ip = ( Info_t * ) hashlook(tp, name, HASH_LOOKUP, NiL)))
             return 0;
         if (attr) {
             if (streq(attr, "*"))
@@ -173,7 +173,7 @@ csattr(Cs_t *state, const char *name, const char *attr)
                 }
                 return 0;
             }
-            for (s = ( char * )attr; *s && *v == *s++; v++)
+            for (s = ( char * ) attr; *s && *v == *s++; v++)
                 ;
             if (!*s && (*v == '=' || !*v || isspace(*v))) {
                 if (*v == '=')

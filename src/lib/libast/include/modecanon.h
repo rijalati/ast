@@ -30,7 +30,7 @@
 #ifndef _MODECANON_H
 #    define _MODECANON_H
 
-#    define X_ITYPE(m) (( m )&X_IFMT)
+#    define X_ITYPE(m) (( m ) &X_IFMT)
 
 #    define X_IFMT 0170000
 #    define X_IFWHT 0160000

@@ -179,7 +179,7 @@ jclpush(Jcl_t *jcl, Sfio_t *sp, const char *file, long line)
     ip->sp = jcl->sp;
     jcl->sp = sp;
     ip->file = error_info.file;
-    error_info.file = file ? strcpy(ip->path, file) : ( char * )0;
+    error_info.file = file ? strcpy(ip->path, file) : ( char * ) 0;
     ip->line = error_info.line;
     error_info.line = 0;
     ip->prev = jcl->include;

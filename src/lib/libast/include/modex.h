@@ -44,7 +44,7 @@ modex(int);
 #    undef extern
 
 #    if _S_IDPERM
-#        define modei(m) (( m )&X_IPERM)
+#        define modei(m) (( m ) &X_IPERM)
 #        if _S_IDTYPE
 #            define modex(m) (m)
 #        endif

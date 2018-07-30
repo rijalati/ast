@@ -99,7 +99,7 @@ pathfind(const char *name,
      */
 
     if (type && !*type
-        || ((s = strrchr(name, '/')) || (s = ( char * )name))
+        || ((s = strrchr(name, '/')) || (s = ( char * ) name))
            && strchr(s, '.')) {
         if (regular(name, &st)) {
             strncopy(buf, name, size);
@@ -158,8 +158,8 @@ pathfind(const char *name,
      */
 
     if (lib) {
-        if (s = strrchr(( char * )lib, ':'))
-            lib = ( const char * )s + 1;
+        if (s = strrchr(( char * ) lib, ':'))
+            lib = ( const char * ) s + 1;
         sfsprintf(tmp, sizeof(tmp), "lib/%s/%s", lib, name);
         if (pathpath(tmp, "", PATH_REGULAR, buf, size))
             return buf;

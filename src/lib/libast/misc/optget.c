@@ -188,9 +188,9 @@ static char *
 translate(const char *cmd, const char *cat, const char *msg)
 {
     if (!X(cat))
-        return ( char * )msg;
-    if (cat != ( const char * )ID && D(msg))
-        cat = ( const char * )ID;
+        return ( char * ) msg;
+    if (cat != ( const char * ) ID && D(msg))
+        cat = ( const char * ) ID;
     return errorx(NiL, cmd, cat, msg);
 }
 
@@ -763,9 +763,9 @@ search(const void *tab, size_t num, size_t siz, char *s)
     char *p;
     char *e;
 
-    for (e = (p = ( char * )tab) + num * siz; p < e; p += siz)
-        if (match(s, *(( char ** )p), -1, NiL, NiL))
-            return ( void * )p;
+    for (e = (p = ( char * ) tab) + num * siz; p < e; p += siz)
+        if (match(s, *(( char ** ) p), -1, NiL, NiL))
+            return ( void * ) p;
     return 0;
 }
 
@@ -792,10 +792,10 @@ save(const char *ap,
 
     if (!dict) {
         if (!(d = newof(0, Dtdisc_t, 1, 0)))
-            return ( char * )ap;
+            return ( char * ) ap;
         d->key = offsetof(Save_t, text);
         if (!(dict = dtopen(d, Dtset)))
-            return ( char * )ap;
+            return ( char * ) ap;
     }
     b = buf;
     e = b + sizeof(buf) - 1;
@@ -809,9 +809,9 @@ save(const char *ap,
                 ;
     }
     *b = 0;
-    if (!(p = ( Save_t * )dtmatch(dict, buf))) {
+    if (!(p = ( Save_t * ) dtmatch(dict, buf))) {
         if (!(p = newof(0, Save_t, 1, b - buf)))
-            return ( char * )ap;
+            return ( char * ) ap;
         strcpy(p->text, buf);
         dtinsert(dict, p);
     }
@@ -1069,7 +1069,7 @@ init(char *s, Optpass_t *p)
                       && (!p->id || (t - s) != strlen(p->id)
                           || !strneq(s, p->id, t - s)))
                      ? save(s, t - s, 0, 0, 0, 0)
-                     : ( char * )0;
+                     : ( char * ) 0;
     if (!p->catalog) {
         if (opt_info.disc && opt_info.disc->catalog
             && (!p->id || !streq(opt_info.disc->catalog, p->id)))
@@ -1201,7 +1201,7 @@ info(Push_t *psp, char *s, char *e, Sfio_t *ip, char *id)
     opt_info.arg = arg;
     n = strlen(b);
     if (tsp = newof(0, Push_t, 1, n + 1)) {
-        tsp->nb = ( char * )(tsp + 1);
+        tsp->nb = ( char * ) (tsp + 1);
         tsp->ne = tsp->nb + n;
         strcpy(tsp->nb, b);
     } else
@@ -1253,7 +1253,7 @@ localize(Push_t *psp,
         return 0;
     n = strlen(u);
     if (tsp = newof(0, Push_t, 1, n + 1)) {
-        tsp->nb = ( char * )(tsp + 1);
+        tsp->nb = ( char * ) (tsp + 1);
         tsp->ne = tsp->nb + n;
         strcpy(tsp->nb, u);
         tsp->ob = t;
@@ -1627,7 +1627,7 @@ args(Sfio_t *sp,
         o = T(NiL, ID, "options");
         b = style == STYLE_nroff ? "\\ " : " ";
         for (;;) {
-            t = ( char * )memchr(p, '\n', n);
+            t = ( char * ) memchr(p, '\n', n);
             if (style >= STYLE_man) {
                 if (!(a = id))
                     a = "...";
@@ -2496,7 +2496,7 @@ opthelp(const char *oopts, const char *what)
     Sfio_t *vp;
     Push_t *tsp;
 
-    char *opts = ( char * )oopts;
+    char *opts = ( char * ) oopts;
     char *section = "1";
     int flags = 0;
     int bflags = 0;
@@ -2523,10 +2523,10 @@ opthelp(const char *oopts, const char *what)
         style = STYLE_match;
     else if (!*(what + 1))
         style = STYLE_man;
-    else if ((hp = ( Help_t * )search(styles,
-                                      elementsof(styles),
-                                      sizeof(styles[0]),
-                                      ( char * )what + 1))
+    else if ((hp = ( Help_t * ) search(styles,
+                                       elementsof(styles),
+                                       sizeof(styles[0]),
+                                       ( char * ) what + 1))
              && hp->style >= 0) {
         style = hp->style;
         if (*hp->name != '?')
@@ -2563,7 +2563,7 @@ again:
             }
         if (i >= state.npass) {
             o = &one;
-            if (init(( char * )opts, o))
+            if (init(( char * ) opts, o))
                 goto nospace;
         }
         e = o + 1;
@@ -2576,7 +2576,7 @@ again:
             e = o + 1;
         } else
             return T(NiL, ID, "[* call optget() before opthelp() *]");
-        oopts = ( const char * )state.pass[0].oopts;
+        oopts = ( const char * ) state.pass[0].oopts;
     }
     if (style <= STYLE_usage) {
         if (!(sp_text = sfstropen()) || !(sp_info = sfstropen()))
@@ -3019,7 +3019,7 @@ again:
                             s = C("version");
                         else
                             s = p + 1;
-                        w = ( char * )what;
+                        w = ( char * ) what;
                         if (*s != '-' || *(w + 1) == '-') {
                             if (*s == '-')
                                 s++;
@@ -3088,7 +3088,7 @@ again:
                             paragraph = 0;
                         }
                         if (match(
-                            ( char * )what + 1, p + 1, version, id, catalog)) {
+                            ( char * ) what + 1, p + 1, version, id, catalog)) {
                             p = textout(sp,
                                         p,
                                         cb,
@@ -3161,7 +3161,7 @@ again:
                         if (style == STYLE_match) {
                             if (wl
                                 && !match(
-                                   ( char * )what, w, version, id, catalog))
+                                   ( char * ) what, w, version, id, catalog))
                                 wl = 0;
                             if ((!wl || *w == ':' || *w == '?')
                                 && (what[1] || sl && !memchr(s, what[0], sl)
@@ -3803,10 +3803,10 @@ again:
     }
     if (style == STYLE_match) {
         if (!matched) {
-            if (hp = ( Help_t * )search(styles,
-                                        elementsof(styles),
-                                        sizeof(styles[0]),
-                                        ( char * )what)) {
+            if (hp = ( Help_t * ) search(styles,
+                                         elementsof(styles),
+                                         sizeof(styles[0]),
+                                         ( char * ) what)) {
                 if (!sp_help && !(sp_help = sfstropen()))
                     goto nospace;
                 sfprintf(sp_help, "[-][:%s?%s]", hp->match, hp->text);
@@ -3814,7 +3814,7 @@ again:
                     goto nospace;
                 goto again;
             }
-            s = ( char * )unknown;
+            s = ( char * ) unknown;
             goto nope;
         } else if (matched < 0)
             x = 0;
@@ -4290,7 +4290,7 @@ opterror(char *p, int err, int version, char *id, char *catalog)
     int c;
 
     if (opt_info.num != LONG_MIN)
-        opt_info.num = ( long )(opt_info.number = 0);
+        opt_info.num = ( long ) (opt_info.number = 0);
     if (!p || !(mp = state.mp) && !(mp = state.mp = sfstropen()))
         goto nospace;
     s = *p == '-' ? p : opt_info.name;
@@ -4463,7 +4463,7 @@ optget(char **argv, const char *oopts)
     else
         for (pcache = 0, cache = state.cache; cache;
              pcache = cache, cache = cache->next)
-            if (cache->pass.oopts == ( char * )oopts)
+            if (cache->pass.oopts == ( char * ) oopts)
                 break;
     if (cache) {
         if (pcache) {
@@ -4478,9 +4478,9 @@ optget(char **argv, const char *oopts)
             n = state.npass ? state.npass : 1;
         else if ((n = state.join - 1) < 0)
             n = 0;
-        if (n >= state.npass || state.pass[n].oopts != ( char * )oopts) {
+        if (n >= state.npass || state.pass[n].oopts != ( char * ) oopts) {
             for (m = 0;
-                 m < state.npass && state.pass[m].oopts != ( char * )oopts;
+                 m < state.npass && state.pass[m].oopts != ( char * ) oopts;
                  m++)
                 ;
             if (m < state.npass)
@@ -4488,7 +4488,7 @@ optget(char **argv, const char *oopts)
             else {
                 if (n >= elementsof(state.pass))
                     n = elementsof(state.pass) - 1;
-                init(( char * )oopts, &state.pass[n]);
+                init(( char * ) oopts, &state.pass[n]);
                 if (state.npass <= n)
                     state.npass = n + 1;
             }
@@ -4718,8 +4718,8 @@ again:
                      */
 
                     if (opt_info.num != LONG_MIN)
-                        opt_info.num
-                        = ( long )(opt_info.number = !(k & OPT_cache_invert));
+                        opt_info.num = ( long ) (opt_info.number
+                                                 = !(k & OPT_cache_invert));
                     if (!(k & (OPT_cache_string | OPT_cache_numeric)))
                         return c;
                     if (*(opt_info.arg
@@ -4728,10 +4728,10 @@ again:
                             opt_info.offset = 0;
                             return c;
                         }
-                        opt_info.num = ( long )(opt_info.number = optnumber(
-                                                opt_info.arg, &e, &err));
+                        opt_info.num = ( long ) (opt_info.number = optnumber(
+                                                 opt_info.arg, &e, &err));
                         if (err || e == opt_info.arg) {
-                            opt_info.num = ( long )(opt_info.number = 0);
+                            opt_info.num = ( long ) (opt_info.number = 0);
                             if (!err && (k & OPT_cache_optional)) {
                                 opt_info.arg = 0;
                                 opt_info.index--;
@@ -4755,15 +4755,15 @@ again:
                             opt_info.arg = 0;
                             opt_info.index--;
                             opt_info.offset = 0;
-                            opt_info.num = ( long )(opt_info.number = 0);
+                            opt_info.num = ( long ) (opt_info.number = 0);
                             return c;
                         }
                         if (k & OPT_cache_string) {
                             opt_info.offset = 0;
                             return c;
                         }
-                        opt_info.num = ( long )(opt_info.number = optnumber(
-                                                opt_info.arg, &e, &err));
+                        opt_info.num = ( long ) (opt_info.number = optnumber(
+                                                 opt_info.arg, &e, &err));
                         if (!err) {
                             if (!*e) {
                                 opt_info.offset = 0;
@@ -5231,10 +5231,10 @@ again:
     }
     if (!*s) {
         if (w) {
-            if (hp = ( Help_t * )search(
+            if (hp = ( Help_t * ) search(
                 styles, elementsof(styles), sizeof(styles[0]), w)) {
                 if (!v)
-                    v = ( char * )hp->name;
+                    v = ( char * ) hp->name;
                 goto help;
             }
             if (!v) {
@@ -5257,7 +5257,7 @@ again:
      */
 
     if (opt_info.num != LONG_MIN)
-        opt_info.num = ( long )(opt_info.number = num);
+        opt_info.num = ( long ) (opt_info.number = num);
     if ((n = (*++s == '#')) || *s == ':'
         || w && !nov && v && (optnumber(v, &e, NiL), n = !*e)) {
         if (w) {
@@ -5266,7 +5266,7 @@ again:
                     pop(psp);
                     return opterror("!", 0, version, id, catalog);
                 }
-                opt_info.num = ( long )(opt_info.number = 0);
+                opt_info.num = ( long ) (opt_info.number = 0);
             } else {
                 if (!v && *(s + 1) != '?' && (v = argv[opt_info.index])) {
                     opt_info.index++;
@@ -5291,14 +5291,14 @@ again:
                                 } else {
                                     opt_info.arg = 0;
                                     opt_info.num
-                                    = ( long )(opt_info.number = 0);
+                                    = ( long ) (opt_info.number = 0);
                                 }
                                 break;
                             }
                 }
                 if (opt_info.arg && n) {
-                    opt_info.num = ( long )(opt_info.number = optnumber(
-                                            opt_info.arg, &e, &err));
+                    opt_info.num = ( long ) (opt_info.number = optnumber(
+                                             opt_info.arg, &e, &err));
                     if (err || e == opt_info.arg) {
                         pop(psp);
                         return opterror(s, err, version, id, catalog);
@@ -5309,8 +5309,8 @@ again:
         } else if (*(opt_info.arg
                      = &argv[opt_info.index++][opt_info.offset])) {
             if (*s == '#') {
-                opt_info.num = ( long )(opt_info.number
-                                        = optnumber(opt_info.arg, &e, &err));
+                opt_info.num = ( long ) (opt_info.number
+                                         = optnumber(opt_info.arg, &e, &err));
                 if (err || e == opt_info.arg) {
                     if (!err && *(s + 1) == '?') {
                         opt_info.arg = 0;
@@ -5334,12 +5334,12 @@ again:
                 && (*opt_info.arg == '-'
                     || (pass->flags & OPT_plus) && *opt_info.arg == '+')
                 && *(opt_info.arg + 1)) {
-                opt_info.num = ( long )(opt_info.number = 0);
+                opt_info.num = ( long ) (opt_info.number = 0);
                 opt_info.index--;
                 opt_info.arg = 0;
             } else if (*s == '#') {
-                opt_info.num = ( long )(opt_info.number
-                                        = optnumber(opt_info.arg, &e, &err));
+                opt_info.num = ( long ) (opt_info.number
+                                         = optnumber(opt_info.arg, &e, &err));
                 if (err || *e) {
                     if (!err && *(s + 1) == '?') {
                         opt_info.arg = 0;
@@ -5493,7 +5493,7 @@ again:
                         }
                     }
                 } while (*(s = skip(s, 0, 0, 0, 1, 0, 1, version)) == '[');
-                if (!(opt_info.num = ( long )(opt_info.number = x))) {
+                if (!(opt_info.num = ( long ) (opt_info.number = x))) {
                     pop(psp);
                     return opterror("*", 0, version, id, catalog);
                 }
@@ -5503,7 +5503,7 @@ again:
         pop(psp);
         return opterror("=", 0, version, id, catalog);
     } else {
-        opt_info.num = ( long )(opt_info.number = num);
+        opt_info.num = ( long ) (opt_info.number = num);
         if (!w && !argv[opt_info.index][opt_info.offset]) {
             opt_info.offset = 0;
             opt_info.index++;
@@ -5519,7 +5519,7 @@ help:
             n = -1;
         } else
             n = 1;
-        if (hp = ( Help_t * )search(
+        if (hp = ( Help_t * ) search(
             styles, elementsof(styles), sizeof(styles[0]), s)) {
             if (hp->style < STYLE_man || !(s = argv[opt_info.index])
                 || s[0] != '-' || s[1] != '-' || !s[2]) {
@@ -5558,7 +5558,7 @@ help:
             return '#';
         goto again;
     }
-    if ((opt_info.arg = opthelp(NiL, v)) == ( char * )unknown) {
+    if ((opt_info.arg = opthelp(NiL, v)) == ( char * ) unknown) {
         pop(psp);
         return opterror(v, 0, version, id, catalog);
     }
@@ -5593,7 +5593,7 @@ nospace:
 int
 optstr(const char *str, const char *opts)
 {
-    char *s = ( char * )str;
+    char *s = ( char * ) str;
     Sfio_t *mp;
     int c;
     int ql;
@@ -5628,7 +5628,7 @@ again:
             sfputc(mp, '-');
             sfputc(mp, '-');
         }
-        if (isdigit(*s) && (v = ( int )strtol(s, &e, 10)) > 1 && isspace(*e)
+        if (isdigit(*s) && (v = ( int ) strtol(s, &e, 10)) > 1 && isspace(*e)
             && --v <= strlen(s) && (s[v] == 0 || s[v] == '\n')) {
             s += v;
             while (isspace(*++e))
@@ -5640,7 +5640,7 @@ again:
                 sfputc(mp, *s++);
             if ((c = *s) == ':' && *(s + 1) != '=') {
                 opt_info.index = 1;
-                opt_info.offset = ++s - ( char * )str;
+                opt_info.offset = ++s - ( char * ) str;
                 if (!(s = sfstruse(mp)))
                     goto nospace;
                 s += 2;
@@ -5649,7 +5649,7 @@ again:
                        && (*e++ = *s++))
                     ;
                 opt_info.arg = 0;
-                opt_info.num = ( long )(opt_info.number = 0);
+                opt_info.num = ( long ) (opt_info.number = 0);
                 opt_info.option[0] = ':';
                 opt_info.option[1] = 0;
                 return '#';
@@ -5697,7 +5697,7 @@ again:
         if (!(state.strv[1] = sfstruse(mp)))
             goto nospace;
         state.strv[2] = 0;
-        opt_info.offset = s - ( char * )str;
+        opt_info.offset = s - ( char * ) str;
     }
     if (opts) {
         if (!state.strv[1]) {

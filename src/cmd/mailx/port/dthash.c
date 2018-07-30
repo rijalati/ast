@@ -95,7 +95,7 @@ static void dthtab(dt) Dt_t *dt;
         nslot = HRESIZE(nslot);
 
     /* allocate new table */
-    slot = ( Dtlink_t ** )(*dt->memoryf)(
+    slot = ( Dtlink_t ** ) (*dt->memoryf)(
     dt, NIL(Void_t *), nslot * sizeof(Dtlink_t *), dt->disc);
     if (!slot)
         return;
@@ -115,7 +115,7 @@ static void dthtab(dt) Dt_t *dt;
     }
 
     if (dt->data->ntab > 0)
-        (*dt->memoryf)(dt, ( Void_t * )dt->data->htab, 0, dt->disc);
+        (*dt->memoryf)(dt, ( Void_t * ) dt->data->htab, 0, dt->disc);
     dt->data->htab = slot;
     dt->data->ntab = nslot;
 }
@@ -153,7 +153,7 @@ int type;
                     if (disc->freef)
                         (*disc->freef)(dt, OBJ(t, disc), disc);
                     if (disc->link < 0)
-                        (*dt->memoryf)(dt, ( Void_t * )t, 0, disc);
+                        (*dt->memoryf)(dt, ( Void_t * ) t, 0, disc);
                     t = r;
                 }
             }
@@ -176,10 +176,10 @@ int type;
 
     /* object, key, hash value */
     if (type & DT_MATCH)
-        key = ( char * )obj;
+        key = ( char * ) obj;
     else {
         if (type & DT_RENEW) {
-            r = ( Dtlink_t * )obj;
+            r = ( Dtlink_t * ) obj;
             obj = OBJ(r, disc);
         }
         key = KEY(obj, disc);
@@ -196,8 +196,8 @@ int type;
             for (; t; prev = t, t = t->right) {
                 if (hsh != t->hash)
                     continue;
-                k = ( char * )OBJ(t, disc);
-                k = KEY(( Void_t * )k, disc);
+                k = ( char * ) OBJ(t, disc);
+                k = KEY(( Void_t * ) k, disc);
                 if (CMP(dt, key, k, disc) == 0)
                     break;
             }
@@ -221,14 +221,14 @@ int type;
             if (disc->makef && !(obj = (*disc->makef)(dt, obj, disc)))
                 return NIL(Void_t *);
             if (disc->link < 0) {
-                t = ( Dtlink_t * )(*dt->memoryf)(
+                t = ( Dtlink_t * ) (*dt->memoryf)(
                 dt, NIL(Void_t *), sizeof(Dthold_t), disc);
                 if (!t) {
                     if (disc->makef && disc->freef)
                         (*disc->freef)(dt, obj, disc);
                     return NIL(Void_t *);
                 }
-                (( Dthold_t * )t)->obj = obj;
+                (( Dthold_t * ) t)->obj = obj;
             } else
                 t = ELT(obj, disc);
             t->hash = hsh;
@@ -259,7 +259,7 @@ int type;
         if (disc->freef)
             (*disc->freef)(dt, obj, disc);
         if (disc->link < 0)
-            (*dt->memoryf)(dt, ( Void_t * )r, 0, disc);
+            (*dt->memoryf)(dt, ( Void_t * ) r, 0, disc);
         return NIL(Void_t *);
     }
 
@@ -289,7 +289,7 @@ int type;
         if (disc->freef)
             (*disc->freef)(dt, obj, disc);
         if (disc->makef)
-            (*dt->memoryf)(dt, ( Void_t * )t, 0, disc);
+            (*dt->memoryf)(dt, ( Void_t * ) t, 0, disc);
         dt->data->size -= 1;
         dt->data->here = r;
         return obj;

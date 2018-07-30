@@ -41,10 +41,10 @@
 #    include <sfio.h>
 
 #    ifndef pointerof
-#        define pointerof(x) (( void * )(( char * )0 + (x)))
+#        define pointerof(x) (( void * ) (( char * ) 0 + (x)))
 #    endif
 
-#    define Empty (( char * )(e_sptbnl + 3))
+#    define Empty (( char * ) (e_sptbnl + 3))
 
 #    define env_change() (++ast.env_serial)
 #    if SHOPT_ENV
@@ -293,14 +293,15 @@ struct shared
 #    endif
 
 /* error exits from various parts of shell */
-#    define NIL(type) (( type )0)
+#    define NIL(type) (( type ) 0)
 
-#    define new_of(type, x) (( type * )malloc(( unsigned )sizeof(type) + (x)))
+#    define new_of(type, x)                                                  \
+        (( type * ) malloc(( unsigned ) sizeof(type) + (x)))
 
 #    define exitset(shp) (shp->savexit = shp->exitval)
 
 #    ifndef SH_DICT
-#        define SH_DICT ( void * )e_dict
+#        define SH_DICT ( void * ) e_dict
 #    endif
 
 #    ifndef SH_CMDLIB_DIR
@@ -552,13 +553,15 @@ sh_diropenat(Shell_t *, int, const char *);
 #    define WMASK (0xff)
 
 #    define is_option(s, x)                                                  \
-        (( bool )(((s)->v[(( x )&WMASK) / WBITS] & (1ULL << ((x) % WBITS)))  \
+        (                                                                    \
+        ( bool ) (((s)->v[(( x ) &WMASK) / WBITS] & (1ULL << ((x) % WBITS))) \
                   ? true                                                     \
                   : false))
 #    define on_option(s, x)                                                  \
-        (( void )((s)->v[(( x )&WMASK) / WBITS] |= (1ULL << ((x) % WBITS))))
+        (( void ) ((s)->v[(( x ) &WMASK) / WBITS] |= (1ULL << ((x) % WBITS))))
 #    define off_option(s, x)                                                 \
-        (( void )((s)->v[(( x )&WMASK) / WBITS] &= ~(1ULL << ((x) % WBITS))))
+        (( void ) ((s)->v[(( x ) &WMASK) / WBITS]                            \
+                   &= ~(1ULL << ((x) % WBITS))))
 
 #    undef sh_isoption
 #    undef sh_onoption

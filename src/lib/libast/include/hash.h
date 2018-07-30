@@ -51,12 +51,13 @@
 #    define HASH_OPAQUE (1L << 14)  /* opaque bucket		*/
 #    define HASH_VALUE (1L << 15)   /* value bucket field used	*/
 
-#    define HASH_SIZE(n) ((( long )(n)) << 16) /* fixed bucket size		*/
+#    define HASH_SIZE(n) ((( long ) (n)) << 16) /* fixed bucket size         \
+                                                 */
 #    define HASH_SIZEOF(f)                                                   \
-        (((( long )(f)) >> 16) & 0xffff) /* extract size	*/
+        (((( long ) (f)) >> 16) & 0xffff) /* extract size	*/
 
 #    define HASH_DELETED                                                     \
-        (( unsigned long )1                                                  \
+        (( unsigned long ) 1                                                 \
          << (8 * sizeof(int) - 1)) /* deleted placeholder	*/
 #    define HASH_KEEP                                                        \
         (1L << (8 * sizeof(int) - 2)) /* no free on bucket                   \
@@ -101,27 +102,30 @@
 
 #    define hashclear(t, f) ((t)->flags &= ~((f) & ~HASH_INTERNAL))
 #    define hashcover(b)                                                     \
-        (((b)->hash & HASH_HIDES) ? ( Hash_bucket_t * )((b)->name)           \
-                                  : ( Hash_bucket_t * )0)
-#    define hashdel(t, n) hashlook(t, ( char * )(n), HASH_DELETE, ( char * )0)
+        (((b)->hash & HASH_HIDES) ? ( Hash_bucket_t * ) ((b)->name)          \
+                                  : ( Hash_bucket_t * ) 0)
+#    define hashdel(t, n)                                                    \
+        hashlook(t, ( char * ) (n), HASH_DELETE, ( char * ) 0)
 #    define hashget(t, n)                                                    \
-        hashlook(t, ( char * )(n), HASH_LOOKUP | HASH_VALUE, ( char * )0)
+        hashlook(t, ( char * ) (n), HASH_LOOKUP | HASH_VALUE, ( char * ) 0)
 #    define hashgetbucket(s)                                                 \
-        (( Hash_bucket_t * )((s)                                             \
+        (                                                                    \
+        ( Hash_bucket_t * ) ((s)                                             \
                              - ((sizeof(Hash_bucket_t) + sizeof(char *) - 1) \
                                 / sizeof(char *))                            \
                                * sizeof(char *)))
 #    define hashkeep(b) ((b)->hash |= HASH_KEEP)
 #    define hashname(b)                                                      \
-        ((((b)->hash & HASH_HIDES) ? (( Hash_bucket_t * )((b)->name)) : (b)) \
-         ->name)
+        (                                                                    \
+        (((b)->hash & HASH_HIDES) ? (( Hash_bucket_t * ) ((b)->name)) : (b)) \
+        ->name)
 #    define hashput(t, n, v)                                                 \
-        hashlook(t, ( char * )(n), HASH_CREATE | HASH_VALUE, ( char * )(v))
+        hashlook(t, ( char * ) (n), HASH_CREATE | HASH_VALUE, ( char * ) (v))
 #    define hashref(t, n)                                                    \
         hashlook(t,                                                          \
-                 ( char * )(n),                                              \
+                 ( char * ) (n),                                             \
                  HASH_LOOKUP | HASH_INTERNAL | HASH_VALUE,                   \
-                 ( char * )0)
+                 ( char * ) 0)
 #    define hashscope(t) ((t)->scope)
 #    define hashset(t, f) ((t)->flags |= ((f) & ~HASH_INTERNAL))
 

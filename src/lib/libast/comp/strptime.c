@@ -64,7 +64,7 @@ strptime(const char *s, const char *format, struct tm *ts)
     tm.tm_isdst = ts->tm_isdst;
     t = tmtime(&tm, TM_LOCALZONE);
     t = tmscan(s, &e, format, &f, &t, 0);
-    if (e == ( char * )s || *f)
+    if (e == ( char * ) s || *f)
         return 0;
     tmxtm(&tm, tmxclock(&t), NiL);
     ts->tm_sec = tm.tm_sec;

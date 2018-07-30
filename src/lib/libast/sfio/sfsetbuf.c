@@ -35,7 +35,7 @@ __STDPP__directive pragma pp : hide getpagesize
 #endif
 
 #if _lib_getpagesize
-  _BEGIN_EXTERNS_ extern int getpagesize _ARG_(( void ));
+  _BEGIN_EXTERNS_ extern int getpagesize _ARG_(( void ) );
 _END_EXTERNS_
 #endif
 
@@ -64,7 +64,7 @@ struct stat
 #if SFSETLINEMODE
 
 #    ifndef roundof
-#        define roundof(x, y) (((x) + ( y )-1) & ~(( y )-1))
+#        define roundof(x, y) (((x) + ( y ) -1) & ~(( y ) -1))
 #    endif
 
 #    define SF_TEST_read 0x01000
@@ -136,9 +136,9 @@ sfsetlinemode(void)
                 case 'm':
                     if (n && v)
 #    if _PACKAGE_ast
-                        z = ( size_t )strtonll(v, NiL, NiL, 0);
+                        z = ( size_t ) strtonll(v, NiL, NiL, 0);
 #    else
-                        z = ( size_t )strtol(v, NiL, 0);
+                        z = ( size_t ) strtol(v, NiL, 0);
 #    endif
                     else
                         z = 0;
@@ -149,7 +149,7 @@ sfsetlinemode(void)
                         case 'M': /* max map */
                         case 'm':
                             if (z) {
-                                if (z != ( size_t )SF_UNBOUND)
+                                if (z != ( size_t ) SF_UNBOUND)
                                     z = roundof(z, _Sfpage);
                                 _Sfmaxm = z;
                                 _Sftest &= ~SF_TEST_read;
@@ -235,7 +235,7 @@ size_t size;                              /* buffer size, -1 for default size */
 
     if (size == 0 && buf) { /* special case to get buffer info */
         _Sfi = f->val = (f->bits & SF_MMAP) ? (f->endb - f->data) : f->size;
-        SFMTXRETURN(f, ( Void_t * )f->data);
+        SFMTXRETURN(f, ( Void_t * ) f->data);
     }
 
     /* cleanup actions already done, don't allow write buffering any more */
@@ -274,11 +274,11 @@ size_t size;                              /* buffer size, -1 for default size */
 
     SFLOCK(f, local);
 
-    if (( Sfio_t * )buf != f)
+    if (( Sfio_t * ) buf != f)
         blksz = -1;
     else /* setting alignment size only */
     {
-        blksz = ( ssize_t )size;
+        blksz = ( ssize_t ) size;
 
         if (!init) /* stream already initialized */
         {
@@ -288,7 +288,7 @@ size_t size;                              /* buffer size, -1 for default size */
         } else /* initialize stream as if in the default case */
         {
             buf = NIL(Void_t *);
-            size = ( size_t )SF_UNBOUND;
+            size = ( size_t ) SF_UNBOUND;
         }
     }
 
@@ -325,7 +325,7 @@ size_t size;                              /* buffer size, -1 for default size */
 
     /* pure read/string streams must have a valid string */
     if ((f->flags & (SF_RDWR | SF_STRING)) == SF_RDSTR
-        && (size == ( size_t )SF_UNBOUND || !buf))
+        && (size == ( size_t ) SF_UNBOUND || !buf))
         size = 0;
 
     /* set disc to the first discipline with a seekf */
@@ -339,37 +339,37 @@ size_t size;                              /* buffer size, -1 for default size */
 
         /* if has discipline, set size by discipline if possible */
         if (!_sys_stat || disc) {
-            if ((f->here = SFSK(f, ( Sfoff_t )0, SEEK_CUR, disc)) < 0)
+            if ((f->here = SFSK(f, ( Sfoff_t ) 0, SEEK_CUR, disc)) < 0)
                 goto unseekable;
             else {
                 Sfoff_t e;
-                if ((e = SFSK(f, ( Sfoff_t )0, SEEK_END, disc)) >= 0)
+                if ((e = SFSK(f, ( Sfoff_t ) 0, SEEK_END, disc)) >= 0)
                     f->extent = e > f->here ? e : f->here;
-                ( void )SFSK(f, f->here, SEEK_SET, disc);
+                ( void ) SFSK(f, f->here, SEEK_SET, disc);
                 goto setbuf;
             }
         }
 
         /* get file descriptor status */
-        if (sysfstatf(( int )f->file, &st) < 0)
+        if (sysfstatf(( int ) f->file, &st) < 0)
             f->here = -1;
         else {
 #if _sys_stat && _stat_blksize /* preferred io block size */
-            f->blksz = ( size_t )st.st_blksize;
+            f->blksz = ( size_t ) st.st_blksize;
 #endif
             bufsize = 64 * 1024;
             if (S_ISDIR(st.st_mode)
-                || ( Sfoff_t )st.st_size < ( Sfoff_t )SF_GRAIN)
+                || ( Sfoff_t ) st.st_size < ( Sfoff_t ) SF_GRAIN)
                 okmmap = 0;
             if (S_ISREG(st.st_mode) || S_ISDIR(st.st_mode))
-                f->here = SFSK(f, ( Sfoff_t )0, SEEK_CUR, f->disc);
+                f->here = SFSK(f, ( Sfoff_t ) 0, SEEK_CUR, f->disc);
             else
                 f->here = -1;
 
 #if O_TEXT /* no memory mapping with O_TEXT because read()/write() alter     \
               data stream */
             if (okmmap && f->here >= 0
-                && (sysfcntlf(( int )f->file, F_GETFL, 0) & O_TEXT))
+                && (sysfcntlf(( int ) f->file, F_GETFL, 0) & O_TEXT))
                 okmmap = 0;
 #endif
         }
@@ -377,7 +377,7 @@ size_t size;                              /* buffer size, -1 for default size */
         /* set page size, this is also the desired default buffer size */
         if (_Sfpage <= 0) {
 #if _lib_getpagesize
-            if ((_Sfpage = ( size_t )getpagesize()) <= 0)
+            if ((_Sfpage = ( size_t ) getpagesize()) <= 0)
 #endif
                 _Sfpage = SF_PAGE;
         }
@@ -388,7 +388,7 @@ size_t size;                              /* buffer size, -1 for default size */
 #endif
 
         if (f->here >= 0) {
-            f->extent = ( Sfoff_t )st.st_size;
+            f->extent = ( Sfoff_t ) st.st_size;
 
             /* seekable std-devices are share-public by default */
             if (f == sfstdin || f == sfstdout || f == sfstderr)
@@ -413,15 +413,15 @@ size_t size;                              /* buffer size, -1 for default size */
                     {
                         reg int dev, ino;
                         static int null_checked, null_dev, null_ino;
-                        dev = ( int )st.st_dev;
-                        ino = ( int )st.st_ino;
+                        dev = ( int ) st.st_dev;
+                        ino = ( int ) st.st_ino;
                         if (!null_checked) {
                             if (sysstatf(DEVNULL, &st) < 0)
                                 null_checked = -1;
                             else {
                                 null_checked = 1;
-                                null_dev = ( int )st.st_dev;
-                                null_ino = ( int )st.st_ino;
+                                null_dev = ( int ) st.st_dev;
+                                null_ino = ( int ) st.st_ino;
                             }
                         }
                         if (null_checked >= 0 && dev == null_dev
@@ -434,7 +434,7 @@ size_t size;                              /* buffer size, -1 for default size */
 
                 /* initialize side buffer for r+w unseekable streams */
                 if (!f->proc && (f->bits & SF_BOTH))
-                    ( void )_sfpopen(f, -1, -1, 1);
+                    ( void ) _sfpopen(f, -1, -1, 1);
             }
         }
     }
@@ -449,7 +449,7 @@ size_t size;                              /* buffer size, -1 for default size */
         if (!disc) {
             if (!(_Sftest & SF_TEST_read))
                 f->bits |= SF_MMAP;
-            if (size == ( size_t )SF_UNBOUND) {
+            if (size == ( size_t ) SF_UNBOUND) {
                 if (bufsize > _Sfpage)
                     size = bufsize * SF_NMAP;
                 else
@@ -463,8 +463,8 @@ size_t size;                              /* buffer size, -1 for default size */
 
     /* get buffer space */
 setbuf:
-    if (size == ( size_t )SF_UNBOUND) { /* define a default size suitable for
-                                           block transfer */
+    if (size == ( size_t ) SF_UNBOUND) { /* define a default size suitable for
+                                            block transfer */
         if (init && osize > 0)
             size = osize;
         else if (f == sfstderr && (f->mode & SF_WRITE))
@@ -472,9 +472,9 @@ setbuf:
         else if (f->flags & SF_STRING)
             size = SF_GRAIN;
         else if ((f->flags & SF_READ) && !(f->bits & SF_BOTH) && f->extent > 0
-                 && f->extent < ( Sfoff_t )_Sfpage)
+                 && f->extent < ( Sfoff_t ) _Sfpage)
             size
-            = ((( size_t )f->extent + SF_GRAIN - 1) / SF_GRAIN) * SF_GRAIN;
+            = ((( size_t ) f->extent + SF_GRAIN - 1) / SF_GRAIN) * SF_GRAIN;
         else if ((ssize_t)(size = _Sfpage) < bufsize)
             size = bufsize;
 
@@ -484,14 +484,14 @@ setbuf:
     sf_malloc = 0;
     if (size > 0 && !buf
         && !(f->bits & SF_MMAP)) { /* try to allocate a buffer */
-        if (obuf && size == ( size_t )osize && init) {
-            buf = ( Void_t * )obuf;
+        if (obuf && size == ( size_t ) osize && init) {
+            buf = ( Void_t * ) obuf;
             obuf = NIL(uchar *);
             sf_malloc = (oflags & SF_MALLOC);
         }
         if (!buf) { /* do allocation */
             while (!buf && size > 0) {
-                if ((buf = ( Void_t * )malloc(size)))
+                if ((buf = ( Void_t * ) malloc(size)))
                     break;
                 else
                     size /= 2;
@@ -504,12 +504,12 @@ setbuf:
     if (size == 0 && !(f->flags & SF_STRING) && !(f->bits & SF_MMAP)
         && (f->mode & SF_READ)) { /* use the internal buffer */
         size = sizeof(f->tiny);
-        buf = ( Void_t * )f->tiny;
+        buf = ( Void_t * ) f->tiny;
     }
 
     /* set up new buffer */
     f->size = size;
-    f->next = f->data = f->endr = f->endw = ( uchar * )buf;
+    f->next = f->data = f->endr = f->endw = ( uchar * ) buf;
     f->endb = (f->mode & SF_READ) ? f->data : f->data + size;
     if (f->flags & SF_STRING) { /* these fields are used to test actual size -
                                    see sfseek() */
@@ -526,7 +526,7 @@ setbuf:
     f->flags = (f->flags & ~SF_MALLOC) | sf_malloc;
 
     if (obuf && obuf != f->data && osize > 0 && (oflags & SF_MALLOC)) {
-        free(( Void_t * )obuf);
+        free(( Void_t * ) obuf);
         obuf = NIL(uchar *);
     }
 
@@ -546,5 +546,5 @@ done:
 
     SFOPEN(f, local);
 
-    SFMTXRETURN(f, ( Void_t * )obuf);
+    SFMTXRETURN(f, ( Void_t * ) obuf);
 }

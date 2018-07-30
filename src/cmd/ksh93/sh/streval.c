@@ -58,15 +58,15 @@
     ((x) <= 2                                                                \
      ? 2                                                                     \
      : (x) <= 4 ? 4 : (x) <= 8 ? 8 : (x) <= 16 ? 16 : (x) <= 32 ? 32 : 64)
-#define round(x, size) (((x) + ( size )-1) & ~(( size )-1))
+#define round(x, size) (((x) + ( size ) -1) & ~(( size ) -1))
 #define stkpush(stk, v, val, type)                                           \
     ((((v)->offset = round(stktell(stk), pow2size(sizeof(type)))),           \
       stkseek(stk, (v)->offset + sizeof(type)),                              \
-      *(( type * )stkptr(stk, (v)->offset)) = (val)),                        \
+      *(( type * ) stkptr(stk, (v)->offset)) = (val)),                       \
      (v)->offset)
 #define roundptr(ep, cp, type)                                               \
-    ((( unsigned char * )(ep))                                               \
-     + round(cp - (( unsigned char * )(ep)), pow2size(sizeof(type))))
+    ((( unsigned char * ) (ep))                                              \
+     + round(cp - (( unsigned char * ) (ep)), pow2size(sizeof(type))))
 
 static int level;
 
@@ -200,7 +200,7 @@ static int
 _seterror(struct vars *vp, const char *msg)
 {
     if (!vp->errmsg.value)
-        vp->errmsg.value = ( char * )msg;
+        vp->errmsg.value = ( char * ) msg;
     vp->errchr = vp->nextchr;
     vp->nextchr = "";
     level = 0;
@@ -274,9 +274,9 @@ arith_exec(Arith_t *ep)
     if (ep->staksize < SMALL_STACK)
         sp = small_stack;
     else
-        sp = ( Sfdouble_t * )stkalloc(
+        sp = ( Sfdouble_t * ) stkalloc(
         shp->stk, ep->staksize * (sizeof(Sfdouble_t) + 1));
-    tp = ( char * )(sp + ep->staksize);
+    tp = ( char * ) (sp + ep->staksize);
     tp--, sp--;
     while (c = *cp++) {
         if (c & T_NOFLOAT) {
@@ -293,7 +293,7 @@ arith_exec(Arith_t *ep)
             if ((c == A_JMPZ && num) || (c == A_JMPNZ && !num))
                 cp += sizeof(short);
             else
-                cp = ( unsigned char * )ep + *(( short * )cp);
+                cp = ( unsigned char * ) ep + *(( short * ) cp);
             continue;
         case A_NOTNOT:
             num = (num != 0);
@@ -330,11 +330,11 @@ arith_exec(Arith_t *ep)
             node.emode |= ARITH_ASSIGNOP;
         case A_PUSHV:
             cp = roundptr(ep, cp, Sfdouble_t *);
-            dp = *(( Sfdouble_t ** )cp);
+            dp = *(( Sfdouble_t ** ) cp);
             cp += sizeof(Sfdouble_t *);
-            c = *( short * )cp;
+            c = *( short * ) cp;
             cp += sizeof(short);
-            lastval = node.value = ( char * )dp;
+            lastval = node.value = ( char * ) dp;
             if (node.flag = c)
                 lastval = 0;
             node.isfloat = 0;
@@ -342,8 +342,9 @@ arith_exec(Arith_t *ep)
             node.nosub = 0;
             node.nextop = *cp;
             if (node.nextop == A_JMP)
-                node.nextop = (( unsigned char * )
-                               ep)[*(( short * )roundptr(ep, cp + 1, short))];
+                node.nextop
+                = (( unsigned char * )
+                   ep)[*(( short * ) roundptr(ep, cp + 1, short))];
             num = (*ep->fun)(&ptr, &node, VALUE, num);
             if (lastval)
                 lastval = node.ovalue;
@@ -352,7 +353,7 @@ arith_exec(Arith_t *ep)
                 node.nosub = 0;
                 node.emode &= ~ARITH_ASSIGNOP;
             }
-            if (node.value != ( char * )dp)
+            if (node.value != ( char * ) dp)
                 arith_error(node.value, ptr, ep->emode);
             *++sp = num;
             type = node.isfloat;
@@ -360,7 +361,7 @@ arith_exec(Arith_t *ep)
                 type = TYPE_U;
                 d -= LDBL_LLONG_MAX;
             }
-            if (( Sflong_t )d != d)
+            if (( Sflong_t ) d != d)
                 type = TYPE_LD;
             *++tp = type;
             c = 0;
@@ -372,13 +373,13 @@ arith_exec(Arith_t *ep)
             node.nosub = lastsub;
         case A_STORE:
             cp = roundptr(ep, cp, Sfdouble_t *);
-            dp = *(( Sfdouble_t ** )cp);
+            dp = *(( Sfdouble_t ** ) cp);
             cp += sizeof(Sfdouble_t *);
-            c = *( short * )cp;
+            c = *( short * ) cp;
             if (c < 0)
                 c = 0;
             cp += sizeof(short);
-            node.value = ( char * )dp;
+            node.value = ( char * ) dp;
             node.flag = c;
             if (lastval)
                 node.eflag = 1;
@@ -391,13 +392,13 @@ arith_exec(Arith_t *ep)
                 r = (*ep->fun)(&ptr, &node, VALUE, num);
                 if (r != num) {
                     node.flag = c;
-                    node.value = ( char * )dp;
+                    node.value = ( char * ) dp;
                     num = (*ep->fun)(&ptr, &node, ASSIGN, r);
                 }
             } else if (lastval && num == 0 && sh_isoption(shp, SH_NOUNSET)
-                       && nv_isnull(( Namval_t * )lastval))
-                arith_error(( char * )ERROR_dictionary(e_notset),
-                            nv_name(( Namval_t * )lastval),
+                       && nv_isnull(( Namval_t * ) lastval))
+                arith_error(( char * ) ERROR_dictionary(e_notset),
+                            nv_name(( Namval_t * ) lastval),
                             3);
             lastval = 0;
             c = 0;
@@ -414,7 +415,7 @@ arith_exec(Arith_t *ep)
             continue;
         case A_PUSHN:
             cp = roundptr(ep, cp, Sfdouble_t);
-            num = *(( Sfdouble_t * )cp);
+            num = *(( Sfdouble_t * ) cp);
             cp += sizeof(Sfdouble_t);
             *++sp = num;
             *++tp = type = *cp++;
@@ -442,15 +443,15 @@ arith_exec(Arith_t *ep)
             extern Math_f sh_mathstdfun(const char *, size_t, short *);
             static Math_2f_f powfn;
             if (!powfn) {
-                powfn = ( Math_2f_f )sh_mathstdfun("pow", 3, NULL);
+                powfn = ( Math_2f_f ) sh_mathstdfun("pow", 3, NULL);
                 if (!powfn)
-                    powfn = ( Math_2f_f )pow;
+                    powfn = ( Math_2f_f ) pow;
             }
             num = powfn(sp[-1], num);
             break;
         }
         case A_MOD:
-            if (!( Sflong_t )num)
+            if (!( Sflong_t ) num)
                 arith_error(e_divzero, ep->expr, ep->emode);
             if (type == TYPE_U || tp[-1] == TYPE_U)
                 num = U2F((Sfulong_t)(sp[-1]) % (Sfulong_t)(num));
@@ -472,20 +473,20 @@ arith_exec(Arith_t *ep)
             }
             break;
         case A_LSHIFT:
-            if (( long )num >= CHAR_BIT * sizeof(Sfulong_t))
+            if (( long ) num >= CHAR_BIT * sizeof(Sfulong_t))
                 num = 0;
             else if (tp[-1] == TYPE_U)
-                num = U2F((Sfulong_t)(sp[-1]) << ( long )(num));
+                num = U2F((Sfulong_t)(sp[-1]) << ( long ) (num));
             else
-                num = (Sflong_t)(sp[-1]) << ( long )(num);
+                num = (Sflong_t)(sp[-1]) << ( long ) (num);
             break;
         case A_RSHIFT:
-            if (( long )num >= CHAR_BIT * sizeof(Sfulong_t))
+            if (( long ) num >= CHAR_BIT * sizeof(Sfulong_t))
                 num = 0;
             else if (tp[-1] == TYPE_U)
-                num = U2F((Sfulong_t)(sp[-1]) >> ( long )(num));
+                num = U2F((Sfulong_t)(sp[-1]) >> ( long ) (num));
             else
-                num = (Sflong_t)(sp[-1]) >> ( long )(num);
+                num = (Sflong_t)(sp[-1]) >> ( long ) (num);
             break;
         case A_XOR:
             if (type == TYPE_U || tp[-1] == TYPE_U)
@@ -531,28 +532,28 @@ arith_exec(Arith_t *ep)
             break;
         case A_CALL1F:
             sp--, tp--;
-            fun = *(( Math_f * )(ep->code + ( int )(*sp)));
+            fun = *(( Math_f * ) (ep->code + ( int ) (*sp)));
             type = *tp;
             if (c & T_BINARY) {
                 c &= ~T_BINARY;
                 arg[0] = num;
                 arg[1] = 0;
                 array_args(shp, tp + 1, 1);
-                num = sh_mathfun(shp, ( void * )fun, 1, arg);
+                num = sh_mathfun(shp, ( void * ) fun, 1, arg);
                 node.userfn = 0;
                 break;
             }
-            num = (*(( Math_1f_f )fun))(num);
+            num = (*(( Math_1f_f ) fun))(num);
             break;
         case A_CALL1I:
             sp--, tp--;
-            fun = *(( Math_f * )(ep->code + ( int )(*sp)));
+            fun = *(( Math_f * ) (ep->code + ( int ) (*sp)));
             type = *tp;
-            num = (*(( Math_1i_f )fun))(num);
+            num = (*(( Math_1i_f ) fun))(num);
             break;
         case A_CALL2F:
             sp -= 2, tp -= 2;
-            fun = *(( Math_f * )(ep->code + ( int )(*sp)));
+            fun = *(( Math_f * ) (ep->code + ( int ) (*sp)));
             type = *tp;
             if (c & T_BINARY) {
                 c &= ~T_BINARY;
@@ -560,30 +561,30 @@ arith_exec(Arith_t *ep)
                 arg[1] = num;
                 arg[2] = 0;
                 array_args(shp, tp + 1, 2);
-                num = sh_mathfun(shp, ( void * )fun, 2, arg);
+                num = sh_mathfun(shp, ( void * ) fun, 2, arg);
                 node.userfn = 0;
                 break;
             }
             if (c & T_NOFLOAT)
-                num = (*(( Math_2f_i )fun))(sp[1], ( int )num);
+                num = (*(( Math_2f_i ) fun))(sp[1], ( int ) num);
             else
-                num = (*(( Math_2f_f )fun))(sp[1], num);
+                num = (*(( Math_2f_f ) fun))(sp[1], num);
             break;
         case A_CALL2V:
             sp -= 2, tp -= 2;
-            fun = *(( Math_f * )(ep->code + ( int )(*sp)));
+            fun = *(( Math_f * ) (ep->code + ( int ) (*sp)));
             type = tp[1];
-            num = (*(( Math_2v_f )fun))(type - 1, sp[1], num);
+            num = (*(( Math_2v_f ) fun))(type - 1, sp[1], num);
             break;
         case A_CALL2I:
             sp -= 2, tp -= 2;
-            fun = *(( Math_f * )(ep->code + ( int )(*sp)));
+            fun = *(( Math_f * ) (ep->code + ( int ) (*sp)));
             type = *tp;
-            num = (*(( Math_2i_f )fun))(sp[1], num);
+            num = (*(( Math_2i_f ) fun))(sp[1], num);
             break;
         case A_CALL3F:
             sp -= 3, tp -= 3;
-            fun = *(( Math_f * )(ep->code + ( int )(*sp)));
+            fun = *(( Math_f * ) (ep->code + ( int ) (*sp)));
             type = *tp;
             if (c & T_BINARY) {
                 c &= ~T_BINARY;
@@ -592,11 +593,11 @@ arith_exec(Arith_t *ep)
                 arg[2] = num;
                 arg[3] = 0;
                 array_args(shp, tp + 1, 3);
-                num = sh_mathfun(shp, ( void * )fun, 3, arg);
+                num = sh_mathfun(shp, ( void * ) fun, 3, arg);
                 node.userfn = 0;
                 break;
             }
-            num = (*(( Math_3f_f )fun))(sp[1], sp[2], num);
+            num = (*(( Math_3f_f ) fun))(sp[1], sp[2], num);
             break;
         }
         if (c)
@@ -828,9 +829,9 @@ again:
                 if (vp->staksize++ >= vp->stakmaxsize)
                     vp->stakmaxsize = vp->staksize;
                 vp->infun = 1;
-                if (( int )lvalue.nargs < 0)
+                if (( int ) lvalue.nargs < 0)
                     userfun = T_BINARY;
-                else if (( int )lvalue.nargs & 040)
+                else if (( int ) lvalue.nargs & 040)
                     userfun = T_NOFLOAT;
                 sfputc(shp->stk, A_PUSHF);
                 stkpush(shp->stk, vp, fun, Math_f);
@@ -892,11 +893,11 @@ again:
                 ERROR(vp, e_questcolon);
             sfputc(shp->stk, A_JMP);
             offset2 = stkpush(shp->stk, vp, 0, short);
-            *(( short * )stkptr(shp->stk, offset1)) = stktell(shp->stk);
+            *(( short * ) stkptr(shp->stk, offset1)) = stktell(shp->stk);
             sfputc(shp->stk, A_POP);
             if (!expr(vp, 3))
                 return (false);
-            *(( short * )stkptr(shp->stk, offset2)) = stktell(shp->stk);
+            *(( short * ) stkptr(shp->stk, offset2)) = stktell(shp->stk);
             lvalue.value = 0;
             wasop = 0;
             break;
@@ -919,7 +920,7 @@ again:
             sfputc(shp->stk, A_POP);
             if (!expr(vp, c))
                 return (false);
-            *(( short * )stkptr(shp->stk, offset)) = stktell(shp->stk);
+            *(( short * ) stkptr(shp->stk, offset)) = stktell(shp->stk);
             if (op != A_QCOLON)
                 sfputc(shp->stk, A_NOTNOT);
             lvalue.value = 0;
@@ -968,7 +969,7 @@ again:
                     d = '\\';
                     vp->nextchr += 2;
                 } else
-                    d = chresc(pos + 1, ( char ** )&vp->nextchr);
+                    d = chresc(pos + 1, ( char ** ) &vp->nextchr);
                 /* posix allows the trailing ' to be optional */
                 if (*vp->nextchr == '\'')
                     vp->nextchr++;
@@ -1024,7 +1025,7 @@ arith_compile(Shell_t *shp,
     Arith_t *ep;
     int offset;
     int nounset = sh_isoption(shp, SH_NOUNSET);
-    memset(( void * )&cur, 0, sizeof(cur));
+    memset(( void * ) &cur, 0, sizeof(cur));
     cur.shp = shp;
     cur.expr = cur.nextchr = string;
     cur.convert = fun;
@@ -1039,7 +1040,7 @@ arith_compile(Shell_t *shp,
             string = cur.errstr;
         if ((*fun)(&string, &cur.errmsg, MESSAGE, 0) < 0) {
             stkseek(shp->stk, 0);
-            *last = ( char * )Empty;
+            *last = ( char * ) Empty;
             if (nounset)
                 sh_onoption(shp, SH_NOUNSET);
             return (0);
@@ -1048,17 +1049,17 @@ arith_compile(Shell_t *shp,
     }
     sfputc(shp->stk, 0);
     offset = stktell(shp->stk);
-    ep = ( Arith_t * )stkfreeze(shp->stk, 0);
+    ep = ( Arith_t * ) stkfreeze(shp->stk, 0);
     ep->shp = shp;
     ep->expr = string;
-    ep->elen = ( short )strlen(string);
-    ep->code = ( unsigned char * )(ep + 1);
+    ep->elen = ( short ) strlen(string);
+    ep->code = ( unsigned char * ) (ep + 1);
     ep->fun = fun;
     ep->emode = emode;
     ep->size = offset - sizeof(Arith_t);
     ep->staksize = cur.stakmaxsize + 1;
     if (last)
-        *last = ( char * )(cur.nextchr);
+        *last = ( char * ) (cur.nextchr);
     if (nounset)
         sh_onoption(shp, SH_NOUNSET);
     return (ep);
@@ -1092,7 +1093,7 @@ strval(Shell_t *shp,
     ep = arith_compile(shp, s, end, conv, emode);
     ep->emode = emode;
     d = arith_exec(ep);
-    stkset(shp->stk, sp ? sp : ( char * )ep, offset);
+    stkset(shp->stk, sp ? sp : ( char * ) ep, offset);
     return (d);
 }
 

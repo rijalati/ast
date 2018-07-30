@@ -268,13 +268,13 @@ typedef union
 #    define TO_SIX_BIT(rslt, src)                                            \
         {                                                                    \
             C_block cvt;                                                     \
-            cvt.b[0] = ( unsigned char )src;                                 \
+            cvt.b[0] = ( unsigned char ) src;                                \
             src >>= 6;                                                       \
-            cvt.b[1] = ( unsigned char )src;                                 \
+            cvt.b[1] = ( unsigned char ) src;                                \
             src >>= 6;                                                       \
-            cvt.b[2] = ( unsigned char )src;                                 \
+            cvt.b[2] = ( unsigned char ) src;                                \
             src >>= 6;                                                       \
-            cvt.b[3] = ( unsigned char )src;                                 \
+            cvt.b[3] = ( unsigned char ) src;                                \
             rslt = (cvt.b32.i0 & 0x3f3f3f3fL) << 2;                          \
         }
 
@@ -1024,7 +1024,7 @@ init_des(void)
             k = (k | 07) - (k & 07);
             k++;
         }
-        perm[i] = ( unsigned char )k;
+        perm[i] = ( unsigned char ) k;
     }
 #    ifdef DEBUG
     prtab("pc1tab", perm, 8);
@@ -1072,7 +1072,7 @@ init_des(void)
                 k = (k | 07) - (k & 07);
                 k++;
             }
-            perm[i * 8 + j] = ( unsigned char )k;
+            perm[i * 8 + j] = ( unsigned char ) k;
         }
     }
 #    ifdef DEBUG
@@ -1148,15 +1148,15 @@ des_setkey(const char *key)
         des_ready = 1;
     }
 
-    PERM6464(K, K0, K1, ( unsigned char * )key, ( C_block * )PC1ROT);
-    key = ( char * )&KS[0];
-    STORE(K & ~0x03030303L, K0 & ~0x03030303L, K1, *( C_block * )key);
+    PERM6464(K, K0, K1, ( unsigned char * ) key, ( C_block * ) PC1ROT);
+    key = ( char * ) &KS[0];
+    STORE(K & ~0x03030303L, K0 & ~0x03030303L, K1, *( C_block * ) key);
     for (i = 1; i < 16; i++) {
         key += sizeof(C_block);
-        STORE(K, K0, K1, *( C_block * )key);
-        ptabp = ( C_block * )PC2ROT[Rotates[i] - 1];
-        PERM6464(K, K0, K1, ( unsigned char * )key, ptabp);
-        STORE(K & ~0x03030303L, K0 & ~0x03030303L, K1, *( C_block * )key);
+        STORE(K, K0, K1, *( C_block * ) key);
+        ptabp = ( C_block * ) PC2ROT[Rotates[i] - 1];
+        PERM6464(K, K0, K1, ( unsigned char * ) key, ptabp);
+        STORE(K & ~0x03030303L, K0 & ~0x03030303L, K1, *( C_block * ) key);
     }
     return (0);
 }
@@ -1203,7 +1203,7 @@ des_cipher(const char *in, char *out, long salt, int num_iter)
     B.b[7] = in[7];
     LOAD(L, L0, L1, B);
 #    else
-    LOAD(L, L0, L1, *( C_block * )in);
+    LOAD(L, L0, L1, *( C_block * ) in);
 #    endif
     LOADREG(R, R0, R1, L, L0, L1);
     L0 &= 0x55555555L;
@@ -1213,8 +1213,8 @@ des_cipher(const char *in, char *out, long salt, int num_iter)
     R1 = (R1 >> 1) & 0x55555555L;
     L1 = R0 | R1; /* L1 is the odd-numbered input bits */
     STORE(L, L0, L1, B);
-    PERM3264(L, L0, L1, B.b, ( C_block * )IE3264);     /* even bits */
-    PERM3264(R, R0, R1, B.b + 4, ( C_block * )IE3264); /* odd bits */
+    PERM3264(L, L0, L1, B.b, ( C_block * ) IE3264);     /* even bits */
+    PERM3264(R, R0, R1, B.b + 4, ( C_block * ) IE3264); /* odd bits */
 
     if (num_iter >= 0) { /* encryption */
         kp = &KS[0];
@@ -1222,7 +1222,7 @@ des_cipher(const char *in, char *out, long salt, int num_iter)
     } else { /* decryption */
         num_iter = -num_iter;
         kp = &KS[KS_SIZE - 1];
-        ks_inc = -(( int )sizeof(*kp));
+        ks_inc = -(( int ) sizeof(*kp));
     }
 
     while (--num_iter >= 0) {
@@ -1230,7 +1230,7 @@ des_cipher(const char *in, char *out, long salt, int num_iter)
         do {
 
 #    define SPTAB(t, i)                                                      \
-        (*( long * )(( unsigned char * )t + i * (sizeof(long) / 4)))
+        (*( long * ) (( unsigned char * ) t + i * (sizeof(long) / 4)))
 #    if defined(gould)
             /* use this if B.b[i] is evaluated just once ... */
 #        define DOXOR(x, y, i)                                               \
@@ -1256,7 +1256,7 @@ des_cipher(const char *in, char *out, long salt, int num_iter)
         k = (q0 ^ q1) & SALT;                                                \
         B.b32.i0 = k ^ q0 ^ kp->b32.i0;                                      \
         B.b32.i1 = k ^ q1 ^ kp->b32.i1;                                      \
-        kp = ( C_block * )(( char * )kp + ks_inc);                           \
+        kp = ( C_block * ) (( char * ) kp + ks_inc);                         \
                                                                              \
         DOXOR(p0, p1, 0);                                                    \
         DOXOR(p0, p1, 1);                                                    \
@@ -1270,7 +1270,7 @@ des_cipher(const char *in, char *out, long salt, int num_iter)
             CRUNCH(L0, L1, R0, R1);
             CRUNCH(R0, R1, L0, L1);
         } while (--loop_count != 0);
-        kp = ( C_block * )(( char * )kp - (ks_inc * KS_SIZE));
+        kp = ( C_block * ) (( char * ) kp - (ks_inc * KS_SIZE));
 
 
         /* swap L and R */
@@ -1286,7 +1286,7 @@ des_cipher(const char *in, char *out, long salt, int num_iter)
     L0 = ((L0 >> 3) & 0x0f0f0f0fL) | ((L1 << 1) & 0xf0f0f0f0L);
     L1 = ((R0 >> 3) & 0x0f0f0f0fL) | ((R1 << 1) & 0xf0f0f0f0L);
     STORE(L, L0, L1, B);
-    PERM6464(L, L0, L1, B.b, ( C_block * )CF6464);
+    PERM6464(L, L0, L1, B.b, ( C_block * ) CF6464);
 #    if defined(MUST_ALIGN)
     STORE(L, L0, L1, B);
     out[0] = B.b[0];
@@ -1298,7 +1298,7 @@ des_cipher(const char *in, char *out, long salt, int num_iter)
     out[6] = B.b[6];
     out[7] = B.b[7];
 #    else
-    STORE(L, L0, L1, *( C_block * )out);
+    STORE(L, L0, L1, *( C_block * ) out);
 #    endif
     return (0);
 }
@@ -1316,11 +1316,11 @@ setkey(const char *key)
         k = 0;
         for (j = 0; j < 8; j++) {
             k <<= 1;
-            k |= ( unsigned char )*key++;
+            k |= ( unsigned char ) *key++;
         }
         keyblock.b[i] = k;
     }
-    return (des_setkey(( char * )keyblock.b));
+    return (des_setkey(( char * ) keyblock.b));
 }
 
 /*
@@ -1336,11 +1336,12 @@ encrypt(char *block, int flag)
         k = 0;
         for (j = 0; j < 8; j++) {
             k <<= 1;
-            k |= ( unsigned char )*block++;
+            k |= ( unsigned char ) *block++;
         }
         cblock.b[i] = k;
     }
-    if (des_cipher(( char * )&cblock, ( char * )&cblock, 0L, (flag ? -1 : 1)))
+    if (des_cipher(
+        ( char * ) &cblock, ( char * ) &cblock, 0L, (flag ? -1 : 1)))
         return (1);
     for (i = 7; i >= 0; i--) {
         k = cblock.b[i];
@@ -1374,11 +1375,11 @@ crypt(const char *key, const char *setting)
 #    endif
 
     for (i = 0; i < 8; i++) {
-        if ((t = 2 * ( unsigned char )(*key)) != 0)
+        if ((t = 2 * ( unsigned char ) (*key)) != 0)
             key++;
         keyblock.b[i] = t;
     }
-    if (des_setkey(( char * )keyblock.b)) /* also initializes "a64toi" */
+    if (des_setkey(( char * ) keyblock.b)) /* also initializes "a64toi" */
         return (NULL);
 
     encp = &cryptresult[0];
@@ -1388,14 +1389,14 @@ crypt(const char *key, const char *setting)
          * Involve the rest of the password 8 characters at a time.
          */
         while (*key) {
-            if (des_cipher(( char * )&keyblock, ( char * )&keyblock, 0L, 1))
+            if (des_cipher(( char * ) &keyblock, ( char * ) &keyblock, 0L, 1))
                 return (NULL);
             for (i = 0; i < 8; i++) {
-                if ((t = 2 * ( unsigned char )(*key)) != 0)
+                if ((t = 2 * ( unsigned char ) (*key)) != 0)
                     key++;
                 keyblock.b[i] ^= t;
             }
-            if (des_setkey(( char * )keyblock.b))
+            if (des_setkey(( char * ) keyblock.b))
                 return (NULL);
         }
 
@@ -1404,7 +1405,7 @@ crypt(const char *key, const char *setting)
         /* get iteration count */
         num_iter = 0;
         for (i = 4; --i >= 0;) {
-            if ((t = ( unsigned char )setting[i]) == '\0')
+            if ((t = ( unsigned char ) setting[i]) == '\0')
                 t = '.';
             encp[i] = t;
             num_iter = (num_iter << 6) | a64toi[t];
@@ -1420,20 +1421,20 @@ crypt(const char *key, const char *setting)
 
     salt = 0;
     for (i = salt_size; --i >= 0;) {
-        if ((t = ( unsigned char )setting[i]) == '\0')
+        if ((t = ( unsigned char ) setting[i]) == '\0')
             t = '.';
         encp[i] = t;
         salt = (salt << 6) | a64toi[t];
     }
     encp += salt_size;
     if (des_cipher(
-        ( char * )&constdatablock, ( char * )&rsltblock, salt, num_iter))
+        ( char * ) &constdatablock, ( char * ) &rsltblock, salt, num_iter))
         return (NULL);
 
     /*
      * Encode the 64 cipher bits as 11 ascii characters.
      */
-    i = (( long )((rsltblock.b[0] << 8) | rsltblock.b[1]) << 8)
+    i = (( long ) ((rsltblock.b[0] << 8) | rsltblock.b[1]) << 8)
         | rsltblock.b[2];
     encp[3] = itoa64[i & 0x3f];
     i >>= 6;
@@ -1443,7 +1444,7 @@ crypt(const char *key, const char *setting)
     i >>= 6;
     encp[0] = itoa64[i];
     encp += 4;
-    i = (( long )((rsltblock.b[3] << 8) | rsltblock.b[4]) << 8)
+    i = (( long ) ((rsltblock.b[3] << 8) | rsltblock.b[4]) << 8)
         | rsltblock.b[5];
     encp[3] = itoa64[i & 0x3f];
     i >>= 6;
@@ -1453,7 +1454,7 @@ crypt(const char *key, const char *setting)
     i >>= 6;
     encp[0] = itoa64[i];
     encp += 4;
-    i = (( long )((rsltblock.b[6]) << 8) | rsltblock.b[7]) << 2;
+    i = (( long ) ((rsltblock.b[6]) << 8) | rsltblock.b[7]) << 2;
     encp[2] = itoa64[i & 0x3f];
     i >>= 6;
     encp[1] = itoa64[i & 0x3f];
@@ -1473,14 +1474,14 @@ int num_rows;
 {
     int i, j;
 
-    ( void )printf("%s:\n", s);
+    ( void ) printf("%s:\n", s);
     for (i = 0; i < num_rows; i++) {
         for (j = 0; j < 8; j++) {
-            ( void )printf("%3d", t[i * 8 + j]);
+            ( void ) printf("%3d", t[i * 8 + j]);
         }
-        ( void )printf("\n");
+        ( void ) printf("\n");
     }
-    ( void )printf("\n");
+    ( void ) printf("\n");
 }
 #    endif
 

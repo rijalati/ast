@@ -138,7 +138,7 @@ extern Dsslib_t dss_lib_xml;
 static Cxvariable_t *
 xmlvar(Cx_t *cx, char *name, const char *type, Cxdisc_t *disc)
 {
-    Xml_t *xml = ( Xml_t * )DSS(cx)->meth->data;
+    Xml_t *xml = ( Xml_t * ) DSS(cx)->meth->data;
     Cxvariable_t *var;
     Value_t *val;
     char *s;
@@ -155,11 +155,11 @@ xmlvar(Cx_t *cx, char *name, const char *type, Cxdisc_t *disc)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
         }
-        var->data = val = ( Value_t * )(var + 1);
+        var->data = val = ( Value_t * ) (var + 1);
         strcpy(
-        ( char * )(var->name = ( const char * )(var + 1) + sizeof(Value_t)),
+        ( char * ) (var->name = ( const char * ) (var + 1) + sizeof(Value_t)),
         name);
-        var->type = ( Cxtype_t * )(type ? type : "number");
+        var->type = ( Cxtype_t * ) (type ? type : "number");
         if (cxaddvariable(cx, var, disc))
             return 0;
         if ((val->number = cxisnumber(var->type))
@@ -234,7 +234,8 @@ refill(Dssfile_t *file, File_t *f, int c, Dssdisc_t *disc)
             f->prv[n - 1] = f->save;
             f->prvlen += n;
         }
-        if (!(f->buf = ( unsigned char * )sfreserve(file->io, SF_UNBOUND, 0)))
+        if (!(f->buf
+              = ( unsigned char * ) sfreserve(file->io, SF_UNBOUND, 0)))
             return -1;
         if (f->rec)
             f->rec = f->buf;
@@ -340,9 +341,9 @@ xmlread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                                 f->part[f->prefix] + 1)) {
                     if (f->image && !f->rec)
                         f->rec = f->cur - 1;
-                    (( Value_t * )v->data)->record = f->record;
-                    (( Value_t * )v->data)->offset = vp - vb;
-                    (( Value_t * )v->data)->size = 1;
+                    (( Value_t * ) v->data)->record = f->record;
+                    (( Value_t * ) v->data)->offset = vp - vb;
+                    (( Value_t * ) v->data)->size = 1;
                     if (vp >= ve)
                         RESIZE();
                     *vp++ = '1';
@@ -407,8 +408,8 @@ xmlread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                                     f->part[f->prefix] + 1)) {
                         if (f->image && !f->rec)
                             f->rec = f->cur - 1;
-                        (( Value_t * )v->data)->record = f->record;
-                        (( Value_t * )v->data)->offset = vp - vb;
+                        (( Value_t * ) v->data)->record = f->record;
+                        (( Value_t * ) v->data)->offset = vp - vb;
                         for (;;) {
                             while (!xml_beg_tag[c = *f->cur++]) {
                                 if (vp >= ve)
@@ -424,8 +425,8 @@ xmlread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                                 RESIZE();
                             *vp++ = c;
                         }
-                        (( Value_t * )v->data)->size
-                        = vp - (vb + (( Value_t * )v->data)->offset);
+                        (( Value_t * ) v->data)->size
+                        = vp - (vb + (( Value_t * ) v->data)->offset);
                         if (vp >= ve)
                             RESIZE();
                         *vp++ = 0;
@@ -458,7 +459,7 @@ incomplete:
 static int
 xmlwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    File_t *r = ( File_t * )record->data;
+    File_t *r = ( File_t * ) record->data;
     size_t n;
 
     sfprintf(file->io, "<%s", r->root);
@@ -485,7 +486,7 @@ xmlwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 static int
 xmlfopen(Dssfile_t *file, Dssdisc_t *disc)
 {
-    Xml_t *xml = ( Xml_t * )file->dss->meth->data;
+    Xml_t *xml = ( Xml_t * ) file->dss->meth->data;
     unsigned char *s;
     unsigned char *t;
     int n;
@@ -498,7 +499,7 @@ xmlfopen(Dssfile_t *file, Dssdisc_t *disc)
 
     if (file->flags & DSS_FILE_WRITE)
         buf = 0;
-    else if (buf = ( unsigned char * )sfreserve(file->io, SF_UNBOUND, 0)) {
+    else if (buf = ( unsigned char * ) sfreserve(file->io, SF_UNBOUND, 0)) {
         end = buf + sfvalue(file->io) - 1;
         if (xml->prefix < 0) {
             xml->image = !!(file->dss->flags & DSS_WRITE);
@@ -561,7 +562,7 @@ xmlfopen(Dssfile_t *file, Dssdisc_t *disc)
         return -1;
     }
     file->data = f;
-    f->name = ( char * )(f + 1) + (xml->maxlevel + 1) * sizeof(char *);
+    f->name = ( char * ) (f + 1) + (xml->maxlevel + 1) * sizeof(char *);
     if (!(file->flags & DSS_FILE_WRITE)) {
         if (buf) {
             f->cur = f->buf = buf;
@@ -569,7 +570,7 @@ xmlfopen(Dssfile_t *file, Dssdisc_t *disc)
             f->save = *end;
             *end = 0;
         } else
-            f->buf = f->cur = f->end = ( unsigned char * )null;
+            f->buf = f->cur = f->end = ( unsigned char * ) null;
         f->image = xml->image;
         f->prefix = xml->prefix;
         f->maxlevel = xml->maxlevel;
@@ -728,12 +729,12 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                             *np = 0;
                             if (v = dtmatch(file->dss->cx->variables,
                                             f->part[f->prefix] + 1)) {
-                                (( Value_t * )v->data)->record = f->record;
-                                (( Value_t * )v->data)->offset = vp - vb;
+                                (( Value_t * ) v->data)->record = f->record;
+                                (( Value_t * ) v->data)->offset = vp - vb;
                                 if (vp >= ve)
                                     RESIZE();
                                 *vp++ = '1';
-                                (( Value_t * )v->data)->size = 1;
+                                (( Value_t * ) v->data)->size = 1;
                                 if (vp >= ve)
                                     RESIZE();
                                 *vp++ = 0;
@@ -747,8 +748,8 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                         *np = 0;
                         if (v = dtmatch(file->dss->cx->variables,
                                         f->part[f->prefix] + 1)) {
-                            (( Value_t * )v->data)->record = f->record;
-                            (( Value_t * )v->data)->offset = vp - vb;
+                            (( Value_t * ) v->data)->record = f->record;
+                            (( Value_t * ) v->data)->offset = vp - vb;
                             e = c == 'n';
                             for (;;) {
                                 if (c == '"') {
@@ -800,9 +801,9 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                                     REFILL(f, c, goto incomplete);
                             }
                             if (e)
-                                vp = vb + (( Value_t * )v->data)->offset;
-                            (( Value_t * )v->data)->size
-                            = vp - (vb + (( Value_t * )v->data)->offset);
+                                vp = vb + (( Value_t * ) v->data)->offset;
+                            (( Value_t * ) v->data)->size
+                            = vp - (vb + (( Value_t * ) v->data)->offset);
                             *vp++ = 0;
                             if (!f->level) {
                                 record->data = f;
@@ -889,7 +890,7 @@ incomplete:
 static int
 jsonwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    File_t *r = ( File_t * )record->data;
+    File_t *r = ( File_t * ) record->data;
     size_t n;
 
     if (r->prvlen && sfwrite(file->io, r->prv, r->prvlen) != r->prvlen) {
@@ -924,15 +925,15 @@ op_get(Cx_t *cx,
        void *data,
        Cxdisc_t *disc)
 {
-    File_t *f = ( File_t * )DSSDATA(data);
-    Value_t *v = ( Value_t * )pc->data.variable->data;
+    File_t *f = ( File_t * ) DSSDATA(data);
+    Value_t *v = ( Value_t * ) pc->data.variable->data;
     char *s;
 
     if (v) {
         if (v->record == f->record)
             s = f->value + v->offset;
         else {
-            s = ( char * )null;
+            s = ( char * ) null;
             v->size = 0;
         }
         if (!v->internalf) {
@@ -978,7 +979,7 @@ xml_field_name_dat(Tag_t *tag,
                    const char *data,
                    Tagdisc_t *disc)
 {
-    Xml_t *xml = ( Xml_t * )disc;
+    Xml_t *xml = ( Xml_t * ) disc;
 
     if (!(xml->lastfield->name = strdup(data))) {
         if (disc->errorf)
@@ -994,11 +995,11 @@ xml_field_type_dat(Tag_t *tag,
                    const char *data,
                    Tagdisc_t *disc)
 {
-    Xml_t *xml = ( Xml_t * )disc;
+    Xml_t *xml = ( Xml_t * ) disc;
     char *s;
 
     memset(&xml->lastfield->format, 0, sizeof(xml->lastfield->format));
-    ( void )cxattr(NiL, data, &s, &xml->lastfield->format, NiL);
+    ( void ) cxattr(NiL, data, &s, &xml->lastfield->format, NiL);
     if (!*s)
         s = "number";
     if (!(xml->lastfield->type = strdup(s))) {
@@ -1042,7 +1043,7 @@ static Tags_t tags_xml_field[]
 static int
 xml_name_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
-    Xml_t *xml = ( Xml_t * )disc;
+    Xml_t *xml = ( Xml_t * ) disc;
 
     if (!(xml->meth.name = strdup(data))) {
         if (disc->errorf)
@@ -1058,7 +1059,7 @@ xml_description_dat(Tag_t *tag,
                     const char *data,
                     Tagdisc_t *disc)
 {
-    Xml_t *xml = ( Xml_t * )disc;
+    Xml_t *xml = ( Xml_t * ) disc;
 
     if (!(xml->meth.description = strdup(data))) {
         if (disc->errorf)
@@ -1071,7 +1072,7 @@ xml_description_dat(Tag_t *tag,
 static int
 xml_library_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
-    Xml_t *xml = ( Xml_t * )disc;
+    Xml_t *xml = ( Xml_t * ) disc;
     Library_t *p;
 
     if (!(p = newof(0, Library_t, 1, strlen(data)))) {
@@ -1090,7 +1091,7 @@ xml_library_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 static Tags_t *
 xml_field_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
 {
-    Xml_t *xml = ( Xml_t * )disc;
+    Xml_t *xml = ( Xml_t * ) disc;
     Field_t *f;
 
     if (name) {
@@ -1111,7 +1112,7 @@ xml_field_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
 static int
 xml_field_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
 {
-    Xml_t *xml = ( Xml_t * )disc;
+    Xml_t *xml = ( Xml_t * ) disc;
 
     if (xml->lastfield && (!xml->lastfield->name || !xml->lastfield->type)) {
         if (disc->errorf)
@@ -1252,7 +1253,7 @@ drop:
 static int
 xmlopen(Dss_t *dss, Dssdisc_t *disc)
 {
-    Xml_t *xml = ( Xml_t * )dss->meth->data;
+    Xml_t *xml = ( Xml_t * ) dss->meth->data;
     Field_t *f;
     Field_t *g;
     Cxvariable_t *v;

@@ -145,7 +145,8 @@ ssize_t n_smpl;
 
 #if DO_LCS
     ssize_t *here, *last;
-    if (!(here = ( ssize_t * )malloc(2 * tbl->fld[f].maxz * sizeof(ssize_t))))
+    if (!(here
+          = ( ssize_t * ) malloc(2 * tbl->fld[f].maxz * sizeof(ssize_t))))
         return -1;
     last = here + tbl->fld[f].maxz;
 #endif
@@ -207,7 +208,7 @@ Vcodex_t *vcw; /* weight function, NULL for match()	*/
         return rdmatch(tbl, f, vect, smpl, n_smpl);
 
     /* construct the string of field data */
-    if (!(data = ( Vcchar_t * )malloc(tbl->recn * tbl->fld[f].maxz)))
+    if (!(data = ( Vcchar_t * ) malloc(tbl->recn * tbl->fld[f].maxz)))
         return -1;
     for (dt = data, dtsz = 0, rcrd = tbl->fld[f].rcrd, s = 0; s < n_smpl;
          ++s) {
@@ -251,8 +252,8 @@ Vcodex_t *vcw;                                       /* general compressor	*/
     recn = tbl->recn;
 
     /* construct the identity transformation plan */
-    if (!(pl = ( Vcrdplan_t * )malloc(sizeof(Vcrdplan_t)
-                                      + (fldn - 1) * sizeof(ssize_t))))
+    if (!(pl = ( Vcrdplan_t * ) malloc(sizeof(Vcrdplan_t)
+                                       + (fldn - 1) * sizeof(ssize_t))))
         return NIL(Vcrdplan_t *);
     pl->fldn = fldn;
     for (f = 0; f < fldn; ++f)
@@ -262,7 +263,7 @@ Vcodex_t *vcw;                                       /* general compressor	*/
         return pl;
 
     /* allocate space for intermediate computation */
-    if (!(wght = ( ssize_t * )calloc(fldn + recn, sizeof(ssize_t)))) {
+    if (!(wght = ( ssize_t * ) calloc(fldn + recn, sizeof(ssize_t)))) {
         free(pl);
         pl = NIL(Vcrdplan_t *);
         goto done;
@@ -317,7 +318,7 @@ Vcodex_t *vcw;                                       /* general compressor	*/
         goto done;
     for (f = 0; f < fldn;
          ++f) { /* create the node corresponding to this column */
-        if (!(nd = grnode(gr, ( Void_t * )f, 1)))
+        if (!(nd = grnode(gr, ( Void_t * ) f, 1)))
             goto done;
         if (wght[f] <= 0) /* reorder won't do anything */
             continue;
@@ -327,19 +328,19 @@ Vcodex_t *vcw;                                       /* general compressor	*/
             if (wght[p] <= 0)
                 continue;
 
-            if (!(pd = grnode(gr, ( Void_t * )p, 0)))
+            if (!(pd = grnode(gr, ( Void_t * ) p, 0)))
                 goto done;
             if ((z = maxz
                      - rdentropy(tbl, f, tbl->fld[p].vect, smpl, n_smpl, vcw))
                 > wght[f]) {
-                if (!(e = gredge(gr, pd, nd, ( Void_t * )0, 1)))
+                if (!(e = gredge(gr, pd, nd, ( Void_t * ) 0, 1)))
                     goto done;
                 grbrweight(e, z);
             }
             if ((z = maxz
                      - rdentropy(tbl, p, tbl->fld[f].vect, smpl, n_smpl, vcw))
                 > wght[p]) {
-                if (!(e = gredge(gr, nd, pd, ( Void_t * )0, 1)))
+                if (!(e = gredge(gr, nd, pd, ( Void_t * ) 0, 1)))
                     goto done;
                 grbrweight(e, z);
             }
@@ -352,8 +353,8 @@ Vcodex_t *vcw;                                       /* general compressor	*/
     /* the transform plan */
     for (nd = dtfirst(gr->nodes); nd; nd = dtnext(gr->nodes, nd))
         if (nd->iedge)
-            pl->pred[( ssize_t )nd->label]
-            = ( ssize_t )nd->iedge->tail->label;
+            pl->pred[( ssize_t ) nd->label]
+            = ( ssize_t ) nd->iedge->tail->label;
 
 done:
     if (gr)
@@ -474,7 +475,7 @@ int type;       /* VC_ENCODE or VC_DECODE	*/
     if ((fldn = tbl->fldn) <= 0 || (recn = tbl->recn) <= 0)
         return 0;
 
-    if (!(rtmp = ( Vcrdrecord_t * )malloc(recn * sizeof(Vcrdrecord_t))))
+    if (!(rtmp = ( Vcrdrecord_t * ) malloc(recn * sizeof(Vcrdrecord_t))))
         return -1;
 
     for (f = 0; f < fldn; ++f) /* no transform vector done yet */

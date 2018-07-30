@@ -40,7 +40,7 @@ int dtclose(dt) Dt_t *dt;
         return -1;
 
     if (disc && disc->eventf) /* announce closing event */
-        ev = (*disc->eventf)(dt, DT_CLOSE, ( Void_t * )1, disc);
+        ev = (*disc->eventf)(dt, DT_CLOSE, ( Void_t * ) 1, disc);
     else
         ev = 0;
     if (ev < 0) /* cannot close */
@@ -54,15 +54,15 @@ int dtclose(dt) Dt_t *dt;
 
     if (ev == 0) /* release all allocated data */
     {
-        ( void )(*(dt->meth->searchf))(dt, NIL(Void_t *), DT_CLEAR);
-        ( void )(*dt->meth->eventf)(dt, DT_CLOSE, ( Void_t * )0);
+        ( void ) (*(dt->meth->searchf))(dt, NIL(Void_t *), DT_CLEAR);
+        ( void ) (*dt->meth->eventf)(dt, DT_CLOSE, ( Void_t * ) 0);
         /**/ DEBUG_ASSERT(!dt->data);
     }
     if (!(type & DT_INDATA))
-        ( void )free(dt);
+        ( void ) free(dt);
 
     if (disc && disc->eventf) /* announce end of closing activities */
-        ( void )(*disc->eventf)(&pdt, DT_ENDCLOSE, ( Void_t * )0, disc);
+        ( void ) (*disc->eventf)(&pdt, DT_ENDCLOSE, ( Void_t * ) 0, disc);
 
     return 0;
 }

@@ -97,7 +97,7 @@ Sfio_t *sp;
              kp->verbose);
     sfprintf(sp,
              "\ttab='%s' keys=%s maxfield=%d",
-             kp->tab[0] ? ( char * )kp->tab : " ",
+             kp->tab[0] ? ( char * ) kp->tab : " ",
              kp->coded ? "coded" : "",
              kp->field.maxfield);
     if (kp->fixed)

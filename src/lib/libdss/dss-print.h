@@ -56,7 +56,7 @@ USAGE_LICENSE
 static int
 print_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     int all = 0;
     int errors = error_info.errors;
 
@@ -84,7 +84,7 @@ print_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         expr->data = 0;
     else if (!(expr->data = *argv++)) {
         argv--;
-        if (!(expr->data = ( char * )DSS(cx)->meth->print)) {
+        if (!(expr->data = ( char * ) DSS(cx)->meth->print)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -100,14 +100,14 @@ print_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         return -1;
     }
     return cx->referencef
-           ? dssprintf(DSS(cx), cx, 0, ( char * )expr->data, NiL)
+           ? dssprintf(DSS(cx), cx, 0, ( char * ) expr->data, NiL)
            : 0;
 }
 
 static int
 print_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    return dssprintf(DSS(cx), cx, expr->op, ( char * )expr->data, data);
+    return dssprintf(DSS(cx), cx, expr->op, ( char * ) expr->data, data);
 }
 
 static int
@@ -116,7 +116,7 @@ print_ref(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     char *s;
     char **a;
 
-    if (cx->referencef && (a = ( char ** )data) && *a++)
+    if (cx->referencef && (a = ( char ** ) data) && *a++)
         while (s = *a++)
             if (*s != '-')
                 return dssprintf(DSS(cx), cx, 0, s, NiL);

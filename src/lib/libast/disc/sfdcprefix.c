@@ -53,7 +53,7 @@ size_t n;
 Sfdisc_t *dp;
 #endif
 {
-    Prefix_t *pfx = ( Prefix_t * )dp;
+    Prefix_t *pfx = ( Prefix_t * ) dp;
     char *b;
     char *s;
     char *e;
@@ -63,7 +63,7 @@ Sfdisc_t *dp;
 
     skip = 0;
     w = 0;
-    b = ( char * )buf;
+    b = ( char * ) buf;
     s = b;
     e = s + n;
     do {
@@ -125,7 +125,7 @@ char *prefix;
 
     if (!prefix || !(n = strlen(prefix)) || !(sfset(f, 0, 0) & SF_WRITE))
         return -1;
-    if (!(pfx = ( Prefix_t * )malloc(sizeof(Prefix_t) + n)))
+    if (!(pfx = ( Prefix_t * ) malloc(sizeof(Prefix_t) + n)))
         return -1;
     memset(pfx, 0, sizeof(*pfx));
 
@@ -133,10 +133,10 @@ char *prefix;
     pfx->disc.exceptf = pfxexcept;
     pfx->length = n;
     memcpy(pfx->prefix, prefix, n);
-    s = ( char * )prefix + n;
-    while (--s > ( char * )prefix && (*s == ' ' || *s == '\t'))
+    s = ( char * ) prefix + n;
+    while (--s > ( char * ) prefix && (*s == ' ' || *s == '\t'))
         ;
-    n = s - ( char * )prefix;
+    n = s - ( char * ) prefix;
     if (*s != ' ' || *s != '\t')
         n++;
     pfx->empty = n;

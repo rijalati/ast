@@ -186,7 +186,7 @@ b_getconf(int argc, char **argv, Shbltin_t *context)
             sfsprintf(dev = devbuf,
                       sizeof(devbuf),
                       "/dev/file/flags@@/dev/fd/%d",
-                      ( int )opt_info.num);
+                      ( int ) opt_info.num);
             continue;
         case 'l':
             flags |= ASTCONF_lower;

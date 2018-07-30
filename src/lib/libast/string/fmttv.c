@@ -35,10 +35,10 @@ fmttv(const char *fmt, Tv_t *tv)
     char *t;
     int n;
 
-    s = fmttime(fmt, ( time_t )tv->tv_sec);
+    s = fmttime(fmt, ( time_t ) tv->tv_sec);
     if (!tv->tv_nsec || tv->tv_nsec == TV_NSEC_IGNORE)
         return s;
     t = fmtbuf(n = strlen(s) + 11);
-    sfsprintf(t, n, "%s.%09lu", s, ( unsigned long )tv->tv_nsec);
+    sfsprintf(t, n, "%s.%09lu", s, ( unsigned long ) tv->tv_nsec);
     return t;
 }

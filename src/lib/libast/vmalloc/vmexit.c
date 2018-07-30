@@ -58,7 +58,7 @@ int atexit(exitf) void (*exitf)();
 typedef struct _exit_s
 {
     struct _exit_s *next;
-    void(*exitf) _ARG_(( void ));
+    void(*exitf) _ARG_(( void ) );
 } Exit_t;
 static Exit_t *Exit;
 
@@ -70,7 +70,7 @@ atexit(exitf) void (*exitf)();
 {
     Exit_t *e;
 
-    if (!(e = ( Exit_t * )malloc(sizeof(Exit_t))))
+    if (!(e = ( Exit_t * ) malloc(sizeof(Exit_t))))
         return -1;
     e->exitf = exitf;
     e->next = Exit;

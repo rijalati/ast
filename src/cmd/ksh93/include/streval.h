@@ -41,27 +41,27 @@
 
 #    ifndef LDBL_LLONG_MAX
 #        ifdef LLONG_MAX
-#            define LDBL_LLONG_MAX (( Sfdouble_t )LLONG_MAX)
+#            define LDBL_LLONG_MAX (( Sfdouble_t ) LLONG_MAX)
 #        else
 #            ifdef LLONG_MAX
-#                define LDBL_LLONG_MAX (( Sfdouble_t )LLONG_MAX)
+#                define LDBL_LLONG_MAX (( Sfdouble_t ) LLONG_MAX)
 #            else
 #                define LDBL_LLONG_MAX                                       \
                     ((Sfdouble_t)(                                           \
-                    ((( Sflong_t )1) << (8 * sizeof(Sflong_t) - 1)) - 1))
+                    ((( Sflong_t ) 1) << (8 * sizeof(Sflong_t) - 1)) - 1))
 #            endif
 #        endif
 #    endif
 #    ifndef LDBL_ULLONG_MAX
 #        ifdef ULLONG_MAX
-#            define LDBL_ULLONG_MAX (( Sfdouble_t )ULLONG_MAX)
+#            define LDBL_ULLONG_MAX (( Sfdouble_t ) ULLONG_MAX)
 #        else
-#            define LDBL_ULLONG_MAX (2. * (( Sfdouble_t )LDBL_LLONG_MAX))
+#            define LDBL_ULLONG_MAX (2. * (( Sfdouble_t ) LDBL_LLONG_MAX))
 #        endif
 #    endif
 #    ifndef LDBL_LLONG_MIN
 #        ifdef LLONG_MIN
-#            define LDBL_LLONG_MIN (( Sfdouble_t )LLONG_MIN)
+#            define LDBL_LLONG_MIN (( Sfdouble_t ) LLONG_MIN)
 #        else
 #            define LDBL_LLONG_MIN (-LDBL_LLONG_MAX)
 #        endif

@@ -29,7 +29,7 @@ static char id[] = "\n@(#)$Id: vcs+ifs (AT&T Research) 1996-02-29 $\0\n";
 #include <error.h>
 #include <fs3d.h>
 
-#define CST (( State_t * )handle)
+#define CST (( State_t * ) handle)
 
 /*
  *	replies
@@ -72,8 +72,8 @@ int fdmax;
     char pidfile[80];
     char pid[80];
 
-    ( void )fs3d(FS3D_OP_OFF);
-    ( void )memset(CST, 0, sizeof(State_t));
+    ( void ) fs3d(FS3D_OP_OFF);
+    ( void ) memset(CST, 0, sizeof(State_t));
     CST->uptime = cs.time;
     CST->who = getuid();
     sfsprintf(pid, sizeof(pid), "%d", getpid());
@@ -141,7 +141,7 @@ int fd;
     char *argv[16], *ptr;
     int uid, n, argc;
 
-    ( void )fs3d(FS3D_OP_OFF);
+    ( void ) fs3d(FS3D_OP_OFF);
     csusrmsg[0] = '\0';
     uid = CST->userid[fd];
     if ((n = csread(fd, msg, sizeof(msgbuf), CS_LINE)) <= 0)
@@ -151,7 +151,7 @@ int fd;
         time_t t;
 
         t = cs.time;
-        ( void )tmform(ret, "%i", &t);
+        ( void ) tmform(ret, "%i", &t);
         sfprintf(CST->logfd, "[%s]\n%s\n", ret, msg);
     }
     while ((argc = tokscan(msg, &msg, " %v ", argv, elementsof(argv))) > 0) {
@@ -222,7 +222,7 @@ int fd;
             n = IfsUserDef(ret, n, uid, argc, argv);
             break;
         case 'D':
-            error_info.trace = -( int )strtol(argv[1], ( char ** )0, 0);
+            error_info.trace = -( int ) strtol(argv[1], ( char ** ) 0, 0);
             n = sfsprintf(ret, n, "I debug level %d\n", -error_info.trace);
             break;
         default:

@@ -194,8 +194,8 @@ user(State_t *state, char *name, unsigned long uid)
 
     static User_t nobody;
 
-    if (!(usr = name ? ( User_t * )dtmatch(state->table.user.handle, name)
-                     : ( User_t * )dtmatch(state->table.uid.handle, &uid))) {
+    if (!(usr = name ? ( User_t * ) dtmatch(state->table.user.handle, name)
+                     : ( User_t * ) dtmatch(state->table.uid.handle, &uid))) {
         if (pwd = name ? getpwnam(name) : getpwuid(uid)) {
             if (name)
                 uid = pwd->pw_uid;
@@ -236,7 +236,7 @@ permit(Queue_t *que, User_t *usr)
 {
     Owner_t *own;
 
-    if (!(own = ( Owner_t * )dtmatch(que->owner, &usr))) {
+    if (!(own = ( Owner_t * ) dtmatch(que->owner, &usr))) {
         if (que->allow > 0)
             return 0;
         if (own = newof(0, Owner_t, 1, 0)) {
@@ -257,7 +257,7 @@ static int
 allow(Dt_t *dt, void *object, void *handle)
 {
     NoP(dt);
-    (( Owner_t * )object)->allow = !(( Queue_t * )handle)->allow;
+    (( Owner_t * ) object)->allow = !(( Queue_t * ) handle)->allow;
     return 0;
 }
 
@@ -279,7 +279,7 @@ queue(State_t *state, char *s)
     if (*s && *s != '#') {
         if (t = strchr(s, '.'))
             *t++ = 0;
-        if (!(que = ( Queue_t * )dtmatch(state->table.queue.handle, s))) {
+        if (!(que = ( Queue_t * ) dtmatch(state->table.queue.handle, s))) {
             if (!(que = newof(0, Queue_t, 1, strlen(s) + 1)))
                 error(ERROR_SYSTEM | 3, "out of space [queue]");
             strcpy(que->name, s);
@@ -288,7 +288,7 @@ queue(State_t *state, char *s)
             que->load = LOAD;
             que->nice = NICE;
             que->wait = WAIT;
-            que = ( Queue_t * )dtinsert(state->table.queue.handle, que);
+            que = ( Queue_t * ) dtinsert(state->table.queue.handle, que);
         }
         if (!state->queue)
             state->queue = que;
@@ -344,7 +344,7 @@ queue(State_t *state, char *s)
                     if (!*t)
                         break;
                     usr = user(state, t, 0);
-                    if (!(own = ( Owner_t * )dtmatch(que->owner, &usr))) {
+                    if (!(own = ( Owner_t * ) dtmatch(que->owner, &usr))) {
                         if (!(own = newof(0, Owner_t, 1, 0)))
                             error(ERROR_SYSTEM | 3,
                                   "out of space [queue owner]");
@@ -400,9 +400,9 @@ update(State_t *state)
      * with no specific allow/deny overrides
      */
 
-    for (que = ( Queue_t * )dtfirst(state->table.queue.handle);
+    for (que = ( Queue_t * ) dtfirst(state->table.queue.handle);
          que && que->specific;
-         que = ( Queue_t * )dtnext(state->table.queue.handle, que))
+         que = ( Queue_t * ) dtnext(state->table.queue.handle, que))
         ;
     if (que && !stat(file = AT_CRON_DIR, &st) && S_ISDIR(st.st_mode)) {
         sfprintf(state->tmp, "%s/%s/%s", state->pwd, file, AT_ALLOW_FILE);
@@ -424,8 +424,8 @@ update(State_t *state)
          * reset the queue and associated user access
          */
 
-        for (que = ( Queue_t * )dtfirst(state->table.queue.handle); que;
-             que = ( Queue_t * )dtnext(state->table.queue.handle, que))
+        for (que = ( Queue_t * ) dtfirst(state->table.queue.handle); que;
+             que = ( Queue_t * ) dtnext(state->table.queue.handle, que))
             if (!que->specific) {
                 que->allow = permit;
                 dtwalk(que->owner, allow, que);
@@ -439,12 +439,13 @@ update(State_t *state)
             error(0, "scan %s access list", path);
             while (s = sfgetr(sp, '\n', 1)) {
                 usr = user(state, s, 0);
-                for (que = ( Queue_t * )dtfirst(state->table.queue.handle);
+                for (que = ( Queue_t * ) dtfirst(state->table.queue.handle);
                      que;
                      que
-                     = ( Queue_t * )dtnext(state->table.queue.handle, que))
+                     = ( Queue_t * ) dtnext(state->table.queue.handle, que))
                     if (!que->specific) {
-                        if (!(own = ( Owner_t * )dtmatch(que->owner, &usr))) {
+                        if (!(own
+                              = ( Owner_t * ) dtmatch(que->owner, &usr))) {
                             if (!(own = newof(0, Owner_t, 1, 0)))
                                 error(ERROR_SYSTEM | 3,
                                       "out of space [queue owner]");
@@ -466,7 +467,7 @@ update(State_t *state)
 static int
 client(Css_t *css, Cssfd_t *fp, Csid_t *id, char **args, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Connection_t *con = state->con + fp->fd;
 
     NoP(args);
@@ -611,8 +612,8 @@ schedule(State_t *state)
     unsigned long x = SMAX;
 
     csstat(state->css->state, NiL, &st);
-    for (job = ( Job_t * )dtfirst(state->table.job.handle); job;
-         job = ( Job_t * )dtnext(state->table.job.handle, job)) {
+    for (job = ( Job_t * ) dtfirst(state->table.job.handle); job;
+         job = ( Job_t * ) dtnext(state->table.job.handle, job)) {
         message(
         (-2,
          "schedule job=%s start=%lu time=%lu queue=%s load=%d.%02d/%d.%02d%s",
@@ -679,7 +680,7 @@ schedule(State_t *state)
 static int
 exception(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     int status;
     pid_t pid;
     Job_t *job;
@@ -700,7 +701,7 @@ exception(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
                 status = WIFSIGNALED(status) ? EXIT_TERM(WTERMSIG(status))
                                              : EXIT_CODE(WEXITSTATUS(status));
                 message((-2, "wait pid=%lu status=%d", pid, status));
-                if (job = ( Job_t * )dtmatch(state->table.pid.handle, &pid))
+                if (job = ( Job_t * ) dtmatch(state->table.pid.handle, &pid))
                     reap(state, job, status);
                 continue;
             }
@@ -722,8 +723,8 @@ exception(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
 static int
 listowner(Dt_t *dt, void *object, void *handle)
 {
-    Owner_t *own = ( Owner_t * )object;
-    Visit_t *vis = ( Visit_t * )handle;
+    Owner_t *own = ( Owner_t * ) object;
+    Visit_t *vis = ( Visit_t * ) handle;
 
     NoP(dt);
     if (own->allow == vis->queue->allow)
@@ -738,9 +739,9 @@ listowner(Dt_t *dt, void *object, void *handle)
 static int
 listqueue(Dt_t *dt, void *object, void *handle)
 {
-    Queue_t *que = ( Queue_t * )object;
-    Connection_t *con = (( Visit_t * )handle)->con;
-    State_t *state = (( Visit_t * )handle)->state;
+    Queue_t *que = ( Queue_t * ) object;
+    Connection_t *con = (( Visit_t * ) handle)->con;
+    State_t *state = (( Visit_t * ) handle)->state;
     char *s;
     Visit_t visit;
 
@@ -832,7 +833,7 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
             return -1;
         }
         *s = 0;
-        if (!(que = ( Queue_t * )dtmatch(state->table.queue.handle, t))) {
+        if (!(que = ( Queue_t * ) dtmatch(state->table.queue.handle, t))) {
             error(ERROR_OUTPUT | 2, con->fd, "%s: unknown queue", t);
             return -1;
         }
@@ -905,7 +906,7 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
                       con->id.uid,
                       con->id.gid,
                       state->sequence++);
-        s = ( char * )memcpy(job->data, t, s - t);
+        s = ( char * ) memcpy(job->data, t, s - t);
         job->start = cs.time;
         job->shell = s;
         while (*s)
@@ -1081,9 +1082,9 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
         if (*s++ != ' ')
             s = 0;
         m = 0;
-        for (job = ( Job_t * )dtfirst(state->table.job.handle); job;
+        for (job = ( Job_t * ) dtfirst(state->table.job.handle); job;
              job = next) {
-            next = ( Job_t * )dtnext(state->table.job.handle, job);
+            next = ( Job_t * ) dtnext(state->table.job.handle, job);
             if ((!que || que == job->queue)
                 && (s && strmatch(job->name, s)
                     || !s && (admin || con->id.uid == job->id.uid))
@@ -1160,8 +1161,8 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
     case AT_USER:
         error(
         ERROR_OUTPUT | 0, con->fd, "USER      ADMIN TOTAL SUB RUN HOME");
-        for (usr = ( User_t * )dtfirst(state->table.user.handle); usr;
-             usr = ( User_t * )dtnext(state->table.user.handle, usr))
+        for (usr = ( User_t * ) dtfirst(state->table.user.handle); usr;
+             usr = ( User_t * ) dtnext(state->table.user.handle, usr))
             if (admin || con->id.uid == usr->uid)
                 error(ERROR_OUTPUT | 0,
                       con->fd,
@@ -1214,10 +1215,10 @@ order(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 
     NoP(dt);
     NoP(disc);
-    if (!(r2 = strcmp(( char * )a + sizeof(unsigned long),
-                      ( char * )b + sizeof(unsigned long))))
+    if (!(r2 = strcmp(( char * ) a + sizeof(unsigned long),
+                      ( char * ) b + sizeof(unsigned long))))
         return 0;
-    if (!(r1 = *( unsigned long * )a - *( unsigned long * )b))
+    if (!(r1 = *( unsigned long * ) a - *( unsigned long * ) b))
         return r2;
     return r1;
 }
@@ -1314,13 +1315,13 @@ stampwrite(int fd, const void *buf, size_t n)
             r = -1;
         else
             r += z;
-        for (s = ( char * )buf; s < (( char * )buf + n - 1) && !isspace(*s);
+        for (s = ( char * ) buf; s < (( char * ) buf + n - 1) && !isspace(*s);
              s++)
             if (*s == ':') {
-                while (++s < (( char * )buf + n - 1) && isspace(*s))
+                while (++s < (( char * ) buf + n - 1) && isspace(*s))
                     ;
-                n -= s - ( char * )buf;
-                buf = ( void * )s;
+                n -= s - ( char * ) buf;
+                buf = ( void * ) s;
                 break;
             }
     }
@@ -1338,7 +1339,7 @@ stampwrite(int fd, const void *buf, size_t n)
 static int
 request(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Connection_t *con = state->con + fp->fd;
     char *s;
     char *t;
@@ -1401,7 +1402,7 @@ init(const char *path)
     struct stat xs;
 
     umask(S_IWGRP | S_IWOTH);
-    if ((i = ( int )strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0)) < 20)
+    if ((i = ( int ) strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0)) < 20)
         i = 20;
     if (!(state = newof(0, State_t, 1, (i - 1) * sizeof(Connection_t))))
         error(ERROR_SYSTEM | 3, "out of space [state]");
@@ -1481,7 +1482,7 @@ init(const char *path)
     *ap++ = ds.st_uid;
     *ap = xs.st_uid;
     limited
-    = (xs.st_mode & S_ISUID) ? ( unsigned long )xs.st_uid : state->admin[0];
+    = (xs.st_mode & S_ISUID) ? ( unsigned long ) xs.st_uid : state->admin[0];
     if (!(state->atx = strdup(s)))
         error(ERROR_SYSTEM | 3, "out of space [atx]");
     state->table.job.discipline.key = offsetof(Job_t, start);
@@ -1568,7 +1569,7 @@ init(const char *path)
                 error(0, "cannot read old job %s", s);
                 remove(s);
             } else {
-                if (b = ( char * )sfreserve(sp, SF_UNBOUND, SF_LOCKR))
+                if (b = ( char * ) sfreserve(sp, SF_UNBOUND, SF_LOCKR))
                     command(state, state->con, b, sfvalue(sp), s);
                 sfclose(sp);
             }

@@ -48,8 +48,8 @@ memcpy(void *s1, void *s2, size_t n)
 void *
 memcpy(void *as1, const void *as2, size_t n)
 {
-    char *s1 = ( char * )as1;
-    const char *s2 = ( const char * )as2;
+    char *s1 = ( char * ) as1;
+    const char *s2 = ( const char * ) as2;
 
     while (n-- > 0)
         *s1++ = *s2++;

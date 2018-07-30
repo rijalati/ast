@@ -41,7 +41,7 @@
 #    include "debug.h"
 
 /* short-hand notations */
-#    define NIL(t) (( t )0)
+#    define NIL(t) (( t ) 0)
 #    define reg register
 
 /* min #bits for a hash table. (1<<this) is table size */
@@ -151,13 +151,14 @@ typedef struct _dtlib_s
         (!((dt)->disc && (dt)->disc->eventf)                                 \
          ? 0                                                                 \
          : (*(dt)->disc->eventf)(                                            \
-           (dt), DT_ERROR, ( Void_t * )(mesg), (dt)->disc))
+           (dt), DT_ERROR, ( Void_t * ) (mesg), (dt)->disc))
 
 /* announce completion of an operation of type (ty) on some object (ob) in
  * dictionary (dt) */
 #    define DTANNOUNCE(dt, ob, ty)                                           \
-        (((ob) && (( ty )&DT_TOANNOUNCE) && ((dt)->data->type & DT_ANNOUNCE) \
-          && (dt)->disc && (dt)->disc->eventf)                               \
+        (((ob) && (( ty ) &DT_TOANNOUNCE)                                    \
+          && ((dt)->data->type & DT_ANNOUNCE) && (dt)->disc                  \
+          && (dt)->disc->eventf)                                             \
          ? (*(dt)->disc->eventf)((dt), DT_ANNOUNCE | (ty), (ob), (dt)->disc) \
          : 0)
 
@@ -200,16 +201,16 @@ _BEGIN_EXTERNS_
 #        define extern __EXPORT__
 #    endif
 
-extern Dtlink_t *_dtmake _ARG_(( Dt_t *, Void_t *, int ));
-extern void _dtfree _ARG_(( Dt_t *, Dtlink_t *, int ));
-extern int _dtlock _ARG_(( Dt_t *, int ));
+extern Dtlink_t *_dtmake _ARG_(( Dt_t *, Void_t *, int ) );
+extern void _dtfree _ARG_(( Dt_t *, Dtlink_t *, int ) );
+extern int _dtlock _ARG_(( Dt_t *, int ) );
 
 #    undef extern
 
 #    if !_PACKAGE_ast
 extern Void_t *malloc _ARG_((size_t));
 extern Void_t *realloc _ARG_((Void_t *, size_t));
-extern void free _ARG_(( Void_t * ));
+extern void free _ARG_(( Void_t * ) );
 #    endif
 
 _END_EXTERNS_

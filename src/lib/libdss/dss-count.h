@@ -37,7 +37,7 @@ USAGE_LICENSE
 static int
 count_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     int errors = error_info.errors;
 
     for (;;) {
@@ -69,7 +69,7 @@ static int
 count_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
     if (expr->data)
-        sfprintf(expr->op, "%s: ", ( char * )expr->data);
+        sfprintf(expr->op, "%s: ", ( char * ) expr->data);
     sfprintf(expr->op,
              "%I*u/%I*u\n",
              sizeof(expr->parent->selected),

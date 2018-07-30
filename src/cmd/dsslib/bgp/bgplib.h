@@ -35,10 +35,10 @@
 #    include "bgp.h"
 
 #    ifndef truncof
-#        define truncof(x, y) ((x) & ~(( y )-1))
+#        define truncof(x, y) ((x) & ~(( y ) -1))
 #    endif
 
-#    define BGPFILE(f) (( Bgp_t * )(f)->dss->data)
+#    define BGPFILE(f) (( Bgp_t * ) (f)->dss->data)
 #    define BGPDATA(p) BGPFILE(DSSRECORD(p)->file)
 
 #    define BGP_FIXED offsetof(Bgproute_t, data)
@@ -87,7 +87,7 @@ typedef struct Bgp_s /* method handle		*/
                 (s)->size += m * sizeof(t);                                  \
             }                                                                \
             (v)->size = m;                                                   \
-            p = ( t * )((r)->data + (v)->offset);                            \
+            p = ( t * ) ((r)->data + (v)->offset);                           \
         } while (0)
 
 #    define BGPPERM(s, r, t, p, m, x, e, d)                                  \
@@ -99,7 +99,7 @@ typedef struct Bgp_s /* method handle		*/
             if ((a + n) <= (s)->temp) {                                      \
                 (s)->size = a + n;                                           \
                 memset((r)->data + a, 0, n);                                 \
-                p = ( t * )((r)->data + a);                                  \
+                p = ( t * ) ((r)->data + a);                                 \
             } else {                                                         \
                 if ((d)->errorf)                                             \
                     (*(d)->errorf)(                                          \
@@ -113,10 +113,10 @@ typedef struct Bgp_s /* method handle		*/
             int a;                                                           \
             int n;                                                           \
             n = m * sizeof(t) + x;                                           \
-            if ((a = ( int )(s)->temp - n) >= 0) {                           \
+            if ((a = ( int ) (s)->temp - n) >= 0) {                          \
                 (s)->temp = truncof(a, ALIGN_BOUND1);                        \
                 memset((r)->data + (s)->temp, 0, n);                         \
-                p = ( t * )((r)->data + (s)->temp);                          \
+                p = ( t * ) ((r)->data + (s)->temp);                         \
             } else {                                                         \
                 if ((d)->errorf)                                             \
                     (*(d)->errorf)(                                          \

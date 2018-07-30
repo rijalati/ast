@@ -535,7 +535,7 @@ cmdpipe(char *str)
     }
     if (fp)
         fileclose(fp);
-    note(0, "\"%s\" %ld/%ld", cmd, ( long )lc, ( long )cc);
+    note(0, "\"%s\" %ld/%ld", cmd, ( long ) lc, ( long ) cc);
     return 0;
 }
 
@@ -568,10 +568,10 @@ quote(FILE *fp, char *s)
 static int
 blastdump(Dt_t *dt, void *object, void *context)
 {
-    struct name *hp = ( struct name * )object;
+    struct name *hp = ( struct name * ) object;
 
     printf("header[%s]='", hp->name);
-    quote(stdout, ( char * )hp->value);
+    quote(stdout, ( char * ) hp->value);
     printf("'\n");
     hp->flags = 0;
     hp->value = 0;
@@ -619,15 +619,15 @@ blast1(struct msg *msgvec, Dt_t **ignore)
             while (headget(&pp))
                 if (hp = dictsearch(&headers, pp.name, LOOKUP)) {
                     if (!hp->value) {
-                        hp->value = ( void * )next;
+                        hp->value = ( void * ) next;
                         next += hp->flags + 1;
                         if (next > &tmp[sizeof(tmp)]) {
                             note(0, "Too many headers");
                             goto skip;
                         }
-                        *(( char * )hp->value) = 0;
+                        *(( char * ) hp->value) = 0;
                     }
-                    strcat(( char * )hp->value, pp.data);
+                    strcat(( char * ) hp->value, pp.data);
                 }
         }
 
@@ -802,12 +802,12 @@ mark1(char *str, int set, int clr)
                 break;
             }
             mark += no;
-            if (!(kp = ( struct mark * )strsearch(marks,
-                                                  elementsof(marks),
-                                                  sizeof(*marks),
-                                                  strcasecmp,
-                                                  mark,
-                                                  NiL))) {
+            if (!(kp = ( struct mark * ) strsearch(marks,
+                                                   elementsof(marks),
+                                                   sizeof(*marks),
+                                                   strcasecmp,
+                                                   mark,
+                                                   NiL))) {
                 note(0, "%s: unknown mark", mark);
                 return 1;
             }

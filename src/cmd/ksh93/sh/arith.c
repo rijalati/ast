@@ -362,7 +362,7 @@ static Namval_t *
 scope(Namval_t *np, struct lval *lvalue, int assign)
 {
     int flag = lvalue->flag;
-    char *sub = 0, *cp = ( char * )np;
+    char *sub = 0, *cp = ( char * ) np;
     Namval_t *mp;
     Shell_t *shp = lvalue->shp;
     int flags = HASH_NOSCOPE | HASH_SCOPE | HASH_BUCKET;
@@ -373,7 +373,7 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
     assign = assign ? NV_ASSIGN : NV_NOASSIGN;
     lvalue->nosub = 0;
     if (nosub < 0 && lvalue->ovalue)
-        return (( Namval_t * )lvalue->ovalue);
+        return (( Namval_t * ) lvalue->ovalue);
     lvalue->ovalue = 0;
     if (cp >= lvalue->expr && cp < lvalue->expr + lvalue->elen) {
         int offset;
@@ -405,7 +405,7 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
             flag++;
         else
             flag = 0;
-        cp = ( char * )np;
+        cp = ( char * ) np;
     } else if (assign == NV_ASSIGN && nv_isnull(np)
                && !nv_isattr(np, ~(NV_MINIMAL | NV_NOFREE)))
         flags |= NV_ADD;
@@ -436,7 +436,7 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
     }
     if (!nosub && flag) {
         int hasdot = 0;
-        cp = ( char * )&lvalue->expr[flag];
+        cp = ( char * ) &lvalue->expr[flag];
         if (sub) {
             goto skip;
         }
@@ -444,7 +444,7 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
         while (1) {
             Namarr_t *ap;
             Namval_t *nq;
-            cp = nv_endsubscript(np, cp, 0, ( void * )shp);
+            cp = nv_endsubscript(np, cp, 0, ( void * ) shp);
             if (c || *cp == '.') {
                 c = '.';
                 while (*cp == '.') {
@@ -497,14 +497,14 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
                 }
                 if (ap && ap->table
                     && (nq = nv_search(nv_getsub(np), ap->table, NV_ADD)))
-                    nq->nvenv = ( char * )np;
+                    nq->nvenv = ( char * ) np;
                 if (nq && nv_isnull(nq))
                     np = nv_arraychild(np, nq, 0);
             }
             sub = cp;
         }
     } else if (nosub > 0)
-        nv_putsub(np, ( char * )0, nosub - 1, 0);
+        nv_putsub(np, ( char * ) 0, nosub - 1, 0);
     return (np);
 }
 
@@ -564,7 +564,7 @@ number(const char *s, char **p, int b, struct lval *lvalue)
     if (*t == '_') {
         if ((r == 1 || r == 2) && strcmp(t, "_PI") == 0) {
             t += 3;
-            r = Mtable[( int )r - 1].value;
+            r = Mtable[( int ) r - 1].value;
         } else if (r == 2 && strcmp(t, "_SQRTPI") == 0) {
             t += 7;
             r = Mtable[2].value;
@@ -580,14 +580,14 @@ number(const char *s, char **p, int b, struct lval *lvalue)
         if (*t == 'f' || *t == 'F') {
             t++;
             lvalue->isfloat = TYPE_F;
-            r = ( float )r;
+            r = ( float ) r;
         } else if (*t == 'l' || *t == 'L') {
             t++;
             lvalue->isfloat = TYPE_LD;
         } else if (*t == 'd' || *t == 'D') {
             t++;
             lvalue->isfloat = TYPE_LD;
-            r = ( double )r;
+            r = ( double ) r;
         }
     }
     errno = oerrno;
@@ -600,24 +600,24 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
 {
     Shell_t *shp = lvalue->shp;
     Sfdouble_t r = 0;
-    char *str = ( char * )*ptr;
+    char *str = ( char * ) *ptr;
     char *cp;
     switch (type) {
     case ASSIGN: {
-        Namval_t *np = ( Namval_t * )(lvalue->value);
+        Namval_t *np = ( Namval_t * ) (lvalue->value);
         np = scope(np, lvalue, 1);
-        nv_putval(np, ( char * )&n, NV_LDOUBLE);
+        nv_putval(np, ( char * ) &n, NV_LDOUBLE);
         if (lvalue->eflag)
-            lvalue->ptr = ( void * )nv_hasdisc(np, &ENUM_disc);
+            lvalue->ptr = ( void * ) nv_hasdisc(np, &ENUM_disc);
         lvalue->eflag = 0;
         r = nv_getnum(np);
-        lvalue->value = ( char * )np;
+        lvalue->value = ( char * ) np;
         break;
     }
     case LOOKUP: {
         int c = *str;
         char *xp = str;
-        lvalue->value = ( char * )0;
+        lvalue->value = ( char * ) 0;
         if (c == '.')
             str++;
         c = mbchar(str);
@@ -629,7 +629,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                     ;
                 str = xp;
                 while (c == '[' && dot == NV_NOADD) {
-                    str = nv_endsubscript(( Namval_t * )0, str, 0, shp);
+                    str = nv_endsubscript(( Namval_t * ) 0, str, 0, shp);
                     c = *str;
                 }
                 if (c != '.')
@@ -637,15 +637,15 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                 dot = NV_NOADD;
                 if ((c = *++str) != '[')
                     continue;
-                str
-                = nv_endsubscript(( Namval_t * )0, cp = str, NV_SUBQUOTE, shp)
-                  - 1;
-                if (sh_checkid(cp + 1, ( char * )0))
+                str = nv_endsubscript(
+                      ( Namval_t * ) 0, cp = str, NV_SUBQUOTE, shp)
+                      - 1;
+                if (sh_checkid(cp + 1, ( char * ) 0))
                     str -= 2;
             }
             if (c == '(') {
                 int off = stktell(shp->stk);
-                int fsize = str - ( char * )(*ptr);
+                int fsize = str - ( char * ) (*ptr);
                 const struct mathtab *tp;
                 Namval_t *nq;
                 c = **ptr;
@@ -654,22 +654,22 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                 stkseek(shp->stk, off);
                 if (nq = nv_search(stkptr(shp->stk, off), shp->fun_tree, 0)) {
                     lvalue->nargs = -nq->nvalue.rp->argc;
-                    lvalue->fun = ( Math_f )nq;
+                    lvalue->fun = ( Math_f ) nq;
                     break;
                 }
                 if (fsize <= (sizeof(tp->fname) - 2))
                     lvalue->fun
-                    = ( Math_f )sh_mathstdfun(*ptr, fsize, &lvalue->nargs);
+                    = ( Math_f ) sh_mathstdfun(*ptr, fsize, &lvalue->nargs);
                 if (lvalue->fun)
                     break;
                 if (lvalue->emode & ARITH_COMP)
-                    lvalue->value = ( char * )e_function;
+                    lvalue->value = ( char * ) e_function;
                 else
-                    lvalue->value = ( char * )ERROR_dictionary(e_function);
+                    lvalue->value = ( char * ) ERROR_dictionary(e_function);
                 return (r);
             }
             if ((lvalue->emode & ARITH_COMP) && dot) {
-                lvalue->value = ( char * )*ptr;
+                lvalue->value = ( char * ) *ptr;
                 lvalue->flag = str - lvalue->value;
                 break;
             }
@@ -685,7 +685,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                 cp = str;
                 while (c == '[' || c == '.') {
                     if (c == '[') {
-                        str = nv_endsubscript(np, str, 0, ( void * )shp);
+                        str = nv_endsubscript(np, str, 0, ( void * ) shp);
                         if ((c = *str) != '[' && c != '.') {
                             str = cp;
                             c = '[';
@@ -700,7 +700,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                     }
                 }
                 *str = 0;
-                cp = ( char * )*ptr;
+                cp = ( char * ) *ptr;
                 Varsubscript = false;
                 if ((cp[0] == 'i' || cp[0] == 'I')
                     && (cp[1] == 'n' || cp[1] == 'N')
@@ -746,7 +746,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                                   NV_NOREF | NV_NOASSIGN | NV_VARNAME | dot);
                     if (!np || Varsubscript) {
                         np = 0;
-                        lvalue->value = ( char * )*ptr;
+                        lvalue->value = ( char * ) *ptr;
                         lvalue->flag = str - lvalue->value;
                     }
                 }
@@ -763,7 +763,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
 #endif
             if (!np && lvalue->value)
                 break;
-            lvalue->value = ( char * )np;
+            lvalue->value = ( char * ) np;
             /* bind subscript later */
             if (nv_isattr(np, NV_DOUBLE) == NV_DOUBLE)
                 lvalue->isfloat = 1;
@@ -787,7 +787,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
         break;
     }
     case VALUE: {
-        Namval_t *np = ( Namval_t * )(lvalue->value);
+        Namval_t *np = ( Namval_t * ) (lvalue->value);
         Namarr_t *ap;
         if (sh_isoption(shp, SH_NOEXEC))
             return (0);
@@ -799,13 +799,13 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
             }
             return (0);
         }
-        lvalue->ovalue = ( char * )np;
+        lvalue->ovalue = ( char * ) np;
         if (lvalue->eflag)
-            lvalue->ptr = ( void * )nv_hasdisc(np, &ENUM_disc);
-        else if (( Namfun_t * )lvalue->ptr && !nv_hasdisc(np, &ENUM_disc)
+            lvalue->ptr = ( void * ) nv_hasdisc(np, &ENUM_disc);
+        else if (( Namfun_t * ) lvalue->ptr && !nv_hasdisc(np, &ENUM_disc)
                  && !nv_isattr(np, NV_INTEGER)) {
             Namval_t *mp, node;
-            mp = (( Namfun_t * )lvalue->ptr)->type;
+            mp = (( Namfun_t * ) lvalue->ptr)->type;
             memset(&node, 0, sizeof(node));
             nv_clone(mp, &node, 0);
             nv_offattr(&node, NV_RDONLY | NV_NOFREE);
@@ -819,29 +819,29 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
             && nv_isnull(np) && !nv_isattr(np, NV_INTEGER)) {
             *ptr = nv_name(np);
         skip:
-            lvalue->value = ( char * )ERROR_dictionary(e_notset);
+            lvalue->value = ( char * ) ERROR_dictionary(e_notset);
             lvalue->emode |= 010;
             return (0);
         }
         if (lvalue->userfn && (ap = nv_arrayptr(np))
             && (ap->flags & ARRAY_UNDEF)) {
-            r = ( Sfdouble_t )integralof(np);
+            r = ( Sfdouble_t ) integralof(np);
             lvalue->isfloat = 5;
             return (r);
         }
         r = nv_getnum(np);
         if (nv_isattr(np, NV_INTEGER | NV_BINARY) == (NV_INTEGER | NV_BINARY))
-            lvalue->isfloat = (r != ( Sflong_t )r) ? TYPE_LD : 0;
+            lvalue->isfloat = (r != ( Sflong_t ) r) ? TYPE_LD : 0;
         else if (nv_isattr(np, (NV_DOUBLE | NV_SHORT))
                  == (NV_DOUBLE | NV_SHORT)) {
             lvalue->isfloat = TYPE_F;
-            r = ( float )r;
+            r = ( float ) r;
         } else if (nv_isattr(np, (NV_DOUBLE | NV_LONG))
                    == (NV_DOUBLE | NV_LONG))
             lvalue->isfloat = TYPE_LD;
         else if (nv_isattr(np, NV_DOUBLE) == NV_DOUBLE) {
             lvalue->isfloat = TYPE_D;
-            r = ( double )r;
+            r = ( double ) r;
         }
         if ((lvalue->emode & ARITH_ASSIGNOP) && nv_isarray(np))
             lvalue->nosub = nv_aindex(np) + 1;
@@ -868,7 +868,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
 Sfdouble_t
 sh_arith(Shell_t *shp, const char *str)
 {
-    return (sh_strnum(shp, str, ( char ** )0, 1));
+    return (sh_strnum(shp, str, ( char ** ) 0, 1));
 }
 
 void *
@@ -876,10 +876,10 @@ sh_arithcomp(Shell_t *shp, char *str)
 {
     const char *ptr = str;
     Arith_t *ep;
-    ep = arith_compile(shp, str, ( char ** )&ptr, arith, ARITH_COMP | 1);
+    ep = arith_compile(shp, str, ( char ** ) &ptr, arith, ARITH_COMP | 1);
     if (*ptr)
         errormsg(SH_DICT, ERROR_exit(1), e_lexbadchar, *ptr, str);
-    return (( void * )ep);
+    return (( void * ) ep);
 }
 
 /*
@@ -894,7 +894,7 @@ sh_strnum_20120720(Shell_t *shp, const char *str, char **ptr, int mode)
     char *last;
     if (*str == 0) {
         if (ptr)
-            *ptr = ( char * )str;
+            *ptr = ( char * ) str;
         return (0);
     }
     errno = 0;

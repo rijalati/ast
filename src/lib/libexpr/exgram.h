@@ -37,7 +37,7 @@
 
 #    define exlex() extoken(expr.program)
 
-#    define ALLOCATE(p, x) ( x * )exalloc(p, sizeof(x))
+#    define ALLOCATE(p, x) ( x * ) exalloc(p, sizeof(x))
 #    define QUALIFY(r, s)                                                    \
         ((r) && (expr.program->disc->flags & EX_QUALIFY) ? qualify(r, s)     \
                                                          : (s))
@@ -100,7 +100,7 @@ exfreenode(Expr_t *p, Exnode_t *x)
         if (x->data.variable.index)
             exfreenode(p, x->data.variable.index);
         if (x->data.variable.symbol->local.pointer) {
-            dtclose(( Dt_t * )x->data.variable.symbol->local.pointer);
+            dtclose(( Dt_t * ) x->data.variable.symbol->local.pointer);
             x->data.variable.symbol->local.pointer = 0;
         }
         break;
@@ -153,7 +153,7 @@ static int typecast[5][5]
     I2F, I2S, F2X, F2I, F2I, 0,   F2S, S2X, S2I, S2I, S2F, 0 };
 
 #    define TYPEINDEX(t)                                                     \
-        (((t) >= INTEGER && (t) <= STRING) ? (( t )-INTEGER + 1) : 0)
+        (((t) >= INTEGER && (t) <= STRING) ? (( t ) -INTEGER + 1) : 0)
 #    define TYPENAME(t) typename[TYPEINDEX(t)]
 #    define TYPECAST(f, t) typecast[TYPEINDEX(f)][TYPEINDEX(t)]
 
@@ -327,7 +327,7 @@ qualify(Exref_t *ref, Exid_t *sym)
         ref = ref->next;
     sfprintf(expr.program->tmp, "%s.%s", ref->symbol->name, sym->name);
     s = exstash(expr.program->tmp, NiL);
-    if (!(x = ( Exid_t * )dtmatch(expr.program->symbols, s))) {
+    if (!(x = ( Exid_t * ) dtmatch(expr.program->symbols, s))) {
         if (x = newof(0, Exid_t, 1, strlen(s) - EX_NAMELEN + 1)) {
             memcpy(x, sym, sizeof(Exid_t) - EX_NAMELEN);
             strcpy(x->name, s);
@@ -546,7 +546,7 @@ preprint(Exnode_t *args)
                                 0,
                                 FLOATING,
                                 x->arg,
-                                x->arg->op == ID ? x->arg : ( Exnode_t * )0);
+                                x->arg->op == ID ? x->arg : ( Exnode_t * ) 0);
                 break;
             case INTEGER:
             case UNSIGNED:
@@ -559,7 +559,7 @@ preprint(Exnode_t *args)
                                 0,
                                 INTEGER,
                                 x->arg,
-                                x->arg->op == ID ? x->arg : ( Exnode_t * )0);
+                                x->arg->op == ID ? x->arg : ( Exnode_t * ) 0);
                 x->arg->type = t;
                 break;
             case STRING:
@@ -594,7 +594,7 @@ preprint(Exnode_t *args)
                         0,
                         STRING,
                         x->arg,
-                        x->arg->op == ID ? x->arg : ( Exnode_t * )0);
+                        x->arg->op == ID ? x->arg : ( Exnode_t * ) 0);
                 }
                 break;
             }
@@ -629,7 +629,7 @@ expush(Expr_t *p, const char *name, int line, const char *sp, Sfio_t *fp)
     }
     if (!p->input)
         p->input = &expr.null;
-    if (!(in->bp = in->sp = ( char * )sp)) {
+    if (!(in->bp = in->sp = ( char * ) sp)) {
         if (in->fp = fp)
             in->close = 0;
         else if (name) {
@@ -639,7 +639,7 @@ expush(Expr_t *p, const char *name, int line, const char *sp, Sfio_t *fp)
                 exerror("%s: file not found", name);
                 in->bp = in->sp = "";
             } else {
-                name = ( const char * )vmstrdup(p->vm, s);
+                name = ( const char * ) vmstrdup(p->vm, s);
                 in->close = 1;
             }
         }
@@ -659,7 +659,7 @@ expush(Expr_t *p, const char *name, int line, const char *sp, Sfio_t *fp)
     p->input = in;
     in->file = error_info.file;
     if (line >= 0)
-        error_info.file = ( char * )name;
+        error_info.file = ( char * ) name;
     in->line = error_info.line;
     in->nesting = 0;
     in->unit = !name && !line;
@@ -731,8 +731,8 @@ excomp(Expr_t *p, const char *name, int line, const char *sp, Sfio_t *fp)
     expop(p);
     p->eof = eof;
     if (expr.statics) {
-        for (v = ( Exid_t * )dtfirst(p->symbols); v;
-             v = ( Exid_t * )dtnext(p->symbols, v))
+        for (v = ( Exid_t * ) dtfirst(p->symbols); v;
+             v = ( Exid_t * ) dtnext(p->symbols, v))
             if (v->isstatic) {
                 dtdelete(p->symbols, v);
                 if (!--expr.statics)

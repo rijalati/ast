@@ -34,7 +34,7 @@ Void_t *obj;
 Void_t *data;
 #endif
 {
-    See[( long )obj] = 1;
+    See[( long ) obj] = 1;
     Count += 1;
     return 0;
 }
@@ -66,11 +66,11 @@ tmain()
     dtinsert(dt3, 6L);
     dtinsert(dt3, 8L);
 
-    if (( long )dtsearch(dt1, 4L) != 0)
+    if (( long ) dtsearch(dt1, 4L) != 0)
         terror("Finding 4 here?");
 
     dtview(dt1, dt2);
-    if (( long )dtsearch(dt1, 4L) != 4)
+    if (( long ) dtsearch(dt1, 4L) != 4)
         terror("Should find 4 here!");
 
     dtwalk(dt1, visit, NIL(Void_t *));
@@ -83,27 +83,28 @@ tmain()
     dtinsert(dt1, 2L);
 
     Count = 0;
-    for (i = ( long )dtfirst(dt1); i; i = ( long )dtnext(dt1, i))
+    for (i = ( long ) dtfirst(dt1); i; i = ( long ) dtnext(dt1, i))
         Count++;
     if (Count != 6)
         terror("Walk wrong length2");
 
     Count = 0;
-    for (i = ( long )dtlast(dt1); i; i = ( long )dtprev(dt1, i))
+    for (i = ( long ) dtlast(dt1); i; i = ( long ) dtprev(dt1, i))
         Count++;
     if (Count != 6)
         terror("Walk wrong length3");
 
     /* check union of elements in order across ordered sets */
     dtview(dt2, dt3);
-    for (k = 1, i = ( long )dtfirst(dt1); i; ++k, i = ( long )dtnext(dt1, i))
+    for (k = 1, i = ( long ) dtfirst(dt1); i;
+         ++k, i = ( long ) dtnext(dt1, i))
         if (i != k)
             terror("Elements not appearing in order");
 
     dtinsert(dt3, 10L);
-    if (( long )dtatmost(dt1, 9L) != 8L)
+    if (( long ) dtatmost(dt1, 9L) != 8L)
         terror("dtatmost failed on an order set");
-    if (( long )dtatleast(dt1, 9L) != 10L)
+    if (( long ) dtatleast(dt1, 9L) != 10L)
         terror("dtatleast failed on an order set");
 
     /* dt1: 1 3 5 2
@@ -114,7 +115,7 @@ tmain()
     dtmethod(dt1, Dtset);
     dtmethod(dt2, Dtset);
     dtmethod(dt3, Dtset);
-    for (i = ( long )dtfirst(dt1); i; i = ( long )dtnext(dt1, i))
+    for (i = ( long ) dtfirst(dt1); i; i = ( long ) dtnext(dt1, i))
         Count++;
     if (Count != 9)
         terror("Walk wrong length4");

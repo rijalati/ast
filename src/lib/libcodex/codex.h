@@ -57,7 +57,7 @@
 #    define CODEX_NAME 256   /* max coder name w/args	*/
 #    define CODEX_ARGS 32    /* max coder args in name	*/
 
-#    define CODEX(d) (( Codex_t * )(d))
+#    define CODEX(d) (( Codex_t * ) (d))
 
 typedef uint32_t Codexnum_t;
 

@@ -90,11 +90,11 @@ msgvcall(int fd,
          */
 
         msg_write = 1;
-        ip = xp ? ( Msg_file_t * )(*xp) : va_arg(ap, Msg_file_t *);
+        ip = xp ? ( Msg_file_t * ) (*xp) : va_arg(ap, Msg_file_t *);
         b = va_arg(ap, char *);
         c = va_arg(ap, size_t);
-        o
-        = MSG_ARG(call, 4) == MSG_ARG_number ? va_arg(ap, off_t) : ( off_t )0;
+        o = MSG_ARG(call, 4) == MSG_ARG_number ? va_arg(ap, off_t)
+                                               : ( off_t ) 0;
         r = 0;
         while (c > 0) {
             z = c > MSG_SIZE_IO ? MSG_SIZE_IO : c;
@@ -161,7 +161,7 @@ msgvcall(int fd,
                 msgputu(&b, e, *np++);
             continue;
         case MSG_ARG_file:
-            ip = (xp && *xp) ? ( Msg_file_t * )(*xp++)
+            ip = (xp && *xp) ? ( Msg_file_t * ) (*xp++)
                              : va_arg(ap, Msg_file_t *);
             for (n = 0; n < sizeof(*ip) / sizeof(ip->fid[0]); n++)
                 msgputu(&b, e, ip->fid[n]);
@@ -185,7 +185,7 @@ msgvcall(int fd,
                     if (ret)
                         n = ret->number;
                     at >>= MSG_ARG_TYPE;
-                    de = ( struct dirent * )(( char * )dp + n);
+                    de = ( struct dirent * ) (( char * ) dp + n);
                     while (dp < de) {
                         i = D_NAMLEN(dp);
                         msgputz(&b, e, dp->d_name, i + 1);
@@ -195,13 +195,13 @@ msgvcall(int fd,
 #else
                         i = D_RECSIZ(dp, i);
 #endif
-                        dp = ( struct dirent * )(( char * )dp + i);
+                        dp = ( struct dirent * ) (( char * ) dp + i);
                     }
                     msgputu(&b, e, 0);
                     msgputu(&b, e, n);
                     break;
                 case MSG_CALL(MSG_pipe):
-                    ip = (xp && *xp) ? ( Msg_file_t * )(*xp++)
+                    ip = (xp && *xp) ? ( Msg_file_t * ) (*xp++)
                                      : va_arg(ap, Msg_file_t *);
                     for (i = 0; i < 2; i++) {
                         for (n = 0; n < sizeof(*ip) / sizeof(ip->fid[0]); n++)
@@ -274,7 +274,7 @@ msgvcall(int fd,
                 va_arg(ap, char *);
             continue;
         case MSG_ARG_string:
-            p = (xp && *xp) ? ( char * )(*xp++) : va_arg(ap, char *);
+            p = (xp && *xp) ? ( char * ) (*xp++) : va_arg(ap, char *);
             if (p)
                 msgputz(&b, e, p, strlen(p) + 1);
             else
@@ -461,7 +461,7 @@ msgvreturn(int fd, unsigned long call, void **xp, va_list ap)
 #if _mem_d_reclen_dirent
                     dp->d_reclen = n;
 #endif
-                    dp = ( struct dirent * )(( char * )dp + n);
+                    dp = ( struct dirent * ) (( char * ) dp + n);
                 }
                 break;
             case MSG_CALL(MSG_pipe):

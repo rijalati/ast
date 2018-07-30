@@ -37,7 +37,7 @@
 
 #    define SWAP_MAX 8
 
-#    define SWAPOP(n) ((( n )&int_swap) ^ (n))
+#    define SWAPOP(n) ((( n ) &int_swap) ^ (n))
 
 #    if _BLD_ast && defined(__EXPORT__)
 #        define extern __EXPORT__

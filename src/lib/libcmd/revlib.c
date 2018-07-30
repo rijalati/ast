@@ -27,7 +27,7 @@
 #include <rev.h>
 
 #define BUFSIZE SF_BUFSIZE
-#define rounddown(n, size) ((( n )-1) & ~(( size )-1))
+#define rounddown(n, size) ((( n ) -1) & ~(( size ) -1))
 
 /*
  * copy the lines starting at offset <start> from in <in> to <out>
@@ -40,18 +40,18 @@ rev_line(Sfio_t *in, Sfio_t *out, off_t start)
     int n, nleft = 0;
     char buff[BUFSIZE];
     off_t offset;
-    if (sfseek(in, ( off_t )0, SEEK_CUR) < 0) {
+    if (sfseek(in, ( off_t ) 0, SEEK_CUR) < 0) {
         Sfio_t *tmp = sftmp(4 * SF_BUFSIZE);
         if (!tmp)
             return (-1);
-        if (start > 0 && sfmove(in, ( Sfio_t * )0, start, -1) != start)
+        if (start > 0 && sfmove(in, ( Sfio_t * ) 0, start, -1) != start)
             return (-1);
         if (sfmove(in, tmp, SF_UNBOUND, -1) < 0 || !sfeof(in) || sferror(tmp))
             return (-1);
         in = tmp;
         start = 0;
     }
-    if ((offset = sfseek(in, ( off_t )0, SEEK_END)) <= start)
+    if ((offset = sfseek(in, ( off_t ) 0, SEEK_END)) <= start)
         return (0);
     offset = rounddown(offset, BUFSIZE);
     while (1) {

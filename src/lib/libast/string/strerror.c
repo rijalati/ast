@@ -77,7 +77,7 @@ _ast_strerror(int err)
     errno = z;
 #else
     if (err > 0 && err <= sys_nerr)
-        msg = ( char * )sys_errlist[err];
+        msg = ( char * ) sys_errlist[err];
     else
         msg = 0;
 #endif

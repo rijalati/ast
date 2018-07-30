@@ -40,26 +40,26 @@ char *cmd;
 
     if (mpoint == NULL || cmd == NULL)
         return (-1);
-    entry = ( entry_t * )malloc(sizeof(entry_t));
+    entry = ( entry_t * ) malloc(sizeof(entry_t));
     entry->mpoint = strdup(mpoint);
     entry->vcscmd = strdup(cmd);
     if (istate.mtab == NULL)
-        istate.mtab = hashalloc(( HASHTABLE * )0, 0);
-    ( void )hashput(istate.mtab, entry->mpoint, ( char * )entry);
+        istate.mtab = hashalloc(( HASHTABLE * ) 0, 0);
+    ( void ) hashput(istate.mtab, entry->mpoint, ( char * ) entry);
     return (0);
 }
 
-#define hashrm(tbl, name) hashlook(tbl, name, HASH_DELETE, ( char * )0)
+#define hashrm(tbl, name) hashlook(tbl, name, HASH_DELETE, ( char * ) 0)
 int rm_entry(mpoint) char *mpoint;
 {
     entry_t *entry;
 
     if (istate.mtab == NULL)
         return (1);
-    if ((entry = ( entry_t * )hashrm(istate.mtab, mpoint)) != NULL) {
+    if ((entry = ( entry_t * ) hashrm(istate.mtab, mpoint)) != NULL) {
         free(entry->mpoint);
         free(entry->vcscmd);
-        free(( char * )entry);
+        free(( char * ) entry);
         return (0);
     }
     return (1);
@@ -91,7 +91,7 @@ char **argv;
             printf("reboot");
             return (1);
         }
-    ( void )hashwalk(istate.mtab, 0, do_call, 0);
+    ( void ) hashwalk(istate.mtab, 0, do_call, 0);
     return (0);
 }
 
@@ -107,7 +107,7 @@ caddr_t dump;
 
     memset(reply, 0, sizeof(reply));
 
-    if (value != NULL && (vcscmd = (( entry_t * )value)->vcscmd) != NULL) {
+    if (value != NULL && (vcscmd = (( entry_t * ) value)->vcscmd) != NULL) {
         if (vcs_write(vcscmd) > 0 && vcs_read(reply, 1024 * 2) > 0) {
             printmtmsg(reply);
             return (0);

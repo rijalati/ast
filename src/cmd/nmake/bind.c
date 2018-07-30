@@ -65,7 +65,7 @@
 static int
 file_compare(const char *s, const char *t)
 {
-    return (( File_t * )hashgetbucket(s)->value)->dir->ignorecase
+    return (( File_t * ) hashgetbucket(s)->value)->dir->ignorecase
            ? strcasecmp(s, t)
            : strcmp(s, t);
 }
@@ -73,7 +73,7 @@ file_compare(const char *s, const char *t)
 static unsigned int
 file_hash(const char *s)
 {
-    const unsigned char *p = ( const unsigned char * )s;
+    const unsigned char *p = ( const unsigned char * ) s;
     unsigned int h = 0;
     unsigned int c;
 
@@ -118,7 +118,7 @@ rule_compare(const char *s, const char *t)
 static unsigned int
 rule_hash(const char *s)
 {
-    const unsigned char *p = ( const unsigned char * )s;
+    const unsigned char *p = ( const unsigned char * ) s;
     unsigned int h = 0;
     unsigned int c;
     int x;
@@ -351,7 +351,7 @@ newfile(Rule_t *r, char *dir, Time_t date)
 
             if (pos = hashscan(table.dir, 0)) {
                 while (hashnext(pos)) {
-                    d = ( Dir_t * )pos->bucket->value;
+                    d = ( Dir_t * ) pos->bucket->value;
                     if (d->name == z->name) {
                         addfile(d, s + 1, date);
                         break;
@@ -454,7 +454,7 @@ trace_opendir(const char* dir, int line)
 static void *
 glob_diropen(glob_t *gp, const char *path)
 {
-    Globstate_t *gs = ( Globstate_t * )gp->gl_handle;
+    Globstate_t *gs = ( Globstate_t * ) gp->gl_handle;
     const char *dir;
     int i;
     int n;
@@ -475,9 +475,9 @@ glob_diropen(glob_t *gp, const char *path)
                 break;
             }
         }
-    gs->name = makerule(( char * )path)->name;
+    gs->name = makerule(( char * ) path)->name;
     if (gs->dirp = opendir(dir))
-        return ( void * )gs;
+        return ( void * ) gs;
     if (*path != '/')
         while (gs->view++ < state.maxview) {
             if (*gs->name == '/')
@@ -492,7 +492,7 @@ glob_diropen(glob_t *gp, const char *path)
                 internal.nam, "%s/%s", state.view[gs->view].path, gs->name);
             }
             if (gs->dirp = opendir(sfstruse(internal.nam)))
-                return ( void * )gs;
+                return ( void * ) gs;
         }
     hashfree(gs->overlay);
     return 0;
@@ -505,7 +505,7 @@ glob_diropen(glob_t *gp, const char *path)
 static char *
 glob_dirnext(glob_t *gp, void *handle)
 {
-    Globstate_t *gs = ( Globstate_t * )handle;
+    Globstate_t *gs = ( Globstate_t * ) handle;
     Dirent_t *dp;
     char *s;
 
@@ -516,7 +516,7 @@ glob_dirnext(glob_t *gp, void *handle)
             HACKSPACE(dp->d_name, s);
             if (hashget(gs->overlay, dp->d_name))
                 continue;
-            hashput(gs->overlay, 0, ( char * )gs);
+            hashput(gs->overlay, 0, ( char * ) gs);
 #if defined(DT_UNKNOWN) && defined(DT_DIR) && defined(DT_LNK)
             if (dp->d_type != DT_UNKNOWN && dp->d_type != DT_DIR
                 && dp->d_type != DT_LNK)
@@ -551,7 +551,7 @@ glob_dirnext(glob_t *gp, void *handle)
 static void
 glob_dirclose(glob_t *gp, void *handle)
 {
-    Globstate_t *gs = ( Globstate_t * )handle;
+    Globstate_t *gs = ( Globstate_t * ) handle;
 
     if (gs->dirp)
         closedir(gs->dirp);
@@ -637,7 +637,7 @@ globv(glob_t *gp, char *s)
     gp->gl_intr = &state.caught;
     gp->gl_stat = pathstat;
     if (state.maxview && !state.fsview) {
-        gp->gl_handle = ( void * )&gs;
+        gp->gl_handle = ( void * ) &gs;
         gp->gl_diropen = glob_diropen;
         gp->gl_dirnext = glob_dirnext;
         gp->gl_dirclose = glob_dirclose;
@@ -1313,7 +1313,7 @@ bindfile(Rule_t *r, char *name, int flags)
             } else
                 n = 0;
             if (s && !streq(s, name)) {
-                t = n ? getarg(&b, NiL) : ( char * )0;
+                t = n ? getarg(&b, NiL) : ( char * ) 0;
                 message((-3,
                          "%s name=%s n='%c' s=%s t=%s",
                          a->name,
@@ -1439,8 +1439,8 @@ bindfile(Rule_t *r, char *name, int flags)
                  "bindfile(%s): path=%s rule=%s alias=%s view=%d time=%s",
                  name,
                  b,
-                 r ? r->name : ( char * )0,
-                 (x = getrule(b)) && x != r ? x->name : ( char * )0,
+                 r ? r->name : ( char * ) 0,
+                 (x = getrule(b)) && x != r ? x->name : ( char * ) 0,
                  view,
                  timestr(tm)));
 #endif
@@ -1684,7 +1684,7 @@ rebind(Rule_t *r, int op)
 int
 unbind(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
 
     if (!s || !h && (r->mark & M_mark)
         || h && (r->dynamic & D_alias)

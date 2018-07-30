@@ -24,18 +24,18 @@ tmain()
     Sfio_t *f;
     char *s, *endos, *os = "one\ntwo\nthree\n";
     int n;
-    void(*handler) _ARG_(( int ));
+    void(*handler) _ARG_(( int ) );
 
     if (argc > 1) {
         sfmove(sfstdin, sfstdout, (Sfoff_t)(-1), -1);
         return 0;
     }
 
-    if (!(f = sfpopen(( Sfio_t * )0,
+    if (!(f = sfpopen(( Sfio_t * ) 0,
                       sfprints("%s -p > %s", argv[0], tstfile("sf", 0)),
                       "w")))
         terror("Opening for write");
-    if (sfwrite(f, os, strlen(os)) != ( ssize_t )strlen(os))
+    if (sfwrite(f, os, strlen(os)) != ( ssize_t ) strlen(os))
         terror("Writing");
 
 #ifdef SIGPIPE
@@ -47,7 +47,7 @@ tmain()
 
     sfclose(f);
 
-    if (!(f = sfpopen(( Sfio_t * )0,
+    if (!(f = sfpopen(( Sfio_t * ) 0,
                       sfprints("%s -p < %s", argv[0], tstfile("sf", 0)),
                       "r")))
         terror("Opening for read");

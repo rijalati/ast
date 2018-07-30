@@ -128,7 +128,7 @@ Atom format;            /* Format in which the selection
                          * will be tolerated (blech). */
 {
     TkSelHandler *selPtr;
-    TkWindow *winPtr = ( TkWindow * )tkwin;
+    TkWindow *winPtr = ( TkWindow * ) tkwin;
 
     if (winPtr->dispPtr->multipleAtom == None) {
         TkSelInit(tkwin);
@@ -141,7 +141,7 @@ Atom format;            /* Format in which the selection
 
     for (selPtr = winPtr->selHandlerList;; selPtr = selPtr->nextPtr) {
         if (selPtr == NULL) {
-            selPtr = ( TkSelHandler * )ckalloc(sizeof(TkSelHandler));
+            selPtr = ( TkSelHandler * ) ckalloc(sizeof(TkSelHandler));
             selPtr->nextPtr = winPtr->selHandlerList;
             winPtr->selHandlerList = selPtr;
             break;
@@ -155,7 +155,7 @@ Atom format;            /* Format in which the selection
              */
 
             if (selPtr->proc == HandleTclCommand) {
-                ckfree(( char * )selPtr->clientData);
+                ckfree(( char * ) selPtr->clientData);
             }
             break;
         }
@@ -198,7 +198,7 @@ Atom selection; /* The selection whose handler
 Atom target;    /* The target whose selection
                  * handler is to be removed. */
 {
-    TkWindow *winPtr = ( TkWindow * )tkwin;
+    TkWindow *winPtr = ( TkWindow * ) tkwin;
     TkSelHandler *selPtr, *prevPtr;
     TkSelInProgress *ipPtr;
 
@@ -238,9 +238,9 @@ Atom target;    /* The target whose selection
         prevPtr->nextPtr = selPtr->nextPtr;
     }
     if (selPtr->proc == HandleTclCommand) {
-        ckfree(( char * )selPtr->clientData);
+        ckfree(( char * ) selPtr->clientData);
     }
-    ckfree(( char * )selPtr);
+    ckfree(( char * ) selPtr);
 }
 
 /*
@@ -277,7 +277,7 @@ Tk_LostSelProc *proc;  /* Procedure to call when selection
 ClientData clientData; /* Arbitrary one-word argument to
                         * pass to proc. */
 {
-    TkWindow *winPtr = ( TkWindow * )tkwin;
+    TkWindow *winPtr = ( TkWindow * ) tkwin;
     TkDisplay *dispPtr = winPtr->dispPtr;
     TkSelectionInfo *infoPtr;
     Tk_LostSelProc *clearProc = NULL;
@@ -307,7 +307,7 @@ ClientData clientData; /* Arbitrary one-word argument to
         }
     }
     if (infoPtr == NULL) {
-        infoPtr = ( TkSelectionInfo * )ckalloc(sizeof(TkSelectionInfo));
+        infoPtr = ( TkSelectionInfo * ) ckalloc(sizeof(TkSelectionInfo));
         infoPtr->selection = selection;
         infoPtr->nextPtr = dispPtr->selectionInfoPtr;
         dispPtr->selectionInfoPtr = infoPtr;
@@ -322,7 +322,7 @@ ClientData clientData; /* Arbitrary one-word argument to
              * a memory leak.
              */
 
-            ckfree(( char * )infoPtr->clearData);
+            ckfree(( char * ) infoPtr->clearData);
         }
     }
 
@@ -384,7 +384,7 @@ void Tk_ClearSelection(tkwin,
                                                       display. */
 Atom selection; /* Selection to be cancelled. */
 {
-    TkWindow *winPtr = ( TkWindow * )tkwin;
+    TkWindow *winPtr = ( TkWindow * ) tkwin;
     TkDisplay *dispPtr = winPtr->dispPtr;
     TkSelectionInfo *infoPtr;
     TkSelectionInfo *prevPtr;
@@ -414,7 +414,7 @@ Atom selection; /* Selection to be cancelled. */
     if (infoPtr != NULL) {
         clearProc = infoPtr->clearProc;
         clearData = infoPtr->clearData;
-        ckfree(( char * )infoPtr);
+        ckfree(( char * ) infoPtr);
     }
     XSetSelectionOwner(winPtr->display, selection, None, CurrentTime);
 
@@ -479,7 +479,7 @@ Tk_GetSelProc *proc;   /* Procedure to call to process the
                         * selection, once it has been retrieved. */
 ClientData clientData; /* Arbitrary value to pass to proc. */
 {
-    TkWindow *winPtr = ( TkWindow * )tkwin;
+    TkWindow *winPtr = ( TkWindow * ) tkwin;
     TkDisplay *dispPtr = winPtr->dispPtr;
     TkSelectionInfo *infoPtr;
 
@@ -506,7 +506,7 @@ ClientData clientData; /* Arbitrary value to pass to proc. */
         char buffer[TK_SEL_BYTES_AT_ONCE + 1];
         TkSelInProgress ip;
 
-        for (selPtr = (( TkWindow * )infoPtr->owner)->selHandlerList;
+        for (selPtr = (( TkWindow * ) infoPtr->owner)->selHandlerList;
              selPtr != NULL;
              selPtr = selPtr->nextPtr) {
             if ((selPtr->target == target)
@@ -569,7 +569,7 @@ cantget:
                      " selection doesn't exist or form \"",
                      Tk_GetAtomName(tkwin, target),
                      "\" not defined",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -598,7 +598,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     char *path = NULL;
     Atom selection;
     char *selName = NULL;
@@ -622,7 +622,7 @@ char **argv;           /* Argument strings. */
             }
             if (count < 2) {
                 Tcl_AppendResult(
-                interp, "value for \"", *args, "\" missing", ( char * )NULL);
+                interp, "value for \"", *args, "\" missing", ( char * ) NULL);
                 return TCL_ERROR;
             }
             c = args[0][1];
@@ -634,7 +634,7 @@ char **argv;           /* Argument strings. */
                 selName = args[1];
             } else {
                 Tcl_AppendResult(
-                interp, "unknown option \"", args[0], "\"", ( char * )NULL);
+                interp, "unknown option \"", args[0], "\"", ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
@@ -645,7 +645,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " clear ?options?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (path != NULL) {
@@ -675,7 +675,7 @@ char **argv;           /* Argument strings. */
             }
             if (count < 2) {
                 Tcl_AppendResult(
-                interp, "value for \"", *args, "\" missing", ( char * )NULL);
+                interp, "value for \"", *args, "\" missing", ( char * ) NULL);
                 return TCL_ERROR;
             }
             c = args[0][1];
@@ -690,7 +690,7 @@ char **argv;           /* Argument strings. */
                 targetName = args[1];
             } else {
                 Tcl_AppendResult(
-                interp, "unknown option \"", args[0], "\"", ( char * )NULL);
+                interp, "unknown option \"", args[0], "\"", ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
@@ -710,7 +710,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " get ?options?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         } else if (count == 1) {
             target = Tk_InternAtom(tkwin, args[0]);
@@ -721,8 +721,12 @@ char **argv;           /* Argument strings. */
         }
 
         Tcl_DStringInit(&selBytes);
-        result = Tk_GetSelection(
-        interp, tkwin, selection, target, SelGetProc, ( ClientData )&selBytes);
+        result = Tk_GetSelection(interp,
+                                 tkwin,
+                                 selection,
+                                 target,
+                                 SelGetProc,
+                                 ( ClientData ) &selBytes);
         if (result == TCL_OK) {
             Tcl_DStringResult(interp, &selBytes);
         } else {
@@ -743,7 +747,7 @@ char **argv;           /* Argument strings. */
             }
             if (count < 2) {
                 Tcl_AppendResult(
-                interp, "value for \"", *args, "\" missing", ( char * )NULL);
+                interp, "value for \"", *args, "\" missing", ( char * ) NULL);
                 return TCL_ERROR;
             }
             c = args[0][1];
@@ -758,7 +762,7 @@ char **argv;           /* Argument strings. */
                 targetName = args[1];
             } else {
                 Tcl_AppendResult(
-                interp, "unknown option \"", args[0], "\"", ( char * )NULL);
+                interp, "unknown option \"", args[0], "\"", ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
@@ -768,7 +772,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " handle ?options? window command\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         tkwin = Tk_NameToWindow(interp, args[0], tkwin);
@@ -799,8 +803,8 @@ char **argv;           /* Argument strings. */
         if (cmdLength == 0) {
             Tk_DeleteSelHandler(tkwin, selection, target);
         } else {
-            cmdInfoPtr = ( CommandInfo * )ckalloc(
-            ( unsigned )(sizeof(CommandInfo) - 3 + cmdLength));
+            cmdInfoPtr = ( CommandInfo * ) ckalloc(
+            ( unsigned ) (sizeof(CommandInfo) - 3 + cmdLength));
             cmdInfoPtr->interp = interp;
             cmdInfoPtr->cmdLength = cmdLength;
             strcpy(cmdInfoPtr->command, args[1]);
@@ -808,7 +812,7 @@ char **argv;           /* Argument strings. */
                                 selection,
                                 target,
                                 HandleTclCommand,
-                                ( ClientData )cmdInfoPtr,
+                                ( ClientData ) cmdInfoPtr,
                                 format);
         }
         return TCL_OK;
@@ -824,7 +828,7 @@ char **argv;           /* Argument strings. */
             }
             if (count < 2) {
                 Tcl_AppendResult(
-                interp, "value for \"", *args, "\" missing", ( char * )NULL);
+                interp, "value for \"", *args, "\" missing", ( char * ) NULL);
                 return TCL_ERROR;
             }
             c = args[0][1];
@@ -839,7 +843,7 @@ char **argv;           /* Argument strings. */
                 selName = args[1];
             } else {
                 Tcl_AppendResult(
-                interp, "unknown option \"", args[0], "\"", ( char * )NULL);
+                interp, "unknown option \"", args[0], "\"", ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
@@ -849,7 +853,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " own ?options? ?window?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (selName != NULL) {
@@ -866,7 +870,7 @@ char **argv;           /* Argument strings. */
             if (tkwin == NULL) {
                 return TCL_ERROR;
             }
-            winPtr = ( TkWindow * )tkwin;
+            winPtr = ( TkWindow * ) tkwin;
             for (infoPtr = winPtr->dispPtr->selectionInfoPtr; infoPtr != NULL;
                  infoPtr = infoPtr->nextPtr) {
                 if (infoPtr->selection == selection)
@@ -892,16 +896,16 @@ char **argv;           /* Argument strings. */
         }
         if (script == NULL) {
             Tk_OwnSelection(
-            tkwin, selection, ( Tk_LostSelProc * )NULL, ( ClientData )NULL);
+            tkwin, selection, ( Tk_LostSelProc * ) NULL, ( ClientData ) NULL);
             return TCL_OK;
         }
         cmdLength = strlen(script);
-        lostPtr = ( LostCommand * )ckalloc(
-        ( unsigned )(sizeof(LostCommand) - 3 + cmdLength));
+        lostPtr = ( LostCommand * ) ckalloc(
+        ( unsigned ) (sizeof(LostCommand) - 3 + cmdLength));
         lostPtr->interp = interp;
         strcpy(lostPtr->command, script);
         Tk_OwnSelection(
-        tkwin, selection, LostSelection, ( ClientData )lostPtr);
+        tkwin, selection, LostSelection, ( ClientData ) lostPtr);
         return TCL_OK;
     } else {
         sprintf(interp->result,
@@ -950,9 +954,9 @@ void TkSelDeadWindow(winPtr) TkWindow *winPtr; /* Window that's being deleted.
             }
         }
         if (selPtr->proc == HandleTclCommand) {
-            ckfree(( char * )selPtr->clientData);
+            ckfree(( char * ) selPtr->clientData);
         }
-        ckfree(( char * )selPtr);
+        ckfree(( char * ) selPtr);
     }
 
     /*
@@ -963,11 +967,11 @@ void TkSelDeadWindow(winPtr) TkWindow *winPtr; /* Window that's being deleted.
          infoPtr != NULL;
          infoPtr = nextPtr) {
         nextPtr = infoPtr->nextPtr;
-        if (infoPtr->owner == ( Tk_Window )winPtr) {
+        if (infoPtr->owner == ( Tk_Window ) winPtr) {
             if (infoPtr->clearProc == LostSelection) {
-                ckfree(( char * )infoPtr->clearData);
+                ckfree(( char * ) infoPtr->clearData);
             }
-            ckfree(( char * )infoPtr);
+            ckfree(( char * ) infoPtr);
             infoPtr = prevPtr;
             if (prevPtr == NULL) {
                 winPtr->dispPtr->selectionInfoPtr = nextPtr;
@@ -998,7 +1002,7 @@ void TkSelDeadWindow(winPtr) TkWindow *winPtr; /* Window that's being deleted.
 void TkSelInit(tkwin) Tk_Window tkwin; /* Window token (used to find
                                         * display to initialize). */
 {
-    TkDisplay *dispPtr = (( TkWindow * )tkwin)->dispPtr;
+    TkDisplay *dispPtr = (( TkWindow * ) tkwin)->dispPtr;
 
     /*
      * Fetch commonly-used atoms.
@@ -1037,7 +1041,7 @@ void TkSelClearSelection(tkwin,
                                                        was targeted. */
 XEvent *eventPtr; /* X SelectionClear event. */
 {
-    TkWindow *winPtr = ( TkWindow * )tkwin;
+    TkWindow *winPtr = ( TkWindow * ) tkwin;
     TkDisplay *dispPtr = winPtr->dispPtr;
     TkSelectionInfo *infoPtr;
     TkSelectionInfo *prevPtr;
@@ -1077,7 +1081,7 @@ XEvent *eventPtr; /* X SelectionClear event. */
         if (infoPtr->clearProc != NULL) {
             (*infoPtr->clearProc)(infoPtr->clearData);
         }
-        ckfree(( char * )infoPtr);
+        ckfree(( char * ) infoPtr);
     }
 }
 
@@ -1107,7 +1111,7 @@ Tcl_Interp *interp;    /* Interpreter used for error
                         * reporting (not used). */
 char *portion;         /* New information to be appended. */
 {
-    Tcl_DStringAppend(( Tcl_DString * )clientData, portion, -1);
+    Tcl_DStringAppend(( Tcl_DString * ) clientData, portion, -1);
     return TCL_OK;
 }
 
@@ -1138,7 +1142,7 @@ int offset;            /* Return selection bytes starting at this
 char *buffer;          /* Place to store converted selection. */
 int maxBytes;          /* Maximum # of bytes to store at buffer. */
 {
-    CommandInfo *cmdInfoPtr = ( CommandInfo * )clientData;
+    CommandInfo *cmdInfoPtr = ( CommandInfo * ) clientData;
     int spaceNeeded, length;
 #define MAX_STATIC_SIZE 100
     char staticSpace[MAX_STATIC_SIZE];
@@ -1154,7 +1158,7 @@ int maxBytes;          /* Maximum # of bytes to store at buffer. */
      */
 
     interp = cmdInfoPtr->interp;
-    Tcl_Preserve(( ClientData )interp);
+    Tcl_Preserve(( ClientData ) interp);
 
     /*
      * First, generate a command by taking the command string
@@ -1165,7 +1169,7 @@ int maxBytes;          /* Maximum # of bytes to store at buffer. */
     if (spaceNeeded < MAX_STATIC_SIZE) {
         command = staticSpace;
     } else {
-        command = ( char * )ckalloc(( unsigned )spaceNeeded);
+        command = ( char * ) ckalloc(( unsigned ) spaceNeeded);
     }
     sprintf(command, "%s %d %d", cmdInfoPtr->command, offset, maxBytes);
 
@@ -1181,7 +1185,8 @@ int maxBytes;          /* Maximum # of bytes to store at buffer. */
         if (length > maxBytes) {
             length = maxBytes;
         }
-        memcpy(( VOID * )buffer, ( VOID * )interp->result, ( size_t )length);
+        memcpy(
+        ( VOID * ) buffer, ( VOID * ) interp->result, ( size_t ) length);
         buffer[length] = '\0';
     } else {
         length = -1;
@@ -1192,7 +1197,7 @@ int maxBytes;          /* Maximum # of bytes to store at buffer. */
         ckfree(command);
     }
 
-    Tcl_Release(( ClientData )interp);
+    Tcl_Release(( ClientData ) interp);
     return length;
 }
 
@@ -1230,14 +1235,14 @@ int maxBytes;             /* Maximum # of bytes to store at buffer. */
 Atom *typePtr;            /* Store here the type of the selection,
                            * for use in converting to proper X format. */
 {
-    TkWindow *winPtr = ( TkWindow * )infoPtr->owner;
+    TkWindow *winPtr = ( TkWindow * ) infoPtr->owner;
     TkDisplay *dispPtr = winPtr->dispPtr;
 
     if (target == dispPtr->timestampAtom) {
         if (maxBytes < 20) {
             return -1;
         }
-        sprintf(buffer, "0x%x", ( unsigned int )infoPtr->time);
+        sprintf(buffer, "0x%x", ( unsigned int ) infoPtr->time);
         *typePtr = XA_INTEGER;
         return strlen(buffer);
     }
@@ -1258,7 +1263,7 @@ Atom *typePtr;            /* Store here the type of the selection,
                 && (selPtr->target != dispPtr->applicationAtom)
                 && (selPtr->target != dispPtr->windowAtom)) {
                 atomString
-                = Tk_GetAtomName(( Tk_Window )winPtr, selPtr->target);
+                = Tk_GetAtomName(( Tk_Window ) winPtr, selPtr->target);
                 atomLength = strlen(atomString) + 1;
                 if ((length + atomLength) >= maxBytes) {
                     return -1;
@@ -1321,13 +1326,13 @@ Atom *typePtr;            /* Store here the type of the selection,
 static void LostSelection(clientData)
 ClientData clientData; /* Pointer to CommandInfo structure. */
 {
-    LostCommand *lostPtr = ( LostCommand * )clientData;
+    LostCommand *lostPtr = ( LostCommand * ) clientData;
     char *oldResultString;
     Tcl_FreeProc *oldFreeProc;
     Tcl_Interp *interp;
 
     interp = lostPtr->interp;
-    Tcl_Preserve(( ClientData )interp);
+    Tcl_Preserve(( ClientData ) interp);
 
     /*
      * Execute the command.  Save the interpreter's result, if any, and
@@ -1339,7 +1344,7 @@ ClientData clientData; /* Pointer to CommandInfo structure. */
         oldResultString = interp->result;
     } else {
         oldResultString
-        = ( char * )ckalloc(( unsigned )(strlen(interp->result) + 1));
+        = ( char * ) ckalloc(( unsigned ) (strlen(interp->result) + 1));
         strcpy(oldResultString, interp->result);
         oldFreeProc = TCL_DYNAMIC;
     }
@@ -1351,11 +1356,11 @@ ClientData clientData; /* Pointer to CommandInfo structure. */
     interp->result = oldResultString;
     interp->freeProc = oldFreeProc;
 
-    Tcl_Release(( ClientData )interp);
+    Tcl_Release(( ClientData ) interp);
 
     /*
      * Free the storage for the command, since we're done with it now.
      */
 
-    ckfree(( char * )lostPtr);
+    ckfree(( char * ) lostPtr);
 }

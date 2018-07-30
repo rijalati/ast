@@ -36,7 +36,7 @@
 void *
 ppcontext(void *context, int flags)
 {
-    struct ppcontext *np = ( struct ppcontext * )context;
+    struct ppcontext *np = ( struct ppcontext * ) context;
     struct ppcontext *op;
 
     if (flags & 01) {
@@ -45,7 +45,7 @@ ppcontext(void *context, int flags)
         memcpy(op, _PP_CONTEXT_BASE_, sizeof(struct ppcontext));
     } else {
         if (!(op = np))
-            op = ( struct ppcontext * )_PP_CONTEXT_BASE_;
+            op = ( struct ppcontext * ) _PP_CONTEXT_BASE_;
         if (op->filtab)
             hashfree(op->filtab);
         if (op->prdtab)
@@ -65,5 +65,5 @@ ppcontext(void *context, int flags)
     }
     if (np)
         memcpy(_PP_CONTEXT_BASE_, np, sizeof(struct ppcontext));
-    return (( void * )op);
+    return (( void * ) op);
 }

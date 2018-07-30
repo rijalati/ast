@@ -52,7 +52,7 @@ typedef struct Shell_s Shell_t;
 #        include "name.h"
 #    else
 #        include "nval.h"
-#    endif  // _SH_PRIVATE
+#    endif    // _SH_PRIVATE
 
 
 #    if __STDC_VERSION__ >= 199901L
@@ -67,7 +67,7 @@ typedef struct Shell_s Shell_t;
 /// same situation.
 #    define UNUSED(expr)                                                     \
         do {                                                                 \
-            ( void )(expr);                                                  \
+            ( void ) (expr);                                                 \
         } while (0)
 
 
@@ -187,45 +187,45 @@ struct Shell_s
     int **fdptrs;           // pointer to file numbers
     int savexit;
     char *lastarg;
-    char *lastpath;    // last alsolute path found
-    int path_err;      // last error on path search
-    Dt_t *track_tree;  // for tracked aliases*/
-    Dt_t *var_base;    // global level variables
+    char *lastpath;      // last alsolute path found
+    int path_err;        // last error on path search
+    Dt_t *track_tree;    // for tracked aliases*/
+    Dt_t *var_base;      // global level variables
     Dt_t *openmatch;
     Dt_t *namref_root;
-    Namval_t *namespace;   // current active namespace*/
-    Namval_t *last_table;  // last table used in last nv_open
-    Namval_t *prev_table;  // previous table used in nv_open
-    Namval_t *oldnp;       // last valid parent node
-    Namval_t **nodelist;   // for decl commands
-    Sfio_t *outpool;       // ouput stream pool
-    long timeout;          // read timeout
-    long curenv;           // current subshell number
-    long jobenv;           // subshell number for jobs
-    int infd;              // input file descriptor
-    short nextprompt;      // next prompt is PS<nextprompt>
+    Namval_t *namespace;     // current active namespace*/
+    Namval_t *last_table;    // last table used in last nv_open
+    Namval_t *prev_table;    // previous table used in nv_open
+    Namval_t *oldnp;         // last valid parent node
+    Namval_t **nodelist;     // for decl commands
+    Sfio_t *outpool;         // ouput stream pool
+    long timeout;            // read timeout
+    long curenv;             // current subshell number
+    long jobenv;             // subshell number for jobs
+    int infd;                // input file descriptor
+    short nextprompt;        // next prompt is PS<nextprompt>
     short poolfiles;
-    Namval_t *posix_fun;  // points to last name() function
-    char *outbuff;        // pointer to output buffer
-    char *errbuff;        // pointer to stderr buffer
-    char *prompt;         // pointer to prompt string
-    char *shname;         // shell name
-    char *comdiv;         // points to sh -c argument
-    char *prefix;         // prefix for compound assignment
-    sigjmp_buf *jmplist;  // longjmp return stack
-    char *fifo;           // fifo name for process sub
+    Namval_t *posix_fun;    // points to last name() function
+    char *outbuff;          // pointer to output buffer
+    char *errbuff;          // pointer to stderr buffer
+    char *prompt;           // pointer to prompt string
+    char *shname;           // shell name
+    char *comdiv;           // points to sh -c argument
+    char *prefix;           // prefix for compound assignment
+    sigjmp_buf *jmplist;    // longjmp return stack
+    char *fifo;             // fifo name for process sub
     int oldexit;
-    pid_t bckpid;  // background process id
+    pid_t bckpid;    // background process id
     pid_t cpid;
-    pid_t spid;  // subshell process id
+    pid_t spid;    // subshell process id
     pid_t pipepid;
     pid_t outpipepid;
-    pid_t *procsub;  // pids for >() argument
-    int nprocsub;    // number of pids in procsub
+    pid_t *procsub;    // pids for >() argument
+    int nprocsub;      // number of pids in procsub
     int topfd;
     int errorfd;
     int savesig;
-    unsigned char *sigflag;  // pointer to signal states
+    unsigned char *sigflag;    // pointer to signal states
     char intrap;
     char login_sh;
     char lastbase;
@@ -233,25 +233,25 @@ struct Shell_s
     char binscript;
     char deftype;
     char funload;
-    char used_pos;  // used postional parameter
+    char used_pos;    // used postional parameter
     char universe;
     char winch;
-    char inarith;           // set when in ((...))
-    char indebug;           // set when in debug trap
-    unsigned char ignsig;   // ignored signal in subshell
-    unsigned char lastsig;  // last signal received
-    char pathinit;          // pathinit called from subshell
-    char comsub;            // set when in $() comsub
-    char subshare;          // set when in ${..} comsub
-    char toomany;           // set when out of fd's
-    char instance;          // in set_instance
-    char decomma;           // decimal_point=','
-    char redir0;            // redirect of 0
-    char intrace;           // set when trace expands PS4
-    char *readscript;       // set before reading a script
-    int subdup;             // bitmask for dups of 1
-    int *inpipe;            // input pipe pointer
-    int *outpipe;           // output pipe pointer
+    char inarith;             // set when in ((...))
+    char indebug;             // set when in debug trap
+    unsigned char ignsig;     // ignored signal in subshell
+    unsigned char lastsig;    // last signal received
+    char pathinit;            // pathinit called from subshell
+    char comsub;              // set when in $() comsub
+    char subshare;            // set when in ${..} comsub
+    char toomany;             // set when out of fd's
+    char instance;            // in set_instance
+    char decomma;             // decimal_point=','
+    char redir0;              // redirect of 0
+    char intrace;             // set when trace expands PS4
+    char *readscript;         // set before reading a script
+    int subdup;               // bitmask for dups of 1
+    int *inpipe;              // input pipe pointer
+    int *outpipe;             // output pipe pointer
     int cpipe[3];
     int coutpipe;
     int inuse_bits;
@@ -318,7 +318,7 @@ struct Shell_s
     char exittrap;
     char errtrap;
     char end_fn;
-#endif  // _SH_PRIVATE
+#endif    // _SH_PRIVATE
 };
 
 /* flags for sh_parse */

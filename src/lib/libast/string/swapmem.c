@@ -38,8 +38,8 @@
 void *
 swapmem(int op, const void *from, void *to, size_t n)
 {
-    char *f = ( char * )from;
-    char *t = ( char * )to;
+    char *f = ( char * ) from;
+    char *t = ( char * ) to;
     int c;
 
     switch (op & (n - 1)) {

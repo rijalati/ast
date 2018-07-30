@@ -66,7 +66,7 @@ prog(const char *command, char *path, size_t size)
     }
 #endif
 #if _lib_getexecname
-    if ((s = ( char * )getexecname()) && *s == '/')
+    if ((s = ( char * ) getexecname()) && *s == '/')
         goto found;
 #endif
 #if _lib__NSGetExecutablePath
@@ -98,7 +98,7 @@ prog(const char *command, char *path, size_t size)
     }
 #endif
     if (command) {
-        s = ( char * )command;
+        s = ( char * ) command;
         goto found;
     }
     return 0;

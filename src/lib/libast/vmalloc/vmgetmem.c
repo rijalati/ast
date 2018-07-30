@@ -43,7 +43,7 @@ size_t size;
 #endif
 {
     if (!vm)
-        return ( Void_t * )vmopen(Vmdcheap, Vmbest, 0);
+        return ( Void_t * ) vmopen(Vmdcheap, Vmbest, 0);
 
     if (data || size)
         return vmresize(vm, data, size, VM_RSMOVE | VM_RSCOPY | VM_RSZERO);

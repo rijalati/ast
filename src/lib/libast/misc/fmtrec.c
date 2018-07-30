@@ -45,7 +45,7 @@ fmtrec(Recfmt_t f, int fs)
         if ((del[0] = REC_D_DELIMITER(f)) != '\n') {
             del[1] = 0;
             if (fs)
-                sfsprintf(s, e - s, "0x%02x", *( unsigned char * )del);
+                sfsprintf(s, e - s, "0x%02x", *( unsigned char * ) del);
             else
                 sfsprintf(s, e - s, "%s", fmtquote(del, NiL, NiL, 1, 0));
         } else

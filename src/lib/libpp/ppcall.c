@@ -189,7 +189,7 @@ ppcall(struct ppsymbol *sym, int tok)
             old_next = (c == MARK) ? pp.in->nextchr : NiL;
             old_token = pp.token;
             mp = pp.macp->next;
-            if ((pp.token = ( char * )&mp->arg[mac->arity + 1]) > pp.maxmac)
+            if ((pp.token = ( char * ) &mp->arg[mac->arity + 1]) > pp.maxmac)
                 error(
                 3, "%s: too many nested function-like macros", sym->name);
             old_hidden = pp.hidden;
@@ -242,7 +242,7 @@ ppcall(struct ppsymbol *sym, int tok)
             m = 0;
             n = 0;
             mp = pp.macp->next;
-            p = pp.token = ( char * )&mp->arg[mac->arity + 1];
+            p = pp.token = ( char * ) &mp->arg[mac->arity + 1];
             pp.state |= COLLECTING | NOEXPAND;
             pp.state &= ~FILEPOP;
             sym->flags |= SYM_ACTIVE;
@@ -431,7 +431,7 @@ ppcall(struct ppsymbol *sym, int tok)
                 if (!c)
                     ++c;
                 while (c < mac->arity)
-                    mp->arg[c++] = ( char * )"\0" + 1;
+                    mp->arg[c++] = ( char * ) "\0" + 1;
             }
             mp->arg[0][-2] = m;
             *p++ = 0;

@@ -35,14 +35,14 @@ ptinvert(Pt_t *a)
 
     if (t = ptopen(a->disc)) {
         m = 0;
-        for (ap = ( Ptprefix_t * )dtfirst(a->dict); ap;
-             ap = ( Ptprefix_t * )dtnext(a->dict, ap)) {
+        for (ap = ( Ptprefix_t * ) dtfirst(a->dict); ap;
+             ap = ( Ptprefix_t * ) dtnext(a->dict, ap)) {
             if (m < ap->min && !ptinsert(t, m, ap->min - 1))
                 break;
             m = ap->max + 1;
         }
         if (m || !dtsize(a->dict))
-            ptinsert(t, m, ~(( Ptaddr_t )0));
+            ptinsert(t, m, ~(( Ptaddr_t ) 0));
     }
     return t;
 }

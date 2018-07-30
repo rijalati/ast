@@ -45,7 +45,7 @@ initiate(Cs_t *state, const char *name, char *buf)
         return -1;
     }
     av[0] = buf;
-    av[1] = ( char * )name;
+    av[1] = ( char * ) name;
     av[2] = 0;
     procclose(procopen(av[0], av, NiL, NiL, 0));
     return 0;
@@ -68,7 +68,7 @@ csstat(Cs_t *state, const char *name, Csstat_t *sp)
     messagef((state->id, NiL, -8, "stat(%s) call", name));
     CSTIME();
     if (!name || streq(name, CS_HOST_LOCAL))
-        name = ( const char * )csname(state, 0);
+        name = ( const char * ) csname(state, 0);
     if (!strchr(name, '/')) {
         if (!init) {
             init = 1;
@@ -79,7 +79,7 @@ csstat(Cs_t *state, const char *name, Csstat_t *sp)
             return -1;
         sfsprintf(buf, sizeof(buf), "%s/%s", dir, name);
         if ((n = stat(buf, &st))
-            || (state->time - CS_STAT_DOWN) > ( unsigned long )st.st_ctime) {
+            || (state->time - CS_STAT_DOWN) > ( unsigned long ) st.st_ctime) {
             if (initiate(state, name, buf))
                 return -1;
             for (i = 1; i < CS_STAT_DOWN / 20; i <<= 1) {
@@ -105,7 +105,7 @@ csstat(Cs_t *state, const char *name, Csstat_t *sp)
             memzero(sp, sizeof(*sp));
             sp->up
             = -(((a & 0x7ff) << ((a >> 11) & 0x1f))
-                + ( long )(state->time - ( unsigned long )st.st_ctime));
+                + ( long ) (state->time - ( unsigned long ) st.st_ctime));
             s = csname(state, 0);
             if (streq(name, s))
                 initiate(state, name, buf);

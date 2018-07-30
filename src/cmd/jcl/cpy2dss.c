@@ -219,7 +219,7 @@ cpyopen(const char *path, Sfio_t *ip, Cpydisc_t *disc)
     cpy->ip = ip;
     cpy->cp = empty;
     cpy->ofile = error_info.file;
-    error_info.file = ( char * )path;
+    error_info.file = ( char * ) path;
     cpy->oline = error_info.line;
     error_info.line = 0;
     return cpy;
@@ -333,7 +333,7 @@ cpyfield(Cpy_t *cpy)
         if (!(s = cpylex(cpy)))
             return 0;
     } while (!strncasecmp(s, "SKIP", 4));
-    level = ( int )strtol(s, &e, 10);
+    level = ( int ) strtol(s, &e, 10);
     if (*e) {
         if (cpy->disc->errorf)
             (*cpy->disc->errorf)(
@@ -355,7 +355,7 @@ cpyfield(Cpy_t *cpy)
     cpy->last = f;
     f->level = level;
     e = s;
-    while ((p = ( Cpyfield_t * )dtmatch(cpy->dt, e)) && p->dup) {
+    while ((p = ( Cpyfield_t * ) dtmatch(cpy->dt, e)) && p->dup) {
         p->dup++;
         e = sfprints("%s_%d", s, p->dup);
     }
@@ -375,7 +375,7 @@ cpyfield(Cpy_t *cpy)
             if (*s++ != '_')
                 f->comp = 1;
             else {
-                f->comp = ( int )strtol(s, &e, 10);
+                f->comp = ( int ) strtol(s, &e, 10);
                 if (*e || f->comp <= 0 || f->comp > 9) {
                     if (cpy->disc->errorf)
                         (*cpy->disc->errorf)(cpy,
@@ -399,7 +399,7 @@ cpyfield(Cpy_t *cpy)
             }
             if (!(s = cpylex(cpy)) || !*s)
                 break;
-            if (!(p = ( Cpyfield_t * )dtmatch(cpy->dt, s))) {
+            if (!(p = ( Cpyfield_t * ) dtmatch(cpy->dt, s))) {
                 if (!(p = vmnewof(cpy->vm, 0, Cpyfield_t, 1, cpy->size))) {
                     if (cpy->disc->errorf)
                         (*cpy->disc->errorf)(
@@ -409,7 +409,7 @@ cpyfield(Cpy_t *cpy)
                 dtinsert(cpy->dt, p);
             } else if (p->dup > 1) {
                 s = sfprints("%s_%d", p->name, p->dup);
-                if (!(p = ( Cpyfield_t * )dtmatch(cpy->dt, s))) {
+                if (!(p = ( Cpyfield_t * ) dtmatch(cpy->dt, s))) {
                     if (cpy->disc->errorf)
                         (*cpy->disc->errorf)(
                         cpy,
@@ -437,7 +437,7 @@ cpyfield(Cpy_t *cpy)
         else if (!strcasecmp(s, "OCCURS")) {
             if (!(s = cpylex(cpy)) || !*s)
                 break;
-            f->mindimension = ( int )strtol(s, &e, 10);
+            f->mindimension = ( int ) strtol(s, &e, 10);
             if (*e) {
                 if (cpy->disc->errorf)
                     (*cpy->disc->errorf)(
@@ -453,7 +453,7 @@ cpyfield(Cpy_t *cpy)
             if (!strcasecmp(s, "TO")) {
                 if (!(s = cpylex(cpy)) || !*s)
                     break;
-                f->maxdimension = ( int )strtol(s, &e, 10);
+                f->maxdimension = ( int ) strtol(s, &e, 10);
                 if (*e) {
                     if (cpy->disc->errorf)
                         (*cpy->disc->errorf)(
@@ -503,7 +503,7 @@ cpyfield(Cpy_t *cpy)
                     continue;
                 case '(':
                     width = 0;
-                    n = ( int )strtol(s, &e, 10);
+                    n = ( int ) strtol(s, &e, 10);
                     if (*e == ')')
                         e++;
                     s = e;
@@ -540,7 +540,7 @@ cpyfield(Cpy_t *cpy)
                 return 0;
             }
             e = s;
-            while ((p = ( Cpyfield_t * )dtmatch(cpy->dt, e)) && p->dup > 1)
+            while ((p = ( Cpyfield_t * ) dtmatch(cpy->dt, e)) && p->dup > 1)
                 e = sfprints("%s_%d", s, p->dup);
             if (!(f->redefines = p)) {
                 if (cpy->disc->errorf)
@@ -625,7 +625,7 @@ static char *typename(Cpyfield_t *field)
     return type;
 }
 
-#define INDENT(n) (&indent[sizeof(indent) - ( n )-1])
+#define INDENT(n) (&indent[sizeof(indent) - ( n ) -1])
 
 int
 cpy2dss(const char *path,
@@ -707,7 +707,7 @@ cpy2dss(const char *path,
             if (state.regress) {
                 stamp = 0x42d9e64b;
                 if (path && (delimiter = strrchr(path, '/')))
-                    path = ( const char * )delimiter + 1;
+                    path = ( const char * ) delimiter + 1;
             }
             sfprintf(op,
                      "%s<DESCRIPTION>converted by %s from copybook %s</>\n",

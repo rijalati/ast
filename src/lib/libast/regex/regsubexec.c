@@ -85,10 +85,10 @@ sub(const regex_t *p,
                 return REG_ESUBREG;
             if ((c = match[op->off].rm_so) < 0)
                 continue;
-            s = ( char * )ss + c;
+            s = ( char * ) ss + c;
             if ((c = match[op->off].rm_eo) < 0)
                 continue;
-            e = ( char * )ss + c;
+            e = ( char * ) ss + c;
             NEED(p, b, e - s, return c);
             switch (op->op) {
             case REG_SUB_UPPER:
@@ -153,7 +153,7 @@ regsubexec(const regex_t *p, const char *s, size_t nmatch, regmatch_t *match)
     b = p->re_sub;
     m = b->re_min;
     b->re_cur = b->re_buf;
-    e = ( const char * )p->env->end;
+    e = ( const char * ) p->env->end;
     c = 0;
     for (;;) {
         if (--m > 0)

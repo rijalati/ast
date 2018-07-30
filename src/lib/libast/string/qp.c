@@ -47,9 +47,9 @@ qpencode(const void *fb, size_t fz, void **fn, void *tb, size_t tz, void **tn)
     unsigned char *te;
     int c;
 
-    fp = ( unsigned char * )fb;
+    fp = ( unsigned char * ) fb;
     fe = fp + fz;
-    tp = ( unsigned char * )tb;
+    tp = ( unsigned char * ) tb;
     te = tp + tz;
     while (fp < fe) {
         if (((c = *fp) != ' ' || !(c = '_'))
@@ -75,7 +75,7 @@ qpencode(const void *fb, size_t fz, void **fn, void *tb, size_t tz, void **tn)
         *tn = tp;
     if (fn)
         *fn = fp;
-    return tp - ( unsigned char * )tb;
+    return tp - ( unsigned char * ) tb;
 }
 
 /*
@@ -92,9 +92,9 @@ qpdecode(const void *fb, size_t fz, void **fn, void *tb, size_t tz, void **tn)
     int c;
 
     SFCVINIT();
-    fp = ( unsigned char * )fb;
+    fp = ( unsigned char * ) fb;
     fe = fp + fz;
-    tp = ( unsigned char * )tb;
+    tp = ( unsigned char * ) tb;
     te = tp + tz;
     while (fp < fe && tp < te) {
         if ((c = *fp++) == '=') {
@@ -112,5 +112,5 @@ qpdecode(const void *fb, size_t fz, void **fn, void *tb, size_t tz, void **tn)
         *tn = tp;
     if (fn)
         *fn = fp;
-    return tp - ( unsigned char * )tb;
+    return tp - ( unsigned char * ) tb;
 }

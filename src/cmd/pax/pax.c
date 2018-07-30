@@ -247,7 +247,7 @@ action(const char *command, int pattern)
     int n;
     regex_t *re;
 
-    s = ( char * )command;
+    s = ( char * ) command;
     if (pattern && *s && *s == *(s + 1)) {
         s += 2;
         pattern = 0;
@@ -263,7 +263,7 @@ action(const char *command, int pattern)
         s += re->re_npat;
     } else
         re = 0;
-    command = ( const char * )s;
+    command = ( const char * ) s;
     q = 0;
     n = 3;
     while (c = *s++)
@@ -281,11 +281,11 @@ action(const char *command, int pattern)
                 s++;
         }
     if (!(fp = newof(
-          0, Filter_t, 1, n * sizeof(char **) + 2 * (s - ( char * )command))))
+          0, Filter_t, 1, n * sizeof(char **) + 2 * (s - ( char * ) command))))
         nospace();
     fp->re = re;
-    fp->argv = ( char ** )(fp + 1);
-    fp->command = ( char * )(fp->argv + n);
+    fp->argv = ( char ** ) (fp + 1);
+    fp->command = ( char * ) (fp->argv + n);
     s = stpcpy(fp->command, command) + 1;
     strcpy(s, command);
     fp->argv[0] = s;
@@ -418,16 +418,16 @@ setoptions(char *line,
             v = line;
             line = e;
             y = 1;
-            if (!(op = ( Option_t * )hashget(state.options, o))) {
+            if (!(op = ( Option_t * ) hashget(state.options, o))) {
                 s = o;
                 if (strneq(o, VENDOR ".", sizeof(VENDOR))) {
                     o += sizeof(VENDOR);
-                    op = ( Option_t * )hashget(state.options, o);
+                    op = ( Option_t * ) hashget(state.options, o);
                 }
                 if (!op && *o == 'n' && *(o + 1) == 'o') {
                     o += 2;
                     y = 0;
-                    op = ( Option_t * )hashget(state.options, o);
+                    op = ( Option_t * ) hashget(state.options, o);
                 }
                 if (!op) {
                     if (islower(*s) && !strchr(s, '.'))
@@ -644,7 +644,7 @@ setoptions(char *line,
             state.clobber = y;
             break;
         case OPT_comment:
-            state.header.comment = y ? strdup(v) : ( char * )0;
+            state.header.comment = y ? strdup(v) : ( char * ) 0;
             break;
         case OPT_complete:
             state.complete = y;
@@ -662,7 +662,7 @@ setoptions(char *line,
         case OPT_debug:
             if (y) {
                 y = error_info.trace;
-                error_info.trace = -( int )n;
+                error_info.trace = -( int ) n;
                 if (!y)
                     message((-10, "usage %s", usage));
             } else
@@ -745,16 +745,16 @@ setoptions(char *line,
             state.drop = y;
             break;
         case OPT_edit:
-            substitute(&opt.lastmap, ( char * )v);
+            substitute(&opt.lastmap, ( char * ) v);
             break;
         case OPT_eom:
-            eomprompt = y ? strdup(v) : ( char * )0;
+            eomprompt = y ? strdup(v) : ( char * ) 0;
             break;
         case OPT_exact:
             state.exact = y;
             break;
         case OPT_extended_name:
-            state.header.extended = y ? strdup(v) : ( char * )0;
+            state.header.extended = y ? strdup(v) : ( char * ) 0;
             break;
         case OPT_file:
             ap = getarchive(state.operation);
@@ -869,10 +869,10 @@ setoptions(char *line,
             }
             break;
         case OPT_global_name:
-            state.header.global = y ? strdup(v) : ( char * )0;
+            state.header.global = y ? strdup(v) : ( char * ) 0;
             break;
         case OPT_header:
-            v = y ? strdup(v) : ( char * )0;
+            v = y ? strdup(v) : ( char * ) 0;
             if (assignment)
                 state.header.extended = v;
             else
@@ -893,7 +893,7 @@ setoptions(char *line,
             }
             break;
         case OPT_install:
-            state.install.name = y ? strdup(v) : ( char * )0;
+            state.install.name = y ? strdup(v) : ( char * ) 0;
             break;
         case OPT_intermediate:
             state.intermediate = y;
@@ -918,7 +918,7 @@ setoptions(char *line,
                     }
                 }
             }
-            switch (( int )n) {
+            switch (( int ) n) {
             case 'b':
                 state.header.invalid = INVALID_binary;
                 break;
@@ -972,7 +972,7 @@ setoptions(char *line,
             if (y && *v) {
                 if (s = strchr(v, '='))
                     *s++ = 0;
-                if (!(op = ( Option_t * )hashget(state.options, v))) {
+                if (!(op = ( Option_t * ) hashget(state.options, v))) {
                     if (!s)
                         break;
                     if (!(op = newof(0, Option_t, 1, 0)))
@@ -1040,7 +1040,7 @@ setoptions(char *line,
                 opt.owner = strdup(v);
             break;
         case OPT_passphrase:
-            state.passphrase = y ? strdup(v) : ( char * )0;
+            state.passphrase = y ? strdup(v) : ( char * ) 0;
             break;
         case OPT_physical:
             if (y) {
@@ -1114,7 +1114,7 @@ setoptions(char *line,
             state.record.line = y;
             break;
         case OPT_record_match:
-            state.record.pattern = y ? strdup(v) : ( char * )0;
+            state.record.pattern = y ? strdup(v) : ( char * ) 0;
             break;
         case OPT_record_pad:
             state.record.pad = y;
@@ -1185,7 +1185,7 @@ setoptions(char *line,
             break;
         case OPT_test:
             if (y)
-                state.test |= ( unsigned long )n;
+                state.test |= ( unsigned long ) n;
             else
                 state.test = 0;
             break;
@@ -1305,7 +1305,7 @@ ignore(void)
         nospace();
     if ((all || ext) && (pos = hashscan(state.options, 0))) {
         while (hashnext(pos)) {
-            op = ( Option_t * )pos->bucket->value;
+            op = ( Option_t * ) pos->bucket->value;
             if (!(op->flags & OPT_READONLY)
                 && (all && matchopt(pos->bucket->name, all, op) && (lev = 8)
                     || ext && matchopt(pos->bucket->name, ext, op)
@@ -1555,7 +1555,7 @@ main(int argc, char **argv)
             sfprintf(
             state.tmp.str, "=%d:%s", options[i].index, options[i].name);
             if (options[i].flags & OPT_VENDOR) {
-                for (s = ( char * )options[i].name; p = strchr(s, '|');
+                for (s = ( char * ) options[i].name; p = strchr(s, '|');
                      s = p + 1)
                     sfprintf(state.tmp.str, "|%s.%-.*s", VENDOR, p - s, s);
                 sfprintf(state.tmp.str, "|%s.%s", VENDOR, s);
@@ -1761,7 +1761,8 @@ main(int argc, char **argv)
 
             cmd[0] = ap->compress->name;
             i = 1;
-            if (cmd[i] = (( Compress_format_t * )ap->compress->data)->variant)
+            if (cmd[i]
+                = (( Compress_format_t * ) ap->compress->data)->variant)
                 i++;
             if (cmd[i] = ap->compress->details)
                 i++;
@@ -1782,7 +1783,7 @@ main(int argc, char **argv)
             close(n);
             if (!(p = newof(0, List_t, 1, 0)))
                 nospace();
-            p->item = ( void * )proc;
+            p->item = ( void * ) proc;
             p->next = state.proc;
             state.proc = p;
         }
@@ -1841,7 +1842,7 @@ main(int argc, char **argv)
 #if DEBUG
     if ((state.test & 0000010) && (pos = hashscan(state.options, 0))) {
         while (hashnext(pos)) {
-            op = ( Option_t * )pos->bucket->value;
+            op = ( Option_t * ) pos->bucket->value;
             if (op->name == pos->bucket->name)
                 sfprintf(sfstderr,
                          "%-16s %c %2d %d perm=%ld:%s temp=%ld:%s%s%s\n",
@@ -1950,7 +1951,7 @@ finish(int code)
     off_t n;
 
     while (state.proc) {
-        procclose(( Proc_t * )state.proc->item);
+        procclose(( Proc_t * ) state.proc->item);
         state.proc = state.proc->next;
     }
     remove(state.tmp.file);

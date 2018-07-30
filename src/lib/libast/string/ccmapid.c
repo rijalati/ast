@@ -124,7 +124,7 @@ static const Ccmap_t maps[] = {
 Ccmap_t *
 ccmaplist(Ccmap_t *mp)
 {
-    return !mp ? ( Ccmap_t * )maps : (++mp)->name ? mp : ( Ccmap_t * )0;
+    return !mp ? ( Ccmap_t * ) maps : (++mp)->name ? mp : ( Ccmap_t * ) 0;
 }
 
 /*
@@ -169,6 +169,6 @@ ccmapname(int id)
 
     for (mp = maps; mp->name; mp++)
         if (id == mp->ccode)
-            return ( char * )mp->name;
+            return ( char * ) mp->name;
     return 0;
 }

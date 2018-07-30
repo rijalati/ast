@@ -45,7 +45,7 @@ mmap()
     if (Success)
         texit(0);
 
-    return ( void * )(-1);
+    return ( void * ) (-1);
 }
 
 #if __STD_C
@@ -59,7 +59,7 @@ mmap64()
     if (Success)
         texit(0);
 
-    return ( void * )(-1);
+    return ( void * ) (-1);
 }
 
 tmain()
@@ -69,7 +69,7 @@ tmain()
     int n, r;
 
     /* test to see if malloc() winds up calling mmap() */
-    if (!(data = ( char * )malloc(8 * 1024)))
+    if (!(data = ( char * ) malloc(8 * 1024)))
         terror("Malloc failed");
     free(data);
     Success = 0;

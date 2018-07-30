@@ -28,7 +28,7 @@
 **
 **	Written by Kiem-Phong Vo.
 */
-#define MAX_SSIZE ((ssize_t)((~(( size_t )0)) >> 1))
+#define MAX_SSIZE ((ssize_t)((~(( size_t ) 0)) >> 1))
 
 #if __STD_C
 Sfoff_t
@@ -50,23 +50,23 @@ reg int rc; /* record separator */
     SFMTXDECL(fr);  /* declare a shadow stream variable for from stream */
     SFMTXDECL2(fw); /* declare a shadow stream variable for to stream */
 
-    SFMTXENTER(fr, ( Sfoff_t )0);
+    SFMTXENTER(fr, ( Sfoff_t ) 0);
     if (fw)
-        SFMTXBEGIN2(fw, ( Sfoff_t )0);
+        SFMTXBEGIN2(fw, ( Sfoff_t ) 0);
 
     for (n_move = 0; n != 0;) {
         if (rc
             >= 0) /* moving records, let sfgetr() deal with record reading */
         {
-            if (!(cp = ( uchar * )sfgetr(fr, rc, 0)))
+            if (!(cp = ( uchar * ) sfgetr(fr, rc, 0)))
                 n = 0;
             else {
                 r = sfvalue(fr);
                 if (fw && (w = SFWRITE(fw, cp, r)) != r) {
                     if (fr->extent >= 0)
-                        ( void )SFSEEK(fr, (Sfoff_t)(-r), SEEK_CUR);
+                        ( void ) SFSEEK(fr, (Sfoff_t)(-r), SEEK_CUR);
                     if (fw->extent >= 0 && w > 0)
-                        ( void )SFSEEK(fw, (Sfoff_t)(-w), SEEK_CUR);
+                        ( void ) SFSEEK(fw, (Sfoff_t)(-w), SEEK_CUR);
                     n = 0;
                 } else {
                     n_move += 1;
@@ -93,7 +93,7 @@ reg int rc; /* record separator */
                     && (fw->extent < 0 || (fw->flags & SF_SHARE))))
                 if (SFFLSBUF(fw, -1) < 0)
                     break;
-        } else if ((cur = SFSEEK(fr, ( Sfoff_t )0, SEEK_CUR)) >= 0) {
+        } else if ((cur = SFSEEK(fr, ( Sfoff_t ) 0, SEEK_CUR)) >= 0) {
             sk = n > 0 ? SFSEEK(fr, n, SEEK_CUR) : SFSEEK(fr, 0, SEEK_END);
             if (sk > cur) /* safe to skip over data in current stream */
             {
@@ -118,7 +118,7 @@ reg int rc; /* record separator */
             next = fr->rsrv->data;
         } else if ((r = fr->endb - (next = fr->next))
                    <= 0) { /* amount of data remained to be read */
-            if ((w = n > MAX_SSIZE ? MAX_SSIZE : ( ssize_t )n) < 0) {
+            if ((w = n > MAX_SSIZE ? MAX_SSIZE : ( ssize_t ) n) < 0) {
                 if (fr->extent < 0)
                     w = fr->data == fr->tiny ? SF_GRAIN : fr->size;
                 else if ((fr->extent - fr->here) > SF_NMAP * SF_PAGE)
@@ -144,7 +144,7 @@ reg int rc; /* record separator */
                         w = maxw;
                     else
                         w = ((w + fr->size - 1) / fr->size) * fr->size;
-                    if (rsize <= 0 && (rbuf = ( uchar * )malloc(w)))
+                    if (rsize <= 0 && (rbuf = ( uchar * ) malloc(w)))
                         rsize = w;
                     if (rbuf) {
                         next = rbuf;
@@ -157,7 +157,7 @@ reg int rc; /* record separator */
             if (!direct) { /* make sure we don't read too far ahead */
                 if (n > 0 && fr->extent < 0 && (fr->flags & SF_SHARE)) {
                     if ((Sfoff_t)(r = fr->size) > n)
-                        r = ( ssize_t )n;
+                        r = ( ssize_t ) n;
                 } else
                     r = -1;
                 if ((r = SFFILBUF(fr, r)) <= 0)
@@ -165,7 +165,7 @@ reg int rc; /* record separator */
                 next = fr->next;
             } else { /* actual amount to be read */
                 if (n > 0 && n < w)
-                    w = ( ssize_t )n;
+                    w = ( ssize_t ) n;
 
                 if ((r = SFRD(fr, next, w, fr->disc)) > 0)
                     fr->next = fr->endb = fr->endr = fr->data;
@@ -180,7 +180,7 @@ reg int rc; /* record separator */
         endb = next + r;
         if (n > 0) {
             if (r > n)
-                r = ( ssize_t )n;
+                r = ( ssize_t ) n;
             n -= r;
         }
         n_move += r;
@@ -191,26 +191,26 @@ reg int rc; /* record separator */
         else if ((w = endb - cp) > 0) { /* move left-over to read stream */
             if (w > fr->size)
                 w = fr->size;
-            memcpy(( Void_t * )fr->data, ( Void_t * )cp, w);
+            memcpy(( Void_t * ) fr->data, ( Void_t * ) cp, w);
             fr->endb = fr->data + w;
             if ((w = endb - (cp + w)) > 0)
-                ( void )SFSK(fr, (Sfoff_t)(-w), SEEK_CUR, fr->disc);
+                ( void ) SFSK(fr, (Sfoff_t)(-w), SEEK_CUR, fr->disc);
         }
 
         if (fw) {
             if (direct == SF_WRITE)
                 fw->next += r;
             else if (r <= (fw->endb - fw->next)) {
-                memcpy(( Void_t * )fw->next, ( Void_t * )next, r);
+                memcpy(( Void_t * ) fw->next, ( Void_t * ) next, r);
                 fw->next += r;
-            } else if ((w = SFWRITE(fw, ( Void_t * )next, r))
+            } else if ((w = SFWRITE(fw, ( Void_t * ) next, r))
                        != r) { /* a write error happened */
                 if (w > 0) {
                     r -= w;
                     n_move -= r;
                 }
                 if (fr->extent >= 0)
-                    ( void )SFSEEK(fr, (Sfoff_t)(-r), SEEK_CUR);
+                    ( void ) SFSEEK(fr, (Sfoff_t)(-r), SEEK_CUR);
                 break;
             }
         }

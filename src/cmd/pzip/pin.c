@@ -264,7 +264,7 @@ matrix(int i)
     n = i * i;
     if (!(p = newof(0, size_t *, i, n * sizeof(size_t))))
         error(ERROR_SYSTEM | 3, "out of space [%d X %d matrix]", i, i);
-    v = ( size_t * )(p + i);
+    v = ( size_t * ) (p + i);
     for (k = 0; k < i; k++) {
         p[k] = v;
         v += i;
@@ -287,7 +287,7 @@ partition(int i)
     n = i * i;
     if (!(p = newof(0, Part_t, n, n * i * sizeof(size_t))))
         error(ERROR_SYSTEM | 3, "out of space [%d partition]", i);
-    v = ( size_t * )(p + n);
+    v = ( size_t * ) (p + n);
     for (k = 0; k < n; k++) {
         p[k].member = v;
         v += i;
@@ -302,8 +302,8 @@ partition(int i)
 static int
 byfrequency(const void *va, const void *vb)
 {
-    Stats_t *a = ( Stats_t * )va;
-    Stats_t *b = ( Stats_t * )vb;
+    Stats_t *a = ( Stats_t * ) va;
+    Stats_t *b = ( Stats_t * ) vb;
 
     if (a->frequency < b->frequency)
         return 1;
@@ -323,8 +323,8 @@ byfrequency(const void *va, const void *vb)
 static int
 bycolumn(const void *va, const void *vb)
 {
-    Stats_t *a = ( Stats_t * )va;
-    Stats_t *b = ( Stats_t * )vb;
+    Stats_t *a = ( Stats_t * ) va;
+    Stats_t *b = ( Stats_t * ) vb;
 
     if (a->column < b->column)
         return -1;
@@ -340,8 +340,8 @@ bycolumn(const void *va, const void *vb)
 static int
 byrate(const void *va, const void *vb)
 {
-    Part_t *a = ( Part_t * )va;
-    Part_t *b = ( Part_t * )vb;
+    Part_t *a = ( Part_t * ) va;
+    Part_t *b = ( Part_t * ) vb;
 
     if (a->rate < b->rate)
         return -1;
@@ -402,7 +402,7 @@ zip(unsigned char *b, size_t size)
     if (state.bzip) {
         dest = bufsize;
         if (bzBuffToBuffCompress(
-            ( char * )buf, &dest, ( char * )b, size, state.level, 0, 30)
+            ( char * ) buf, &dest, ( char * ) b, size, state.level, 0, 30)
             != BZ_OK)
             error(3, "bzip compress failed");
         used = dest;
@@ -860,7 +860,7 @@ reorder_heuristic(Reorder_method_t *method,
     fin = partition(row);
     hit = vector(row);
     ord = vector(row);
-    cst = ( ssize_t * )vector(row);
+    cst = ( ssize_t * ) vector(row);
 
     /*
      * fill in the pair compression size matrix
@@ -923,7 +923,7 @@ reorder_heuristic(Reorder_method_t *method,
                 error_info.line = 0;
                 if (!(sp = sfopen(NiL, error_info.file, "a")))
                     error(ERROR_SYSTEM | 1, "cannot update cache");
-                else if (!sfseek(sp, ( Sfoff_t )0, SEEK_END)) {
+                else if (!sfseek(sp, ( Sfoff_t ) 0, SEEK_END)) {
                     sfprintf(
                     sp, "# %s cache for %s\n", error_info.id, state.input);
                     error_info.line++;
@@ -1167,7 +1167,7 @@ reorder_tsp(Reorder_method_t *method,
     if (!(cost = newof(0, Tsp_cost_t *, row, row * row * sizeof(Tsp_cost_t))))
         error(
         ERROR_SYSTEM | 3, "out of space [%d X %d cost matrix]", row, row);
-    v = ( Tsp_cost_t * )(cost + row);
+    v = ( Tsp_cost_t * ) (cost + row);
     for (i = 0; i < row; i++) {
         cost[i] = v;
         v += row;
@@ -1677,7 +1677,7 @@ main(int argc, char **argv)
     }
     if (!(rec = row))
         error(3, "-r row-size is required");
-    if (high > ( int )row)
+    if (high > ( int ) row)
         error(3, "-h col-count must be <= -r row-size");
     state.window = (state.window / row) * row;
     if (!(dat = newof(0, unsigned char, state.window, 0)))

@@ -215,7 +215,7 @@ coexec(Coshell_t *co,
      */
 
     for (cs = co->service; cs; cs = cs->next) {
-        for (s = cs->name, t = ( char * )action; *s && *s == *t; s++, t++)
+        for (s = cs->name, t = ( char * ) action; *s && *s == *t; s++, t++)
             ;
         if (!*s && *t == ' ')
             return request(co, cj, cs, t + 1, flags);

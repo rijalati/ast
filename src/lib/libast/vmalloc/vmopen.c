@@ -55,7 +55,7 @@ int mode;        /* type of region		*/
     Vmdata_t *vd, vdproto;
     ssize_t algn, incr, vdsz, vmsz, sgsz, size;
     Vmuchar_t *addr, *base;
-    Seg_t *seg = ( Seg_t * )Version; /* stop compiler's warning */
+    Seg_t *seg = ( Seg_t * ) Version; /* stop compiler's warning */
     int rv, mt, initheap = 0;
     /**/ DEBUG_COUNT(N_open);
 
@@ -89,7 +89,7 @@ int mode;        /* type of region		*/
     size = 0;
 
     if (disc->exceptf) {
-        if ((rv = (*disc->exceptf)(vmp, VM_OPEN, ( Void_t * )(&addr), disc))
+        if ((rv = (*disc->exceptf)(vmp, VM_OPEN, ( Void_t * ) (&addr), disc))
             < 0) {
             if (initheap)
                 write(
@@ -102,7 +102,7 @@ int mode;        /* type of region		*/
         } else if (rv > 0) /* region opened before and now being restored */
         {
             if (!(vd
-                  = ( Vmdata_t * )addr)) /* addr should point to Vmdata_t */
+                  = ( Vmdata_t * ) addr)) /* addr should point to Vmdata_t */
             {
                 if (initheap)
                     write(
@@ -143,7 +143,7 @@ int mode;        /* type of region		*/
         size = vmsz + vdsz + sgsz + 8 * _Vmpagesize;
         size = ROUND(size, incr); /**/
         DEBUG_ASSERT(size % MEM_ALIGN == 0);
-        if (!(base = ( Vmuchar_t * )(*disc->memoryf)(
+        if (!(base = ( Vmuchar_t * ) (*disc->memoryf)(
               vmp, NIL(Void_t *), 0, size, disc))) {
             if (initheap)
                 write(
@@ -163,9 +163,9 @@ int mode;        /* type of region		*/
         /**/ DEBUG_ASSERT(VMLONG(addr) % MEM_ALIGN == 0);
 
         /* addresses of Vmdata_t and root segment */
-        vd = ( Vmdata_t * )(addr + vmsz); /**/
+        vd = ( Vmdata_t * ) (addr + vmsz); /**/
         DEBUG_ASSERT(VMLONG(vd) % MEM_ALIGN == 0);
-        seg = ( Seg_t * )(addr + vmsz + vdsz); /**/
+        seg = ( Seg_t * ) (addr + vmsz + vdsz); /**/
         DEBUG_ASSERT(VMLONG(seg) % MEM_ALIGN == 0);
 
         /* set Vmdata_t data */
@@ -189,11 +189,11 @@ int mode;        /* type of region		*/
             vm = Vmheap;
         else if (vd->mode
                  & VM_MEMORYF) /* keep in app-defined memory as Vmdata_t */
-            vm = ( Vmalloc_t * )addr;
-        else if (!(vm = ( Vmalloc_t * )vmalloc(
+            vm = ( Vmalloc_t * ) addr;
+        else if (!(vm = ( Vmalloc_t * ) vmalloc(
                    Vmheap, sizeof(Vmalloc_t)))) /* on the heap */
         {
-            ( void )(*disc->memoryf)(
+            ( void ) (*disc->memoryf)(
             vmp, vd->seg->base, vd->seg->size, 0, disc);
             if (initheap)
                 write(
@@ -205,10 +205,10 @@ int mode;        /* type of region		*/
 
     if (size > 0
         && meth->eventf) /* finalize internal method data structures */
-        ( void )(*meth->eventf)(vm, VM_ENDOPEN, NIL(Void_t *));
+        ( void ) (*meth->eventf)(vm, VM_ENDOPEN, NIL(Void_t *));
 
     if (disc->exceptf) /* signaling to application that vmopen succeeded */
-        ( void )(*disc->exceptf)(vm, VM_ENDOPEN, NIL(Void_t *), disc);
+        ( void ) (*disc->exceptf)(vm, VM_ENDOPEN, NIL(Void_t *), disc);
 
     if (vmo) {
         *vmo = *vm;

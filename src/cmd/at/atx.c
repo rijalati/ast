@@ -53,13 +53,13 @@ stampwrite(int fd, const void *buf, size_t n)
             r = -1;
         else
             r += z;
-        for (s = ( char * )buf; s < (( char * )buf + n - 1) && !isspace(*s);
+        for (s = ( char * ) buf; s < (( char * ) buf + n - 1) && !isspace(*s);
              s++)
             if (*s == ':') {
-                while (++s < (( char * )buf + n - 1) && isspace(*s))
+                while (++s < (( char * ) buf + n - 1) && isspace(*s))
                     ;
-                n -= s - ( char * )buf;
-                buf = ( void * )s;
+                n -= s - ( char * ) buf;
+                buf = ( void * ) s;
                 break;
             }
     }
@@ -92,7 +92,7 @@ main(int argc, char **argv)
         && sfsscanf(argv[2], "%..36lu.%..36lu.%..36lu", &uid, &gid, &tid)
            != 3)
         error(
-        3, "%s: command garbled [%d]", argc >= 3 ? argv[2] : ( char * )0, n);
+        3, "%s: command garbled [%d]", argc >= 3 ? argv[2] : ( char * ) 0, n);
     if (setgid(gid))
         error(ERROR_SYSTEM | 3,
               "%s %s group denied (gid=%u egid=%u => gid=%d)",

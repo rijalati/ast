@@ -41,7 +41,7 @@ vswprintf(wchar_t *s, size_t n, const wchar_t *fmt, va_list args)
     f.bits = SF_PRIVATE;
     f.mode = SF_WRITE;
     f.size = n - 1;
-    f.data = f.next = f.endr = ( uchar * )s;
+    f.data = f.next = f.endr = ( uchar * ) s;
     f.endb = f.endw = f.data + f.size;
 
     /*

@@ -35,8 +35,8 @@ static int Dfd, Tfd;
 #define tarinit(buf, size, fd)                                               \
     (Tdata = Tnext = buf, Tend = buf + size, Tfd = fd)
 #define tarflush()                                                           \
-    (write(Tfd, ( char * )Tdata, Tnext - Tdata) >= 0 ? (Tnext = Tdata, 0)    \
-                                                     : -1)
+    (write(Tfd, ( char * ) Tdata, Tnext - Tdata) >= 0 ? (Tnext = Tdata, 0)   \
+                                                      : -1)
 
 /* read a byte from delta file */
 static int
@@ -44,11 +44,11 @@ delgetc(void)
 {
     if (Dnext >= Dend) {
         int n;
-        if ((n = read(Dfd, ( char * )Ddata, BUFSIZE)) <= 0)
+        if ((n = read(Dfd, ( char * ) Ddata, BUFSIZE)) <= 0)
             return -1;
         Dnext = Ddata, Dend = Ddata + n;
     }
-    return ( int )(*Dnext++);
+    return ( int ) (*Dnext++);
 }
 
 /* read a long value from delta file */
@@ -78,7 +78,7 @@ filetransfer(int fd, long n)
             if (tarflush() < 0)
                 return -1;
         r = n > (Tend - Tnext) ? (Tend - Tnext) : n;
-        if (read(fd, ( char * )Tnext, r) != r)
+        if (read(fd, ( char * ) Tnext, r) != r)
             return -1;
         Tnext += r;
         n -= r;
@@ -147,16 +147,16 @@ update(int srcfd, long offset, int delfd, int tarfd)
         return -1;
 
     /* make data area for target file */
-    if (tar = ( unsigned char * )malloc(n_tar)) /* assignment = */
+    if (tar = ( unsigned char * ) malloc(n_tar)) /* assignment = */
         tarinit(tar, n_tar, tarfd);
     else
         tarinit(tarbuf, BUFSIZE, tarfd);
 
     /* read in source file if possible to avoid lseek */
-    if (src = ( unsigned char * )malloc(n_src)) /* assignment = */
+    if (src = ( unsigned char * ) malloc(n_src)) /* assignment = */
     {
         lseek(srcfd, offset, 0);
-        if (read(srcfd, ( char * )src, n_src) != n_src)
+        if (read(srcfd, ( char * ) src, n_src) != n_src)
             return -1;
     }
 

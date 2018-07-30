@@ -232,7 +232,7 @@ int rs;                                               /* record separator 	*/
             fsep[fs].typn = -1;
 
     /* now find the separator with best coding size among the remainders */
-    if (!(fld = ( Freq_t * )malloc(fsep[bestfs].typ[0] * sizeof(Freq_t))))
+    if (!(fld = ( Freq_t * ) malloc(fsep[bestfs].typ[0] * sizeof(Freq_t))))
         return -1;
     for (bestfs = -1, fs = 0; fs < 256; ++fs) {
         if (fsep[fs].typn <= 0)
@@ -261,7 +261,7 @@ int rs;                                               /* record separator 	*/
     for (z = 0; z < size; ++z)
         freq[data[z]] += 1;
     size = rdhuffman(freq);
-    perf = (( double )fsep[bestfs].cdsz) / size;
+    perf = (( double ) fsep[bestfs].cdsz) / size;
 
     if (rdf->perf > 0. && rdf->fldn > 2 * fsep[bestfs].typ[0])
         perf = rdf->perf; /* prefer larger number of fields */
@@ -536,10 +536,10 @@ Freq_t *colf; /* column frequencies	*/
     ** seg[l][r] represents the field group fldz[l],fldz[l+1]...fldz[r].
     */
     sz = nf * sizeof(Freq_t) + nf * sizeof(Seg_t *) + nf * nf * sizeof(Seg_t);
-    if (!(fldf = ( Freq_t * )calloc(1, sz)))
+    if (!(fldf = ( Freq_t * ) calloc(1, sz)))
         return -1;
-    seg = ( Seg_t ** )(fldf + nf);
-    seg[0] = ( Seg_t * )(seg + nf);
+    seg = ( Seg_t ** ) (fldf + nf);
+    seg[0] = ( Seg_t * ) (seg + nf);
     for (k = 1; k < nf; ++k)
         seg[k] = seg[k - 1] + nf;
 
@@ -605,14 +605,14 @@ int merge;
     ssize_t *fldz, *tmpz, *mark;
     Freq_t *colf;
 
-    if (!(fldz = ( ssize_t * )calloc(nc, sizeof(ssize_t))))
+    if (!(fldz = ( ssize_t * ) calloc(nc, sizeof(ssize_t))))
         return -1;
     if (!(colf
-          = ( Freq_t * )calloc(nc, sizeof(Freq_t) + 2 * sizeof(ssize_t)))) {
+          = ( Freq_t * ) calloc(nc, sizeof(Freq_t) + 2 * sizeof(ssize_t)))) {
         free(fldz);
         return -1;
     }
-    mark = ( ssize_t * )(colf + nc);
+    mark = ( ssize_t * ) (colf + nc);
     tmpz = mark + nc;
 
     if (nc < 4 || nr < 16) /* too little data */
@@ -658,7 +658,7 @@ done:
     free(colf);
 
     if (allc <= 0 || fldc <= 0
-        || (rdf->perf > 0. && (( double )fldc) / allc > rdf->perf)) {
+        || (rdf->perf > 0. && (( double ) fldc) / allc > rdf->perf)) {
         free(fldz);
         return 0;
     } else /* good partition, keep it */
@@ -666,7 +666,7 @@ done:
         rdf->fsep = rdf->rsep = -1;
         rdf->fldn = nf;
         rdf->fldz = fldz;
-        rdf->perf = (( double )fldc) / allc;
+        rdf->perf = (( double ) fldc) / allc;
         return 1;
     }
 }
@@ -727,12 +727,12 @@ int merge;
     if (rdt.fldn <= 0 && rdt.perf <= 0.0)
         rdf = NIL(Vcrdformat_t *); /* failed to find any structure */
     else
-        rdf = ( Vcrdformat_t * )calloc(
+        rdf = ( Vcrdformat_t * ) calloc(
         1, sizeof(Vcrdformat_t) + rdt.fldn * sizeof(ssize_t));
     if (rdf) {
         memcpy(rdf, &rdt, sizeof(Vcrdformat_t));
         if (rdf->fldn > 0) {
-            rdf->fldz = ( ssize_t * )(rdf + 1);
+            rdf->fldz = ( ssize_t * ) (rdf + 1);
             memcpy(rdf->fldz, rdt.fldz, rdf->fldn * sizeof(ssize_t));
         }
     }

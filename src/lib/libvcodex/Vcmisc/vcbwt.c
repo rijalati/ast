@@ -61,7 +61,7 @@ Void_t **out;
         goto done;
 
     /* compute the transform */
-    dt = ( Vcchar_t * )data;
+    dt = ( Vcchar_t * ) data;
     bw = output;
     for (k = 0; k < size; ++k) {
         if (idx[k] == 0) /* special coding of the 0th position */
@@ -137,7 +137,7 @@ Void_t **out;
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
         RETURN(-1);
 
-    if (!(pick = ( ssize_t * )malloc((sz + 1) * sizeof(ssize_t))))
+    if (!(pick = ( ssize_t * ) malloc((sz + 1) * sizeof(ssize_t))))
         RETURN(-1);
 
     for (k = 0; k < 256; ++k)

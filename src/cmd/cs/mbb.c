@@ -108,9 +108,9 @@ typedef struct State_s
 #define CHUNK (4 * 1024)
 #define HOG (4 * 1024 * 1024)
 
-#define CHAN_DEFAULT ((( Sfulong_t )~0) ^ 1)
+#define CHAN_DEFAULT ((( Sfulong_t ) ~0) ^ 1)
 #define CHAN_VALID(c) ((c) >= 0 && (c) <= 63)
-#define CHAN_MASK(c) ((( Sfulong_t )1) << (c))
+#define CHAN_MASK(c) ((( Sfulong_t ) 1) << (c))
 
 static char buf[8 * 1024];
 
@@ -135,7 +135,7 @@ note(Css_t *css,
      int force,
      Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     ssize_t z;
 
     if ((force || to->blocked[log] < 0)
@@ -202,7 +202,7 @@ note(Css_t *css,
 static int
 dump(Css_t *css, Connection_t *con, int log, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     char *s;
     size_t n;
     int r;
@@ -254,7 +254,7 @@ post(Css_t *css,
      const char *format,
      ...)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     char *s;
     ssize_t n;
     Sfulong_t m;
@@ -285,7 +285,7 @@ post(Css_t *css,
 static void
 drop(Css_t *css, Connection_t *con, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Connection_t *cp;
     Connection_t *pp;
 
@@ -306,7 +306,7 @@ drop(Css_t *css, Connection_t *con, Cssdisc_t *disc)
 static int
 acceptf(Css_t *css, Cssfd_t *fp, Csid_t *ip, char **av, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Connection_t *con;
     int i;
 
@@ -328,7 +328,7 @@ acceptf(Css_t *css, Cssfd_t *fp, Csid_t *ip, char **av, Cssdisc_t *disc)
 static int
 actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Connection_t *con;
     char *s;
     char *e;
@@ -339,12 +339,12 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 
     switch (fp->status) {
     case CS_POLL_CLOSE:
-        if (!(con = ( Connection_t * )fp->data))
+        if (!(con = ( Connection_t * ) fp->data))
             return -1;
         drop(css, con, disc);
         return 0;
     case CS_POLL_READ:
-        if (!(con = ( Connection_t * )fp->data))
+        if (!(con = ( Connection_t * ) fp->data))
             return -1;
         if ((n = csread(css->state, fp->fd, buf, sizeof(buf) - 1, CS_LINE))
             <= 0) {
@@ -356,7 +356,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
         buf[n] = 0;
         for (s = buf; isspace(*s); s++)
             ;
-        c = ( int )strtol(s, &e, 0);
+        c = ( int ) strtol(s, &e, 0);
         if (CHAN_VALID(c) && e > s) {
             s = e;
             if (*s == '.')
@@ -402,7 +402,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
         }
         return 1;
     case CS_POLL_WRITE:
-        if (!(con = ( Connection_t * )fp->data))
+        if (!(con = ( Connection_t * ) fp->data))
             return -1;
         if ((con->blocked[!state->log] < 0
              || dump(css, con, !state->log, disc))

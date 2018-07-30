@@ -81,7 +81,7 @@ getprocs_init(Pss_t *pss)
 static int
 getprocs_read(Pss_t *pss, Pss_id_t pid)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
 
     if (pid) {
         pss->pid = pid;
@@ -119,7 +119,7 @@ getprocs_read(Pss_t *pss, Pss_id_t pid)
 static int
 getprocs_part(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     struct procsinfo *pr;
 
     pr = state->pr;
@@ -154,7 +154,7 @@ getprocs_part(Pss_t *pss, Pssent_t *pe)
 static int
 getprocs_full(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     struct procsinfo *pr = state->pr;
     unsigned long fields = pss->disc->fields & pss->meth->fields;
     char *s;
@@ -178,7 +178,7 @@ getprocs_full(Pss_t *pss, Pssent_t *pe)
             pe->command = s;
         }
     }
-    pe->addr = ( void * )pr->pi_adspace;
+    pe->addr = ( void * ) pr->pi_adspace;
     pe->flags = pr->pi_flags;
     pe->nice = pr->pi_nice;
     pe->ppid = pr->pi_ppid;

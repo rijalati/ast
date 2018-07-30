@@ -46,12 +46,12 @@ fcfopen(Sfio_t *f)
     _Fcin.fcbuff = _Fcin.fcptr;
     _Fcin._fcfile = f;
     fcsave(&save);
-    if (!(buff = ( char * )sfreserve(f, SF_UNBOUND, SF_LOCKR))) {
+    if (!(buff = ( char * ) sfreserve(f, SF_UNBOUND, SF_LOCKR))) {
         fcrestore(&save);
         _Fcin.fcchar = 0;
         _Fcin.fcptr = _Fcin.fcbuff = &_Fcin.fcchar;
         _Fcin.fclast = 0;
-        _Fcin._fcfile = ( Sfio_t * )0;
+        _Fcin._fcfile = ( Sfio_t * ) 0;
         return (EOF);
     }
     n = sfvalue(f);
@@ -59,8 +59,9 @@ fcfopen(Sfio_t *f)
     sfread(f, buff, 0);
     _Fcin.fcoff = sftell(f);
     ;
-    buff = ( char * )sfreserve(f, SF_UNBOUND, SF_LOCKR);
-    _Fcin.fclast = (_Fcin.fcptr = _Fcin.fcbuff = ( unsigned char * )buff) + n;
+    buff = ( char * ) sfreserve(f, SF_UNBOUND, SF_LOCKR);
+    _Fcin.fclast
+    = (_Fcin.fcptr = _Fcin.fcbuff = ( unsigned char * ) buff) + n;
     if (sffileno(f) >= 0)
         *_Fcin.fclast = 0;
     return (n);
@@ -97,8 +98,8 @@ fcfill(void)
             _Fcin.fcptr = ptr = last;
     }
     if ((n = ptr - _Fcin.fcbuff) && _Fcin.fcfun)
-        (*_Fcin.fcfun)(f, ( const char * )_Fcin.fcbuff, n, _Fcin.context);
-    sfread(f, ( char * )_Fcin.fcbuff, n);
+        (*_Fcin.fcfun)(f, ( const char * ) _Fcin.fcbuff, n, _Fcin.context);
+    sfread(f, ( char * ) _Fcin.fcbuff, n);
     _Fcin.fcoff += n;
     _Fcin._fcfile = 0;
     if (!last)

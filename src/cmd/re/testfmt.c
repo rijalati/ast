@@ -100,7 +100,7 @@ static struct
 static void
 quote(char *s, int expand)
 {
-    unsigned char *u = ( unsigned char * )s;
+    unsigned char *u = ( unsigned char * ) s;
     int c;
 
     if (!u)
@@ -230,7 +230,7 @@ escape(char *s)
                 break;
             case 'u':
             case 'x':
-                q = *s == 'u' ? (s + 4) : ( char * )0;
+                q = *s == 'u' ? (s + 4) : ( char * ) 0;
                 c = 0;
                 e = s;
                 while (!e || !q || s < q) {

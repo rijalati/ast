@@ -72,7 +72,7 @@ fmtuid(int uid)
         disc.key = offsetof(Id_t, id);
         disc.size = sizeof(int);
         dict = dtopen(&disc, Dtset);
-    } else if (ip = ( Id_t * )dtmatch(dict, &uid))
+    } else if (ip = ( Id_t * ) dtmatch(dict, &uid))
         return ip->name;
     if (pw = getpwuid(uid)) {
         name = pw->pw_name;

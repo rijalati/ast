@@ -299,7 +299,7 @@ static int createfile(file) char *file;
     file = buf;
     if (*file == '&' && *(file += 1)
         || strncmp(file, "/dev/fd/", 8) == 0 && *(file += 8)) {
-        fd = fcntl(( int )atou(&file), F_DUPFD_CLOEXEC, 0);
+        fd = fcntl(( int ) atou(&file), F_DUPFD_CLOEXEC, 0);
 #    if F_DUPFD_CLOEXEC == F_DUPFD
         if (fd >= 0)
             SETCLOEXEC(fd);
@@ -547,7 +547,7 @@ _vmoptions(int boot)
                             vm = vmopen(Vmdcsystem, Vmdebug, 0);
                         if (vm && vm->meth.meth == VM_MTDEBUG && v
                             && (n = atou(&v)) > 0)
-                            vmdbwatch(( Void_t * )n);
+                            vmdbwatch(( Void_t * ) n);
                         break;
                     }
                 }
@@ -633,7 +633,7 @@ extern unsigned long _record[2048];
 __inline Void_t *
 _vmrecord(Void_t *p)
 {
-    unsigned long v = (( unsigned long )p) >> 16;
+    unsigned long v = (( unsigned long ) p) >> 16;
 
     _record[v >> 5] |= 1 << ((v & 0x1f));
     return p;
@@ -673,7 +673,7 @@ lcl_getenv(const char *s)
 
 #        if USE_NATIVE
 static void *native_realloc _ARG_((void *, size_t));
-static void native_free _ARG_(( void * ));
+static void native_free _ARG_(( void * ) );
 #        endif
 
 #        define VM_STARTING 1
@@ -824,7 +824,7 @@ free(Void_t *data)
 
     if (data && !(_Vmassert & VM_keep)) {
         if ((vm = vmregion(data)))
-            ( void )(*vm->meth.freef)(vm, data, 0);
+            ( void ) (*vm->meth.freef)(vm, data, 0);
 #        if USE_NATIVE
         else /* not our data */
             native_free(data);
@@ -967,7 +967,7 @@ alloca(size_t size)
             f = Frame;
             Frame = f->head.head.next;
             if ((vm = vmregion(f)))
-                ( void )(*vm->meth.freef)(vm, f, 0);
+                ( void ) (*vm->meth.freef)(vm, f, 0);
             /* else: something bad happened. just keep going */
         } else
             break;
@@ -977,7 +977,7 @@ alloca(size_t size)
     Vmregion->line = line;
     Vmregion->func = func;
 
-    f = ( Alloca_t * )(*Vmregion->meth.allocf)(
+    f = ( Alloca_t * ) (*Vmregion->meth.allocf)(
     Vmregion, size + sizeof(Alloca_t) - 1, 0);
 
     /* if f is NULL, this mimics a stack overflow with a memory error! */
@@ -987,7 +987,7 @@ alloca(size_t size)
 
     VMEPILOGUE(0);
 
-    return ( Void_t * )f->data;
+    return ( Void_t * ) f->data;
 }
 #        endif /*!_lib_alloca || _mal_alloca*/
 
@@ -1309,10 +1309,10 @@ mstats()
 extern Void_t *calloc _ARG_((size_t, size_t));
 
 #        undef cfree
-extern void cfree _ARG_(( Void_t * ));
+extern void cfree _ARG_(( Void_t * ) );
 
 #        undef free
-extern void free _ARG_(( Void_t * ));
+extern void free _ARG_(( Void_t * ) );
 
 #        undef malloc
 extern Void_t *malloc _ARG_((size_t));

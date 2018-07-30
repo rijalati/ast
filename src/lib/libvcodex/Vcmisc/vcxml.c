@@ -101,8 +101,8 @@ static unsigned char sep[256];
 static int
 tagcmp(Dt_t *dt, void *obj1, void *obj2, Dtdisc_t *disc)
 {
-    unsigned char *a = ( unsigned char * )obj1;
-    unsigned char *b = ( unsigned char * )obj2;
+    unsigned char *a = ( unsigned char * ) obj1;
+    unsigned char *b = ( unsigned char * ) obj2;
 
     while (*a == *b) {
         if (sep[*a])
@@ -139,7 +139,7 @@ vcxml(Vcodex_t *vc, const void *data, size_t size, void **out)
     if (!(buf = vcbuffer(vc, NIL(Vcchar_t *), size, 0)))
         RETURN(-1);
     vcioinit(&io, buf, size);
-    s = ( Vcchar_t * )data;
+    s = ( Vcchar_t * ) data;
     e = s + size;
     while (s < e) {
         if ((c = *s++) == '<') {
@@ -199,7 +199,7 @@ vcxml(Vcodex_t *vc, const void *data, size_t size, void **out)
                     RETURN(-1);
                 }
                 encode->k--;
-                if (!(t = ( Tag_t * )dtmatch((*(encode->k))->sub, b))) {
+                if (!(t = ( Tag_t * ) dtmatch((*(encode->k))->sub, b))) {
                     if (vc->errorf)
                         (*vc->errorf)(NiL,
                                       vc->disc,
@@ -223,7 +223,7 @@ vcxml(Vcodex_t *vc, const void *data, size_t size, void **out)
                     vcioputc(&io, TAG_EMT);
                 } else
                     a = s - 1;
-                if (!(t = ( Tag_t * )dtmatch((*encode->k)->sub, b))) {
+                if (!(t = ( Tag_t * ) dtmatch((*encode->k)->sub, b))) {
                     q = a - b;
                     if (!(t = vmoldof(encode->v, 0, Tag_t, 1, q + 1))
                         || !(t->sub = dtnew(encode->v, &encode->d, Dtoset))) {
@@ -332,14 +332,14 @@ vcunxml(Vcodex_t *vc, const void *orig, size_t size, void **out)
         RETURN(-1);
     if (size == 0)
         return 0;
-    data = ( Vcchar_t * )orig;
+    data = ( Vcchar_t * ) orig;
     if (vcrecode(vc, &data, &size, 0, 0) < 0)
         return -1;
     if (!(buf = vcbuffer(vc, NIL(Vcchar_t *), 4 * size, 0)))
         RETURN(-1);
     x = 0;
     vcioinit(&io, buf, size);
-    s = ( Vcchar_t * )data;
+    s = ( Vcchar_t * ) data;
     e = s + size;
     while (s < e) {
         b = s;
@@ -501,7 +501,7 @@ undone:
 done:
     size = io.next - io.data;
     vcbuffer(vc, buf, size, 0);
-    if (data != ( Vcchar_t * )orig)
+    if (data != ( Vcchar_t * ) orig)
         vcbuffer(vc, data, -1, -1);
     if (out)
         *out = buf;

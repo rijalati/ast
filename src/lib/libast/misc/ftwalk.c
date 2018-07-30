@@ -77,21 +77,21 @@ ftwalk(const char *path,
         flags |= FTS_SEEDOT;
     state.comparf = comparf;
     if (!(f = fts_open(
-          ( char *const * )path, flags, comparf ? ftscompare : 0))) {
+          ( char *const * ) path, flags, comparf ? ftscompare : 0))) {
         if (!path
             || !(flags & FTS_ONEPATH)
-               && !(path = ( const char * )(*(( char ** )path))))
+               && !(path = ( const char * ) (*(( char ** ) path))))
             return -1;
         ns = strlen(path) + 1;
         if (!(e = newof(0, FTSENT, 1, ns)))
             return -1;
         e->fts_accpath = e->fts_name = e->fts_path
-        = strcpy(( char * )(e + 1), path);
+        = strcpy(( char * ) (e + 1), path);
         e->fts_namelen = e->fts_pathlen = ns;
         e->fts_info = FTS_NS;
         e->parent = e;
         e->parent->link = e;
-        rv = (*userf)(( Ftw_t * )e);
+        rv = (*userf)(( Ftw_t * ) e);
         free(e);
         return rv;
     }
@@ -107,7 +107,7 @@ ftwalk(const char *path,
                     break;
             }
         e->parent->link = e;
-        rv = (*userf)(( Ftw_t * )e->parent);
+        rv = (*userf)(( Ftw_t * ) e->parent);
         e->parent->link = 0;
         while (nd > 0)
             dd[--nd]->info |= FTS_DD;
@@ -145,7 +145,7 @@ ftwalk(const char *path,
             e->info = FTS_SL;
             break;
         }
-        rv = (*userf)(( Ftw_t * )e);
+        rv = (*userf)(( Ftw_t * ) e);
         e->info = oi;
         if (e->status == ns)
             e->status = os;

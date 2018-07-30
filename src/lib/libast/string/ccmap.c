@@ -4218,7 +4218,7 @@ _ccmap(int i, int o)
     int op;
 
     if (!i && !o)
-        return ( unsigned char * )tab;
+        return ( unsigned char * ) tab;
     if (CCCONVERT(i)) {
         o = CCOUT(i);
         i = CCIN(i);
@@ -4234,9 +4234,9 @@ _ccmap(int i, int o)
     if (i == o || i < 1 || i > MAPS || o < 1 || o > MAPS)
         return 0;
     if (i == CC_ASCII)
-        return ( unsigned char * )tab + MAP * (2 * (o - 1));
+        return ( unsigned char * ) tab + MAP * (2 * (o - 1));
     if (o == CC_ASCII)
-        return ( unsigned char * )tab + MAP * (2 * (i - 1) + 1);
+        return ( unsigned char * ) tab + MAP * (2 * (i - 1) + 1);
     op = CCOP(i, o);
     for (map = maps; map; map = map->next)
         if (map->op == op)
@@ -4244,8 +4244,8 @@ _ccmap(int i, int o)
     if (!(map = newof(0, Map_t, 1, 0)))
         return 0;
     map->op = op;
-    a = ( unsigned char * )tab + MAP * (2 * (o - 1));
-    z = ( unsigned char * )tab + MAP * (2 * (i - 1) + 1);
+    a = ( unsigned char * ) tab + MAP * (2 * (o - 1));
+    z = ( unsigned char * ) tab + MAP * (2 * (i - 1) + 1);
     m = map->map;
     for (n = 0; n < MAP; n++)
         m[n] = n;
@@ -4264,9 +4264,9 @@ _ccmapcpy(unsigned char *m, void *b, const void *a, size_t n)
     unsigned char *ua;
 
     if (m) {
-        ub = ( unsigned char * )b;
+        ub = ( unsigned char * ) b;
         ue = ub + n;
-        ua = ( unsigned char * )a;
+        ua = ( unsigned char * ) a;
         while (ub < ue)
             *ub++ = m[*ua++];
     } else
@@ -4281,7 +4281,7 @@ _ccmapstr(unsigned char *m, void *b, size_t n)
     unsigned char *e;
 
     if (m)
-        for (e = (s = ( unsigned char * )b) + n; s < e; s++)
+        for (e = (s = ( unsigned char * ) b) + n; s < e; s++)
             *s = m[*s];
     return b;
 }

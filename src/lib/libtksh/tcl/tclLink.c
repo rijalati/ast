@@ -100,9 +100,9 @@ int type;           /* Type of C variable: TCL_LINK_INT, etc.
     char buffer[TCL_DOUBLE_SPACE];
     int code;
 
-    linkPtr = ( Link * )ckalloc(sizeof(Link));
+    linkPtr = ( Link * ) ckalloc(sizeof(Link));
     linkPtr->interp = interp;
-    linkPtr->varName = ( char * )ckalloc(( unsigned )(strlen(varName) + 1));
+    linkPtr->varName = ( char * ) ckalloc(( unsigned ) (strlen(varName) + 1));
     strcpy(linkPtr->varName, varName);
     linkPtr->addr = addr;
     linkPtr->type = type & ~TCL_LINK_READ_ONLY;
@@ -117,7 +117,7 @@ int type;           /* Type of C variable: TCL_LINK_INT, etc.
                    TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG)
         == NULL) {
         ckfree(linkPtr->varName);
-        ckfree(( char * )linkPtr);
+        ckfree(( char * ) linkPtr);
         return TCL_ERROR;
     }
     code = Tcl_TraceVar(interp,
@@ -125,10 +125,10 @@ int type;           /* Type of C variable: TCL_LINK_INT, etc.
                         TCL_GLOBAL_ONLY | TCL_TRACE_READS | TCL_TRACE_WRITES
                         | TCL_TRACE_UNSETS,
                         LinkTraceProc,
-                        ( ClientData )linkPtr);
+                        ( ClientData ) linkPtr);
     if (code != TCL_OK) {
         ckfree(linkPtr->varName);
-        ckfree(( char * )linkPtr);
+        ckfree(( char * ) linkPtr);
     }
     return code;
 }
@@ -158,8 +158,8 @@ char *varName; /* Global variable in interp to unlink. */
 {
     Link *linkPtr;
 
-    linkPtr = ( Link * )Tcl_VarTraceInfo(
-    interp, varName, TCL_GLOBAL_ONLY, LinkTraceProc, ( ClientData )NULL);
+    linkPtr = ( Link * ) Tcl_VarTraceInfo(
+    interp, varName, TCL_GLOBAL_ONLY, LinkTraceProc, ( ClientData ) NULL);
     if (linkPtr == NULL) {
         return;
     }
@@ -168,9 +168,9 @@ char *varName; /* Global variable in interp to unlink. */
                    TCL_GLOBAL_ONLY | TCL_TRACE_READS | TCL_TRACE_WRITES
                    | TCL_TRACE_UNSETS,
                    LinkTraceProc,
-                   ( ClientData )linkPtr);
+                   ( ClientData ) linkPtr);
     ckfree(linkPtr->varName);
-    ckfree(( char * )linkPtr);
+    ckfree(( char * ) linkPtr);
 }
 
 /*
@@ -200,8 +200,8 @@ char *varName;      /* Name of global variable that is linked. */
     char buffer[TCL_DOUBLE_SPACE];
     int savedFlag;
 
-    linkPtr = ( Link * )Tcl_VarTraceInfo(
-    interp, varName, TCL_GLOBAL_ONLY, LinkTraceProc, ( ClientData )NULL);
+    linkPtr = ( Link * ) Tcl_VarTraceInfo(
+    interp, varName, TCL_GLOBAL_ONLY, LinkTraceProc, ( ClientData ) NULL);
     if (linkPtr == NULL) {
         return;
     }
@@ -240,7 +240,7 @@ char *name1;           /* First part of variable name. */
 char *name2;           /* Second part of variable name. */
 int flags;             /* Miscellaneous additional information. */
 {
-    Link *linkPtr = ( Link * )clientData;
+    Link *linkPtr = ( Link * ) clientData;
     int changed;
     char buffer[TCL_DOUBLE_SPACE];
     char *value, **pp;
@@ -254,7 +254,7 @@ int flags;             /* Miscellaneous additional information. */
     if (flags & TCL_TRACE_UNSETS) {
         if (flags & TCL_INTERP_DESTROYED) {
             ckfree(linkPtr->varName);
-            ckfree(( char * )linkPtr);
+            ckfree(( char * ) linkPtr);
         } else if (flags & TCL_TRACE_DESTROYED) {
             Tcl_SetVar(interp,
                        linkPtr->varName,
@@ -265,7 +265,7 @@ int flags;             /* Miscellaneous additional information. */
                          TCL_GLOBAL_ONLY | TCL_TRACE_READS | TCL_TRACE_WRITES
                          | TCL_TRACE_UNSETS,
                          LinkTraceProc,
-                         ( ClientData )linkPtr);
+                         ( ClientData ) linkPtr);
         }
         return NULL;
     }
@@ -290,10 +290,10 @@ int flags;             /* Miscellaneous additional information. */
         switch (linkPtr->type) {
         case TCL_LINK_INT:
         case TCL_LINK_BOOLEAN:
-            changed = *( int * )(linkPtr->addr) != linkPtr->lastValue.i;
+            changed = *( int * ) (linkPtr->addr) != linkPtr->lastValue.i;
             break;
         case TCL_LINK_DOUBLE:
-            changed = *( double * )(linkPtr->addr) != linkPtr->lastValue.d;
+            changed = *( double * ) (linkPtr->addr) != linkPtr->lastValue.d;
             break;
         case TCL_LINK_STRING:
             changed = 1;
@@ -346,7 +346,7 @@ int flags;             /* Miscellaneous additional information. */
                        TCL_GLOBAL_ONLY);
             return "variable must have integer value";
         }
-        *( int * )(linkPtr->addr) = linkPtr->lastValue.i;
+        *( int * ) (linkPtr->addr) = linkPtr->lastValue.i;
         break;
     case TCL_LINK_DOUBLE:
         if (Tcl_GetDouble(interp, value, &linkPtr->lastValue.d) != TCL_OK) {
@@ -357,7 +357,7 @@ int flags;             /* Miscellaneous additional information. */
                        TCL_GLOBAL_ONLY);
             return "variable must have real value";
         }
-        *( double * )(linkPtr->addr) = linkPtr->lastValue.d;
+        *( double * ) (linkPtr->addr) = linkPtr->lastValue.d;
         break;
     case TCL_LINK_BOOLEAN:
         if (Tcl_GetBoolean(interp, value, &linkPtr->lastValue.i) != TCL_OK) {
@@ -368,14 +368,14 @@ int flags;             /* Miscellaneous additional information. */
                        TCL_GLOBAL_ONLY);
             return "variable must have boolean value";
         }
-        *( int * )(linkPtr->addr) = linkPtr->lastValue.i;
+        *( int * ) (linkPtr->addr) = linkPtr->lastValue.i;
         break;
     case TCL_LINK_STRING:
-        pp = ( char ** )(linkPtr->addr);
+        pp = ( char ** ) (linkPtr->addr);
         if (*pp != NULL) {
             ckfree(*pp);
         }
-        *pp = ( char * )ckalloc(( unsigned )(strlen(value) + 1));
+        *pp = ( char * ) ckalloc(( unsigned ) (strlen(value) + 1));
         strcpy(*pp, value);
         break;
     default:
@@ -415,21 +415,21 @@ char *buffer; /* Small buffer to use for converting
 
     switch (linkPtr->type) {
     case TCL_LINK_INT:
-        linkPtr->lastValue.i = *( int * )(linkPtr->addr);
+        linkPtr->lastValue.i = *( int * ) (linkPtr->addr);
         sprintf(buffer, "%d", linkPtr->lastValue.i);
         return buffer;
     case TCL_LINK_DOUBLE:
-        linkPtr->lastValue.d = *( double * )(linkPtr->addr);
+        linkPtr->lastValue.d = *( double * ) (linkPtr->addr);
         Tcl_PrintDouble(linkPtr->interp, linkPtr->lastValue.d, buffer);
         return buffer;
     case TCL_LINK_BOOLEAN:
-        linkPtr->lastValue.i = *( int * )(linkPtr->addr);
+        linkPtr->lastValue.i = *( int * ) (linkPtr->addr);
         if (linkPtr->lastValue.i != 0) {
             return "1";
         }
         return "0";
     case TCL_LINK_STRING:
-        p = *( char ** )(linkPtr->addr);
+        p = *( char ** ) (linkPtr->addr);
         if (p == NULL) {
             return "NULL";
         }

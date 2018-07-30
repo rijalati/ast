@@ -78,7 +78,7 @@ working(char *store, char *typeascii, char *pnumascii, ssize_t size)
             else {
                 n_free += 1;
                 Piece[f].free = 0;
-                Piece[f].addr = ( Void_t * )0;
+                Piece[f].addr = ( Void_t * ) 0;
             }
         }
     }
@@ -115,7 +115,7 @@ makeprocess(char *program, char *store, int type, int pnum)
     argv[2] = store;
     argv[3] = typeascii;
     argv[4] = pnumascii;
-    argv[5] = ( char * )0;
+    argv[5] = ( char * ) 0;
 
     if ((pid = fork()) < 0)
         terror("Could not fork() a subprocess");

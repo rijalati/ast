@@ -94,31 +94,31 @@ typedef struct
 #    define ast _ast_info_
 
 #    define elementsof(x) (sizeof(x) / sizeof(x[0]))
-#    define integralof(x) ((( char * )(x)) - (( char * )0))
+#    define integralof(x) ((( char * ) (x)) - (( char * ) 0))
 #    define newof(p, t, n, x)                                                \
-        ((p) ? ( t * )realloc(( char * )(p), sizeof(t) * (n) + (x))          \
-             : ( t * )calloc(1, sizeof(t) * (n) + (x)))
+        ((p) ? ( t * ) realloc(( char * ) (p), sizeof(t) * (n) + (x))        \
+             : ( t * ) calloc(1, sizeof(t) * (n) + (x)))
 #    define oldof(p, t, n, x)                                                \
-        ((p) ? ( t * )realloc(( char * )(p), sizeof(t) * (n) + (x))          \
-             : ( t * )malloc(sizeof(t) * (n) + (x)))
-#    define pointerof(x) (( void * )(( char * )0 + (x)))
-#    define roundof(x, y) (((x) + ( y )-1) & ~(( y )-1))
+        ((p) ? ( t * ) realloc(( char * ) (p), sizeof(t) * (n) + (x))        \
+             : ( t * ) malloc(sizeof(t) * (n) + (x)))
+#    define pointerof(x) (( void * ) (( char * ) 0 + (x)))
+#    define roundof(x, y) (((x) + ( y ) -1) & ~(( y ) -1))
 
 #    ifndef offsetof
 #        define offsetof(type, member)                                       \
-            (( unsigned long )&((( type * )0)->member))
+            (( unsigned long ) &((( type * ) 0)->member))
 #    endif
 
 #    if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
 #        define NiL 0
-#        define NoP(x) ( void )(x)
+#        define NoP(x) ( void ) (x)
 #    else
-#        define NiL (( char * )0)
+#        define NiL (( char * ) 0)
 #        define NoP(x) (&x, 1)
 #    endif
 
 #    define conformance(a, b) "ast"
-#    define fmtident(s) (( char * )(s) + 10)
+#    define fmtident(s) (( char * ) (s) + 10)
 #    define mbchar(s) (*s++)
 #    define setlocale(a, b)
 

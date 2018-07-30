@@ -44,7 +44,7 @@
 
 #    else
 
-#        define HASH_MPY(h) (( h )*0x63c63cd9L)
+#        define HASH_MPY(h) (( h ) *0x63c63cd9L)
 
 #    endif
 

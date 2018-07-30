@@ -87,9 +87,9 @@ typedef union
 static int
 getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
 {
-    Fmt_t *fp = ( Fmt_t * )dp;
+    Fmt_t *fp = ( Fmt_t * ) dp;
     Arg_t *ap = fp->ap++;
-    Value_t *value = ( Value_t * )vp;
+    Value_t *value = ( Value_t * ) vp;
     Cxoperand_t ret;
 
     if (ap->expr && cxeval(fp->cx, ap->expr, fp->data, &ret) < 0
@@ -107,7 +107,7 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
         else if (ret.value.number > UCHAR_MAX)
             value->c = UCHAR_MAX;
         else
-            value->c = ( unsigned char )ret.value.number;
+            value->c = ( unsigned char ) ret.value.number;
         break;
     case DSS_FORMAT_float:
         fp->fmt.size = sizeof(double);
@@ -142,7 +142,7 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
         else if (ret.value.number < FLTMAX_INTMAX_MIN)
             value->q = FLTMAX_INTMAX_MAX;
         else
-            value->q = (Sfulong_t)(( Sflong_t )ret.value.number);
+            value->q = (Sfulong_t)(( Sflong_t ) ret.value.number);
         break;
     case DSS_FORMAT_string:
         if (ap->fmt
@@ -206,15 +206,16 @@ dssprintf(Dss_t *dss,
             }
             n = q = 0;
             if (dss->meth->cx->fields) {
-                for (vp = ( Cxvariable_t * )dtfirst(dss->meth->cx->fields);
+                for (vp = ( Cxvariable_t * ) dtfirst(dss->meth->cx->fields);
                      vp;
-                     vp = ( Cxvariable_t * )dtnext(dss->meth->cx->fields, vp),
+                     vp
+                     = ( Cxvariable_t * ) dtnext(dss->meth->cx->fields, vp),
                     n++)
                     if (!(vp->header.flags & CX_DEPRECATED)
                         && q < (l = strlen(vp->name)))
                         q = l;
             } else if (dss->meth->data) {
-                for (vp = ( Cxvariable_t * )dss->meth->data; vp->name;
+                for (vp = ( Cxvariable_t * ) dss->meth->data; vp->name;
                      vp++, n++)
                     if (!(vp->header.flags & CX_DEPRECATED)
                         && q < (l = strlen(vp->name)))
@@ -225,8 +226,8 @@ dssprintf(Dss_t *dss,
         n = 0;
         if (sp
             && (vp = dss->meth->cx->fields
-                     ? ( Cxvariable_t * )dtfirst(dss->meth->cx->fields)
-                     : dss->meth->data ? ( Cxvariable_t * )dss->meth->data
+                     ? ( Cxvariable_t * ) dtfirst(dss->meth->cx->fields)
+                     : dss->meth->data ? ( Cxvariable_t * ) dss->meth->data
                                        : 0)) {
             for (;;) {
                 if (dss->meth->cx->fields) {
@@ -240,7 +241,8 @@ dssprintf(Dss_t *dss,
                     if (!(*cx->getf)(cx, &x, &r, &a, NiL, record, cx->disc)) {
                         switch (cxrepresentation(vp->type)) {
                         case CX_buffer:
-                            if (!(p = ( unsigned char * )r.value.buffer.data))
+                            if (!(p
+                                  = ( unsigned char * ) r.value.buffer.data))
                                 goto next;
                             if (r.value.buffer.size) {
                                 e = p + r.value.buffer.size;
@@ -275,7 +277,7 @@ dssprintf(Dss_t *dss,
                 }
             next:
                 if (dss->meth->cx->fields)
-                    vp = ( Cxvariable_t * )dtnext(dss->meth->cx->fields, vp);
+                    vp = ( Cxvariable_t * ) dtnext(dss->meth->cx->fields, vp);
                 else
                     vp++;
             }
@@ -283,7 +285,7 @@ dssprintf(Dss_t *dss,
         }
         return n;
     }
-    for (fp = dss->print; fp && fp->oformat != ( char * )format;
+    for (fp = dss->print; fp && fp->oformat != ( char * ) format;
          fp = fp->next)
         ;
     if (!fp) {
@@ -298,7 +300,7 @@ dssprintf(Dss_t *dss,
         char *w;
         char *details['z' - 'a' + 1];
 
-        f = s = ( char * )format;
+        f = s = ( char * ) format;
         memset(details, 0, sizeof(details));
         d = 0;
         l = 0;
@@ -382,11 +384,11 @@ dssprintf(Dss_t *dss,
                 NiL, dss->disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
-        fp->oformat = ( char * )format;
+        fp->oformat = ( char * ) format;
         fp->next = dss->print;
         dss->print = fp;
         ap = &fp->arg[0];
-        s = t = fp->nformat = ( char * )(&fp->arg[n]);
+        s = t = fp->nformat = ( char * ) (&fp->arg[n]);
         strcpy(t, format);
         f = t + strlen(format) + 2 * n + 1;
         q = 0;
@@ -442,7 +444,7 @@ dssprintf(Dss_t *dss,
                         default:
                             if (!d
                                 && cx->table
-                                   ->opcode[*( unsigned char * )(s - 1)])
+                                   ->opcode[*( unsigned char * ) (s - 1)])
                                 x = 1;
                             continue;
                         }

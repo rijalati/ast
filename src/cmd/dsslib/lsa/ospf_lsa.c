@@ -45,7 +45,7 @@ typedef struct _ospf_qh_t
     ospf_prefix_t prefix;
 } ospf_qh_t;
 
-#define OSPF_QH(d) (( ospf_qh_t * )(DSS(d)->data))
+#define OSPF_QH(d) (( ospf_qh_t * ) (DSS(d)->data))
 
 /* LSA variable indices */
 #define LSA_VARI_TIME 1
@@ -214,7 +214,7 @@ ospf_lsa_close(Dss_t *dss, Dssdisc_t *disc)
 {
     ospf_qh_t *ospf_qh;
 
-    if (!(ospf_qh = ( ospf_qh_t * )dss->data) || !ospf_qh->tmp) {
+    if (!(ospf_qh = ( ospf_qh_t * ) dss->data) || !ospf_qh->tmp) {
         return -1;
     }
     sfstrclose(ospf_qh->tmp);
@@ -230,17 +230,17 @@ op_get(Cx_t *cx,
        void *data,
        Cxdisc_t *disc)
 {
-    ospf_qh_t *op = ( ospf_qh_t * )(DSSRECORD(data)->file)->dss->data;
-    ospf_lsa_can_t *rp = ( ospf_lsa_can_t * )DSSDATA(data);
-    Cxvariable_t *vp = ( Cxvariable_t * )pc->data.variable;
+    ospf_qh_t *op = ( ospf_qh_t * ) (DSSRECORD(data)->file)->dss->data;
+    ospf_lsa_can_t *rp = ( ospf_lsa_can_t * ) DSSDATA(data);
+    Cxvariable_t *vp = ( Cxvariable_t * ) pc->data.variable;
 
     switch (vp->index) {
     case LSA_VARI_TIME: /* ns_t */
         error(-1, "AHA LSA_VARI_TIME %u.%09u", rp->sec, rp->micro_sec * 1000);
 #if _typ_int64_t
         r->value.number
-        = ( int64_t )rp->sec * 1000000000
-          + ( int64_t )rp->micro_sec * 1000; /* ms cc requires signed */
+        = ( int64_t ) rp->sec * 1000000000
+          + ( int64_t ) rp->micro_sec * 1000; /* ms cc requires signed */
 #else
         r->value.number = rp->sec;
         r->value.number *= 1e9;

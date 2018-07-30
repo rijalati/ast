@@ -103,9 +103,9 @@ double N;
     int k;
 
 #        ifdef national
-    unsigned short *px = ( unsigned short * )&x + 3;
+    unsigned short *px = ( unsigned short * ) &x + 3;
 #        else  /* national */
-    unsigned short *px = ( unsigned short * )&x;
+    unsigned short *px = ( unsigned short * ) &x;
 #        endif /* national */
 
     if (x == zero)
@@ -139,7 +139,7 @@ double N;
         else if (k > -prep1)
         /* gradual underflow */
         {
-            *px = (*px & ~mexp) | ( short )(1 << gap);
+            *px = (*px & ~mexp) | ( short ) (1 << gap);
             x *= scalb(1.0, k - 1);
         } else
             return (nunf * nunf);
@@ -164,10 +164,11 @@ double N;
 extern double _copysign(x, y) double x, y;
 {
 #        ifdef national
-    unsigned short *px = ( unsigned short * )&x + 3,
-                   *py = ( unsigned short * )&y + 3;
+    unsigned short *px = ( unsigned short * ) &x + 3,
+                   *py = ( unsigned short * ) &y + 3;
 #        else  /* national */
-    unsigned short *px = ( unsigned short * )&x, *py = ( unsigned short * )&y;
+    unsigned short *px = ( unsigned short * ) &x,
+                   *py = ( unsigned short * ) &y;
 #        endif /* national */
 
 #        if defined(vax) || defined(tahoe)
@@ -196,13 +197,13 @@ extern double logb(x) double x;
 {
 
 #        ifdef national
-    short *px = ( short * )&x + 3, k;
+    short *px = ( short * ) &x + 3, k;
 #        else  /* national */
-    short *px = ( short * )&x, k;
+    short *px = ( short * ) &x, k;
 #        endif /* national */
 
 #        if defined(vax) || defined(tahoe)
-    return ( int )(((*px & mexp) >> gap) - bias);
+    return ( int ) (((*px & mexp) >> gap) - bias);
 #        else  /* defined(vax)||defined(tahoe) */
     if ((k = *px & mexp) != mexp)
         if (k != 0)
@@ -230,9 +231,9 @@ extern int _finite(x) double x;
     return (1);
 #        else /* defined(vax)||defined(tahoe) */
 #            ifdef national
-    return ((*(( short * )&x + 3) & mexp) != mexp);
+    return ((*(( short * ) &x + 3) & mexp) != mexp);
 #            else  /* national */
-    return ((*(( short * )&x) & mexp) != mexp);
+    return ((*(( short * ) &x) & mexp) != mexp);
 #            endif /* national */
 #        endif     /* defined(vax)||defined(tahoe) */
 }
@@ -259,14 +260,15 @@ extern double drem(x, p) double x, p;
     double hp, dp, tmp;
     unsigned short k;
 #            ifdef national
-    unsigned short *px = ( unsigned short * )&x + 3,
-                   *pp = ( unsigned short * )&p + 3,
-                   *pd = ( unsigned short * )&dp + 3,
-                   *pt = ( unsigned short * )&tmp + 3;
+    unsigned short *px = ( unsigned short * ) &x + 3,
+                   *pp = ( unsigned short * ) &p + 3,
+                   *pd = ( unsigned short * ) &dp + 3,
+                   *pt = ( unsigned short * ) &tmp + 3;
 #            else  /* national */
-    unsigned short *px = ( unsigned short * )&x, *pp = ( unsigned short * )&p,
-                   *pd = ( unsigned short * )&dp,
-                   *pt = ( unsigned short * )&tmp;
+    unsigned short *px = ( unsigned short * ) &x,
+                   *pp = ( unsigned short * ) &p,
+                   *pd = ( unsigned short * ) &dp,
+                   *pt = ( unsigned short * ) &tmp;
 #            endif /* national */
 
     *pp &= msign;
@@ -301,7 +303,7 @@ extern double drem(x, p) double x, p;
     /* subnormal p, or almost subnormal p */
     {
         double b;
-        b = scalb(1.0, ( int )prep1);
+        b = scalb(1.0, ( int ) prep1);
         p *= b;
         x = drem(x, p);
         x *= b;
@@ -653,7 +655,7 @@ end:    py[n0]=py[n0]+scalx;            /* ...scale back y */
 extern int
 ilogb(double x)
 {
-    return (( int )logb(x));
+    return (( int ) logb(x));
 }
 
 #    endif

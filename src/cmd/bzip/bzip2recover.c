@@ -63,8 +63,8 @@ typedef int Int32;
 typedef unsigned char UChar;
 typedef char Char;
 typedef unsigned char Bool;
-#define True (( Bool )1)
-#define False (( Bool )0)
+#define True (( Bool ) 1)
+#define False (( Bool ) 0)
 
 
 Char inFileName[2000];
@@ -169,7 +169,7 @@ void
 bsPutBit(BitStream *bs, Int32 bit)
 {
     if (bs->buffLive == 8) {
-        Int32 retVal = putc(( UChar )bs->buffer, bs->handle);
+        Int32 retVal = putc(( UChar ) bs->buffer, bs->handle);
         if (retVal == EOF)
             writeError();
         bytesOut++;
@@ -242,7 +242,7 @@ bsPutUChar(BitStream *bs, UChar c)
 {
     Int32 i;
     for (i = 7; i >= 0; i--)
-        bsPutBit(bs, ((( UInt32 )c) >> i) & 0x1);
+        bsPutBit(bs, ((( UInt32 ) c) >> i) & 0x1);
 }
 
 

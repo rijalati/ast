@@ -209,7 +209,7 @@ node(FTS *fts, FTSENT *parent, char *name, size_t namelen)
     f->symlink = 0;
     f->fts_level = (f->fts_parent = parent)->fts_level + 1;
 #if __OBSOLETE__ < 20140101
-    f->_fts_level = ( short )f->fts_level;
+    f->_fts_level = ( short ) f->fts_level;
 #endif
     f->fts_link = 0;
     f->fts_pointer = 0;
@@ -217,7 +217,7 @@ node(FTS *fts, FTSENT *parent, char *name, size_t namelen)
     f->fts_errno = 0;
     f->fts_namelen = namelen;
 #if __OBSOLETE__ < 20140101
-    f->_fts_namelen = ( unsigned short )f->fts_namelen;
+    f->_fts_namelen = ( unsigned short ) f->fts_namelen;
 #endif
     f->fts_name = f->name;
     f->fts_statp = &f->statb;
@@ -618,7 +618,7 @@ toplist(FTS *fts, char *const *pathnames)
             f->fts_namelen = s - path;
         }
 #if __OBSOLETE__ < 20140101
-        f->_fts_namelen = ( unsigned short )f->fts_namelen;
+        f->_fts_namelen = ( unsigned short ) f->fts_namelen;
 #endif
         if (!*path) {
             errno = ENOENT;
@@ -746,7 +746,7 @@ fts_open(char *const *pathnames,
      * initialize the tippity-top
      */
 
-    fts->parent = ( FTSENT * )(fts + 1);
+    fts->parent = ( FTSENT * ) (fts + 1);
     fts->parent->fts_info = FTS_D;
     memcpy(fts->parent->fts_accpath = fts->parent->fts_path
            = fts->parent->fts_name = fts->parent->name,
@@ -754,7 +754,7 @@ fts_open(char *const *pathnames,
            2);
     fts->parent->fts_level = -1;
 #if __OBSOLETE__ < 20140101
-    fts->parent->_fts_level = ( short )fts->parent->fts_level;
+    fts->parent->_fts_level = ( short ) fts->parent->fts_level;
 #endif
     fts->parent->fts_statp = &fts->parent->statb;
     fts->parent->must = 2;
@@ -768,7 +768,8 @@ fts_open(char *const *pathnames,
     if (!pathnames || (flags & FTS_ONEPATH) || !*pathnames) {
         char *v[2];
 
-        v[0] = pathnames && (flags & FTS_ONEPATH) ? ( char * )pathnames : ".";
+        v[0]
+        = pathnames && (flags & FTS_ONEPATH) ? ( char * ) pathnames : ".";
         v[1] = 0;
         fts->todo = toplist(fts, v);
     } else
@@ -1345,7 +1346,7 @@ fts_read(FTS *fts)
         }
 note:
 #if __OBSOLETE__ < 20140101
-    f->_fts_pathlen = ( unsigned short )f->fts_pathlen;
+    f->_fts_pathlen = ( unsigned short ) f->fts_pathlen;
 #endif
     for (p = notify; p; p = p->next)
         if ((n = (*p->notifyf)(fts, f, p->context)) > 0)

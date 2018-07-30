@@ -358,9 +358,9 @@ Vcint_t _vciogetg(io) Vcio_t *io;
             return -1;
 
         if ((k = io->nbits) >= 8)
-            b = ( int )(io->bits >> (VC_BITSIZE - 8));
+            b = ( int ) (io->bits >> (VC_BITSIZE - 8));
         else
-            b = ( int )((io->bits >> (VC_BITSIZE - k)) << (8 - k));
+            b = ( int ) ((io->bits >> (VC_BITSIZE - k)) << (8 - k));
 
         if ((g = Ifour[b]) >= 0) {
             if (io->nbits < 8)
@@ -371,7 +371,7 @@ Vcint_t _vciogetg(io) Vcio_t *io;
             g = Ilast[b];
         }
 
-        v |= (( Vcint_t )g) << s;
+        v |= (( Vcint_t ) g) << s;
         vciodelb(io, io->bits, io->nbits, k);
         if (k < 8)
             break;
@@ -449,7 +449,7 @@ ssize_t nlist;
 
         vciosetb(io, b, n, VC_ENCODE);
         for (i = 0; i < nlist; ++i) {
-            v = (( Vcint_t )list[i]) << (VC_INTSIZE - s);
+            v = (( Vcint_t ) list[i]) << (VC_INTSIZE - s);
             vcioaddb(io, b, n, v, s);
         }
         vcioendb(io, b, n, VC_ENCODE);
@@ -463,11 +463,11 @@ ssize_t nlist;
 
         vciosetb(io, b, n, VC_ENCODE);
         for (i = 0; i < nlist; ++i) {
-            v = ( Vcint_t )list[i];
+            v = ( Vcint_t ) list[i];
             s = NBITS(v) - 1;
             vcioaddb(io, b, n, bits[s], size[s]);
 
-            for (v = ( Vcint_t )list[i], s += 1;;) {
+            for (v = ( Vcint_t ) list[i], s += 1;;) {
                 if (s > 8) {
                     e = (v & 0xff) << (VC_INTSIZE - 8);
                     vcioaddb(io, b, n, e, 8);
@@ -536,7 +536,7 @@ ssize_t nlist;
             p += (b >> (VC_BITSIZE - s)); /* slot to look into */
             if (size[p] > 0)              /* length is found */
             {
-                s = ( int )node[p] + 1;      /* get the actual length */
+                s = ( int ) node[p] + 1;     /* get the actual length */
                 vciodelb(io, b, n, size[p]); /* consume bits */
 
                 for (v = 0, d = 0;;) {
@@ -791,109 +791,109 @@ ssize_t z;                        /* size of 'a'			*/
     if (type == 0) /* construct the map from native to ascii */
     {
         for (c = 0; c < 256; ++c)
-            _ascii[c] = ( char )c;
-        _ascii[( Vcchar_t )'\a'] = '\007';
-        _ascii[( Vcchar_t )'\b'] = '\010';
-        _ascii[( Vcchar_t )'\t'] = '\011';
-        _ascii[( Vcchar_t )'\n'] = '\012';
-        _ascii[( Vcchar_t )'\v'] = '\013';
-        _ascii[( Vcchar_t )'\f'] = '\014';
-        _ascii[( Vcchar_t )'\r'] = '\015';
-        _ascii[( Vcchar_t )' '] = '\040';
-        _ascii[( Vcchar_t )'!'] = '\041';
-        _ascii[( Vcchar_t )'\"'] = '\042';
-        _ascii[( Vcchar_t )'#'] = '\043';
-        _ascii[( Vcchar_t )'$'] = '\044';
-        _ascii[( Vcchar_t )'%'] = '\045';
-        _ascii[( Vcchar_t )'&'] = '\046';
-        _ascii[( Vcchar_t )'\''] = '\047';
-        _ascii[( Vcchar_t )'('] = '\050';
-        _ascii[( Vcchar_t )')'] = '\051';
-        _ascii[( Vcchar_t )'*'] = '\052';
-        _ascii[( Vcchar_t )'+'] = '\053';
-        _ascii[( Vcchar_t )','] = '\054';
-        _ascii[( Vcchar_t )'-'] = '\055';
-        _ascii[( Vcchar_t )'.'] = '\056';
-        _ascii[( Vcchar_t )'/'] = '\057';
-        _ascii[( Vcchar_t )'0'] = '\060';
-        _ascii[( Vcchar_t )'1'] = '\061';
-        _ascii[( Vcchar_t )'2'] = '\062';
-        _ascii[( Vcchar_t )'3'] = '\063';
-        _ascii[( Vcchar_t )'4'] = '\064';
-        _ascii[( Vcchar_t )'5'] = '\065';
-        _ascii[( Vcchar_t )'6'] = '\066';
-        _ascii[( Vcchar_t )'7'] = '\067';
-        _ascii[( Vcchar_t )'8'] = '\070';
-        _ascii[( Vcchar_t )'9'] = '\071';
-        _ascii[( Vcchar_t )':'] = '\072';
-        _ascii[( Vcchar_t )';'] = '\073';
-        _ascii[( Vcchar_t )'<'] = '\074';
-        _ascii[( Vcchar_t )'='] = '\075';
-        _ascii[( Vcchar_t )'>'] = '\076';
-        _ascii[( Vcchar_t )'\?'] = '\077';
-        _ascii[( Vcchar_t )'@'] = '\100';
-        _ascii[( Vcchar_t )'A'] = '\101';
-        _ascii[( Vcchar_t )'B'] = '\102';
-        _ascii[( Vcchar_t )'C'] = '\103';
-        _ascii[( Vcchar_t )'D'] = '\104';
-        _ascii[( Vcchar_t )'E'] = '\105';
-        _ascii[( Vcchar_t )'F'] = '\106';
-        _ascii[( Vcchar_t )'G'] = '\107';
-        _ascii[( Vcchar_t )'H'] = '\110';
-        _ascii[( Vcchar_t )'I'] = '\111';
-        _ascii[( Vcchar_t )'J'] = '\112';
-        _ascii[( Vcchar_t )'K'] = '\113';
-        _ascii[( Vcchar_t )'L'] = '\114';
-        _ascii[( Vcchar_t )'M'] = '\115';
-        _ascii[( Vcchar_t )'N'] = '\116';
-        _ascii[( Vcchar_t )'O'] = '\117';
-        _ascii[( Vcchar_t )'P'] = '\120';
-        _ascii[( Vcchar_t )'Q'] = '\121';
-        _ascii[( Vcchar_t )'R'] = '\122';
-        _ascii[( Vcchar_t )'S'] = '\123';
-        _ascii[( Vcchar_t )'T'] = '\124';
-        _ascii[( Vcchar_t )'U'] = '\125';
-        _ascii[( Vcchar_t )'V'] = '\126';
-        _ascii[( Vcchar_t )'W'] = '\127';
-        _ascii[( Vcchar_t )'X'] = '\130';
-        _ascii[( Vcchar_t )'Y'] = '\131';
-        _ascii[( Vcchar_t )'Z'] = '\132';
-        _ascii[( Vcchar_t )'['] = '\133';
-        _ascii[( Vcchar_t )'\\'] = '\134';
-        _ascii[( Vcchar_t )']'] = '\135';
-        _ascii[( Vcchar_t )'^'] = '\136';
-        _ascii[( Vcchar_t )'_'] = '\137';
-        _ascii[( Vcchar_t )'`'] = '\140';
-        _ascii[( Vcchar_t )'a'] = '\141';
-        _ascii[( Vcchar_t )'b'] = '\142';
-        _ascii[( Vcchar_t )'c'] = '\143';
-        _ascii[( Vcchar_t )'d'] = '\144';
-        _ascii[( Vcchar_t )'e'] = '\145';
-        _ascii[( Vcchar_t )'f'] = '\146';
-        _ascii[( Vcchar_t )'g'] = '\147';
-        _ascii[( Vcchar_t )'h'] = '\150';
-        _ascii[( Vcchar_t )'i'] = '\151';
-        _ascii[( Vcchar_t )'j'] = '\152';
-        _ascii[( Vcchar_t )'k'] = '\153';
-        _ascii[( Vcchar_t )'l'] = '\154';
-        _ascii[( Vcchar_t )'m'] = '\155';
-        _ascii[( Vcchar_t )'n'] = '\156';
-        _ascii[( Vcchar_t )'o'] = '\157';
-        _ascii[( Vcchar_t )'p'] = '\160';
-        _ascii[( Vcchar_t )'q'] = '\161';
-        _ascii[( Vcchar_t )'r'] = '\162';
-        _ascii[( Vcchar_t )'s'] = '\163';
-        _ascii[( Vcchar_t )'t'] = '\164';
-        _ascii[( Vcchar_t )'u'] = '\165';
-        _ascii[( Vcchar_t )'v'] = '\166';
-        _ascii[( Vcchar_t )'w'] = '\167';
-        _ascii[( Vcchar_t )'x'] = '\170';
-        _ascii[( Vcchar_t )'y'] = '\171';
-        _ascii[( Vcchar_t )'z'] = '\172';
-        _ascii[( Vcchar_t )'{'] = '\173';
-        _ascii[( Vcchar_t )'|'] = '\174';
-        _ascii[( Vcchar_t )'}'] = '\175';
-        _ascii[( Vcchar_t )'~'] = '\176';
+            _ascii[c] = ( char ) c;
+        _ascii[( Vcchar_t ) '\a'] = '\007';
+        _ascii[( Vcchar_t ) '\b'] = '\010';
+        _ascii[( Vcchar_t ) '\t'] = '\011';
+        _ascii[( Vcchar_t ) '\n'] = '\012';
+        _ascii[( Vcchar_t ) '\v'] = '\013';
+        _ascii[( Vcchar_t ) '\f'] = '\014';
+        _ascii[( Vcchar_t ) '\r'] = '\015';
+        _ascii[( Vcchar_t ) ' '] = '\040';
+        _ascii[( Vcchar_t ) '!'] = '\041';
+        _ascii[( Vcchar_t ) '\"'] = '\042';
+        _ascii[( Vcchar_t ) '#'] = '\043';
+        _ascii[( Vcchar_t ) '$'] = '\044';
+        _ascii[( Vcchar_t ) '%'] = '\045';
+        _ascii[( Vcchar_t ) '&'] = '\046';
+        _ascii[( Vcchar_t ) '\''] = '\047';
+        _ascii[( Vcchar_t ) '('] = '\050';
+        _ascii[( Vcchar_t ) ')'] = '\051';
+        _ascii[( Vcchar_t ) '*'] = '\052';
+        _ascii[( Vcchar_t ) '+'] = '\053';
+        _ascii[( Vcchar_t ) ','] = '\054';
+        _ascii[( Vcchar_t ) '-'] = '\055';
+        _ascii[( Vcchar_t ) '.'] = '\056';
+        _ascii[( Vcchar_t ) '/'] = '\057';
+        _ascii[( Vcchar_t ) '0'] = '\060';
+        _ascii[( Vcchar_t ) '1'] = '\061';
+        _ascii[( Vcchar_t ) '2'] = '\062';
+        _ascii[( Vcchar_t ) '3'] = '\063';
+        _ascii[( Vcchar_t ) '4'] = '\064';
+        _ascii[( Vcchar_t ) '5'] = '\065';
+        _ascii[( Vcchar_t ) '6'] = '\066';
+        _ascii[( Vcchar_t ) '7'] = '\067';
+        _ascii[( Vcchar_t ) '8'] = '\070';
+        _ascii[( Vcchar_t ) '9'] = '\071';
+        _ascii[( Vcchar_t ) ':'] = '\072';
+        _ascii[( Vcchar_t ) ';'] = '\073';
+        _ascii[( Vcchar_t ) '<'] = '\074';
+        _ascii[( Vcchar_t ) '='] = '\075';
+        _ascii[( Vcchar_t ) '>'] = '\076';
+        _ascii[( Vcchar_t ) '\?'] = '\077';
+        _ascii[( Vcchar_t ) '@'] = '\100';
+        _ascii[( Vcchar_t ) 'A'] = '\101';
+        _ascii[( Vcchar_t ) 'B'] = '\102';
+        _ascii[( Vcchar_t ) 'C'] = '\103';
+        _ascii[( Vcchar_t ) 'D'] = '\104';
+        _ascii[( Vcchar_t ) 'E'] = '\105';
+        _ascii[( Vcchar_t ) 'F'] = '\106';
+        _ascii[( Vcchar_t ) 'G'] = '\107';
+        _ascii[( Vcchar_t ) 'H'] = '\110';
+        _ascii[( Vcchar_t ) 'I'] = '\111';
+        _ascii[( Vcchar_t ) 'J'] = '\112';
+        _ascii[( Vcchar_t ) 'K'] = '\113';
+        _ascii[( Vcchar_t ) 'L'] = '\114';
+        _ascii[( Vcchar_t ) 'M'] = '\115';
+        _ascii[( Vcchar_t ) 'N'] = '\116';
+        _ascii[( Vcchar_t ) 'O'] = '\117';
+        _ascii[( Vcchar_t ) 'P'] = '\120';
+        _ascii[( Vcchar_t ) 'Q'] = '\121';
+        _ascii[( Vcchar_t ) 'R'] = '\122';
+        _ascii[( Vcchar_t ) 'S'] = '\123';
+        _ascii[( Vcchar_t ) 'T'] = '\124';
+        _ascii[( Vcchar_t ) 'U'] = '\125';
+        _ascii[( Vcchar_t ) 'V'] = '\126';
+        _ascii[( Vcchar_t ) 'W'] = '\127';
+        _ascii[( Vcchar_t ) 'X'] = '\130';
+        _ascii[( Vcchar_t ) 'Y'] = '\131';
+        _ascii[( Vcchar_t ) 'Z'] = '\132';
+        _ascii[( Vcchar_t ) '['] = '\133';
+        _ascii[( Vcchar_t ) '\\'] = '\134';
+        _ascii[( Vcchar_t ) ']'] = '\135';
+        _ascii[( Vcchar_t ) '^'] = '\136';
+        _ascii[( Vcchar_t ) '_'] = '\137';
+        _ascii[( Vcchar_t ) '`'] = '\140';
+        _ascii[( Vcchar_t ) 'a'] = '\141';
+        _ascii[( Vcchar_t ) 'b'] = '\142';
+        _ascii[( Vcchar_t ) 'c'] = '\143';
+        _ascii[( Vcchar_t ) 'd'] = '\144';
+        _ascii[( Vcchar_t ) 'e'] = '\145';
+        _ascii[( Vcchar_t ) 'f'] = '\146';
+        _ascii[( Vcchar_t ) 'g'] = '\147';
+        _ascii[( Vcchar_t ) 'h'] = '\150';
+        _ascii[( Vcchar_t ) 'i'] = '\151';
+        _ascii[( Vcchar_t ) 'j'] = '\152';
+        _ascii[( Vcchar_t ) 'k'] = '\153';
+        _ascii[( Vcchar_t ) 'l'] = '\154';
+        _ascii[( Vcchar_t ) 'm'] = '\155';
+        _ascii[( Vcchar_t ) 'n'] = '\156';
+        _ascii[( Vcchar_t ) 'o'] = '\157';
+        _ascii[( Vcchar_t ) 'p'] = '\160';
+        _ascii[( Vcchar_t ) 'q'] = '\161';
+        _ascii[( Vcchar_t ) 'r'] = '\162';
+        _ascii[( Vcchar_t ) 's'] = '\163';
+        _ascii[( Vcchar_t ) 't'] = '\164';
+        _ascii[( Vcchar_t ) 'u'] = '\165';
+        _ascii[( Vcchar_t ) 'v'] = '\166';
+        _ascii[( Vcchar_t ) 'w'] = '\167';
+        _ascii[( Vcchar_t ) 'x'] = '\170';
+        _ascii[( Vcchar_t ) 'y'] = '\171';
+        _ascii[( Vcchar_t ) 'z'] = '\172';
+        _ascii[( Vcchar_t ) '{'] = '\173';
+        _ascii[( Vcchar_t ) '|'] = '\174';
+        _ascii[( Vcchar_t ) '}'] = '\175';
+        _ascii[( Vcchar_t ) '~'] = '\176';
 
         for (c = 0; c < 256; ++c)
             if (_ascii[c] != c)
@@ -902,7 +902,7 @@ ssize_t z;                        /* size of 'a'			*/
     }
 
     for (c = 0; c < z; ++c)
-        if ((a[c] = ( char )_ascii[s[c]]) == 0)
+        if ((a[c] = ( char ) _ascii[s[c]]) == 0)
             break;
     return c < z ? a : NIL(char *);
 }
@@ -933,7 +933,7 @@ ssize_t **listp;                                 /* to return list	*/
     if (n == 0)
         return n;
 
-    if (!(list = ( ssize_t * )malloc(n * sizeof(ssize_t))))
+    if (!(list = ( ssize_t * ) malloc(n * sizeof(ssize_t))))
         return -1;
 
     for (n = 0, k = 0;;) {
@@ -965,8 +965,8 @@ vchexcode(Vcchar_t *byte, ssize_t bytez, Vcchar_t *hex, ssize_t hexz, int type)
 
     if (!Didinit) /* initialize conversion tables */
     {
-        memcpy(Upper, ( Vcchar_t * )("0123456789ABCDEF"), 16);
-        memcpy(Lower, ( Vcchar_t * )("0123456789abcdef"), 16);
+        memcpy(Upper, ( Vcchar_t * ) ("0123456789ABCDEF"), 16);
+        memcpy(Lower, ( Vcchar_t * ) ("0123456789abcdef"), 16);
         for (b = 0; b < 256; ++b)
             Rev[b] = (Vcchar_t)(~0);
         for (b = 0; b < 16; ++b) {

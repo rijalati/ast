@@ -70,7 +70,7 @@ scantree(Shell_t *, Dt_t *, const char *, struct argnod **);
 #endif
 
 #define GLOB_RESCAN 1
-#define globptr() (( struct glob * )membase)
+#define globptr() (( struct glob * ) membase)
 
 static struct glob *membase;
 
@@ -79,12 +79,12 @@ static char *
 nextdir(glob_t *gp, char *dir)
 {
     Shell_t *shp = sh_getinterp();
-    Pathcomp_t *pp = ( Pathcomp_t * )gp->gl_handle;
+    Pathcomp_t *pp = ( Pathcomp_t * ) gp->gl_handle;
     if (!dir)
         pp = path_get(shp, "");
     else
         pp = pp->next;
-    gp->gl_handle = ( void * )pp;
+    gp->gl_handle = ( void * ) pp;
     if (pp)
         return (pp->name);
     return (0);
@@ -193,13 +193,13 @@ path_expand(Shell_t *shp, const char *pattern, struct argnod **arghead)
         stkseek(shp->stk, 0);
 #endif
     sh_sigcheck(shp);
-    for (ap = ( struct argnod * )gp->gl_list; ap; ap = ap->argnxt.ap) {
+    for (ap = ( struct argnod * ) gp->gl_list; ap; ap = ap->argnxt.ap) {
         ap->argchn.ap = ap->argnxt.ap;
         if (!ap->argnxt.ap)
             ap->argchn.ap = *arghead;
     }
     if (gp->gl_list)
-        *arghead = ( struct argnod * )gp->gl_list;
+        *arghead = ( struct argnod * ) gp->gl_list;
     return (gp->gl_pathc + extra);
 }
 
@@ -218,12 +218,12 @@ scantree(Shell_t *shp,
     struct argnod *ap;
     int nmatch = 0;
     char *cp;
-    np = ( Namval_t * )dtfirst(tree);
-    for (; np && !nv_isnull(np); (np = ( Namval_t * )dtnext(tree, np))) {
+    np = ( Namval_t * ) dtfirst(tree);
+    for (; np && !nv_isnull(np); (np = ( Namval_t * ) dtnext(tree, np))) {
         if (strmatch(cp = nv_name(np), pattern)) {
-            ap = ( struct argnod * )stkseek(shp->stk, ARGVAL);
+            ap = ( struct argnod * ) stkseek(shp->stk, ARGVAL);
             sfputr(shp->stk, cp, -1);
-            ap = ( struct argnod * )stkfreeze(shp->stk, 1);
+            ap = ( struct argnod * ) stkfreeze(shp->stk, 1);
             ap->argbegin = NIL(char *);
             ap->argchn.ap = *arghead;
             ap->argflag = ARG_RAW | ARG_MAKE;
@@ -247,7 +247,7 @@ path_complete(Shell_t *shp,
               struct argnod **arghead)
 {
     sufstr = suffix;
-    suflen = ( int )strlen(suffix);
+    suflen = ( int ) strlen(suffix);
     return (path_expand(shp, name, arghead));
 }
 
@@ -437,13 +437,13 @@ endloop1:
         brace = *cp;
         *cp = 0;
         sh_sigcheck(shp);
-        ap = ( struct argnod * )stkseek(shp->stk, ARGVAL);
+        ap = ( struct argnod * ) stkseek(shp->stk, ARGVAL);
         ap->argflag = ARG_RAW;
         ap->argchn.ap = todo;
         sfputr(shp->stk, apin->argval, -1);
         sfputr(shp->stk, pat, -1);
         sfputr(shp->stk, rescan, -1);
-        todo = ap = ( struct argnod * )stkfreeze(shp->stk, 1);
+        todo = ap = ( struct argnod * ) stkfreeze(shp->stk, 1);
         if (brace == '}')
             break;
         if (!range)

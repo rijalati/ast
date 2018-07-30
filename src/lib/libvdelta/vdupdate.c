@@ -72,7 +72,7 @@ static int vdunfold(tab) Utable_t *tab;
     source = tab->source;
 
     for (t = 0, c_addr = n_src; t < n_tar;) {
-        if ((inst = VDGETC(( Vdio_t * )tab)) < 0)
+        if ((inst = VDGETC(( Vdio_t * ) tab)) < 0)
             return -1;
         k_type = K_GET(inst);
 
@@ -83,10 +83,11 @@ static int vdunfold(tab) Utable_t *tab;
                 size = A_LGET(inst);
             else /* non-local ADD size		*/
             {
-                if ((size = VDGETC(( Vdio_t * )tab)) < 0)
+                if ((size = VDGETC(( Vdio_t * ) tab)) < 0)
                     return -1;
                 if (size >= I_MORE
-                    && (size = ( long )(*_Vdgetu)(( Vdio_t * )tab, size)) < 0)
+                    && (size = ( long ) (*_Vdgetu)(( Vdio_t * ) tab, size))
+                       < 0)
                     return -1;
                 size = A_GET(size);
             }
@@ -97,17 +98,17 @@ static int vdunfold(tab) Utable_t *tab;
             /* copy data from the delta stream to target */
             for (;;) {
                 if (!tar) {
-                    if (( long )(n = sizeof(tab->data)) > size)
-                        n = ( int )size;
-                    if ((*_Vdread)(( Vdio_t * )tab, tab->data, n) != n)
+                    if (( long ) (n = sizeof(tab->data)) > size)
+                        n = ( int ) size;
+                    if ((*_Vdread)(( Vdio_t * ) tab, tab->data, n) != n)
                         return -1;
                     r = (*target->writef)(
-                    ( Void_t * )tab->data, n, tab->t_org + t, target);
+                    ( Void_t * ) tab->data, n, tab->t_org + t, target);
                     if (r != n)
                         return -1;
                 } else {
-                    n = ( int )size;
-                    if ((*_Vdread)(( Vdio_t * )tab, tar + t, n) != n)
+                    n = ( int ) size;
+                    if ((*_Vdread)(( Vdio_t * ) tab, tar + t, n) != n)
                         return -1;
                 }
                 t += n;
@@ -124,10 +125,11 @@ static int vdunfold(tab) Utable_t *tab;
             if (C_ISHERE(inst)) /* locally coded COPY size */
                 size = C_LGET(inst);
             else {
-                if ((size = VDGETC(( Vdio_t * )tab)) < 0)
+                if ((size = VDGETC(( Vdio_t * ) tab)) < 0)
                     return -1;
                 if (size >= I_MORE
-                    && (size = ( long )(*_Vdgetu)(( Vdio_t * )tab, size)) < 0)
+                    && (size = ( long ) (*_Vdgetu)(( Vdio_t * ) tab, size))
+                       < 0)
                     return -1;
                 size = C_GET(size);
             }
@@ -135,13 +137,14 @@ static int vdunfold(tab) Utable_t *tab;
             if ((t + size) > n_tar) /* out of sync */
                 return -1;
 
-            if ((copy = VDGETC(( Vdio_t * )tab)) < 0)
+            if ((copy = VDGETC(( Vdio_t * ) tab)) < 0)
                 return -1;
             if (k_type >= K_QUICK && k_type < (K_QUICK + K_QTYPE))
                 copy = tab->quick[copy + ((k_type - K_QUICK) << VD_BITS)];
             else {
                 if (copy >= I_MORE
-                    && (copy = ( long )(*_Vdgetu)(( Vdio_t * )tab, copy)) < 0)
+                    && (copy = ( long ) (*_Vdgetu)(( Vdio_t * ) tab, copy))
+                       < 0)
                     return -1;
                 if (k_type >= K_RECENT && k_type < (K_RECENT + K_RTYPE))
                     copy += tab->recent[k_type - K_RECENT];
@@ -157,14 +160,14 @@ static int vdunfold(tab) Utable_t *tab;
                 if ((copy + size) > n_src) /* out of sync */
                     return -1;
                 if (src) {
-                    n = ( int )size;
+                    n = ( int ) size;
                     fr = src + copy;
                     if (tar) {
                         to = tar + t;
                         MEMCPY(to, fr, n);
                     } else {
                         r = (*target->writef)(
-                        ( Void_t * )fr, n, tab->t_org + t, target);
+                        ( Void_t * ) fr, n, tab->t_org + t, target);
                         if (r != n)
                             return -1;
                     }
@@ -181,19 +184,21 @@ static int vdunfold(tab) Utable_t *tab;
                     }
                     for (;;) {
                         if (tar) {
-                            n = ( int )size;
+                            n = ( int ) size;
                             r = (*disc->readf)(
-                            ( Void_t * )(tar + t), n, copy, disc);
+                            ( Void_t * ) (tar + t), n, copy, disc);
                         } else {
                             n = sizeof(tab->data);
-                            if (( long )n > size)
-                                n = ( int )size;
+                            if (( long ) n > size)
+                                n = ( int ) size;
                             r = (*disc->readf)(
-                            ( Void_t * )tab->data, n, copy, disc);
+                            ( Void_t * ) tab->data, n, copy, disc);
                             if (r != n)
                                 return -1;
-                            r = (*target->writef)(
-                            ( Void_t * )tab->data, n, tab->t_org + t, target);
+                            r = (*target->writef)(( Void_t * ) tab->data,
+                                                  n,
+                                                  tab->t_org + t,
+                                                  target);
                         }
                         if (r != n)
                             return -1;
@@ -216,7 +221,7 @@ static int vdunfold(tab) Utable_t *tab;
                     if (tar) {
                         to = tar + t;
                         fr = tar + copy;
-                        n = ( int )s;
+                        n = ( int ) s;
                         MEMCPY(to, fr, n);
                         t += n;
                         goto next;
@@ -225,14 +230,14 @@ static int vdunfold(tab) Utable_t *tab;
                     /* hard read/write */
                     a = copy;
                     for (;;) {
-                        if (( long )(n = sizeof(tab->data)) > s)
-                            n = ( int )s;
+                        if (( long ) (n = sizeof(tab->data)) > s)
+                            n = ( int ) s;
                         r = (*target->readf)(
-                        ( Void_t * )tab->data, n, a + tab->t_org, target);
+                        ( Void_t * ) tab->data, n, a + tab->t_org, target);
                         if (r != n)
                             return -1;
                         r = (*target->writef)(
-                        ( Void_t * )tab->data, n, t + tab->t_org, target);
+                        ( Void_t * ) tab->data, n, t + tab->t_org, target);
                         if (r != n)
                             return -1;
                         t += n;
@@ -281,13 +286,13 @@ Vddisc_t *delta;                                       /* delta data	*/
     /* check magic header */
     /* VD_MAGIC is the preferred binary magic */
     /* VD_MAGIC_OLD is the deprecated ascii magic */
-    data = ( uchar * )(VD_MAGIC);
+    data = ( uchar * ) (VD_MAGIC);
     n = sizeof(VD_MAGIC) - 1;
     if ((*_Vdread)(&tab.io, magic, n) != n)
         return -1;
     for (r = 0; r < n; ++r)
         if (data[r] != magic[r]) {
-            data = ( uchar * )(VD_MAGIC_OLD);
+            data = ( uchar * ) (VD_MAGIC_OLD);
             for (r = 0; r < n; ++r)
                 if (data[r] != magic[r])
 #if _PACKAGE_ast
@@ -299,13 +304,13 @@ Vddisc_t *delta;                                       /* delta data	*/
         }
 
     /* get true target size */
-    if ((t = ( long )(*_Vdgetu)(&tab.io, 0)) < 0
+    if ((t = ( long ) (*_Vdgetu)(&tab.io, 0)) < 0
         || (target->data && target->size < t))
         return -1;
     n_tar = t;
 
     /* get true source size */
-    if ((t = ( long )(*_Vdgetu)(&tab.io, 0)) < 0)
+    if ((t = ( long ) (*_Vdgetu)(&tab.io, 0)) < 0)
         return -1;
     else if (t > 0) {
         if (!source || (!source->data && !source->readf))
@@ -316,7 +321,7 @@ Vddisc_t *delta;                                       /* delta data	*/
     n_src = t;
 
     /* get window size */
-    if ((window = ( long )(*_Vdgetu)(&tab.io, 0)) < 0)
+    if ((window = ( long ) (*_Vdgetu)(&tab.io, 0)) < 0)
         return -1;
 
     tab.compress = n_src == 0 ? 1 : 0;
@@ -325,27 +330,27 @@ Vddisc_t *delta;                                       /* delta data	*/
     tab.tar = tab.src = NIL(uchar *);
     tab.t_alloc = tab.s_alloc = 0;
 
-    n = (!target->data && window < ( long )MAXINT) ? ( int )window : 0;
+    n = (!target->data && window < ( long ) MAXINT) ? ( int ) window : 0;
     if (n > n_tar)
         n = n_tar;
-    if (n > 0 && (tab.tar = ( uchar * )malloc(n * sizeof(uchar))))
+    if (n > 0 && (tab.tar = ( uchar * ) malloc(n * sizeof(uchar))))
         tab.t_alloc = 1;
 
     if (n_src <= 0) {
-        if (target->data || window >= ( long )MAXINT || window >= n_tar)
+        if (target->data || window >= ( long ) MAXINT || window >= n_tar)
             n = 0;
         else
-            n = ( int )HEADER(window);
+            n = ( int ) HEADER(window);
     } else {
-        n = (!source->data && window < ( long )MAXINT) ? ( int )window : 0;
+        n = (!source->data && window < ( long ) MAXINT) ? ( int ) window : 0;
         if (n > n_src)
             n = n_src;
     }
-    if (n > 0 && (tab.src = ( uchar * )malloc(n * sizeof(uchar))))
+    if (n > 0 && (tab.src = ( uchar * ) malloc(n * sizeof(uchar))))
         tab.s_alloc = 1;
 
-    tar = ( uchar * )target->data;
-    src = ( uchar * )(source ? source->data : NIL(Void_t *));
+    tar = ( uchar * ) target->data;
+    src = ( uchar * ) (source ? source->data : NIL(Void_t *));
     for (t = 0; t < n_tar;) {
         tab.t_org = t; /* current location in target stream */
 
@@ -361,10 +366,10 @@ Vddisc_t *delta;                                       /* delta data	*/
                 if (tar)
                     tab.src = tar + p;
                 else if (tab.src) {
-                    n = ( int )tab.n_src;
+                    n = ( int ) tab.n_src;
                     if (tab.tar) {
                         data = tab.tar + tab.n_tar - n;
-                        memcpy(( Void_t * )tab.src, ( Void_t * )data, n);
+                        memcpy(( Void_t * ) tab.src, ( Void_t * ) data, n);
                     } else {
                         r = (*target->readf)(tab.src, n, p, target);
                         if (r != n)
@@ -388,7 +393,7 @@ Vddisc_t *delta;                                       /* delta data	*/
                 if (src)
                     tab.src = src + p;
                 else if (tab.src) {
-                    n = ( int )tab.n_src;
+                    n = ( int ) tab.n_src;
                     r = (*source->readf)(tab.src, n, p, source);
                     if (r != n)
                         goto done;
@@ -398,7 +403,7 @@ Vddisc_t *delta;                                       /* delta data	*/
         }
 
         if (tar)
-            tab.tar = ( uchar * )tar + t;
+            tab.tar = ( uchar * ) tar + t;
         tab.n_tar = window < (n_tar - t) ? window : (n_tar - t);
 
         K_INIT(tab.quick, tab.recent, tab.rhere);
@@ -406,7 +411,7 @@ Vddisc_t *delta;                                       /* delta data	*/
             goto done;
         if (!target->data && tab.tar) {
             p = (*target->writef)(
-            ( Void_t * )tab.tar, ( int )tab.n_tar, t, target);
+            ( Void_t * ) tab.tar, ( int ) tab.n_tar, t, target);
             if (p != tab.n_tar)
                 goto done;
         }
@@ -416,9 +421,9 @@ Vddisc_t *delta;                                       /* delta data	*/
 
 done:
     if (tab.t_alloc)
-        free(( Void_t * )tab.tar);
+        free(( Void_t * ) tab.tar);
     if (tab.s_alloc)
-        free(( Void_t * )tab.src);
+        free(( Void_t * ) tab.src);
 
     return t;
 }

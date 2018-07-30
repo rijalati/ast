@@ -63,7 +63,7 @@ unsigned long version;
     dtdisc(&pdt, disc, 0); /* note that this sets pdt.memoryf */
 
     if (disc->eventf) {
-        if ((ev = (*disc->eventf)(&pdt, DT_OPEN, ( Void_t * )(&data), disc))
+        if ((ev = (*disc->eventf)(&pdt, DT_OPEN, ( Void_t * ) (&data), disc))
             < 0)
             return NIL(Dt_t *); /* something bad happened */
         else if (ev > 0) {
@@ -90,8 +90,8 @@ unsigned long version;
     /* now allocate/initialize the actual dictionary structure */
     if (pdt.data->type & DT_INDATA)
         dt = &pdt.data->dict;
-    else if (!(dt = ( Dt_t * )malloc(sizeof(Dt_t)))) {
-        ( void )(*meth->eventf)(&pdt, DT_CLOSE, NIL(Void_t *));
+    else if (!(dt = ( Dt_t * ) malloc(sizeof(Dt_t)))) {
+        ( void ) (*meth->eventf)(&pdt, DT_CLOSE, NIL(Void_t *));
         DTERROR(&pdt, "Error in allocating a new dictionary");
         return NIL(Dt_t *);
     }
@@ -101,7 +101,7 @@ unsigned long version;
     dt->user = &dt->data->user; /* space allocated for application usage */
 
     if (disc->eventf) /* signal opening is done */
-        ( void )(*disc->eventf)(dt, DT_ENDOPEN, ( Void_t * )0, disc);
+        ( void ) (*disc->eventf)(dt, DT_ENDOPEN, ( Void_t * ) 0, disc);
 
     /* set mapping of operation bits between versions as needed */
     if (version < 20111111L)
@@ -138,16 +138,16 @@ _dtmake(Dt_t *dt, Void_t *obj, int type)
         return _DTLNK(disc, obj);
 
     /* create a holder to hold obj */
-    if ((h = ( Dthold_t * )(dt->memoryf)(
+    if ((h = ( Dthold_t * ) (dt->memoryf)(
          dt, NIL(Void_t *), sizeof(Dthold_t), disc)))
         h->obj = obj;
     else {
         DTERROR(dt, "Error in allocating an object holder");
         if (!(type & DT_ATTACH) && disc->makef && disc->freef)
-            ( void )(*disc->freef)(dt, obj, disc); /* free just-made obj */
+            ( void ) (*disc->freef)(dt, obj, disc); /* free just-made obj */
     }
 
-    return ( Dtlink_t * )h;
+    return ( Dtlink_t * ) h;
 }
 
 void
@@ -156,8 +156,8 @@ _dtfree(Dt_t *dt, Dtlink_t *l, int type)
     Dtdisc_t *disc = dt->disc;
 
     if (!(type & DT_DETACH) && disc->freef) /* free object */
-        ( void )(*disc->freef)(dt, _DTOBJ(disc, l), disc);
+        ( void ) (*disc->freef)(dt, _DTOBJ(disc, l), disc);
 
     if (disc->link < 0) /* free holder */
-        ( void )(*dt->memoryf)(dt, ( Void_t * )l, 0, disc);
+        ( void ) (*dt->memoryf)(dt, ( Void_t * ) l, 0, disc);
 }

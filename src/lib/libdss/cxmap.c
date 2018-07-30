@@ -40,7 +40,7 @@ typedef struct Frame_s
 static int
 ignorecase(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 {
-    return strcasecmp(( char * )a, ( char * )b);
+    return strcasecmp(( char * ) a, ( char * ) b);
 }
 
 /*
@@ -172,7 +172,7 @@ num2str(Cx_t *cx, Cxmap_t *map, Sfio_t *sp, Cxunsigned_t num, int del)
             break;
         map = map->map;
     }
-    if (map->num2str && (item = ( Cxitem_t * )dtmatch(map->num2str, &num))) {
+    if (map->num2str && (item = ( Cxitem_t * ) dtmatch(map->num2str, &num))) {
         sfprintf(sp, "%c%s", del, item->name);
         return 1;
     }
@@ -298,7 +298,7 @@ cxstr2num(Cx_t *cx,
             ;
         if (*s)
             *s++ = 0;
-        if (item = ( Cxitem_t * )dtmatch(dt, b))
+        if (item = ( Cxitem_t * ) dtmatch(dt, b))
             n |= item->value;
         else if (str2num(cx, format->map, b, &m))
             n |= m;

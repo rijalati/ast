@@ -71,7 +71,7 @@ assert(int op, char *pred, char *args)
             a = 0;
             goto unmark;
         }
-    if (a = ( struct pplist * )hashget(pp.prdtab, pred)) {
+    if (a = ( struct pplist * ) hashget(pp.prdtab, pred)) {
         p = 0;
         q = a;
         while (q) {
@@ -337,7 +337,7 @@ ppcontrol(void)
         directive = INCLUDE;
         goto linesync;
     case T_ID:
-        switch (directive = ( int )hashref(pp.dirtab, pp.token)) {
+        switch (directive = ( int ) hashref(pp.dirtab, pp.token)) {
         case ELIF:
         else_if:
             if ((pp.option & ALLPOSSIBLE) && !pp.in->prev->prev)
@@ -375,7 +375,7 @@ ppcontrol(void)
             if ((pp.option & ALLPOSSIBLE) && !pp.in->prev->prev)
                 goto eatdirective;
             if ((pp.option & ELSEIF) && (c = pplex()) == T_ID
-                && ((n = ( int )hashref(pp.dirtab, pp.token)) == IF
+                && ((n = ( int ) hashref(pp.dirtab, pp.token)) == IF
                     || n == IFDEF || n == IFNDEF)) {
                 error(1,
                       "#%s %s is non-standard -- use #%s",
@@ -537,7 +537,7 @@ ppcontrol(void)
             p = pp.valbuf;
             var.best = 0;
             n = 0;
-            for (map = ( struct map * )pp.maps; map; map = map->next)
+            for (map = ( struct map * ) pp.maps; map; map = map->next)
                 if (!(i1
                       = regexec(&map->re, p, elementsof(match), match, 0))) {
                     if ((c = match[0].rm_eo - match[0].rm_so) > n) {
@@ -609,7 +609,7 @@ ppcontrol(void)
                     }
                     *p4 = 0;
                 }
-                if (p = ( char * )memchr(
+                if (p = ( char * ) memchr(
                     pp.valbuf + 1, MARK, p6 - pp.valbuf - 1)) {
                     s = p;
                     while (p < p6)
@@ -988,7 +988,7 @@ ppcontrol(void)
                             goto checkvalue;
                         }
                     if (var.type == TOK_BUILTIN)
-                        switch (( int )hashget(pp.strtab, pp.token)) {
+                        switch (( int ) hashget(pp.strtab, pp.token)) {
                         case V_DEFAULT:
                         case V_EMPTY:
                             sym->flags |= SYM_EMPTY;
@@ -1036,7 +1036,8 @@ ppcontrol(void)
                         if (sym->flags & SYM_MULTILINE) {
                             if (n3 & NEWLINE) {
                                 pp.state &= ~NOEXPAND;
-                                switch (( int )hashref(pp.dirtab, pp.token)) {
+                                switch (
+                                ( int ) hashref(pp.dirtab, pp.token)) {
                                 case ENDMAC:
                                     if (!i2--)
                                         goto gotdefinition;
@@ -1258,8 +1259,8 @@ ppcontrol(void)
             else if (pp.option & KEYARGS) {
                 p0 = mac->formals;
                 mac->formkeys = newof(0, struct ppkeyarg, n, p1 - p0 + 1);
-                s = ( char * )&mac->formkeys[mac->arity];
-                ( void )memcpy(s, p0, p1 - p0 + 1);
+                s = ( char * ) &mac->formkeys[mac->arity];
+                ( void ) memcpy(s, p0, p1 - p0 + 1);
                 free(p0);
                 for (n = 0; n < mac->arity; n++) {
                     mac->formkeys[n].name = s + (formargs[n] - p0);
@@ -1386,7 +1387,7 @@ ppcontrol(void)
                              error_info.file,
                              n2,
                              mac ? error_info.line - n2 + 1 : REF_UNDEF,
-                             mac ? strsum(mac->value, ( long )mac->arity)
+                             mac ? strsum(mac->value, ( long ) mac->arity)
                                  : 0L);
             break;
         assertion:
@@ -1400,7 +1401,7 @@ ppcontrol(void)
                 error(2, "%s: invalid predicate name", pptokstr(pp.token, 0));
                 goto eatdirective;
             }
-            switch (( int )hashref(pp.strtab, pp.token)) {
+            switch (( int ) hashref(pp.strtab, pp.token)) {
             case X_DEFINED:
             case X_EXISTS:
             case X_EXISTS_NEXT:
@@ -1753,10 +1754,10 @@ ppcontrol(void)
                 n = 0;
             i2 = *p4;
             *p4 = 0;
-            if (((i1 = ( int )hashref(pp.strtab, p3 + (i0 ? 0 : 2))) < 1
+            if (((i1 = ( int ) hashref(pp.strtab, p3 + (i0 ? 0 : 2))) < 1
                  || i1 > X_last_option)
                 && (i0
-                    || (i1 = ( int )hashref(pp.strtab, p3)) > X_last_option))
+                    || (i1 = ( int ) hashref(pp.strtab, p3)) > X_last_option))
                 i1 = 0;
             if ((pp.state & (COMPATIBILITY | STRICT)) == STRICT
                 && !(pp.mode & (HOSTED | RELAX))) {
@@ -1923,7 +1924,7 @@ ppcontrol(void)
             case X_LINE:
                 if (pp.linesync)
                     pp.olinesync = pp.linesync;
-                pp.linesync = i0 ? pp.olinesync : ( PPLINESYNC )0;
+                pp.linesync = i0 ? pp.olinesync : ( PPLINESYNC ) 0;
                 break;
             case X_LINEBASE:
                 ppop(PP_LINEBASE, i0);
@@ -1932,7 +1933,7 @@ ppcontrol(void)
                 ppop(PP_LINEFILE, i0);
                 break;
             case X_LINEID:
-                ppop(PP_LINEID, i0 ? p : ( char * )0);
+                ppop(PP_LINEID, i0 ? p : ( char * ) 0);
                 break;
             case X_LINETYPE:
                 ppop(PP_LINETYPE, i0 ? (p ? strtol(p, NiL, 0) : 1) : 0);
@@ -1979,11 +1980,11 @@ ppcontrol(void)
                 PUSH_LINE(p5);
                 while ((c = pplex()) == T_ID) {
                     sfsprintf(pp.tmpbuf, MAXTOKEN, "__%s__", s = pp.token);
-                    if (c = ( int )hashget(pp.dirtab, s)) {
+                    if (c = ( int ) hashget(pp.dirtab, s)) {
                         hashput(pp.dirtab, 0, 0);
                         hashput(pp.dirtab, pp.tmpbuf, c);
                     }
-                    if (c = ( int )hashget(pp.strtab, s)) {
+                    if (c = ( int ) hashget(pp.strtab, s)) {
                         hashput(pp.strtab, 0, 0);
                         hashput(pp.strtab, pp.tmpbuf, c);
                     }
@@ -2052,8 +2053,8 @@ ppcontrol(void)
                           pptokstr(pp.token, 0));
                     goto eatmap;
                 }
-                map->next = ( struct map * )pp.maps;
-                pp.maps = ( char * )map;
+                map->next = ( struct map * ) pp.maps;
+                pp.maps = ( char * ) map;
             eatmap:
                 POP_LINE();
                 /*INDENT*/
@@ -2074,7 +2075,7 @@ ppcontrol(void)
                 setoption(NATIVE, i0);
                 break;
             case X_OPSPACE:
-                ppfsm(FSM_OPSPACE, i0 ? p4 : ( char * )0);
+                ppfsm(FSM_OPSPACE, i0 ? p4 : ( char * ) 0);
                 break;
             case X_PASSTHROUGH:
                 ppop(PP_PASSTHROUGH, i0);

@@ -41,8 +41,8 @@ ccnative(void *b, const void *a, size_t n)
 #else
     int c;
     const unsigned char *m;
-    unsigned char *cb = ( unsigned char * )b;
-    unsigned char *ca = ( unsigned char * )a;
+    unsigned char *cb = ( unsigned char * ) b;
+    unsigned char *ca = ( unsigned char * ) a;
 
     m = CCMAP(CC_ASCII, CC_NATIVE);
     if (n == sizeof(char))

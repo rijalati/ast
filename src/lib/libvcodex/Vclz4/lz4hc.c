@@ -152,7 +152,8 @@
 #    define lz4_bswap16(x) _byteswap_ushort(x)
 #else
 #    define lz4_bswap16(x)                                                   \
-        (( unsigned short int )((((x) >> 8) & 0xffu) | ((( x )&0xffu) << 8)))
+        (( unsigned short int ) ((((x) >> 8) & 0xffu)                        \
+                                 | ((( x ) &0xffu) << 8)))
 #endif
 
 
@@ -209,9 +210,9 @@ typedef struct _U64_S
 #    pragma pack(pop)
 #endif
 
-#define A64(x) ((( U64_S * )(x))->v)
-#define A32(x) ((( U32_S * )(x))->v)
-#define A16(x) ((( U16_S * )(x))->v)
+#define A64(x) ((( U64_S * ) (x))->v)
+#define A32(x) ((( U32_S * ) (x))->v)
+#define A16(x) ((( U16_S * ) (x))->v)
 
 
 /* ************************************** */
@@ -239,7 +240,7 @@ typedef struct _U64_S
 #define LASTLITERALS 5
 #define MFLIMIT (COPYLENGTH + MINMATCH)
 #define MINLENGTH (MFLIMIT + 1)
-#define OPTIMAL_ML ( int )((ML_MASK - 1) + MINMATCH)
+#define OPTIMAL_ML ( int ) ((ML_MASK - 1) + MINMATCH)
 
 
 /* ************************************** */
@@ -276,7 +277,7 @@ typedef struct _U64_S
         {                                                                    \
             U16 v = A16(p);                                                  \
             v = lz4_bswap16(v);                                              \
-            d = ( s )-v;                                                     \
+            d = ( s ) -v;                                                    \
         }
 #    define LZ4_WRITE_LITTLEENDIAN_16(p, i)                                  \
         {                                                                    \
@@ -288,7 +289,7 @@ typedef struct _U64_S
 #else /*  Little Endian */
 #    define LZ4_READ_LITTLEENDIAN_16(d, s, p)                                \
         {                                                                    \
-            d = ( s )-A16(p);                                                \
+            d = ( s ) -A16(p);                                               \
         }
 #    define LZ4_WRITE_LITTLEENDIAN_16(p, v)                                  \
         {                                                                    \
@@ -323,11 +324,11 @@ typedef struct
         LZ4_WILDCOPY(s, d, e);                                               \
         d = e;                                                               \
     }
-#define HASH_FUNCTION(i) ((( i )*2654435761U) >> ((MINMATCH * 8) - HASH_LOG))
+#define HASH_FUNCTION(i) ((( i ) *2654435761U) >> ((MINMATCH * 8) - HASH_LOG))
 #define HASH_VALUE(p) HASH_FUNCTION(A32(p))
 #define HASH_POINTER(p) (HashTable[HASH_VALUE(p)] + base)
-#define DELTANEXT(p) chainTable[(size_t)( p )&MAXD_MASK]
-#define GETNEXT(p) ((p) - ( size_t )DELTANEXT(p))
+#define DELTANEXT(p) chainTable[(size_t)( p ) &MAXD_MASK]
+#define GETNEXT(p) ((p) - ( size_t ) DELTANEXT(p))
 
 
 /* ************************************** */
@@ -342,7 +343,7 @@ LZ4_NbCommonBytes(U64 val)
 #        if defined(_MSC_VER) && !defined(LZ4_FORCE_SW_BITCOUNT)
     unsigned long r = 0;
     _BitScanReverse64(&r, val);
-    return ( int )(r >> 3);
+    return ( int ) (r >> 3);
 #        elif defined(__GNUC__)                                              \
         && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 304)                        \
         && !defined(LZ4_FORCE_SW_BITCOUNT)
@@ -368,7 +369,7 @@ LZ4_NbCommonBytes(U64 val)
 #        if defined(_MSC_VER) && !defined(LZ4_FORCE_SW_BITCOUNT)
     unsigned long r = 0;
     _BitScanForward64(&r, val);
-    return ( int )(r >> 3);
+    return ( int ) (r >> 3);
 #        elif defined(__GNUC__)                                              \
         && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 304)                        \
         && !defined(LZ4_FORCE_SW_BITCOUNT)
@@ -392,7 +393,7 @@ LZ4_NbCommonBytes(U32 val)
 #        if defined(_MSC_VER) && !defined(LZ4_FORCE_SW_BITCOUNT)
     unsigned long r;
     _BitScanReverse(&r, val);
-    return ( int )(r >> 3);
+    return ( int ) (r >> 3);
 #        elif defined(__GNUC__)                                              \
         && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 304)                        \
         && !defined(LZ4_FORCE_SW_BITCOUNT)
@@ -413,7 +414,7 @@ LZ4_NbCommonBytes(U32 val)
 #        if defined(_MSC_VER) && !defined(LZ4_FORCE_SW_BITCOUNT)
     unsigned long r;
     _BitScanForward(&r, val);
-    return ( int )(r >> 3);
+    return ( int ) (r >> 3);
 #        elif defined(__GNUC__)                                              \
         && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 304)                        \
         && !defined(LZ4_FORCE_SW_BITCOUNT)
@@ -422,7 +423,7 @@ LZ4_NbCommonBytes(U32 val)
     static const int DeBruijnBytePos[32]
     = { 0, 0, 3, 0, 3, 1, 3, 0, 3, 2, 2, 1, 3, 2, 0, 1,
         3, 3, 1, 2, 2, 2, 2, 0, 3, 1, 2, 0, 1, 0, 1, 1 };
-    return DeBruijnBytePos[((U32)((val & -( S32 )val) * 0x077CB531U)) >> 27];
+    return DeBruijnBytePos[((U32)((val & -( S32 ) val) * 0x077CB531U)) >> 27];
 #        endif
 #    endif
 }
@@ -433,7 +434,7 @@ LZ4_NbCommonBytes(U32 val)
 inline static int
 LZ4HC_Init(LZ4HC_Data_Structure *hc4, const BYTE *base)
 {
-    MEM_INIT(( void * )hc4->hashTable, 0, sizeof(hc4->hashTable));
+    MEM_INIT(( void * ) hc4->hashTable, 0, sizeof(hc4->hashTable));
     MEM_INIT(hc4->chainTable, 0xFF, sizeof(hc4->chainTable));
     hc4->nextToUpdate = base + LZ4_ARCH64;
     hc4->base = base;
@@ -446,7 +447,7 @@ LZ4HC_Create(const BYTE *base)
 {
     void *hc4 = ALLOCATOR(sizeof(LZ4HC_Data_Structure));
 
-    LZ4HC_Init(( LZ4HC_Data_Structure * )hc4, base);
+    LZ4HC_Init(( LZ4HC_Data_Structure * ) hc4, base);
     return hc4;
 }
 
@@ -470,11 +471,11 @@ LZ4HC_Insert(LZ4HC_Data_Structure *hc4, const BYTE *ip)
 
     while (hc4->nextToUpdate < ip) {
         const BYTE *p = hc4->nextToUpdate;
-        size_t delta = ( p )-HASH_POINTER(p);
+        size_t delta = ( p ) -HASH_POINTER(p);
         if (delta > MAX_DISTANCE)
             delta = MAX_DISTANCE;
-        DELTANEXT(p) = ( U16 )delta;
-        HashTable[HASH_VALUE(p)] = (HTYPE)(( p )-base);
+        DELTANEXT(p) = ( U16 ) delta;
+        HashTable[HASH_VALUE(p)] = (HTYPE)(( p ) -base);
         hc4->nextToUpdate++;
     }
 }
@@ -576,14 +577,14 @@ LZ4HC_InsertAndFindBestMatch(LZ4HC_Data_Structure *hc4,
         do {
             DELTANEXT(ptr) = delta;
             HashTable[HASH_VALUE(ptr)]
-            = (HTYPE)(( ptr )-base); /*  Head of chain */
+            = (HTYPE)(( ptr ) -base); /*  Head of chain */
             ptr++;
         } while (ptr < end);
         hc4->nextToUpdate = end;
     }
 #endif
 
-    return ( int )ml;
+    return ( int ) ml;
 }
 
 
@@ -601,7 +602,7 @@ LZ4HC_InsertAndGetWiderMatch(LZ4HC_Data_Structure *hc4,
     INITBASE(base, hc4->base);
     const BYTE *ref;
     int nbAttempts = MAX_NB_ATTEMPTS;
-    int delta = ( int )(ip - startLimit);
+    int delta = ( int ) (ip - startLimit);
 
     /*  First Match */
     LZ4HC_Insert(hc4, ip);
@@ -657,7 +658,7 @@ LZ4HC_InsertAndGetWiderMatch(LZ4HC_Data_Structure *hc4,
                 }
 
                 if ((ipt - startt) > longest) {
-                    longest = ( int )(ipt - startt);
+                    longest = ( int ) (ipt - startt);
                     *matchpos = reft;
                     *startpos = startt;
                 }
@@ -681,16 +682,16 @@ LZ4_encodeSequence(const BYTE **ip,
     BYTE *token;
 
     /*  Encode Literal length */
-    length = ( int )(*ip - *anchor);
+    length = ( int ) (*ip - *anchor);
     token = (*op)++;
     if ((*op + length + (2 + 1 + LASTLITERALS) + (length >> 8)) > oend)
         return 1; /*  Check output limit */
-    if (length >= ( int )RUN_MASK) {
+    if (length >= ( int ) RUN_MASK) {
         *token = (RUN_MASK << ML_BITS);
         len = length - RUN_MASK;
         for (; len > 254; len -= 255)
             *(*op)++ = 255;
-        *(*op)++ = ( BYTE )len;
+        *(*op)++ = ( BYTE ) len;
     } else
         *token = (BYTE)(length << ML_BITS);
 
@@ -701,10 +702,10 @@ LZ4_encodeSequence(const BYTE **ip,
     LZ4_WRITE_LITTLEENDIAN_16(*op, (U16)(*ip - ref));
 
     /*  Encode MatchLength */
-    len = ( int )(matchLength - MINMATCH);
+    len = ( int ) (matchLength - MINMATCH);
     if (*op + (1 + LASTLITERALS) + (length >> 8) > oend)
         return 1; /*  Check output limit */
-    if (len >= ( int )ML_MASK) {
+    if (len >= ( int ) ML_MASK) {
         *token += ML_MASK;
         len -= ML_MASK;
         for (; len > 509; len -= 510) {
@@ -715,9 +716,9 @@ LZ4_encodeSequence(const BYTE **ip,
             len -= 255;
             *(*op)++ = 255;
         }
-        *(*op)++ = ( BYTE )len;
+        *(*op)++ = ( BYTE ) len;
     } else
-        *token += ( BYTE )len;
+        *token += ( BYTE ) len;
 
     /*  Prepare next loop */
     *ip += matchLength;
@@ -738,13 +739,13 @@ LZ4_compressHCCtx(LZ4HC_Data_Structure *ctx,
                   int inputSize,
                   int maxOutputSize)
 {
-    const BYTE *ip = ( const BYTE * )source;
+    const BYTE *ip = ( const BYTE * ) source;
     const BYTE *anchor = ip;
     const BYTE *const iend = ip + inputSize;
     const BYTE *const mflimit = iend - MFLIMIT;
     const BYTE *const matchlimit = (iend - LASTLITERALS);
 
-    BYTE *op = ( BYTE * )dest;
+    BYTE *op = ( BYTE * ) dest;
     BYTE *const oend = op + maxOutputSize;
 
     int ml, ml2, ml3, ml0;
@@ -813,8 +814,8 @@ LZ4_compressHCCtx(LZ4HC_Data_Structure *ctx,
             if (new_ml > OPTIMAL_ML)
                 new_ml = OPTIMAL_ML;
             if (ip + new_ml > start2 + ml2 - MINMATCH)
-                new_ml = ( int )(start2 - ip) + ml2 - MINMATCH;
-            correction = new_ml - ( int )(start2 - ip);
+                new_ml = ( int ) (start2 - ip) + ml2 - MINMATCH;
+            correction = new_ml - ( int ) (start2 - ip);
             if (correction > 0) {
                 start2 += correction;
                 ref2 += correction;
@@ -834,7 +835,7 @@ LZ4_compressHCCtx(LZ4HC_Data_Structure *ctx,
         {
             /*  ip & ref are known; Now for ml */
             if (start2 < ip + ml)
-                ml = ( int )(start2 - ip);
+                ml = ( int ) (start2 - ip);
             /*  Now, encode 2 sequences */
             if (LZ4_encodeSequence(&ip, &op, &anchor, ml, ref, oend))
                 return 0;
@@ -851,7 +852,7 @@ LZ4_compressHCCtx(LZ4HC_Data_Structure *ctx,
                                         is removed, so Seq3 becomes Seq1 */
             {
                 if (start2 < ip + ml) {
-                    int correction = ( int )(ip + ml - start2);
+                    int correction = ( int ) (ip + ml - start2);
                     start2 += correction;
                     ref2 += correction;
                     ml2 -= correction;
@@ -884,20 +885,20 @@ LZ4_compressHCCtx(LZ4HC_Data_Structure *ctx,
          * first one */
         /*  ip & ref are known; Now for ml */
         if (start2 < ip + ml) {
-            if ((start2 - ip) < ( int )ML_MASK) {
+            if ((start2 - ip) < ( int ) ML_MASK) {
                 int correction;
                 if (ml > OPTIMAL_ML)
                     ml = OPTIMAL_ML;
                 if (ip + ml > start2 + ml2 - MINMATCH)
-                    ml = ( int )(start2 - ip) + ml2 - MINMATCH;
-                correction = ml - ( int )(start2 - ip);
+                    ml = ( int ) (start2 - ip) + ml2 - MINMATCH;
+                correction = ml - ( int ) (start2 - ip);
                 if (correction > 0) {
                     start2 += correction;
                     ref2 += correction;
                     ml2 -= correction;
                 }
             } else {
-                ml = ( int )(start2 - ip);
+                ml = ( int ) (start2 - ip);
             }
         }
         if (LZ4_encodeSequence(&ip, &op, &anchor, ml, ref, oend))
@@ -916,17 +917,17 @@ LZ4_compressHCCtx(LZ4HC_Data_Structure *ctx,
 
     /*  Encode Last Literals */
     {
-        int lastRun = ( int )(iend - anchor);
-        if ((( char * )op - dest) + lastRun + 1
+        int lastRun = ( int ) (iend - anchor);
+        if ((( char * ) op - dest) + lastRun + 1
             + ((lastRun + 255 - RUN_MASK) / 255)
-            > ( U32 )maxOutputSize)
+            > ( U32 ) maxOutputSize)
             return 0; /*  Check output limit */
-        if (lastRun >= ( int )RUN_MASK) {
+        if (lastRun >= ( int ) RUN_MASK) {
             *op++ = (RUN_MASK << ML_BITS);
             lastRun -= RUN_MASK;
             for (; lastRun > 254; lastRun -= 255)
                 *op++ = 255;
-            *op++ = ( BYTE )lastRun;
+            *op++ = ( BYTE ) lastRun;
         } else
             *op++ = (BYTE)(lastRun << ML_BITS);
         memcpy(op, anchor, iend - anchor);
@@ -934,7 +935,7 @@ LZ4_compressHCCtx(LZ4HC_Data_Structure *ctx,
     }
 
     /*  End */
-    return ( int )((( char * )op) - dest);
+    return ( int ) ((( char * ) op) - dest);
 }
 
 
@@ -944,7 +945,7 @@ LZ4_compressHC_limitedOutput(const char *source,
                              int inputSize,
                              int maxOutputSize)
 {
-    void *ctx = LZ4HC_Create(( const BYTE * )source);
+    void *ctx = LZ4HC_Create(( const BYTE * ) source);
     int result
     = LZ4_compressHCCtx(ctx, source, dest, inputSize, maxOutputSize);
     LZ4HC_Free(&ctx);

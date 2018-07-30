@@ -45,17 +45,17 @@ tmain()
     if (dt->user->lock != 0)
         terror("user->lock should be 0");
 
-    if (dtuserdata(dt, ( Void_t * )11, 1) != ( Void_t * )0)
+    if (dtuserdata(dt, ( Void_t * ) 11, 1) != ( Void_t * ) 0)
         terror("dtuserdata() should have returned NULL");
-    if (dt->user->data != ( Void_t * )11)
+    if (dt->user->data != ( Void_t * ) 11)
         terror("user->data should be 11");
 
-    if (dtuserdata(dt, ( Void_t * )0, 0) != ( Void_t * )11)
+    if (dtuserdata(dt, ( Void_t * ) 0, 0) != ( Void_t * ) 11)
         terror("dtuserdata() should have returned 11");
 
-    if (dtuserdata(dt, ( Void_t * )22, 1) != ( Void_t * )11)
+    if (dtuserdata(dt, ( Void_t * ) 22, 1) != ( Void_t * ) 11)
         terror("dtuserdata() should have returned 11");
-    if (dt->user->data != ( Void_t * )22)
+    if (dt->user->data != ( Void_t * ) 22)
         terror("user->data should be 22");
 
     texit(0);

@@ -75,11 +75,11 @@ ssize_t ntar; /* length of target data	*/
     size
     = sizeof(Hash_t) + n * sizeof(Obj_t *) + (nsrc + ntar) * sizeof(Obj_t);
 
-    if (!(hs = ( Hash_t * )calloc(1, size)))
+    if (!(hs = ( Hash_t * ) calloc(1, size)))
         return NIL(Hash_t *);
 
-    hs->htab = ( Obj_t ** )(hs + 1);
-    hs->src = ( Obj_t * )(hs->htab + n);
+    hs->htab = ( Obj_t ** ) (hs + 1);
+    hs->src = ( Obj_t * ) (hs->htab + n);
     hs->tar = hs->src + nsrc;
     hs->mask = n - 1;
 
@@ -510,7 +510,7 @@ static int sfxparse(vcpa) Vclzparse_t *vcpa;
         str = vcpa->src;
     } else {
         nstr = nsrc + vcpa->ntar;
-        if (!(str = ( Vcchar_t * )malloc(nstr)))
+        if (!(str = ( Vcchar_t * ) malloc(nstr)))
             return -1;
         memcpy(str, vcpa->src, nsrc);
         memcpy(str + nsrc, vcpa->tar, vcpa->ntar);

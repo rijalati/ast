@@ -169,7 +169,7 @@ matched(int n, size_t *z, Jcldisc_t *disc)
         return 0;
     }
     *z = state.match[n].length;
-    return ( char * )state.match[n].string;
+    return ( char * ) state.match[n].string;
 }
 
 /*
@@ -243,10 +243,10 @@ match(const char *name)
             i = 0;
             buf[0] = name[0];
             if (!(mp
-                  = ( Map_t * )dtprev(state.match[state.matched].map, &map)))
-                mp = ( Map_t * )dtfirst(state.match[state.matched].map);
-            for (; mp && mp->same >= i;
-                 mp = ( Map_t * )dtnext(state.match[state.matched].map, mp)) {
+                  = ( Map_t * ) dtprev(state.match[state.matched].map, &map)))
+                mp = ( Map_t * ) dtfirst(state.match[state.matched].map);
+            for (; mp && mp->same >= i; mp = ( Map_t * ) dtnext(
+                                        state.match[state.matched].map, mp)) {
                 for (j = i; name[j] == mp->prefix[j]; j++)
                     if (!name[j]) {
                         if (mp->tail)
@@ -401,7 +401,7 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
                     NiL, disc, 2, "%s: cannot find map file", file);
                 return -1;
             }
-            sp = sfopen(NiL, file = ( char * )buf, "r");
+            sp = sfopen(NiL, file = ( char * ) buf, "r");
         }
         if (!sp) {
             if (disc->errorf)
@@ -411,7 +411,7 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
         }
     }
     ofile = error_info.file;
-    error_info.file = ( char * )file;
+    error_info.file = ( char * ) file;
     oline = error_info.line;
     error_info.line = 0;
     while (s = sfgetr(sp, '\n', 1)) {
@@ -534,7 +534,7 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
                 if (tail)
                     n = tail - s;
                 mp->length = n;
-                memcpy(mp->prefix = ( char * )(mp + 1), s, n);
+                memcpy(mp->prefix = ( char * ) (mp + 1), s, n);
                 s = mp->prefix + n;
                 *s++ = 0;
                 s = stpcpy(mp->map = s, arg[1]);
@@ -548,7 +548,7 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
                     dtinsert(state.match[k].map, mp);
                 else
                     state.match[k].all = mp;
-                if ((s = ( char * )nextdelim(mp->suffix))
+                if ((s = ( char * ) nextdelim(mp->suffix))
                     && suffix(sp, s, disc))
                     return -1;
             } else if (streq(op, "set")) {
@@ -594,8 +594,8 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
     error_info.line = oline;
     for (k = 0; k <= state.matches; k++) {
         if (state.match[k].map)
-            for (pp = 0, mp = ( Map_t * )dtfirst(state.match[k].map); mp;
-                 pp = mp, mp = ( Map_t * )dtnext(state.match[k].map, mp)) {
+            for (pp = 0, mp = ( Map_t * ) dtfirst(state.match[k].map); mp;
+                 pp = mp, mp = ( Map_t * ) dtnext(state.match[k].map, mp)) {
                 mp->same = 0;
                 if (pp)
                     while (mp->prefix[mp->same] == pp->prefix[mp->same])
@@ -628,7 +628,7 @@ suflen(const char *path)
     const char *s;
 
     return (state.suf && (s = strrchr(path, '.'))
-            && (xp = ( Suf_t * )dtmatch(state.suf, s)))
+            && (xp = ( Suf_t * ) dtmatch(state.suf, s)))
            ? xp->length
            : 0;
 }
@@ -651,7 +651,7 @@ jclpath(Jcl_t *jcl, const char *name)
     Sfio_t *pp;
 
     if (s = mark(name, 0, 0, jcl->disc))
-        name = ( const char * )s;
+        name = ( const char * ) s;
     if (*name != '/' && (*name != '.' || *(name + 1) != '/') && state.mapped
         && (m = match(name))) {
         name += m->length;
@@ -667,14 +667,14 @@ jclpath(Jcl_t *jcl, const char *name)
             sfprintf(jcl->vp, "%s%s%s", m->map, name, m->suffix);
         if (!(name = sfstruse(jcl->vp)))
             nospace(jcl, NiL);
-        name = ( const char * )expand(jcl, name, JCL_SYM_SET);
+        name = ( const char * ) expand(jcl, name, JCL_SYM_SET);
         message((-7, "match     %s => %s", oname, name));
     } else
         m = 0;
     if ((s = strrchr(name, '(')) && (t = strrchr(s, ')')) && !*(t + 1)) {
-        if (name != ( const char * )sfstrbase(jcl->vp)) {
+        if (name != ( const char * ) sfstrbase(jcl->vp)) {
             sfprintf(jcl->vp, "%s", name);
-            if (!(name = ( const char * )sfstruse(jcl->vp)))
+            if (!(name = ( const char * ) sfstruse(jcl->vp)))
                 nospace(jcl, NiL);
             s = strrchr(name, '(');
         }
@@ -702,11 +702,11 @@ jclpath(Jcl_t *jcl, const char *name)
                             1,
                             "%s: cannot map generation data group",
                             s);
-                    } else if (!(name = ( const char * )sfstruse(jcl->vp)))
+                    } else if (!(name = ( const char * ) sfstruse(jcl->vp)))
                         nospace(jcl, NiL);
                 } else {
                     sfprintf(jcl->vp, "%s", s);
-                    if (!(name = ( const char * )sfstruse(jcl->vp)))
+                    if (!(name = ( const char * ) sfstruse(jcl->vp)))
                         nospace(jcl, NiL);
                 }
             }
@@ -716,8 +716,8 @@ jclpath(Jcl_t *jcl, const char *name)
         }
     }
     if (s = mark(name, 0, 0, jcl->disc))
-        name = ( const char * )s;
+        name = ( const char * ) s;
     if (name != oname)
         message((-7, "map       %s => %s", oname, name));
-    return ( char * )name;
+    return ( char * ) name;
 }

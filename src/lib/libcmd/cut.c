@@ -121,9 +121,9 @@ typedef struct Cut_s
 static int
 mycomp(const void *a, const void *b)
 {
-    if (*(( int * )a) < *(( int * )b))
+    if (*(( int * ) a) < *(( int * ) b))
         return -1;
-    if (*(( int * )a) > *(( int * )b))
+    if (*(( int * ) a) > *(( int * ) b))
         return 1;
     return 0;
 }
@@ -139,7 +139,7 @@ cutinit(int mode, char *str, Delim_t *wdelim, Delim_t *ldelim, size_t reclen)
     Cut_t *cut;
 
     if (!(cut
-          = ( Cut_t * )stakalloc(sizeof(Cut_t) + strlen(cp) * sizeof(int))))
+          = ( Cut_t * ) stakalloc(sizeof(Cut_t) + strlen(cp) * sizeof(int))))
         error(ERROR_exit(1), "out of space");
     if (cut->mb = mbwide()) {
         memset(cut->space, 0, sizeof(cut->space) / 2);
@@ -273,7 +273,7 @@ cutcols(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                     else if ((z = mbtsize(s, w, &cut->q)) <= 0) {
                         if (s == bp && xx) {
                             w += s - xx;
-                            bp = ( char * )(s = xx);
+                            bp = ( char * ) (s = xx);
                             xx = 0;
                             continue;
                         }
@@ -310,7 +310,7 @@ cutcols(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                 ncol -= c;
             }
             if (!skip && c) {
-                if (sfwrite(fdout, ( char * )bp, c) < 0)
+                if (sfwrite(fdout, ( char * ) bp, c) < 0)
                     return;
                 must = 0;
             }
@@ -354,7 +354,7 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
     long offset = 0;
     unsigned char mb[8];
     /* process each buffer */
-    while ((bp = ( unsigned char * )sfreserve(fdin, SF_UNBOUND, -1))
+    while ((bp = ( unsigned char * ) sfreserve(fdin, SF_UNBOUND, -1))
            && (c = sfvalue(fdin)) > 0) {
         cp = bp;
         ep = cp + --c;
@@ -377,7 +377,7 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                 /* skip over non-delimiter characters */
                 if (cut->mb)
                     for (;;) {
-                        switch (c = sp[*( unsigned char * )cp++]) {
+                        switch (c = sp[*( unsigned char * ) cp++]) {
                         case 0:
                             continue;
                         case SP_WIDE:
@@ -402,13 +402,13 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                                 if (copy) {
                                     empty = 0;
                                     if ((c = cp - copy) > 0
-                                        && sfwrite(fdout, ( char * )copy, c)
+                                        && sfwrite(fdout, ( char * ) copy, c)
                                            < 0)
                                         goto failed;
                                 }
                                 for (i = 0; i <= (ep - cp); i++)
                                     mb[i] = cp[i];
-                                if (!(bp = ( unsigned char * )sfreserve(
+                                if (!(bp = ( unsigned char * ) sfreserve(
                                       fdin, SF_UNBOUND, -1))
                                     || (c = sfvalue(fdin)) <= 0)
                                     goto failed;
@@ -420,13 +420,13 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                                 k = 0;
                                 while (j < mbmax())
                                     mb[j++] = cp[k++];
-                                tp = ( char * )mb;
+                                tp = ( char * ) mb;
                                 w = mbchar(&w, tp, j, &cut->q);
                                 if (mberrno(&cut->q)) {
                                     w = 0;
                                     c = i;
                                 } else
-                                    c = tp - ( char * )mb;
+                                    c = tp - ( char * ) mb;
                                 first = bp = cp += c - i;
                                 if (copy) {
                                     copy = bp;
@@ -434,7 +434,7 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                                         lastchar = cut->ldelim.chr;
                                     else if (w != cut->wdelim.chr) {
                                         empty = 0;
-                                        if (sfwrite(fdout, ( char * )mb, c)
+                                        if (sfwrite(fdout, ( char * ) mb, c)
                                             < 0)
                                             goto failed;
                                     }
@@ -480,7 +480,7 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                 if (copy) {
                     empty = 0;
                     if ((c = wp - copy) > 0
-                        && sfwrite(fdout, ( char * )copy, c) < 0)
+                        && sfwrite(fdout, ( char * ) copy, c) < 0)
                         goto failed;
                     copy = 0;
                 } else
@@ -492,7 +492,7 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                     if (nodelim) {
                         if (!cut->sflag) {
                             if (offset) {
-                                sfseek(fdtmp, ( Sfoff_t )0, SEEK_SET);
+                                sfseek(fdtmp, ( Sfoff_t ) 0, SEEK_SET);
                                 sfmove(fdtmp, fdout, offset, -1);
                             }
                             copy = first;
@@ -504,7 +504,7 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                     sfseek(fdtmp, offset = 0, SEEK_SET);
             }
             if (copy && (c = cp - copy) > 0 && (!nodelim || !cut->sflag)
-                && sfwrite(fdout, ( char * )copy, c) < 0)
+                && sfwrite(fdout, ( char * ) copy, c) < 0)
                 goto failed;
         }
         /* see whether to save in tmp file */
@@ -512,7 +512,7 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
             /* copy line to tmpfile in case no fields */
             if (!fdtmp)
                 fdtmp = sftmp(BLOCK);
-            sfwrite(fdtmp, ( char * )first, c);
+            sfwrite(fdtmp, ( char * ) first, c);
             offset += c;
         }
     }
@@ -567,7 +567,7 @@ b_cut(int argc, char **argv, Shbltin_t *context)
                     continue;
                 }
             }
-            ldelim.chr = *( unsigned char * )opt_info.arg;
+            ldelim.chr = *( unsigned char * ) opt_info.arg;
             ldelim.len = 1;
             continue;
         case 'd':
@@ -581,7 +581,7 @@ b_cut(int argc, char **argv, Shbltin_t *context)
                     continue;
                 }
             }
-            wdelim.chr = *( unsigned char * )opt_info.arg;
+            wdelim.chr = *( unsigned char * ) opt_info.arg;
             wdelim.len = 1;
             continue;
         case 'f':

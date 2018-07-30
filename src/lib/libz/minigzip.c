@@ -52,7 +52,7 @@
 #endif
 
 #ifndef ZLIB_WIN32 /* unlink already in stdio.h for ZLIB_WIN32 */
-extern int unlink OF(( const char * ));
+extern int unlink OF(( const char * ) );
 #endif
 
 #ifndef GZ_SUFFIX
@@ -110,7 +110,7 @@ gzFile out;
         return;
 #endif
     for (;;) {
-        len = ( int )fread(buf, 1, sizeof(buf), in);
+        len = ( int ) fread(buf, 1, sizeof(buf), in);
         if (ferror(in)) {
             perror("fread");
             exit(1);
@@ -118,7 +118,7 @@ gzFile out;
         if (len == 0)
             break;
 
-        if (gzwrite(out, buf, ( unsigned )len) != len)
+        if (gzwrite(out, buf, ( unsigned ) len) != len)
             error(gzerror(out, &err));
     }
     fclose(in);
@@ -149,14 +149,15 @@ gzFile out;
         return Z_ERRNO;
 
     /* Now do the actual mmap: */
-    buf = mmap(( caddr_t )0, buf_len, PROT_READ, MAP_SHARED, ifd, ( off_t )0);
+    buf
+    = mmap(( caddr_t ) 0, buf_len, PROT_READ, MAP_SHARED, ifd, ( off_t ) 0);
     if (buf == (caddr_t)(-1))
         return Z_ERRNO;
 
     /* Compress the whole file at once: */
-    len = gzwrite(out, ( char * )buf, ( unsigned )buf_len);
+    len = gzwrite(out, ( char * ) buf, ( unsigned ) buf_len);
 
-    if (len != ( int )buf_len)
+    if (len != ( int ) buf_len)
         error(gzerror(out, &err));
 
     munmap(buf, buf_len);
@@ -184,7 +185,7 @@ FILE *out;
         if (len == 0)
             break;
 
-        if (( int )fwrite(buf, 1, ( unsigned )len, out) != len) {
+        if (( int ) fwrite(buf, 1, ( unsigned ) len, out) != len) {
             error("failed fwrite");
         }
     }
@@ -235,7 +236,7 @@ void file_uncompress(file) char *file;
     char *infile, *outfile;
     FILE *out;
     gzFile in;
-    uInt len = ( uInt )strlen(file);
+    uInt len = ( uInt ) strlen(file);
 
     strcpy(buf, file);
 

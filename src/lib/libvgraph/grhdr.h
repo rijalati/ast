@@ -7,7 +7,7 @@
 #include "kpvdebug.h"
 
 #ifndef NIL
-#    define NIL(type) (( type )0)
+#    define NIL(type) (( type ) 0)
 #endif
 
 #endif

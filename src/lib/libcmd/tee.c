@@ -70,12 +70,12 @@ tee_write(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *handle)
 {
     const char *bp;
     const char *ep;
-    int *hp = (( Tee_t * )handle)->fd;
+    int *hp = (( Tee_t * ) handle)->fd;
     int fd = sffileno(fp);
     ssize_t r;
 
     do {
-        bp = ( const char * )buf;
+        bp = ( const char * ) buf;
         ep = bp + n;
         while (bp < ep) {
             if ((r = write(fd, bp, ep - bp)) <= 0)
@@ -111,7 +111,7 @@ b_tee(int argc, char **argv, Shbltin_t *context)
     int line;
 
     if (argc <= 0) {
-        if (context && (tp = ( Tee_t * )sh_context(context)->data)) {
+        if (context && (tp = ( Tee_t * ) sh_context(context)->data)) {
             sh_context(context)->data = 0;
             tee_cleanup(tp);
         }
@@ -156,11 +156,11 @@ b_tee(int argc, char **argv, Shbltin_t *context)
     }
 #endif
     if (argc > 0) {
-        if (tp = ( Tee_t * )stakalloc(sizeof(Tee_t) + argc * sizeof(int))) {
+        if (tp = ( Tee_t * ) stakalloc(sizeof(Tee_t) + argc * sizeof(int))) {
             memset(&tp->disc, 0, sizeof(tp->disc));
             tp->disc.writef = tee_write;
             if (context)
-                sh_context(context)->data = ( void * )tp;
+                sh_context(context)->data = ( void * ) tp;
             tp->line = line;
             hp = tp->fd;
             while (cp = *argv++) {

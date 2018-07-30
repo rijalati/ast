@@ -218,7 +218,7 @@ extern "C"
 
     /* basic functions */
 
-    ZEXTERN const char *ZEXPORT zlibVersion OF(( void ));
+    ZEXTERN const char *ZEXPORT zlibVersion OF(( void ) );
     /* The application can compare zlibVersion and ZLIB_VERSION for
        consistency. If the first character differs, the library code actually
        used is not compatible with the zlib.h header file used by the
@@ -903,8 +903,8 @@ extern "C"
        match the version of the header file.
     */
 
-    typedef unsigned(*in_func) OF(( void FAR *, unsigned char FAR *FAR * ));
-    typedef int(*out_func) OF(( void FAR *, unsigned char FAR *, unsigned ));
+    typedef unsigned(*in_func) OF(( void FAR *, unsigned char FAR *FAR * ) );
+    typedef int(*out_func) OF(( void FAR *, unsigned char FAR *, unsigned ) );
 
     ZEXTERN int ZEXPORT inflateBack OF((z_streamp strm,
                                         in_func in,
@@ -989,7 +989,7 @@ extern "C"
        stream state was inconsistent.
     */
 
-    ZEXTERN uLong ZEXPORT zlibCompileFlags OF(( void ));
+    ZEXTERN uLong ZEXPORT zlibCompileFlags OF(( void ) );
     /* Return flags indicating compile-time options.
 
         Type sizes, two bits each, 00 = 16 bits, 01 = 32, 10 = 64, 11 = other:
@@ -1427,9 +1427,9 @@ extern "C"
     }; /* hack for buggy compilers */
 #endif
 
-    ZEXTERN const char *ZEXPORT zError OF(( int ));
+    ZEXTERN const char *ZEXPORT zError OF(( int ) );
     ZEXTERN int ZEXPORT inflateSyncPoint OF((z_streamp z));
-    ZEXTERN const uLongf *ZEXPORT get_crc_table OF(( void ));
+    ZEXTERN const uLongf *ZEXPORT get_crc_table OF(( void ) );
 
 #ifdef __cplusplus
 }

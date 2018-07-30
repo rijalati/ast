@@ -49,7 +49,7 @@ scan(void)
         while (dle = dllsread(dls))
             if (dll = dlopen(dle->path, RTLD_LAZY)) {
                 if (dllcheck(dll, dle->path, PAX_PLUGIN_VERSION, NiL)
-                    && (init = ( Paxlib_f )dlllook(dll, "pax_lib"))
+                    && (init = ( Paxlib_f ) dlllook(dll, "pax_lib"))
                     && (lp = (*init)(&state)))
                     fp = fp->next = lp;
                 else
@@ -180,9 +180,9 @@ selectfile(Archive_t *ap, File_t *f)
         d->offset = ap->io->offset + ap->io->count;
         d->size = f->st->st_size;
         d->uncompressed = f->uncompressed;
-        if (!(d->info = ( File_t * )memdup(f, sizeof(File_t)))
+        if (!(d->info = ( File_t * ) memdup(f, sizeof(File_t)))
             || !(d->info->st
-                 = ( struct stat * )memdup(f->st, sizeof(struct stat))))
+                 = ( struct stat * ) memdup(f->st, sizeof(struct stat))))
             nospace();
         d->info->name = d->info->path
         = hashput(ap->parent->delta->tab, f->name, d);
@@ -200,7 +200,7 @@ selectfile(Archive_t *ap, File_t *f)
     if (!match(f->path))
         return 0;
     if (f->type != X_IFDIR && ap->update
-        && (d = ( Member_t * )hashget(ap->update, f->name))) {
+        && (d = ( Member_t * ) hashget(ap->update, f->name))) {
         if (f->type != X_IFREG && d->dev != f->st->st_dev)
             /* keep */;
         else if (!(c = tvcmp(&d->mtime, tvmtime(&t, f->st))))
@@ -444,7 +444,7 @@ listlookup(void *handle,
            char **ps,
            Sflong_t *pn)
 {
-    List_handle_t *gp = ( List_handle_t * )handle;
+    List_handle_t *gp = ( List_handle_t * ) handle;
     File_t *f = gp->file;
     struct stat *st = f->st;
     char *s = 0;
@@ -459,7 +459,7 @@ listlookup(void *handle,
     static const char fmt_mode[] = "mode";
 
     if (fmt->t_str) {
-        if (!(op = ( Option_t * )hashget(state.options, fmt->t_str))) {
+        if (!(op = ( Option_t * ) hashget(state.options, fmt->t_str))) {
             if (*fmt->t_str != '$')
                 return 0;
             if (!(op = newof(0, Option_t, 1, 0)))
@@ -500,7 +500,7 @@ listlookup(void *handle,
                               "%c%02d.%1d%%",
                               f->delta.op ? f->delta.op : 'c',
                               k,
-                              ( int )((st->st_size * 1000) / f->uncompressed)
+                              ( int ) ((st->st_size * 1000) / f->uncompressed)
                               % 10);
                 else
                     switch (f->delta.op) {
@@ -647,7 +647,7 @@ listlookup(void *handle,
                 else if (f->uncompressed)
                     n = f->uncompressed;
                 else
-                    n = ( Sfulong_t )st->st_size;
+                    n = ( Sfulong_t ) st->st_size;
                 break;
             case OPT_tmp:
                 if (s = strrchr(state.tmp.file, '/')) {
@@ -758,7 +758,7 @@ listlookup(void *handle,
             n = st->st_mtime;
             t = tmxgetmtime(st);
         }
-        if (( unsigned long )n >= state.testdate) {
+        if (( unsigned long ) n >= state.testdate) {
             n = state.testdate;
             t = TMX_NOTIME;
         }
@@ -777,11 +777,11 @@ listlookup(void *handle,
                     arg += 5;
                 if (!arg || !*arg)
                     arg = fmt_time + 5;
-                if (( unsigned long )n >= state.testdate) {
+                if (( unsigned long ) n >= state.testdate) {
                     n = state.testdate;
                     t = TMX_NOTIME;
                 }
-                *ps = t == TMX_NOTIME ? fmttime(arg, ( time_t )n)
+                *ps = t == TMX_NOTIME ? fmttime(arg, ( time_t ) n)
                                       : fmttmx(arg, t);
             }
         } else
@@ -911,7 +911,7 @@ initmatch(char **v)
     if (!(p = newof(0, Pattern_t, n, m)))
         nospace();
     state.pattern = state.patterns = p;
-    s = ( char * )(p + n);
+    s = ( char * ) (p + n);
     for (a = v; *a; a++, p++) {
         s = stpcpy(p->pattern = s, *a) + 1;
         pathcanon(p->pattern, s - p->pattern, 0);
@@ -1043,7 +1043,7 @@ complete(Archive_t *ap, File_t *f, size_t header)
 void
 undoable(Archive_t *ap, Format_t *fp)
 {
-    Compress_format_t *cp = ( Compress_format_t * )fp->data;
+    Compress_format_t *cp = ( Compress_format_t * ) fp->data;
     char buf[PATH_MAX];
 
     if (!pathpath(cp->undo[0], NiL, PATH_EXECUTE, buf, sizeof(buf))) {

@@ -120,7 +120,7 @@ test_strmatch(Shell_t *shp, const char *str, const char *pat)
         m = elementsof(match) / 2;
     n = strgrpmatch(str,
                     pat,
-                    ( ssize_t * )match,
+                    ( ssize_t * ) match,
                     m,
                     STR_GROUP | STR_MAXIMAL | STR_LEFT | STR_RIGHT | STR_INT);
     if (m == 0 && n == 1)
@@ -339,7 +339,7 @@ test_unop(Shell_t *shp, int op, const char *arg)
         /* add trailing / */
         sfputr(shp->stk, arg, '/');
         sfputc(shp->stk, 0);
-        arg = ( const char * )stkptr(shp->stk, offset);
+        arg = ( const char * ) stkptr(shp->stk, offset);
         stkseek(shp->stk, offset);
         /* FALL THRU */
     }
@@ -388,7 +388,7 @@ test_unop(Shell_t *shp, int op, const char *arg)
             return (1);
         sfputr(shp->stk, arg, '+');
         sfputc(shp->stk, 0);
-        arg = ( const char * )stkptr(shp->stk, offset);
+        arg = ( const char * ) stkptr(shp->stk, offset);
         stkseek(shp->stk, offset);
         return (test_stat(arg, &statb) >= 0 && S_ISCDF(statb.st_mode));
     }
@@ -577,7 +577,8 @@ sh_access(const char *name, int mode)
     if (*name == 0)
         return (-1);
     if (sh_isdevfd(name))
-        return (sh_ioaccess(( int )strtol(name + 8, ( char ** )0, 10), mode));
+        return (
+        sh_ioaccess(( int ) strtol(name + 8, ( char ** ) 0, 10), mode));
     /* can't use access function for execute permission with root */
     if (mode == X_OK && shp->gd->euserid == 0)
         goto skip;
@@ -624,13 +625,13 @@ skip:
             int n;
             if (maxgroups == 0) {
                 /* first time */
-                if ((maxgroups = getgroups(0, ( gid_t * )0)) <= 0) {
+                if ((maxgroups = getgroups(0, ( gid_t * ) 0)) <= 0) {
                     /* pre-POSIX system */
                     maxgroups = shgd->lim.ngroups_max;
                 }
             }
             groups
-            = ( gid_t * )stkalloc(shp->stk, (maxgroups + 1) * sizeof(gid_t));
+            = ( gid_t * ) stkalloc(shp->stk, (maxgroups + 1) * sizeof(gid_t));
             n = getgroups(maxgroups, groups);
             while (--n >= 0) {
                 if (groups[n] == statb.st_gid) {
@@ -673,7 +674,7 @@ test_stat(const char *name, struct stat *buff)
         return (-1);
     }
     if (sh_isdevfd(name))
-        return (fstat(( int )strtol(name + 8, ( char ** )0, 10), buff));
+        return (fstat(( int ) strtol(name + 8, ( char ** ) 0, 10), buff));
     else
         return (stat(name, buff));
 }

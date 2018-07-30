@@ -34,7 +34,7 @@
 char *
 fmtident(const char *a)
 {
-    char *s = ( char * )a;
+    char *s = ( char * ) a;
     char *t;
     char *buf;
     int i;

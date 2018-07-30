@@ -85,9 +85,9 @@ b_exec(int argc, char *argv[], Shbltin_t *context)
         }
     argv += opt_info.index;
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (*argv)
-        B_login(0, argv, ( Shbltin_t * )&logdata);
+        B_login(0, argv, ( Shbltin_t * ) &logdata);
     return (0);
 }
 
@@ -108,10 +108,10 @@ B_login(int argc, char *argv[], Shbltin_t *context)
     if (argc)
         shp = context->shp;
     else {
-        logp = ( struct login * )context;
+        logp = ( struct login * ) context;
         shp = logp->sh;
     }
-    pp = ( struct checkpt * )shp->jmplist;
+    pp = ( struct checkpt * ) shp->jmplist;
     if (sh_isoption(shp, SH_RESTRICTED))
         errormsg(SH_DICT, ERROR_exit(1), e_restricted, argv[0]);
     else {
@@ -123,7 +123,7 @@ B_login(int argc, char *argv[], Shbltin_t *context)
         if (logp && logp->clear) {
 #ifdef _ENV_H
             env_close(shp->env);
-            shp->env = env_open(( char ** )0, 3);
+            shp->env = env_open(( char ** ) 0, 3);
 #else
             nv_scan(shp->var_tree, noexport, 0, NV_EXPORT, NV_EXPORT);
 #endif
@@ -173,7 +173,7 @@ b_let(int argc, char *argv[], Shbltin_t *context)
         }
     argv += opt_info.index;
     if (error_info.errors || !*argv)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     while (arg = *argv++)
         r = !sh_arith(shp, arg);
     return (r);
@@ -195,7 +195,7 @@ b_eval(int argc, char *argv[], Shbltin_t *context)
             return (2);
         }
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     argv += opt_info.index;
     if (*argv && **argv) {
         sh_offstate(shp, SH_MONITOR);
@@ -231,7 +231,7 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
     argv += opt_info.index;
     script = *argv;
     if (error_info.errors || !script)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (shp->dot_depth + 1 > DOTMAX)
         errormsg(SH_DICT, ERROR_exit(1), e_toodeep, script);
     if (!(np = shp->posix_fun)) {
@@ -256,17 +256,17 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
     }
     *prevscope = shp->st;
     shp->st.lineno
-    = np ? (( struct functnod * )nv_funtree(np))->functline : 1;
+    = np ? (( struct functnod * ) nv_funtree(np))->functline : 1;
     shp->st.var_local = shp->st.save_tree = shp->var_tree;
     if (filename) {
         shp->st.filename = filename;
         shp->st.lineno = 1;
     }
     level = shp->fn_depth + shp->dot_depth + 1;
-    nv_putval(SH_LEVELNOD, ( char * )&level, NV_INT16);
+    nv_putval(SH_LEVELNOD, ( char * ) &level, NV_INT16);
     shp->st.prevst = prevscope;
     shp->st.self = &savst;
-    shp->topscope = ( Shscope_t * )shp->st.self;
+    shp->topscope = ( Shscope_t * ) shp->st.self;
     prevscope->save_tree = shp->var_tree;
     if (np) {
         shp->st.filename
@@ -281,8 +281,9 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
     if (jmpval == 0) {
         shp->dot_depth++;
         if (np)
-            sh_exec(
-            shp, ( Shnode_t * )(nv_funtree(np)), sh_isstate(shp, SH_ERREXIT));
+            sh_exec(shp,
+                    ( Shnode_t * ) (nv_funtree(np)),
+                    sh_isstate(shp, SH_ERREXIT));
         else {
             buffer = malloc(IOBSIZE + 1);
             iop = sfnew(NIL(Sfio_t *), buffer, IOBSIZE, fd, SF_READ);
@@ -294,10 +295,10 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
     if (buffer)
         free(buffer);
     if (!np)
-        free(( void * )shp->st.filename);
+        free(( void * ) shp->st.filename);
     shp->dot_depth--;
     if ((np || argv[1]) && jmpval != SH_JMPSCRIPT)
-        sh_argreset(shp, ( struct dolnod * )argsave, saveargfor);
+        sh_argreset(shp, ( struct dolnod * ) argsave, saveargfor);
     else {
         prevscope->dolc = shp->st.dolc;
         prevscope->dolv = shp->st.dolv;
@@ -305,8 +306,8 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
     if (shp->st.self != &savst)
         *shp->st.self = shp->st;
     /* only restore the top Shscope_t portion for posix functions */
-    memcpy(( void * )&shp->st, ( void * )prevscope, sizeof(Shscope_t));
-    shp->topscope = ( Shscope_t * )prevscope;
+    memcpy(( void * ) &shp->st, ( void * ) prevscope, sizeof(Shscope_t));
+    shp->topscope = ( Shscope_t * ) prevscope;
     nv_putval(SH_PATHNAMENOD, shp->st.filename, NV_NOFREE);
     if (jmpval && jmpval != SH_JMPFUN)
         siglongjmp(*shp->jmplist, jmpval);
@@ -352,9 +353,9 @@ b_shift(int n, char *argv[], Shbltin_t *context)
             return (2);
         }
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     argv += opt_info.index;
-    n = ((arg = *argv) ? ( int )sh_arith(shp, arg) : 1);
+    n = ((arg = *argv) ? ( int ) sh_arith(shp, arg) : 1);
     if (n < 0 || shp->st.dolc < n)
         errormsg(SH_DICT, ERROR_exit(1), e_number, arg);
     else {
@@ -378,7 +379,7 @@ b_wait(int n, char *argv[], Shbltin_t *context)
             break;
         }
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     argv += opt_info.index;
     job_bwait(argv);
     return (shp->exitval);
@@ -410,7 +411,7 @@ b_bg(int n, char *argv[], Shbltin_t *context)
             break;
         }
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     argv += opt_info.index;
     if (!sh_isoption(shp, SH_MONITOR) || !job.jobcontrol) {
         if (sh_isstate(shp, SH_INTERACTIVE))
@@ -418,7 +419,7 @@ b_bg(int n, char *argv[], Shbltin_t *context)
         return (1);
     }
     if (flag == 'd' && *argv == 0)
-        argv = ( char ** )0;
+        argv = ( char ** ) 0;
     if (job_walk(shp, sfstdout, job_switch, flag, argv))
         errormsg(SH_DICT, ERROR_exit(1), e_no_job);
     return (shp->exitval);
@@ -449,12 +450,12 @@ b_jobs(int n, char *argv[], Shbltin_t *context)
         }
     argv += opt_info.index;
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (*argv == 0)
-        argv = ( char ** )0;
+        argv = ( char ** ) 0;
     if (job_walk(shp, sfstdout, job_list, flag, argv))
         errormsg(SH_DICT, ERROR_exit(1), e_no_job);
-    job_wait(( pid_t )0);
+    job_wait(( pid_t ) 0);
     return (shp->exitval);
 }
 #endif
@@ -482,7 +483,7 @@ b_universe(int argc, char *argv[], Shbltin_t *context)
     argv += opt_info.index;
     argc -= opt_info.index;
     if (error_info.errors || argc > 1)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (arg = argv[0]) {
         if (!astconf("UNIVERSE", 0, arg))
             errormsg(SH_DICT, ERROR_exit(1), e_badname, arg);
@@ -528,7 +529,7 @@ b_vpath(int argc, char *argv[], Shbltin_t *context)
             break;
         }
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
 #    ifdef MS_3D
     flag |= MS_3D;
 #    else
@@ -541,7 +542,7 @@ b_vpath(int argc, char *argv[], Shbltin_t *context)
     case 0:
     case 1:
         flag |= FS3D_GET;
-        if ((n = mount(*argv, ( char * )0, flag, 0)) >= 0) {
+        if ((n = mount(*argv, ( char * ) 0, flag, 0)) >= 0) {
             vend = stkalloc(shp->stk, ++n);
             n = mount(*argv, vend, flag | FS3D_SIZE(n), 0);
         }
@@ -564,7 +565,7 @@ b_vpath(int argc, char *argv[], Shbltin_t *context)
         break;
     default:
         if ((argc & 1))
-            errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+            errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
         /*FALLTHROUGH*/
     case 2:
         if (shp->subshell && !shp->subshare)

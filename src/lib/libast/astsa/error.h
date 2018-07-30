@@ -57,7 +57,7 @@ typedef struct Error_info_s
 
 extern Error_info_t error_info;
 
-#define errorx(l, x, c, m) ( char * )m
+#define errorx(l, x, c, m) ( char * ) m
 
 extern void
 error(int, ...);

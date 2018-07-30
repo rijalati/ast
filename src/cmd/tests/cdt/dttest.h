@@ -30,7 +30,7 @@ Void_t *o2;
 Dtdisc_t *disc;
 #endif
 {
-    return ( int )(( char * )o1 - ( char * )o2);
+    return ( int ) (( char * ) o1 - ( char * ) o2);
 }
 
 #if __STD_C
@@ -43,7 +43,7 @@ Void_t *o2;
 Dtdisc_t *disc;
 #endif
 {
-    return ( int )(( char * )o2 - ( char * )o1);
+    return ( int ) (( char * ) o2 - ( char * ) o1);
 }
 
 #if __STD_C
@@ -67,5 +67,5 @@ Void_t *o;
 Dtdisc_t *disc;
 #endif
 {
-    return ( unsigned int )(( char * )o - ( char * )0);
+    return ( unsigned int ) (( char * ) o - ( char * ) 0);
 }

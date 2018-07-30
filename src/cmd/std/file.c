@@ -155,10 +155,10 @@ type(Magic_t *mp, char *file, const char *pattern, Magicdisc_t *disc)
     struct stat st;
 
     sp = ((disc->flags & MAGIC_PHYSICAL) ? lstat(file, &st) : stat(file, &st))
-         ? ( struct stat * )0
+         ? ( struct stat * ) 0
          : &st;
     fp
-    = (sp && S_ISREG(sp->st_mode)) ? sfopen(NiL, file, "r") : ( Sfio_t * )0;
+    = (sp && S_ISREG(sp->st_mode)) ? sfopen(NiL, file, "r") : ( Sfio_t * ) 0;
     s = magictype(mp, fp, file, sp);
     if (fp)
         sfclose(fp);

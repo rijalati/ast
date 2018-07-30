@@ -50,10 +50,10 @@ tmain()
     if (pipe(fd) < 0)
         terror("Can't open pipe");
     if (!(fr = sfnew(
-          NIL(Sfio_t *), NIL(Void_t *), ( size_t )SF_UNBOUND, fd[0], SF_READ))
+          NIL(Sfio_t *), NIL(Void_t *), ( size_t ) SF_UNBOUND, fd[0], SF_READ))
         || !(fw = sfnew(NIL(Sfio_t *),
                         NIL(Void_t *),
-                        ( size_t )SF_UNBOUND,
+                        ( size_t ) SF_UNBOUND,
                         fd[1],
                         SF_WRITE)))
         terror("Can't open stream");
@@ -65,7 +65,8 @@ tmain()
     if (sfread(fr, buf, 10) != 10)
         terror("Can't read data from pipe");
     SYNC sfwrite(fw, "0123456789", 10);
-    SYNC if (sfmove(fr, fw, ( Sfoff_t )10, -1) != 10) terror("sfmove failed");
+    SYNC if (sfmove(fr, fw, ( Sfoff_t ) 10, -1) != 10)
+    terror("sfmove failed");
     if (to)
         alarm(0);
     sfpurge(fw);
@@ -76,10 +77,10 @@ tmain()
     if (pipe(fd) < 0)
         terror("Can't open pipe2");
     if (!(fr = sfnew(
-          NIL(Sfio_t *), NIL(Void_t *), ( size_t )SF_UNBOUND, fd[0], SF_READ))
+          NIL(Sfio_t *), NIL(Void_t *), ( size_t ) SF_UNBOUND, fd[0], SF_READ))
         || !(fw = sfnew(NIL(Sfio_t *),
                         NIL(Void_t *),
-                        ( size_t )SF_UNBOUND,
+                        ( size_t ) SF_UNBOUND,
                         fd[1],
                         SF_WRITE)))
         terror("Can't open stream");
@@ -107,7 +108,8 @@ tmain()
     if (to)
         alarm(4);
     SYNC sfputr(fw, "abc", '\n');
-    SYNC if (sfmove(fr, fw, ( Sfoff_t )1, '\n') != 1) terror("sfmove failed");
+    SYNC if (sfmove(fr, fw, ( Sfoff_t ) 1, '\n') != 1)
+    terror("sfmove failed");
     SYNC if (!(s = sfgetr(fr, '\n', 1)) || strcmp(s, "abc"))
     terror("sfgetr failed");
     if (to)
@@ -125,11 +127,11 @@ tmain()
 
     if (to)
         alarm(4);
-    SYNC if (sfmove(fr, sfstdout, ( Sfoff_t )2, '\n') != 2)
+    SYNC if (sfmove(fr, sfstdout, ( Sfoff_t ) 2, '\n') != 2)
     terror("sfmove failed");
     SYNC sfputc(sfstdout, 0);
     SYNC if (strcmp("222\n333\n", buf)) terror("sfmove got wrong data");
-    SYNC if (sfmove(fr, NIL(Sfio_t *), ( Sfoff_t )1, '\n') != 1)
+    SYNC if (sfmove(fr, NIL(Sfio_t *), ( Sfoff_t ) 1, '\n') != 1)
     terror("sfmove failed");
     if (to)
         alarm(0);

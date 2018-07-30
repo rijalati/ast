@@ -62,7 +62,7 @@ typedef struct Re_s
     Ireint_t id[1];
 } Re_t;
 
-#define irenewof(b, p, t, s, x) ( t * )irealloc(b, p, sizeof(t) * s + x)
+#define irenewof(b, p, t, s, x) ( t * ) irealloc(b, p, sizeof(t) * s + x)
 
 static void *
 irealloc(Ire_t *ire, void *p, size_t n)
@@ -74,7 +74,7 @@ irealloc(Ire_t *ire, void *p, size_t n)
     else
         r = (*ire->disc->resizef)(ire->disc->resizehandle, p, n);
     if (r)
-        (( Re_t * )r)->lo = (( Re_t * )r)->hi = 1;
+        (( Re_t * ) r)->lo = (( Re_t * ) r)->hi = 1;
     else if (ire->disc->errorf)
         (*ire->disc->errorf)(
         ire, ire->disc, ERROR_SYSTEM | 2, "out of space");
@@ -111,7 +111,7 @@ irenum(const char *s, char **e)
 
     n = strton(s, &p, NiL, 0);
     for (;;) {
-        s = ( char * )p;
+        s = ( char * ) p;
         if (*s != '.')
             break;
         n = (n << 8) | (strtol(s, &p, 0) & 0xff);
@@ -165,7 +165,7 @@ irecomp(const char *pattern,
     if (disc->resizef) {
         if (!disc->resizehandle)
             disc->resizehandle = (*disc->resizef)(NiL, NiL, 0);
-        if (!(ire = ( Ire_t * )(*disc->resizef)(
+        if (!(ire = ( Ire_t * ) (*disc->resizef)(
               disc->resizehandle, NiL, sizeof(Ire_t)))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -190,7 +190,7 @@ irecomp(const char *pattern,
     ire->element = element;
     ire->dots = dots;
     ire->tuple = tuple;
-    s = ( char * )pattern;
+    s = ( char * ) pattern;
     pe = 0;
     mem = 0;
     for (;;) {
@@ -221,15 +221,15 @@ irecomp(const char *pattern,
                 }
                 switch (element) {
                 case 1:
-                    ire->execf = ( Ireexec_f )ireexec1;
+                    ire->execf = ( Ireexec_f ) ireexec1;
                     ire->group = 0xff;
                     break;
                 case 2:
-                    ire->execf = ( Ireexec_f )ireexec2;
+                    ire->execf = ( Ireexec_f ) ireexec2;
                     ire->group = 0xffff;
                     break;
                 case 4:
-                    ire->execf = ( Ireexec_f )ireexec4;
+                    ire->execf = ( Ireexec_f ) ireexec4;
                     ire->group = 0xffffffff;
                     break;
                 }
@@ -354,11 +354,11 @@ for (re = ire->re; re; re = re->next)
             case '{':
                 if (!group)
                     goto syntax;
-                re->lo = ( int )irenum(s, &e);
+                re->lo = ( int ) irenum(s, &e);
                 for (s = e; *s == ' ' || *s == '\t'; s++)
                     ;
                 if (*s == ',') {
-                    re->hi = ( int )irenum(s + 1, &e);
+                    re->hi = ( int ) irenum(s + 1, &e);
                     for (s = e; *s == ' ' || *s == '\t'; s++)
                         ;
                 } else
@@ -400,7 +400,7 @@ syntax:
                         disc,
                         2,
                         "%-.*s<<<: invalid regular expression",
-                        s - ( char * )pattern + 1,
+                        s - ( char * ) pattern + 1,
                         pattern);
 nospace:
     if (ire->vm)

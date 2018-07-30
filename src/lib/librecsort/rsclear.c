@@ -34,7 +34,7 @@ int rsclear(rs) Rs_t *rs;
 {
     reg uchar *m, *endm;
 
-    for (m = ( uchar * )rs->methdata, endm = m + rs->meth->size; m < endm;
+    for (m = ( uchar * ) rs->methdata, endm = m + rs->meth->size; m < endm;
          ++m)
         *m = 0;
 

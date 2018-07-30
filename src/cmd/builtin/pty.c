@@ -336,7 +336,7 @@ process(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
                 /*skip*/;
             else if (sps[i] == mp) {
                 t++;
-                if (!(s = ( char * )sfreserve(mp, SF_UNBOUND, -1))) {
+                if (!(s = ( char * ) sfreserve(mp, SF_UNBOUND, -1))) {
                     sfclose(mp);
                     mp = 0;
                 } else if ((r = sfvalue(mp)) > 0
@@ -500,7 +500,7 @@ again:
         goto done;
     }
     if ((n = sfpoll(&mp, 1, timeout)) <= 0
-        || !(( int )sfvalue(mp) & SF_READ)) {
+        || !(( int ) sfvalue(mp) & SF_READ)) {
         if (n < 0) {
             if (must)
                 error(ERROR_SYSTEM | 2, "poll failed");
@@ -705,7 +705,7 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
                 && !masterline(mp, lp, master->prompt, 0, timeout, master))
                 goto done;
             if (delay)
-                usleep(( unsigned long )delay * 1000);
+                usleep(( unsigned long ) delay * 1000);
             if (op == 'w')
                 error(-1, "w \"%s\\r\"", s);
             else
@@ -717,10 +717,10 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
                 goto done;
             }
             if (delay)
-                usleep(( unsigned long )delay * 1000);
+                usleep(( unsigned long ) delay * 1000);
             break;
         case 'd':
-            delay = ( int )strtol(s, &e, 0);
+            delay = ( int ) strtol(s, &e, 0);
             if (*e)
                 error(2, "%s: invalid delay -- milliseconds expected", s);
             break;
@@ -795,14 +795,14 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
             match(s, m, 1);
             break;
         case 's':
-            n = ( int )strtol(s, &e, 0);
+            n = ( int ) strtol(s, &e, 0);
             if (*e)
                 error(2, "%s: invalid delay -- milliseconds expected", s);
             if (n)
-                usleep(( unsigned long )n * 1000);
+                usleep(( unsigned long ) n * 1000);
             break;
         case 't':
-            timeout = ( int )strtol(s, &e, 0);
+            timeout = ( int ) strtol(s, &e, 0);
             if (*e)
                 error(2, "%s: invalid timeout -- milliseconds expected", s);
             break;
@@ -817,12 +817,12 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
             } while (!match(s, m, 0));
             break;
         case 'v':
-            error_info.trace = -( int )strtol(s, &e, 0);
+            error_info.trace = -( int ) strtol(s, &e, 0);
             if (*e)
                 error(2, "%s: invalid verbose level -- number expected", s);
             break;
         case 'x':
-            status = ( int )strtol(s, &e, 0);
+            status = ( int ) strtol(s, &e, 0);
             if (*e)
                 error(2, "%s: invalid exit code", s);
             break;
@@ -913,7 +913,7 @@ b_pty(int argc, char **argv, Shbltin_t *context)
                 fun = dialogue;
             continue;
         case 'D':
-            error_info.trace = -( int )opt_info.num;
+            error_info.trace = -( int ) opt_info.num;
             continue;
         case 'l':
             log = opt_info.arg;
@@ -924,13 +924,13 @@ b_pty(int argc, char **argv, Shbltin_t *context)
             session = !!opt_info.num;
             continue;
         case 't':
-            timeout = ( int )opt_info.num;
+            timeout = ( int ) opt_info.num;
             continue;
         case 'T':
             stty = opt_info.arg;
             continue;
         case 'w':
-            delay = ( int )opt_info.num;
+            delay = ( int ) opt_info.num;
             continue;
         case ':':
             break;
@@ -956,8 +956,8 @@ b_pty(int argc, char **argv, Shbltin_t *context)
               0, Argv_t, 1, (n + 2) * sizeof(char *) + (s - stty + 1))))
             error(ERROR_system(1), "out of space");
         ap->argc = n + 1;
-        ap->argv = ( char ** )(ap + 1);
-        ap->args = ( char * )(ap->argv + n + 2);
+        ap->argv = ( char ** ) (ap + 1);
+        ap->args = ( char * ) (ap->argv + n + 2);
         strcpy(ap->args, stty);
         ap->argv[0] = "stty";
         sfsprintf(ap->argv[1] = buf, sizeof(buf), "--fd=%d", slave);

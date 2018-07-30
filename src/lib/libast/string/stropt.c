@@ -90,8 +90,8 @@ stropt(const char *as,
                 break;
             }
             if (tab) {
-                for (p = ( char ** )tab; t = *p;
-                     p = ( char ** )(( char * )p + siz)) {
+                for (p = ( char ** ) tab; t = *p;
+                     p = ( char ** ) (( char * ) p + siz)) {
                     for (v = s; *t && *t == *v; t++, v++)
                         ;
                     if (!*t || isspace(*v) || *v == ',' || *v == '=')
@@ -107,7 +107,7 @@ stropt(const char *as,
                     p = 0;
                 }
             } else {
-                p = ( char ** )(v = s);
+                p = ( char ** ) (v = s);
                 t = 0;
             }
             while (*v && !isspace(*v) && *v != '=' && *v != ',')

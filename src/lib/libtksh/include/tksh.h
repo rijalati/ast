@@ -279,10 +279,10 @@ typedef struct TkshCommandData
 
 #    define Tksh_BeginBlock(interp, kind)                                    \
         do {                                                                 \
-            int oldInterp = (( Interp * )interp)->interpType;                \
-        (( Interp * )interp)->interpType = kind
+            int oldInterp = (( Interp * ) interp)->interpType;               \
+        (( Interp * ) interp)->interpType = kind
 #    define Tksh_EndBlock(interp)                                            \
-        (( Interp * )interp)->interpType = oldInterp;                        \
+        (( Interp * ) interp)->interpType = oldInterp;                       \
         }                                                                    \
         while (0)
 

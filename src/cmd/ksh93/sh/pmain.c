@@ -42,7 +42,7 @@ main(int argc, char *argv[])
     mha.mha_cmd = MHA_MAPSIZE_STACK;
     mha.mha_flags = 0;
     mha.mha_pagesize = 64 * 1024;
-    ( void )memcntl(NULL, 0, MC_HAT_ADVISE, ( caddr_t )&mha, 0, 0);
+    ( void ) memcntl(NULL, 0, MC_HAT_ADVISE, ( caddr_t ) &mha, 0, 0);
 #endif
-    return (sh_main(argc, argv, ( Shinit_f )0));
+    return (sh_main(argc, argv, ( Shinit_f ) 0));
 }

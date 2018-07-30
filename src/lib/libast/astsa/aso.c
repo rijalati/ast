@@ -50,7 +50,7 @@ asosubint(unsigned int *p, unsigned int n)
 void *
 asocasptr(void *p, void *o, void *n)
 {
-    void **a = ( void ** )p;
+    void **a = ( void ** ) p;
     void *r;
 
     r = *a;

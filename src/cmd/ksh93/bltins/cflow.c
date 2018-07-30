@@ -47,7 +47,7 @@ b_return(int n, char *argv[], Shbltin_t *context)
 {
     char *arg;
     Shell_t *shp = context->shp;
-    struct checkpt *pp = ( struct checkpt * )shp->jmplist;
+    struct checkpt *pp = ( struct checkpt * ) shp->jmplist;
     const char *options = (**argv == 'r' ? sh_optreturn : sh_optexit);
     while ((n = optget(argv, options)))
         switch (n) {
@@ -61,13 +61,13 @@ b_return(int n, char *argv[], Shbltin_t *context)
         }
 done:
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     pp->mode = (**argv == 'e' ? SH_JMPEXIT : SH_JMPFUN);
     argv += opt_info.index;
-    n
-    = (((arg = *argv) ? ( int )strtol(arg, ( char ** )0, 10) : shp->oldexit));
+    n = (((arg = *argv) ? ( int ) strtol(arg, ( char ** ) 0, 10)
+                        : shp->oldexit));
     if (n < 0 || n == 256 || n > SH_EXITMASK + shp->gd->sigmax)
-        n &= (( unsigned int )n) & SH_EXITMASK;
+        n &= (( unsigned int ) n) & SH_EXITMASK;
     /* return outside of function, dotscript and profile is exit */
     if (shp->fn_depth == 0 && shp->dot_depth == 0
         && !sh_isstate(shp, SH_PROFILE))
@@ -100,11 +100,11 @@ b_break(int n, char *argv[], Shbltin_t *context)
             return (2);
         }
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     argv += opt_info.index;
     n = 1;
     if (arg = *argv) {
-        n = ( int )strtol(arg, &arg, 10);
+        n = ( int ) strtol(arg, &arg, 10);
         if (n <= 0 || *arg)
             errormsg(SH_DICT, ERROR_exit(1), e_nolabels, *argv);
     }

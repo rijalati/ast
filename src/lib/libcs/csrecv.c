@@ -55,16 +55,16 @@ sockrecv(int fd, Csid_t *id, int *fds, int n)
     msg.msg_namelen = 0;
     msg.msg_iov = &iov;
     msg.msg_iovlen = 1;
-    iov.iov_base = ( caddr_t )id;
+    iov.iov_base = ( caddr_t ) id;
     iov.iov_len = sizeof(*id);
 #    if _mem_msg_control_msghdr
-    msg.msg_control = ( caddr_t )&ctl;
-    msg.msg_controllen = ( char * )&ctl.fds[n] - ( char * )&ctl;
+    msg.msg_control = ( caddr_t ) &ctl;
+    msg.msg_controllen = ( char * ) &ctl.fds[n] - ( char * ) &ctl;
     ctl.hdr.cmsg_len = msg.msg_controllen;
     ctl.hdr.cmsg_level = SOL_SOCKET;
     ctl.hdr.cmsg_type = SCM_RIGHTS;
 #    else
-    msg.msg_control = ( caddr_t )fds;
+    msg.msg_control = ( caddr_t ) fds;
     msg.msg_controllen = n * sizeof(fds[0]);
 #    endif
     if (recvmsg(fd, &msg, 0) < 0)
@@ -157,7 +157,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
 #    if CS_LIB_SOCKET
 
     namlen = sizeof(nam);
-    if ((fds[0] = accept(fd, ( struct sockaddr * )&nam, &namlen)) >= 0) {
+    if ((fds[0] = accept(fd, ( struct sockaddr * ) &nam, &namlen)) >= 0) {
 
 #        if CS_LIB_SOCKET_UN && !CS_LIB_STREAM
 
@@ -216,7 +216,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
 #        endif
 
         if (nam.sin_family == AF_INET)
-            id->hid = ( unsigned long )nam.sin_addr.s_addr;
+            id->hid = ( unsigned long ) nam.sin_addr.s_addr;
         return 1;
     }
     messagef((state->id, NiL, -1, "recv: %d: accept error", fd));

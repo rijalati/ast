@@ -96,15 +96,15 @@ extern int errno;
  * These macros are just wrappers for the equivalent X Region calls.
  */
 
-#define TkClipBox(rgn, rect) XClipBox(( Region )rgn, rect)
+#define TkClipBox(rgn, rect) XClipBox(( Region ) rgn, rect)
 #define TkCreateRegion() (TkRegion) XCreateRegion()
-#define TkDestroyRegion(rgn) XDestroyRegion(( Region )rgn)
+#define TkDestroyRegion(rgn) XDestroyRegion(( Region ) rgn)
 #define TkIntersectRegion(a, b, r)                                           \
-    XIntersectRegion(( Region )a, ( Region )b, ( Region )r)
-#define TkRectInRegion(r, x, y, w, h) XRectInRegion(( Region )r, x, y, w, h)
-#define TkSetRegion(d, gc, rgn) XSetRegion(d, gc, ( Region )rgn)
+    XIntersectRegion(( Region ) a, ( Region ) b, ( Region ) r)
+#define TkRectInRegion(r, x, y, w, h) XRectInRegion(( Region ) r, x, y, w, h)
+#define TkSetRegion(d, gc, rgn) XSetRegion(d, gc, ( Region ) rgn)
 #define TkUnionRectWithRegion(rect, src, ret)                                \
-    XUnionRectWithRegion(rect, ( Region )src, ( Region )ret)
+    XUnionRectWithRegion(rect, ( Region ) src, ( Region ) ret)
 
 /*
  * The TkPutImage macro strips off the color table information, which isn't

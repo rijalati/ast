@@ -47,9 +47,10 @@ hashwalk(Hash_table_t *tab,
         return (-1);
     v = 0;
     while (b = hashnext(pos))
-        if ((v = (*walker)(hashname(b),
-                           (tab->flags & HASH_VALUE) ? b->value : ( char * )b,
-                           handle))
+        if ((v
+             = (*walker)(hashname(b),
+                         (tab->flags & HASH_VALUE) ? b->value : ( char * ) b,
+                         handle))
             < 0)
             break;
     hashdone(pos);

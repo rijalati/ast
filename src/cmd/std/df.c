@@ -226,7 +226,7 @@ basetype(const char *path)
 #    define F_BASETYPE(v, p) (basetype(p))
 #endif
 
-#define REALITY(n) (((( long )(n)) < 0) ? 0 : (n))
+#define REALITY(n) (((( long ) (n)) < 0) ? 0 : (n))
 #define UNKNOWN "local"
 
 #if _lib_sync
@@ -322,7 +322,7 @@ scale(int m, unsigned long w, unsigned long p)
 static int
 key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 {
-    Df_t *df = ( Df_t * )handle;
+    Df_t *df = ( Df_t * ) handle;
     char *s = 0;
     Sflong_t n = 0;
     Key_t *kp;
@@ -330,14 +330,14 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 
     if (!fp->t_str)
         return 0;
-    if (!(kp = ( Key_t * )dtmatch(state.keys, fp->t_str))) {
+    if (!(kp = ( Key_t * ) dtmatch(state.keys, fp->t_str))) {
         if (*fp->t_str != '$') {
             error(3, "%s: unknown format key", fp->t_str);
             return 0;
         }
         if (!(kp = newof(0, Key_t, 1, strlen(fp->t_str) + 1)))
             error(3, "out of space [key]");
-        kp->name = strcpy(( char * )(kp + 1), fp->t_str);
+        kp->name = strcpy(( char * ) (kp + 1), fp->t_str);
         kp->macro = getenv(fp->t_str + 1);
         kp->index = KEY_environ;
         kp->disable = 1;
@@ -370,7 +370,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
             }
             if (t = newof(0, char, kp->abbrev, 1))
                 s = kp->heading
-                = ( char * )memcpy(t, kp->heading, kp->abbrev);
+                = ( char * ) memcpy(t, kp->heading, kp->abbrev);
         }
         kp->width = fp->width;
         if (fp->flags & SFFMT_LEFT)
@@ -540,16 +540,17 @@ entry(Df_t *df, const char *format)
              */
 
             df->total = df->vfs.f_blocks;
-            df->used = (( long )df->vfs.f_blocks <= ( long )df->vfs.f_bfree)
+            df->used = (( long ) df->vfs.f_blocks <= ( long ) df->vfs.f_bfree)
                        ? 0
                        : (df->vfs.f_blocks - df->vfs.f_bfree);
-            df->avail = (( long )df->vfs.f_bavail < 0) ? 0 : df->vfs.f_bavail;
-            df->percent
-            = (df->ttotal = df->avail + df->used)
-              ? ( unsigned long )((( double )df->used / ( double )df->ttotal
-                                   + 0.005)
-                                  * 100.0)
-              : 0;
+            df->avail
+            = (( long ) df->vfs.f_bavail < 0) ? 0 : df->vfs.f_bavail;
+            df->percent = (df->ttotal = df->avail + df->used)
+                          ? ( unsigned long ) ((( double ) df->used
+                                                / ( double ) df->ttotal
+                                                + 0.005)
+                                               * 100.0)
+                          : 0;
         }
         df->fraction = 0;
         df->ttotal = df->tavail = df->tused = 0;
@@ -583,8 +584,8 @@ entry(Df_t *df, const char *format)
         df->iavail = REALITY(df->vfs.f_favail);
         df->ipercent
         = (s = df->iused + df->iavail)
-          ? ( unsigned long )((( double )df->iused / ( double )s + 0.005)
-                              * 100.0)
+          ? ( unsigned long ) ((( double ) df->iused / ( double ) s + 0.005)
+                               * 100.0)
           : 0;
         sfkeyprintf(sfstdout, df, format, key, NiL);
     }
@@ -658,12 +659,12 @@ main(int argc, char **argv)
                 opt_info.arg += 2;
                 s = 0;
             }
-            if (!(kp = ( Key_t * )dtmatch(state.keys, opt_info.arg))) {
+            if (!(kp = ( Key_t * ) dtmatch(state.keys, opt_info.arg))) {
                 if (!s)
                     continue;
                 if (!(kp = newof(0, Key_t, 1, strlen(opt_info.arg) + 1)))
                     error(ERROR_SYSTEM | 3, "out of space [macro]");
-                kp->name = strcpy(( char * )(kp + 1), opt_info.arg);
+                kp->name = strcpy(( char * ) (kp + 1), opt_info.arg);
                 dtinsert(state.keys, kp);
             }
             if (kp->macro = s)

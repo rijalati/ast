@@ -135,14 +135,14 @@ b_rev(int argc, char **argv, Shbltin_t *context)
     }
     argv += opt_info.index;
     if (error_info.errors)
-        error(ERROR_usage(2), "%s", optusage(( char * )0));
+        error(ERROR_usage(2), "%s", optusage(( char * ) 0));
     n = 0;
     if (cp = *argv)
         argv++;
     do {
         if (!cp || streq(cp, "-"))
             fp = sfstdin;
-        else if (!(fp = sfopen(( Sfio_t * )0, cp, "r"))) {
+        else if (!(fp = sfopen(( Sfio_t * ) 0, cp, "r"))) {
             error(ERROR_system(0), "%s: cannot open", cp);
             n = 1;
             continue;

@@ -63,7 +63,7 @@ _stdfun(Sfio_t *, Funvec_t *);
                 if ((_i = _stdfun(p, &_v)) < 0)                              \
                     return -1;                                               \
                 else if (_i > 0)                                             \
-                    return ( ( _s_f )_v.vec[_i] )a;                          \
+                    return ( ( _s_f ) _v.vec[_i] ) a;                        \
             }
 
 #        define STDIO_PTR(p, n, t, f, a)                                     \
@@ -74,7 +74,7 @@ _stdfun(Sfio_t *, Funvec_t *);
                 if ((_i = _stdfun(p, &_v)) < 0)                              \
                     return 0;                                                \
                 else if (_i > 0)                                             \
-                    return ( ( _s_f )_v.vec[_i] )a;                          \
+                    return ( ( _s_f ) _v.vec[_i] ) a;                        \
             }
 
 #        define STDIO_VOID(p, n, t, f, a)                                    \
@@ -85,7 +85,7 @@ _stdfun(Sfio_t *, Funvec_t *);
                 if ((_i = _stdfun(p, &_v)) < 0)                              \
                     return;                                                  \
                 else if (_i > 0) {                                           \
-                    (( _s_f )_v.vec[_i]) a;                                  \
+                    (( _s_f ) _v.vec[_i]) a;                                 \
                     return;                                                  \
                 }                                                            \
             }

@@ -67,7 +67,7 @@ regrexec_20120528(const regex_t *p,
     if (!s || !p || !(env = p->env) || (e = env->rex)->type != REX_BM)
         return REG_BADPAT;
     inv = (flags & REG_INVERT) != 0;
-    buf = beg = ( unsigned char * )s;
+    buf = beg = ( unsigned char * ) s;
     end = buf + len;
     mid = (len < e->re.bm.right) ? 0 : (len - e->re.bm.right);
     skip = e->re.bm.skip;
@@ -114,22 +114,22 @@ regrexec_20120528(const regex_t *p,
         if (complete
             || (env->rex = ((r - l) > 128) ? e : e->next)
                && !(n = regnexec(
-                    p, ( char * )l, r - l, nmatch, match, flags))) {
+                    p, ( char * ) l, r - l, nmatch, match, flags))) {
             if (inv) {
             invert:
                 x = beg;
                 while (beg < l) {
                     while (x < l && *x != sep)
                         x++;
-                    if (n = (*record)(handle, ( char * )beg, x - beg))
+                    if (n = (*record)(handle, ( char * ) beg, x - beg))
                         goto done;
                     beg = ++x;
                 }
-            } else if (n = (*record)(handle, ( char * )l, r - l))
+            } else if (n = (*record)(handle, ( char * ) l, r - l))
                 goto done;
             if ((index = (r - buf) + leftlen) >= len) {
                 n = (inv && (++r - buf) < len)
-                    ? (*record)(handle, ( char * )r, (buf + len) - r)
+                    ? (*record)(handle, ( char * ) r, (buf + len) - r)
                     : 0;
                 goto done;
             }

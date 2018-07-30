@@ -101,7 +101,7 @@ _vmfreelist(Vmdata_t *vmdt, Void_t *arg, int type)
     /**/ DEBUG_ASSERT(vmdt->lock != 0);
 
     if (type == INSERT_BLOCK) {
-        blk = ( Block_t * )arg;
+        blk = ( Block_t * ) arg;
         do
             LINK(blk) = bp = vmdt->free;
         while (asocasptr(&vmdt->free, bp, blk) != bp);
@@ -110,9 +110,9 @@ _vmfreelist(Vmdata_t *vmdt, Void_t *arg, int type)
         do {
             for (pb = NIL(Block_t *), bp = vmdt->free; bp;
                  pb = bp, bp = LINK(bp))
-                if ((type == DELETE_BLOCK && bp == ( Block_t * )arg)
+                if ((type == DELETE_BLOCK && bp == ( Block_t * ) arg)
                     || (type == DELETE_ENDB
-                        && NEXT(bp) == (( Seg_t * )arg)->endb))
+                        && NEXT(bp) == (( Seg_t * ) arg)->endb))
                     break;
             if (!bp) /* none matches deletion requirement */
                 return NIL(Block_t *);
@@ -192,10 +192,10 @@ vmsegfind(Vmalloc_t *vm, Void_t *addr)
 
     if (vm->data)
         for (seg = vm->data->seg; seg; seg = seg->next)
-            if (( Vmuchar_t * )addr >= ( Vmuchar_t * )seg->base
-                && ( Vmuchar_t * )addr
-                   < (( Vmuchar_t * )seg->base + seg->size))
-                return ( Void_t * )seg->base;
+            if (( Vmuchar_t * ) addr >= ( Vmuchar_t * ) seg->base
+                && ( Vmuchar_t * ) addr
+                   < (( Vmuchar_t * ) seg->base + seg->size))
+                return ( Void_t * ) seg->base;
 
     return NIL(Void_t *);
 }
@@ -209,8 +209,8 @@ _vmseginit(Vmdata_t *vmdt,
            ssize_t size,
            int insert)
 {
-    /**/ DEBUG_ASSERT(( Vmuchar_t * )seg >= base
-                    && ( Vmuchar_t * )seg < (base + size));
+    /**/ DEBUG_ASSERT(( Vmuchar_t * ) seg >= base
+                    && ( Vmuchar_t * ) seg < (base + size));
     seg->vmdt = vmdt;
     seg->base = base;
     seg->size = size;
@@ -221,7 +221,7 @@ _vmseginit(Vmdata_t *vmdt,
     = (size / MEM_ALIGN) * MEM_ALIGN; /* must be multiple of MEM_ALIGN's */
 
     /* block at start of memory */
-    seg->begb = ( Block_t * )SEGDATA(seg);
+    seg->begb = ( Block_t * ) SEGDATA(seg);
     SEG(seg->begb) = seg;
     SIZE(seg->begb) = (size - 2 * sizeof(Head_t));
 
@@ -240,7 +240,7 @@ _vmseginit(Vmdata_t *vmdt,
 
     /* add the free block to the free list */
     if (insert)
-        _vmfreelist(vmdt, ( Void_t * )seg->begb, INSERT_BLOCK);
+        _vmfreelist(vmdt, ( Void_t * ) seg->begb, INSERT_BLOCK);
     else
         SIZE(seg->begb) |= BUSY;
 
@@ -263,7 +263,7 @@ _vmsegmerge(Vmdata_t *vmdt, Block_t *blk)
         next = NEXT(blk); /**/
         DEBUG_ASSERT(SEG(next) == SEG(blk));
         if (!(SIZE(next) & BUSY)) {
-            _vmfreelist(vmdt, ( Void_t * )next, DELETE_BLOCK);
+            _vmfreelist(vmdt, ( Void_t * ) next, DELETE_BLOCK);
             size = SIZE(blk) + BDSZ(next) + sizeof(Head_t);
             asocassize(&SIZE(blk), SIZE(blk), size); /**/
             DEBUG_ASSERT(SIZE(blk) == size);
@@ -329,14 +329,14 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
             _vmsegmerge(vmdt, blk);
             if (BDSZ(blk) >= size)
                 RETURN(blk);
-            if (NEXT(blk) != (( Seg_t * )SEG(blk))->endb)
+            if (NEXT(blk) != (( Seg_t * ) SEG(blk))->endb)
                 RETURN(blk = NIL(Block_t *));
         } else /* see if anything available for requested size */
         {
             for (blk = vmdt->free; blk; blk = LINK(blk)) {
                 _vmsegmerge(vmdt, blk);
                 if (BDSZ(blk) >= size) {
-                    _vmfreelist(vmdt, ( Void_t * )blk, DELETE_BLOCK);
+                    _vmfreelist(vmdt, ( Void_t * ) blk, DELETE_BLOCK);
                     RETURN(blk);
                 }
             }
@@ -350,8 +350,9 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
             /**/ DEBUG_ASSERT((SIZE(blk) & BUSY) && NEXT(blk) == seg->endb);
         } else {
             seg = vmdt->seg;
-            blk = seg->iffy ? NIL(Block_t *)
-                            : _vmfreelist(vmdt, ( Void_t * )seg, DELETE_ENDB);
+            blk = seg->iffy
+                  ? NIL(Block_t *)
+                  : _vmfreelist(vmdt, ( Void_t * ) seg, DELETE_ENDB);
             /**/ DEBUG_ASSERT(!blk
                             || (SEG(blk) == seg && NEXT(blk) == seg->endb));
         }
@@ -378,7 +379,7 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
                  ** allow longjmp() while keeping the memory layout
                  *consistent.
                  */
-                base = ( Vmuchar_t * )(*disc->memoryf)(
+                base = ( Vmuchar_t * ) (*disc->memoryf)(
                 vm, seg->base, seg->size, segsz, disc);
                 if (base == seg->base) /* successful extension */
                 { /* keeping segment size right is first priority */
@@ -397,8 +398,8 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
                      *occurs.
                      */
                     endb = seg->endb; /* current end block */
-                    np = ( Block_t * )(( Vmuchar_t * )endb
-                                       + sz); /* new end block */
+                    np = ( Block_t * ) (( Vmuchar_t * ) endb
+                                        + sz); /* new end block */
                     SEG(np) = seg;
                     SIZE(np) = BUSY;
                     seg->endb = np;
@@ -426,7 +427,7 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
             if (SIZE(blk) & BUSY) /* unextensible busy block */
                 RETURN(blk = NIL(Block_t *));
 
-            _vmfreelist(vmdt, ( Void_t * )blk, INSERT_BLOCK);
+            _vmfreelist(vmdt, ( Void_t * ) blk, INSERT_BLOCK);
             blk = NIL(Block_t *);
         }
 
@@ -435,19 +436,19 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
         if (segsz <= size || (segsz = ROUND(segsz, vmdt->incr)) <= size)
             RETURN(blk = NIL(Block_t *)); /* did wrap around */
 
-        if (!(base = ( Vmuchar_t * )(*disc->memoryf)(
+        if (!(base = ( Vmuchar_t * ) (*disc->memoryf)(
               vm, NIL(Void_t *), 0, segsz, disc))) {
             if (disc->exceptf) /* announce that no more memory is available */
-                ( void )(*disc->exceptf)(
-                vm, VM_NOMEM, ( Void_t * )segsz, disc);
+                ( void ) (*disc->exceptf)(
+                vm, VM_NOMEM, ( Void_t * ) segsz, disc);
             RETURN(blk = NIL(Block_t *));
         }
 
         /* segment must start at an aligned address */
         if ((sz = (size_t)(VMLONG(base) % MEM_ALIGN)) == 0)
-            seg = ( Seg_t * )base;
+            seg = ( Seg_t * ) base;
         else
-            seg = ( Seg_t * )(base + MEM_ALIGN - sz);
+            seg = ( Seg_t * ) (base + MEM_ALIGN - sz);
         blk = _vmseginit(vmdt, seg, base, segsz, 0);
     }
 
@@ -459,7 +460,7 @@ re_turn:
         if (!(type & VM_SEGALL)
             && (sz - size) > (Segunit + sizeof(Block_t))) { /* make block of
                                                                unused space */
-            np = ( Block_t * )(( Vmuchar_t * )blk + size + sizeof(Head_t));
+            np = ( Block_t * ) (( Vmuchar_t * ) blk + size + sizeof(Head_t));
             SEG(np) = SEG(blk);
             SIZE(np) = sz - size - sizeof(Head_t); /**/
             DEBUG_ASSERT(BDSZ(np) >= Segunit);
@@ -468,7 +469,7 @@ re_turn:
             size |= SIZE(blk) & BUSY;
             asocassize(&SIZE(blk), SIZE(blk), size);
 
-            _vmfreelist(vmdt, ( Void_t * )np, INSERT_BLOCK);
+            _vmfreelist(vmdt, ( Void_t * ) np, INSERT_BLOCK);
         }
         SIZE(blk) |= BUSY; /**/
         DEBUG_ASSERT(BDSZ(blk) >= Segunit);
@@ -490,7 +491,7 @@ static void
 _vmsegfree(Vmalloc_t *vm, Block_t *blk)
 {
     SIZE(blk) &= ~BUSY;
-    _vmfreelist(vm->data, ( Void_t * )blk, INSERT_BLOCK);
+    _vmfreelist(vm->data, ( Void_t * ) blk, INSERT_BLOCK);
 }
 
 /* copy a string and add a special end of character */
@@ -528,15 +529,15 @@ _vmitoa(Vmulong_t v, int type)
     } else if (type > 0) /* unsigned base-10 */
     {
         do
-            *--s = ( char )('0' + (v % 10));
+            *--s = ( char ) ('0' + (v % 10));
         while ((v /= 10) > 0);
     } else /* signed base-10 */
     {
-        int negative = (( long )v < 0) ? 1 : 0;
+        int negative = (( long ) v < 0) ? 1 : 0;
         if (negative)
-            v = (Vmulong_t)(-(( long )v));
+            v = (Vmulong_t)(-(( long ) v));
         do
-            *--s = ( char )('0' + (v % 10));
+            *--s = ( char ) ('0' + (v % 10));
         while ((v /= 10) > 0);
         if (negative)
             *--s = '-';

@@ -320,8 +320,8 @@ ccflags(char *s, struct var *v)
 static int
 initrule(const char *as, char *ar, void *handle)
 {
-    char *s = ( char * )as;
-    struct rule *r = ( struct rule * )ar;
+    char *s = ( char * ) as;
+    struct rule *r = ( struct rule * ) ar;
     struct local *x;
     struct block *p;
     char *t;
@@ -329,7 +329,7 @@ initrule(const char *as, char *ar, void *handle)
     NoP(handle);
     if (!(x = newof(0, struct local, 1, 0)))
         error(3, "out of space");
-    r->local.pointer = ( char * )x;
+    r->local.pointer = ( char * ) x;
     pathcanon(r->name, 0, 0);
     s = r->name + strlen(r->name);
     if (s >= r->name + 2 && *(s -= 2) == '.')
@@ -392,7 +392,7 @@ dumpprereqs(int col, struct rule *r)
         r->attributes |= A_listprereq;
         col = dumpname(col,
                        r->local.pointer
-                       ? (( struct local * )r->local.pointer)->base
+                       ? (( struct local * ) r->local.pointer)->base
                        : r->name);
         if (r->attributes & (A_directory))
             for (p = r->prereqs; p; p = p->next)
@@ -435,9 +435,9 @@ dump(struct rule *r)
             message(-1, "%s:%s", r->name, r->action ? " action" : "");
             col = dumpname(1,
                            r->local.pointer
-                           ? ((( struct local * )r->local.pointer)->target
-                              ? (( struct local * )r->local.pointer)->target
-                              : (( struct local * )r->local.pointer)->base)
+                           ? ((( struct local * ) r->local.pointer)->target
+                              ? (( struct local * ) r->local.pointer)->target
+                              : (( struct local * ) r->local.pointer)->base)
                            : r->name);
             col = dumpname(col, ":");
             for (p = r->prereqs; p; p = p->next)
@@ -461,8 +461,8 @@ dump(struct rule *r)
 static int
 dumpstate(const char *an, char *av, void *handle)
 {
-    char *name = ( char * )an;
-    struct var *v = ( struct var * )av;
+    char *name = ( char * ) an;
+    struct var *v = ( struct var * ) av;
     char *s = v->value;
     int col;
 

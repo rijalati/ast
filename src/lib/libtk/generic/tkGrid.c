@@ -290,7 +290,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     Gridder *masterPtr;  /* master grid record */
     GridMaster *gridPtr; /* pointer to grid data */
     size_t length;       /* streing length of argument */
@@ -306,7 +306,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option arg ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -326,7 +326,7 @@ char **argv;           /* Argument strings. */
                              "must be \"",
                              argv[0],
                              " bbox master ?column row ?column row??\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -425,7 +425,7 @@ char **argv;           /* Argument strings. */
                              "bad argument \"",
                              argv[2],
                              "\": must be name of window",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         return ConfigureSlaves(interp, tkwin, argc - 2, argv + 2);
@@ -458,7 +458,7 @@ char **argv;           /* Argument strings. */
                     slavePtr->sticky = 0;
                 }
                 Tk_ManageGeometry(
-                slave, ( Tk_GeomMgr * )NULL, ( ClientData )NULL);
+                slave, ( Tk_GeomMgr * ) NULL, ( ClientData ) NULL);
                 Unlink(slavePtr);
                 Tk_UnmapWindow(slavePtr->tkwin);
             }
@@ -473,7 +473,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " info window\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         slave = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -494,16 +494,16 @@ char **argv;           /* Argument strings. */
                 slavePtr->row,
                 slavePtr->numCols,
                 slavePtr->numRows);
-        Tcl_AppendResult(interp, buffer, ( char * )NULL);
+        Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         sprintf(buffer,
                 " -ipadx %d -ipady %d -padx %d -pady %d",
                 slavePtr->iPadX / 2,
                 slavePtr->iPadY / 2,
                 slavePtr->padX / 2,
                 slavePtr->padY / 2);
-        Tcl_AppendResult(interp, buffer, ( char * )NULL);
+        Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         StickyToString(slavePtr->sticky, buffer);
-        Tcl_AppendResult(interp, " -sticky ", buffer, ( char * )NULL);
+        Tcl_AppendResult(interp, " -sticky ", buffer, ( char * ) NULL);
     } else if ((c == 'l') && (strncmp(argv[1], "location", length) == 0)) {
         Tk_Window master;
         SlotInfo *slotPtr;
@@ -516,7 +516,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " location master x y\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -546,8 +546,8 @@ char **argv;           /* Argument strings. */
          */
 
         while (masterPtr->flags & REQUESTED_RELAYOUT) {
-            Tk_CancelIdleCall(ArrangeGrid, ( ClientData )masterPtr);
-            ArrangeGrid(( ClientData )masterPtr);
+            Tk_CancelIdleCall(ArrangeGrid, ( ClientData ) masterPtr);
+            ArrangeGrid(( ClientData ) masterPtr);
         }
         SetGridSize(masterPtr);
         endX = MAX(gridPtr->columnEnd, gridPtr->columnMax);
@@ -583,7 +583,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " propagate window ?boolean?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         master = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -611,7 +611,7 @@ char **argv;           /* Argument strings. */
             }
             if (!(masterPtr->flags & REQUESTED_RELAYOUT)) {
                 masterPtr->flags |= REQUESTED_RELAYOUT;
-                Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )masterPtr);
+                Tcl_DoWhenIdle(ArrangeGrid, ( ClientData ) masterPtr);
             }
         }
     } else if ((c == 's') && (strncmp(argv[1], "size", length) == 0)
@@ -623,7 +623,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " size window\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         master = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -654,7 +654,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " slaves window ?-option value...?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -665,7 +665,7 @@ char **argv;           /* Argument strings. */
                                  "invalid args: should be \"",
                                  argv[0],
                                  " slaves window ?-option value...?\"",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
             if (Tcl_GetInt(interp, argv[i + 1], &value) != TCL_OK) {
@@ -675,7 +675,7 @@ char **argv;           /* Argument strings. */
                 Tcl_AppendResult(interp,
                                  argv[i],
                                  " is an invalid value: should NOT be < 0",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
             if (strncmp(argv[i], "-column", length) == 0) {
@@ -687,7 +687,7 @@ char **argv;           /* Argument strings. */
                                  argv[i],
                                  " is an invalid option: should be \"",
                                  "-row, -column\"",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
@@ -743,7 +743,7 @@ char **argv;           /* Argument strings. */
                              " ",
                              argv[1],
                              " master index ?-option value...?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -769,7 +769,7 @@ char **argv;           /* Argument strings. */
                              ": \"",
                              argv[3],
                              "\" is out of range",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         } else if (ok == TCL_OK) {
             slotPtr = (slotType == COLUMN)
@@ -808,7 +808,7 @@ char **argv;           /* Argument strings. */
                                  "invalid arg \"",
                                  argv[i],
                                  "\" :expecting -minsize, -pad, or -weight.",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
             if (strncmp(argv[i], "-minsize", length) == 0) {
@@ -831,7 +831,7 @@ char **argv;           /* Argument strings. */
                                      "invalid arg \"",
                                      argv[i],
                                      "\": should be non-negative",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 } else {
                     slotPtr[slot].weight = wt;
@@ -847,7 +847,7 @@ char **argv;           /* Argument strings. */
                                      "invalid arg \"",
                                      argv[i],
                                      "\": should be non-negative",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 } else {
                     slotPtr[slot].pad = size;
@@ -857,7 +857,7 @@ char **argv;           /* Argument strings. */
                                  "invalid arg \"",
                                  argv[i],
                                  "\": expecting -minsize, -pad, or -weight.",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
@@ -891,7 +891,7 @@ char **argv;           /* Argument strings. */
             }
             if (!(masterPtr->flags & REQUESTED_RELAYOUT)) {
                 masterPtr->flags |= REQUESTED_RELAYOUT;
-                Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )masterPtr);
+                Tcl_DoWhenIdle(ArrangeGrid, ( ClientData ) masterPtr);
             }
         }
     } else {
@@ -901,7 +901,7 @@ char **argv;           /* Argument strings. */
         argv[1],
         "\":  must be bbox, columnconfigure, configure, forget, info, ",
         "location, propagate, remove, rowconfigure, size, or slaves.",
-        ( char * )NULL);
+        ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -933,12 +933,12 @@ static void GridReqProc(clientData,
 Tk_Window tkwin; /* Other Tk-related information
                   * about the window. */
 {
-    Gridder *gridPtr = ( Gridder * )clientData;
+    Gridder *gridPtr = ( Gridder * ) clientData;
 
     gridPtr = gridPtr->masterPtr;
     if (!(gridPtr->flags & REQUESTED_RELAYOUT)) {
         gridPtr->flags |= REQUESTED_RELAYOUT;
-        Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )gridPtr);
+        Tcl_DoWhenIdle(ArrangeGrid, ( ClientData ) gridPtr);
     }
 }
 
@@ -964,7 +964,7 @@ ClientData clientData; /* Grid structure for slave window that
                         * was stolen away. */
 Tk_Window tkwin;       /* Tk's handle for the slave window. */
 {
-    Gridder *slavePtr = ( Gridder * )clientData;
+    Gridder *slavePtr = ( Gridder * ) clientData;
 
     if (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin)) {
         Tk_UnmaintainGeometry(slavePtr->tkwin, slavePtr->masterPtr->tkwin);
@@ -1225,7 +1225,7 @@ static void ArrangeGrid(clientData)
 ClientData clientData; /* Structure describing parent whose slaves
                         * are to be re-layed out. */
 {
-    Gridder *masterPtr = ( Gridder * )clientData;
+    Gridder *masterPtr = ( Gridder * ) clientData;
     Gridder *slavePtr;
     GridMaster *slotPtr = masterPtr->masterDataPtr;
     int abort;
@@ -1260,7 +1260,7 @@ ClientData clientData; /* Structure describing parent whose slaves
     }
     masterPtr->abortPtr = &abort;
     abort = 0;
-    Tcl_Preserve(( ClientData )masterPtr);
+    Tcl_Preserve(( ClientData ) masterPtr);
 
     /*
      * Call the constraint engine to fill in the row and column offsets.
@@ -1278,10 +1278,10 @@ ClientData clientData; /* Structure describing parent whose slaves
         Tk_GeometryRequest(masterPtr->tkwin, width, height);
         if (width > 1 && height > 1) {
             masterPtr->flags |= REQUESTED_RELAYOUT;
-            Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )masterPtr);
+            Tcl_DoWhenIdle(ArrangeGrid, ( ClientData ) masterPtr);
         }
         masterPtr->abortPtr = NULL;
-        Tcl_Release(( ClientData )masterPtr);
+        Tcl_Release(( ClientData ) masterPtr);
         return;
     }
 
@@ -1371,7 +1371,7 @@ ClientData clientData; /* Structure describing parent whose slaves
     }
 
     masterPtr->abortPtr = NULL;
-    Tcl_Release(( ClientData )masterPtr);
+    Tcl_Release(( ClientData ) masterPtr);
 }
 
 /*
@@ -1445,7 +1445,7 @@ int maxOffset;      /* The actual maximum size of this layout
     gridCount = MAX(constraintCount, slotCount);
     if (gridCount >= TYPICAL_SIZE) {
         layoutPtr
-        = ( GridLayout * )ckalloc(sizeof(GridLayout) * (1 + gridCount));
+        = ( GridLayout * ) ckalloc(sizeof(GridLayout) * (1 + gridCount));
     } else {
         layoutPtr = layoutData;
     }
@@ -1684,7 +1684,8 @@ int maxOffset;      /* The actual maximum size of this layout
         for (weight = 0, slot = start; slot < end; slot++) {
             weight += noWeights ? 1 : layoutPtr[slot].weight;
             layoutPtr[slot].minOffset
-            += ( int )(( double )(have - need) * weight / totalWeight + 0.5);
+            += ( int ) (( double ) (have - need) * weight / totalWeight
+                        + 0.5);
             layoutPtr[slot].minSize
             = layoutPtr[slot].minOffset - layoutPtr[slot - 1].minOffset;
         }
@@ -1716,7 +1717,7 @@ int maxOffset;      /* The actual maximum size of this layout
 
     --layoutPtr;
     if (layoutPtr != layoutData) {
-        ckfree(( char * )layoutPtr);
+        ckfree(( char * ) layoutPtr);
     }
     return requiredSize;
 }
@@ -1760,11 +1761,11 @@ static Gridder *GetGrid(tkwin) Tk_Window tkwin; /* Token for window for which
      * then create a new one.
      */
 
-    hPtr = Tcl_CreateHashEntry(&gridHashTable, ( char * )tkwin, &new);
+    hPtr = Tcl_CreateHashEntry(&gridHashTable, ( char * ) tkwin, &new);
     if (!new) {
-        return ( Gridder * )Tcl_GetHashValue(hPtr);
+        return ( Gridder * ) Tcl_GetHashValue(hPtr);
     }
-    gridPtr = ( Gridder * )ckalloc(sizeof(Gridder));
+    gridPtr = ( Gridder * ) ckalloc(sizeof(Gridder));
     gridPtr->tkwin = tkwin;
     gridPtr->masterPtr = NULL;
     gridPtr->masterDataPtr = NULL;
@@ -1786,7 +1787,7 @@ static Gridder *GetGrid(tkwin) Tk_Window tkwin; /* Token for window for which
     gridPtr->masterDataPtr = NULL;
     Tcl_SetHashValue(hPtr, gridPtr);
     Tk_CreateEventHandler(
-    tkwin, StructureNotifyMask, GridStructureProc, ( ClientData )gridPtr);
+    tkwin, StructureNotifyMask, GridStructureProc, ( ClientData ) gridPtr);
     return gridPtr;
 }
 
@@ -1883,15 +1884,15 @@ int checkOnly;      /* don't allocate new space if true */
                                  : masterPtr->masterDataPtr->columnSpace;
         if (last < slot) {
             size_t size = sizeof(SlotInfo) * (slot + PREALLOC);
-            SlotInfo *new = ( SlotInfo * )ckalloc(size);
+            SlotInfo *new = ( SlotInfo * ) ckalloc(size);
             SlotInfo *old = (slotType == ROW)
                             ? masterPtr->masterDataPtr->rowPtr
                             : masterPtr->masterDataPtr->columnPtr;
-            memcpy(( VOID * )new, ( VOID * )old, last * sizeof(SlotInfo));
-            memset(( VOID * )(new + last),
+            memcpy(( VOID * ) new, ( VOID * ) old, last * sizeof(SlotInfo));
+            memset(( VOID * ) (new + last),
                    0,
                    (sizeof(SlotInfo) * (PREALLOC + slot - last)));
-            ckfree(( char * )old);
+            ckfree(( char * ) old);
             if (slotType == ROW) {
                 masterPtr->masterDataPtr->rowPtr = new;
                 masterPtr->masterDataPtr->rowSpace = slot + PREALLOC;
@@ -1935,22 +1936,22 @@ static void InitMasterData(masterPtr) Gridder *masterPtr;
     size_t size;
     if (masterPtr->masterDataPtr == NULL) {
         GridMaster *gridPtr = masterPtr->masterDataPtr
-        = ( GridMaster * )ckalloc(sizeof(GridMaster));
+        = ( GridMaster * ) ckalloc(sizeof(GridMaster));
         size = sizeof(SlotInfo) * TYPICAL_SIZE;
 
         gridPtr->columnEnd = 0;
         gridPtr->columnMax = 0;
-        gridPtr->columnPtr = ( SlotInfo * )ckalloc(size);
+        gridPtr->columnPtr = ( SlotInfo * ) ckalloc(size);
         gridPtr->columnSpace = 0;
         gridPtr->columnSpace = TYPICAL_SIZE;
         gridPtr->rowEnd = 0;
         gridPtr->rowMax = 0;
-        gridPtr->rowPtr = ( SlotInfo * )ckalloc(size);
+        gridPtr->rowPtr = ( SlotInfo * ) ckalloc(size);
         gridPtr->rowSpace = 0;
         gridPtr->rowSpace = TYPICAL_SIZE;
 
-        memset(( VOID * )gridPtr->columnPtr, 0, size);
-        memset(( VOID * )gridPtr->rowPtr, 0, size);
+        memset(( VOID * ) gridPtr->columnPtr, 0, size);
+        memset(( VOID * ) gridPtr->rowPtr, 0, size);
     }
 }
 
@@ -1998,7 +1999,7 @@ static void Unlink(slavePtr) Gridder *slavePtr; /* Window to unlink. */
     }
     if (!(masterPtr->flags & REQUESTED_RELAYOUT)) {
         masterPtr->flags |= REQUESTED_RELAYOUT;
-        Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )masterPtr);
+        Tcl_DoWhenIdle(ArrangeGrid, ( ClientData ) masterPtr);
     }
     if (masterPtr->abortPtr != NULL) {
         *masterPtr->abortPtr = 1;
@@ -2033,18 +2034,18 @@ static void Unlink(slavePtr) Gridder *slavePtr; /* Window to unlink. */
 static void DestroyGrid(memPtr) char *memPtr; /* Info about window that is now
                                                  dead. */
 {
-    Gridder *gridPtr = ( Gridder * )memPtr;
+    Gridder *gridPtr = ( Gridder * ) memPtr;
 
     if (gridPtr->masterDataPtr != NULL) {
         if (gridPtr->masterDataPtr->rowPtr != NULL) {
-            ckfree(( char * )gridPtr->masterDataPtr->rowPtr);
+            ckfree(( char * ) gridPtr->masterDataPtr->rowPtr);
         }
         if (gridPtr->masterDataPtr->columnPtr != NULL) {
-            ckfree(( char * )gridPtr->masterDataPtr->columnPtr);
+            ckfree(( char * ) gridPtr->masterDataPtr->columnPtr);
         }
-        ckfree(( char * )gridPtr->masterDataPtr);
+        ckfree(( char * ) gridPtr->masterDataPtr);
     }
-    ckfree(( char * )gridPtr);
+    ckfree(( char * ) gridPtr);
 }
 
 /*
@@ -2071,12 +2072,12 @@ ClientData clientData; /* Our information about window
                         * referred to by eventPtr. */
 XEvent *eventPtr;      /* Describes what just happened. */
 {
-    Gridder *gridPtr = ( Gridder * )clientData;
+    Gridder *gridPtr = ( Gridder * ) clientData;
 
     if (eventPtr->type == ConfigureNotify) {
         if (!(gridPtr->flags & REQUESTED_RELAYOUT)) {
             gridPtr->flags |= REQUESTED_RELAYOUT;
-            Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )gridPtr);
+            Tcl_DoWhenIdle(ArrangeGrid, ( ClientData ) gridPtr);
         }
         if (gridPtr->doubleBw
             != 2 * Tk_Changes(gridPtr->tkwin)->border_width) {
@@ -2085,7 +2086,8 @@ XEvent *eventPtr;      /* Describes what just happened. */
                 gridPtr->doubleBw
                 = 2 * Tk_Changes(gridPtr->tkwin)->border_width;
                 gridPtr->masterPtr->flags |= REQUESTED_RELAYOUT;
-                Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )gridPtr->masterPtr);
+                Tcl_DoWhenIdle(ArrangeGrid,
+                               ( ClientData ) gridPtr->masterPtr);
             }
         }
     } else if (eventPtr->type == DestroyNotify) {
@@ -2102,16 +2104,16 @@ XEvent *eventPtr;      /* Describes what just happened. */
             gridPtr2->nextPtr = NULL;
         }
         Tcl_DeleteHashEntry(
-        Tcl_FindHashEntry(&gridHashTable, ( char * )gridPtr->tkwin));
+        Tcl_FindHashEntry(&gridHashTable, ( char * ) gridPtr->tkwin));
         if (gridPtr->flags & REQUESTED_RELAYOUT) {
-            Tk_CancelIdleCall(ArrangeGrid, ( ClientData )gridPtr);
+            Tk_CancelIdleCall(ArrangeGrid, ( ClientData ) gridPtr);
         }
         gridPtr->tkwin = NULL;
-        Tk_EventuallyFree(( ClientData )gridPtr, DestroyGrid);
+        Tk_EventuallyFree(( ClientData ) gridPtr, DestroyGrid);
     } else if (eventPtr->type == MapNotify) {
         if (!(gridPtr->flags & REQUESTED_RELAYOUT)) {
             gridPtr->flags |= REQUESTED_RELAYOUT;
-            Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )gridPtr);
+            Tcl_DoWhenIdle(ArrangeGrid, ( ClientData ) gridPtr);
         }
     } else if (eventPtr->type == UnmapNotify) {
         Gridder *gridPtr2;
@@ -2155,7 +2157,7 @@ char *argv[];       /* Argument strings:  contains one or more
                      * make sure that there is at least one
                      * window name. */
 {
-    Gridder *masterPtr = ( Gridder * )NULL;
+    Gridder *masterPtr = ( Gridder * ) NULL;
     Gridder *slavePtr;
     Tk_Window other, slave, parent, ancestor;
     int i, j, c, length, tmp;
@@ -2186,7 +2188,7 @@ char *argv[];       /* Argument strings:  contains one or more
                              argv[i],
                              "\", in configure list. ",
                              "Should be window name or option",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -2195,7 +2197,7 @@ char *argv[];       /* Argument strings:  contains one or more
                 || *argv[i - 1] == REL_VERT)) {
             Tcl_AppendResult(interp,
                              "Must specify window before shortcut '-'.",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -2208,14 +2210,14 @@ char *argv[];       /* Argument strings:  contains one or more
                          "invalid window shortcut, \"",
                          argv[i],
                          "\" should be '-', 'x', or '^'",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     numWindows = i;
 
     if ((argc - numWindows) & 1) {
         Tcl_AppendResult(
-        interp, "extra option or", " option with no value", ( char * )NULL);
+        interp, "extra option or", " option with no value", ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -2263,7 +2265,7 @@ char *argv[];       /* Argument strings:  contains one or more
                              "can't manage \"",
                              argv[j],
                              "\": it's a top-level window",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         slavePtr = GetGrid(slave);
@@ -2295,7 +2297,7 @@ char *argv[];       /* Argument strings:  contains one or more
                 "\": must be ",
                 "-column, -columnspan, -in, -ipadx, -ipady, ",
                 "-padx, -pady, -row, -rowspan, or -sticky",
-                ( char * )NULL);
+                ( char * ) NULL);
                 return TCL_ERROR;
             }
             if ((c == 'c') && (strcmp(argv[i], "-column") == 0)) {
@@ -2306,7 +2308,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                      "bad column value \"",
                                      argv[i + 1],
                                      "\": must be a non-negative integer",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 slavePtr->column = tmp;
@@ -2318,7 +2320,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                      "bad columnspan value \"",
                                      argv[i + 1],
                                      "\": must be a positive integer",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 slavePtr->numCols = tmp;
@@ -2342,7 +2344,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                      "bad ipadx value \"",
                                      argv[i + 1],
                                      "\": must be positive screen distance",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 slavePtr->iPadX = tmp * 2;
@@ -2354,7 +2356,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                      "bad ipady value \"",
                                      argv[i + 1],
                                      "\": must be positive screen distance",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 slavePtr->iPadY = tmp * 2;
@@ -2366,7 +2368,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                      "bad padx value \"",
                                      argv[i + 1],
                                      "\": must be positive screen distance",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 slavePtr->padX = tmp * 2;
@@ -2378,7 +2380,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                      "bad pady value \"",
                                      argv[i + 1],
                                      "\": must be positive screen distance",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 slavePtr->padY = tmp * 2;
@@ -2390,7 +2392,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                      "bad grid value \"",
                                      argv[i + 1],
                                      "\": must be a non-negative integer",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 slavePtr->row = tmp;
@@ -2402,7 +2404,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                      "bad rowspan value \"",
                                      argv[i + 1],
                                      "\": must be a positive integer",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 slavePtr->numRows = tmp;
@@ -2414,7 +2416,7 @@ char *argv[];       /* Argument strings:  contains one or more
                     "bad stickyness value \"",
                     argv[i + 1],
                     "\": must be a string containing n, e, s, and/or w",
-                    ( char * )NULL);
+                    ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 slavePtr->sticky = sticky;
@@ -2426,7 +2428,7 @@ char *argv[];       /* Argument strings:  contains one or more
                 "\": must be ",
                 "-column, -columnspan, -in, -ipadx, -ipady, ",
                 "-padx, -pady, -row, -rowspan, or -sticky",
-                ( char * )NULL);
+                ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
@@ -2475,7 +2477,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                  argv[j],
                                  " inside ",
                                  Tk_PathName(masterPtr->tkwin),
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 Unlink(slavePtr);
                 return TCL_ERROR;
             }
@@ -2492,12 +2494,12 @@ char *argv[];       /* Argument strings:  contains one or more
                              " inside ",
                              Tk_PathName(masterPtr->tkwin),
                              ", would cause management loop.",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             Unlink(slavePtr);
             return TCL_ERROR;
         }
 
-        Tk_ManageGeometry(slave, &gridMgrType, ( ClientData )slavePtr);
+        Tk_ManageGeometry(slave, &gridMgrType, ( ClientData ) slavePtr);
 
         /*
          * Assign default position information.
@@ -2527,7 +2529,7 @@ char *argv[];       /* Argument strings:  contains one or more
         }
         if (!(masterPtr->flags & REQUESTED_RELAYOUT)) {
             masterPtr->flags |= REQUESTED_RELAYOUT;
-            Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )masterPtr);
+            Tcl_DoWhenIdle(ArrangeGrid, ( ClientData ) masterPtr);
         }
     }
 
@@ -2548,7 +2550,7 @@ char *argv[];       /* Argument strings:  contains one or more
 
         if (masterPtr == NULL) {
             Tcl_AppendResult(
-            interp, "can't use '^', cant find master", ( char * )NULL);
+            interp, "can't use '^', cant find master", ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -2588,8 +2590,9 @@ char *argv[];       /* Argument strings:  contains one or more
             lastWindow = Tk_PathName(slavePtr->tkwin);
         }
         if (!match) {
-            Tcl_AppendResult(
-            interp, "can't find slave to extend with \"^\".", ( char * )NULL);
+            Tcl_AppendResult(interp,
+                             "can't find slave to extend with \"^\".",
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         j += width - 1;
@@ -2597,7 +2600,7 @@ char *argv[];       /* Argument strings:  contains one or more
 
     if (masterPtr == NULL) {
         Tcl_AppendResult(
-        interp, "can't determine master window", ( char * )NULL);
+        interp, "can't determine master window", ( char * ) NULL);
         return TCL_ERROR;
     }
     SetGridSize(masterPtr);

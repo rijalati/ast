@@ -139,15 +139,15 @@ static Tk_ConfigSpec configSpecs[]
     { TK_CONFIG_SYNONYM,
       "-bd",
       "borderWidth",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 },
     { TK_CONFIG_SYNONYM,
       "-bg",
       "background",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 },
     { TK_CONFIG_PIXELS,
@@ -167,8 +167,8 @@ static Tk_ConfigSpec configSpecs[]
     { TK_CONFIG_SYNONYM,
       "-fg",
       "foreground",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 },
     { TK_CONFIG_FONT,
@@ -263,10 +263,10 @@ static Tk_ConfigSpec configSpecs[]
       Tk_Offset(Message, width),
       0 },
     { TK_CONFIG_END,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 } };
 
@@ -317,30 +317,30 @@ char **argv;           /* Argument strings. */
 {
     Message *msgPtr;
     Tk_Window new;
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
 
     if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
                          " pathName ?options?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
-    new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * )NULL);
+    new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * ) NULL);
     if (new == NULL) {
         return TCL_ERROR;
     }
 
-    msgPtr = ( Message * )ckalloc(sizeof(Message));
+    msgPtr = ( Message * ) ckalloc(sizeof(Message));
     msgPtr->tkwin = new;
     msgPtr->display = Tk_Display(new);
     msgPtr->interp = interp;
     msgPtr->widgetCmd = Tcl_CreateCommand(interp,
                                           Tk_PathName(msgPtr->tkwin),
                                           MessageWidgetCmd,
-                                          ( ClientData )msgPtr,
+                                          ( ClientData ) msgPtr,
                                           MessageCmdDeletedProc);
     msgPtr->string = NULL;
     msgPtr->numChars = 0;
@@ -372,7 +372,7 @@ char **argv;           /* Argument strings. */
                           ExposureMask | StructureNotifyMask
                           | FocusChangeMask,
                           MessageEventProc,
-                          ( ClientData )msgPtr);
+                          ( ClientData ) msgPtr);
     if (ConfigureMessage(interp, msgPtr, argc - 2, argv + 2, 0) != TCL_OK) {
         goto error;
     }
@@ -409,7 +409,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Message *msgPtr = ( Message * )clientData;
+    Message *msgPtr = ( Message * ) clientData;
     size_t length;
     int c;
 
@@ -418,7 +418,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option ?arg arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -430,23 +430,23 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " cget option\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         return Tk_ConfigureValue(
-        interp, msgPtr->tkwin, configSpecs, ( char * )msgPtr, argv[2], 0);
+        interp, msgPtr->tkwin, configSpecs, ( char * ) msgPtr, argv[2], 0);
     } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
                && (length >= 2)) {
         if (argc == 2) {
             return Tk_ConfigureInfo(interp,
                                     msgPtr->tkwin,
                                     configSpecs,
-                                    ( char * )msgPtr,
-                                    ( char * )NULL,
+                                    ( char * ) msgPtr,
+                                    ( char * ) NULL,
                                     0);
         } else if (argc == 3) {
             return Tk_ConfigureInfo(
-            interp, msgPtr->tkwin, configSpecs, ( char * )msgPtr, argv[2], 0);
+            interp, msgPtr->tkwin, configSpecs, ( char * ) msgPtr, argv[2], 0);
         } else {
             return ConfigureMessage(
             interp, msgPtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
@@ -456,7 +456,7 @@ char **argv;           /* Argument strings. */
                          "bad option \"",
                          argv[1],
                          "\": must be cget or configure",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 }
@@ -482,7 +482,7 @@ char **argv;           /* Argument strings. */
 static void DestroyMessage(memPtr) char *memPtr; /* Info about message widget.
                                                   */
 {
-    Message *msgPtr = ( Message * )memPtr;
+    Message *msgPtr = ( Message * ) memPtr;
 
     /*
      * Free up all the stuff that requires special handling, then
@@ -495,13 +495,13 @@ static void DestroyMessage(memPtr) char *memPtr; /* Info about message widget.
                        msgPtr->textVarName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                        MessageTextVarProc,
-                       ( ClientData )msgPtr);
+                       ( ClientData ) msgPtr);
     }
     if (msgPtr->textGC != None) {
         Tk_FreeGC(msgPtr->display, msgPtr->textGC);
     }
-    Tk_FreeOptions(configSpecs, ( char * )msgPtr, msgPtr->display, 0);
-    ckfree(( char * )msgPtr);
+    Tk_FreeOptions(configSpecs, ( char * ) msgPtr, msgPtr->display, 0);
+    ckfree(( char * ) msgPtr);
 }
 
 /*
@@ -545,11 +545,16 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                        msgPtr->textVarName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                        MessageTextVarProc,
-                       ( ClientData )msgPtr);
+                       ( ClientData ) msgPtr);
     }
 
-    if (Tk_ConfigureWidget(
-        interp, msgPtr->tkwin, configSpecs, argc, argv, ( char * )msgPtr, flags)
+    if (Tk_ConfigureWidget(interp,
+                           msgPtr->tkwin,
+                           configSpecs,
+                           argc,
+                           argv,
+                           ( char * ) msgPtr,
+                           flags)
         != TCL_OK) {
         return TCL_ERROR;
     }
@@ -572,14 +577,14 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                 ckfree(msgPtr->string);
             }
             msgPtr->string
-            = ( char * )ckalloc(( unsigned )(strlen(value) + 1));
+            = ( char * ) ckalloc(( unsigned ) (strlen(value) + 1));
             strcpy(msgPtr->string, value);
         }
         Tcl_TraceVar(interp,
                      msgPtr->textVarName,
                      TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                      MessageTextVarProc,
-                     ( ClientData )msgPtr);
+                     ( ClientData ) msgPtr);
     }
 
     /*
@@ -620,7 +625,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     ComputeMessageGeometry(msgPtr);
     if ((msgPtr->tkwin != NULL) && Tk_IsMapped(msgPtr->tkwin)
         && !(msgPtr->flags & REDRAW_PENDING)) {
-        Tcl_DoWhenIdle(DisplayMessage, ( ClientData )msgPtr);
+        Tcl_DoWhenIdle(DisplayMessage, ( ClientData ) msgPtr);
         msgPtr->flags |= REDRAW_PENDING;
     }
 
@@ -762,7 +767,7 @@ msgPtr) Message *msgPtr; /* Information about window. */
 static void DisplayMessage(clientData)
 ClientData clientData; /* Information about window. */
 {
-    Message *msgPtr = ( Message * )clientData;
+    Message *msgPtr = ( Message * ) clientData;
     Tk_Window tkwin = msgPtr->tkwin;
     char *p;
     int x, y, lineLength, numChars, charsLeft;
@@ -795,7 +800,7 @@ ClientData clientData; /* Information about window. */
     case TK_ANCHOR_W:
     case TK_ANCHOR_CENTER:
     case TK_ANCHOR_E:
-        y = (( int )(Tk_Height(tkwin) - msgPtr->msgHeight)) / 2;
+        y = (( int ) (Tk_Height(tkwin) - msgPtr->msgHeight)) / 2;
         break;
     default:
         y
@@ -835,7 +840,7 @@ ClientData clientData; /* Information about window. */
         case TK_ANCHOR_N:
         case TK_ANCHOR_CENTER:
         case TK_ANCHOR_S:
-            x = (( int )(Tk_Width(tkwin) - msgPtr->lineLength)) / 2;
+            x = (( int ) (Tk_Width(tkwin) - msgPtr->lineLength)) / 2;
             break;
         default:
             x = Tk_Width(tkwin) - msgPtr->inset - msgPtr->padX
@@ -922,7 +927,7 @@ static void MessageEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
 XEvent *eventPtr;      /* Information about event. */
 {
-    Message *msgPtr = ( Message * )clientData;
+    Message *msgPtr = ( Message * ) clientData;
 
     if (((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0))
         || (eventPtr->type == ConfigureNotify)) {
@@ -935,9 +940,9 @@ XEvent *eventPtr;      /* Information about event. */
             Tcl_GetCommandName(msgPtr->interp, msgPtr->widgetCmd));
         }
         if (msgPtr->flags & REDRAW_PENDING) {
-            Tcl_CancelIdleCall(DisplayMessage, ( ClientData )msgPtr);
+            Tcl_CancelIdleCall(DisplayMessage, ( ClientData ) msgPtr);
         }
-        Tcl_EventuallyFree(( ClientData )msgPtr, DestroyMessage);
+        Tcl_EventuallyFree(( ClientData ) msgPtr, DestroyMessage);
     } else if (eventPtr->type == FocusIn) {
         if (eventPtr->xfocus.detail != NotifyInferior) {
             msgPtr->flags |= GOT_FOCUS;
@@ -957,7 +962,7 @@ XEvent *eventPtr;      /* Information about event. */
 
 redraw:
     if ((msgPtr->tkwin != NULL) && !(msgPtr->flags & REDRAW_PENDING)) {
-        Tcl_DoWhenIdle(DisplayMessage, ( ClientData )msgPtr);
+        Tcl_DoWhenIdle(DisplayMessage, ( ClientData ) msgPtr);
         msgPtr->flags |= REDRAW_PENDING;
     }
 }
@@ -983,7 +988,7 @@ redraw:
 static void MessageCmdDeletedProc(clientData)
 ClientData clientData; /* Pointer to widget record for widget. */
 {
-    Message *msgPtr = ( Message * )clientData;
+    Message *msgPtr = ( Message * ) clientData;
     Tk_Window tkwin = msgPtr->tkwin;
 
     /*
@@ -1025,7 +1030,7 @@ char *name1;           /* Name of variable. */
 char *name2;           /* Second part of variable name. */
 int flags;             /* Information about what happened. */
 {
-    Message *msgPtr = ( Message * )clientData;
+    Message *msgPtr = ( Message * ) clientData;
     char *value;
 
     /*
@@ -1045,7 +1050,7 @@ int flags;             /* Information about what happened. */
                          MessageTextVarProc,
                          clientData);
         }
-        return ( char * )NULL;
+        return ( char * ) NULL;
     }
 
     value = Tcl_GetVar(interp, msgPtr->textVarName, TCL_GLOBAL_ONLY);
@@ -1056,14 +1061,14 @@ int flags;             /* Information about what happened. */
         ckfree(msgPtr->string);
     }
     msgPtr->numChars = strlen(value);
-    msgPtr->string = ( char * )ckalloc(( unsigned )(msgPtr->numChars + 1));
+    msgPtr->string = ( char * ) ckalloc(( unsigned ) (msgPtr->numChars + 1));
     strcpy(msgPtr->string, value);
     ComputeMessageGeometry(msgPtr);
 
     if ((msgPtr->tkwin != NULL) && Tk_IsMapped(msgPtr->tkwin)
         && !(msgPtr->flags & REDRAW_PENDING)) {
-        Tcl_DoWhenIdle(DisplayMessage, ( ClientData )msgPtr);
+        Tcl_DoWhenIdle(DisplayMessage, ( ClientData ) msgPtr);
         msgPtr->flags |= REDRAW_PENDING;
     }
-    return ( char * )NULL;
+    return ( char * ) NULL;
 }

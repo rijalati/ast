@@ -134,7 +134,7 @@
 
 /* The NIL() macro simplifies defining nil pointers to a given type */
 #    ifndef NIL
-#        define NIL(type) (( type )0)
+#        define NIL(type) (( type ) 0)
 #    endif /*NIL*/
 
 /* For DLLs on systems allowing only pointers across client and library code.
@@ -173,13 +173,14 @@ typedef struct _dtdata_s Dtdata_t;
 typedef struct _dt_s Dt_t;
 typedef struct _dt_s Dict_t; /* for libdict compatibility */
 typedef struct _dtstat_s Dtstat_t;
-typedef Void_t *( *Dtsearch_f )_ARG_(( Dt_t *, Void_t *, int ));
-typedef Void_t *( *Dtmake_f )_ARG_(( Dt_t *, Void_t *, Dtdisc_t * ));
-typedef void(*Dtfree_f) _ARG_(( Dt_t *, Void_t *, Dtdisc_t * ));
-typedef int(*Dtcompar_f) _ARG_(( Dt_t *, char *, char *, Dtdisc_t * ));
-typedef unsigned long(*Dthash_f) _ARG_(( Dt_t *, char *, Dtdisc_t * ));
-typedef Void_t *( *Dtmemory_f )_ARG_(( Dt_t *, Void_t *, size_t, Dtdisc_t * ));
-typedef int(*Dtevent_f) _ARG_(( Dt_t *, int, Void_t *, Dtdisc_t * ));
+typedef Void_t *( *Dtsearch_f ) _ARG_(( Dt_t *, Void_t *, int ) );
+typedef Void_t *( *Dtmake_f ) _ARG_(( Dt_t *, Void_t *, Dtdisc_t * ) );
+typedef void(*Dtfree_f) _ARG_(( Dt_t *, Void_t *, Dtdisc_t * ) );
+typedef int(*Dtcompar_f) _ARG_(( Dt_t *, char *, char *, Dtdisc_t * ) );
+typedef unsigned long(*Dthash_f) _ARG_(( Dt_t *, char *, Dtdisc_t * ) );
+typedef Void_t *( *Dtmemory_f )
+_ARG_(( Dt_t *, Void_t *, size_t, Dtdisc_t * ) );
+typedef int(*Dtevent_f) _ARG_(( Dt_t *, int, Void_t *, Dtdisc_t * ) );
 
 struct _dtlink_s
 {
@@ -288,24 +289,24 @@ struct _dtstat_s
 #    define DT_MATCH 001000  /* find object matching key		*/
 
 _BEGIN_EXTERNS_
-extern Dt_t *dtopen _ARG_(( Dtdisc_t *, Dtmethod_t * ));
-extern int dtclose _ARG_(( Dt_t * ));
-extern Dt_t *dtview _ARG_(( Dt_t *, Dt_t * ));
-extern Dtdisc_t *dtdisc _ARG_(( Dt_t * dt, Dtdisc_t *, int ));
-extern Dtmethod_t *dtmethod _ARG_(( Dt_t *, Dtmethod_t * ));
+extern Dt_t *dtopen _ARG_(( Dtdisc_t *, Dtmethod_t * ) );
+extern int dtclose _ARG_(( Dt_t * ) );
+extern Dt_t *dtview _ARG_(( Dt_t *, Dt_t * ) );
+extern Dtdisc_t *dtdisc _ARG_(( Dt_t * dt, Dtdisc_t *, int ) );
+extern Dtmethod_t *dtmethod _ARG_(( Dt_t *, Dtmethod_t * ) );
 
-extern Dtlink_t *dtflatten _ARG_(( Dt_t * ));
-extern Dtlink_t *dtextract _ARG_(( Dt_t * ));
-extern int dtrestore _ARG_(( Dt_t *, Dtlink_t * ));
+extern Dtlink_t *dtflatten _ARG_(( Dt_t * ) );
+extern Dtlink_t *dtextract _ARG_(( Dt_t * ) );
+extern int dtrestore _ARG_(( Dt_t *, Dtlink_t * ) );
 
 extern int
-dtwalk _ARG_(( Dt_t *, int (*)(Dt_t *, Void_t *, Void_t *), Void_t * ));
+dtwalk _ARG_(( Dt_t *, int (*)(Dt_t *, Void_t *, Void_t *), Void_t * ) );
 
-extern Void_t *dtrenew _ARG_(( Dt_t *, Void_t * ));
+extern Void_t *dtrenew _ARG_(( Dt_t *, Void_t * ) );
 
-extern int dtsize _ARG_(( Dt_t * ));
-extern int dtstat _ARG_(( Dt_t *, Dtstat_t *, int ));
-extern unsigned long dtstrhash _ARG_(( unsigned long, char *, int ));
+extern int dtsize _ARG_(( Dt_t * ) );
+extern int dtstat _ARG_(( Dt_t *, Dtstat_t *, int ) );
+extern unsigned long dtstrhash _ARG_(( unsigned long, char *, int ) );
 
 extern Dtmethod_t _PTR_ _Dthash;
 extern Dtmethod_t _PTR_ _Dttree;
@@ -320,34 +321,34 @@ _END_EXTERNS_
 #    define Dtstack (_ADR_ _Dtstack)
 #    define Dtqueue (_ADR_ _Dtqueue)
 
-#    define _DT_(d) (( Dt_t * )(d))
+#    define _DT_(d) (( Dt_t * ) (d))
 
-#    define dtlink(d, e) ((( Dtlink_t * )(e))->right)
+#    define dtlink(d, e) ((( Dtlink_t * ) (e))->right)
 #    define dtobj(d, e)                                                      \
         ((_DT_(d)->disc->link < 0)                                           \
-         ? ((( Dthold_t * )(e))->obj)                                        \
-         : ( Void_t * )(( char * )( e )-_DT_(d)->disc->link))
+         ? ((( Dthold_t * ) (e))->obj)                                       \
+         : ( Void_t * ) (( char * ) ( e ) -_DT_(d)->disc->link))
 #    define dtfinger(d)                                                      \
         (_DT_(d)->data->here ? dtobj((d), _DT_(d)->data->here)               \
                              : NIL(Void_t *))
 
 #    define dtfirst(d) (*(_DT_(d)->searchf))((d), NIL(Void_t *), DT_FIRST)
-#    define dtnext(d, o) (*(_DT_(d)->searchf))((d), ( Void_t * )(o), DT_NEXT)
+#    define dtnext(d, o) (*(_DT_(d)->searchf))((d), ( Void_t * ) (o), DT_NEXT)
 #    define dtlast(d) (*(_DT_(d)->searchf))((d), NIL(Void_t *), DT_LAST)
-#    define dtprev(d, o) (*(_DT_(d)->searchf))((d), ( Void_t * )(o), DT_PREV)
+#    define dtprev(d, o) (*(_DT_(d)->searchf))((d), ( Void_t * ) (o), DT_PREV)
 #    define dtsearch(d, o)                                                   \
-        (*(_DT_(d)->searchf))((d), ( Void_t * )(o), DT_SEARCH)
+        (*(_DT_(d)->searchf))((d), ( Void_t * ) (o), DT_SEARCH)
 #    define dtinsert(d, o)                                                   \
-        (*(_DT_(d)->searchf))((d), ( Void_t * )(o), DT_INSERT)
+        (*(_DT_(d)->searchf))((d), ( Void_t * ) (o), DT_INSERT)
 #    define dtdelete(d, o)                                                   \
-        (*(_DT_(d)->searchf))((d), ( Void_t * )(o), DT_DELETE)
+        (*(_DT_(d)->searchf))((d), ( Void_t * ) (o), DT_DELETE)
 #    define dtmatch(d, o)                                                    \
-        (*(_DT_(d)->searchf))((d), ( Void_t * )(o), DT_MATCH)
+        (*(_DT_(d)->searchf))((d), ( Void_t * ) (o), DT_MATCH)
 #    define dtclear(d) (*(_DT_(d)->searchf))((d), NIL(Void_t *), DT_CLEAR)
 
 /* A linear congruential hash: h*127 + c + 987654321 */
 #    define dtcharhash(h, c)                                                 \
-        (((( unsigned long )(h)) << 7) - (( unsigned long )(h))              \
-         + (( unsigned char )(c)) + 987654321L)
+        (((( unsigned long ) (h)) << 7) - (( unsigned long ) (h))            \
+         + (( unsigned char ) (c)) + 987654321L)
 
 #endif /* _CDT_H */

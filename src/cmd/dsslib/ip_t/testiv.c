@@ -162,7 +162,7 @@ main(int argc, char **argv)
             if (ivstr(iv, s, 0, addr, 0))
                 error(1, "%s: invalid address", s);
             else if (pp = ivseg(iv, addr)) {
-                hop = ( Hop_t * )pp->data;
+                hop = ( Hop_t * ) pp->data;
                 sfprintf(sfstdout,
                          "%s%-42s  %-42s  %s\n",
                          dump ? "get  " : "",

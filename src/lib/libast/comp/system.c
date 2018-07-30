@@ -49,7 +49,7 @@ system(const char *cmd)
         return !eaccess(pathshell(), X_OK);
     sh[0] = "sh";
     sh[1] = "-c";
-    sh[2] = ( char * )cmd;
+    sh[2] = ( char * ) cmd;
     sh[3] = 0;
     return procrun(NiL, sh, 0);
 }

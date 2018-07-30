@@ -86,7 +86,7 @@ getsaveset(Pax_t *pax, Archive_t *ap, File_t *f, Saveset_t *ss, int header)
             ss->bp = ss->block;
             ss->lastsize = 0;
             if (paxread(
-                pax, ap, ss->bp, ( off_t )0, ( off_t )state.blocksize, 0)
+                pax, ap, ss->bp, ( off_t ) 0, ( off_t ) state.blocksize, 0)
                 <= 0) {
                 ap->format = getformat("slt", 1);
                 if (header)
@@ -137,7 +137,7 @@ getsaveset(Pax_t *pax, Archive_t *ap, File_t *f, Saveset_t *ss, int header)
                 *t = 0;
                 for (i = 0; i < 5; i++) {
                     s = p + FILHDR_size;
-                    if ((p += FILHDR_SIZE + ( long )swapget(1, s, 2))
+                    if ((p += FILHDR_SIZE + ( long ) swapget(1, s, 2))
                         > ss->block + state.blocksize)
                         error(3,
                               "invalid %s format file attribute",
@@ -148,12 +148,13 @@ getsaveset(Pax_t *pax, Archive_t *ap, File_t *f, Saveset_t *ss, int header)
                 ss->reclen = swapget(1, p + FILHDR_data + FILATT_reclen, 2);
                 ss->recvfc = swapget(1, p + FILHDR_data + FILATT_recvfc, 2);
                 f->st->st_size
-                = ( long )(swapget(1, p + FILHDR_data + FILATT_blocks, 2) - 1)
+                = ( long ) (swapget(1, p + FILHDR_data + FILATT_blocks, 2)
+                            - 1)
                   * BLOCKSIZE
-                  + ( long )swapget(1, p + FILHDR_data + FILATT_frag, 2);
+                  + ( long ) swapget(1, p + FILHDR_data + FILATT_frag, 2);
                 for (; i < 15; i++) {
                     s = p + FILHDR_size;
-                    if ((p += FILHDR_SIZE + ( long )swapget(1, s, 2))
+                    if ((p += FILHDR_SIZE + ( long ) swapget(1, s, 2))
                         > ss->block + state.blocksize)
                         error(3,
                               "invalid %s format file attribute",
@@ -169,7 +170,7 @@ getsaveset(Pax_t *pax, Archive_t *ap, File_t *f, Saveset_t *ss, int header)
                     n = 1;
                 else
                     n = (n << 8) + *(p + FILHDR_data + 3);
-                f->st->st_mtime = ( time_t )n;
+                f->st->st_mtime = ( time_t ) n;
                 return 1;
             }
             ss->bp -= RECHDR_SIZE;
@@ -193,7 +194,7 @@ vmsbackup_done(Pax_t *pax, Archive_t *ap)
 static int
 vmsbackup_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
 {
-    Saveset_t *ss = ( Saveset_t * )ap->data;
+    Saveset_t *ss = ( Saveset_t * ) ap->data;
     off_t c;
     int i;
     int j;
@@ -295,7 +296,7 @@ vmsbackup_getepilogue(Pax_t *pax, Archive_t *ap)
 static int
 vmsbackup_validate(Pax_t *pax, Archive_t *ap, File_t *f)
 {
-    Saveset_t *ss = ( Saveset_t * )ap->data;
+    Saveset_t *ss = ( Saveset_t * ) ap->data;
     char *s;
 
     if (f->type != X_IFREG) {

@@ -30,7 +30,7 @@ Sfdisc_t *disc;
 #endif
 {
     size_t i;
-    char *s = ( char * )buf;
+    char *s = ( char * ) buf;
 
     if (sfgetc(f) >= 0)
         terror("Stream should be locked");
@@ -54,7 +54,7 @@ Sfdisc_t *disc;
 #endif
 {
     size_t i;
-    char *s = ( char * )buf;
+    char *s = ( char * ) buf;
 
     if (sfputc(f, 0) >= 0)
         terror("Stream should be locked2");
@@ -76,7 +76,7 @@ Sfdisc_t *disc;
 #endif
 {
     size_t i;
-    char *s = ( char * )buf;
+    char *s = ( char * ) buf;
 
     if (sfgetc(f) >= 0)
         terror("Stream should be locked");
@@ -128,16 +128,28 @@ Sfdisc_t *disc;
 }
 
 
-Sfdisc_t Wdisc
-= { ( Sfread_f )0, wupper, ( Sfseek_f )0, ( Sfexcept_f )0, ( Sfdisc_t * )0 };
+Sfdisc_t Wdisc = { ( Sfread_f ) 0,
+                   wupper,
+                   ( Sfseek_f ) 0,
+                   ( Sfexcept_f ) 0,
+                   ( Sfdisc_t * ) 0 };
 Sfdisc_t Udisc
-= { upper, wupper, ( Sfseek_f )0, ( Sfexcept_f )0, ( Sfdisc_t * )0 };
-Sfdisc_t Ldisc
-= { lower, ( Sfwrite_f )0, ( Sfseek_f )0, ( Sfexcept_f )0, ( Sfdisc_t * )0 };
-Sfdisc_t Odisc
-= { once, ( Sfwrite_f )0, ( Sfseek_f )0, ( Sfexcept_f )0, ( Sfdisc_t * )0 };
-Sfdisc_t Edisc
-= { ( Sfread_f )0, external, ( Sfseek_f )0, ( Sfexcept_f )0, ( Sfdisc_t * )0 };
+= { upper, wupper, ( Sfseek_f ) 0, ( Sfexcept_f ) 0, ( Sfdisc_t * ) 0 };
+Sfdisc_t Ldisc = { lower,
+                   ( Sfwrite_f ) 0,
+                   ( Sfseek_f ) 0,
+                   ( Sfexcept_f ) 0,
+                   ( Sfdisc_t * ) 0 };
+Sfdisc_t Odisc = { once,
+                   ( Sfwrite_f ) 0,
+                   ( Sfseek_f ) 0,
+                   ( Sfexcept_f ) 0,
+                   ( Sfdisc_t * ) 0 };
+Sfdisc_t Edisc = { ( Sfread_f ) 0,
+                   external,
+                   ( Sfseek_f ) 0,
+                   ( Sfexcept_f ) 0,
+                   ( Sfdisc_t * ) 0 };
 
 tmain()
 {
@@ -165,7 +177,7 @@ tmain()
         terror("Writing data %d", r);
     sfsync(f);
 
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     sfdisc(f, &Udisc);
     if (!(s = sfreserve(f, n, 0)))
         terror("Reading string1");
@@ -174,7 +186,7 @@ tmain()
         terror("Input1=%s, Expect=%s", s, u);
     }
 
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     sfdisc(f, &Ldisc);
     if (!(s = sfreserve(f, n, 0)))
         terror("Reading string2");
@@ -189,7 +201,7 @@ tmain()
     sfdisc(f, &Wdisc);
     if (sfputr(f, low, '\n') < 0)
         terror("Writing data");
-    if (sfseek(f, ( Sfoff_t )0, 0) != 0)
+    if (sfseek(f, ( Sfoff_t ) 0, 0) != 0)
         terror("Seeking");
     if (!(s = sfgetr(f, '\n', 1)))
         terror("sfgetr");

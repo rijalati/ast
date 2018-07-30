@@ -103,7 +103,7 @@ _re_read(regexp_t *re,
         if (!re->re_sed && !prev) {
             ERROR(41);
         }
-        RETURN(( char * )endbuf);
+        RETURN(( char * ) endbuf);
     }
     UNGETC(c);
     prev = 0;
@@ -124,11 +124,11 @@ _re_read(regexp_t *re,
         }
         _re_putc(c);
     }
-    if (c = _re_comp(re, _re_putc(0), ep, ( char * )endbuf - ep)) {
+    if (c = _re_comp(re, _re_putc(0), ep, ( char * ) endbuf - ep)) {
         ERROR(c);
     }
     prev = endbuf;
-    RETURN(( char * )prev);
+    RETURN(( char * ) prev);
 }
 
 #    endif

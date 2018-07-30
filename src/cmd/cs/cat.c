@@ -83,7 +83,7 @@ svc_init(void *handle, int fdmax)
                                    0)))
         error(3, "out of space [files]");
     cstimeout(CS_SVC_DORMANT * 1000L);
-    return (( void * )state);
+    return (( void * ) state);
 }
 
 /*
@@ -93,7 +93,7 @@ svc_init(void *handle, int fdmax)
 static int
 svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **argv)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     File_t *fp;
     char *s;
     int ad;
@@ -125,10 +125,10 @@ svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **argv)
     }
     fid.dev = st.st_dev;
     fid.ino = st.st_ino;
-    if (!(fp = ( File_t * )hashlook(state->files,
-                                    ( char * )&fid,
-                                    HASH_CREATE | HASH_SIZE(sizeof(File_t)),
-                                    NiL))) {
+    if (!(fp = ( File_t * ) hashlook(state->files,
+                                     ( char * ) &fid,
+                                     HASH_CREATE | HASH_SIZE(sizeof(File_t)),
+                                     NiL))) {
         close(ad);
         return (-1);
     }
@@ -150,7 +150,7 @@ svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **argv)
 static int
 svc_read(void *handle, int fd)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     ssize_t n;
     ssize_t m;
     ssize_t i;
@@ -193,7 +193,7 @@ svc_read(void *handle, int fd)
 static int
 svc_timeout(void *handle)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
 
     if (!state->active) {
         if (state->dormant)

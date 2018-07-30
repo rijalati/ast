@@ -56,7 +56,7 @@ strrchr(const char *s, int c)
         if (*s == c)
             r = s;
     while (*s++);
-    return (( char * )r);
+    return (( char * ) r);
 }
 
 #    endif

@@ -131,7 +131,7 @@ GopherNop()
 
 int GopherInit(tbl) struct agent_item *tbl;
 {
-    tbl->localdata = ( char * )&gopher_data;
+    tbl->localdata = ( char * ) &gopher_data;
     tbl->connect = GopherNop;
     tbl->disconnect = GopherNop;
     tbl->listdents = GopherGetFile;

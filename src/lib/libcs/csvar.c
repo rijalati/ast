@@ -57,11 +57,11 @@ csvar(Cs_t *state, int index, int trust)
         return 0;
     p = &var[index];
     if (!p->name || trust)
-        return ( char * )p->trust;
+        return ( char * ) p->trust;
     if (!p->value)
         p->value
-        = ((s = getenv(p->name)) && *s) ? ( const char * )s : p->trust;
-    return ( char * )p->value;
+        = ((s = getenv(p->name)) && *s) ? ( const char * ) s : p->trust;
+    return ( char * ) p->value;
 }
 
 char *

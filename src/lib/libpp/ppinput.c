@@ -48,14 +48,14 @@ native(const char *s)
     if (!s)
         return 0;
     if (!np && !(np = sfstropen()) || !qp && !(qp = sfstropen()))
-        return ( char * )s;
+        return ( char * ) s;
     n = PATH_MAX;
     do {
         m = n;
         n = pathnative(s, sfstrrsrv(np, m), m);
     } while (n > m);
     sfstrseek(np, n, SEEK_CUR);
-    s = ( const char * )sfstruse(np);
+    s = ( const char * ) sfstruse(np);
     for (;;) {
         switch (c = *s++) {
         case 0:
@@ -71,7 +71,7 @@ native(const char *s)
         break;
     }
     if (!(xp = ppsetfile(sfstruse(qp))))
-        return ( char * )s;
+        return ( char * ) s;
     return xp->name;
 }
 
@@ -370,7 +370,7 @@ static int
 dump(const char *name, char *v, void *handle)
 {
     struct ppmacro *mac;
-    struct ppsymbol *sym = ( struct ppsymbol * )v;
+    struct ppsymbol *sym = ( struct ppsymbol * ) v;
     int flags;
 
     NoP(name);
@@ -737,14 +737,14 @@ ppload(char *s)
                     while (*s++)
                         ;
                     mac->formals
-                    = ( char * )memcpy(oldof(0, char, 0, s - b), b, s - b);
+                    = ( char * ) memcpy(oldof(0, char, 0, s - b), b, s - b);
                 }
             }
             b = s;
             while (*s++)
                 ;
             mac->size = s - b - 1;
-            mac->value = ( char * )memcpy(
+            mac->value = ( char * ) memcpy(
             oldof(0, char, 0, mac->size + 1), b, mac->size + 1);
             if (pp.test & 0x1000)
                 error(2, "checkpoint LOAD %s=%s", sym->name, mac->value);

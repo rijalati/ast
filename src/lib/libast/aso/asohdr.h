@@ -37,10 +37,10 @@
 #        define elementsof(x) (sizeof(x) / sizeof(x[0]))
 #    endif
 #    ifndef integralof
-#        define integralof(x) ((( char * )(x)) - (( char * )0))
+#        define integralof(x) ((( char * ) (x)) - (( char * ) 0))
 #    endif
 #    ifndef NiL
-#        define NiL (( void * )0)
+#        define NiL (( void * ) 0)
 #    endif
 #    ifndef NoN
 #        if defined(__STDC__) || defined(__STDPP__)

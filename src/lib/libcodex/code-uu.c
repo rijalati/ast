@@ -85,7 +85,7 @@ static const Data_t uu_posix
     1,
     " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_" };
 
-#define GETCHAR(p) ((p)->bp < (p)->be ? ( int )*(p)->bp++ : fill(p))
+#define GETCHAR(p) ((p)->bp < (p)->be ? ( int ) *(p)->bp++ : fill(p))
 #define PUTCHAR(p, s, e, c) ((s < e) ? (*s++ = (c)) : (*p->pp++ = (c)))
 
 static int
@@ -169,7 +169,7 @@ uu_open(Codex_t *p, char *const args[], Codexnum_t flags)
 
     data = &uu_posix;
     string = text = 0;
-    a = ( char ** )args + 1;
+    a = ( char ** ) args + 1;
     while (s = *++a)
         if (streq(s, "base64") || streq(s, "mime"))
             data = &uu_base64;
@@ -214,8 +214,8 @@ uu_open(Codex_t *p, char *const args[], Codexnum_t flags)
         q[EOF] = UU_END;
         if (n)
             q[data->pad] = UU_PAD;
-        for (m = ( unsigned char * )data->map; c = *m; m++)
-            q[c] = m - ( unsigned char * )data->map;
+        for (m = ( unsigned char * ) data->map; c = *m; m++)
+            q[c] = m - ( unsigned char * ) data->map;
     }
     p->data = state;
     state->codex = p;
@@ -225,7 +225,7 @@ uu_open(Codex_t *p, char *const args[], Codexnum_t flags)
 static int
 uu_init(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
     int n;
 
     state->bp = state->buf;
@@ -251,8 +251,8 @@ uu_init(Codex_t *p)
 static ssize_t
 uu_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 {
-    State_t *state = ( State_t * )CODEX(disc)->data;
-    char *s = ( char * )buf;
+    State_t *state = ( State_t * ) CODEX(disc)->data;
+    char *s = ( char * ) buf;
     char *e = s + n;
     uint32_t b;
     int c;
@@ -365,13 +365,13 @@ uu_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
             }
         }
 done:
-    return s - ( char * )buf;
+    return s - ( char * ) buf;
 }
 
 static ssize_t
 uu_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
 {
-    State_t *state = ( State_t * )CODEX(disc)->data;
+    State_t *state = ( State_t * ) CODEX(disc)->data;
     unsigned char *s;
     unsigned char *e;
     uint32_t b;
@@ -379,7 +379,7 @@ uu_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
     int c2;
     int c3;
 
-    s = ( unsigned char * )buf;
+    s = ( unsigned char * ) buf;
     e = s + n;
     if ((c1 = state->c1) >= 0) {
         state->c1 = -1;
@@ -453,7 +453,7 @@ uu_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
 static int
 uu_sync(Codex_t *p)
 {
-    return (p->flags & CODEX_ENCODE) ? flush(( State_t * )p->data) : 0;
+    return (p->flags & CODEX_ENCODE) ? flush(( State_t * ) p->data) : 0;
 }
 
 Codexmeth_t codex_uu

@@ -324,7 +324,7 @@ Error(Service_t *sp, int level, const char *arg, ...)
     va_start(ap, arg);
     if (sp->node)
         nv_unset(sp->node);
-    free(( void * )sp);
+    free(( void * ) sp);
     errorv(NiL, ERROR_exit(1), ap);
     va_end(ap);
     return 0;
@@ -333,7 +333,7 @@ Error(Service_t *sp, int level, const char *arg, ...)
 static char *
 setdisc(Namval_t *np, const char *event, Namval_t *action, Namfun_t *fp)
 {
-    Service_t *sp = ( Service_t * )fp;
+    Service_t *sp = ( Service_t * ) fp;
     const char *cp;
     int i;
     int n = strlen(event) - 1;
@@ -346,13 +346,13 @@ setdisc(Namval_t *np, const char *event, Namval_t *action, Namfun_t *fp)
             action = sp->disc[i];
         else {
             if (nq = sp->disc[i])
-                free(( void * )nq);
+                free(( void * ) nq);
             if (action)
                 sp->disc[i] = action;
             else
                 sp->disc[i] = 0;
         }
-        return action ? ( char * )action : "";
+        return action ? ( char * ) action : "";
     }
     /* try the next level */
     return nv_setdisc(np, event, action, fp);
@@ -362,7 +362,7 @@ static void
 putval(Namval_t *np, const char *val, int flag, Namfun_t *fp)
 {
     Shell_t *shp = sh_ptr(np);
-    Service_t *sp = ( Service_t * )fp;
+    Service_t *sp = ( Service_t * ) fp;
     if (!val)
         fp = nv_stack(np, NiL);
     nv_putv(np, val, flag, fp);
@@ -375,7 +375,7 @@ putval(Namval_t *np, const char *val, int flag, Namfun_t *fp)
                     break;
             }
         }
-        free(( void * )fp);
+        free(( void * ) fp);
         return;
     }
 }
@@ -421,7 +421,7 @@ b_mkservice(int argc, char **argv, Shbltin_t *context)
     sp->node = 0;
     sp->fun.disc = &servdisc;
     if ((fd = sh_open(path, O_SERVICE | O_RDWR)) <= 0) {
-        free(( void * )sp);
+        free(( void * ) sp);
         error(ERROR_exit(1), "%s: cannot start service", path);
     }
     if ((sp->fd = fcntl(fd, F_DUPFD, 10)) >= 10)
@@ -431,7 +431,7 @@ b_mkservice(int argc, char **argv, Shbltin_t *context)
     np = nv_open(var, shp->var_tree, NV_ARRAY | NV_VARNAME | NV_NOASSIGN);
     sp->node = np;
     nv_putval(np, path, 0);
-    nv_stack(np, ( Namfun_t * )sp);
+    nv_stack(np, ( Namfun_t * ) sp);
     service_add(sp);
     return (0);
 }

@@ -52,7 +52,7 @@ ciscov6ident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
 
     m = 0;
     v = 0;
-    s = ( char * )buf;
+    s = ( char * ) buf;
     e = s + n;
     for (;;) {
         for (;;) {
@@ -121,7 +121,7 @@ ciscov6open(Dssfile_t *file, Dssdisc_t *disc)
 static int
 ciscov6read(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Ciscov6state_t *state = ( Ciscov6state_t * )file->data;
+    Ciscov6state_t *state = ( Ciscov6state_t * ) file->data;
     Bgproute_t *rp;
     char *s;
     int o;
@@ -185,7 +185,7 @@ ciscov6read(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         }
         memset(rp->data + o, 0, elementsof(rp->data) - o);
         record->data = rp;
-        record->size = rp->size = ( char * )(rp->data + o) - ( char * )rp;
+        record->size = rp->size = ( char * ) (rp->data + o) - ( char * ) rp;
         return 1;
     }
     return 0;

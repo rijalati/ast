@@ -50,7 +50,7 @@ getdelim(char **sp, size_t *np, int delim, Sfio_t *f)
 
     SFLOCK(f, 0);
 
-    if (!(s = ( uchar * )(*sp)) || (n = *np) < 0) {
+    if (!(s = ( uchar * ) (*sp)) || (n = *np) < 0) {
         s = NIL(uchar *);
         n = 0;
     }
@@ -75,13 +75,13 @@ getdelim(char **sp, size_t *np, int delim, Sfio_t *f)
         if ((m + k + 1) >= n) /* make sure there is space */
         {
             n = ((m + k + 15) / 8) * 8;
-            if (!(s = ( uchar * )realloc(s, n))) {
+            if (!(s = ( uchar * ) realloc(s, n))) {
                 *sp = 0;
                 *np = 0;
                 m = -1;
                 break;
             }
-            *sp = ( char * )s;
+            *sp = ( char * ) s;
             *np = n;
         }
 

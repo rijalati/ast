@@ -132,8 +132,8 @@ enter(char *name, int alloc)
 static int
 sort(const char *pa, const char *pb)
 {
-    Sys_t *a = ( Sys_t * )pa;
-    Sys_t *b = ( Sys_t * )pb;
+    Sys_t *a = ( Sys_t * ) pa;
+    Sys_t *b = ( Sys_t * ) pb;
     int k;
     long n;
 
@@ -235,7 +235,7 @@ main(int argc, char **argv)
         closedir(dirp);
     }
     if (n = state.next - state.base) {
-        strsort(( char ** )state.base, n, sort);
+        strsort(( char ** ) state.base, n, sort);
         for (sv = state.base; sv < state.next; sv++)
             if ((sp = *sv)->fail)
                 sfprintf(sfstdout, "%-12s %s\n", sp->name, sp->fail);

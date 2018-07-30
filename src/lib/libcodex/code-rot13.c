@@ -60,7 +60,7 @@ rot13_open(Codex_t *p, char *const args[], Codexnum_t flags)
 static int
 rot13_close(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
 
     if (!state)
         return -1;
@@ -73,13 +73,13 @@ rot13_close(Codex_t *p)
 static ssize_t
 rot13_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 {
-    State_t *state = ( State_t * )CODEX(disc)->data;
+    State_t *state = ( State_t * ) CODEX(disc)->data;
     unsigned char *s;
     unsigned char *e;
     ssize_t r;
 
     if ((r = sfrd(sp, buf, n, disc)) > 0)
-        for (e = (s = ( unsigned char * )buf) + r; s < e; s++)
+        for (e = (s = ( unsigned char * ) buf) + r; s < e; s++)
             *s = state->rot[*s];
     return r;
 }
@@ -87,7 +87,7 @@ rot13_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 static ssize_t
 rot13_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
 {
-    State_t *state = ( State_t * )CODEX(disc)->data;
+    State_t *state = ( State_t * ) CODEX(disc)->data;
     unsigned char *s;
     unsigned char *e;
     unsigned char *b;
@@ -102,7 +102,7 @@ rot13_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
             return -1;
         }
     }
-    for (b = state->buf, e = (s = ( unsigned char * )buf) + n; s < e; s++)
+    for (b = state->buf, e = (s = ( unsigned char * ) buf) + n; s < e; s++)
         *b++ = state->rot[*s];
     return sfwr(sp, state->buf, n, disc);
 }

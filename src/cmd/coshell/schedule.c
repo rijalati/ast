@@ -41,7 +41,7 @@
 #define R_USER (3 * 60 * 60)  /* user activity range		*/
 #define W_USER (X_RANK / 600) /* user activity weight		*/
 
-#define CPU(n, v) (( v )*100 / (10 + (( n )-1) * W_CPU / 10) / 10)
+#define CPU(n, v) (( v ) *100 / (10 + (( n ) -1) * W_CPU / 10) / 10)
 #define PCT(n, p) (((n) / 100) * (p))
 #define RNK(p, a)                                                            \
     (((p)->mode & SHELL_DISABLE)                                             \
@@ -209,7 +209,7 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
         nopen = noverride = 0;
         ap = state.shellnext;
         scan++;
-        if (cs.time - ( unsigned long )tt > LOST) {
+        if (cs.time - ( unsigned long ) tt > LOST) {
             tt = cs.time;
             state.tm = tmmake(&tt);
             if (!state.tm->tm_wday)
@@ -292,7 +292,7 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
             if (matched) {
                 if (ap->update <= cs.time && ap->errors < ERRORS)
                     update(ap);
-                ap->temp += ((( unsigned long )1)
+                ap->temp += ((( unsigned long ) 1)
                              << (CHAR_BIT * sizeof(ap->temp) - W_TEMP));
                 if (ap->fd > 0) {
                     v = RNK(ap, a);
@@ -661,7 +661,7 @@ info(int op, char *file)
 int
 byname(const char *a, const char *b)
 {
-    return (strcoll((( Coshell_t * )a)->name, (( Coshell_t * )b)->name));
+    return (strcoll((( Coshell_t * ) a)->name, (( Coshell_t * ) b)->name));
 }
 
 /*
@@ -671,9 +671,9 @@ byname(const char *a, const char *b)
 int
 byrank(const char *a, const char *b)
 {
-    if ((( Coshell_t * )a)->rank < (( Coshell_t * )b)->rank)
+    if ((( Coshell_t * ) a)->rank < (( Coshell_t * ) b)->rank)
         return (-1);
-    if ((( Coshell_t * )a)->rank > (( Coshell_t * )b)->rank)
+    if ((( Coshell_t * ) a)->rank > (( Coshell_t * ) b)->rank)
         return (1);
     return (0);
 }
@@ -685,9 +685,9 @@ byrank(const char *a, const char *b)
 int
 bytemp(const char *a, const char *b)
 {
-    if ((( Coshell_t * )a)->temp > (( Coshell_t * )b)->temp)
+    if ((( Coshell_t * ) a)->temp > (( Coshell_t * ) b)->temp)
         return (-1);
-    if ((( Coshell_t * )a)->temp < (( Coshell_t * )b)->temp)
+    if ((( Coshell_t * ) a)->temp < (( Coshell_t * ) b)->temp)
         return (1);
     return (0);
 }

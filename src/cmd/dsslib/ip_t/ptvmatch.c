@@ -32,5 +32,5 @@ ptvmatch(Ptv_t *tab, unsigned char *addr)
     Ptvprefix_t key;
 
     key.min = key.max = addr;
-    return ( Ptvprefix_t * )dtsearch(tab->dict, &key);
+    return ( Ptvprefix_t * ) dtsearch(tab->dict, &key);
 }

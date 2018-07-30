@@ -38,7 +38,7 @@ MAIN()
     if (!(vc = vcopen(0, Vctranspose, "0", 0, VC_ENCODE)))
         terror("Cannot open Vctranspose handle");
 
-    vcsetmtarg(vc, "columns", ( Void_t * )1600, 2);
+    vcsetmtarg(vc, "columns", ( Void_t * ) 1600, 2);
     if ((i = vcapply(vc, matrix, sizeof(matrix), &tr)) != sizeof(matrix))
         terror("Vctranspose failed");
 

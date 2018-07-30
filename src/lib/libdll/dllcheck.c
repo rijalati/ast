@@ -36,7 +36,7 @@ dllversion(void *dll, const char *path)
 {
     Dll_plugin_version_f pvf;
 
-    if (pvf = ( Dll_plugin_version_f )dlllook(dll, "plugin_version"))
+    if (pvf = ( Dll_plugin_version_f ) dlllook(dll, "plugin_version"))
         return (*pvf)();
     if (path) {
         state.error = 1;

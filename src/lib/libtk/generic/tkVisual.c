@@ -109,7 +109,7 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
     char *p;
     VisualDictionary *dictPtr;
     TkColormap *cmapPtr;
-    TkDisplay *dispPtr = (( TkWindow * )tkwin)->dispPtr;
+    TkDisplay *dispPtr = (( TkWindow * ) tkwin)->dispPtr;
 
     /*
      * Parse string and set up a template for use in searching for
@@ -185,7 +185,7 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
                              "bad X identifier for visual: ",
                              string,
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return NULL;
         }
         template.visualid = visualId;
@@ -205,7 +205,7 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
         template.class = -1;
         for (dictPtr = visualNames; dictPtr->name != NULL; dictPtr++) {
             if ((dictPtr->name[0] == c) && (length >= dictPtr->minLength)
-                && (strncmp(string, dictPtr->name, ( size_t )length) == 0)) {
+                && (strncmp(string, dictPtr->name, ( size_t ) length) == 0)) {
                 template.class = dictPtr->class;
                 break;
             }
@@ -215,11 +215,12 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
                              "unknown or ambiguous visual name \"",
                              string,
                              "\": class must be ",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             for (dictPtr = visualNames; dictPtr->name != NULL; dictPtr++) {
-                Tcl_AppendResult(interp, dictPtr->name, ", ", ( char * )NULL);
+                Tcl_AppendResult(
+                interp, dictPtr->name, ", ", ( char * ) NULL);
             }
-            Tcl_AppendResult(interp, "or default", ( char * )NULL);
+            Tcl_AppendResult(interp, "or default", ( char * ) NULL);
             return NULL;
         }
         while (isspace(UCHAR(*p))) {
@@ -322,7 +323,7 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
     }
     *depthPtr = bestPtr->depth;
     visual = bestPtr->visual;
-    XFree(( char * )visInfoList);
+    XFree(( char * ) visInfoList);
 
     /*
      * If we need to find a colormap for this visual, do it now.
@@ -344,7 +345,7 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
                     goto done;
                 }
             }
-            cmapPtr = ( TkColormap * )ckalloc(sizeof(TkColormap));
+            cmapPtr = ( TkColormap * ) ckalloc(sizeof(TkColormap));
             cmapPtr->colormap
             = XCreateColormap(Tk_Display(tkwin),
                               RootWindowOfScreen(Tk_Screen(tkwin)),
@@ -396,7 +397,7 @@ char *string;    /* String that identifies colormap:
 {
     Colormap colormap;
     TkColormap *cmapPtr;
-    TkDisplay *dispPtr = (( TkWindow * )tkwin)->dispPtr;
+    TkDisplay *dispPtr = (( TkWindow * ) tkwin)->dispPtr;
     Tk_Window other;
 
     /*
@@ -404,7 +405,7 @@ char *string;    /* String that identifies colormap:
      */
 
     if (strcmp(string, "new") == 0) {
-        cmapPtr = ( TkColormap * )ckalloc(sizeof(TkColormap));
+        cmapPtr = ( TkColormap * ) ckalloc(sizeof(TkColormap));
         cmapPtr->colormap
         = XCreateColormap(Tk_Display(tkwin),
                           RootWindowOfScreen(Tk_Screen(tkwin)),
@@ -433,7 +434,7 @@ char *string;    /* String that identifies colormap:
                          "can't use colormap for ",
                          string,
                          ": not on same screen",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return None;
     }
     if (Tk_Visual(other) != Tk_Visual(tkwin)) {
@@ -441,7 +442,7 @@ char *string;    /* String that identifies colormap:
                          "can't use colormap for ",
                          string,
                          ": incompatible visuals",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return None;
     }
     colormap = Tk_Colormap(other);
@@ -511,7 +512,7 @@ Colormap colormap; /* Colormap that is no longer needed.
                 } else {
                     prevPtr->nextPtr = cmapPtr->nextPtr;
                 }
-                ckfree(( char * )cmapPtr);
+                ckfree(( char * ) cmapPtr);
             }
             return;
         }

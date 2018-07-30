@@ -48,13 +48,13 @@ __DEFINE__(char *, __loc1, 0);
 static void *
 block(void *handle, void *data, size_t size)
 {
-    Regex_t *re = ( Regex_t * )handle;
+    Regex_t *re = ( Regex_t * ) handle;
 
     if (data
         || (size = roundof(size, ALIGN_BOUND2))
            > (re->buf + re->size - re->cur))
         return 0;
-    data = ( void * )re->cur;
+    data = ( void * ) re->cur;
     re->cur += size;
     return data;
 }
@@ -87,7 +87,7 @@ regcmp(const char *pattern, ...)
         p = -1;
         b = 0;
         nsub = 0;
-        s = ( char * )pattern;
+        s = ( char * ) pattern;
         do {
             while (c = *s++) {
                 if (c == '\\') {
@@ -113,7 +113,7 @@ regcmp(const char *pattern, ...)
                      * a cast is needed to make this work
                      */
 
-                    if (p < ( int )(elementsof(paren) - 1))
+                    if (p < ( int ) (elementsof(paren) - 1))
                         p++;
                     paren[p] = ++n;
                 } else if (c == ')' && p >= 0) {
@@ -165,7 +165,7 @@ regcmp(const char *pattern, ...)
     }
     if (re->nsub = nsub)
         memcpy(re->sub, sub, (nsub + 1) * sizeof(sub[0]));
-    return ( char * )re;
+    return ( char * ) re;
 }
 
 char *
@@ -180,7 +180,7 @@ regex(const char *handle, const char *subject, ...)
     va_list ap;
 
     va_start(ap, subject);
-    if (!(re = ( Regex_t * )handle) || !subject)
+    if (!(re = ( Regex_t * ) handle) || !subject)
         k = 1;
     else {
         k = 0;
@@ -199,6 +199,6 @@ regex(const char *handle, const char *subject, ...)
             strlcpy(sub[n], subject + match[i].rm_so, k);
             *(sub[n] + k) = 0;
         }
-    __loc1 = ( char * )subject + match[0].rm_so;
-    return ( char * )subject + match[0].rm_eo;
+    __loc1 = ( char * ) subject + match[0].rm_so;
+    return ( char * ) subject + match[0].rm_eo;
 }

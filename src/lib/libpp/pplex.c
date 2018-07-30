@@ -81,7 +81,7 @@ static int hit[LAST - TERMINAL + 2];
             if (sp)                                                          \
                 sp = op;                                                     \
         } while (0)
-#    define GETCHR() (*( unsigned char * )ip++)
+#    define GETCHR() (*( unsigned char * ) ip++)
 #    define LASTCHR() (*(ip - 1))
 #    define LASTOUT() ((op > pp.outbuf) ? *(op - 1) : pp.lastout)
 #    define SKIPIN() (ip++)
@@ -258,7 +258,7 @@ pool(void);
         } while (0)
 #    define CACHEIN() (ip = pp.in->nextchr)
 #    define CACHEOUT() (op = pp.token)
-#    define GETCHR() (*( unsigned char * )ip++)
+#    define GETCHR() (*( unsigned char * ) ip++)
 #    define LASTCHR() (*(ip - 1))
 #    define PUTCHR(c) (*op++ = (c))
 #    define SETCHR(c) (*op = (c))
@@ -1556,7 +1556,7 @@ fsm_terminal:
                                       ? ppsymref(pp.symtab, tp)
                                       : ppsymset(pp.symtab, tp),
                                     0))) {
-                            c = (( struct ppsymkey * )sym)->lex;
+                            c = (( struct ppsymkey * ) sym)->lex;
                             /*UNDENT*/
 
 #    define ADVANCE()                                                        \
@@ -1707,9 +1707,9 @@ fsm_terminal:
                                    && strneq(tp, "__builtin_", 10)) {
                             hashlook(pp.symtab, tp, HASH_DELETE, NiL);
                             pp.symbol = sym
-                            = ( struct ppsymbol * )ppkeyset(pp.symtab, tp);
+                            = ( struct ppsymbol * ) ppkeyset(pp.symtab, tp);
                             sym->flags |= SYM_KEYWORD;
-                            c = (( struct ppsymkey * )sym)->lex = T_BUILTIN;
+                            c = (( struct ppsymkey * ) sym)->lex = T_BUILTIN;
                         }
                     }
                 }
@@ -2150,7 +2150,7 @@ fsm_terminal:
                         bp = ip;
                         goto fsm_get;
                     case 'F':
-                        error_info.file = ( char * )strtoul(ip, &s, 16);
+                        error_info.file = ( char * ) strtoul(ip, &s, 16);
                         debug(
                         (-6, "actual sync: file = \"%s\"", error_info.file));
                         bp = ip = s + 1;

@@ -126,8 +126,8 @@ getfield(Field_t *f, int restore)
 static int
 getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
 {
-    Fmt_t *fp = ( Fmt_t * )dp;
-    Value_t *value = ( Value_t * )vp;
+    Fmt_t *fp = ( Fmt_t * ) dp;
+    Value_t *value = ( Value_t * ) vp;
     char *v;
     char *t;
     char *b;
@@ -210,7 +210,7 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
     case 'u':
     case 'x':
         fp->fmt.size = sizeof(Sflong_t);
-        value->q = s ? ( Sflong_t )strtoull(s, NiL, 0) : n;
+        value->q = s ? ( Sflong_t ) strtoull(s, NiL, 0) : n;
         break;
     case 'p':
         if (s)
@@ -335,7 +335,7 @@ sfkeyprintf_20000308(Sfio_t *sp,
     memset(&fmt, 0, sizeof(fmt));
     fmt.version = 20030909;
     fmt.fmt.version = SFIO_VERSION;
-    fmt.fmt.form = ( char * )format;
+    fmt.fmt.form = ( char * ) format;
     fmt.fmt.extf = getfmt;
     fmt.handle = handle;
     fmt.lookup = lookup;
@@ -365,7 +365,7 @@ sfkeyprintf(Sfio_t *sp,
 
     memset(&fmt, 0, sizeof(fmt));
     fmt.fmt.version = SFIO_VERSION;
-    fmt.fmt.form = ( char * )format;
+    fmt.fmt.form = ( char * ) format;
     fmt.fmt.extf = getfmt;
     fmt.handle = handle;
     fmt.lookup = lookup;

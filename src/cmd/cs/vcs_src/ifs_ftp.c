@@ -143,7 +143,7 @@ char *buf;
             ptr -= 15;
             while (*ptr != ' ')
                 ptr--;
-            fi->fsize = ( int )strtol(ptr + 1, ( char ** )0, 0);
+            fi->fsize = ( int ) strtol(ptr + 1, ( char ** ) 0, 0);
         }
         break;
 
@@ -165,7 +165,7 @@ char *buf;
             ptr -= 2;
             while (*ptr != ' ')
                 ptr--;
-            fi->fsize = ( int )strtol(ptr + 1, ( char ** )0, 0);
+            fi->fsize = ( int ) strtol(ptr + 1, ( char ** ) 0, 0);
         }
         break;
 
@@ -307,8 +307,8 @@ NetFile *nFile;
     }
     sfsprintf(
     host, sizeof(host), "%s.%s.%s.%s", arg[0], arg[1], arg[2], arg[3]);
-    port = ( int )strtol(arg[4], ( char ** )0, 0) * 256
-           + ( int )strtol(arg[5], ( char ** )0, 0);
+    port = ( int ) strtol(arg[4], ( char ** ) 0, 0) * 256
+           + ( int ) strtol(arg[5], ( char ** ) 0, 0);
     return NetConnect(srv, host, port);
 }
 
@@ -578,7 +578,7 @@ FtpNop()
  */
 int FtpInit(tbl) struct agent_item *tbl;
 {
-    tbl->localdata = ( char * )&ftp_data;
+    tbl->localdata = ( char * ) &ftp_data;
     tbl->connect = FtpConnect;
     tbl->disconnect = FtpDisconnect;
     tbl->listdents = FtpGetFile;

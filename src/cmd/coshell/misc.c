@@ -191,7 +191,7 @@ misccmp(char *vp, int op, char *sb, char *se)
 static long
 miscget(Coshell_t *sp, const char *as, int set, char **e, char *rep)
 {
-    char *s = ( char * )as;
+    char *s = ( char * ) as;
     char *cp;
     char *np;
     int c;
@@ -240,7 +240,7 @@ miscget(Coshell_t *sp, const char *as, int set, char **e, char *rep)
                     cp++;
                 *e = cp;
             } else
-                *e = ( char * )s;
+                *e = ( char * ) s;
             switch (*cp) {
             case '<':
                 op = LT;
@@ -335,7 +335,7 @@ miscget(Coshell_t *sp, const char *as, int set, char **e, char *rep)
                         gid = strgid(sb);
                         if (sb = ee)
                             *sb++ = '|';
-                        for (no = 0; state.gids[no] != ( gid_t )-1; no++)
+                        for (no = 0; state.gids[no] != ( gid_t ) -1; no++)
                             if (gid == state.gids[no]) {
                                 x = 1;
                                 break;
@@ -661,7 +661,7 @@ attributes(char *s, Coattr_t *p, Coattr_t *d)
                 }
                 continue;
             case HASHKEY3('c', 'p', 'u'):
-                if (p->cpu = sp ? sp->cpu : ( int )strtol(v, NiL, 0))
+                if (p->cpu = sp ? sp->cpu : ( int ) strtol(v, NiL, 0))
                     p->set |= SETCPU;
                 continue;
             case HASHKEY5('d', 'e', 'b', 'u', 'g'):
@@ -710,7 +710,8 @@ attributes(char *s, Coattr_t *p, Coattr_t *d)
                 continue;
             case HASHKEY6('i', 'g', 'n', 'o', 'r', 'e'):
                 p->set |= SETIGNORE;
-                p->ignore = sp ? (sp->flags & IGN) : ( int )strtol(v, NiL, 0);
+                p->ignore
+                = sp ? (sp->flags & IGN) : ( int ) strtol(v, NiL, 0);
                 continue;
             case HASHKEY5('l', 'a', 'b', 'e', 'l'):
                 if (!sp && n) {
@@ -725,7 +726,7 @@ attributes(char *s, Coattr_t *p, Coattr_t *d)
                 continue;
             case HASHKEY6('m', 'a', 'x', 'i', 'd', 'l'):
                 if (!sp) {
-                    p->global.maxidle = ( int )strtol(v, NiL, 0);
+                    p->global.maxidle = ( int ) strtol(v, NiL, 0);
                     p->global.set |= SETMAXIDLE;
                 }
                 continue;
@@ -749,7 +750,7 @@ attributes(char *s, Coattr_t *p, Coattr_t *d)
                 continue;
             case HASHKEY6('p', 'e', 'r', 'c', 'p', 'u'):
                 if (!sp
-                    && (p->global.percpu = ( int )strtol(v, NiL, 0)) > 0) {
+                    && (p->global.percpu = ( int ) strtol(v, NiL, 0)) > 0) {
                     if (p->global.percpu > (state.jobmax - state.job + 1))
                         p->global.percpu = state.jobmax - state.job + 1;
                     p->global.set |= SETPERCPU;
@@ -757,7 +758,7 @@ attributes(char *s, Coattr_t *p, Coattr_t *d)
                 continue;
             case HASHKEY6('p', 'e', 'r', 'h', 'o', 's'):
                 if (!sp
-                    && (p->global.perhost = ( int )strtol(v, NiL, 0)) > 0) {
+                    && (p->global.perhost = ( int ) strtol(v, NiL, 0)) > 0) {
                     if (p->global.perhost > (state.jobmax - state.job + 1))
                         p->global.perhost = state.jobmax - state.job + 1;
                     p->global.set |= SETPERHOST;
@@ -765,7 +766,7 @@ attributes(char *s, Coattr_t *p, Coattr_t *d)
                 continue;
             case HASHKEY6('p', 'e', 'r', 's', 'e', 'r'):
                 if (!sp
-                    && (p->global.perserver = ( int )strtol(v, NiL, 0))
+                    && (p->global.perserver = ( int ) strtol(v, NiL, 0))
                        >= 0) {
                     if (p->global.perserver > (state.jobmax - state.job + 1))
                         p->global.perserver = state.jobmax - state.job + 1;
@@ -774,14 +775,14 @@ attributes(char *s, Coattr_t *p, Coattr_t *d)
                 continue;
             case HASHKEY6('p', 'e', 'r', 'u', 's', 'e'):
                 if (!sp
-                    && (p->global.peruser = ( int )strtol(v, NiL, 0)) > 0) {
+                    && (p->global.peruser = ( int ) strtol(v, NiL, 0)) > 0) {
                     if (p->global.peruser > (state.jobmax - state.job + 1))
                         p->global.peruser = state.jobmax - state.job + 1;
                     p->global.set |= SETPERUSER;
                 }
                 continue;
             case HASHKEY4('p', 'o', 'o', 'l'):
-                if (!sp && (p->global.pool = ( int )strtol(v, NiL, 0)) > 0)
+                if (!sp && (p->global.pool = ( int ) strtol(v, NiL, 0)) > 0)
                     p->global.set |= SETPOOL;
                 continue;
             case HASHKEY6('p', 'r', 'o', 'f', 'i', 'l'):
@@ -808,7 +809,7 @@ attributes(char *s, Coattr_t *p, Coattr_t *d)
                 }
                 continue;
             case HASHKEY5('s', 'c', 'a', 'l', 'e'):
-                if (p->scale = sp ? sp->scale : ( int )strtol(v, NiL, 0))
+                if (p->scale = sp ? sp->scale : ( int ) strtol(v, NiL, 0))
                     p->set |= SETSCALE;
                 continue;
             case HASHKEY6('s', 'c', 'h', 'e', 'd', 'u'):
@@ -936,7 +937,7 @@ misceval(const char *s, char **e, void *handle)
         message((-3, "attribute: %s", *e));
         return (0);
     }
-    return (miscget(( Coshell_t * )handle, s, 0, e, NiL));
+    return (miscget(( Coshell_t * ) handle, s, 0, e, NiL));
 }
 
 /*

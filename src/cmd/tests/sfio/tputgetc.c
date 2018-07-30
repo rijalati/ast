@@ -31,7 +31,7 @@ tmain()
         if (sfputc(f, (i % 26) + 'a') < 0)
             terror("Writing %c", (i % 26) + 'a');
 
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
 
     for (i = 0; i < 10000; ++i)
         if ((c = sfgetc(f)) != ((i % 26) + 'a'))

@@ -60,7 +60,8 @@ struct shtable4
 #    endif
 
 #    define sh_lookup(name, value)                                           \
-        (sh_locate(name, ( Shtable_t * )(value), sizeof(*(value)))->sh_number)
+        (sh_locate(name, ( Shtable_t * ) (value), sizeof(*(value)))          \
+         ->sh_number)
 extern const Shtable_t shtab_testops[];
 extern const Shtable_t shtab_options[];
 extern const Shtable_t shtab_attributes[];

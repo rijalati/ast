@@ -25,7 +25,7 @@ tmain()
     int fd;
     off_t sk;
 
-    if (!(f = sfopen(( Sfio_t * )0, tstfile("sf", 0), "w+")))
+    if (!(f = sfopen(( Sfio_t * ) 0, tstfile("sf", 0), "w+")))
         terror("Opening file");
     fd = sffileno(f);
 
@@ -40,14 +40,14 @@ tmain()
     if (sfwrite(f, "123456789\n", 10) != 10)
         terror("sfwrite");
 
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (sfgetc(f) != '1')
         terror("sfgetc1");
 
     if (sfsetfd(f, -1) != -1 || sffileno(f) != -1)
         terror("setfd2");
-    if ((sk = lseek(fd, ( off_t )0, 1)) != ( off_t )1)
-        terror("Bad seek address %lld", ( Sfoff_t )sk);
+    if ((sk = lseek(fd, ( off_t ) 0, 1)) != ( off_t ) 1)
+        terror("Bad seek address %lld", ( Sfoff_t ) sk);
     if (sfgetc(f) >= 0)
         terror("sfgetc2");
 

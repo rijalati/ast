@@ -53,17 +53,17 @@ int type;
     reg Sfoff_t here, parent;
     reg ssize_t io;
 
-    su = ( Subfile_t * )disc;
+    su = ( Subfile_t * ) disc;
 
     /* read just what we need */
     if (su->extent >= 0
-        && ( ssize_t )n > (io = (ssize_t)(su->extent - su->here)))
+        && ( ssize_t ) n > (io = (ssize_t)(su->extent - su->here)))
         n = io;
     if (n <= 0)
         return n;
 
     /* save current location in parent stream */
-    parent = sfsk(f, ( Sfoff_t )0, SEEK_CUR, disc);
+    parent = sfsk(f, ( Sfoff_t ) 0, SEEK_CUR, disc);
 
     /* read data */
     here = su->here + su->offset;
@@ -94,7 +94,7 @@ size_t n;
 Sfdisc_t *disc;
 #endif
 {
-    return streamio(f, ( Void_t * )buf, n, disc, SF_WRITE);
+    return streamio(f, ( Void_t * ) buf, n, disc, SF_WRITE);
 }
 
 #if __STD_C
@@ -123,7 +123,7 @@ Sfdisc_t *disc;
     reg Subfile_t *su;
     reg Sfoff_t here, parent;
 
-    su = ( Subfile_t * )disc;
+    su = ( Subfile_t * ) disc;
 
     switch (type) {
     case SEEK_SET:
@@ -136,8 +136,8 @@ Sfdisc_t *disc;
         if (su->extent >= 0)
             here = su->extent;
         else {
-            parent = sfsk(f, ( Sfoff_t )0, SEEK_CUR, disc);
-            if ((here = sfsk(f, ( Sfoff_t )0, SEEK_END, disc)) < 0)
+            parent = sfsk(f, ( Sfoff_t ) 0, SEEK_CUR, disc);
+            if ((here = sfsk(f, ( Sfoff_t ) 0, SEEK_END, disc)) < 0)
                 return -1;
             else
                 here -= su->offset;
@@ -185,7 +185,7 @@ Sfoff_t extent; /* desired size */
     reg Sfoff_t here;
 
     /* establish that we can seek to offset */
-    if ((here = sfseek(parent, ( Sfoff_t )0, SEEK_CUR)) < 0
+    if ((here = sfseek(parent, ( Sfoff_t ) 0, SEEK_CUR)) < 0
         || sfseek(parent, offset, SEEK_SET) < 0)
         return 0;
     else
@@ -195,12 +195,12 @@ Sfoff_t extent; /* desired size */
     if (!(sp = f)
         && !(sp = sfnew(NIL(Sfio_t *),
                         NIL(Void_t *),
-                        ( size_t )SF_UNBOUND,
+                        ( size_t ) SF_UNBOUND,
                         dup(sffileno(parent)),
                         parent->flags)))
         return 0;
 
-    if (!(su = ( Subfile_t * )malloc(sizeof(Subfile_t)))) {
+    if (!(su = ( Subfile_t * ) malloc(sizeof(Subfile_t)))) {
         if (sp != f)
             sfclose(sp);
         return 0;
@@ -215,7 +215,7 @@ Sfoff_t extent; /* desired size */
     su->offset = offset;
     su->extent = extent;
 
-    if (sfdisc(sp, ( Sfdisc_t * )su) != ( Sfdisc_t * )su) {
+    if (sfdisc(sp, ( Sfdisc_t * ) su) != ( Sfdisc_t * ) su) {
         free(su);
         if (sp != f)
             sfclose(sp);

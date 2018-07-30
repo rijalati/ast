@@ -44,12 +44,12 @@ typedef struct _sfdisc_s Sfdisc_t;
 #    define Sfulong_t uintmax_t
 #    define Sfdouble_t _ast_fltmax_t
 
-typedef ssize_t(*Sfread_f) _ARG_(( Sfio_t *, Void_t *, size_t, Sfdisc_t * ));
+typedef ssize_t(*Sfread_f) _ARG_(( Sfio_t *, Void_t *, size_t, Sfdisc_t * ) );
 typedef ssize_t(*Sfwrite_f)
-_ARG_(( Sfio_t *, const Void_t *, size_t, Sfdisc_t * ));
-typedef Sfoff_t(*Sfseek_f) _ARG_(( Sfio_t *, Sfoff_t, int, Sfdisc_t * ));
-typedef int(*Sfexcept_f) _ARG_(( Sfio_t *, int, Void_t *, Sfdisc_t * ));
-typedef int(*Sfwalk_f) _ARG_(( Sfio_t *, Void_t * ));
+_ARG_(( Sfio_t *, const Void_t *, size_t, Sfdisc_t * ) );
+typedef Sfoff_t(*Sfseek_f) _ARG_(( Sfio_t *, Sfoff_t, int, Sfdisc_t * ) );
+typedef int(*Sfexcept_f) _ARG_(( Sfio_t *, int, Void_t *, Sfdisc_t * ) );
+typedef int(*Sfwalk_f) _ARG_(( Sfio_t *, Void_t * ) );
 
 /* discipline structure */
 struct _sfdisc_s
@@ -65,8 +65,8 @@ struct _sfdisc_s
 
 /* formatting environment */
 typedef struct _sffmt_s Sffmt_t;
-typedef int(*Sffmtext_f) _ARG_(( Sfio_t *, Void_t *, Sffmt_t * ));
-typedef int(*Sffmtevent_f) _ARG_(( Sfio_t *, int, Void_t *, Sffmt_t * ));
+typedef int(*Sffmtext_f) _ARG_(( Sfio_t *, Void_t *, Sffmt_t * ) );
+typedef int(*Sffmtevent_f) _ARG_(( Sfio_t *, int, Void_t *, Sffmt_t * ) );
 struct _sffmt_s
 {
     long version;        /* version of this structure		*/
@@ -182,8 +182,8 @@ struct _sffmt_s
 #    define SF_EVENT 100 /* start of user-defined events		*/
 
 /* for stack and disciplines */
-#    define SF_POPSTACK (( Sfio_t * )0)  /* pop the stream stack		*/
-#    define SF_POPDISC (( Sfdisc_t * )0) /* pop the discipline stack	*/
+#    define SF_POPSTACK (( Sfio_t * ) 0)  /* pop the stream stack		*/
+#    define SF_POPDISC (( Sfdisc_t * ) 0) /* pop the discipline stack	*/
 
 /* for the notify function and discipline exception */
 #    define SF_NEW 0         /* new stream				*/
@@ -233,37 +233,37 @@ extern Sfio_t _Sfstderr;
 #        define extern __EXPORT__
 #    endif
 
-extern Sfio_t *sfnew _ARG_(( Sfio_t *, Void_t *, size_t, int, int ));
-extern Sfio_t *sfopen _ARG_(( Sfio_t *, const char *, const char * ));
-extern Sfio_t *sfopenat _ARG_(( int, Sfio_t *, const char *, const char * ));
-extern Sfio_t *sfpopen _ARG_(( Sfio_t *, const char *, const char * ));
-extern Sfio_t *sfstack _ARG_(( Sfio_t *, Sfio_t * ));
-extern Sfio_t *sfswap _ARG_(( Sfio_t *, Sfio_t * ));
+extern Sfio_t *sfnew _ARG_(( Sfio_t *, Void_t *, size_t, int, int ) );
+extern Sfio_t *sfopen _ARG_(( Sfio_t *, const char *, const char * ) );
+extern Sfio_t *sfopenat _ARG_(( int, Sfio_t *, const char *, const char * ) );
+extern Sfio_t *sfpopen _ARG_(( Sfio_t *, const char *, const char * ) );
+extern Sfio_t *sfstack _ARG_(( Sfio_t *, Sfio_t * ) );
+extern Sfio_t *sfswap _ARG_(( Sfio_t *, Sfio_t * ) );
 extern Sfio_t *sftmp _ARG_((size_t));
-extern int sfwalk _ARG_(( Sfwalk_f, Void_t *, int ));
-extern int sfpurge _ARG_(( Sfio_t * ));
-extern int sfpoll _ARG_(( Sfio_t **, int, int ));
-extern Void_t *sfreserve _ARG_(( Sfio_t *, ssize_t, int ));
+extern int sfwalk _ARG_(( Sfwalk_f, Void_t *, int ) );
+extern int sfpurge _ARG_(( Sfio_t * ) );
+extern int sfpoll _ARG_(( Sfio_t **, int, int ) );
+extern Void_t *sfreserve _ARG_(( Sfio_t *, ssize_t, int ) );
 extern int sfresize _ARG_((Sfio_t *, Sfoff_t));
-extern int sfsync _ARG_(( Sfio_t * ));
-extern int sfclrlock _ARG_(( Sfio_t * ));
+extern int sfsync _ARG_(( Sfio_t * ) );
+extern int sfclrlock _ARG_(( Sfio_t * ) );
 extern Void_t *sfsetbuf _ARG_((Sfio_t *, Void_t *, size_t));
-extern Sfdisc_t *sfdisc _ARG_(( Sfio_t *, Sfdisc_t * ));
-extern int sfraise _ARG_(( Sfio_t *, int, Void_t * ));
+extern Sfdisc_t *sfdisc _ARG_(( Sfio_t *, Sfdisc_t * ) );
+extern int sfraise _ARG_(( Sfio_t *, int, Void_t * ) );
 extern int sfnotify _ARG_((void (*)(Sfio_t *, int, void *)));
-extern int sfset _ARG_(( Sfio_t *, int, int ));
-extern int sfsetfd _ARG_(( Sfio_t *, int ));
-extern Sfio_t *sfpool _ARG_(( Sfio_t *, Sfio_t *, int ));
+extern int sfset _ARG_(( Sfio_t *, int, int ) );
+extern int sfsetfd _ARG_(( Sfio_t *, int ) );
+extern Sfio_t *sfpool _ARG_(( Sfio_t *, Sfio_t *, int ) );
 extern ssize_t sfread _ARG_((Sfio_t *, Void_t *, size_t));
 extern ssize_t sfwrite _ARG_((Sfio_t *, const Void_t *, size_t));
-extern Sfoff_t sfmove _ARG_(( Sfio_t *, Sfio_t *, Sfoff_t, int ));
-extern int sfclose _ARG_(( Sfio_t * ));
-extern Sfoff_t sftell _ARG_(( Sfio_t * ));
-extern Sfoff_t sfseek _ARG_(( Sfio_t *, Sfoff_t, int ));
-extern ssize_t sfputr _ARG_(( Sfio_t *, const char *, int ));
-extern char *sfgetr _ARG_(( Sfio_t *, int, int ));
+extern Sfoff_t sfmove _ARG_(( Sfio_t *, Sfio_t *, Sfoff_t, int ) );
+extern int sfclose _ARG_(( Sfio_t * ) );
+extern Sfoff_t sftell _ARG_(( Sfio_t * ) );
+extern Sfoff_t sfseek _ARG_(( Sfio_t *, Sfoff_t, int ) );
+extern ssize_t sfputr _ARG_(( Sfio_t *, const char *, int ) );
+extern char *sfgetr _ARG_(( Sfio_t *, int, int ) );
 extern ssize_t sfnputc _ARG_((Sfio_t *, int, size_t));
-extern int sfungetc _ARG_(( Sfio_t *, int ));
+extern int sfungetc _ARG_(( Sfio_t *, int ) );
 extern int sfprintf _ARG_((Sfio_t *, const char *, ...));
 extern char *sfprints _ARG_((const char *, ...));
 extern ssize_t sfaprints _ARG_((char **, const char *, ...));
@@ -275,17 +275,17 @@ extern int sfscanf _ARG_((Sfio_t *, const char *, ...));
 extern int sfsscanf _ARG_((const char *, const char *, ...));
 extern int sfvsscanf _ARG_((const char *, const char *, va_list));
 extern int sfvscanf _ARG_((Sfio_t *, const char *, va_list));
-extern int sfgetwc _ARG_(( Sfio_t * ));
+extern int sfgetwc _ARG_(( Sfio_t * ) );
 extern int sfputwc _ARG_((Sfio_t *, int w));
 
 /* mutex locking for thread-safety */
-extern int sfmutex _ARG_(( Sfio_t *, int ));
+extern int sfmutex _ARG_(( Sfio_t *, int ) );
 
 /* io functions with discipline continuation */
-extern ssize_t sfrd _ARG_(( Sfio_t *, Void_t *, size_t, Sfdisc_t * ));
-extern ssize_t sfwr _ARG_(( Sfio_t *, const Void_t *, size_t, Sfdisc_t * ));
-extern Sfoff_t sfsk _ARG_(( Sfio_t *, Sfoff_t, int, Sfdisc_t * ));
-extern ssize_t sfpkrd _ARG_(( int, Void_t *, size_t, int, long, int ));
+extern ssize_t sfrd _ARG_(( Sfio_t *, Void_t *, size_t, Sfdisc_t * ) );
+extern ssize_t sfwr _ARG_(( Sfio_t *, const Void_t *, size_t, Sfdisc_t * ) );
+extern Sfoff_t sfsk _ARG_(( Sfio_t *, Sfoff_t, int, Sfdisc_t * ) );
+extern ssize_t sfpkrd _ARG_(( int, Void_t *, size_t, int, long, int ) );
 
 /* portable handling of primitive types */
 extern int sfdlen _ARG_((Sfdouble_t));
@@ -296,36 +296,36 @@ extern int sfputd _ARG_((Sfio_t *, Sfdouble_t));
 extern int sfputl _ARG_((Sfio_t *, Sflong_t));
 extern int sfputu _ARG_((Sfio_t *, Sfulong_t));
 extern int sfputm _ARG_((Sfio_t *, Sfulong_t, Sfulong_t));
-extern int sfputc _ARG_(( Sfio_t *, int ));
+extern int sfputc _ARG_(( Sfio_t *, int ) );
 
-extern Sfdouble_t sfgetd _ARG_(( Sfio_t * ));
-extern Sflong_t sfgetl _ARG_(( Sfio_t * ));
-extern Sfulong_t sfgetu _ARG_(( Sfio_t * ));
+extern Sfdouble_t sfgetd _ARG_(( Sfio_t * ) );
+extern Sflong_t sfgetl _ARG_(( Sfio_t * ) );
+extern Sfulong_t sfgetu _ARG_(( Sfio_t * ) );
 extern Sfulong_t sfgetm _ARG_((Sfio_t *, Sfulong_t));
-extern int sfgetc _ARG_(( Sfio_t * ));
+extern int sfgetc _ARG_(( Sfio_t * ) );
 
 extern int _sfputd _ARG_((Sfio_t *, Sfdouble_t));
 extern int _sfputl _ARG_((Sfio_t *, Sflong_t));
 extern int _sfputu _ARG_((Sfio_t *, Sfulong_t));
 extern int _sfputm _ARG_((Sfio_t *, Sfulong_t, Sfulong_t));
-extern int _sfflsbuf _ARG_(( Sfio_t *, int ));
+extern int _sfflsbuf _ARG_(( Sfio_t *, int ) );
 
-extern int _sffilbuf _ARG_(( Sfio_t *, int ));
+extern int _sffilbuf _ARG_(( Sfio_t *, int ) );
 
 extern int _sfdlen _ARG_((Sfdouble_t));
 extern int _sfllen _ARG_((Sflong_t));
 extern int _sfulen _ARG_((Sfulong_t));
 
 /* miscellaneous function analogues of fast in-line functions */
-extern Sfoff_t sfsize _ARG_(( Sfio_t * ));
-extern int sfclrerr _ARG_(( Sfio_t * ));
-extern int sfeof _ARG_(( Sfio_t * ));
-extern int sferror _ARG_(( Sfio_t * ));
-extern int sffileno _ARG_(( Sfio_t * ));
-extern int sfstacked _ARG_(( Sfio_t * ));
-extern ssize_t sfvalue _ARG_(( Sfio_t * ));
-extern ssize_t sfslen _ARG_(( void ));
-extern ssize_t sfmaxr _ARG_(( ssize_t, int ));
+extern Sfoff_t sfsize _ARG_(( Sfio_t * ) );
+extern int sfclrerr _ARG_(( Sfio_t * ) );
+extern int sfeof _ARG_(( Sfio_t * ) );
+extern int sferror _ARG_(( Sfio_t * ) );
+extern int sffileno _ARG_(( Sfio_t * ) );
+extern int sfstacked _ARG_(( Sfio_t * ) );
+extern ssize_t sfvalue _ARG_(( Sfio_t * ) );
+extern ssize_t sfslen _ARG_(( void ) );
+extern ssize_t sfmaxr _ARG_(( ssize_t, int ) );
 
 #    undef extern
 _END_EXTERNS_
@@ -345,7 +345,7 @@ _END_EXTERNS_
 #    if __cplusplus
 #        define _SF_(f) (f)
 #    else
-#        define _SF_(f) (( Sfio_t * )(f))
+#        define _SF_(f) (( Sfio_t * ) (f))
 #    endif
 
 #    define __sf_putd(f, v) (_sfputd(_SF_(f), (Sfdouble_t)(v)))
@@ -356,11 +356,11 @@ _END_EXTERNS_
 
 #    define __sf_putc(f, c)                                                  \
         (_SF_(f)->_next >= _SF_(f)->_endw                                    \
-         ? _sfflsbuf(_SF_(f), ( int )(( unsigned char )(c)))                 \
-         : ( int )(*_SF_(f)->_next++ = ( unsigned char )(c)))
+         ? _sfflsbuf(_SF_(f), ( int ) (( unsigned char ) (c)))               \
+         : ( int ) (*_SF_(f)->_next++ = ( unsigned char ) (c)))
 #    define __sf_getc(f)                                                     \
         (_SF_(f)->_next >= _SF_(f)->_endr ? _sffilbuf(_SF_(f), 0)            \
-                                          : ( int )(*_SF_(f)->_next++))
+                                          : ( int ) (*_SF_(f)->_next++))
 
 #    define __sf_dlen(v) (_sfdlen((Sfdouble_t)(v)))
 #    define __sf_llen(v) (_sfllen((Sflong_t)(v)))
@@ -375,7 +375,7 @@ _END_EXTERNS_
 #    define __sf_eof(f) (_SF_(f)->_flags & SF_EOF)
 #    define __sf_error(f) (_SF_(f)->_flags & SF_ERROR)
 #    define __sf_clrerr(f) (_SF_(f)->_flags &= ~(SF_ERROR | SF_EOF))
-#    define __sf_stacked(f) (_SF_(f)->_push != ( Sfio_t * )0)
+#    define __sf_stacked(f) (_SF_(f)->_push != ( Sfio_t * ) 0)
 #    define __sf_value(f) (_SF_(f)->_val)
 #    define __sf_slen() (_Sfi)
 #    define __sf_maxr(n, s)                                                  \
@@ -505,43 +505,43 @@ sfmaxr(ssize_t n, int s)
 #        define sfstrclose(f) sfclose(f)
 
 #        define sfstrseek(f, p, m)                                           \
-            (                                                                \
-            (m) == SEEK_SET                                                  \
-            ? (((p) < 0 || (p) > (f)->_size)                                 \
-               ? ( char * )0                                                 \
-               : ( char * )((f)->_next = (f)->_data + (p)))                  \
-            : (m) == SEEK_CUR                                                \
-              ? ((f)->_next += (p),                                          \
-                 (((f)->_next < (f)->_data                                   \
-                   || (f)->_next > (f)->_data + (f)->_size)                  \
-                  ? ((f)->_next -= (p), ( char * )0)                         \
-                  : ( char * )(f)->_next))                                   \
-              : (m) == SEEK_END                                              \
-                ? (((p) > 0 || (f)->_size < -(p))                            \
-                   ? ( char * )0                                             \
-                   : ( char * )((f)->_next = (f)->_data + (f)->_size + (p))) \
-                : ( char * )0)
+            ((m) == SEEK_SET                                                 \
+             ? (((p) < 0 || (p) > (f)->_size)                                \
+                ? ( char * ) 0                                               \
+                : ( char * ) ((f)->_next = (f)->_data + (p)))                \
+             : (m) == SEEK_CUR                                               \
+               ? ((f)->_next += (p),                                         \
+                  (((f)->_next < (f)->_data                                  \
+                    || (f)->_next > (f)->_data + (f)->_size)                 \
+                   ? ((f)->_next -= (p), ( char * ) 0)                       \
+                   : ( char * ) (f)->_next))                                 \
+               : (m) == SEEK_END                                             \
+                 ? (((p) > 0 || (f)->_size < -(p))                           \
+                    ? ( char * ) 0                                           \
+                    : ( char * ) ((f)->_next                                 \
+                                  = (f)->_data + (f)->_size + (p)))          \
+                 : ( char * ) 0)
 
 #        define sfstrsize(f) ((f)->_size)
 #        define sfstrtell(f) ((f)->_next - (f)->_data)
 #        define sfstrpend(f) ((f)->_size - sfstrtell())
-#        define sfstrbase(f) (( char * )(f)->_data)
+#        define sfstrbase(f) (( char * ) (f)->_data)
 
 #        define sfstruse(f)                                                  \
-            (sfputc((f), 0) < 0 ? ( char * )0                                \
-                                : ( char * )((f)->_next = (f)->_data))
+            (sfputc((f), 0) < 0 ? ( char * ) 0                               \
+                                : ( char * ) ((f)->_next = (f)->_data))
 
 #        define sfstrrsrv(f, n)                                              \
             (sfreserve((f), (n), SF_WRITE | SF_LOCKR),                       \
              sfwrite((f), (f)->_next, 0),                                    \
              ((f)->_next + (n) <= (f)->_data + (f)->_size                    \
-              ? ( char * )(f)->_next                                         \
-              : ( char * )0))
+              ? ( char * ) (f)->_next                                        \
+              : ( char * ) 0))
 
 #        define sfstrbuf(f, b, n, m)                                         \
             (sfsetbuf((f), (b), (n)),                                        \
              ((f)->_flags |= (m) ? SF_MALLOC : 0),                           \
-             ((f)->_data == ( unsigned char * )(b) ? 0 : -1))
+             ((f)->_data == ( unsigned char * ) (b) ? 0 : -1))
 
 #    endif /* _SFSTR_H */
 

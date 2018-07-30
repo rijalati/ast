@@ -59,14 +59,14 @@ a64l(const char *str)
             break;
         ul |= (cp - letter) << (6 * n);
     }
-    return (( long )ul);
+    return (( long ) ul);
 }
 
 extern char *
 l64a(long l)
 {
     static char buff[7];
-    unsigned ul = (( unsigned long )l & 0xffffffff);
+    unsigned ul = (( unsigned long ) l & 0xffffffff);
     char *cp = buff;
     while (ul > 0) {
         *cp++ = letter[ul & 077];

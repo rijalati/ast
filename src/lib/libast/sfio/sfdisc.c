@@ -91,9 +91,9 @@ Sfdisc_t *disc;
         return size;
 
     /* read from available data */
-    dcca = ( Dccache_t * )disc;
-    if ((sz = dcca->endb - dcca->data) > ( ssize_t )size)
-        sz = ( ssize_t )size;
+    dcca = ( Dccache_t * ) disc;
+    if ((sz = dcca->endb - dcca->data) > ( ssize_t ) size)
+        sz = ( ssize_t ) size;
     memcpy(buf, dcca->data, sz);
 
     if ((dcca->data += sz) >= dcca->endb) /* free empty cache */
@@ -123,7 +123,7 @@ Sfdisc_t *disc;
 
     SFMTXENTER(f, NIL(Sfdisc_t *));
 
-    if (( Sfio_t * )disc == f) /* special case to get the top discipline */
+    if (( Sfio_t * ) disc == f) /* special case to get the top discipline */
         SFMTXRETURN(f, f->disc);
 
     if ((f->flags & SF_READ) && f->proc
@@ -146,7 +146,7 @@ Sfdisc_t *disc;
 
     /* synchronize before switching to a new discipline */
     if (!(f->flags & SF_STRING)) {
-        ( void )SFSYNC(f); /* do a silent buffer synch */
+        ( void ) SFSYNC(f); /* do a silent buffer synch */
         if ((f->mode & SF_READ) && (f->mode & SF_SYNCED)) {
             f->mode &= ~SF_SYNCED;
             f->endb = f->next = f->endr = f->endw = f->data;
@@ -176,7 +176,7 @@ Sfdisc_t *disc;
 
         /* trick the new discipline into processing already buffered data */
         if ((f->mode & SF_READ) && n > 0 && disc && disc->readf) {
-            if (!(dcca = ( Dccache_t * )malloc(sizeof(Dccache_t) + n)))
+            if (!(dcca = ( Dccache_t * ) malloc(sizeof(Dccache_t) + n)))
                 goto done;
             memclear(dcca, sizeof(Dccache_t));
 
@@ -184,7 +184,7 @@ Sfdisc_t *disc;
             dcca->disc.exceptf = _dccaexcept;
 
             /* move buffered data into the temp discipline */
-            dcca->data = (( uchar * )dcca) + sizeof(Dccache_t);
+            dcca->data = (( uchar * ) dcca) + sizeof(Dccache_t);
             dcca->endb = dcca->data + n;
             memcpy(dcca->data, f->next, n);
             f->endb = f->next = f->endr = f->endw = f->data;
@@ -208,7 +208,7 @@ Sfdisc_t *disc;
         disc = d->disc;
         if (d->exceptf) {
             SFOPEN(f, 0);
-            if ((*(d->exceptf))(f, SF_DPOP, ( Void_t * )disc, d) < 0)
+            if ((*(d->exceptf))(f, SF_DPOP, ( Void_t * ) disc, d) < 0)
                 goto done;
             SFLOCK(f, 0);
         }
@@ -219,7 +219,7 @@ Sfdisc_t *disc;
             d = f->disc;
             if (d && d->exceptf) {
                 SFOPEN(f, 0);
-                if ((*(d->exceptf))(f, SF_DPUSH, ( Void_t * )disc, d) < 0)
+                if ((*(d->exceptf))(f, SF_DPUSH, ( Void_t * ) disc, d) < 0)
                     goto done;
                 SFLOCK(f, 0);
             }
@@ -261,12 +261,12 @@ Sfdisc_t *disc;
             SETLOCAL(f);
             f->bits &= ~SF_NULL; /* turn off /dev/null handling */
             if ((f->bits & SF_MMAP) || (f->mode & SF_INIT))
-                sfsetbuf(f, NIL(Void_t *), ( size_t )SF_UNBOUND);
+                sfsetbuf(f, NIL(Void_t *), ( size_t ) SF_UNBOUND);
             else if (f->data == f->tiny)
                 sfsetbuf(f, NIL(Void_t *), 0);
             else {
                 int flags = f->flags;
-                sfsetbuf(f, ( Void_t * )f->data, f->size);
+                sfsetbuf(f, ( Void_t * ) f->data, f->size);
                 f->flags |= (flags & SF_MALLOC);
             }
         }

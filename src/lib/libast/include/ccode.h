@@ -71,16 +71,16 @@ ccmaplist(Ccmap_t *);
 #    undef extern
 
 #    define CCOP(i, o) ((i) == (o) ? 0 : (((o) << 8) | (i)))
-#    define CCIN(x) (( x )&0xFF)
+#    define CCIN(x) (( x ) &0xFF)
 #    define CCOUT(x) (((x) >> 8) & 0xFF)
-#    define CCCONVERT(x) (( x )&0xFF00)
+#    define CCCONVERT(x) (( x ) &0xFF00)
 
 #    define CCCVT(x) CCMAP(x, 0)
-#    define CCMAP(i, o) ((i) == (o) ? ( unsigned char * )0 : _ccmap(i, o))
+#    define CCMAP(i, o) ((i) == (o) ? ( unsigned char * ) 0 : _ccmap(i, o))
 #    define CCMAPCHR(m, c) ((m) ? (m)[c] : (c))
 #    define CCMAPCPY(m, t, f, n)                                             \
         ((m) ? _ccmapcpy(m, t, f, n) : memcpy(t, f, n))
-#    define CCMAPSTR(m, s, n) ((m) ? _ccmapstr(m, s, n) : ( void * )(s))
+#    define CCMAPSTR(m, s, n) ((m) ? _ccmapstr(m, s, n) : ( void * ) (s))
 
 #    define ccmap(i, o) CCMAP(i, o)
 #    define ccmapchr(m, c) CCMAPCHR(m, c)
@@ -91,7 +91,7 @@ ccmaplist(Ccmap_t *);
 #    define CCMAPM(t, f, n, i, o)                                            \
         ((i) == (o) ? memcpy(t, f, n) : _ccmapcpy(CCMAP(i, o), t, f, n))
 #    define CCMAPS(s, n, i, o)                                               \
-        ((i) == (o) ? ( void * )(s) : _ccmapstr(CCMAP(i, o), s, n))
+        ((i) == (o) ? ( void * ) (s) : _ccmapstr(CCMAP(i, o), s, n))
 
 #    define ccmapc(c, i, o) CCMAPC(c, i, o)
 #    define ccmapm(t, f, n, i, o) CCMAPM(t, f, n, i, o)

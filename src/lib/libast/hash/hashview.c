@@ -59,10 +59,10 @@ hashview(Hash_table_t *top, Hash_table_t *bot)
             sp = &top->table[0];
             while (sp < sx)
                 for (b = *sp++; b; b = b->next)
-                    if (p = ( Hash_bucket_t * )hashlook(
+                    if (p = ( Hash_bucket_t * ) hashlook(
                         bot, b->name, HASH_LOOKUP, NiL)) {
                         b->name
-                        = (p->hash & HASH_HIDES) ? p->name : ( char * )b;
+                        = (p->hash & HASH_HIDES) ? p->name : ( char * ) b;
                         b->hash |= HASH_HIDES;
                     }
             top->scope = bot;
@@ -75,7 +75,7 @@ hashview(Hash_table_t *top, Hash_table_t *bot)
             for (b = *sp++; b; b = b->next)
                 if (b->hash & HASH_HIDES) {
                     b->hash &= ~HASH_HIDES;
-                    b->name = (( Hash_bucket_t * )b->name)->name;
+                    b->name = (( Hash_bucket_t * ) b->name)->name;
                 }
         top->scope = 0;
         bot->frozen--;

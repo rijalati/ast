@@ -95,7 +95,7 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
     unsigned char FAR *from; /* where to copy match from */
 
     /* copy state to local variables */
-    state = ( struct inflate_state FAR * )strm->state;
+    state = ( struct inflate_state FAR * ) strm->state;
     in = strm->next_in - OFF;
     last = in + (strm->avail_in - 5);
     out = strm->next_out - OFF;
@@ -119,64 +119,64 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
        input data or output space */
     do {
         if (bits < 15) {
-            hold += ( unsigned long )(PUP(in)) << bits;
+            hold += ( unsigned long ) (PUP(in)) << bits;
             bits += 8;
-            hold += ( unsigned long )(PUP(in)) << bits;
+            hold += ( unsigned long ) (PUP(in)) << bits;
             bits += 8;
         }
         this = lcode[hold & lmask];
     dolen:
-        op = ( unsigned )(this.bits);
+        op = ( unsigned ) (this.bits);
         hold >>= op;
         bits -= op;
-        op = ( unsigned )(this.op);
+        op = ( unsigned ) (this.op);
         if (op == 0) { /* literal */
             Tracevv((stderr,
                      this.val >= 0x20 && this.val < 0x7f
                      ? "inflate:         literal '%c'\n"
                      : "inflate:         literal 0x%02x\n",
                      this.val));
-            PUP(out) = ( unsigned char )(this.val);
+            PUP(out) = ( unsigned char ) (this.val);
         } else if (op & 16) { /* length base */
-            len = ( unsigned )(this.val);
+            len = ( unsigned ) (this.val);
             op &= 15; /* number of extra bits */
             if (op) {
                 if (bits < op) {
-                    hold += ( unsigned long )(PUP(in)) << bits;
+                    hold += ( unsigned long ) (PUP(in)) << bits;
                     bits += 8;
                 }
-                len += ( unsigned )hold & ((1U << op) - 1);
+                len += ( unsigned ) hold & ((1U << op) - 1);
                 hold >>= op;
                 bits -= op;
             }
             Tracevv((stderr, "inflate:         length %u\n", len));
             if (bits < 15) {
-                hold += ( unsigned long )(PUP(in)) << bits;
+                hold += ( unsigned long ) (PUP(in)) << bits;
                 bits += 8;
-                hold += ( unsigned long )(PUP(in)) << bits;
+                hold += ( unsigned long ) (PUP(in)) << bits;
                 bits += 8;
             }
             this = dcode[hold & dmask];
         dodist:
-            op = ( unsigned )(this.bits);
+            op = ( unsigned ) (this.bits);
             hold >>= op;
             bits -= op;
-            op = ( unsigned )(this.op);
+            op = ( unsigned ) (this.op);
             if (op & 16) { /* distance base */
-                dist = ( unsigned )(this.val);
+                dist = ( unsigned ) (this.val);
                 op &= 15; /* number of extra bits */
                 if (bits < op) {
-                    hold += ( unsigned long )(PUP(in)) << bits;
+                    hold += ( unsigned long ) (PUP(in)) << bits;
                     bits += 8;
                     if (bits < op) {
-                        hold += ( unsigned long )(PUP(in)) << bits;
+                        hold += ( unsigned long ) (PUP(in)) << bits;
                         bits += 8;
                     }
                 }
-                dist += ( unsigned )hold & ((1U << op) - 1);
+                dist += ( unsigned ) hold & ((1U << op) - 1);
 #    ifdef INFLATE_STRICT
                 if (dist > dmax) {
-                    strm->msg = ( char * )"invalid distance too far back";
+                    strm->msg = ( char * ) "invalid distance too far back";
                     state->mode = BAD;
                     break;
                 }
@@ -184,11 +184,12 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
                 hold >>= op;
                 bits -= op;
                 Tracevv((stderr, "inflate:         distance %u\n", dist));
-                op = ( unsigned )(out - beg); /* max distance in output */
-                if (dist > op) {              /* see if copy from window */
-                    op = dist - op;           /* distance back in window */
+                op = ( unsigned ) (out - beg); /* max distance in output */
+                if (dist > op) {               /* see if copy from window */
+                    op = dist - op;            /* distance back in window */
                     if (op > whave) {
-                        strm->msg = ( char * )"invalid distance too far back";
+                        strm->msg
+                        = ( char * ) "invalid distance too far back";
                         state->mode = BAD;
                         break;
                     }
@@ -259,7 +260,7 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
                 this = dcode[this.val + (hold & ((1U << op) - 1))];
                 goto dodist;
             } else {
-                strm->msg = ( char * )"invalid distance code";
+                strm->msg = ( char * ) "invalid distance code";
                 state->mode = BAD;
                 break;
             }
@@ -271,7 +272,7 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
             state->mode = TYPE;
             break;
         } else {
-            strm->msg = ( char * )"invalid literal/length code";
+            strm->msg = ( char * ) "invalid literal/length code";
             state->mode = BAD;
             break;
         }
@@ -288,9 +289,9 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
     strm->next_in = in + OFF;
     strm->next_out = out + OFF;
     strm->avail_in
-    = ( unsigned )(in < last ? 5 + (last - in) : 5 - (in - last));
+    = ( unsigned ) (in < last ? 5 + (last - in) : 5 - (in - last));
     strm->avail_out
-    = ( unsigned )(out < end ? 257 + (end - out) : 257 - (out - end));
+    = ( unsigned ) (out < end ? 257 + (end - out) : 257 - (out - end));
     state->hold = hold;
     state->bits = bits;
     return;

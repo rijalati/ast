@@ -334,8 +334,8 @@ b_who(int argc, char **argv, Shbltin_t *context)
         argc = 0;
     }
     if (error_info.errors || argc)
-        error(ERROR_usage(2), "%s", optusage(( char * )0));
-    if (!(sp = sfopen(( Sfio_t * )0, UTMP, "r")))
+        error(ERROR_usage(2), "%s", optusage(( char * ) 0));
+    if (!(sp = sfopen(( Sfio_t * ) 0, UTMP, "r")))
         error(ERROR_system(1), "%s: cannot open", UTMP);
     who(sp, sfstdout, flags);
     sfclose(sp);

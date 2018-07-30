@@ -136,7 +136,7 @@ typedef struct rdirent_t rdirent_t;
 #define APPEND_VERSION(fd, tp, df)                                           \
     {                                                                        \
         locking(fd);                                                         \
-        sfwrite(fd, ( char * )tp, tp->length);                               \
+        sfwrite(fd, ( char * ) tp, tp->length);                              \
         sfseek(df, 0L, 0);                                                   \
         sfmove(df, fd, -1, -1);                                              \
         unlocking(fd);                                                       \

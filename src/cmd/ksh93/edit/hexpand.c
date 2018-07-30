@@ -80,7 +80,7 @@ parse_subst(Shell_t *shp, const char *s, struct subst *sb)
     /* get delimiter */
     del = *s;
 
-    cp = ( char * )s + 1;
+    cp = ( char * ) s + 1;
 
     while (n < 2) {
         if (*cp == del || *cp == '\n' || *cp == '\0') {
@@ -175,7 +175,7 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
     if (off = stktell(shp->stk))
         sp = stkfreeze(shp->stk, 0);
 
-    cp = ( char * )ln;
+    cp = ( char * ) ln;
 
     while (cp && *cp) {
         /* read until event/quick substitution/comment designator */
@@ -441,7 +441,7 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
 
             do {
                 cc = strchr(qc, c);
-                q ^= cc ? 1 << ( int )(cc - qc) : 0;
+                q ^= cc ? 1 << ( int ) (cc - qc) : 0;
                 if (p)
                     sfputc(tmp, c);
             } while ((c = sfgetc(ref)) > 0 && (!isspace(c) || q));
@@ -545,7 +545,7 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
                 if (c == 's') {
                     /* preset old with match from !?string? */
                     if (!sb.str[0] && wm)
-                        sb.str[0] = strdup(sfsetbuf(wm, ( Void_t * )1, 0));
+                        sb.str[0] = strdup(sfsetbuf(wm, ( Void_t * ) 1, 0));
                     cp = parse_subst(shp, cp, &sb);
                 }
 
@@ -562,7 +562,7 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
                 }
 
                 /* need pointer for strstr() */
-                str = sfsetbuf(tmp, ( Void_t * )1, 0);
+                str = sfsetbuf(tmp, ( Void_t * ) 1, 0);
 
                 flag |= HIST_SUBSTITUTE;
                 while (flag & HIST_SUBSTITUTE) {

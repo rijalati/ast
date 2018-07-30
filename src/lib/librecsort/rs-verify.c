@@ -44,7 +44,7 @@ reg Rsobj_t *obj;
     reg ulong oh, ph;
     reg uchar *k;
     reg Rsobj_t *p;
-    reg Rsverify_t *verify = ( Rsverify_t * )rs->methdata;
+    reg Rsverify_t *verify = ( Rsverify_t * ) rs->methdata;
 
     p = &verify->obj;
     ph = p->order;
@@ -159,12 +159,12 @@ verifylist(Rs_t *rs)
 static Rsobj_t *verifylist(rs) Rs_t *rs;
 #endif
 {
-    reg Rsverify_t *verify = ( Rsverify_t * )rs->methdata;
+    reg Rsverify_t *verify = ( Rsverify_t * ) rs->methdata;
     reg Rsobj_t *p = &verify->obj;
     reg uchar *k;
 
     if (verify->n > 0 && p->data) { /* save data space for last object */
-        if (!(k = ( uchar * )vmalloc(rs->vm, p->datalen)))
+        if (!(k = ( uchar * ) vmalloc(rs->vm, p->datalen)))
             return NIL(Rsobj_t *);
         memcpy(k, p->data, p->datalen);
         p->data = k;

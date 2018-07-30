@@ -69,6 +69,6 @@ ivstr(Iv_t *iv,
     r = 0;
 done:
     if (e)
-        *e = ( char * )(s - 1);
+        *e = ( char * ) (s - 1);
     return r;
 }

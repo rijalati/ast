@@ -52,7 +52,7 @@ mamcanon(char *path)
 ssize_t
 mamerror(int fd, const void *b, size_t n)
 {
-    char *s = ( char * )b;
+    char *s = ( char * ) b;
     char *e;
     char *t;
 
@@ -60,7 +60,7 @@ mamerror(int fd, const void *b, size_t n)
         if (e = strchr(s, ':')) {
             for (s = e; *++s && *s == ' ';)
                 ;
-            n -= s - ( char * )b;
+            n -= s - ( char * ) b;
         }
         switch (state.mam.level) {
         case ERROR_WARNING:
@@ -221,7 +221,7 @@ mamout(Rule_t *r)
         return 0;
     if (state.mam.regress)
         return (r->property & P_dontcare) && !state.mam.dontcare
-               ? ( Sfio_t * )0
+               ? ( Sfio_t * ) 0
                : state.mam.out;
     if (r->property & (P_make | P_state))
         return 0;

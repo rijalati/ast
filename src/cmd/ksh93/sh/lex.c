@@ -201,7 +201,7 @@ refvar(Lex_t *lp, int type)
 static void
 lex_advance(Sfio_t *iop, const char *buff, int size, void *context)
 {
-    Lex_t *lp = ( Lex_t * )context;
+    Lex_t *lp = ( Lex_t * ) context;
     Shell_t *shp = lp->sh;
     Sfio_t *log = shp->funlog;
     Stk_t *stkp = shp->stk;
@@ -210,7 +210,7 @@ lex_advance(Sfio_t *iop, const char *buff, int size, void *context)
     if (iop && !sfstacked(iop)) {
         if (sh_isstate(shp, SH_HISTORY) && shp->gd->hist_ptr)
             log = shp->gd->hist_ptr->histfp;
-        sfwrite(log, ( void * )buff, size);
+        sfwrite(log, ( void * ) buff, size);
         if (sh_isstate(shp, SH_VERBOSE))
             sfwrite(sfstderr, buff, size);
     }
@@ -218,19 +218,19 @@ lex_advance(Sfio_t *iop, const char *buff, int size, void *context)
     if (lp->lexd.nocopy)
         return;
     if (lp->lexd.dolparen && lp->lexd.docword && lp->lexd.docend) {
-        int n = size - (lp->lexd.docend - ( char * )buff);
+        int n = size - (lp->lexd.docend - ( char * ) buff);
         sfwrite(shp->strbuf, lp->lexd.docend, n);
         lp->lexd.docextra += n;
         if (sffileno(iop) >= 0)
-            lp->lexd.docend = sfsetbuf(iop, ( Void_t * )iop, 0);
+            lp->lexd.docend = sfsetbuf(iop, ( Void_t * ) iop, 0);
         else
             lp->lexd.docend = fcfirst();
     }
     if (lp->lexd.first) {
-        size -= (lp->lexd.first - ( char * )buff);
+        size -= (lp->lexd.first - ( char * ) buff);
         buff = lp->lexd.first;
         if (!lp->lexd.noarg)
-            lp->arg = ( struct argnod * )stkseek(stkp, ARGVAL);
+            lp->arg = ( struct argnod * ) stkseek(stkp, ARGVAL);
 #if SHOPT_KIA
         lp->lexd.kiaoff += ARGVAL;
 #endif /* SHOPT_KIA */
@@ -281,7 +281,7 @@ Lex_t *
 sh_lexopen(Lex_t *lp, Shell_t *shp, int mode)
 {
     if (!lp) {
-        lp = ( Lex_t * )newof(0, Lex_t, 1, 0);
+        lp = ( Lex_t * ) newof(0, Lex_t, 1, 0);
         lp->sh = shp;
         shp->lexsize = sizeof(Lex_t);
     }
@@ -665,7 +665,7 @@ sh_lex(Lex_t *lp)
                 if (sp)
                     fcfopen(sp);
                 else
-                    fcsopen(( char * )state);
+                    fcsopen(( char * ) state);
                 /* remove \new-line */
                 n = stktell(stkp) - c;
                 stkseek(stkp, n);
@@ -1291,9 +1291,9 @@ breakloop:
     }
     if (!(state = lp->lexd.first))
         state = fcfirst();
-    n = fcseek(0) - ( char * )state;
+    n = fcseek(0) - ( char * ) state;
     if (!lp->arg)
-        lp->arg = ( struct argnod * )stkseek(stkp, ARGVAL);
+        lp->arg = ( struct argnod * ) stkseek(stkp, ARGVAL);
     if (n > 0)
         sfwrite(stkp, state, n);
     /* add balancing character if necessary */
@@ -1328,7 +1328,7 @@ breakloop:
                && sh_isoption(lp->sh, SH_BRACEEXPAND)) {
         if (!strchr(state, ',')) {
             stkseek(stkp, stktell(stkp) - 1);
-            lp->arg = ( struct argnod * )stkfreeze(stkp, 1);
+            lp->arg = ( struct argnod * ) stkfreeze(stkp, 1);
             return (lp->token = IOVNAME);
         }
         c = wordflags;
@@ -1336,7 +1336,7 @@ breakloop:
         c = wordflags;
     if (assignment < 0) {
         stkseek(stkp, stktell(stkp) - 1);
-        lp->arg = ( struct argnod * )stkfreeze(stkp, 1);
+        lp->arg = ( struct argnod * ) stkfreeze(stkp, 1);
         lp->lex.reservok = 1;
         return (lp->token = LABLSYM);
     }
@@ -1354,7 +1354,7 @@ breakloop:
         c |= ARG_MAC;
     }
     if (c == 0 || (c & (ARG_MAC | ARG_EXP | ARG_MESSAGE))) {
-        lp->arg = ( struct argnod * )stkfreeze(stkp, 1);
+        lp->arg = ( struct argnod * ) stkfreeze(stkp, 1);
         lp->arg->argflag = (c ? c : ARG_RAW);
     } else if (mode == ST_NONE)
         lp->arg = sh_endword(shp, -1);
@@ -1542,7 +1542,7 @@ comsub(Lex_t *lp, int endtok)
         if (endtok == LPAREN && lp->lexd.paren) {
 
             if (first == lp->lexd.first) {
-                n = cp + 1 - ( char * )fcseek(0);
+                n = cp + 1 - ( char * ) fcseek(0);
                 fcseek(n);
             }
             count++;
@@ -1672,13 +1672,13 @@ nested_here(Lex_t *lp)
     iop->iolst = lp->heredoc;
     stkseek(stkp, ARGVAL);
     if (lp->lexd.docextra) {
-        sfseek(lp->sh->strbuf, ( Sfoff_t )0, SEEK_SET);
+        sfseek(lp->sh->strbuf, ( Sfoff_t ) 0, SEEK_SET);
         sfmove(lp->sh->strbuf, stkp, lp->lexd.docextra, -1);
-        sfseek(lp->sh->strbuf, ( Sfoff_t )0, SEEK_SET);
+        sfseek(lp->sh->strbuf, ( Sfoff_t ) 0, SEEK_SET);
     }
     sfwrite(stkp, lp->lexd.docend, n);
     lp->arg = sh_endword(lp->sh, 0);
-    iop->ioname = ( char * )(iop + 1);
+    iop->ioname = ( char * ) (iop + 1);
     strcpy(iop->ioname, lp->arg->argval);
     iop->iofile = (IODOC | IORAW);
     if (lp->lexd.docword > 1)
@@ -1724,9 +1724,9 @@ sh_lexskip(Lex_t *lp, int close, int copy, int state)
 ssize_t
 _sfwrite(Sfio_t *sp, const Void_t *buff, size_t n)
 {
-    const char *cp = ( const char * )buff, *next = cp, *ep = cp + n;
+    const char *cp = ( const char * ) buff, *next = cp, *ep = cp + n;
     int m = 0, k;
-    while (next = ( const char * )memchr(next, '\r', ep - next))
+    while (next = ( const char * ) memchr(next, '\r', ep - next))
         if (*++next == '\n') {
             if (k = next - cp - 1) {
                 if ((k = sfwrite(sp, cp, k)) < 0)
@@ -1764,7 +1764,7 @@ here_copy(Lex_t *lp, struct ionod *iop)
     }
     if (iop->iolst)
         here_copy(lp, iop->iolst);
-    iop->iooffset = sfseek(sp, ( off_t )0, SEEK_END);
+    iop->iooffset = sfseek(sp, ( off_t ) 0, SEEK_END);
     iop->iosize = 0;
     iop->iodelim = iop->ioname;
     /* check for and strip quoted characters in delimiter string */
@@ -1965,7 +1965,7 @@ here_copy(Lex_t *lp, struct ionod *iop)
 done:
     lp->sh->funlog = funlog;
     if (lp->lexd.dolparen)
-        free(( void * )iop);
+        free(( void * ) iop);
     else if (!special)
         iop->iofile |= IOQUOTE;
     return (c);
@@ -1979,7 +1979,7 @@ fmttoken(Lex_t *lp, int sym, char *tok)
 {
     int n = 1;
     if (sym < 0)
-        return (( char * )sh_translate(e_lexzerobyte));
+        return (( char * ) sh_translate(e_lexzerobyte));
     if (sym == 0)
         return (lp->arg ? lp->arg->argval : "?");
     if (lp->lex.intest && lp->arg && *lp->arg->argval)
@@ -1988,12 +1988,12 @@ fmttoken(Lex_t *lp, int sym, char *tok)
         const Shtable_t *tp = shtab_reserved;
         while (tp->sh_number && tp->sh_number != sym)
             tp++;
-        return (( char * )tp->sh_name);
+        return (( char * ) tp->sh_name);
     }
     if (sym == EOFSYM)
-        return (( char * )sh_translate(e_endoffile));
+        return (( char * ) sh_translate(e_endoffile));
     if (sym == NL)
-        return (( char * )sh_translate(e_newline));
+        return (( char * ) sh_translate(e_newline));
     tok[0] = sym;
     if (sym & SYMREP)
         tok[n++] = sym;
@@ -2143,7 +2143,7 @@ sh_endword(Shell_t *shp, int mode)
         case S_EOF:
             stkseek(stkp, dp - stkptr(stkp, 0));
             if (mode <= 0) {
-                argp = ( struct argnod * )stkfreeze(stkp, 0);
+                argp = ( struct argnod * ) stkfreeze(stkp, 0);
                 argp->argflag = ARG_RAW | ARG_QUOTED;
             }
             return (argp);
@@ -2348,7 +2348,7 @@ static int
 alias_exceptf(Sfio_t *iop, int type, Sfdisc_t *handle)
 #endif
 {
-    struct alias *ap = ( struct alias * )handle;
+    struct alias *ap = ( struct alias * ) handle;
     Namval_t *np;
     Lex_t *lp;
     if (type == 0 || type == SF_ATEXIT || !ap)
@@ -2361,7 +2361,7 @@ alias_exceptf(Sfio_t *iop, int type, Sfdisc_t *handle)
             if (dp != handle)
                 sfdisc(iop, dp);
         } else if (type == SF_DPOP || type == SF_FINAL)
-            free(( void * )ap);
+            free(( void * ) ap);
         goto done;
     }
     if (ap->nextc) {
@@ -2385,7 +2385,7 @@ static void
 setupalias(Lex_t *lp, const char *string, Namval_t *np)
 {
     Sfio_t *iop, *base;
-    struct alias *ap = ( struct alias * )malloc(sizeof(struct alias));
+    struct alias *ap = ( struct alias * ) malloc(sizeof(struct alias));
     ap->disc = alias_disc;
     ap->lp = lp;
     ap->buf[1] = 0;
@@ -2407,7 +2407,7 @@ setupalias(Lex_t *lp, const char *string, Namval_t *np)
             ap->nextc = ' ';
     } else
         ap->nextc = 0;
-    iop = sfopen(NIL(Sfio_t *), ( char * )string, "s");
+    iop = sfopen(NIL(Sfio_t *), ( char * ) string, "s");
     sfdisc(iop, &ap->disc);
     lp->lexd.nocopy++;
     if (!(base = fcfile()))
@@ -2426,9 +2426,9 @@ stack_grow(Lex_t *lp)
 {
     lp->lexd.lex_max += STACK_ARRAY;
     if (lp->lexd.lex_match)
-        lp->lexd.lex_match = ( int * )realloc(( char * )lp->lexd.lex_match,
-                                              sizeof(int) * lp->lexd.lex_max);
+        lp->lexd.lex_match = ( int * ) realloc(
+        ( char * ) lp->lexd.lex_match, sizeof(int) * lp->lexd.lex_max);
     else
-        lp->lexd.lex_match = ( int * )malloc(sizeof(int) * STACK_ARRAY);
+        lp->lexd.lex_match = ( int * ) malloc(sizeof(int) * STACK_ARRAY);
     return (lp->lexd.lex_match != 0);
 }

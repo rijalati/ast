@@ -30,7 +30,7 @@
 
 #include <ls.h>
 
-#define REFONE (pp.truncate ? ( Hash_table_t * )0 : pp.symtab)
+#define REFONE (pp.truncate ? ( Hash_table_t * ) 0 : pp.symtab)
 #define REFALL (pp.truncate ? pp.dirtab : pp.symtab)
 
 #define ppiskey(t, v, p)                                                     \
@@ -313,7 +313,7 @@ context(Sfio_t *sp, int level, int flags)
 static int
 unguard(const char *name, char *v, void *handle)
 {
-    struct ppfile *fp = ( struct ppfile * )v;
+    struct ppfile *fp = ( struct ppfile * ) v;
 
     fp->guard = 0;
     return 0;
@@ -326,7 +326,7 @@ unguard(const char *name, char *v, void *handle)
 static void
 undefine(void *p)
 {
-    struct ppmacro *mac = (( struct ppsymbol * )p)->macro;
+    struct ppmacro *mac = (( struct ppsymbol * ) p)->macro;
 
     if (mac) {
         if (mac->formals)
@@ -442,7 +442,7 @@ ppop(int op, ...)
         if (p = va_arg(ap, char *)) {
             c = strlen(p);
             xp = newof(0, struct oplist, 1, c + 1);
-            xp->value = (( char * )xp) + sizeof(struct oplist);
+            xp->value = (( char * ) xp) + sizeof(struct oplist);
             s = xp->value;
             c = *p++;
             while (*p && *p != c)
@@ -686,7 +686,7 @@ ppop(int op, ...)
                  * initialize the error message interface
                  */
 
-                error_info.version = ( char * )pp.version;
+                error_info.version = ( char * ) pp.version;
 #if DEBUG & TRACE_debug
                 error_info.auxilliary = context;
                 pptrace(0);
@@ -704,7 +704,7 @@ ppop(int op, ...)
 
                 pp.macp = newof(0, struct ppmacstk, DEFMACSTACK, 0);
                 pp.macp->next = pp.macp + 1;
-                pp.maxmac = ( char * )pp.macp + DEFMACSTACK;
+                pp.maxmac = ( char * ) pp.macp + DEFMACSTACK;
                 initialized = 1;
 
                 /*
@@ -1066,7 +1066,7 @@ ppop(int op, ...)
                 struct pplist *preroot;
 
                 if ((preroot
-                     = ( struct pplist * )hashget(pp.prdtab, "preroot")))
+                     = ( struct pplist * ) hashget(pp.prdtab, "preroot")))
                     setpreroot(NiL, preroot->value);
 #endif
             }
@@ -1385,7 +1385,7 @@ ppop(int op, ...)
                 p++;
             else
                 n |= OPT_PASS;
-            if ((c = ( int )hashref(pp.strtab, p)) > 0 && c <= X_last_option)
+            if ((c = ( int ) hashref(pp.strtab, p)) > 0 && c <= X_last_option)
                 pp.optflags[c] = n;
         }
         break;
@@ -1572,7 +1572,7 @@ ppop(int op, ...)
                     do {
                         b = hashnext(pos);
                         hashlook(pp.symtab,
-                                 ( char * )p,
+                                 ( char * ) p,
                                  HASH_BUCKET | HASH_INSTALL,
                                  NiL);
                     } while (p = b);

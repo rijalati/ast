@@ -77,7 +77,7 @@ fmtls(char *buf,
                        LS_W_MAX,
                        "%s%3u",
                        fmtmode(st->st_mode, flags & LS_EXTERNAL),
-                       ( unsigned int )st->st_nlink);
+                       ( unsigned int ) st->st_nlink);
         if (!(flags & LS_NOUSER)) {
             if (flags & LS_NUMBER)
                 s += sfsprintf(s,

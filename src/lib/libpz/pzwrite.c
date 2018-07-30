@@ -75,7 +75,7 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
             pz->sort.orderdisc.link = offsetof(Pzelt_t, link);
             pz->sort.orderdisc.key = offsetof(Pzelt_t, buf);
             pz->sort.orderdisc.size = pp->row;
-            if (!(elt = ( Pzelt_t * )vmnewof(pz->vm, 0, char, pp->col *k, 0))
+            if (!(elt = ( Pzelt_t * ) vmnewof(pz->vm, 0, char, pp->col *k, 0))
                 || !(pz->sort.order
                      = dtnew(pz->vm, &pz->sort.orderdisc, Dtobag))
                 || !(pz->sort.free
@@ -83,10 +83,10 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
                 return pznospace(pz);
             for (i = 0; i < pp->col; i++) {
                 dtinsert(pz->sort.free, elt);
-                elt = ( Pzelt_t * )(( char * )elt + k);
+                elt = ( Pzelt_t * ) (( char * ) elt + k);
             }
         }
-        bp = ( unsigned char * )buf;
+        bp = ( unsigned char * ) buf;
         k = n;
         if (pz->ws.sz) {
             x = pz->ws.sz;
@@ -102,7 +102,7 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
         }
         x = pp->row;
         while (k > 0) {
-            while (!(elt = ( Pzelt_t * )dtfirst(pz->sort.free)))
+            while (!(elt = ( Pzelt_t * ) dtfirst(pz->sort.free)))
                 if (pzsync(pz))
                     return -1;
             dtdelete(pz->sort.free, elt);
@@ -137,7 +137,7 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
             return x;
     } else
         x = 0;
-    bp = ( unsigned char * )buf + x;
+    bp = ( unsigned char * ) buf + x;
     be = bp + n;
     if (k = n % pp->row) {
         if (!pz->ws.pb

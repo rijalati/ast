@@ -25,7 +25,7 @@
  *
  * generate signal features
  */
-#include "config_ast.h"  // IWYU pragma: keep
+#include "config_ast.h"    // IWYU pragma: keep
 
 #include <ast_standards.h> /* iffe --include-first */
 

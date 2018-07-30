@@ -120,7 +120,7 @@ Void_t **out; /* return encoded data 	*/
     vcioputc(&io, huff->maxs);                  /* the control code */
 
     /**/ DEBUG_PRINT(2, "Vchuff: inputsz=%d ", dtsz);
-    enddt = (dt = ( Vcchar_t * )data) + dtsz;
+    enddt = (dt = ( Vcchar_t * ) data) + dtsz;
     if (huff->maxs == 0) /* a single run */
         vcioputc(&io, *dt);
     else { /* output the code tree */
@@ -171,14 +171,14 @@ Void_t **out; /* return decoded data	*/
     if (dtsz == 0)
         return 0;
 
-    data = ( Vcchar_t * )orig;
-    sz = ( ssize_t )dtsz;
+    data = ( Vcchar_t * ) orig;
+    sz = ( ssize_t ) dtsz;
     if (vcrecode(vc, &data, &sz, 0, 0) < 0)
         return -1;
     dtsz = sz;
 
     vcioinit(&io, data, dtsz);
-    sz = ( ssize_t )vciogetu(&io);
+    sz = ( ssize_t ) vciogetu(&io);
 
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
         return -1;
@@ -214,7 +214,7 @@ Void_t **out; /* return decoded data	*/
             if (size[p] > 0)               /* byte is found */
             {
                 vciodelb(&io, b, n, size[p]); /* consume bits */
-                *o = ( Vcchar_t )node[p];     /* decode the byte */
+                *o = ( Vcchar_t ) node[p];    /* decode the byte */
                 if ((o += 1) >= endo)
                     break;
                 sz = ntop;
@@ -250,7 +250,7 @@ Void_t *params;
     Vchuff_t *huff;
 
     if (type == VC_OPENING) {
-        if (!(huff = ( Vchuff_t * )malloc(sizeof(Vchuff_t))))
+        if (!(huff = ( Vchuff_t * ) malloc(sizeof(Vchuff_t))))
             return -1;
         huff->trie = NIL(Vchtrie_t *);
         huff->maxs = 0;

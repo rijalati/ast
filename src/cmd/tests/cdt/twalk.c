@@ -29,22 +29,22 @@ typedef struct _obj_s
 static int
 objcmp(Dt_t *dt, Void_t *arg1, Void_t *arg2, Dtdisc_t *disc)
 {
-    Obj_t *o1 = ( Obj_t * )arg1, *o2 = ( Obj_t * )arg2;
+    Obj_t *o1 = ( Obj_t * ) arg1, *o2 = ( Obj_t * ) arg2;
 
-    return ( int )(o1->key - o2->key);
+    return ( int ) (o1->key - o2->key);
 }
 
 static unsigned int
 objhash(Dt_t *dt, Void_t *arg, Dtdisc_t *disc)
 {
-    Obj_t *o = ( Obj_t * )arg;
-    return dtstrhash(0, ( char * )(&o->key), sizeof(long));
+    Obj_t *o = ( Obj_t * ) arg;
+    return dtstrhash(0, ( char * ) (&o->key), sizeof(long));
 }
 
 static char *
 objprint(Void_t *arg)
 {
-    Obj_t *obj = ( Obj_t * )arg;
+    Obj_t *obj = ( Obj_t * ) arg;
     static char buf[1024];
 
     sprintf(buf, "%ld,%ld", obj->key, obj->ord);

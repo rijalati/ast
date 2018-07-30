@@ -31,7 +31,7 @@
 #include <tmx.h>
 
 #define warped(t, n)                                                         \
-    ((t) < (( n )-tmxsns(6L * 30L * 24L * 60L * 60L, 0))                     \
+    ((t) < (( n ) -tmxsns(6L * 30L * 24L * 60L * 60L, 0))                    \
      || (t) > ((n) + tmxsns(24L * 60L * 60L, 0)))
 
 /*
@@ -250,16 +250,16 @@ tmxfmt(char *buf, size_t len, const char *format, Time_t t)
             goto push;
         case 'C': /* 2 digit century */
             cp = number(
-            cp, ep, ( long )(1900 + tm->tm_year) / 100, 2, width, pad);
+            cp, ep, ( long ) (1900 + tm->tm_year) / 100, 2, width, pad);
             continue;
         case 'd': /* day of month */
-            cp = number(cp, ep, ( long )tm->tm_mday, 2, width, pad);
+            cp = number(cp, ep, ( long ) tm->tm_mday, 2, width, pad);
             continue;
         case 'D': /* date */
             p = tm_info.format[TM_DATE];
             goto push;
         case 'e': /* blank padded day of month */
-            cp = number(cp, ep, ( long )tm->tm_mday, -2, width, pad);
+            cp = number(cp, ep, ( long ) tm->tm_mday, -2, width, pad);
             continue;
         case 'f': /* (AST) OBSOLETE use %Qf */
             p = "%Qf";
@@ -282,10 +282,10 @@ tmxfmt(char *buf, size_t len, const char *format, Time_t t)
                 c = 2;
             } else
                 c = 4;
-            cp = number(cp, ep, ( long )n, c, width, pad);
+            cp = number(cp, ep, ( long ) n, c, width, pad);
             continue;
         case 'H': /* hour (0 - 23) */
-            cp = number(cp, ep, ( long )tm->tm_hour, 2, width, pad);
+            cp = number(cp, ep, ( long ) tm->tm_hour, 2, width, pad);
             continue;
         case 'i': /* (AST) OBSOLETE use %QI */
             p = "%QI";
@@ -295,13 +295,13 @@ tmxfmt(char *buf, size_t len, const char *format, Time_t t)
                 n -= 12;
             else if (n == 0)
                 n = 12;
-            cp = number(cp, ep, ( long )n, 2, width, pad);
+            cp = number(cp, ep, ( long ) n, 2, width, pad);
             continue;
         case 'j': /* Julian date (1 offset) */
-            cp = number(cp, ep, ( long )(tm->tm_yday + 1), 3, width, pad);
+            cp = number(cp, ep, ( long ) (tm->tm_yday + 1), 3, width, pad);
             continue;
         case 'J': /* Julian date (0 offset) */
-            cp = number(cp, ep, ( long )tm->tm_yday, 3, width, pad);
+            cp = number(cp, ep, ( long ) tm->tm_yday, 3, width, pad);
             continue;
         case 'k': /* (AST) OBSOLETE use %QD */
             p = "%QD";
@@ -328,17 +328,17 @@ tmxfmt(char *buf, size_t len, const char *format, Time_t t)
             p = "%Ql";
             goto push;
         case 'm': /* month number */
-            cp = number(cp, ep, ( long )(tm->tm_mon + 1), 2, width, pad);
+            cp = number(cp, ep, ( long ) (tm->tm_mon + 1), 2, width, pad);
             continue;
         case 'M': /* minutes */
-            cp = number(cp, ep, ( long )tm->tm_min, 2, width, pad);
+            cp = number(cp, ep, ( long ) tm->tm_min, 2, width, pad);
             continue;
         case 'n':
             if (cp < ep)
                 *cp++ = '\n';
             continue;
         case 'N': /* (AST|GNU) nanosecond part */
-            cp = number(cp, ep, ( long )tm->tm_nsec, 9, width, pad);
+            cp = number(cp, ep, ( long ) tm->tm_nsec, 9, width, pad);
             continue;
 #if 0
 		case 'o':	/* (UNUSED) */
@@ -478,15 +478,15 @@ tmxfmt(char *buf, size_t len, const char *format, Time_t t)
                 } else {
                     if (t) {
                         now = tmxgettime();
-                        p = warped(t, now) ? ( char * )0 : ( char * )format;
+                        p = warped(t, now) ? ( char * ) 0 : ( char * ) format;
                     } else
-                        p = ( char * )format;
+                        p = ( char * ) format;
                     i = 0;
                     while (n = *format) {
                         format++;
                         if (n == c) {
                             if (!p)
-                                p = ( char * )format;
+                                p = ( char * ) format;
                             if (++i == 2)
                                 goto push_delimiter;
                         }
@@ -521,7 +521,7 @@ tmxfmt(char *buf, size_t len, const char *format, Time_t t)
             }
             continue;
         case 'S': /* seconds */
-            cp = number(cp, ep, ( long )tm->tm_sec, 2, width, pad);
+            cp = number(cp, ep, ( long ) tm->tm_sec, 2, width, pad);
             if ((flags & TM_SUBSECOND) && (format - 2) != oformat) {
                 p = ".%N";
                 goto push;
@@ -537,23 +537,26 @@ tmxfmt(char *buf, size_t len, const char *format, Time_t t)
         case 'u': /* weekday number [1(Monday)-7] */
             if (!(i = tm->tm_wday))
                 i = 7;
-            cp = number(cp, ep, ( long )i, 0, width, pad);
+            cp = number(cp, ep, ( long ) i, 0, width, pad);
             continue;
         case 'U': /* week number, Sunday as first day */
-            cp = number(cp, ep, ( long )tmweek(tm, 0, -1, -1), 2, width, pad);
+            cp
+            = number(cp, ep, ( long ) tmweek(tm, 0, -1, -1), 2, width, pad);
             continue;
 #if 0
 		case 'v':	/* (UNUSED) */
 			continue;
 #endif
         case 'V': /* ISO week number */
-            cp = number(cp, ep, ( long )tmweek(tm, 2, -1, -1), 2, width, pad);
+            cp
+            = number(cp, ep, ( long ) tmweek(tm, 2, -1, -1), 2, width, pad);
             continue;
         case 'W': /* week number, Monday as first day */
-            cp = number(cp, ep, ( long )tmweek(tm, 1, -1, -1), 2, width, pad);
+            cp
+            = number(cp, ep, ( long ) tmweek(tm, 1, -1, -1), 2, width, pad);
             continue;
         case 'w': /* weekday number [0(Sunday)-6] */
-            cp = number(cp, ep, ( long )tm->tm_wday, 0, width, pad);
+            cp = number(cp, ep, ( long ) tm->tm_wday, 0, width, pad);
             continue;
         case 'x':
             p = tm_info.format[TM_DATE];
@@ -562,10 +565,10 @@ tmxfmt(char *buf, size_t len, const char *format, Time_t t)
             p = tm_info.format[TM_TIME];
             goto push;
         case 'y': /* year in the form yy */
-            cp = number(cp, ep, ( long )(tm->tm_year % 100), 2, width, pad);
+            cp = number(cp, ep, ( long ) (tm->tm_year % 100), 2, width, pad);
             continue;
         case 'Y': /* year in the form ccyy */
-            cp = number(cp, ep, ( long )(1900 + tm->tm_year), 4, width, pad);
+            cp = number(cp, ep, ( long ) (1900 + tm->tm_year), 4, width, pad);
             continue;
         case 'z': /* time zone west offset */
             if (arg) {
@@ -693,7 +696,7 @@ tmxfmt(char *buf, size_t len, const char *format, Time_t t)
         c = 0;
     push_delimiter:
         if (sp < &stack[elementsof(stack)]) {
-            sp->format = ( char * )format;
+            sp->format = ( char * ) format;
             format = p;
             sp->delimiter = delimiter;
             delimiter = c;

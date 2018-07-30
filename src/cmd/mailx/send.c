@@ -281,8 +281,8 @@ copy(struct msg *mp,
                 note(DEBUG,
                      "interpolate boundary=%s offset=%ld size=%ld",
                      state.part.out.boundary,
-                     ( long )ap->raw.offset,
-                     ( long )ap->raw.size);
+                     ( long ) ap->raw.offset,
+                     ( long ) ap->raw.size);
                 fprintf(op, "\n--%s\n", state.part.out.boundary);
                 fseek(pp.fp, ap->raw.offset, SEEK_SET);
                 if (part(&pp,
@@ -302,9 +302,9 @@ copy(struct msg *mp,
                               state.part.mime, NiL, NiL, ap->type, ap->opts))) {
                 note(DEBUG,
                      "copy part text offset=%ld size=%ld lines=%ld",
-                     ( long )ap->offset,
-                     ( long )ap->size,
-                     ( long )ap->lines);
+                     ( long ) ap->offset,
+                     ( long ) ap->size,
+                     ( long ) ap->lines);
                 fseek(pp.fp, ap->offset, SEEK_SET);
                 if (part(
                     &pp, op, ap, ap->size, prefix, prefixlen, emptylen, flags))
@@ -358,7 +358,7 @@ prepend(struct letter *lp)
                  state.tmp.mail,
                  nfo,
                  NiL,
-                 ( off_t )0,
+                 ( off_t ) 0,
                  NiL,
                  NiL,
                  0)) {
@@ -384,7 +384,7 @@ savemail(struct letter *lp, char *name)
     FILE *fp;
 
     if (fp = fileopen(name, "Ea")) {
-        filecopy(NiL, lp->fp, name, fp, NiL, ( off_t )0, NiL, NiL, GNL);
+        filecopy(NiL, lp->fp, name, fp, NiL, ( off_t ) 0, NiL, NiL, GNL);
         fileclose(fp);
         rewind(lp->fp);
     }
@@ -396,8 +396,8 @@ savemail(struct letter *lp, char *name)
 static int
 packargs(Dt_t *dt, void *object, void *context)
 {
-    if (!((( struct name * )object)->flags & GDONE))
-        addarg(( struct argvec * )context, (( struct name * )object)->name);
+    if (!((( struct name * ) object)->flags & GDONE))
+        addarg(( struct argvec * ) context, (( struct name * ) object)->name);
     return 0;
 }
 
@@ -442,8 +442,8 @@ isfileaddr(char *name)
 static int
 special(Dt_t *dt, void *object, void *context)
 {
-    struct name *np = ( struct name * )object;
-    struct letter *lp = ( struct letter * )context;
+    struct name *np = ( struct name * ) object;
+    struct letter *lp = ( struct letter * ) context;
     char *name;
     FILE *fp;
     char *cmd;
@@ -469,7 +469,7 @@ special(Dt_t *dt, void *object, void *context)
             }
             remove(state.tmp.edit);
             filecopy(
-            NiL, lp->fp, state.tmp.edit, fp, NiL, ( off_t )0, NiL, NiL, GNL);
+            NiL, lp->fp, state.tmp.edit, fp, NiL, ( off_t ) 0, NiL, NiL, GNL);
             rewind(lp->fp);
             n = start_command(
             state.var.shell, SIG_REG_EXEC, fileno(fp), -1, "-c", name, NiL);
@@ -484,7 +484,7 @@ special(Dt_t *dt, void *object, void *context)
                 state.senderr++;
                 goto cant;
             }
-            filecopy(NiL, lp->fp, name, fp, NiL, ( off_t )0, NiL, NiL, GNL);
+            filecopy(NiL, lp->fp, name, fp, NiL, ( off_t ) 0, NiL, NiL, GNL);
             rewind(lp->fp);
             fileclose(fp);
         }
@@ -560,7 +560,7 @@ sendmail(struct header *hp, unsigned long flags)
                 note(DEBUG, "record mail in \"%s\"", s);
             note(DEBUG, "message contents:");
             filecopy(
-            NiL, letter.fp, NiL, stdout, NiL, ( off_t )0, NiL, NiL, 0);
+            NiL, letter.fp, NiL, stdout, NiL, ( off_t ) 0, NiL, NiL, 0);
         } else {
             if (s)
                 savemail(&letter, s);
@@ -575,7 +575,7 @@ sendmail(struct header *hp, unsigned long flags)
             if (strneq(s, "smtp://", 7)) {
                 if (!*(s += 7))
                     s = state.var.smtp;
-                if (sendsmtp(letter.fp, s, args.argv + 1, ( off_t )0)) {
+                if (sendsmtp(letter.fp, s, args.argv + 1, ( off_t ) 0)) {
                     fseek(letter.fp, letter.body, SEEK_SET);
                     savedeadletter(letter.fp);
                 }
@@ -584,7 +584,7 @@ sendmail(struct header *hp, unsigned long flags)
                                             fileno(letter.fp),
                                             -1,
                                             NiL,
-                                            ( char * )args.argv,
+                                            ( char * ) args.argv,
                                             NiL))
                        < 0) {
                 fseek(letter.fp, letter.body, SEEK_SET);
@@ -614,8 +614,8 @@ typedef struct
 static int
 format(Dt_t *dt, void *object, void *context)
 {
-    struct name *np = ( struct name * )object;
-    Format_t *fs = ( Format_t * )context;
+    struct name *np = ( struct name * ) object;
+    Format_t *fs = ( Format_t * ) context;
     int n;
 
     if (fs->flags & np->flags) {

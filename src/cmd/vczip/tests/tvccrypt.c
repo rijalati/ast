@@ -85,7 +85,8 @@ MAIN()
     Vcdisc_t vcdc;
 
     /* test the subpackage for encryption */
-    if (vcxinit(&xx, Vcxaes128, Cipherkey, -( ssize_t )sizeof(Cipherkey)) < 0)
+    if (vcxinit(&xx, Vcxaes128, Cipherkey, -( ssize_t ) sizeof(Cipherkey))
+        < 0)
         terror("Initializing encryption handle");
     if ((esz = vcxencode(&xx, Plaindt, sizeof(Plaindt), &edt)) < 0)
         terror("Encrypting test data");
@@ -102,7 +103,7 @@ MAIN()
 
     /* test transform */
     vcdc.data = Cipherkey;
-    vcdc.size = -( ssize_t )sizeof(Cipherkey);
+    vcdc.size = -( ssize_t ) sizeof(Cipherkey);
     vcdc.eventf = 0;
     if (!(evc = vcopen(&vcdc, Vccrypt, "aes128", 0, VC_ENCODE)))
         terror("Can't open encryption handle");
@@ -123,7 +124,7 @@ MAIN()
 
     /* test chained blocks */
     vcdc.data = Cipherkey;
-    vcdc.size = ( ssize_t )sizeof(Cipherkey);
+    vcdc.size = ( ssize_t ) sizeof(Cipherkey);
     vcdc.eventf = 0;
     if (!(evc = vcopen(&vcdc, Vccrypt, "aes128.chain", 0, VC_ENCODE)))
         terror("Can't open encryption handle");
@@ -151,7 +152,7 @@ MAIN()
     if (!(dvc = vcopen(&vcdc, Vccrypt, "aes128", 0, VC_DECODE)))
         terror("Can't open decryption handle");
     plaindt = "NguyenV, we love you!";
-    plainsz = strlen(( char * )plaindt);
+    plainsz = strlen(( char * ) plaindt);
     for (k = 0; k < 4; ++k) {
         if ((esz = vcapply(evc, plaindt, plainsz, &edt)) <= 0)
             terror("Encryption error");
@@ -174,7 +175,7 @@ MAIN()
     if (!(dvc = vcopen(&vcdc, Vccrypt, "aes192.chain", 0, VC_DECODE)))
         terror("Can't open decryption handle");
     plaindt = "NguyenV, we love you!";
-    plainsz = strlen(( char * )plaindt);
+    plainsz = strlen(( char * ) plaindt);
     for (k = 0; k < 4; ++k) {
         if ((esz = vcapply(evc, plaindt, plainsz, &edt)) <= 0)
             terror("Encryption error");
@@ -197,7 +198,7 @@ MAIN()
     if (!(dvc = vcopen(&vcdc, Vccrypt, "aes256.chain", 0, VC_DECODE)))
         terror("Can't open decryption handle");
     plaindt = "NguyenV, we love you!";
-    plainsz = strlen(( char * )plaindt);
+    plainsz = strlen(( char * ) plaindt);
     for (k = 0; k < 4; ++k) {
         if ((esz = vcapply(evc, plaindt, plainsz, &edt)) <= 0)
             terror("Encryption error");

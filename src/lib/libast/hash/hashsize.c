@@ -49,7 +49,7 @@ hashsize(Hash_table_t *tab, int size)
     if (size > 0 && size != tab->size && !(size & (size - 1))) {
         if (region = tab->root->local->region) {
             handle = tab->root->local->handle;
-            new_s = ( Hash_bucket_t ** )(*region)(
+            new_s = ( Hash_bucket_t ** ) (*region)(
             handle, NiL, sizeof(Hash_bucket_t *) * size, 0);
         } else
             new_s = newof(0, Hash_bucket_t *, size, 0);

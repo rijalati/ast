@@ -85,16 +85,16 @@ rresvport(int *alport)
     if (s < 0)
         return (-1);
     for (;;) {
-        sin.sin_port = htons(( u_short )*alport);
-        if (bind(s, ( struct sockaddr * )&sin, sizeof(sin)) >= 0)
+        sin.sin_port = htons(( u_short ) *alport);
+        if (bind(s, ( struct sockaddr * ) &sin, sizeof(sin)) >= 0)
             return (s);
         if (errno != EADDRINUSE) {
-            ( void )close(s);
+            ( void ) close(s);
             return (-1);
         }
         (*alport)--;
         if (*alport == IPPORT_RESERVED / 2) {
-            ( void )close(s);
+            ( void ) close(s);
             errno = EAGAIN; /* close */
             return (-1);
         }
@@ -175,7 +175,7 @@ rcmd(char **ahost,
 #    endif
 #    ifdef SIGURG
 #        ifdef _POSIX_SOURCE
-            sigprocmask(SIG_SETMASK, &oset, ( sigset_t * )NULL);
+            sigprocmask(SIG_SETMASK, &oset, ( sigset_t * ) NULL);
 #        else
             sigsetmask(oldmask);
 #        endif
@@ -186,11 +186,11 @@ rcmd(char **ahost,
         fcntl(s, F_SETOWN, pid);
 #    endif
         sin.sin_family = hp->h_addrtype;
-        bcopy(hp->h_addr_list[0], ( caddr_t )&sin.sin_addr, hp->h_length);
+        bcopy(hp->h_addr_list[0], ( caddr_t ) &sin.sin_addr, hp->h_length);
         sin.sin_port = rport;
-        if (connect(s, ( struct sockaddr * )&sin, sizeof(sin)) >= 0)
+        if (connect(s, ( struct sockaddr * ) &sin, sizeof(sin)) >= 0)
             break;
-        ( void )close(s);
+        ( void ) close(s);
         if (errno == EADDRINUSE) {
             lport--;
             continue;
@@ -220,7 +220,8 @@ rcmd(char **ahost,
             errno = oerrno;
             perror(0);
             hp->h_addr_list++;
-            bcopy(hp->h_addr_list[0], ( caddr_t )&sin.sin_addr, hp->h_length);
+            bcopy(
+            hp->h_addr_list[0], ( caddr_t ) &sin.sin_addr, hp->h_length);
 
 #    if NLS
             fprintf(
@@ -236,7 +237,7 @@ rcmd(char **ahost,
         perror(hp->h_name);
 #    ifdef SIGURG
 #        ifdef _POSIX_SOURCE
-        sigprocmask(SIG_SETMASK, &oset, ( sigset_t * )NULL);
+        sigprocmask(SIG_SETMASK, &oset, ( sigset_t * ) NULL);
 #        else
         sigsetmask(oldmask);
 #        endif
@@ -255,7 +256,7 @@ rcmd(char **ahost,
         if (s2 < 0)
             goto bad;
         listen(s2, 1);
-        ( void )snprintf(num, sizeof(num), "%d", lport);
+        ( void ) snprintf(num, sizeof(num), "%d", lport);
         if (write(s, num, strlen(num) + 1) != strlen(num) + 1) {
 #    if NLS
             perror(catgets(_libc_cat,
@@ -265,11 +266,11 @@ rcmd(char **ahost,
 #    else
             perror("write: setting up stderr");
 #    endif
-            ( void )close(s2);
+            ( void ) close(s2);
             goto bad;
         }
-        s3 = accept(s2, ( struct sockaddr * )&from, &len);
-        ( void )close(s2);
+        s3 = accept(s2, ( struct sockaddr * ) &from, &len);
+        ( void ) close(s2);
         if (s3 < 0) {
 #    if NLS
             perror(catgets(_libc_cat, NetMiscSet, NetMiscAccept, "accept"));
@@ -280,7 +281,7 @@ rcmd(char **ahost,
             goto bad;
         }
         *fd2p = s3;
-        from.sin_port = ntohs(( u_short )from.sin_port);
+        from.sin_port = ntohs(( u_short ) from.sin_port);
         if (from.sin_family != AF_INET || from.sin_port >= IPPORT_RESERVED) {
             fprintf(stderr,
 #    if NLS
@@ -295,16 +296,16 @@ rcmd(char **ahost,
             goto bad2;
         }
     }
-    ( void )write(s, locuser, strlen(locuser) + 1);
-    ( void )write(s, remuser, strlen(remuser) + 1);
-    ( void )write(s, cmd, strlen(cmd) + 1);
+    ( void ) write(s, locuser, strlen(locuser) + 1);
+    ( void ) write(s, remuser, strlen(remuser) + 1);
+    ( void ) write(s, cmd, strlen(cmd) + 1);
     if (read(s, &c, 1) != 1) {
         perror(*ahost);
         goto bad2;
     }
     if (c != 0) {
         while (read(s, &c, 1) == 1) {
-            ( void )write(2, &c, 1);
+            ( void ) write(2, &c, 1);
             if (c == '\n')
                 break;
         }
@@ -312,7 +313,7 @@ rcmd(char **ahost,
     }
 #    ifdef SIGURG
 #        ifdef _POSIX_SOURCE
-    sigprocmask(SIG_SETMASK, &oset, ( sigset_t * )NULL);
+    sigprocmask(SIG_SETMASK, &oset, ( sigset_t * ) NULL);
 #        else
     sigsetmask(oldmask);
 #        endif
@@ -320,12 +321,12 @@ rcmd(char **ahost,
     return (s);
 bad2:
     if (lport)
-        ( void )close(*fd2p);
+        ( void ) close(*fd2p);
 bad:
-    ( void )close(s);
+    ( void ) close(s);
 #    ifdef SIGURG
 #        ifdef _POSIX_SOURCE
-    sigprocmask(SIG_SETMASK, &oset, ( sigset_t * )NULL);
+    sigprocmask(SIG_SETMASK, &oset, ( sigset_t * ) NULL);
 #        else
     sigsetmask(oldmask);
 #        endif
@@ -357,15 +358,15 @@ ruserok(const char *rhost, int superuser, const char *ruser, const char *luser)
         }
     }
     *p = '\0';
-    hostf = superuser ? ( FILE * )0 : fopen(_PATH_HEQUIV, "r");
+    hostf = superuser ? ( FILE * ) 0 : fopen(_PATH_HEQUIV, "r");
 again:
     if (hostf) {
         if (!_validuser(hostf, fhost, luser, ruser, baselen)) {
-            ( void )fclose(hostf);
+            ( void ) fclose(hostf);
             seteuid(saveuid);
             return (0);
         }
-        ( void )fclose(hostf);
+        ( void ) fclose(hostf);
     }
     if (first == 1) {
         struct stat sbuf;
@@ -375,14 +376,14 @@ again:
         first = 0;
         if ((pwd = getpwnam(luser)) == NULL)
             return (-1);
-        ( void )strcpy(pbuf, pwd->pw_dir);
-        ( void )strcat(pbuf, "/.rhosts");
-        ( void )seteuid(pwd->pw_uid);
+        ( void ) strcpy(pbuf, pwd->pw_dir);
+        ( void ) strcat(pbuf, "/.rhosts");
+        ( void ) seteuid(pwd->pw_uid);
         if ((hostf = fopen(pbuf, "r")) == NULL) {
             seteuid(saveuid);
             return (-1);
         }
-        ( void )fstat(fileno(hostf), &sbuf);
+        ( void ) fstat(fileno(hostf), &sbuf);
         if (sbuf.st_uid && sbuf.st_uid != pwd->pw_uid) {
             fclose(hostf);
             seteuid(saveuid);
@@ -512,8 +513,8 @@ _checkhost(const char *rhost, const char *lhost, int len)
             nodomain = 1;
             return (0);
         }
-        ldomain[MAXHOSTNAMELEN] = ( char )0;
-        if ((domainp = index(ldomain, '.')) == ( char * )NULL) {
+        ldomain[MAXHOSTNAMELEN] = ( char ) 0;
+        if ((domainp = index(ldomain, '.')) == ( char * ) NULL) {
             nodomain = 1;
             return (0);
         }

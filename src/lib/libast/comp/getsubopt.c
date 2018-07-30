@@ -69,9 +69,9 @@ getsubopt(char **op, char *const *tp, char **vp)
         }
         *op = s;
         *vp = v;
-        for (op = ( char ** )tp; *op; op++)
+        for (op = ( char ** ) tp; *op; op++)
             if (streq(b, *op))
-                return op - ( char ** )tp;
+                return op - ( char ** ) tp;
     }
     *vp = b;
     return -1;

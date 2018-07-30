@@ -54,7 +54,7 @@ even_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     cx->buf, "%s%s", strchr(dss_lib_test.description, '['), even_usage);
     s = sfstruse(cx->buf);
     for (;;) {
-        switch (optget(( char ** )data, s)) {
+        switch (optget(( char ** ) data, s)) {
         case '?':
             if (disc->errorf)
                 (*disc->errorf)(
@@ -80,7 +80,7 @@ even_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 static int
 even_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
 
     if (!(expr->queried & 1)) {
         state->selected++;
@@ -102,7 +102,7 @@ even_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 static int
 even_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
 
     sfprintf(sfstdout,
              "even_end %I*u %I*u %I*u%s\n",
@@ -142,7 +142,7 @@ odd_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     cx->buf, "%s%s", strchr(dss_lib_test.description, '['), odd_usage);
     s = sfstruse(cx->buf);
     for (;;) {
-        switch (optget(( char ** )data, s)) {
+        switch (optget(( char ** ) data, s)) {
         case '?':
             if (disc->errorf)
                 (*disc->errorf)(
@@ -168,7 +168,7 @@ odd_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 static int
 odd_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
 
     if (expr->queried & 1) {
         state->selected++;
@@ -190,7 +190,7 @@ odd_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 static int
 odd_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
 
     sfprintf(sfstdout,
              "odd_end %I*u %I*u %I*u%s\n",

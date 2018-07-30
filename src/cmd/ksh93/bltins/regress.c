@@ -139,7 +139,7 @@ sh_regress(unsigned int index,
     char buf[16];
 
     if (index >= 1 && index <= elementsof(regress_options))
-        name = ( char * )regress_options[index];
+        name = ( char * ) regress_options[index];
     else
         sfsprintf(name = buf, sizeof(buf), "%u", index);
     sfprintf(
@@ -299,7 +299,7 @@ b___regress__(int argc, char **argv, Shbltin_t *context)
                 case REGRESS_egid:
                     if (sh_isregress(n)) {
                         intercept_egid = intercept_sgid
-                        = ( gid_t )opt_info.number;
+                        = ( gid_t ) opt_info.number;
                         TRACE(egid, argv[0], ("%d", intercept_egid));
                     } else
                         TRACE(egid, argv[0], ("%s", "off"));
@@ -307,14 +307,14 @@ b___regress__(int argc, char **argv, Shbltin_t *context)
                 case REGRESS_euid:
                     if (sh_isregress(n)) {
                         intercept_euid = intercept_suid
-                        = ( uid_t )opt_info.number;
+                        = ( uid_t ) opt_info.number;
                         TRACE(euid, argv[0], ("%d", intercept_euid));
                     } else
                         TRACE(euid, argv[0], ("%s", "off"));
                     break;
                 case REGRESS_p_suid:
                     if (sh_isregress(n)) {
-                        intercept_p_suid = ( uid_t )opt_info.number;
+                        intercept_p_suid = ( uid_t ) opt_info.number;
                         TRACE(p_suid, argv[0], ("%d", intercept_p_suid));
                     } else
                         TRACE(p_suid, argv[0], ("%s", "off"));

@@ -46,35 +46,35 @@ static char *
 get_time(Namval_t *np, Namfun_t *nfp)
 {
     static char buff[256];
-    struct dctime *dp = ( struct dctime * )nfp;
+    struct dctime *dp = ( struct dctime * ) nfp;
     time_t t = nv_getn(np, nfp);
     char *format = nv_getval(dp->format);
-    tmfmt(buff, sizeof(buff), format, ( time_t * )0);
+    tmfmt(buff, sizeof(buff), format, ( time_t * ) 0);
     return (buff);
 }
 
 static void
 put_time(Namval_t *np, const char *val, int flag, Namfun_t *nfp)
 {
-    struct dctime *dp = ( struct dctime * )nfp;
+    struct dctime *dp = ( struct dctime * ) nfp;
     char *last;
     if (val) {
         int32_t t;
         if (flag & NV_INTEGER) {
             if (flag & NV_LONG)
-                t = *( Sfdouble_t * )val;
+                t = *( Sfdouble_t * ) val;
             else
-                t = *( double * )val;
+                t = *( double * ) val;
         } else {
-            t = tmdate(val, &last, ( time_t * )0);
+            t = tmdate(val, &last, ( time_t * ) 0);
             if (*last)
                 errormsg(
                 SH_DICT, ERROR_exit(1), "%s: invalid date/time string", val);
         }
-        nv_putv(np, ( char * )&t, NV_INTEGER, nfp);
+        nv_putv(np, ( char * ) &t, NV_INTEGER, nfp);
     } else {
         nv_unset(dp->format);
-        free(( void * )dp->format);
+        free(( void * ) dp->format);
         nv_putv(np, val, flag, nfp);
     }
 }
@@ -82,9 +82,9 @@ put_time(Namval_t *np, const char *val, int flag, Namfun_t *nfp)
 static Namval_t *
 create_time(Namval_t *np, const char *name, int flags, Namfun_t *nfp)
 {
-    struct dctime *dp = ( struct dctime * )nfp;
+    struct dctime *dp = ( struct dctime * ) nfp;
     if (strcmp(name, "format"))
-        return (( Namval_t * )0);
+        return (( Namval_t * ) 0);
     return (dp->format);
 }
 
@@ -100,7 +100,7 @@ make_time(Namval_t *np)
     char *name = nv_name(np);
     struct dctime *dp = newof(NULL, struct dctime, 1, 0);
     if (!dp)
-        return (( Namval_t * )0);
+        return (( Namval_t * ) 0);
     sfprintf(stkstd, "%s.format\0", name);
     sfputc(stkstd, 0);
     dp->format = nv_search(stkptr(stkstd, offset), sh.var_tree, NV_ADD);
@@ -127,16 +127,16 @@ put_mode(Namval_t *np, const char *val, int flag, Namfun_t *nfp)
         char *last;
         if (flag & NV_INTEGER) {
             if (flag & NV_LONG)
-                mode = *( Sfdouble_t * )val;
+                mode = *( Sfdouble_t * ) val;
             else
-                mode = *( double * )val;
+                mode = *( double * ) val;
         } else {
             mode = strperm(val, &last, 0);
             if (*last)
                 errormsg(
                 SH_DICT, ERROR_exit(1), "%s: invalid mode string", val);
         }
-        nv_putv(np, ( char * )&mode, NV_INTEGER, nfp);
+        nv_putv(np, ( char * ) &mode, NV_INTEGER, nfp);
     } else
         nv_putv(np, val, flag, nfp);
 }
@@ -153,7 +153,7 @@ make_mode(Namval_t *np)
     char *name = nv_name(np);
     Namfun_t *nfp = newof(NULL, Namfun_t, 1, 0);
     if (!nfp)
-        return (( Namval_t * )0);
+        return (( Namval_t * ) 0);
     nfp->disc = &modedisc;
     nv_stack(np, nfp);
     return (np);
@@ -220,7 +220,7 @@ sh_newnode(Shfield_t *fp, Namval_t *np)
     sfputc(stkstd, 0);
     nq = nv_search(stkptr(stkstd, offset), sh.var_tree, NV_ADD);
     if (fp->size < 0)
-        val = *( char ** )val;
+        val = *( char ** ) val;
     nv_putval(nq, val, fp->flags | NV_NOFREE);
     if (fp->make)
         (*fp->make)(nq);
@@ -230,10 +230,10 @@ sh_newnode(Shfield_t *fp, Namval_t *np)
 static Namval_t *
 fieldcreate(Namval_t *np, const char *name, int flags, Namfun_t *nfp)
 {
-    struct dcclass *dcp = ( struct dcclass * )nfp;
+    struct dcclass *dcp = ( struct dcclass * ) nfp;
     Shclass_t *sp = &dcp->sclass;
     Shfield_t *fp = sh_findfield(sp->fields, sp->nelem, name);
-    Namval_t *nq, **nodes = ( Namval_t ** )(dcp + 1);
+    Namval_t *nq, **nodes = ( Namval_t ** ) (dcp + 1);
     int n = fp - sp->fields;
     int len = strlen(fp->name);
     if (!(nq = nodes[n])) {
@@ -249,7 +249,7 @@ static void
 genvalue(Sfio_t *out, Shclass_t *sp, int indent, Namval_t *npar)
 {
     Shfield_t *fp = sp->fields;
-    Namval_t *np, **nodes = ( Namval_t ** )(sp + 1);
+    Namval_t *np, **nodes = ( Namval_t ** ) (sp + 1);
     int i, isarray;
     if (out) {
         sfwrite(out, "(\n", 2);
@@ -268,7 +268,7 @@ genvalue(Sfio_t *out, Shclass_t *sp, int indent, Namval_t *npar)
                 if (array_elem(nv_arrayptr(np)) == 0)
                     isarray = 2;
                 else
-                    nv_putsub(np, ( char * )0, 0, ARRAY_SCAN);
+                    nv_putsub(np, ( char * ) 0, 0, ARRAY_SCAN);
             }
             sfnputc(out, '\t', indent);
             sfputr(out, fp->name, (isarray == 2 ? '\n' : '='));
@@ -315,31 +315,31 @@ walk_class(Namval_t *np, int dlete, struct dcclass *dcp)
         outfile = 0;
     else if (!(outfile = out))
         outfile = out
-        = sfnew(( Sfio_t * )0, ( char * )0, -1, -1, SF_WRITE | SF_STRING);
+        = sfnew(( Sfio_t * ) 0, ( char * ) 0, -1, -1, SF_WRITE | SF_STRING);
     else
         sfseek(outfile, 0L, SEEK_SET);
     genvalue(outfile, &dcp->sclass, 0, np);
     stkset(stkstd, savptr, savtop);
     if (!outfile)
-        return (( char * )0);
+        return (( char * ) 0);
     sfputc(out, 0);
-    return (( char * )out->_data);
+    return (( char * ) out->_data);
 }
 
 static char *
 get_classval(Namval_t *np, Namfun_t *nfp)
 {
-    return (walk_class(np, 0, ( struct dcclass * )nfp));
+    return (walk_class(np, 0, ( struct dcclass * ) nfp));
 }
 
 static void
 put_classval(Namval_t *np, const char *val, int flag, Namfun_t *nfp)
 {
-    walk_class(np, 1, ( struct dcclass * )nfp);
-    if (nfp = nv_stack(np, ( Namfun_t * )0)) {
-        free(( void * )nfp);
+    walk_class(np, 1, ( struct dcclass * ) nfp);
+    if (nfp = nv_stack(np, ( Namfun_t * ) 0)) {
+        free(( void * ) nfp);
         if (np->nvalue && !nv_isattr(np, NV_NOFREE))
-            free(( void * )np->nvalue);
+            free(( void * ) np->nvalue);
     }
     if (val)
         nv_putval(np, val, flag);
@@ -355,10 +355,10 @@ mkclass(Namval_t *np, Shclass_t *sp)
     = newof(NULL, struct dcclass, 1, sp->nelem * sizeof(Namval_t *));
     if (!tcp)
         return (0);
-    memset(( void * )(tcp + 1), 0, sp->nelem * sizeof(Namval_t *));
+    memset(( void * ) (tcp + 1), 0, sp->nelem * sizeof(Namval_t *));
     tcp->fun.disc = &classdisc;
     tcp->sclass = *sp;
-    np->nvalue = ( char * )calloc(sp->dsize, 1);
+    np->nvalue = ( char * ) calloc(sp->dsize, 1);
     nv_stack(np, &tcp->fun);
     return (1);
 }
@@ -512,7 +512,7 @@ b_open(int argc, char *argv[], Shbltin_t *context)
     argc -= opt_info.index;
     argv += opt_info.index;
     if (argc != 2)
-        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * ) 0));
     if (!(flags & (letterbit('r') | letterbit('w')))) {
         if (stat(argv[1], &statb) < 0)
             errormsg(SH_DICT, ERROR_system(1), "%s: open failed", argv[1]);
@@ -534,7 +534,7 @@ b_open(int argc, char *argv[], Shbltin_t *context)
     if (!nv_isnull(np))
         nv_unset(np);
     mkclass(np, &Fileclass);
-    fdp = ( struct filedata * )np->nvalue;
+    fdp = ( struct filedata * ) np->nvalue;
     if (!(flags & (letterbit('r') | letterbit('w'))))
         fdp->statb = statb;
     else

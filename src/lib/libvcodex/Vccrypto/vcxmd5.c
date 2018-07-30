@@ -67,10 +67,10 @@ md5_char2int(Vcuint32_t *idt, Vcchar_t *cdt, ssize_t csz)
     int i, c;
 
     for (i = 0, c = 0; c < csz; c += 4, i += 1)
-        idt[i] = ((( Vcuint32_t )cdt[c + 0]) << 0)
-                 | ((( Vcuint32_t )cdt[c + 1]) << 8)
-                 | ((( Vcuint32_t )cdt[c + 2]) << 16)
-                 | ((( Vcuint32_t )cdt[c + 3]) << 24);
+        idt[i] = ((( Vcuint32_t ) cdt[c + 0]) << 0)
+                 | ((( Vcuint32_t ) cdt[c + 1]) << 8)
+                 | ((( Vcuint32_t ) cdt[c + 2]) << 16)
+                 | ((( Vcuint32_t ) cdt[c + 3]) << 24);
 }
 
 /* basic MD5 transform step to do 512 bits at a time */
@@ -230,11 +230,11 @@ md5_init(Vcx_t *xx, Vcxmethod_t *meth, Vcchar_t *key, ssize_t keyz)
     if (meth != Vcxmd5sum)
         return -1;
 
-    if (!(md5 = ( Md5_t * )calloc(1, sizeof(Md5_t))))
+    if (!(md5 = ( Md5_t * ) calloc(1, sizeof(Md5_t))))
         return -1;
 
     xx->meth = Vcxmd5sum; /* set proper method */
-    xx->data = ( Void_t * )md5;
+    xx->data = ( Void_t * ) md5;
     xx->keyz = 0;
     if (key) /* internal key */
     {
@@ -263,7 +263,7 @@ md5_stop(Vcx_t *xx)
 {
     Md5_t *md5;
 
-    if (!xx || xx->meth != Vcxmd5sum || !(md5 = ( Md5_t * )xx->data))
+    if (!xx || xx->meth != Vcxmd5sum || !(md5 = ( Md5_t * ) xx->data))
         return -1;
 
     free(md5);
@@ -275,32 +275,32 @@ md5_stop(Vcx_t *xx)
 static ssize_t
 md5_digest(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
 {
-    Vcchar_t *data = ( Vcchar_t * )buf;
+    Vcchar_t *data = ( Vcchar_t * ) buf;
     Vcuint32_t i, index, plen;
     Vcchar_t bits[8];
     Md5_t *md5;
 
-    if (!xx || xx->meth != Vcxmd5sum || !(md5 = ( Md5_t * )xx->data))
+    if (!xx || xx->meth != Vcxmd5sum || !(md5 = ( Md5_t * ) xx->data))
         return -1;
 
     if (data && size > 0) /* add data to digest */
     {
         index = (md5->count[0] >> 3) & 0x3f;
 
-        md5->count[0] += (( Vcuint32_t )size << 3);
-        if (md5->count[0] < (( Vcuint32_t )size << 3))
+        md5->count[0] += (( Vcuint32_t ) size << 3);
+        if (md5->count[0] < (( Vcuint32_t ) size << 3))
             md5->count[1]++;
-        md5->count[1] += (( Vcuint32_t )size >> 29);
+        md5->count[1] += (( Vcuint32_t ) size >> 29);
 
         plen = 64 - index;
 
-        if (( Vcuint32_t )size
+        if (( Vcuint32_t ) size
             >= plen) /* transform as many times as possible */
         {
             memcpy(&md5->todo[index], data, plen);
             md5_transform(md5, md5->todo);
 
-            for (i = plen; i + 63 < ( Vcuint32_t )size; i += 64)
+            for (i = plen; i + 63 < ( Vcuint32_t ) size; i += 64)
                 md5_transform(md5, data + i);
 
             index = 0;

@@ -85,7 +85,7 @@ what(const char *file, Sfio_t *ip, Sfio_t *op)
 
     if (intro = !state.match)
         sfprintf(op, "%s:\n", file);
-    if (buf = ( unsigned char * )sfreserve(ip, SF_UNBOUND, 0)) {
+    if (buf = ( unsigned char * ) sfreserve(ip, SF_UNBOUND, 0)) {
         skip = state.skip;
         if ((mid = sfvalue(ip)) <= (index = 3))
             goto next;
@@ -110,7 +110,7 @@ what(const char *file, Sfio_t *ip, Sfio_t *op)
                 case 0:
                     break;
                 }
-                if (!(buf = ( unsigned char * )sfreserve(ip, SF_UNBOUND, 0)))
+                if (!(buf = ( unsigned char * ) sfreserve(ip, SF_UNBOUND, 0)))
                     goto done;
                 if ((mid = sfvalue(ip)) <= (index = 3))
                     goto next;
@@ -180,7 +180,7 @@ what(const char *file, Sfio_t *ip, Sfio_t *op)
                         if (s >= e) {
                             sfprintf(op, "%s%-.*s", t, s - b, b);
                             t = "";
-                            if (!(buf = ( unsigned char * )sfreserve(
+                            if (!(buf = ( unsigned char * ) sfreserve(
                                   ip, SF_UNBOUND, 0)))
                                 goto list;
                             e = (s = b = buf) + (mid = sfvalue(ip));

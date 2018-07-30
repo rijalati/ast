@@ -65,7 +65,7 @@
 #include <debug.h>
 
 #ifndef NIL
-#    define NIL(type) (( type )0)
+#    define NIL(type) (( type ) 0)
 #endif
 
 #ifndef reg
@@ -77,7 +77,7 @@
 #endif
 #define isblank(c) ((c) == ' ' || (c) == '\t')
 
-#define TYPECAST(tp, p) ((tp)(( unsigned long )(p)))
+#define TYPECAST(tp, p) ((tp)(( unsigned long ) (p)))
 
 #define RL_ESC 255  /* default escape character	*/
 #define RL_ZERO 254 /* (0,RL_ZERO) codes 0-runs	*/
@@ -104,7 +104,7 @@ extern Void_t *memcpy _ARG_((Void_t *, const Void_t *, size_t));
 extern Void_t *malloc _ARG_((size_t));
 extern Void_t *realloc _ARG_((Void_t *, size_t));
 extern Void_t *calloc _ARG_((size_t, size_t));
-extern void free _ARG_(( Void_t * ));
+extern void free _ARG_(( Void_t * ) );
 _END_EXTERNS_
 
 #endif /*_VCHDR_H*/

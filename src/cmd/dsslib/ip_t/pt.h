@@ -39,12 +39,12 @@
 
 #    define PTMIN(a, b)                                                      \
         ((a)                                                                 \
-         & ~((b) ? (((( Ptaddr_t )1) << (PTBITS - (b))) - 1)                 \
-                 : ~(( Ptaddr_t )0)))
+         & ~((b) ? (((( Ptaddr_t ) 1) << (PTBITS - (b))) - 1)                \
+                 : ~(( Ptaddr_t ) 0)))
 #    define PTMAX(a, b)                                                      \
         ((a)                                                                 \
-         | ((b) ? (((( Ptaddr_t )1) << (PTBITS - (b))) - 1)                  \
-                : ~(( Ptaddr_t )0)))
+         | ((b) ? (((( Ptaddr_t ) 1) << (PTBITS - (b))) - 1)                 \
+                : ~(( Ptaddr_t ) 0)))
 
 struct Pt_s;
 typedef struct Pt_s Pt_t;

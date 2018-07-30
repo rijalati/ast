@@ -93,5 +93,5 @@ pathcat_20100601(const char *dirs,
             if (s >= e)
                 return 0;
         } while (*s++ = *b++);
-    return *dirs ? ( char * )++dirs : 0;
+    return *dirs ? ( char * ) ++dirs : 0;
 }

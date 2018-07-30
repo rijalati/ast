@@ -90,7 +90,7 @@ int type;
         }
 
 #if _lib_memchr
-        if (!(s = ( uchar * )memchr(( char * )s, rc, n)))
+        if (!(s = ( uchar * ) memchr(( char * ) s, rc, n)))
             s = ends;
 #else
         while (*s != rc)
@@ -168,5 +168,5 @@ done:
         f->endr = f->data;
     }
 
-    SFMTXRETURN(f, ( char * )us);
+    SFMTXRETURN(f, ( char * ) us);
 }

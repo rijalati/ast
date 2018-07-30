@@ -203,10 +203,10 @@ b_read(int argc, char *argv[], Shbltin_t *context)
     char *method = 0;
     void *readfn = 0;
     static char default_prompt[3] = { ESC, ESC };
-    rp = ( struct read_save * )(context->data);
+    rp = ( struct read_save * ) (context->data);
     if (argc == 0) {
         if (rp)
-            free(( void * )rp);
+            free(( void * ) rp);
         return (0);
     }
     if (rp) {
@@ -229,7 +229,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
             method = "ksh";
             break;
         case 't':
-            sec = sh_strnum(shp, opt_info.arg, ( char ** )0, 1);
+            sec = sh_strnum(shp, opt_info.arg, ( char ** ) 0, 1);
             timeout = sec ? 1000 * sec : 1;
             break;
         case 'd':
@@ -278,7 +278,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
                     errormsg(SH_DICT, ERROR_exit(1), e_query);
                 break;
             }
-            fd = ( int )strtol(opt_info.arg, &opt_info.arg, 10);
+            fd = ( int ) strtol(opt_info.arg, &opt_info.arg, 10);
             if (*opt_info.arg)
                 fd = -1;
             else if (!sh_iovalidfd(shp, fd))
@@ -306,7 +306,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
         }
     argv += opt_info.index;
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (method) {
         for (mindex = 0; methods[mindex].name; mindex++) {
             if (strcmp(method, methods[mindex].name) == 0)
@@ -330,7 +330,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
         r = 0;
     if (argc == fixargs
         && (rp = newof(NIL(struct read_save *), struct read_save, 1, 0))) {
-        context->data = ( void * )rp;
+        context->data = ( void * ) rp;
         rp->fd = fd;
         rp->flags = flags;
         rp->timeout = timeout;
@@ -342,7 +342,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
     }
 bypass:
     shp->prompt = default_prompt;
-    if (r && (shp->prompt = ( char * )sfreserve(sfstderr, r, SF_LOCKR))) {
+    if (r && (shp->prompt = ( char * ) sfreserve(sfstderr, r, SF_LOCKR))) {
         memcpy(shp->prompt, name, r);
         sfwrite(sfstderr, shp->prompt, r - 1);
     }
@@ -372,7 +372,7 @@ struct timeout
 static void
 timedout(void *handle)
 {
-    struct timeout *tp = ( struct timeout * )handle;
+    struct timeout *tp = ( struct timeout * ) handle;
     sfclrlock(tp->iop);
     sh_exit(tp->shp, 1);
 }
@@ -416,7 +416,7 @@ sh_readline(Shell_t *shp,
     int oflags = NV_ASSIGN | NV_VARNAME;
     char inquote = 0;
     struct checkpt buff;
-    Edit_t *ep = ( struct edit * )shp->gd->ed_context;
+    Edit_t *ep = ( struct edit * ) shp->gd->ed_context;
     Namval_t *nq = 0;
     if (!(iop = shp->sftable[fd]) && !(iop = sh_iostream(shp, fd, fd)))
         return (1);
@@ -431,7 +431,7 @@ sh_readline(Shell_t *shp,
         if (np && nv_isarray(np) && (mp = nv_opensub(np)))
             np = mp;
         if ((flags & V_FLAG) && shp->gd->ed_context)
-            (( struct edit * )shp->gd->ed_context)->e_default = np;
+            (( struct edit * ) shp->gd->ed_context)->e_default = np;
         if (flags & A_FLAG) {
             Namarr_t *ap;
             flags &= ~A_FLAG;
@@ -451,7 +451,7 @@ sh_readline(Shell_t *shp,
             if (!nv_isattr(np, NV_MINIMAL))
                 np->nvenv = sp;
             nv_setvtree(np);
-            *( void ** )(np->nvfun + 1) = readfn;
+            *( void ** ) (np->nvfun + 1) = readfn;
         } else
             name = *++names;
         if (val)
@@ -470,7 +470,7 @@ sh_readline(Shell_t *shp,
         if ((shp->fdstatus[fd] & IOTTY) && !keytrap)
             tty_raw(sffileno(iop), 1);
         if (!(flags & (N_FLAG | NN_FLAG))) {
-            delim = (( unsigned )flags) >> (D_FLAG + 1);
+            delim = (( unsigned ) flags) >> (D_FLAG + 1);
             ep->e_nttyparm.c_cc[VEOL] = delim;
             ep->e_nttyparm.c_lflag |= ISIG;
             tty_set(sffileno(iop), TCSADRAIN, &ep->e_nttyparm);
@@ -529,14 +529,14 @@ sh_readline(Shell_t *shp,
             tmout.shp = shp;
             tmout.iop = iop;
             timeslot
-            = ( void * )sh_timeradd(timeout, 0, timedout, ( void * )&tmout);
+            = ( void * ) sh_timeradd(timeout, 0, timedout, ( void * ) &tmout);
         }
     }
     if (flags & (N_FLAG | NN_FLAG)) {
         char buf[256], *var = buf, *cur, *end, *up, *v;
         /* reserved buffer */
         if ((c = size) >= sizeof(buf)) {
-            if (!(var = ( char * )malloc(c + 1)))
+            if (!(var = ( char * ) malloc(c + 1)))
                 sh_exit(shp, 1);
             end = var + c;
         } else
@@ -559,7 +559,7 @@ sh_readline(Shell_t *shp,
                     while (c-- > 0 && (buf[m] = ed_getchar(ep, 0)))
                         m++;
                     if (m > 0)
-                        cp = ( unsigned char * )buf;
+                        cp = ( unsigned char * ) buf;
                 } else {
                     f = 1;
                     if (cp = sfreserve(iop, c, SF_LOCKR))
@@ -577,7 +577,7 @@ sh_readline(Shell_t *shp,
                 if (m > 0 && (flags & N_FLAG) && !binary
                     && (v = memchr(cp, '\n', m))) {
                     *v++ = 0;
-                    m = v - ( char * )cp;
+                    m = v - ( char * ) cp;
                 }
                 if ((c = m) > size)
                     c = size;
@@ -586,7 +586,7 @@ sh_readline(Shell_t *shp,
                         ssize_t cx = cur - var, ux = up - var;
                         m = (end - var) + (c - (end - cur));
                         if (var == buf) {
-                            v = ( char * )malloc(m + 1);
+                            v = ( char * ) malloc(m + 1);
                             var = memcpy(v, var, cur - var);
                         } else
                             var = newof(var, char, m, 1);
@@ -594,8 +594,8 @@ sh_readline(Shell_t *shp,
                         cur = var + cx;
                         up = var + ux;
                     }
-                    if (cur != ( char * )cp)
-                        memcpy(( void * )cur, cp, c);
+                    if (cur != ( char * ) cp)
+                        memcpy(( void * ) cur, cp, c);
                     if (f)
                         sfread(iop, cp, c);
                     cur += c;
@@ -637,7 +637,7 @@ sh_readline(Shell_t *shp,
             && !((size = nv_size(np)) && nv_isarray(np) && c != size)) {
             int optimize = !np->nvfun || !nv_hasdisc(np, &OPTIMIZE_disc);
             if (optimize && (c == size) && np->nvalue.cp && !nv_isarray(np))
-                memcpy(( char * )np->nvalue.cp, var, c);
+                memcpy(( char * ) np->nvalue.cp, var, c);
             else {
                 Namval_t *mp;
                 if (var == buf)
@@ -645,18 +645,18 @@ sh_readline(Shell_t *shp,
                 nv_putval(np, var, NV_RAW);
                 nv_setsize(np, c);
                 if (!nv_isattr(np, NV_IMPORT | NV_EXPORT)
-                    && (mp = ( Namval_t * )np->nvenv))
+                    && (mp = ( Namval_t * ) np->nvenv))
                     nv_setsize(mp, c);
             }
         } else {
             nv_putval(np, var, 0);
             if (var != buf)
-                free(( void * )var);
+                free(( void * ) var);
         }
         goto done;
-    } else if (cp = ( unsigned char * )sfgetr(iop, delim, 0))
+    } else if (cp = ( unsigned char * ) sfgetr(iop, delim, 0))
         c = sfvalue(iop);
-    else if (cp = ( unsigned char * )sfgetr(iop, delim, -1)) {
+    else if (cp = ( unsigned char * ) sfgetr(iop, delim, -1)) {
         c = sfvalue(iop) + 1;
         if (!sferror(iop) && sfgetc(iop) >= 0)
             errormsg(SH_DICT, ERROR_exit(1), e_overlimit, "line length");
@@ -664,7 +664,7 @@ sh_readline(Shell_t *shp,
     if (timeslot)
         timerdel(timeslot);
     if ((flags & S_FLAG) && !shp->gd->hist_ptr) {
-        sh_histinit(( void * )shp);
+        sh_histinit(( void * ) shp);
         if (!shp->gd->hist_ptr)
             flags &= ~S_FLAG;
     }
@@ -677,7 +677,7 @@ sh_readline(Shell_t *shp,
         if (*(cpmax - 1) != delim)
             *(cpmax - 1) = delim;
         if (flags & S_FLAG)
-            sfwrite(shp->gd->hist_ptr->histfp, ( char * )cp, c);
+            sfwrite(shp->gd->hist_ptr->histfp, ( char * ) cp, c);
         c = shp->ifstable[*cp++];
 #if !SHOPT_MULTIBYTE
         if (!name && (flags & R_FLAG)) /* special case single argument */
@@ -699,7 +699,7 @@ sh_readline(Shell_t *shp,
                 errormsg(SH_DICT, ERROR_warn(0), e_readonly, nv_name(np));
                 jmpval = 1;
             } else
-                nv_putval(np, ( char * )cp - 1, 0);
+                nv_putval(np, ( char * ) cp - 1, 0);
             goto done;
         }
 #endif /* !SHOPT_MULTIBYTE */
@@ -715,9 +715,9 @@ sh_readline(Shell_t *shp,
 #if SHOPT_MULTIBYTE
         case S_MBYTE:
             if (val == 0)
-                val = ( char * )(cp - 1);
-            if (sh_strchr(ifs, ( char * )cp - 1, cpmax - cp + 1) >= 0) {
-                c = mbsize(( char * )cp - 1);
+                val = ( char * ) (cp - 1);
+            if (sh_strchr(ifs, ( char * ) cp - 1, cpmax - cp + 1) >= 0) {
+                c = mbsize(( char * ) cp - 1);
                 if (name)
                     cp[-1] = 0;
                 if (c > 1)
@@ -779,13 +779,13 @@ sh_readline(Shell_t *shp,
         case S_NL:
             if (was_escape) {
                 was_escape = 0;
-                if (cp = ( unsigned char * )sfgetr(iop, delim, 0))
+                if (cp = ( unsigned char * ) sfgetr(iop, delim, 0))
                     c = sfvalue(iop);
-                else if (cp = ( unsigned char * )sfgetr(iop, delim, -1))
+                else if (cp = ( unsigned char * ) sfgetr(iop, delim, -1))
                     c = sfvalue(iop) + 1;
                 if (cp) {
                     if (flags & S_FLAG)
-                        sfwrite(shp->gd->hist_ptr->histfp, ( char * )cp, c);
+                        sfwrite(shp->gd->hist_ptr->histfp, ( char * ) cp, c);
                     cpmax = cp + c;
                     c = shp->ifstable[*cp++];
                     val = 0;
@@ -806,8 +806,8 @@ sh_readline(Shell_t *shp,
                 continue;
 #if SHOPT_MULTIBYTE
             if (c == S_MBYTE) {
-                if (sh_strchr(ifs, ( char * )cp - 1, cpmax - cp + 1) >= 0) {
-                    if ((c = mbsize(( char * )cp - 1)) > 1)
+                if (sh_strchr(ifs, ( char * ) cp - 1, cpmax - cp + 1) >= 0) {
+                    if ((c = mbsize(( char * ) cp - 1)) > 1)
                         cp += (c - 1);
                     c = S_DELIM;
                 } else
@@ -831,7 +831,7 @@ sh_readline(Shell_t *shp,
 
         case 0:
             if (val == 0 || was_escape) {
-                val = ( char * )(cp - 1);
+                val = ( char * ) (cp - 1);
                 was_escape = 0;
             }
             /* skip over word characters */
@@ -845,10 +845,10 @@ sh_readline(Shell_t *shp,
                         if (shp->ifstable[*cp] == S_QUOTE) {
                             if (val) {
                                 sfwrite(
-                                shp->stk, val, cp - ( unsigned char * )val);
+                                shp->stk, val, cp - ( unsigned char * ) val);
                                 use_stak = 1;
                             }
-                            val = ( char * )++cp;
+                            val = ( char * ) ++cp;
                         } else
                             break;
                     }
@@ -856,15 +856,16 @@ sh_readline(Shell_t *shp,
                         if (c == S_NL) {
                             if (val) {
                                 sfwrite(
-                                shp->stk, val, cp - ( unsigned char * )val);
+                                shp->stk, val, cp - ( unsigned char * ) val);
                                 use_stak = 1;
                             }
-                            if (cp = ( unsigned char * )sfgetr(iop, delim, 0))
+                            if (cp
+                                = ( unsigned char * ) sfgetr(iop, delim, 0))
                                 c = sfvalue(iop);
-                            else if (cp = ( unsigned char * )sfgetr(
+                            else if (cp = ( unsigned char * ) sfgetr(
                                      iop, delim, -1))
                                 c = sfvalue(iop) + 1;
-                            val = ( char * )cp;
+                            val = ( char * ) cp;
                         }
                         continue;
                     }
@@ -878,7 +879,7 @@ sh_readline(Shell_t *shp,
                     wrd = 0;
             }
             if (wrd > 0)
-                del = ( unsigned char * )"";
+                del = ( unsigned char * ) "";
             if (c != S_MBYTE)
                 cp[-1] = 0;
             continue;
@@ -892,11 +893,11 @@ sh_readline(Shell_t *shp,
         }
         if (!name && *val) {
             /* strip off trailing space delimiters */
-            unsigned char *vp = ( unsigned char * )val + strlen(val);
+            unsigned char *vp = ( unsigned char * ) val + strlen(val);
             while (shp->ifstable[*--vp] == S_SPACE)
                 ;
             if (vp == del) {
-                if (vp == ( unsigned char * )val)
+                if (vp == ( unsigned char * ) val)
                     vp--;
                 else
                     while (shp->ifstable[*--vp] == S_SPACE)

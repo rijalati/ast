@@ -127,14 +127,14 @@ hdrvcdx(Vcchar_t **datap, ssize_t dtsz, Vcchar_t *code, ssize_t cdsz)
             return dtsz;          /* must be new header format */
 
         if (!old[k].meth
-            && !(old[k].meth = vcgetmeth(( char * )old[k].name, 1))) {
+            && !(old[k].meth = vcgetmeth(( char * ) old[k].name, 1))) {
             old[k].mtid = -1;
             return dtsz;
         }
         meth[n].meth = old[k].meth;
 
         if (vciomore(&io) <= 0 || /* no or bad argument code */
-            (sz = ( ssize_t )vciogetu(&io)) < 0 || sz > vciomore(&io))
+            (sz = ( ssize_t ) vciogetu(&io)) < 0 || sz > vciomore(&io))
             return dtsz; /* must be new header format */
 
         meth[n].size = sz;
@@ -148,10 +148,10 @@ hdrvcdx(Vcchar_t **datap, ssize_t dtsz, Vcchar_t *code, ssize_t cdsz)
     /* construct new header in reverse order */
     vcioinit(&io, code, cdsz);
     for (n -= 1; n >= 0; --n) { /* get and write out the method id string */
-        if (!(dt = ( unsigned char * )vcgetident(
-              meth[n].meth, ( char * )buf, sizeof(buf))))
+        if (!(dt = ( unsigned char * ) vcgetident(
+              meth[n].meth, ( char * ) buf, sizeof(buf))))
             return -1; /* error, no id string for method? */
-        if ((sz = strlen(( char * )dt) + 1) > vciomore(&io)) /* too long */
+        if ((sz = strlen(( char * ) dt) + 1) > vciomore(&io)) /* too long */
             return dtsz; /* must be new header format */
         vcioputs(&io, dt, sz);
 
@@ -165,7 +165,7 @@ hdrvcdx(Vcchar_t **datap, ssize_t dtsz, Vcchar_t *code, ssize_t cdsz)
         else if (meth[n].meth == Vcrle || meth[n].meth == Vcmtf) {
             if (*dt == 0) /* coding rle.0 or mtf.0 */
             {
-                vcstrcode("0", ( char * )buf, sizeof(buf));
+                vcstrcode("0", ( char * ) buf, sizeof(buf));
                 vcioputu(&io, 1);
                 vcioputc(&io, buf[0]);
             } else
@@ -238,7 +238,7 @@ putheader(State_t *state)
         return 0;
 
     /* get the string that codes the methods */
-    if ((sz = vcextract(state->vc, ( Void_t ** )&code)) <= 0)
+    if ((sz = vcextract(state->vc, ( Void_t ** ) &code)) <= 0)
         return VCSFERROR(state, "transform data not encodable");
     if ((4 + 1 + vcsizeu(sz) + sz) > vciomore(state->io))
         return VCSFERROR(state, "transform data abnormally large");
@@ -271,7 +271,7 @@ makebuf(State_t *state, ssize_t size)
         return 0;
 
     oldbase = state->base;
-    if (!(base = ( Vcchar_t * )malloc(size)))
+    if (!(base = ( Vcchar_t * ) malloc(size)))
         return -1;
 
     memcpy(base, oldbase, state->endb - oldbase);
@@ -357,7 +357,7 @@ ident(State_t *state, const Void_t *data, size_t dtsz, char *buf, size_t bfsz)
                 return -1;
             *id++ = '^';
         }
-        mt = ( char * )vcionext(&io);
+        mt = ( char * ) vcionext(&io);
         sz = vciomore(&io);
         if (sz >= 2 && mt[1] == 0) { /* obsolete index */
             x = mt[0];
@@ -386,10 +386,10 @@ ident(State_t *state, const Void_t *data, size_t dtsz, char *buf, size_t bfsz)
         vcioskip(&io, k + 1);
 
         /* get the initialization data, if any */
-        if ((sz = ( ssize_t )vciogetu(&io)) < 0 || sz > vciomore(&io))
+        if ((sz = ( ssize_t ) vciogetu(&io)) < 0 || sz > vciomore(&io))
             return -1;
         if (sz) {
-            dt = ( unsigned char * )vcionext(&io);
+            dt = ( unsigned char * ) vcionext(&io);
             vcioskip(&io, sz);
             k - 2 * sz + 1;
             if ((id + k) >= end && (bfsz || extend(&id, &buf, &end, k)))
@@ -581,7 +581,7 @@ encode(State_t *state, Vcchar_t *data, size_t dtsz)
         {
             sz = vciosize(&io);
             bssz = ((cdsz + sz + 1023) / 1024) * 1024;
-            if (!(base = ( Vcchar_t * )malloc(bssz)))
+            if (!(base = ( Vcchar_t * ) malloc(bssz)))
                 return -1;
             memcpy(base, state->base, vciosize(&io));
             if (state->base)
@@ -626,7 +626,7 @@ vcodex_ident(Codexmeth_t *meth,
              char *name,
              size_t namesize)
 {
-    unsigned char *h = ( unsigned char * )head;
+    unsigned char *h = ( unsigned char * ) head;
     ssize_t n;
     ssize_t m;
     Vcio_t io;
@@ -651,7 +651,7 @@ vcodex_ident(Codexmeth_t *meth,
 static int
 vcodex_done(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
     int r;
     ssize_t sz;
     ssize_t wz;
@@ -710,7 +710,7 @@ vcodex_option(Codex_t *p,
     if (isdigit(*s))
         v = strton(s, &e, NiL, 0);
     else {
-        e = ( char * )s;
+        e = ( char * ) s;
         if (e[0] == 'n' && e[1] == 'o') {
             e += 2;
             v = 0;
@@ -859,7 +859,7 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
 
         /* buffer to accumulate data before encoding */
         state->dtsz = wsize;
-        if (!(state->data = ( Vcchar_t * )malloc(state->dtsz))) {
+        if (!(state->data = ( Vcchar_t * ) malloc(state->dtsz))) {
             VCSFERROR(state, "Out of memory for data buffer");
             goto bad;
         }
@@ -868,7 +868,7 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
 
         /* buffer for the encoder to output results */
         state->bssz = VCSFDTSZ(state->dtsz);
-        if (!(state->base = ( Vcchar_t * )malloc(state->bssz))) {
+        if (!(state->base = ( Vcchar_t * ) malloc(state->bssz))) {
             VCSFERROR(state, "Out of memory for output buffer");
             goto bad;
         }
@@ -878,7 +878,7 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
             state->bssz = VCSF_BUFSIZE;
         else if (state->bssz < VCSF_BUFMIN)
             state->bssz = VCSF_BUFMIN;
-        if (!(state->base = ( Vcchar_t * )malloc(state->bssz))) {
+        if (!(state->base = ( Vcchar_t * ) malloc(state->bssz))) {
             if (!(flags & CODEX_DECODE))
                 state->flags = -1;
             VCSFERROR(state, "Out of memory for output buffer");
@@ -942,7 +942,7 @@ bad:
 static int
 vcodex_init(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
 
     return 0;
 }
@@ -956,12 +956,12 @@ vcodex_read(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
     Sfoff_t pos;
     Vcwmatch_t *wm;
     Vcio_t io;
-    State_t *state = ( State_t * )CODEX(disc)->data;
+    State_t *state = ( State_t * ) CODEX(disc)->data;
 
     if (!(state->flags & VC_DECODE))
         return VCSFERROR(state, "decode handle create failed");
 
-    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n;
+    for (sz = 0, dt = ( Vcchar_t * ) buf; sz < n;
          sz += r, dt += r) { /* copy already decoded data */
         if ((r = state->endd - state->next) > 0) {
             r = r > (n - sz) ? (n - sz) : r;
@@ -988,8 +988,8 @@ vcodex_read(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
                 break;
 
             if (ctrl & (VCD_SOURCEFILE | VCD_TARGETFILE)) {
-                if (!state->vcw || (d = ( ssize_t )vciogetu(&io)) < 0
-                    || (pos = ( Sfoff_t )vciogetu(&io)) < 0
+                if (!state->vcw || (d = ( ssize_t ) vciogetu(&io)) < 0
+                    || (pos = ( Sfoff_t ) vciogetu(&io)) < 0
                     || !(wm = vcwapply(
                          state->vcw, TYPECAST(Void_t *, ctrl), d, pos))) {
                     VCSFERROR(state,
@@ -1068,13 +1068,13 @@ vcodex_write(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *disc)
 {
     Vcchar_t *dt;
     ssize_t sz, w;
-    State_t *state = ( State_t * )CODEX(disc)->data;
+    State_t *state = ( State_t * ) CODEX(disc)->data;
 
     if (!(state->flags & VC_ENCODE))
         return VCSFERROR(state, "encode handle create failed");
 
-    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n; sz += w, dt += w) {
-        if (buf == ( Void_t * )state->data) { /* final flush */
+    for (sz = 0, dt = ( Vcchar_t * ) buf; sz < n; sz += w, dt += w) {
+        if (buf == ( Void_t * ) state->data) { /* final flush */
             w = state->next - state->data;
             state->next = state->data;
 
@@ -1136,7 +1136,7 @@ static int
 vcodex_sync(Codex_t *p)
 {
     ssize_t sz;
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
 
     return (state->flags & VC_ENCODE) && (sz = state->next - state->data) > 0
            && vcodex_write(p->sp, state->data, sz, &p->sfdisc) < 0

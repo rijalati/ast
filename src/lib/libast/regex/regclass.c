@@ -331,7 +331,7 @@ regclass(const char *s, char **e)
         if (n == cp->size && strneq(s, cp->name, n))
             goto found;
     xp = zp = 0;
-    lc = ( Ctype_t * )setlocale(LC_CTYPE, NiL);
+    lc = ( Ctype_t * ) setlocale(LC_CTYPE, NiL);
     for (cp = ctype; cp < &ctype[elementsof(ctype)]; cp++) {
 #if _lib_wctype
         if (!zp) {
@@ -351,18 +351,18 @@ regclass(const char *s, char **e)
             return 0;
         cp->size = 0;
         if (!streq(cp->name, s)) {
-            free(( char * )cp->name);
+            free(( char * ) cp->name);
             cp->name = 0;
         }
     }
     if (!cp->name) {
-        if (!(cp->name = ( const char * )memdup(s, n + 1)))
+        if (!(cp->name = ( const char * ) memdup(s, n + 1)))
             return 0;
-        *(( char * )cp->name + n) = 0;
+        *(( char * ) cp->name + n) = 0;
     }
     /* mvs.390 needs the (char*) cast -- barf */
-    if (!(cp->wtype = wctype(( char * )cp->name))) {
-        free(( char * )cp->name);
+    if (!(cp->wtype = wctype(( char * ) cp->name))) {
+        free(( char * ) cp->name);
         cp->name = 0;
         return 0;
     }
@@ -371,7 +371,7 @@ regclass(const char *s, char **e)
 #endif
 found:
     if (e)
-        *e = ( char * )t + 2;
+        *e = ( char * ) t + 2;
     return cp->ctype;
 }
 
@@ -395,7 +395,7 @@ regaddclass(const char *name, regclass_t fun)
     if (!(np = newof(0, Ctype_t, 1, n + 1)))
         return REG_ESPACE;
     np->size = n;
-    np->name = strcpy(( char * )(np + 1), name);
+    np->name = strcpy(( char * ) (np + 1), name);
     np->ctype = fun;
     np->next = ctypes;
     ctypes = np;

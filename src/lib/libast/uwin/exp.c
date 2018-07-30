@@ -198,7 +198,7 @@ double __exp__D(x, c) double x, c;
 
             /* argument reduction : x --> x - k*ln2 */
             z = invln2 * x;
-            k = ( int )z + copysign(.5, x);
+            k = ( int ) z + copysign(.5, x);
 
             /* express (x+c)-k*ln2 as hi-lo and let x=hi-lo rounded */
 

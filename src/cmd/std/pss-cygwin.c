@@ -105,7 +105,7 @@ cygwin_read(Pss_t *pss, Pss_id_t pid)
     else {
         if (!pss->data)
             pss->pid = 0;
-        else if (!(pss->pid = (( struct external_pinfo * )pss->data)->pid)) {
+        else if (!(pss->pid = (( struct external_pinfo * ) pss->data)->pid)) {
             pss->data = 0;
             return 0;
         }
@@ -119,11 +119,11 @@ cygwin_part(Pss_t *pss, Pssent_t *pe)
 {
     struct external_pinfo *pr;
 
-    if (!(pr
-          = ( struct external_pinfo * )cygwin_internal(CW_GETPINFO, pss->pid))
+    if (!(pr = ( struct external_pinfo * ) cygwin_internal(CW_GETPINFO,
+                                                           pss->pid))
         || !pr->pid)
         return 0;
-    pss->data = ( void * )pr;
+    pss->data = ( void * ) pr;
     pe->gid = pr->gid;
     pe->pgrp = pr->pgid;
     pe->sid = pr->sid;
@@ -145,7 +145,7 @@ cygwin_part(Pss_t *pss, Pssent_t *pe)
 static int
 cygwin_full(Pss_t *pss, Pssent_t *pe)
 {
-    struct external_pinfo *pr = ( struct external_pinfo * )pss->data;
+    struct external_pinfo *pr = ( struct external_pinfo * ) pss->data;
     unsigned long fields = pss->disc->fields & pss->meth->fields;
     char *s;
     int i;
@@ -185,7 +185,7 @@ cygwin_ttyname(Pss_t *pss, Pssent_t *pe)
 {
     if (pe->tty < 0)
         return "?";
-    if (pe->tty == ( Pss_dev_t )TTY_CONSOLE)
+    if (pe->tty == ( Pss_dev_t ) TTY_CONSOLE)
         return "con";
     sfsprintf(pss->buf, sizeof(pss->buf), "%I*d", sizeof(pe->tty), pe->tty);
     return pss->buf;

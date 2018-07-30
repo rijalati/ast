@@ -113,7 +113,7 @@ procfs_init(Pss_t *pss)
     int fd;
 
     sfsprintf(
-    pss->buf, sizeof(pss->buf), _PS_path_num, ( unsigned long )1, _PS_status);
+    pss->buf, sizeof(pss->buf), _PS_path_num, ( unsigned long ) 1, _PS_status);
     if ((fd = open(pss->buf, O_RDONLY | O_BINARY)) < 0)
         return -1;
     close(fd);
@@ -136,7 +136,7 @@ procfs_init(Pss_t *pss)
 static int
 procfs_done(Pss_t *pss)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
 
     closedir(state->dir);
     return 1;
@@ -145,7 +145,7 @@ procfs_done(Pss_t *pss)
 static int
 procfs_read(Pss_t *pss, Pss_id_t pid)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     struct dirent *ent;
     char *e;
 
@@ -155,7 +155,7 @@ procfs_read(Pss_t *pss, Pss_id_t pid)
         do {
             if (!(ent = readdir(state->dir)))
                 return 0;
-            pss->pid = ( Pss_id_t )strtol(ent->d_name, &e, 10);
+            pss->pid = ( Pss_id_t ) strtol(ent->d_name, &e, 10);
         } while (*e);
     return 1;
 }
@@ -163,7 +163,7 @@ procfs_read(Pss_t *pss, Pss_id_t pid)
 static int
 procfs_part(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     struct prpsinfo *pr = &state->pr;
     int fd;
     int n;
@@ -174,7 +174,7 @@ procfs_part(Pss_t *pss, Pssent_t *pe)
     sfsprintf(pss->buf,
               sizeof(pss->buf),
               _PS_path_num,
-              ( unsigned long )pss->pid,
+              ( unsigned long ) pss->pid,
               _PS_status);
     if ((fd = open(pss->buf, O_RDONLY | O_BINARY)) < 0) {
         if (pss->disc->errorf
@@ -207,7 +207,7 @@ procfs_part(Pss_t *pss, Pssent_t *pe)
             if (n < _PS_scan_count)
                 error(1,
                       "%lu: scan count %d, expected at least %d",
-                      ( unsigned long )pss->pid,
+                      ( unsigned long ) pss->pid,
                       n,
                       _PS_scan_count);
         }
@@ -218,9 +218,9 @@ procfs_part(Pss_t *pss, Pssent_t *pe)
         sfsprintf(pss->buf,
                   sizeof(pss->buf),
                   _PS_path_num,
-                  ( unsigned long )pss->pid,
+                  ( unsigned long ) pss->pid,
                   _PS_task);
-        ( void )stat(pss->buf, &st);
+        ( void ) stat(pss->buf, &st);
 #        endif
         pr->pr_uid = st.st_uid;
         pr->pr_gid = st.st_gid;
@@ -244,7 +244,7 @@ procfs_part(Pss_t *pss, Pssent_t *pe)
                 sfclose(fp);
             }
             if (!(pss->hz
-                  = ( int )strtol(astconf("CLK_TCK", NiL, NiL), NiL, 0)))
+                  = ( int ) strtol(astconf("CLK_TCK", NiL, NiL), NiL, 0)))
                 pss->hz = PR_HZ;
         }
         pr->pr_start = pss->boot + pr->pr_start / pss->hz;
@@ -290,7 +290,7 @@ procfs_part(Pss_t *pss, Pssent_t *pe)
     pe->tgrp = pr->pr_tgrp;
 #    endif
     pe->tty
-    = (pr->pr_ttydev == ( Pss_dev_t )PRNODEV) ? PSS_NODEV : pr->pr_ttydev;
+    = (pr->pr_ttydev == ( Pss_dev_t ) PRNODEV) ? PSS_NODEV : pr->pr_ttydev;
     pe->uid = pr->pr_uid;
     return 1;
 }
@@ -298,7 +298,7 @@ procfs_part(Pss_t *pss, Pssent_t *pe)
 static int
 procfs_full(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     struct prpsinfo *pr = &state->pr;
     unsigned long fields = pss->disc->fields & pss->meth->fields;
     char *s;
@@ -345,7 +345,7 @@ procfs_full(Pss_t *pss, Pssent_t *pe)
             pe->command = s;
         }
     }
-    pe->addr = ( void * )pr->pr_addr;
+    pe->addr = ( void * ) pr->pr_addr;
 #    if _mem_pr_clname_prpsinfo
     pe->sched = pr->pr_clname;
 #    endif
@@ -373,7 +373,7 @@ procfs_full(Pss_t *pss, Pssent_t *pe)
     pe->size = pr->pr_size;
     pe->start = PR_START(pr);
     pe->time = PR_TIME(pr);
-    pe->wchan = ( void * )pr->pr_wchan;
+    pe->wchan = ( void * ) pr->pr_wchan;
     return 1;
 }
 

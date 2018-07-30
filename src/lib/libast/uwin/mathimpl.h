@@ -48,7 +48,7 @@
 #        define cat3t(a, b, c) cat3(a, c, b)
 #    endif
 
-#    define vccast(name) (*( const double * )(cat3(name, , x)))
+#    define vccast(name) (*( const double * ) (cat3(name, , x)))
 
 /*
  * Define a constant to high precision on a Vax or Tahoe.
@@ -95,8 +95,8 @@ struct Double
 {
     double a, b;
 };
-double __exp__D __P(( double, double ));
-struct Double __log__D __P(( double ));
+double __exp__D __P(( double, double ) );
+struct Double __log__D __P(( double ) );
 
 /*
  * All externs exported after this point

@@ -110,7 +110,7 @@ fileout(Archive_t *ap, File_t *f)
                                       "aligned reads");
                                 if (!(buf = malloc(state.buffersize + n)))
                                     nospace();
-                                buf += n - ((( ssize_t )buf) & (n - 1));
+                                buf += n - ((( ssize_t ) buf) & (n - 1));
                             }
                             if ((n = read(f->fd, buf, m)) > 0)
                                 memcpy(ap->io->next, buf, n);
@@ -122,8 +122,11 @@ fileout(Archive_t *ap, File_t *f)
                                      ap->io->next,
                                      m);
                         bp->next += m;
-                    } else if (bread(
-                               f->ap, ap->io->next, ( off_t )0, ( off_t )n, 1)
+                    } else if (bread(f->ap,
+                                     ap->io->next,
+                                     ( off_t ) 0,
+                                     ( off_t ) n,
+                                     1)
                                <= 0)
                         n = -1;
                 }
@@ -253,8 +256,8 @@ filein(Archive_t *ap, File_t *f)
             break;
         case DELTA_update:
             if (!f->delta.base
-                || ( unsigned long )f->delta.base->mtime.tv_sec
-                   >= ( unsigned long )f->st->st_mtime)
+                || ( unsigned long ) f->delta.base->mtime.tv_sec
+                   >= ( unsigned long ) f->st->st_mtime)
                 error(3,
                       "%s: base archive mismatch [%s#%d]",
                       f->name,
@@ -423,12 +426,12 @@ fileskip(Archive_t *ap, File_t *f)
     Member_t *d;
     off_t n;
 
-    if (ap->delta && (d = ( Member_t * )hashget(ap->delta->tab, f->name)))
+    if (ap->delta && (d = ( Member_t * ) hashget(ap->delta->tab, f->name)))
         d->info->delta.op = DELTA_delete;
     if ((!ap->format->getdata || !(*ap->format->getdata)(&state, ap, f, -1))
         && ((n = f->st->st_size) > 0 && f->type == X_IFREG
             || (n = f->datasize))
-        && bread(ap, NiL, ( off_t )0, n, 1) < 0)
+        && bread(ap, NiL, ( off_t ) 0, n, 1) < 0)
         error(ERROR_SYSTEM | 2, "%s: skip error", f->name);
 }
 
@@ -470,7 +473,7 @@ copyinout(Ftw_t *ftw)
                         if (c > state.buffersize)
                             c = state.buffersize;
                         if (lseek(rfd, data, SEEK_SET) != data
-                            || (n = read(rfd, state.tmp.buffer, ( size_t )c))
+                            || (n = read(rfd, state.tmp.buffer, ( size_t ) c))
                                <= 0) {
                             error(
                             ERROR_SYSTEM | 2, "%s: read error", f->name);
@@ -609,10 +612,10 @@ copy(Archive_t *ap, int (*copyfile)(Ftw_t *))
         putprologue(ap, state.append || state.update);
     }
     if (state.files)
-        ftwalk(( char * )state.files,
+        ftwalk(( char * ) state.files,
                copyfile,
                state.ftwflags | FTW_MULTIPLE,
-               state.exact ? ( Ftw_cmp_t )0 : cmpftw);
+               state.exact ? ( Ftw_cmp_t ) 0 : cmpftw);
     else {
         sfopen(sfstdin, NiL, "rt");
         sfset(sfstdin, SF_SHARE, 0);

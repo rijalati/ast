@@ -64,8 +64,8 @@ int force;
     tp = &tag;
     new_tag(tp, st, buf, 0, 0, LOG | MARKER);
     tp->stat.st_mtime = expire;
-    ( void )sfseek(rp->fd, 0L, 2);
-    sfwrite(rp->fd, ( char * )tp, tp->length);
+    ( void ) sfseek(rp->fd, 0L, 2);
+    sfwrite(rp->fd, ( char * ) tp, tp->length);
     replica(rp->path, NULL, tp);
     return (0);
 }

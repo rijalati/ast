@@ -42,7 +42,7 @@ fmtip4(uint32_t addr, int bits)
                   (addr >> 24) & 0xff,
                   (addr >> 16) & 0xff,
                   (addr >> 8) & 0xff,
-                  ( addr )&0xff);
+                  ( addr ) &0xff);
     if (bits >= 0 && bits <= 32)
         sfsprintf(buf + i, z - i, "/%d", bits);
     return buf;

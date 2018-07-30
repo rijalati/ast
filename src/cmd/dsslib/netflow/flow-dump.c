@@ -164,18 +164,18 @@ dumpident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
 {
     if (n < sizeof(Hdr_1_t))
         return 0;
-    switch ((( Hdr_1_t * )buf)->version) {
+    switch ((( Hdr_1_t * ) buf)->version) {
     case 1:
     case 5:
     case 7:
-        n = (( Hdr_1_t * )buf)->count;
+        n = (( Hdr_1_t * ) buf)->count;
         return n >= 1 && n <= 30;
     }
-    switch (( int )swapget(0, buf, 2)) {
+    switch (( int ) swapget(0, buf, 2)) {
     case 1:
     case 5:
     case 7:
-        n = ( int )swapget(0, ( char * )buf + 2, 2);
+        n = ( int ) swapget(0, ( char * ) buf + 2, 2);
         return n >= 1 && n <= 30;
     }
     return 0;
@@ -202,7 +202,7 @@ dumpfopen(Dssfile_t *file, Dssdisc_t *disc)
     }
     file->data = state;
     if (file->flags & DSS_FILE_WRITE)
-        state->data = ( char * )(state + 1);
+        state->data = ( char * ) (state + 1);
     return 0;
 }
 
@@ -213,14 +213,14 @@ dumpfopen(Dssfile_t *file, Dssdisc_t *disc)
 static int
 dumpfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    State_t *state = ( State_t * )file->data;
+    State_t *state = ( State_t * ) file->data;
     Netflow_t *rp = &state->record;
     Rec_1_t *r1;
     int n;
 
     while (!rp->count--) {
         if (!(state->data
-              = ( char * )sfreserve(file->io, NETFLOW_PACKET, 0))) {
+              = ( char * ) sfreserve(file->io, NETFLOW_PACKET, 0))) {
             if (sfvalue(file->io)) {
                 if (disc->errorf)
                     (*disc->errorf)(NiL,
@@ -233,7 +233,7 @@ dumpfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             return 0;
         }
         state->swap = 0;
-        n = (( Hdr_1_t * )state->data)->version;
+        n = (( Hdr_1_t * ) state->data)->version;
         for (;;) {
             switch (n) {
             case 1:
@@ -280,15 +280,15 @@ dumpfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 continue;
             }
             state->boot
-            = (( Nftime_t )rp->time * MS - ( Nftime_t )rp->uptime) * US
-              + ( Nftime_t )rp->nsec;
+            = (( Nftime_t ) rp->time * MS - ( Nftime_t ) rp->uptime) * US
+              + ( Nftime_t ) rp->nsec;
             break;
         }
         state->data += n;
     }
     switch (rp->version) {
     case 1:
-        r1 = ( Rec_1_t * )state->data;
+        r1 = ( Rec_1_t * ) state->data;
         if (state->swap) {
             swapmem(3, state->data, &rp->src_addrv4, 12);
             swapmem(1, state->data + 12, &rp->input, 4);
@@ -330,8 +330,8 @@ dumpfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         state->data += sizeof(Rec_7_t);
         break;
     }
-    rp->start = state->boot + ( Nftime_t )rp->first * US;
-    rp->end = state->boot + ( Nftime_t )rp->last * US;
+    rp->start = state->boot + ( Nftime_t ) rp->first * US;
+    rp->end = state->boot + ( Nftime_t ) rp->last * US;
     record->size = sizeof(*rp);
     record->data = rp;
     return 1;
@@ -344,8 +344,8 @@ dumpfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 static int
 dumpfwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    State_t *state = ( State_t * )file->data;
-    Netflow_t *rp = ( Netflow_t * )record->data;
+    State_t *state = ( State_t * ) file->data;
+    Netflow_t *rp = ( Netflow_t * ) record->data;
     size_t n;
 
     if (!state->count++) {
@@ -448,11 +448,11 @@ dumpfwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     }
     state->next += n;
     if (state->count >= state->flush) {
-        (( Hdr_1_t * )state->data)->count = state->count;
+        (( Hdr_1_t * ) state->data)->count = state->count;
         if (state->swap)
             swapmem(1,
-                    &(( Hdr_1_t * )state->data)->count,
-                    &(( Hdr_1_t * )state->data)->count,
+                    &(( Hdr_1_t * ) state->data)->count,
+                    &(( Hdr_1_t * ) state->data)->count,
                     2);
         state->count = 0;
         if (sfwrite(file->io, state->data, NETFLOW_PACKET)
@@ -476,16 +476,16 @@ dumpfwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 static int
 dumpfclose(Dssfile_t *file, Dssdisc_t *disc)
 {
-    State_t *state = ( State_t * )file->data;
+    State_t *state = ( State_t * ) file->data;
 
     if (!state)
         return -1;
     if ((file->flags & DSS_FILE_WRITE) && state->count) {
-        (( Hdr_1_t * )state->data)->count = state->count;
+        (( Hdr_1_t * ) state->data)->count = state->count;
         if (state->swap)
             swapmem(1,
-                    &(( Hdr_1_t * )state->data)->count,
-                    &(( Hdr_1_t * )state->data)->count,
+                    &(( Hdr_1_t * ) state->data)->count,
+                    &(( Hdr_1_t * ) state->data)->count,
                     2);
         memset(state->next, 0, NETFLOW_PACKET - (state->next - state->data));
         if (sfwrite(file->io, state->data, NETFLOW_PACKET)

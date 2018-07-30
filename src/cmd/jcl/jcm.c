@@ -248,7 +248,7 @@ card(Sfio_t *sp, unsigned char *map)
             break;
         error_info.line++;
         if (s == state.data)
-            o = *( unsigned char * )s;
+            o = *( unsigned char * ) s;
         ccmapstr(map, s, z);
         for (t = s, s += z;
              s > t
@@ -294,11 +294,11 @@ prefix(const char *s, const char *e, int d)
     if (n >= sizeof(var.name))
         n = sizeof(var.name);
     strlcpy(var.name, s, n);
-    if (!(v = ( Jcmvar_t * )dtprev(state.vars, &var)))
-        v = ( Jcmvar_t * )dtsearch(state.vars, &var);
+    if (!(v = ( Jcmvar_t * ) dtprev(state.vars, &var)))
+        v = ( Jcmvar_t * ) dtsearch(state.vars, &var);
     if (*v->name != *s)
-        v = ( Jcmvar_t * )dtnext(state.vars, v);
-    for (; v && *v->name == *s; v = ( Jcmvar_t * )dtnext(state.vars, v)) {
+        v = ( Jcmvar_t * ) dtnext(state.vars, v);
+    for (; v && *v->name == *s; v = ( Jcmvar_t * ) dtnext(state.vars, v)) {
         n = strlen(v->name);
         if (strneq(s, v->name, n))
             return s + n;
@@ -365,9 +365,9 @@ parameterize(Sfio_t *sp, const char *s, const char *e, int append, int index)
         sfstrseek(sp, -1, SEEK_CUR);
         return sfstrbase(sp);
     }
-    if (!(s = ( const char * )sfstruse(sp)))
+    if (!(s = ( const char * ) sfstruse(sp)))
         nospace();
-    return ( char * )s;
+    return ( char * ) s;
 }
 
 static Jcmevent_t *
@@ -376,9 +376,9 @@ getevent(const char *s, const char *d, int uniq, int string, int index)
     Jcmevent_t *event;
 
     if (s) {
-        s = ( const char * )parameterize(
-        state.tmp, s, string ? ( const char * )0 : s + 20, 1, index);
-        if (event = ( Jcmevent_t * )dtmatch(state.events, s)) {
+        s = ( const char * ) parameterize(
+        state.tmp, s, string ? ( const char * ) 0 : s + 20, 1, index);
+        if (event = ( Jcmevent_t * ) dtmatch(state.events, s)) {
             if (!uniq) {
                 sfstrseek(state.tmp, 0, SEEK_SET);
                 return event;
@@ -387,7 +387,7 @@ getevent(const char *s, const char *d, int uniq, int string, int index)
         }
     } else
         sfprintf(state.tmp, "{%lu}", ++state.pseudo);
-    if (!(s = ( const char * )sfstruse(state.tmp))
+    if (!(s = ( const char * ) sfstruse(state.tmp))
         || !(event = newof(0, Jcmevent_t, 1, strlen(s))))
         nospace();
     strcpy(event->name, s);
@@ -402,7 +402,7 @@ getjob(const char *s)
 {
     Jcmjob_t *job;
 
-    s = ( const char * )parameterize(state.tmp, s, s + 8, 0, 0);
+    s = ( const char * ) parameterize(state.tmp, s, s + 8, 0, 0);
     if (!(job = newof(0, Jcmjob_t, 1, strlen(s))))
         nospace();
     strcpy(job->base, s);
@@ -419,7 +419,7 @@ setvar(const char *s, const char *v, int init)
 {
     Jcmvar_t *var;
 
-    if (var = ( Jcmvar_t * )dtmatch(state.vars, s)) {
+    if (var = ( Jcmvar_t * ) dtmatch(state.vars, s)) {
         if (!v || !init && var->init)
             return var;
         free(var->value);
@@ -448,7 +448,7 @@ getlib(const char *s)
         return 0;
     if (state.lowercase)
         lower(name);
-    if (!(lib = ( Jcmlib_t * )dtmatch(state.libs, name))) {
+    if (!(lib = ( Jcmlib_t * ) dtmatch(state.libs, name))) {
         if (!(lib = newof(0, Jcmlib_t, 1, 0)))
             nospace();
         strcpy(lib->name, name);
@@ -459,7 +459,7 @@ getlib(const char *s)
             sfsprintf(name, sizeof(name), "lib_%s", t);
             if (state.lowercase)
                 upper(name);
-            if (var = ( Jcmvar_t * )dtmatch(state.vars, name))
+            if (var = ( Jcmvar_t * ) dtmatch(state.vars, name))
                 do {
                     sfsprintf(
                     name, sizeof(name), "lib_%s_%lu", t, ++var->dup);
@@ -528,7 +528,7 @@ init(const char *path)
         return -1;
     }
     file = error_info.file;
-    error_info.file = ( char * )path;
+    error_info.file = ( char * ) path;
     line = error_info.line;
     error_info.line = 0;
     while (s = sfgetr(sp, '\n', 1)) {
@@ -716,8 +716,8 @@ main(int argc, char **argv)
     if (!state.cards) {
         sfprintf(sfstdout, ":JCL:\n\n");
         n = 0;
-        for (var = ( Jcmvar_t * )dtfirst(state.vars); var;
-             var = ( Jcmvar_t * )dtnext(state.vars, var))
+        for (var = ( Jcmvar_t * ) dtfirst(state.vars); var;
+             var = ( Jcmvar_t * ) dtnext(state.vars, var))
             if (var->init) {
                 sfprintf(
                 sfstdout, "%s%s == %s\n", JCL_AUTO, var->name, var->value);
@@ -739,7 +739,7 @@ main(int argc, char **argv)
         n = sfgetc(sp);
         sfungetc(sp, n);
         map
-        = isupper(n) ? ( unsigned char * )0 : ccmap(CC_EBCDIC_O, CC_NATIVE);
+        = isupper(n) ? ( unsigned char * ) 0 : ccmap(CC_EBCDIC_O, CC_NATIVE);
         error_info.file = file;
         error_info.line = 0;
         vmclear(state.vm);
@@ -901,12 +901,12 @@ main(int argc, char **argv)
                             set->value = s;
                         } else
                             set->value = "";
-                        var = ( Jcmvar_t * )dtmatch(state.vars, set->name);
-                        if ((!(var
-                               = ( Jcmvar_t * )dtmatch(state.vars, set->name))
+                        var = ( Jcmvar_t * ) dtmatch(state.vars, set->name);
+                        if ((!(var = ( Jcmvar_t * ) dtmatch(state.vars,
+                                                            set->name))
                              || !var->init)
-                            && (!(global = ( Jcmset_t * )dtmatch(state.set,
-                                                                 set->name))
+                            && (!(global = ( Jcmset_t * ) dtmatch(state.set,
+                                                                  set->name))
                                 || streq(global->value, set->value)
                                 || circular(set))) {
                             if (!global) {

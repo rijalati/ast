@@ -39,23 +39,23 @@
 static int
 att_block(Sum_t *p, const void *s, size_t n)
 {
-    uint32_t c = (( Integral_t * )p)->sum;
-    unsigned char *b = ( unsigned char * )s;
+    uint32_t c = (( Integral_t * ) p)->sum;
+    unsigned char *b = ( unsigned char * ) s;
     unsigned char *e = b + n;
 
     while (b < e)
         c += *b++;
-    (( Integral_t * )p)->sum = c;
+    (( Integral_t * ) p)->sum = c;
     return 0;
 }
 
 static int
 att_done(Sum_t *p)
 {
-    uint32_t c = (( Integral_t * )p)->sum;
+    uint32_t c = (( Integral_t * ) p)->sum;
 
     c = (c & 0xffff) + ((c >> 16) & 0xffff);
     c = (c & 0xffff) + (c >> 16);
-    (( Integral_t * )p)->sum = c & 0xffff;
+    (( Integral_t * ) p)->sum = c & 0xffff;
     return short_done(p);
 }

@@ -85,7 +85,7 @@ match_string_exec(Cx_t *cx,
     int i;
 
     if ((i = regnexec(
-         ( regex_t * )data, sv->string.data, sv->string.size, 0, NiL, 0))
+         ( regex_t * ) data, sv->string.data, sv->string.size, 0, NiL, 0))
         && i != REG_NOMATCH)
         i = -1;
     return i == 0;
@@ -95,7 +95,7 @@ static int
 match_string_free(Cx_t *cx, void *data, Cxdisc_t *disc)
 {
     if (data) {
-        regfree(( regex_t * )data);
+        regfree(( regex_t * ) data);
         free(data);
     }
     return 0;
@@ -172,8 +172,8 @@ number_external(Cx_t *cx,
     char fmt[16];
 
     if (CXDETAILS(details, format, type, 0))
-        n = sfsprintf(buf, size, details, ( intmax_t )value->number);
-    else if (value->number == ( intmax_t )value->number
+        n = sfsprintf(buf, size, details, ( intmax_t ) value->number);
+    else if (value->number == ( intmax_t ) value->number
              || (format->flags & CX_INTEGER)) {
         f = fmt;
         *f++ = '%';
@@ -193,7 +193,7 @@ number_external(Cx_t *cx,
             *f++ = 'd';
         }
         *f = 0;
-        n = sfsprintf(buf, size, fmt, ( intmax_t )value->number);
+        n = sfsprintf(buf, size, fmt, ( intmax_t ) value->number);
     } else if (format->width) {
         int w;
 
@@ -239,14 +239,14 @@ number_internal(Cx_t *cx,
     }
     if (format && (format->flags & CX_UNSIGNED))
         ret->value.number
-        = ( Cxinteger_t )strntoull(buf, size, &e, format->base);
+        = ( Cxinteger_t ) strntoull(buf, size, &e, format->base);
     else if (format && format->base)
         ret->value.number = strntoll(buf, size, &e, format->base);
     else
         ret->value.number = strntod(buf, size, &e);
-    if (e != (( char * )buf + size) && *buf) {
+    if (e != (( char * ) buf + size) && *buf) {
         if (format && format->map && !cxstr2num(cx, format, buf, size, &m)) {
-            ret->value.number = ( Cxinteger_t )m;
+            ret->value.number = ( Cxinteger_t ) m;
             return size;
         }
         if (disc->errorf && !(cx->flags & CX_QUIET))
@@ -256,13 +256,13 @@ number_internal(Cx_t *cx,
             1,
             "%s: invalid number [(buf+size)=%p e=%p%s base=%d size=%d]",
             fmtquote(buf, NiL, NiL, size, 0),
-            ( char * )buf + size,
+            ( char * ) buf + size,
             e,
             (format && (format->flags & CX_UNSIGNED)) ? " unsigned" : "",
             format ? format->base : 0,
             size);
     }
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 /*
@@ -304,10 +304,11 @@ bool_internal(Cx_t *cx,
         ret->value.number = 0;
         return 0;
     }
-    ret->value.number = ( Cxinteger_t )strntoull(buf, size, &e, format->base);
-    if (e != (( char * )buf + size) && *buf) {
+    ret->value.number
+    = ( Cxinteger_t ) strntoull(buf, size, &e, format->base);
+    if (e != (( char * ) buf + size) && *buf) {
         if (format && format->map && !cxstr2num(cx, format, buf, size, &m)) {
-            ret->value.number = ( Cxinteger_t )m;
+            ret->value.number = ( Cxinteger_t ) m;
             return size;
         }
         if (disc->errorf && !(cx->flags & CX_QUIET))
@@ -317,13 +318,13 @@ bool_internal(Cx_t *cx,
             1,
             "%s: invalid bool [(buf+size)=%p e=%p%s base=%d size=%d]",
             fmtquote(buf, NiL, NiL, size, 0),
-            ( char * )buf + size,
+            ( char * ) buf + size,
             e,
             (format && (format->flags & CX_UNSIGNED)) ? " unsigned" : "",
             format ? format->base : 0,
             size);
     }
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 /*
@@ -377,10 +378,10 @@ string_internal(Cx_t *cx,
 {
     char *s;
 
-    ret->value.string.data = ( char * )buf;
+    ret->value.string.data = ( char * ) buf;
     if ((!format || !(format->flags & CX_NUL) && format->fill <= 0)
         && (s = memchr(buf, 0, size)))
-        size = s - ( char * )buf;
+        size = s - ( char * ) buf;
     return ret->value.string.size = size;
 }
 
@@ -415,12 +416,12 @@ buffer_external(Cx_t *cx,
     case 'h':
     case 'x':
         z = value->buffer.size;
-        f = ( unsigned char * )value->buffer.data;
+        f = ( unsigned char * ) value->buffer.data;
         e = f + z;
         z *= 2;
         if (size < z)
             return z;
-        t = ( unsigned char * )buf;
+        t = ( unsigned char * ) buf;
         while (f < e) {
             v = *f++;
             *t++ = hex[v >> 4];
@@ -489,7 +490,7 @@ type_external(Cx_t *cx,
 {
     size_t n;
 
-    type = ( Cxtype_t * )value->pointer;
+    type = ( Cxtype_t * ) value->pointer;
     if ((n = strlen(type->name)) <= size)
         memcpy(buf, type->name, n);
     return n;
@@ -585,14 +586,14 @@ static Type_t types[]
                    0)
     BT(CX_pointer, &name_pointer[0], 0, "A generic pointer.", 0, 0, 0) };
 
-#define CX_bool_t (( Cxtype_t * )&name_bool[0])
-#define CX_buffer_t (( Cxtype_t * )&name_buffer[0])
-#define CX_number_t (( Cxtype_t * )&name_number[0])
-#define CX_pointer_t (( Cxtype_t * )&name_pointer[0])
-#define CX_reference_t (( Cxtype_t * )&name_reference[0])
-#define CX_string_t (( Cxtype_t * )&name_string[0])
-#define CX_type_t (( Cxtype_t * )&name_type[0])
-#define CX_void_t (( Cxtype_t * )&name_void[0])
+#define CX_bool_t (( Cxtype_t * ) &name_bool[0])
+#define CX_buffer_t (( Cxtype_t * ) &name_buffer[0])
+#define CX_number_t (( Cxtype_t * ) &name_number[0])
+#define CX_pointer_t (( Cxtype_t * ) &name_pointer[0])
+#define CX_reference_t (( Cxtype_t * ) &name_reference[0])
+#define CX_string_t (( Cxtype_t * ) &name_string[0])
+#define CX_type_t (( Cxtype_t * ) &name_type[0])
+#define CX_void_t (( Cxtype_t * ) &name_void[0])
 
 static int
 op_call_V(Cx_t *cx,
@@ -662,7 +663,7 @@ op_sc_V(Cx_t *cx,
         Cxdisc_t *disc)
 {
     if ((pc->op == CX_SC0) == (b->value.number == 0)) {
-        cx->jump = ( int )pc->data.number;
+        cx->jump = ( int ) pc->data.number;
         return 1;
     }
     return 0;
@@ -767,8 +768,8 @@ op_mod_N(Cx_t *cx,
         return -1;
     }
     r->value.number = a->value.number / b->value.number;
-    r->value.number = (Cxnumber_t)((( Cxinteger_t )a->value.number)
-                                   % (( Cxinteger_t )b->value.number));
+    r->value.number = (Cxnumber_t)((( Cxinteger_t ) a->value.number)
+                                   % (( Cxinteger_t ) b->value.number));
     return 0;
 }
 
@@ -781,8 +782,8 @@ op_and_N(Cx_t *cx,
          void *data,
          Cxdisc_t *disc)
 {
-    r->value.number = (Cxnumber_t)((( Cxinteger_t )a->value.number)
-                                   & (( Cxinteger_t )b->value.number));
+    r->value.number = (Cxnumber_t)((( Cxinteger_t ) a->value.number)
+                                   & (( Cxinteger_t ) b->value.number));
     return 0;
 }
 
@@ -795,8 +796,8 @@ op_or_N(Cx_t *cx,
         void *data,
         Cxdisc_t *disc)
 {
-    r->value.number = (Cxnumber_t)((( Cxinteger_t )a->value.number)
-                                   | (( Cxinteger_t )b->value.number));
+    r->value.number = (Cxnumber_t)((( Cxinteger_t ) a->value.number)
+                                   | (( Cxinteger_t ) b->value.number));
     return 0;
 }
 
@@ -809,8 +810,8 @@ op_xor_N(Cx_t *cx,
          void *data,
          Cxdisc_t *disc)
 {
-    r->value.number = (Cxnumber_t)((( Cxinteger_t )a->value.number)
-                                   ^ (( Cxinteger_t )b->value.number));
+    r->value.number = (Cxnumber_t)((( Cxinteger_t ) a->value.number)
+                                   ^ (( Cxinteger_t ) b->value.number));
     return 0;
 }
 
@@ -849,8 +850,8 @@ op_lsh_N(Cx_t *cx,
          void *data,
          Cxdisc_t *disc)
 {
-    r->value.number = (Cxnumber_t)((( Cxinteger_t )a->value.number)
-                                   << (( int )b->value.number));
+    r->value.number = (Cxnumber_t)((( Cxinteger_t ) a->value.number)
+                                   << (( int ) b->value.number));
     return 0;
 }
 
@@ -863,8 +864,8 @@ op_rsh_N(Cx_t *cx,
          void *data,
          Cxdisc_t *disc)
 {
-    r->value.number = (Cxnumber_t)((( Cxinteger_t )a->value.number)
-                                   >> (( int )b->value.number));
+    r->value.number = (Cxnumber_t)((( Cxinteger_t ) a->value.number)
+                                   >> (( int ) b->value.number));
     return 0;
 }
 
@@ -877,7 +878,7 @@ op_inv_L(Cx_t *cx,
          void *data,
          Cxdisc_t *disc)
 {
-    r->value.number = (Cxnumber_t)(~(( Cxinteger_t )a->value.number));
+    r->value.number = (Cxnumber_t)(~(( Cxinteger_t ) a->value.number));
     return 0;
 }
 
@@ -1665,7 +1666,7 @@ cxopen(Cxflags_t flags, Cxflags_t test, Cxdisc_t *disc)
     cx->test = test;
     cx->redisc.re_version = REG_VERSION;
     cx->redisc.re_flags = REG_NOFREE;
-    cx->redisc.re_errorf = ( regerror_t )disc->errorf;
+    cx->redisc.re_errorf = ( regerror_t ) disc->errorf;
     if (!(cx->buf = sfstropen()) || !(cx->tp = sfstropen())) {
         cxclose(cx);
         return 0;
@@ -1885,13 +1886,13 @@ cxaddtype(Cx_t *cx, Cxtype_t *type, Cxdisc_t *disc)
     dtinsert(dict, type);
     if (!(type->header.flags & CX_NORMALIZED)) {
         type->header.flags |= CX_NORMALIZED;
-        if ((base = ( char * )type->base)
+        if ((base = ( char * ) type->base)
             && !(type->base = cxtype(cx, base, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: unknown base type", base);
             return -1;
         }
-        if ((base = ( char * )type->fundamental)
+        if ((base = ( char * ) type->fundamental)
             && !(type->fundamental = cxtype(cx, base, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(
@@ -1905,7 +1906,7 @@ cxaddtype(Cx_t *cx, Cxtype_t *type, Cxdisc_t *disc)
                     NiL, disc, 2, "%s: no member get function", type->name);
                 return -1;
             }
-            if (!(member = ( Cxvariable_t * )type->member->members)) {
+            if (!(member = ( Cxvariable_t * ) type->member->members)) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, 2, "%s: no member table", type->name);
@@ -1925,7 +1926,7 @@ cxaddtype(Cx_t *cx, Cxtype_t *type, Cxdisc_t *disc)
                     v = member;
                     if (!(v->header.flags & CX_NORMALIZED)) {
                         v->header.flags |= CX_NORMALIZED;
-                        if ((base = ( char * )v->type)
+                        if ((base = ( char * ) v->type)
                             && !(v->type = cxtype(cx, base, disc))) {
                             if (disc->errorf)
                                 (*disc->errorf)(
@@ -1939,7 +1940,7 @@ cxaddtype(Cx_t *cx, Cxtype_t *type, Cxdisc_t *disc)
                 }
         }
         if (type->generic)
-            for (i = 0; base = ( char * )type->generic[i]; i++)
+            for (i = 0; base = ( char * ) type->generic[i]; i++)
                 if (!(type->generic[i] = cxtype(cx, base, disc))) {
                     if (disc->errorf)
                         (*disc->errorf)(
@@ -1992,16 +1993,16 @@ cxtype(Cx_t *cx, const char *name, Cxdisc_t *disc)
     size_t n;
 
     if ((s = strchr(name, ':')) && *++s == ':') {
-        n = s - ( char * )name;
+        n = s - ( char * ) name;
         lib = fmtbuf(n);
         memcpy(lib, name, --n);
         lib[n] = 0;
-        name = ( const char * )s + 1;
+        name = ( const char * ) s + 1;
     } else
-        lib = ( char * )name;
-    if (!(t = ( Cxtype_t * )dtmatch(cx ? cx->types : state.types, name))
+        lib = ( char * ) name;
+    if (!(t = ( Cxtype_t * ) dtmatch(cx ? cx->types : state.types, name))
         && disc->loadf && (*disc->loadf)(lib, disc))
-        t = ( Cxtype_t * )dtmatch(cx ? cx->types : state.types, name);
+        t = ( Cxtype_t * ) dtmatch(cx ? cx->types : state.types, name);
     return t;
 }
 
@@ -2049,14 +2050,14 @@ cxaddcallout(Cx_t *cx, Cxcallout_t *callout, Cxdisc_t *disc)
         dict = state.callouts;
     if (!(callout->header.flags & CX_NORMALIZED)) {
         callout->header.flags |= CX_NORMALIZED;
-        if (!(name = ( char * )callout->op.type1))
+        if (!(name = ( char * ) callout->op.type1))
             callout->op.type1 = state.type_void;
         else if (!(callout->op.type1 = cxtype(cx, name, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: unknown type", name);
             return -1;
         }
-        if (!(name = ( char * )callout->op.type2))
+        if (!(name = ( char * ) callout->op.type2))
             callout->op.type2 = state.type_void;
         else if (!(callout->op.type2 = cxtype(cx, name, disc))) {
             if (disc->errorf)
@@ -2064,7 +2065,7 @@ cxaddcallout(Cx_t *cx, Cxcallout_t *callout, Cxdisc_t *disc)
             return -1;
         }
     }
-    if (!(copy = ( Cxcallout_t * )dtinsert(dict, callout))
+    if (!(copy = ( Cxcallout_t * ) dtinsert(dict, callout))
         || copy->callout != callout->callout) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "callout initialization error");
@@ -2089,7 +2090,7 @@ cxcallout(Cx_t *cx, int code, Cxtype_t *type1, Cxtype_t *type2, Cxdisc_t *disc)
         op.type1 = state.type_void;
     if (!(op.type2 = type2))
         op.type2 = state.type_void;
-    while (!(callout = ( Cxcallout_t * )dtmatch(
+    while (!(callout = ( Cxcallout_t * ) dtmatch(
              cx ? cx->callouts : state.callouts, &op))) {
         if (op.code == CX_NOMATCH)
             op.code = CX_MATCH;
@@ -2156,16 +2157,16 @@ cxquery(Cx_t *cx, const char *name, Cxdisc_t *disc)
     size_t n;
 
     if ((s = strchr(name, ':')) && *++s == ':') {
-        n = s - ( char * )name;
+        n = s - ( char * ) name;
         lib = fmtbuf(n);
         memcpy(lib, name, --n);
         lib[n] = 0;
-        name = ( const char * )s + 1;
+        name = ( const char * ) s + 1;
     } else
-        lib = ( char * )name;
-    if (!(q = ( Cxquery_t * )dtmatch(cx ? cx->queries : state.queries, name))
+        lib = ( char * ) name;
+    if (!(q = ( Cxquery_t * ) dtmatch(cx ? cx->queries : state.queries, name))
         && disc->loadf && (*disc->loadf)(lib, disc))
-        q = ( Cxquery_t * )dtmatch(cx ? cx->queries : state.queries, name);
+        q = ( Cxquery_t * ) dtmatch(cx ? cx->queries : state.queries, name);
     return q;
 }
 
@@ -2187,7 +2188,7 @@ cxfunction(Cx_t *cx, const char *name, Cxdisc_t *disc)
             (*disc->errorf)(NiL, disc, 2, "%s: function must be local", name);
         return 0;
     }
-    if (f = ( Cxvariable_t * )dtmatch(cx->variables, name)) {
+    if (f = ( Cxvariable_t * ) dtmatch(cx->variables, name)) {
         if (f->function)
             return f;
         if (disc->errorf)
@@ -2199,7 +2200,7 @@ cxfunction(Cx_t *cx, const char *name, Cxdisc_t *disc)
             (*disc->errorf)(NiL, disc, 2, "%s: function must be local", name);
         return 0;
     }
-    i = s - ( char * )name;
+    i = s - ( char * ) name;
     p = fmtbuf(i);
     memcpy(p, name, --i);
     p[i] = 0;
@@ -2209,7 +2210,7 @@ cxfunction(Cx_t *cx, const char *name, Cxdisc_t *disc)
         for (i = 0; lib->functions[i].name; i++)
             if (cxaddvariable(cx, &lib->functions[i], disc))
                 return 0;
-    if (f = ( Cxvariable_t * )dtmatch(cx->variables, name)) {
+    if (f = ( Cxvariable_t * ) dtmatch(cx->variables, name)) {
         if (f->function)
             return f;
         if (disc->errorf)
@@ -2273,7 +2274,7 @@ cxaddmap(Cx_t *cx, Cxmap_t *map, Cxdisc_t *disc)
 Cxmap_t *
 cxmap(Cx_t *cx, const char *name, Cxdisc_t *disc)
 {
-    return ( Cxmap_t * )dtmatch(cx ? cx->maps : state.maps, name);
+    return ( Cxmap_t * ) dtmatch(cx ? cx->maps : state.maps, name);
 }
 
 /*
@@ -2321,20 +2322,20 @@ cxaddrecode(Cx_t *cx, Cxrecode_t *recode, Cxdisc_t *disc)
         dict = state.recodes;
     if (!(recode->header.flags & CX_NORMALIZED)) {
         recode->header.flags |= CX_NORMALIZED;
-        if ((name = ( char * )recode->op.type1)
+        if ((name = ( char * ) recode->op.type1)
             && !(recode->op.type1 = cxtype(cx, name, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: unknown type", name);
             return -1;
         }
-        if ((name = ( char * )recode->op.type2)
+        if ((name = ( char * ) recode->op.type2)
             && !(recode->op.type2 = cxtype(cx, name, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: unknown type", name);
             return -1;
         }
     }
-    if (!(o = ( Cxrecode_t * )dtsearch(dict, recode))
+    if (!(o = ( Cxrecode_t * ) dtsearch(dict, recode))
         || o != recode && dtdelete(dict, o))
         dtinsert(dict, recode);
     return 0;
@@ -2365,9 +2366,9 @@ cxrecode(Cx_t *cx, int code, Cxtype_t *type1, Cxtype_t *type2, Cxdisc_t *disc)
     if (!(op.type2 = type2))
         op.type2 = state.type_void;
     return (recode
-            = ( Cxrecode_t * )dtmatch(cx ? cx->recodes : state.recodes, &op))
+            = ( Cxrecode_t * ) dtmatch(cx ? cx->recodes : state.recodes, &op))
            ? recode->recode
-           : ( Cxrecode_f )0;
+           : ( Cxrecode_f ) 0;
 }
 
 /*
@@ -2429,7 +2430,7 @@ cxedit(Cx_t *cx, const char *data, Cxdisc_t *disc)
     Cxedit_t *o;
     char *s;
 
-    e = ( Cxedit_t * )dtmatch(cx ? cx->edits : state.edits, data);
+    e = ( Cxedit_t * ) dtmatch(cx ? cx->edits : state.edits, data);
     if (isalpha(*data)) {
         if (!e) {
             if (disc->errorf)
@@ -2458,25 +2459,25 @@ cxedit(Cx_t *cx, const char *data, Cxdisc_t *disc)
             return 0;
         }
         e->redisc.re_version = REG_VERSION;
-        e->redisc.re_errorf = ( regerror_t )disc->errorf;
+        e->redisc.re_errorf = ( regerror_t ) disc->errorf;
         if (cx) {
             e->redisc.re_flags = REG_NOFREE;
-            e->redisc.re_resizef = ( regresize_t )vmgetmem;
+            e->redisc.re_resizef = ( regresize_t ) vmgetmem;
             e->redisc.re_resizehandle = cx->vm;
         }
         e->re.re_disc = &e->redisc;
-        s = ( char * )data;
+        s = ( char * ) data;
         if (regcomp(&e->re, s, REG_DELIMITED | REG_LENIENT | REG_NULL))
             return 0;
         s += e->re.re_npat;
         if (regsubcomp(&e->re, s, NiL, 0, 0))
             return 0;
         s += e->re.re_npat;
-        e->re.re_npat = s - ( char * )data;
+        e->re.re_npat = s - ( char * ) data;
         if (*s && disc->errorf)
             (*disc->errorf)(
             NiL, disc, 1, "invalid character after substitution: %s", s);
-        strcpy(( char * )(e->name = ( const char * )(e + 1)), data);
+        strcpy(( char * ) (e->name = ( const char * ) (e + 1)), data);
         if (cx && cxaddedit(cx, e, disc))
             return 0;
     }
@@ -2538,7 +2539,7 @@ cxaddconstraint(Cx_t *cx, Cxconstraint_t *constraint, Cxdisc_t *disc)
 Cxconstraint_t *
 cxconstraint(Cx_t *cx, const char *name, Cxdisc_t *disc)
 {
-    return ( Cxconstraint_t * )dtmatch(
+    return ( Cxconstraint_t * ) dtmatch(
     cx ? cx->constraints : state.constraints, name);
 }
 
@@ -2556,8 +2557,8 @@ referenced(Cxtype_t *type)
         if (type->base)
             referenced(type->base);
         if (type->member)
-            for (mp = ( Cxvariable_t * )dtfirst(type->member->members); mp;
-                 mp = ( Cxvariable_t * )dtnext(type->member->members, mp))
+            for (mp = ( Cxvariable_t * ) dtfirst(type->member->members); mp;
+                 mp = ( Cxvariable_t * ) dtnext(type->member->members, mp))
                 referenced(mp->type);
     }
 }
@@ -2598,7 +2599,7 @@ cxaddvariable(Cx_t *cx, Cxvariable_t *variable, Cxdisc_t *disc)
     }
     if (!(variable->header.flags & CX_NORMALIZED)) {
         variable->header.flags |= CX_NORMALIZED;
-        if ((name = ( char * )variable->type)
+        if ((name = ( char * ) variable->type)
             && !(variable->type = cxtype(cx, name, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(
@@ -2645,7 +2646,7 @@ cxvariable(Cx_t *cx, const char *name, Cxtype_t *m, Cxdisc_t *disc)
     }
     disc = cx->disc;
     if (!m || !m->member) {
-        if (!(v = ( Cxvariable_t * )dtmatch(cx->variables, name))) {
+        if (!(v = ( Cxvariable_t * ) dtmatch(cx->variables, name))) {
             if (!(t = strchr(name, '.'))) {
                 if (disc->errorf)
                     (*disc->errorf)(
@@ -2658,14 +2659,14 @@ cxvariable(Cx_t *cx, const char *name, Cxtype_t *m, Cxdisc_t *disc)
              */
 
             strcpy(s = fmtbuf(strlen(name) + 1), name);
-            t = s + (t - ( char * )name);
+            t = s + (t - ( char * ) name);
             m = 0;
             dict = cx->variables;
             head = 0;
             for (;;) {
                 if (t)
                     *t++ = 0;
-                v = ( Cxvariable_t * )dtmatch(dict, *s ? s : ".");
+                v = ( Cxvariable_t * ) dtmatch(dict, *s ? s : ".");
                 if (!v) {
                     if (disc->errorf) {
                         if (m)
@@ -2719,12 +2720,12 @@ cxvariable(Cx_t *cx, const char *name, Cxtype_t *m, Cxdisc_t *disc)
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
                 return 0;
             }
-            strcpy(( char * )(v->name = ( const char * )(v + 1)), name);
+            strcpy(( char * ) (v->name = ( const char * ) (v + 1)), name);
             v->reference = head;
             v->type = tail->variable->type;
             dtinsert(cx->variables, v);
         }
-    } else if (!(v = ( Cxvariable_t * )dtmatch(m->member->members, name))) {
+    } else if (!(v = ( Cxvariable_t * ) dtmatch(m->member->members, name))) {
         if (disc->errorf)
             (*disc->errorf)(
             cx, disc, 2, "%s: not a member of %s", name, m->name);
@@ -2781,7 +2782,7 @@ cxcast(Cx_t *cx,
             a.type = state.type_string;
             a.refs = 0;
             a.value.string.size
-            = (a.value.string.data = ( char * )format) ? strlen(format) : 0;
+            = (a.value.string.data = ( char * ) format) ? strlen(format) : 0;
             ret->type = var->type;
             ret->value.number = 0;
             if (ref = var->reference) {
@@ -2804,7 +2805,7 @@ cxcast(Cx_t *cx,
                                              &b,
                                              (ref->member->flags & CX_VIRTUAL)
                                              ? data
-                                             : ( void * )0,
+                                             : ( void * ) 0,
                                              cx->disc))
                         return -1;
                 }
@@ -2834,7 +2835,7 @@ cxcast(Cx_t *cx,
             }
             cx->ccsiz = n;
         }
-        ret->value.string.data = ( char * )ccmapcpy(
+        ret->value.string.data = ( char * ) ccmapcpy(
         map, cx->ccbuf, ret->value.string.data, ret->value.string.size);
     }
     if (ret->type->representation != type->representation) {
@@ -2842,7 +2843,7 @@ cxcast(Cx_t *cx,
         if (cxisstring(type)) {
             if (!var || !cxisnumber(from) || !var->format.map || format
                 || cxnum2str(
-                   cx, &var->format, ( Cxinteger_t )ret->value.number, &s)) {
+                   cx, &var->format, ( Cxinteger_t ) ret->value.number, &s)) {
                 if (!(e = ret->type->externalf) && var && var->type->member)
                     e = cxmembers;
                 if (e) {
@@ -2881,7 +2882,7 @@ cxcast(Cx_t *cx,
                     while ((n = (*e)(cx,
                                      ret->type,
                                      format,
-                                     var ? &var->format : ( Cxformat_t * )0,
+                                     var ? &var->format : ( Cxformat_t * ) 0,
                                      &ret->value,
                                      cx->cvt->data,
                                      cx->cvt->size,
@@ -2924,7 +2925,7 @@ cxcast(Cx_t *cx,
                                val.value.string.data,
                                val.value.string.size,
                                &m))
-            ret->value.number = ( Cxinteger_t )m;
+            ret->value.number = ( Cxinteger_t ) m;
 #if 0
 		else if (ret->type->representation != type->representation)
 			goto bad;
@@ -2933,7 +2934,7 @@ cxcast(Cx_t *cx,
                  || (*type->internalf)(cx,
                                        type,
                                        format,
-                                       var ? &var->format : ( Cxformat_t * )0,
+                                       var ? &var->format : ( Cxformat_t * ) 0,
                                        ret,
                                        val.value.string.data,
                                        val.value.string.size,
@@ -2988,8 +2989,8 @@ cxmembers(Cx_t *cx,
     b = buf;
     m = b + size;
     b += sfsprintf(b, m - b, "( ");
-    for (v = ( Cxvariable_t * )dtfirst(type->member->members); v;
-         v = ( Cxvariable_t * )dtnext(type->member->members, v)) {
+    for (v = ( Cxvariable_t * ) dtfirst(type->member->members); v;
+         v = ( Cxvariable_t * ) dtnext(type->member->members, v)) {
         if (!v->type->generic) {
             x.data.variable = v;
             o.type = v->type;
@@ -2999,7 +3000,7 @@ cxmembers(Cx_t *cx,
                 case CX_buffer:
                     if (!o.value.buffer.size)
                         continue;
-                    p = ( unsigned char * )o.value.buffer.data;
+                    p = ( unsigned char * ) o.value.buffer.data;
                     e = p + o.value.buffer.size;
                     while (p < e && !*p)
                         p++;
@@ -3194,7 +3195,7 @@ cxcvt(Cx_t *cx, const char *s, size_t n)
             if (cx->disc->errorf)
                 (*cx->disc->errorf)(
                 NiL, cx->disc, ERROR_SYSTEM | 2, "out of space");
-            return ( char * )s;
+            return ( char * ) s;
         }
     }
     memcpy(cx->cvtbuf, s, n);

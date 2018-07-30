@@ -39,9 +39,9 @@ tmain()
             Sfio_t *f = sfopen(NIL(Sfio_t *), NIL(char *), "swr");
             if (!f)
                 terror("Can't open string stream");
-            if (sfmove(sfstdin, f, ( Sfoff_t )2, '\n') != 2)
+            if (sfmove(sfstdin, f, ( Sfoff_t ) 2, '\n') != 2)
                 terror("Coprocess sfmove failed");
-            sfseek(f, ( Sfoff_t )0, 0);
+            sfseek(f, ( Sfoff_t ) 0, 0);
             if (!(s = sfgetr(f, '\n', 1)) || strcmp(s, "Line2") != 0)
                 terror("Coprocess move did not get Line2");
             if (!(s = sfgetr(f, '\n', 1)) || strcmp(s, "Line3") != 0)
@@ -66,7 +66,7 @@ tmain()
         terror("Did not get Line1 for sfgetr");
     sfsync(sfstdin);
     system(sfprints("%s -r", argv[0]));
-    sfseek(sfstdin, ( Sfoff_t )lseek(sffileno(sfstdin), ( off_t )0, 1), 0);
+    sfseek(sfstdin, ( Sfoff_t ) lseek(sffileno(sfstdin), ( off_t ) 0, 1), 0);
     if (!(s = sfgetr(sfstdin, '\n', 1)) || strcmp(s, "Line4") != 0)
         terror("Did not get Line4 for sfgetr");
 
@@ -77,7 +77,7 @@ tmain()
         terror("Did not get Line1 for sfmove");
     sfsync(sfstdin);
     system(sfprints("%s -m", argv[0]));
-    sfseek(sfstdin, ( Sfoff_t )lseek(sffileno(sfstdin), ( off_t )0, 1), 0);
+    sfseek(sfstdin, ( Sfoff_t ) lseek(sffileno(sfstdin), ( off_t ) 0, 1), 0);
     if (!(s = sfgetr(sfstdin, '\n', 1)) || strcmp(s, "Line4") != 0)
         terror("Did not get Line4 for sfmove");
 
@@ -89,7 +89,7 @@ tmain()
         terror("Did not get Line1 for head");
     sfsync(sfstdin);
     system("head -2 > /dev/null"); /* for testing the head program */
-    sfseek(sfstdin, ( Sfoff_t )lseek(sffileno(sfstdin), ( off_t )0, 1), 0);
+    sfseek(sfstdin, ( Sfoff_t ) lseek(sffileno(sfstdin), ( off_t ) 0, 1), 0);
     if (!(s = sfgetr(sfstdin, '\n', 1)) || strcmp(s, "Line4") != 0)
         terror("Did not get Line4 for head");
 #endif

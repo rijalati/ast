@@ -53,14 +53,14 @@ ar_getprologue(Pax_t *pax,
     }
     ap->data = ar;
     ar->dir = dir;
-    ap->type = ( char * )dir->meth->name;
+    ap->type = ( char * ) dir->meth->name;
     return 1;
 }
 
 static int
 ar_done(Pax_t *pax, Archive_t *ap)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
 
     if (ar) {
         if (ar->dir)
@@ -74,11 +74,11 @@ ar_done(Pax_t *pax, Archive_t *ap)
 static int
 ar_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     off_t pos;
 
     if (!(ar->ent = ardirnext(ar->dir))) {
-        pos = lseek(ap->io->fd, ( off_t )0, SEEK_END);
+        pos = lseek(ap->io->fd, ( off_t ) 0, SEEK_END);
         return (pos < 0 || paxseek(pax, ap, pos, SEEK_SET, 0) != pos) ? -1
                                                                       : 0;
     }
@@ -102,7 +102,7 @@ ar_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
 static int
 ar_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
 
     if (ar->ent->offset < 0) {
         error(

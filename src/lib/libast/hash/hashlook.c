@@ -50,7 +50,7 @@ hashlook(Hash_table_t *tab, const char *name, long flags, const char *value)
         int c;
 
         if (flags & HASH_HASHED)
-            n = *(( unsigned int * )value);
+            n = *(( unsigned int * ) value);
         else {
             s2 = name;
             n = 0;
@@ -66,7 +66,7 @@ hashlook(Hash_table_t *tab, const char *name, long flags, const char *value)
                 while ((c = *s1++) == *s2++)
                     if (!c)
                         return ((flags & HASH_VALUE) ? b->value
-                                                     : ( char * )b);
+                                                     : ( char * ) b);
             }
             if (!(tab = tab->scope) || (flags & HASH_NOSCOPE))
                 return (0);
@@ -79,7 +79,7 @@ hashlook(Hash_table_t *tab, const char *name, long flags, const char *value)
     if (name) {
         last->table = tab;
         if (flags & (HASH_BUCKET | HASH_INSTALL)) {
-            last->bucket = ( Hash_bucket_t * )name;
+            last->bucket = ( Hash_bucket_t * ) name;
             name = hashname(last->bucket);
         } else
             last->bucket = 0;
@@ -87,11 +87,11 @@ hashlook(Hash_table_t *tab, const char *name, long flags, const char *value)
         if (flags & HASH_BUCKET)
             n = last->bucket->hash;
         else if (tab->flags & HASH_HASHED) {
-            n = ( unsigned int )integralof(name);
+            n = ( unsigned int ) integralof(name);
             if (!(flags & HASH_HASHED))
                 n >>= 3;
         } else if (flags & HASH_HASHED)
-            n = *(( unsigned int * )value);
+            n = *(( unsigned int * ) value);
         else
             HASH(tab->root, name, n);
         last->hash = i = HASHVAL(n);
@@ -187,11 +187,11 @@ hashlook(Hash_table_t *tab, const char *name, long flags, const char *value)
                         b->hash |= HASH_DELETED;
                     else {
                         tab->table[n] = b->next;
-                        name = (b->hash & HASH_FREENAME) ? ( char * )b->name
-                                                         : ( char * )0;
+                        name = (b->hash & HASH_FREENAME) ? ( char * ) b->name
+                                                         : ( char * ) 0;
                         if (tab->root->local->free
                             && (tab->root->flags & HASH_BUCKET))
-                            (*tab->root->local->free)(( char * )b);
+                            (*tab->root->local->free)(( char * ) b);
                         else if (!(b->hash & HASH_KEEP)) {
                             if (tab->root->local->region)
                                 (*tab->root->local->region)(
@@ -203,15 +203,15 @@ hashlook(Hash_table_t *tab, const char *name, long flags, const char *value)
                             if (tab->root->local->region)
                                 (*tab->root->local->region)(
                                 tab->root->local->handle,
-                                ( char * )name,
+                                ( char * ) name,
                                 0,
                                 0);
                             else
-                                free(( char * )name);
+                                free(( char * ) name);
                         }
                     }
                 }
-                return (( char * )value);
+                return (( char * ) value);
 
             case HASH_RENAME:
                 if (tab != top || tab->frozen
@@ -222,9 +222,9 @@ hashlook(Hash_table_t *tab, const char *name, long flags, const char *value)
                                 | HASH_LOOKUP,
                                 NiL))
                     return (0);
-                name = ( char * )b->name;
+                name = ( char * ) b->name;
                 if (!(tab->flags & HASH_ALLOCATE))
-                    b->name = ( char * )value;
+                    b->name = ( char * ) value;
                 else if (b->name && tab->root->namesize) {
                     memcpy(b->name, value, tab->root->namesize);
                     name = 0;
@@ -237,16 +237,16 @@ hashlook(Hash_table_t *tab, const char *name, long flags, const char *value)
                             / sizeof(char *);
                     i *= sizeof(char *);
                     m = strlen(value);
-                    if (b->name == (( char * )b + i)
+                    if (b->name == (( char * ) b + i)
                         && strlen(b->name) <= m) {
                         strcpy(b->name, value);
                         name = 0;
                     } else {
                         m++;
                         if (!(t = tab->root->local->region
-                                  ? ( char * )(*tab->root->local->region)(
+                                  ? ( char * ) (*tab->root->local->region)(
                                     tab->root->local->handle, NiL, m, 0)
-                                  : ( char * )malloc(m)))
+                                  : ( char * ) malloc(m)))
                             return (0);
                         b->name = strcpy(t, value);
                     }
@@ -255,9 +255,9 @@ hashlook(Hash_table_t *tab, const char *name, long flags, const char *value)
                     b->hash &= ~HASH_FREENAME;
                     if (tab->root->local->region)
                         (*tab->root->local->region)(
-                        tab->root->local->handle, ( char * )name, 0, 0);
+                        tab->root->local->handle, ( char * ) name, 0, 0);
                     else
-                        free(( char * )name);
+                        free(( char * ) name);
                 }
                 tab->buckets--;
                 tab->table[n] = b->next;
@@ -285,7 +285,7 @@ create:
         prev = 0;
     else {
         if (prev = b) {
-            name = (b->hash & HASH_HIDES) ? b->name : ( char * )b;
+            name = (b->hash & HASH_HIDES) ? b->name : ( char * ) b;
             i |= HASH_HIDES;
         }
         if (!(flags & HASH_SCOPE))
@@ -316,30 +316,30 @@ create:
         } else if (!(n = HASH_SIZEOF(flags))) {
             if (!(flags & HASH_FIXED))
                 n = m;
-            else if ((n = ( int )integralof(value)) < m)
+            else if ((n = ( int ) integralof(value)) < m)
                 n = m;
         } else if (n < m)
             n = m;
         if (!prev && (tab->flags & HASH_ALLOCATE)) {
             m = tab->root->namesize ? tab->root->namesize : strlen(name) + 1;
             if (tab->root->local->region) {
-                if (!(b = ( Hash_bucket_t * )(*tab->root->local->region)(
+                if (!(b = ( Hash_bucket_t * ) (*tab->root->local->region)(
                       tab->root->local->handle, NiL, n + m, 0)))
                     return (0);
                 memset(b, 0, n + m);
             } else if (!(b = newof(0, Hash_bucket_t, 0, n + m)))
                 return (0);
-            b->name = ( char * )b + n;
+            b->name = ( char * ) b + n;
             memcpy(b->name, name, m);
         } else {
             if (tab->root->local->region) {
-                if (!(b = ( Hash_bucket_t * )(*tab->root->local->region)(
+                if (!(b = ( Hash_bucket_t * ) (*tab->root->local->region)(
                       tab->root->local->handle, NiL, n, 0)))
                     return (0);
                 memset(b, 0, n);
             } else if (!(b = newof(0, Hash_bucket_t, 0, n)))
                 return (0);
-            b->name = ( char * )name;
+            b->name = ( char * ) name;
         }
     }
     b->hash = n = i;
@@ -371,12 +371,12 @@ exists:
             (*tab->root->local->free)(b->value);
         if (value && tab->root->local->alloc)
             value
-            = (*tab->root->local->alloc)(( unsigned int )integralof(value));
-        b->value = ( char * )value;
-        return (( char * )hashname(b));
+            = (*tab->root->local->alloc)(( unsigned int ) integralof(value));
+        b->value = ( char * ) value;
+        return (( char * ) hashname(b));
     case HASH_VALUE:
         return (b->value);
     default:
-        return (( char * )b);
+        return (( char * ) b);
     }
 }

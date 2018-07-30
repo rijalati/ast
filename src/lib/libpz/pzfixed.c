@@ -60,9 +60,9 @@ pzfixed(Pz_t *pz, Sfio_t *io, void *buf, size_t z)
     Error_f trace;
 
     trace = pz && error_info.trace <= -2 ? pz->disc->errorf : 0;
-    siz = pz && (pz->flags & PZ_POP) ? ( Sfoff_t )0 : sfsize(io);
+    siz = pz && (pz->flags & PZ_POP) ? ( Sfoff_t ) 0 : sfsize(io);
     if (buf)
-        s = ( unsigned char * )buf;
+        s = ( unsigned char * ) buf;
     else if (!(s = sfreserve(io, 8 * elementsof(xp->rep), 1))
              && !(s = sfreserve(io, SF_UNBOUND, 1)))
         return -1;
@@ -83,7 +83,7 @@ pzfixed(Pz_t *pz, Sfio_t *io, void *buf, size_t z)
      * first check for newline terminated
      */
 
-    if ((t = ( unsigned char * )memchr(( void * )s, '\n', z / 2))
+    if ((t = ( unsigned char * ) memchr(( void * ) s, '\n', z / 2))
         && (n = t - s + 1) > 1) {
         if (siz > 0 && siz % n)
             n = 0;

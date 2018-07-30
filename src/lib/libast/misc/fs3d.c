@@ -67,7 +67,7 @@ fs3d(int op)
     if (!strcmp(v, on))
         cur = FS3D_ON;
     else if (!strncmp(v, off, sizeof(off) - 1) && v[sizeof(off)] == '=')
-        cur = FS3D_LIMIT(( int )strtol(v + sizeof(off) + 1, NiL, 0));
+        cur = FS3D_LIMIT(( int ) strtol(v + sizeof(off) + 1, NiL, 0));
     else
         cur = FS3D_OFF;
     if (cur != op) {

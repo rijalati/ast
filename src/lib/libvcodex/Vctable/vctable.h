@@ -54,9 +54,9 @@ extern Vcmethod_t *Vctable;  /* fixed-length table transform	*/
 extern Vcmethod_t *Vcrtable; /* flat file table transform	*/
 
 extern Vctblplan_t *
-vctblmakeplan _ARG_(( const Void_t *, size_t, size_t, int ));
-extern void vctblfreeplan _ARG_(( Vctblplan_t * ));
-extern ssize_t vctblencodeplan _ARG_(( Vctblplan_t *, Void_t ** ));
+vctblmakeplan _ARG_(( const Void_t *, size_t, size_t, int ) );
+extern void vctblfreeplan _ARG_(( Vctblplan_t * ) );
+extern ssize_t vctblencodeplan _ARG_(( Vctblplan_t *, Void_t ** ) );
 extern Vctblplan_t *vctbldecodeplan _ARG_((Void_t *, size_t));
 _END_EXTERNS_
 

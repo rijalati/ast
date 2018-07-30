@@ -39,7 +39,7 @@ xz_getprologue(Pax_t *pax,
     if (size < 5 || buf[0] != 0xfd || buf[1] != '7' || buf[2] != 'z'
         || buf[3] != 'X' || buf[4] != 'Z')
         return 0;
-    if ((pos = lseek(ap->io->fd, ( off_t )0, SEEK_CUR)) < 0
+    if ((pos = lseek(ap->io->fd, ( off_t ) 0, SEEK_CUR)) < 0
         || lseek(ap->io->fd, (off_t) - sizeof(foot), SEEK_END) <= 0
         || read(ap->io->fd, foot, sizeof(foot)) != sizeof(foot)
         || foot[4] != 0x59 || foot[5] != 0x5A)

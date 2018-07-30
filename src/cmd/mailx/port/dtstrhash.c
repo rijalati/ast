@@ -81,12 +81,12 @@ reg int n;
 #endif
 {
     if (n <= 0) {
-        for (; (n = *(( unsigned char * )s)) != 0; ++s)
+        for (; (n = *(( unsigned char * ) s)) != 0; ++s)
             h = dtcharhash(h, n);
     } else {
         reg char *ends;
         for (ends = s + n; s < ends; ++s) {
-            n = *(( unsigned char * )s);
+            n = *(( unsigned char * ) s);
             h = dtcharhash(h, n);
         }
     }

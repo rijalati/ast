@@ -53,7 +53,7 @@ sfstrtmp(Sfio_t *f, int mode, void *buf, size_t siz)
         free(f->_data);
     f->_flags &= ~(SF_ERROR | SF_MALLOC);
     f->mode = mode;
-    f->_next = f->_data = ( unsigned char * )buf;
+    f->_next = f->_data = ( unsigned char * ) buf;
     f->_endw = f->_endr = f->_endb = f->_data + siz;
     f->_size = siz;
     return 0;

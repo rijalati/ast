@@ -102,7 +102,7 @@ reg int type;
         if (disc->freef)
             (*disc->freef)(dt, obj, disc);
         if (disc->link < 0)
-            (*dt->memoryf)(dt, ( Void_t * )t, 0, disc);
+            (*dt->memoryf)(dt, ( Void_t * ) t, 0, disc);
         return obj;
     }
 
@@ -117,7 +117,7 @@ reg int type;
                     if (disc->freef)
                         (*disc->freef)(dt, OBJ(r, disc), disc);
                     if (disc->link < 0)
-                        (*dt->memoryf)(dt, ( Void_t * )r, 0, disc);
+                        (*dt->memoryf)(dt, ( Void_t * ) r, 0, disc);
                 } while ((r = t));
             }
             dt->data->head = dt->data->here = NIL(Dtlink_t *);
@@ -137,14 +137,14 @@ reg int type;
         if (disc->makef && !(obj = (*disc->makef)(dt, obj, disc)))
             return NIL(Void_t *);
         if (disc->link < 0) {
-            t = ( Dtlink_t * )(*dt->memoryf)(
+            t = ( Dtlink_t * ) (*dt->memoryf)(
             dt, NIL(Void_t *), sizeof(Dthold_t), disc);
             if (!t) {
                 if (disc->freef && disc->makef)
                     (*disc->freef)(dt, obj, disc);
                 return NIL(Void_t *);
             } else
-                (( Dthold_t * )t)->obj = obj;
+                (( Dthold_t * ) t)->obj = obj;
         } else
             t = ELT(obj, disc);
 
@@ -176,8 +176,8 @@ reg int type;
     if (!(t = dt->data->here) || OBJ(t, disc) != obj) {
         reg char *k, *key = KEY(obj, disc);
         for (t = dt->data->head; t; t = t->right) {
-            k = ( char * )OBJ(t, disc);
-            k = KEY(( Void_t * )k, disc);
+            k = ( char * ) OBJ(t, disc);
+            k = KEY(( Void_t * ) k, disc);
             if (CMP(dt, key, k, disc) == 0)
                 break;
         }

@@ -533,7 +533,7 @@ strfv(int n, unsigned char *r, const char *s, char **e, int b, int d)
             break;
     }
     if (e)
-        *e = ( char * )s - 1;
+        *e = ( char * ) s - 1;
     return -c;
 }
 

@@ -49,7 +49,7 @@ typedef struct Lmd_s
 static int
 lmd_init(Sum_t *p)
 {
-    Lmd_t *lmd = ( Lmd_t * )p;
+    Lmd_t *lmd = ( Lmd_t * ) p;
 
     (*lmd->initf)(&lmd->context);
     return 0;
@@ -58,7 +58,7 @@ lmd_init(Sum_t *p)
 static int
 lmd_block(Sum_t *p, const void *s, size_t n)
 {
-    Lmd_t *lmd = ( Lmd_t * )p;
+    Lmd_t *lmd = ( Lmd_t * ) p;
 
     (*lmd->updatef)(&lmd->context, s, n);
     return 0;
@@ -67,7 +67,7 @@ lmd_block(Sum_t *p, const void *s, size_t n)
 static int
 lmd_done(Sum_t *p)
 {
-    Lmd_t *lmd = ( Lmd_t * )p;
+    Lmd_t *lmd = ( Lmd_t * ) p;
     int i;
 
     (*lmd->finalf)(lmd->data, &lmd->context);
@@ -79,7 +79,7 @@ lmd_done(Sum_t *p)
 static int
 lmd_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 {
-    Lmd_t *lmd = ( Lmd_t * )p;
+    Lmd_t *lmd = ( Lmd_t * ) p;
     unsigned char *d;
     int i;
 
@@ -92,7 +92,7 @@ lmd_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 static int
 lmd_data(Sum_t *p, Sumdata_t *data)
 {
-    Lmd_t *lmd = ( Lmd_t * )p;
+    Lmd_t *lmd = ( Lmd_t * ) p;
 
     data->size = lmd->datasize;
     data->num = 0;
@@ -129,15 +129,15 @@ md4_open(const Method_t *method, const char *name)
     Md4_t *lmd;
 
     if (lmd = newof(0, Md4_t, 1, 0)) {
-        lmd->method = ( Method_t * )method;
+        lmd->method = ( Method_t * ) method;
         lmd->name = name;
         lmd->datasize = 16;
-        lmd->initf = ( Lmd_init_f )MD4Init;
-        lmd->updatef = ( Lmd_update_f )MD4Update;
-        lmd->finalf = ( Lmd_final_f )MD4Final;
-        md4_init(( Sum_t * )lmd);
+        lmd->initf = ( Lmd_init_f ) MD4Init;
+        lmd->updatef = ( Lmd_update_f ) MD4Update;
+        lmd->finalf = ( Lmd_final_f ) MD4Final;
+        md4_init(( Sum_t * ) lmd);
     }
-    return ( Sum_t * )lmd;
+    return ( Sum_t * ) lmd;
 }
 
 #endif
@@ -171,15 +171,15 @@ md5_open(const Method_t *method, const char *name)
     Md5_t *lmd;
 
     if (lmd = newof(0, Md5_t, 1, 0)) {
-        lmd->method = ( Method_t * )method;
+        lmd->method = ( Method_t * ) method;
         lmd->name = name;
         lmd->datasize = 16;
-        lmd->initf = ( Lmd_init_f )MD5Init;
-        lmd->updatef = ( Lmd_update_f )MD5Update;
-        lmd->finalf = ( Lmd_final_f )MD5Final;
-        md5_init(( Sum_t * )lmd);
+        lmd->initf = ( Lmd_init_f ) MD5Init;
+        lmd->updatef = ( Lmd_update_f ) MD5Update;
+        lmd->finalf = ( Lmd_final_f ) MD5Final;
+        md5_init(( Sum_t * ) lmd);
     }
-    return ( Sum_t * )lmd;
+    return ( Sum_t * ) lmd;
 }
 
 #endif
@@ -214,15 +214,15 @@ sha1_open(const Method_t *method, const char *name)
     Sha1_t *lmd;
 
     if (lmd = newof(0, Sha1_t, 1, 0)) {
-        lmd->method = ( Method_t * )method;
+        lmd->method = ( Method_t * ) method;
         lmd->name = name;
         lmd->datasize = 20;
-        lmd->initf = ( Lmd_init_f )SHA1Init;
-        lmd->updatef = ( Lmd_update_f )SHA1Update;
-        lmd->finalf = ( Lmd_final_f )SHA1Final;
-        sha1_init(( Sum_t * )lmd);
+        lmd->initf = ( Lmd_init_f ) SHA1Init;
+        lmd->updatef = ( Lmd_update_f ) SHA1Update;
+        lmd->finalf = ( Lmd_final_f ) SHA1Final;
+        sha1_init(( Sum_t * ) lmd);
     }
-    return ( Sum_t * )lmd;
+    return ( Sum_t * ) lmd;
 }
 
 #endif
@@ -256,15 +256,15 @@ sha256_open(const Method_t *method, const char *name)
     Sha256_t *lmd;
 
     if (lmd = newof(0, Sha256_t, 1, 0)) {
-        lmd->method = ( Method_t * )method;
+        lmd->method = ( Method_t * ) method;
         lmd->name = name;
         lmd->datasize = 32;
-        lmd->initf = ( Lmd_init_f )SHA256Init;
-        lmd->updatef = ( Lmd_update_f )SHA256Update;
-        lmd->finalf = ( Lmd_final_f )SHA256Final;
-        sha256_init(( Sum_t * )lmd);
+        lmd->initf = ( Lmd_init_f ) SHA256Init;
+        lmd->updatef = ( Lmd_update_f ) SHA256Update;
+        lmd->finalf = ( Lmd_final_f ) SHA256Final;
+        sha256_init(( Sum_t * ) lmd);
     }
-    return ( Sum_t * )lmd;
+    return ( Sum_t * ) lmd;
 }
 
 #    define sha384_description                                               \
@@ -292,15 +292,15 @@ sha384_open(const Method_t *method, const char *name)
     Sha384_t *lmd;
 
     if (lmd = newof(0, Sha384_t, 1, 0)) {
-        lmd->method = ( Method_t * )method;
+        lmd->method = ( Method_t * ) method;
         lmd->name = name;
         lmd->datasize = 48;
-        lmd->initf = ( Lmd_init_f )SHA384Init;
-        lmd->updatef = ( Lmd_update_f )SHA384Update;
-        lmd->finalf = ( Lmd_final_f )SHA384Final;
-        sha384_init(( Sum_t * )lmd);
+        lmd->initf = ( Lmd_init_f ) SHA384Init;
+        lmd->updatef = ( Lmd_update_f ) SHA384Update;
+        lmd->finalf = ( Lmd_final_f ) SHA384Final;
+        sha384_init(( Sum_t * ) lmd);
     }
-    return ( Sum_t * )lmd;
+    return ( Sum_t * ) lmd;
 }
 
 #    define sha512_description                                               \
@@ -328,15 +328,15 @@ sha512_open(const Method_t *method, const char *name)
     Sha512_t *lmd;
 
     if (lmd = newof(0, Sha512_t, 1, 0)) {
-        lmd->method = ( Method_t * )method;
+        lmd->method = ( Method_t * ) method;
         lmd->name = name;
         lmd->datasize = 64;
-        lmd->initf = ( Lmd_init_f )SHA512Init;
-        lmd->updatef = ( Lmd_update_f )SHA512Update;
-        lmd->finalf = ( Lmd_final_f )SHA512Final;
-        sha512_init(( Sum_t * )lmd);
+        lmd->initf = ( Lmd_init_f ) SHA512Init;
+        lmd->updatef = ( Lmd_update_f ) SHA512Update;
+        lmd->finalf = ( Lmd_final_f ) SHA512Final;
+        sha512_init(( Sum_t * ) lmd);
     }
-    return ( Sum_t * )lmd;
+    return ( Sum_t * ) lmd;
 }
 
 #endif

@@ -183,7 +183,7 @@ cxcontext(Cx_t *cx)
         cx->tp, "%-.*s<<<", t - cx->include->base, cx->include->base);
     else {
         for (s = t - 30; s > cx->include->base
-                         && (cx->ctype[*( unsigned char * )s]
+                         && (cx->ctype[*( unsigned char * ) s]
                              & (CX_CTYPE_ALPHA | CX_CTYPE_DIGIT));
              s--)
             ;
@@ -297,8 +297,10 @@ cxcodetrace(Cx_t *cx,
         sfsprintf(val, sizeof(val), "  %s", pc->data.variable->name);
     else if (*o == 'C') {
         if (pc->data.pointer)
-            sfsprintf(
-            val, sizeof(val), "  %s", (( Cxedit_t * )pc->data.pointer)->name);
+            sfsprintf(val,
+                      sizeof(val),
+                      "  %s",
+                      (( Cxedit_t * ) pc->data.pointer)->name);
     } else if (pc->type == cx->state->type_string)
         sfsprintf(val, sizeof(val), "  \"%-.6s\"", pc->data.string.data);
     else if (pc->type == cx->state->type_number)
@@ -404,7 +406,7 @@ cxpush(Cx_t *cx,
         if (buf
             && (!(sp = sfstropen())
                 || sfstrbuf(
-                   sp, ( char * )buf, len >= 0 ? len : strlen(buf) + 1, 0))) {
+                   sp, ( char * ) buf, len >= 0 ? len : strlen(buf) + 1, 0))) {
             if (sp)
                 sfclose(sp);
             if (cx->disc->errorf)
@@ -421,7 +423,7 @@ cxpush(Cx_t *cx,
         prompt = cx->disc->ps1 && isatty(sffileno(sp));
     } else {
         if (sp)
-            path = ( char * )file;
+            path = ( char * ) file;
         else if (!(path = pathfind(file, cx->id, NiL, tmp, sizeof(tmp)))) {
             if (cx->disc->errorf)
                 (*cx->disc->errorf)(
@@ -446,7 +448,7 @@ cxpush(Cx_t *cx,
     ip->final = !(flags & CX_INCLUDE);
     ip->retain = retain;
     ip->ofile = error_info.file;
-    error_info.file = path ? strcpy(ip->file, path) : ( char * )0;
+    error_info.file = path ? strcpy(ip->file, path) : ( char * ) 0;
     ip->oline = error_info.line;
     error_info.line = 0;
     ip->eof = cx->eof;
@@ -468,7 +470,7 @@ cxpush(Cx_t *cx,
 int
 cxpop(Cx_t *cx, void *pop)
 {
-    Cxinclude_t *pp = ( Cxinclude_t * )pop;
+    Cxinclude_t *pp = ( Cxinclude_t * ) pop;
     Cxinclude_t *ip;
 
     if (!(ip = cx->include)) {
@@ -582,7 +584,8 @@ variable(Cx_t *cx, Cxcompile_t *cc, int c, Cxtype_t *m, Cxtype_t **type)
     } else {
         a.refs = 0;
         if (!m && type
-            && (*type = ( Cxtype_t * )dtmatch(cx->types, a.value.string.data))
+            && (*type
+                = ( Cxtype_t * ) dtmatch(cx->types, a.value.string.data))
             || (*cx->referencef)(cx, NiL, &r, &b, &a, NiL, cx->disc))
             return 0;
     }
@@ -636,7 +639,7 @@ edit(Cx_t *cx,
      void *data,
      Cxdisc_t *disc)
 {
-    return cxsuball(cx, ( Cxpart_t * )pc->data.pointer, r);
+    return cxsuball(cx, ( Cxpart_t * ) pc->data.pointer, r);
 }
 
 /*
@@ -659,7 +662,7 @@ codecast(Cx_t *cx,
     c.pp = 0;
     if ((cx->flags & CX_DEBUG) && sfstrtell(cc->xp))
         cxcodetrace(
-        cx, "comp", &c, ( unsigned int )sfstrtell(cc->xp) / sizeof(c), 0, 0);
+        cx, "comp", &c, ( unsigned int ) sfstrtell(cc->xp) / sizeof(c), 0, 0);
     sfwrite(cc->xp, &c, sizeof(c));
     return 0;
 }
@@ -707,7 +710,7 @@ code(Cx_t *cx,
              || !cxisstring(type1))
         x.data.pointer = pointer;
     else
-        x.data.string.size = strlen(x.data.string.data = ( char * )pointer);
+        x.data.string.size = strlen(x.data.string.data = ( char * ) pointer);
     x.callout = 0;
     if (op == CX_REF || op == CX_GET) {
         if ((
@@ -716,18 +719,18 @@ code(Cx_t *cx,
                 cx, op, cx->state->type_void, cx->state->type_void, cx->disc)))
             && (*f)(cx, expr, &x, NiL, NiL, NiL, cx->disc))
             return 0;
-        if (op == CX_GET && (( Cxvariable_t * )pointer)->member) {
-            x.callout = (( Cxvariable_t * )pointer)->member->member->getf;
+        if (op == CX_GET && (( Cxvariable_t * ) pointer)->member) {
+            x.callout = (( Cxvariable_t * ) pointer)->member->member->getf;
             x.pp--;
         }
-        i1 = i2 = ( Cxinstruction_t * )(sfstrseek(cc->xp, 0, SEEK_CUR)
-                                        - 1 * sizeof(Cxinstruction_t));
+        i1 = i2 = ( Cxinstruction_t * ) (sfstrseek(cc->xp, 0, SEEK_CUR)
+                                         - 1 * sizeof(Cxinstruction_t));
         v1 = v2 = i1->data.variable;
         if (op != CX_REF)
             type1 = type2 = i1->type;
     } else if (op != CX_END) {
-        i1 = ( Cxinstruction_t * )(sfstrseek(cc->xp, 0, SEEK_CUR)
-                                   - 2 * sizeof(Cxinstruction_t));
+        i1 = ( Cxinstruction_t * ) (sfstrseek(cc->xp, 0, SEEK_CUR)
+                                    - 2 * sizeof(Cxinstruction_t));
         i2 = i1 + 1;
         if ((i1->op == CX_GET || i1->op == CX_CAST && (i1 - 1)->op == CX_GET)
             && (f = cxrecode(cx, op, type1, type2, cx->disc))) {
@@ -736,15 +739,16 @@ code(Cx_t *cx,
             if ((*f)(cx, expr, &x, i1, i2, NiL, cx->disc))
                 return 0;
             cc->done = expr->done;
-            i1 = ( Cxinstruction_t * )(sfstrseek(cc->xp, 0, SEEK_CUR)
-                                       - 2 * sizeof(Cxinstruction_t));
+            i1 = ( Cxinstruction_t * ) (sfstrseek(cc->xp, 0, SEEK_CUR)
+                                        - 2 * sizeof(Cxinstruction_t));
             i2 = i1 + 1;
             type1 = i1->type;
             type2 = i2->type;
         }
-        v1 = ref ? ref
-                 : i1->op == CX_GET ? i1->data.variable : ( Cxvariable_t * )0;
-        v2 = i2->op == CX_GET ? i2->data.variable : ( Cxvariable_t * )0;
+        v1 = ref
+             ? ref
+             : i1->op == CX_GET ? i1->data.variable : ( Cxvariable_t * ) 0;
+        v2 = i2->op == CX_GET ? i2->data.variable : ( Cxvariable_t * ) 0;
     }
     if (x.callout)
         goto done;
@@ -762,7 +766,7 @@ code(Cx_t *cx,
     if (type1 != type2) {
         if (v1 && (c.callout = cxcallout(cx, CX_CAST, type1, type2, cx->disc))
             && (x.callout = cxcallout(cx, op, type2, type2, cx->disc))) {
-            t = *( Cxinstruction_t * )(sfstrseek(
+            t = *( Cxinstruction_t * ) (sfstrseek(
             cc->xp, -sizeof(Cxinstruction_t), SEEK_CUR));
             c.op = CX_CAST;
             c.type = type2;
@@ -772,7 +776,7 @@ code(Cx_t *cx,
                 cxcodetrace(cx,
                             "comp",
                             &c,
-                            ( unsigned int )sfstrtell(cc->xp) / sizeof(c),
+                            ( unsigned int ) sfstrtell(cc->xp) / sizeof(c),
                             0,
                             0);
             sfwrite(cc->xp, &c, sizeof(c));
@@ -780,7 +784,7 @@ code(Cx_t *cx,
                 cxcodetrace(cx,
                             "comp",
                             &t,
-                            ( unsigned int )sfstrtell(cc->xp) / sizeof(c),
+                            ( unsigned int ) sfstrtell(cc->xp) / sizeof(c),
                             0,
                             0);
             sfwrite(cc->xp, &t, sizeof(t));
@@ -795,7 +799,7 @@ code(Cx_t *cx,
                               &m)) {
                 i2->op = CX_NUM;
                 i2->type = cx->state->type_number;
-                i2->data.number = ( Cxinteger_t )m;
+                i2->data.number = ( Cxinteger_t ) m;
                 goto done;
             }
             if (v2 && v2->format.map && cxisstring(type1)
@@ -806,7 +810,7 @@ code(Cx_t *cx,
                               &m)) {
                 i1->op = CX_NUM;
                 i1->type = cx->state->type_number;
-                i1->data.number = ( Cxinteger_t )m;
+                i1->data.number = ( Cxinteger_t ) m;
                 goto done;
             }
             if (cxisstring(type2)) {
@@ -889,7 +893,7 @@ code(Cx_t *cx,
                               &m)) {
                 i2->op = CX_NUM;
                 i2->type = type1->fundamental;
-                i2->data.number = ( Cxinteger_t )m;
+                i2->data.number = ( Cxinteger_t ) m;
                 goto done;
             }
             if (!v2) {
@@ -922,7 +926,7 @@ code(Cx_t *cx,
                               &m)) {
                 i1->op = CX_NUM;
                 i1->type = type2->fundamental;
-                i1->data.number = ( Cxinteger_t )m;
+                i1->data.number = ( Cxinteger_t ) m;
                 goto done;
             }
             if (!v1) {
@@ -968,13 +972,13 @@ code(Cx_t *cx,
 done:
     if ((cx->flags & CX_DEBUG) && sfstrtell(cc->xp))
         cxcodetrace(
-        cx, "comp", &x, ( unsigned int )sfstrtell(cc->xp) / sizeof(x), 0, 0);
+        cx, "comp", &x, ( unsigned int ) sfstrtell(cc->xp) / sizeof(x), 0, 0);
     if (sfwrite(cc->xp, &x, sizeof(x)) != sizeof(x)) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(cx, cx->disc, 2, "out of space");
         return 0;
     }
-    if (op == CX_GET && (v1 = ( Cxvariable_t * )pointer)
+    if (op == CX_GET && (v1 = ( Cxvariable_t * ) pointer)
         && cxisstring(v1->type) && v1->format.map && v1->format.map->part
         && v1->format.map->part->edit)
         codecast(cx, cc, v1->type, edit, v1->format.map->part);
@@ -1024,7 +1028,7 @@ prototype(Cx_t *cx,
             if (!e) {
                 e = s;
                 o = 0;
-                while (--e > ( char * )v->prototype) {
+                while (--e > ( char * ) v->prototype) {
                     if ((c = *e) == '[' || !o--)
                         break;
                     else if (c == ']')
@@ -1043,11 +1047,11 @@ prototype(Cx_t *cx,
             r = 1;
             break;
         } else if (c == '&'
-                   && (cx->ctype[*( unsigned char * )s] & CX_CTYPE_ALPHA)
+                   && (cx->ctype[*( unsigned char * ) s] & CX_CTYPE_ALPHA)
                    || (cx->ctype[c] & CX_CTYPE_ALPHA)) {
             if (c != '&')
                 s--;
-            for (u = buf; (cx->ctype[*( unsigned char * )s]
+            for (u = buf; (cx->ctype[*( unsigned char * ) s]
                            & (CX_CTYPE_ALPHA | CX_CTYPE_DIGIT));
                  s++)
                 if (u < &buf[sizeof(buf) - 1])
@@ -1437,7 +1441,7 @@ again:
                 v = 0;
             }
             if (z)
-                (( Cxinstruction_t * )(sfstrbase(cc->xp) + z))->data.number
+                (( Cxinstruction_t * ) (sfstrbase(cc->xp) + z))->data.number
                 = (sfstrtell(cc->xp) - z) / sizeof(Cxinstruction_t);
             x = 1;
         } else if (cx->ctype[c] & CX_CTYPE_DIGIT) {
@@ -1470,7 +1474,7 @@ again:
             back(cx);
             s = sfstruse(cx->tp);
             if (!(i &= 1))
-                n = ( double )strtonll(s, &e, NiL, 0);
+                n = ( double ) strtonll(s, &e, NiL, 0);
             if (i || *e)
                 n = strtod(s, &e);
             if (*e) {
@@ -1531,7 +1535,7 @@ again:
                              NiL))
                     goto bad;
                 o = 0;
-                s = ( char * )v->prototype;
+                s = ( char * ) v->prototype;
                 e = 0;
                 if ((r = prototype(cx, cc, v, &t, &s, &e, &o)) < 0)
                     goto bad;
@@ -2027,7 +2031,7 @@ compile(Cx_t *cx, Cxcompile_t *cc, int balanced)
     cc->type = cx->state->type_void;
     if (!(expr = node(cx, cc, sizeof(Cxquery_t))))
         return 0;
-    expr->query = ( Cxquery_t * )(expr + 1);
+    expr->query = ( Cxquery_t * ) (expr + 1);
     sfstrseek(cc->xp, 0, SEEK_SET);
     if (!code(cx,
               cc,
@@ -2050,8 +2054,8 @@ compile(Cx_t *cx, Cxcompile_t *cc, int balanced)
          * logical cast for naked variable expression
          */
 
-        pc = ( Cxinstruction_t * )(sfstrseek(cc->xp, 0, SEEK_CUR)
-                                   - 1 * sizeof(Cxinstruction_t));
+        pc = ( Cxinstruction_t * ) (sfstrseek(cc->xp, 0, SEEK_CUR)
+                                    - 1 * sizeof(Cxinstruction_t));
         if (pc->op == CX_GET && !cxislogical(pc->type)) {
             if (!code(cx,
                       cc,
@@ -2242,7 +2246,7 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                         s = sfstrbase(cc->tp) + p;
                         if (!*s)
                             goto syntax;
-                        if (!(f = ( char * )vmstrdup(cc->vm, s))) {
+                        if (!(f = ( char * ) vmstrdup(cc->vm, s))) {
                             if (cx->disc->errorf)
                                 (*cx->disc->errorf)(
                                 NiL, cx->disc, 2, "out of space");
@@ -2275,10 +2279,10 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                         if (!(fp
                               = node(cx, cc, (m + 1) * sizeof(char *) + n)))
                             return 0;
-                        fp->argv = v = ( char ** )(fp + 1);
-                        s = ( char * )(v + m + 1);
+                        fp->argv = v = ( char ** ) (fp + 1);
+                        s = ( char * ) (v + m + 1);
                         memcpy(s, sfstrseek(cc->tp, 0, SEEK_SET), n);
-                        x = ( int * )sfstrseek(cx->tp, 0, SEEK_SET);
+                        x = ( int * ) sfstrseek(cx->tp, 0, SEEK_SET);
                         while (m-- > 0)
                             *v++ = s + *x++;
                         *v = 0;

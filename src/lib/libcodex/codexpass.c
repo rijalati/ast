@@ -33,7 +33,7 @@ codexpass(void *buf, size_t n, Codexdisc_t *disc, Codexmeth_t *meth)
     char prompt[2 * CODEX_NAME];
 
     if (disc->passphrase)
-        return strncopy(( char * )buf, disc->passphrase, n) - ( char * )buf;
+        return strncopy(( char * ) buf, disc->passphrase, n) - ( char * ) buf;
     if (disc->passf)
         return (*disc->passf)(buf, n, disc, meth);
     sfsprintf(prompt, sizeof(prompt), "Enter %s passphrase: ", meth->name);

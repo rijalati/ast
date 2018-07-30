@@ -62,7 +62,7 @@ int local;
     Block_t *blk;
     size_t sz, blksz;
     size_t origsz = size;
-    Vmlast_t *last = ( Vmlast_t * )vm->data;
+    Vmlast_t *last = ( Vmlast_t * ) vm->data;
 
     LASTLOCK(last, local);
 
@@ -106,7 +106,7 @@ int local;
 
     LASTOPEN(last, local);
 
-    return ( Void_t * )last->last;
+    return ( Void_t * ) last->last;
 }
 
 #    if __STD_C
@@ -119,14 +119,14 @@ int local;
 #    endif
 {
     ssize_t size;
-    Vmlast_t *last = ( Vmlast_t * )vm->data;
+    Vmlast_t *last = ( Vmlast_t * ) vm->data;
 
     if (!data)
         return 0;
 
     LASTLOCK(last, local);
 
-    if (data != ( Void_t * )last->last)
+    if (data != ( Void_t * ) last->last)
         data = NIL(Void_t *);
     else {
         size = last->data - last->last; /**/
@@ -136,7 +136,7 @@ int local;
         last->last = NIL(Vmuchar_t *);
 
         if (!local && _Vmtrace)
-            (*_Vmtrace)(vm, ( Vmuchar_t * )data, NIL(Vmuchar_t *), size, 0);
+            (*_Vmtrace)(vm, ( Vmuchar_t * ) data, NIL(Vmuchar_t *), size, 0);
     }
 
     LASTOPEN(last, local);
@@ -159,7 +159,7 @@ int local;
     ssize_t sz, oldz, blksz;
     Void_t *origdt = data;
     size_t origsz = size;
-    Vmlast_t *last = ( Vmlast_t * )vm->data;
+    Vmlast_t *last = ( Vmlast_t * ) vm->data;
 
     if (!data) {
         data = lastalloc(vm, size, local);
@@ -167,13 +167,13 @@ int local;
             memset(data, 0, size);
         return data;
     } else if (size <= 0) {
-        ( void )lastfree(vm, data, local);
+        ( void ) lastfree(vm, data, local);
         return NIL(Void_t *);
     }
 
     LASTLOCK(last, local);
 
-    if (data != ( Void_t * )last->last)
+    if (data != ( Void_t * ) last->last)
         data = NIL(Void_t *);
     else {
         oldz = last->data - last->last; /**/
@@ -207,7 +207,7 @@ int local;
                                           VM_SEGALL | VM_SEGEXTEND))) { /**/
                     DEBUG_ASSERT((SIZE(blk) & ~BITS) >= size);
                     last->size = SIZE(blk) & ~BITS;
-                    last->data = ( Vmuchar_t * )DATA(blk);
+                    last->data = ( Vmuchar_t * ) DATA(blk);
                     last->last = NIL(Vmuchar_t *);
                     last->blk = blk;
                 }
@@ -216,8 +216,8 @@ int local;
             if ((oldz + last->size) < size)
                 data = NIL(Void_t *);
             else {
-                if (data != ( Void_t * )last->last) { /* block moved, reset
-                                                         location */
+                if (data != ( Void_t * ) last->last) { /* block moved, reset
+                                                          location */
                     last->last = last->data;
                     last->data += oldz;
                     last->size -= oldz;
@@ -225,7 +225,7 @@ int local;
                     if (type & VM_RSCOPY)
                         memcpy(last->last, data, oldz);
 
-                    data = ( Void_t * )last->last;
+                    data = ( Void_t * ) last->last;
                 }
 
                 if (type & VM_RSZERO)
@@ -239,11 +239,11 @@ int local;
 
     if (data && !local && _Vmtrace)
         (*_Vmtrace)(
-        vm, ( Vmuchar_t * )origdt, ( Vmuchar_t * )data, origsz, 0);
+        vm, ( Vmuchar_t * ) origdt, ( Vmuchar_t * ) data, origsz, 0);
 
     LASTOPEN(last, local);
 
-    return ( Void_t * )data;
+    return ( Void_t * ) data;
 }
 
 
@@ -260,7 +260,7 @@ int local;
     Vmuchar_t *data;
     size_t algn;
     size_t orgsize = size, orgalign = align;
-    Vmlast_t *last = ( Vmlast_t * )vm->data;
+    Vmlast_t *last = ( Vmlast_t * ) vm->data;
 
     if (size <= 0 || align <= 0)
         return NIL(Void_t *);
@@ -270,7 +270,7 @@ int local;
     size = ROUND(size, MEM_ALIGN);
     align = (*_Vmlcm)(align, 2 * sizeof(Block_t));
 
-    if ((data = ( Vmuchar_t * )KPVALLOC(vm, size + align, lastalloc))) {
+    if ((data = ( Vmuchar_t * ) KPVALLOC(vm, size + align, lastalloc))) {
         if ((algn = (size_t)(VMLONG(data) % align))
             != 0) {               /* move forward for required alignment */
             data += align - algn; /**/
@@ -284,13 +284,13 @@ int local;
 
     LASTOPEN(last, local);
 
-    return ( Void_t * )data;
+    return ( Void_t * ) data;
 }
 
 static int
 laststat(Vmalloc_t *vm, Vmstat_t *st, int local)
 {
-    Vmlast_t *last = ( Vmlast_t * )vm->data;
+    Vmlast_t *last = ( Vmlast_t * ) vm->data;
 
     if (!st) /* just returning the lock state */
         return last->lock ? 1 : 0;
@@ -319,10 +319,10 @@ lastevent(Vmalloc_t *vm, int event, Void_t *arg)
     {
         if (!arg)
             return -1;
-        *(( ssize_t * )arg) = sizeof(Vmlast_t);
+        *(( ssize_t * ) arg) = sizeof(Vmlast_t);
     } else if (event == VM_ENDOPEN) /* start as if region was cleared */
     {
-        if (!(last = ( Vmlast_t * )vm->data))
+        if (!(last = ( Vmlast_t * ) vm->data))
             return -1;
         last->lock = 0;
         last->blk = NIL(Block_t *);

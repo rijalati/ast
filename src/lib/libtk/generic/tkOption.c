@@ -103,7 +103,7 @@ typedef struct ElArray
 } ElArray;
 
 #define EL_ARRAY_SIZE(numEls)                                                \
-    (( unsigned )(sizeof(ElArray) + (( numEls )-1) * sizeof(Element)))
+    (( unsigned ) (sizeof(ElArray) + (( numEls ) -1) * sizeof(Element)))
 #define INITIAL_SIZE 5
 
 /*
@@ -238,7 +238,7 @@ int priority;    /* Overall priority level to use for
                   * or TK_INTERACTIVE_PRIO.  Must be between
                   * 0 and TK_MAX_PRIO. */
 {
-    TkWindow *winPtr = (( TkWindow * )tkwin)->mainPtr->winPtr;
+    TkWindow *winPtr = (( TkWindow * ) tkwin)->mainPtr->winPtr;
     ElArray **arrayPtrPtr;
     Element *elPtr;
     Element newEl;
@@ -271,7 +271,7 @@ int priority;    /* Overall priority level to use for
      * Parse the option one field at a time.
      */
 
-    arrayPtrPtr = &((( TkWindow * )tkwin)->mainPtr->optionRootPtr);
+    arrayPtrPtr = &((( TkWindow * ) tkwin)->mainPtr->optionRootPtr);
     p = name;
     for (firstField = 1;; firstField = 0) {
 
@@ -295,7 +295,7 @@ int priority;    /* Overall priority level to use for
         if (length > TMP_SIZE) {
             length = TMP_SIZE;
         }
-        strncpy(tmp, field, ( size_t )length);
+        strncpy(tmp, field, ( size_t ) length);
         tmp[length] = 0;
         newEl.nameUid = Tk_GetUid(tmp);
         if (isupper(UCHAR(*field))) {
@@ -404,8 +404,8 @@ char *className; /* Class of option.  NULL means there
      * the SetupStacks call below (squeeze out those nanoseconds).
      */
 
-    if (tkwin != ( Tk_Window )cachedWindow) {
-        SetupStacks(( TkWindow * )tkwin, 1);
+    if (tkwin != ( Tk_Window ) cachedWindow) {
+        SetupStacks(( TkWindow * ) tkwin, 1);
     }
 
     nameId = Tk_GetUid(name);
@@ -476,7 +476,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     size_t length;
     char c;
 
@@ -485,7 +485,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " cmd arg ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -498,7 +498,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " add pattern value ?priority?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (argc == 4) {
@@ -519,10 +519,10 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " clear\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
-        mainPtr = (( TkWindow * )tkwin)->mainPtr;
+        mainPtr = (( TkWindow * ) tkwin)->mainPtr;
         if (mainPtr->optionRootPtr != NULL) {
             ClearOptionTree(mainPtr->optionRootPtr);
             mainPtr->optionRootPtr = NULL;
@@ -538,7 +538,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " get window name class\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         window = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -558,7 +558,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " readfile fileName ?priority?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (argc == 4) {
@@ -575,7 +575,7 @@ char **argv;           /* Argument strings. */
                          "bad option \"",
                          argv[1],
                          "\": must be add, clear, get, or readfile",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 }
@@ -733,7 +733,7 @@ char *string; /* Describes a priority level, either
             string,
             "\": must be widgetDefault, startupFile, userDefault, ",
             "interactive, or a number between 0 and 100",
-            ( char * )NULL);
+            ( char * ) NULL);
             return -1;
         }
     }
@@ -932,7 +932,7 @@ int priority;       /* Priority level to use for options in
                          fileName,
                          "\": ",
                          Tcl_PosixError(interp),
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -942,7 +942,7 @@ int priority;       /* Priority level to use for options in
      */
 
     bufferSize = Tcl_Seek(chan, 0L, SEEK_END);
-    ( void )Tcl_Seek(chan, 0L, SEEK_SET);
+    ( void ) Tcl_Seek(chan, 0L, SEEK_SET);
 
     if (bufferSize < 0) {
         Tcl_AppendResult(interp,
@@ -950,11 +950,11 @@ int priority;       /* Priority level to use for options in
                          fileName,
                          "\":",
                          Tcl_PosixError(interp),
-                         ( char * )NULL);
+                         ( char * ) NULL);
         Tcl_Close(NULL, chan);
         return TCL_ERROR;
     }
-    buffer = ( char * )ckalloc(( unsigned )bufferSize + 1);
+    buffer = ( char * ) ckalloc(( unsigned ) bufferSize + 1);
     bufferSize = Tcl_Read(chan, buffer, bufferSize);
     if (bufferSize < 0) {
         Tcl_AppendResult(interp,
@@ -962,7 +962,7 @@ int priority;       /* Priority level to use for options in
                          fileName,
                          "\":",
                          Tcl_PosixError(interp),
-                         ( char * )NULL);
+                         ( char * ) NULL);
         Tcl_Close(NULL, chan);
         return TCL_ERROR;
     }
@@ -996,7 +996,7 @@ static ElArray *NewArray(numEls) int numEls; /* How many elements of space to
 {
     ElArray *arrayPtr;
 
-    arrayPtr = ( ElArray * )ckalloc(EL_ARRAY_SIZE(numEls));
+    arrayPtr = ( ElArray * ) ckalloc(EL_ARRAY_SIZE(numEls));
     arrayPtr->arraySize = numEls;
     arrayPtr->numUsed = 0;
     arrayPtr->nextToUse = arrayPtr->els;
@@ -1032,14 +1032,15 @@ Element *elPtr; /* Element to be copied into array. */
     if (arrayPtr->numUsed >= arrayPtr->arraySize) {
         ElArray *newPtr;
 
-        newPtr = ( ElArray * )ckalloc(EL_ARRAY_SIZE(2 * arrayPtr->arraySize));
+        newPtr
+        = ( ElArray * ) ckalloc(EL_ARRAY_SIZE(2 * arrayPtr->arraySize));
         newPtr->arraySize = 2 * arrayPtr->arraySize;
         newPtr->numUsed = arrayPtr->numUsed;
         newPtr->nextToUse = &newPtr->els[newPtr->numUsed];
-        memcpy(( VOID * )newPtr->els,
-               ( VOID * )arrayPtr->els,
+        memcpy(( VOID * ) newPtr->els,
+               ( VOID * ) arrayPtr->els,
                (arrayPtr->arraySize * sizeof(Element)));
-        ckfree(( char * )arrayPtr);
+        ckfree(( char * ) arrayPtr);
         arrayPtr = newPtr;
     }
 
@@ -1159,12 +1160,12 @@ int leaf; /* Non-zero means this is the leaf
     if (curLevel >= numLevels) {
         StackLevel *newLevels;
 
-        newLevels = ( StackLevel * )ckalloc(
-        ( unsigned )(numLevels * 2 * sizeof(StackLevel)));
-        memcpy(( VOID * )newLevels,
-               ( VOID * )levels,
+        newLevels = ( StackLevel * ) ckalloc(
+        ( unsigned ) (numLevels * 2 * sizeof(StackLevel)));
+        memcpy(( VOID * ) newLevels,
+               ( VOID * ) levels,
                (numLevels * sizeof(StackLevel)));
-        ckfree(( char * )levels);
+        ckfree(( char * ) levels);
         numLevels *= 2;
         levels = newLevels;
     }
@@ -1295,7 +1296,7 @@ static void OptionInit(mainPtr) TkMainInfo *mainPtr; /* Top-level information
 
         numLevels = 5;
         levels
-        = ( StackLevel * )ckalloc(( unsigned )(5 * sizeof(StackLevel)));
+        = ( StackLevel * ) ckalloc(( unsigned ) (5 * sizeof(StackLevel)));
         for (i = 0; i < NUM_STACKS; i++) {
             stacks[i] = NewArray(10);
             levels[0].bases[i] = 0;
@@ -1314,7 +1315,7 @@ static void OptionInit(mainPtr) TkMainInfo *mainPtr; /* Top-level information
 
     mainPtr->optionRootPtr = NewArray(20);
     interp = Tcl_CreateInterp();
-    ( void )GetDefaultOptions(interp, mainPtr->winPtr);
+    ( void ) GetDefaultOptions(interp, mainPtr->winPtr);
     Tcl_DeleteInterp(interp);
 }
 
@@ -1350,7 +1351,7 @@ arrayPtr) ElArray *arrayPtr; /* Array of options;  delete everything
             ClearOptionTree(elPtr->child.arrayPtr);
         }
     }
-    ckfree(( char * )arrayPtr);
+    ckfree(( char * ) arrayPtr);
 }
 
 /*
@@ -1399,12 +1400,12 @@ TkWindow *winPtr;   /* Fetch option defaults for main window
                                 &actualFormat,
                                 &numItems,
                                 &bytesAfter,
-                                ( unsigned char ** )&regProp);
+                                ( unsigned char ** ) &regProp);
 
     if ((result == Success) && (actualType == XA_STRING)
         && (actualFormat == 8)) {
         result = AddFromString(
-        interp, ( Tk_Window )winPtr, regProp, TK_USER_DEFAULT_PRIO);
+        interp, ( Tk_Window ) winPtr, regProp, TK_USER_DEFAULT_PRIO);
         XFree(regProp);
         return result;
     }
@@ -1418,6 +1419,6 @@ TkWindow *winPtr;   /* Fetch option defaults for main window
         XFree(regProp);
     }
     result = ReadOptionFile(
-    interp, ( Tk_Window )winPtr, "~/.Xdefaults", TK_USER_DEFAULT_PRIO);
+    interp, ( Tk_Window ) winPtr, "~/.Xdefaults", TK_USER_DEFAULT_PRIO);
     return result;
 }

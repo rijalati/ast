@@ -502,7 +502,7 @@ int *readPtr; /* Fill in with number of characters read
         if (isxdigit(UCHAR(p[1]))) {
             char *end;
 
-            result = ( char )strtoul(p + 1, &end, 16);
+            result = ( char ) strtoul(p + 1, &end, 16);
             count = end - src;
         } else {
             count = 2;
@@ -522,19 +522,19 @@ int *readPtr; /* Fill in with number of characters read
         break;
     default:
         if (isdigit(UCHAR(*p))) {
-            result = ( char )(*p - '0');
+            result = ( char ) (*p - '0');
             p++;
             if (!isdigit(UCHAR(*p))) {
                 break;
             }
             count = 3;
-            result = ( char )((result << 3) + (*p - '0'));
+            result = ( char ) ((result << 3) + (*p - '0'));
             p++;
             if (!isdigit(UCHAR(*p))) {
                 break;
             }
             count = 4;
-            result = ( char )((result << 3) + (*p - '0'));
+            result = ( char ) ((result << 3) + (*p - '0'));
             break;
         }
         result = *p;
@@ -707,7 +707,7 @@ ParseValue *pvPtr;  /* Information about where to place
                      * result of command. */
 {
     int result, length, shortfall;
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
 
     iPtr->evalFlags = flags | TCL_BRACKET_TERM;
     result = Tcl_Eval(interp, string);
@@ -820,7 +820,7 @@ ParseValue *pvPtr;  /* Information about where to place
                 dst[-1] = Tcl_Backslash(src - 1, &count);
                 src += count - 1;
             } else {
-                ( void )Tcl_Backslash(src - 1, &count);
+                ( void ) Tcl_Backslash(src - 1, &count);
                 while (count > 1) {
                     if (dst == end) {
                         pvPtr->next = dst;
@@ -1166,15 +1166,15 @@ int needed;        /* Minimum amount of additional space
     } else {
         newSpace += newSpace;
     }
-    new = ( char * )ckalloc(( unsigned )newSpace);
+    new = ( char * ) ckalloc(( unsigned ) newSpace);
 
     /*
      * Copy from old buffer to new, free old buffer if needed, and
      * mark new buffer as malloc-ed.
      */
 
-    memcpy(( VOID * )new,
-           ( VOID * )pvPtr->buffer,
+    memcpy(( VOID * ) new,
+           ( VOID * ) pvPtr->buffer,
            (size_t)(pvPtr->next - pvPtr->buffer));
     pvPtr->next = new + (pvPtr->next - pvPtr->buffer);
     if (pvPtr->clientData != 0) {
@@ -1182,7 +1182,7 @@ int needed;        /* Minimum amount of additional space
     }
     pvPtr->buffer = new;
     pvPtr->end = new + newSpace - 1;
-    pvPtr->clientData = ( ClientData )1;
+    pvPtr->clientData = ( ClientData ) 1;
 }
 
 /*
@@ -1255,7 +1255,7 @@ int *semiPtr; /* Set to 1 if word ends with a command-
         while (braces != 0) {
             p++;
             while (*p == '\\') {
-                ( void )Tcl_Backslash(p, &count);
+                ( void ) Tcl_Backslash(p, &count);
                 p += count;
             }
             if (*p == '}') {
@@ -1294,7 +1294,7 @@ int *semiPtr; /* Set to 1 if word ends with a command-
 
                 return p - 1;
             }
-            ( void )Tcl_Backslash(p, &count);
+            ( void ) Tcl_Backslash(p, &count);
             p += count;
         } else if (*p == '$') {
             p = VarNameEnd(p);
@@ -1363,11 +1363,11 @@ int term; /* This character will terminate the
 
     while (*p != term) {
         if (*p == '\\') {
-            ( void )Tcl_Backslash(p, &count);
+            ( void ) Tcl_Backslash(p, &count);
             p += count;
         } else if (*p == '[') {
             for (p++; *p != ']'; p++) {
-                p = TclWordEnd(p, 1, ( int * )NULL);
+                p = TclWordEnd(p, 1, ( int * ) NULL);
                 if (*p == 0) {
                     return p;
                 }
@@ -1595,7 +1595,7 @@ char **termPtr;     /* If non-NULL, points to word to fill
             pv.buffer = pv.next = copyStorage;
             pv.end = copyStorage + NUM_CHARS - 1;
             pv.expandProc = TclExpandParseValue;
-            pv.clientData = ( ClientData )NULL;
+            pv.clientData = ( ClientData ) NULL;
             if (TclParseQuotes(interp, string + 1, ')', 0, &end, &pv)
                 != TCL_OK) {
                 char msg[200];
@@ -1626,7 +1626,7 @@ char **termPtr;     /* If non-NULL, points to word to fill
         *termPtr = string;
     }
 
-    if ((( Interp * )interp)->noEval) {
+    if ((( Interp * ) interp)->noEval) {
         return "";
     }
     c = *name1End;

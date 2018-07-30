@@ -124,7 +124,8 @@ int type;
 
     UNFLATTEN(dt);
 
-    if (old->eventf && (*old->eventf)(dt, DT_DISC, ( Void_t * )disc, old) < 0)
+    if (old->eventf
+        && (*old->eventf)(dt, DT_DISC, ( Void_t * ) disc, old) < 0)
         return NIL(Dtdisc_t *);
 
     dt->disc = disc;
@@ -158,11 +159,11 @@ int type;
             next = root->right;
             if (!(type & DT_HASHF)) /* new hash value */
             {
-                k = ( char * )OBJ(root, disc);
-                k = KEY(( Void_t * )k, disc);
+                k = ( char * ) OBJ(root, disc);
+                k = KEY(( Void_t * ) k, disc);
                 root->hash = HASH(dt, k, disc);
             }
-            ( void )(*searchf)(dt, ( Void_t * )root, DT_RENEW);
+            ( void ) (*searchf)(dt, ( Void_t * ) root, DT_RENEW);
             root = next;
         }
     } else if (!(type & DT_COMPARF)) {
@@ -174,7 +175,7 @@ int type;
                 while ((t = root->left))
                     RROTATE(root, t);
                 next = root->right;
-                ( void )(*searchf)(dt, ( Void_t * )root, DT_RENEW);
+                ( void ) (*searchf)(dt, ( Void_t * ) root, DT_RENEW);
                 root = next;
             }
         } else /*if(dt->data->type&DT_LIST)*/
@@ -183,7 +184,7 @@ int type;
             dt->data->head = NIL(Dtlink_t *);
             while (root) {
                 t = root->right;
-                ( void )(*searchf)(dt, ( Void_t * )root, DT_RENEW);
+                ( void ) (*searchf)(dt, ( Void_t * ) root, DT_RENEW);
                 root = t;
             }
         }

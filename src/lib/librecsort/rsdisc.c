@@ -45,7 +45,7 @@ int op;
         if (disc) {
             if (old && (old->events & RS_DISC)
                 && (*old->eventf)(
-                   rs, RS_DISC, ( Void_t * )disc, ( Void_t * )0, old)
+                   rs, RS_DISC, ( Void_t * ) disc, ( Void_t * ) 0, old)
                    < 0)
                 return NIL(Rsdisc_t *);
 
@@ -84,7 +84,7 @@ int op;
                 rs->disc = cur->disc;
             if ((disc->events & RS_POP)
                 && (*disc->eventf)(
-                   rs, RS_POP, ( Void_t * )0, ( Void_t * )0, disc)
+                   rs, RS_POP, ( Void_t * ) 0, ( Void_t * ) 0, disc)
                    < 0)
                 return 0;
             if (rs->disc) {

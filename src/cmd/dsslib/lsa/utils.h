@@ -25,10 +25,10 @@
 #ifndef _OSPFMON_UTILS_H_
 #define _OSPFMON_UTILS_H_ 1
 
-#define get_time_as_double(s, u) (( double )(( s )*1e0 + ( u )*1e-6))
+#define get_time_as_double(s, u) (( double ) (( s ) *1e0 + ( u ) *1e-6))
 #define ipaddr_to_dotted_decimal(a) fmtip4(a, -1)
 #define mask_len_to_ipaddr(b)                                                \
-    ((b) ? (((( ipaddr_t )1) << (32 - (b))) - 1) : ~(( ipaddr_t )0))
+    ((b) ? (((( ipaddr_t ) 1) << (32 - (b))) - 1) : ~(( ipaddr_t ) 0))
 
 #include <mem_debug.h>
 #include <ospf_rfc.h>
@@ -55,7 +55,7 @@ extern "C"
     extern char *tab_strings[];
 
 /* For function pointers. */
-#define FUNC_PTR(func, return, proto) return ( *func )proto
+#define FUNC_PTR(func, return, proto) return ( *func ) proto
 
 #ifndef MIN
 #    define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -95,38 +95,38 @@ extern "C"
     (sockaddr)->sin_addr.s_addr = htonl((ip_addr))
 
 #define ROUNDUP(a, size)                                                     \
-    (((a) & (( size )-1)) ? (1 + ((a) | (( size )-1))) : (a))
+    (((a) & (( size ) -1)) ? (1 + ((a) | (( size ) -1))) : (a))
 
 /* For storing and extracting data in/from void arrays. */
 #define BYTE_ARRAY_TO_DATA_ARRAY(data_type, void_ptr, byte_index)            \
-    (( data_type * )(void_ptr))[(byte_index) / sizeof(data_type)]
+    (( data_type * ) (void_ptr))[(byte_index) / sizeof(data_type)]
 
 /*
  * Macros for extracting network order bytes such that
  * memory alignment is not a problem.
  */
 #define EXTRACT_NO_16BITS(p)                                                 \
-    ((uint16_t) * (( const uint8_t * )(p) + 0) << 8                          \
-     | (uint16_t) * (( const uint8_t * )(p) + 1))
+    ((uint16_t) * (( const uint8_t * ) (p) + 0) << 8                         \
+     | (uint16_t) * (( const uint8_t * ) (p) + 1))
 #define EXTRACT_NO_24BITS(p)                                                 \
-    ((uint32_t) * (( const uint8_t * )(p) + 0) << 16                         \
-     | (uint32_t) * (( const uint8_t * )(p) + 1) << 8                        \
-     | (uint32_t) * (( const uint8_t * )(p) + 2))
+    ((uint32_t) * (( const uint8_t * ) (p) + 0) << 16                        \
+     | (uint32_t) * (( const uint8_t * ) (p) + 1) << 8                       \
+     | (uint32_t) * (( const uint8_t * ) (p) + 2))
 #define EXTRACT_NO_32BITS(p)                                                 \
-    ((uint32_t) * (( const uint8_t * )(p) + 0) << 24                         \
-     | (uint32_t) * (( const uint8_t * )(p) + 1) << 16                       \
-     | (uint32_t) * (( const uint8_t * )(p) + 2) << 8                        \
-     | (uint32_t) * (( const uint8_t * )(p) + 3))
+    ((uint32_t) * (( const uint8_t * ) (p) + 0) << 24                        \
+     | (uint32_t) * (( const uint8_t * ) (p) + 1) << 16                      \
+     | (uint32_t) * (( const uint8_t * ) (p) + 2) << 8                       \
+     | (uint32_t) * (( const uint8_t * ) (p) + 3))
 
 /* Extracts a variable from a network ordered buffer of given data_type */
 #define EXTRACT_DATA_TYPE_FROM_NO_BUFF(                                      \
 data_type, void_ptr, byte_index, var, bytes_left)                            \
     do {                                                                     \
         if (sizeof(data_type) == sizeof(uint32_t)) {                         \
-            (var) = EXTRACT_NO_32BITS(( const uint8_t * )(void_ptr)          \
+            (var) = EXTRACT_NO_32BITS(( const uint8_t * ) (void_ptr)         \
                                       + (byte_index));                       \
         } else if (sizeof(data_type) == sizeof(uint16_t)) {                  \
-            (var) = EXTRACT_NO_16BITS(( const uint8_t * )(void_ptr)          \
+            (var) = EXTRACT_NO_16BITS(( const uint8_t * ) (void_ptr)         \
                                       + (byte_index));                       \
         } else {                                                             \
             (var) = (void_ptr)[(byte_index)];                                \
@@ -140,13 +140,13 @@ data_type, void_ptr, byte_index, var, bytes_left)                            \
 len, void_ptr, byte_index, var, bytes_left)                                  \
     do {                                                                     \
         if ((len) == 4) {                                                    \
-            (var) = EXTRACT_NO_32BITS(( const uint8_t * )(void_ptr)          \
+            (var) = EXTRACT_NO_32BITS(( const uint8_t * ) (void_ptr)         \
                                       + (byte_index));                       \
         } else if ((len) == 3) {                                             \
-            (var) = EXTRACT_NO_24BITS(( const uint8_t * )(void_ptr)          \
+            (var) = EXTRACT_NO_24BITS(( const uint8_t * ) (void_ptr)         \
                                       + (byte_index));                       \
         } else if ((len) == 2) {                                             \
-            (var) = EXTRACT_NO_16BITS(( const uint8_t * )(void_ptr)          \
+            (var) = EXTRACT_NO_16BITS(( const uint8_t * ) (void_ptr)         \
                                       + (byte_index));                       \
         } else if ((len) == 1) {                                             \
             (var) = (void_ptr)[(byte_index)];                                \
@@ -162,13 +162,13 @@ len, void_ptr, byte_index, var, bytes_left)                                  \
 data_type, void_ptr, byte_index, var, bytes_left)                            \
     do {                                                                     \
         if (sizeof(data_type) == sizeof(uint32_t)) {                         \
-            (void_ptr)[byte_index] = (( var )&0xff000000) >> 24;             \
-            (void_ptr)[byte_index + 1] = (( var )&0x00ff0000) >> 16;         \
-            (void_ptr)[byte_index + 2] = (( var )&0x0000ff00) >> 8;          \
-            (void_ptr)[byte_index + 3] = (( var )&0x000000ff);               \
+            (void_ptr)[byte_index] = (( var ) &0xff000000) >> 24;            \
+            (void_ptr)[byte_index + 1] = (( var ) &0x00ff0000) >> 16;        \
+            (void_ptr)[byte_index + 2] = (( var ) &0x0000ff00) >> 8;         \
+            (void_ptr)[byte_index + 3] = (( var ) &0x000000ff);              \
         } else if (sizeof(data_type) == sizeof(uint16_t)) {                  \
-            (void_ptr)[byte_index] = (( var )&0xff00) >> 8;                  \
-            (void_ptr)[byte_index + 1] = (( var )&0x00ff);                   \
+            (void_ptr)[byte_index] = (( var ) &0xff00) >> 8;                 \
+            (void_ptr)[byte_index + 1] = (( var ) &0x00ff);                  \
         } else {                                                             \
             (void_ptr)[byte_index] = (var);                                  \
         }                                                                    \
@@ -182,17 +182,17 @@ data_type, void_ptr, byte_index, var, bytes_left)                            \
 len, void_ptr, byte_index, var, bytes_left)                                  \
     do {                                                                     \
         if ((len) == 4) {                                                    \
-            (void_ptr)[byte_index] = (( var )&0xff000000) >> 24;             \
-            (void_ptr)[byte_index + 1] = (( var )&0x00ff0000) >> 16;         \
-            (void_ptr)[byte_index + 2] = (( var )&0x0000ff00) >> 8;          \
-            (void_ptr)[byte_index + 3] = (( var )&0x000000ff);               \
+            (void_ptr)[byte_index] = (( var ) &0xff000000) >> 24;            \
+            (void_ptr)[byte_index + 1] = (( var ) &0x00ff0000) >> 16;        \
+            (void_ptr)[byte_index + 2] = (( var ) &0x0000ff00) >> 8;         \
+            (void_ptr)[byte_index + 3] = (( var ) &0x000000ff);              \
         } else if ((len) == 3) {                                             \
-            (void_ptr)[byte_index] = (( var )&0xff00) >> 16;                 \
-            (void_ptr)[byte_index + 1] = (( var )&0x00ff) >> 8;              \
-            (void_ptr)[byte_index + 2] = (( var )&0x00ff);                   \
+            (void_ptr)[byte_index] = (( var ) &0xff00) >> 16;                \
+            (void_ptr)[byte_index + 1] = (( var ) &0x00ff) >> 8;             \
+            (void_ptr)[byte_index + 2] = (( var ) &0x00ff);                  \
         } else if ((len) == 2) {                                             \
-            (void_ptr)[byte_index] = (( var )&0xff00) >> 8;                  \
-            (void_ptr)[byte_index + 1] = (( var )&0x00ff);                   \
+            (void_ptr)[byte_index] = (( var ) &0xff00) >> 8;                 \
+            (void_ptr)[byte_index + 1] = (( var ) &0x00ff);                  \
         } else if ((len) == 1) {                                             \
             (void_ptr)[byte_index] = (var);                                  \
         } else {                                                             \

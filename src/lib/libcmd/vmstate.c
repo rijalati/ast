@@ -70,7 +70,7 @@ typedef struct State_s
 static int
 key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     char *s;
 
     if (!(s = fp->t_str) || streq(s, "size"))
@@ -104,7 +104,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
     else if (streq(s, "free_blocks"))
         *pn = state->vs.n_free;
     else if (streq(s, "format"))
-        *ps = ( char * )state->format;
+        *ps = ( char * ) state->format;
     else if (streq(s, "method")) {
         if (state->vs.mode & VM_MTBEST)
             *ps = "best";
@@ -126,7 +126,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 static int
 visit(Vmalloc_t *vm, void *addr, size_t size, Vmdisc_t *disc, void *handle)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
 
     vmstat(vm, &state->vs);
     state->vm = vm;

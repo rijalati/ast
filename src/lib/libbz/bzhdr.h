@@ -90,8 +90,8 @@ typedef unsigned int UInt32;
 typedef short Int16;
 typedef unsigned short UInt16;
 
-#    define True (( Bool )1)
-#    define False (( Bool )0)
+#    define True (( Bool ) 1)
+#    define False (( Bool ) 0)
 
 #    ifndef __GNUC__
 #        define __inline__ /* */
@@ -205,7 +205,7 @@ extern UInt32 crc32Table[256];
 #    define BZ_UPDATE_CRC(crcVar, cha)                                       \
         {                                                                    \
             crcVar                                                           \
-            = (crcVar << 8) ^ crc32Table[(crcVar >> 24) ^ (( UChar )cha)];   \
+            = (crcVar << 8) ^ crc32Table[(crcVar >> 24) ^ (( UChar ) cha)];  \
         }
 
 
@@ -474,7 +474,7 @@ typedef struct
 
 #    define SET_LL4(i, n)                                                    \
         {                                                                    \
-            if ((( i )&0x1) == 0)                                            \
+            if ((( i ) &0x1) == 0)                                           \
                 s->ll4[(i) >> 1] = (s->ll4[(i) >> 1] & 0xf0) | (n);          \
             else                                                             \
                 s->ll4[(i) >> 1] = (s->ll4[(i) >> 1] & 0x0f) | ((n) << 4);   \
@@ -489,7 +489,7 @@ typedef struct
             SET_LL4(i, n >> 16);                                             \
         }
 
-#    define GET_LL(i) ((( UInt32 )s->ll16[i]) | (GET_LL4(i) << 16))
+#    define GET_LL(i) ((( UInt32 ) s->ll16[i]) | (GET_LL4(i) << 16))
 
 #    define BZ_GET_SMALL(cccc)                                               \
         cccc = indexIntoF(s->tPos, s->cftab);                                \

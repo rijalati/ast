@@ -65,7 +65,7 @@ size_t n;
 Sfdisc_t *dp;
 #endif
 {
-    More_t *more = ( More_t * )dp;
+    More_t *more = ( More_t * ) dp;
 
     more->match = 0;
     more->row = 2;
@@ -151,7 +151,7 @@ size_t n;
 Sfdisc_t *dp;
 #endif
 {
-    More_t *more = ( More_t * )dp;
+    More_t *more = ( More_t * ) dp;
     char *b;
     char *s;
     char *e;
@@ -163,7 +163,7 @@ Sfdisc_t *dp;
     if (!more->col)
         return sfwr(f, buf, n, dp);
     w = 0;
-    b = ( char * )buf;
+    b = ( char * ) buf;
     s = b;
     e = s + n;
     if (more->match) {
@@ -178,7 +178,7 @@ Sfdisc_t *dp;
                 break;
         }
         s = b;
-        w += b - ( char * )buf;
+        w += b - ( char * ) buf;
         more->match = 0;
     }
     while (s < e) {
@@ -257,7 +257,7 @@ Void_t *data;
 Sfdisc_t *dp;
 #endif
 {
-    More_t *more = ( More_t * )dp;
+    More_t *more = ( More_t * ) dp;
 
     if (type == SF_FINAL || type == SF_DPOP) {
         if (f = more->input) {
@@ -306,7 +306,7 @@ int cols;
     if (!prompt)
         prompt = "\033[7m More\033[m";
     n = strlen(prompt) + 1;
-    if (!(more = ( More_t * )malloc(sizeof(More_t) + n)))
+    if (!(more = ( More_t * ) malloc(sizeof(More_t) + n)))
         return -1;
     memset(more, 0, sizeof(*more));
 

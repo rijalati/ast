@@ -69,10 +69,10 @@ md5_encode(unsigned char *output, UINT4 *input, unsigned int len)
     unsigned int j;
 
     for (i = j = 0; j < len; i++, j += 4) {
-        output[j] = ( unsigned char )(input[i] & 0xff);
-        output[j + 1] = ( unsigned char )((input[i] >> 8) & 0xff);
-        output[j + 2] = ( unsigned char )((input[i] >> 16) & 0xff);
-        output[j + 3] = ( unsigned char )((input[i] >> 24) & 0xff);
+        output[j] = ( unsigned char ) (input[i] & 0xff);
+        output[j + 1] = ( unsigned char ) ((input[i] >> 8) & 0xff);
+        output[j + 2] = ( unsigned char ) ((input[i] >> 16) & 0xff);
+        output[j + 3] = ( unsigned char ) ((input[i] >> 24) & 0xff);
     }
 }
 
@@ -88,15 +88,15 @@ md5_decode(UINT4 *output, unsigned char *input, unsigned int len)
     unsigned int j;
 
     for (i = j = 0; j < len; i++, j += 4)
-        output[i] = (( UINT4 )input[j]) | ((( UINT4 )input[j + 1]) << 8)
-                    | ((( UINT4 )input[j + 2]) << 16)
-                    | ((( UINT4 )input[j + 3]) << 24);
+        output[i] = (( UINT4 ) input[j]) | ((( UINT4 ) input[j + 1]) << 8)
+                    | ((( UINT4 ) input[j + 2]) << 16)
+                    | ((( UINT4 ) input[j + 3]) << 24);
 }
 
 static int
 md5_init(Sum_t *p)
 {
-    Md5_t *context = ( Md5_t * )p;
+    Md5_t *context = ( Md5_t * ) p;
 
     context->count[0] = context->count[1] = 0;
     context->state[0] = 0x67452301;
@@ -112,11 +112,11 @@ md5_open(const Method_t *method, const char *name)
     Md5_t *p;
 
     if (p = newof(0, Md5_t, 1, 0)) {
-        p->method = ( Method_t * )method;
+        p->method = ( Method_t * ) method;
         p->name = name;
-        md5_init(( Sum_t * )p);
+        md5_init(( Sum_t * ) p);
     }
-    return ( Sum_t * )p;
+    return ( Sum_t * ) p;
 }
 
 /*
@@ -268,20 +268,20 @@ md5_transform(UINT4 state[4], unsigned char block[64])
 static int
 md5_block(Sum_t *p, const void *s, size_t inputLen)
 {
-    Md5_t *context = ( Md5_t * )p;
-    unsigned char *input = ( unsigned char * )s;
+    Md5_t *context = ( Md5_t * ) p;
+    unsigned char *input = ( unsigned char * ) s;
     unsigned int i;
     unsigned int index;
     unsigned int partLen;
 
     /* compute number of bytes mod 64 */
-    index = ( unsigned int )((context->count[0] >> 3) & 0x3f);
+    index = ( unsigned int ) ((context->count[0] >> 3) & 0x3f);
 
     /* update number of bits */
-    if ((context->count[0] += (( UINT4 )inputLen << 3))
-        < (( UINT4 )inputLen << 3))
+    if ((context->count[0] += (( UINT4 ) inputLen << 3))
+        < (( UINT4 ) inputLen << 3))
         context->count[1]++;
-    context->count[1] += (( UINT4 )inputLen >> 29);
+    context->count[1] += (( UINT4 ) inputLen >> 29);
     partLen = 64 - index;
 
     /* transform as many times as possible */
@@ -303,7 +303,7 @@ md5_block(Sum_t *p, const void *s, size_t inputLen)
 static int
 md5_done(Sum_t *p)
 {
-    Md5_t *context = ( Md5_t * )p;
+    Md5_t *context = ( Md5_t * ) p;
     unsigned char bits[8];
     unsigned int index;
     unsigned int padLen;
@@ -312,7 +312,7 @@ md5_done(Sum_t *p)
     md5_encode(bits, context->count, sizeof(bits));
 
     /* pad out to 56 mod 64 */
-    index = ( unsigned int )((context->count[0] >> 3) & 0x3f);
+    index = ( unsigned int ) ((context->count[0] >> 3) & 0x3f);
     padLen = (index < 56) ? (56 - index) : (120 - index);
     md5_block(p, md5_pad, padLen);
 
@@ -332,7 +332,7 @@ md5_done(Sum_t *p)
 static int
 md5_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 {
-    Md5_t *x = ( Md5_t * )p;
+    Md5_t *x = ( Md5_t * ) p;
     unsigned char *d;
     int n;
 
@@ -345,7 +345,7 @@ md5_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 static int
 md5_data(Sum_t *p, Sumdata_t *data)
 {
-    Md5_t *x = ( Md5_t * )p;
+    Md5_t *x = ( Md5_t * ) p;
 
     data->size = elementsof(x->digest);
     data->num = 0;

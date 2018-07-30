@@ -21,7 +21,7 @@
 #include <ast_common.h>
 
 #ifndef NIL
-#    define NIL(t) (( t )0)
+#    define NIL(t) (( t ) 0)
 #endif
 
 #if __STD_C
@@ -38,25 +38,25 @@ extern int vsprintf _ARG_((char *, const char *, va_list));
 #endif
 
 extern int atexit _ARG_((void (*)(void)));
-extern void exit _ARG_(( int ));
-extern size_t strlen _ARG_(( const char * ));
+extern void exit _ARG_(( int ) );
+extern size_t strlen _ARG_(( const char * ) );
 extern Void_t *malloc _ARG_((size_t));
-extern char *getenv _ARG_(( const char * ));
+extern char *getenv _ARG_(( const char * ) );
 
 extern int strncmp _ARG_((const char *, const char *, size_t));
-extern int strcmp _ARG_(( const char *, const char * ));
-extern int system _ARG_(( const char * ));
+extern int strcmp _ARG_(( const char *, const char * ) );
+extern int system _ARG_(( const char * ) );
 
 #if !_hdr_unistd
-extern int alarm _ARG_(( int ));
-extern int sleep _ARG_(( int ));
+extern int alarm _ARG_(( int ) );
+extern int sleep _ARG_(( int ) );
 extern int
 fork();
-extern int wait _ARG_(( int * ));
-extern int access _ARG_(( const char *, int ));
-extern int write _ARG_(( int, const void *, int ));
-extern int unlink _ARG_(( const char * ));
-extern Void_t *sbrk _ARG_(( int ));
+extern int wait _ARG_(( int * ) );
+extern int access _ARG_(( const char *, int ) );
+extern int write _ARG_(( int, const void *, int ) );
+extern int unlink _ARG_(( const char * ) );
+extern Void_t *sbrk _ARG_(( int ) );
 extern int
 getpid();
 #endif
@@ -281,9 +281,9 @@ static char *tstfile(n) int n;
         static int pid;
         static char *tmp;
         if (!tmp) {
-            if (!(tmp = ( char * )getenv("TMPDIR")) || access(tmp, 0) != 0)
+            if (!(tmp = ( char * ) getenv("TMPDIR")) || access(tmp, 0) != 0)
                 tmp = "/tmp";
-            pid = ( int )getpid() % 10000;
+            pid = ( int ) getpid() % 10000;
         }
 #    if _SFIO_H
         sfsprintf(

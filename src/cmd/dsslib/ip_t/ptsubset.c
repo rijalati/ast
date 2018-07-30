@@ -32,18 +32,18 @@ ptsubset(Pt_t *a, Pt_t *b)
     Ptprefix_t *ap;
     Ptprefix_t *bp;
 
-    ap = ( Ptprefix_t * )dtfirst(a->dict);
-    bp = ( Ptprefix_t * )dtfirst(b->dict);
+    ap = ( Ptprefix_t * ) dtfirst(a->dict);
+    bp = ( Ptprefix_t * ) dtfirst(b->dict);
     while (ap) {
         if (!bp || ap->max < bp->min || ap->min < bp->min)
             return 0;
         if (ap->max < bp->max)
-            ap = ( Ptprefix_t * )dtnext(a->dict, ap);
+            ap = ( Ptprefix_t * ) dtnext(a->dict, ap);
         else if (ap->max > bp->max)
-            bp = ( Ptprefix_t * )dtnext(b->dict, bp);
+            bp = ( Ptprefix_t * ) dtnext(b->dict, bp);
         else {
-            ap = ( Ptprefix_t * )dtnext(a->dict, ap);
-            bp = ( Ptprefix_t * )dtnext(b->dict, bp);
+            ap = ( Ptprefix_t * ) dtnext(a->dict, ap);
+            bp = ( Ptprefix_t * ) dtnext(b->dict, bp);
         }
     }
     return 1;

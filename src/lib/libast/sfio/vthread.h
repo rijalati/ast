@@ -105,26 +105,26 @@ typedef struct _vthread_s Vthread_t;
 
 _BEGIN_EXTERNS_
 
-extern Vthread_t *vtopen _ARG_(( Vthread_t *, int ));
-extern int vtclose _ARG_(( Vthread_t * ));
-extern int vtset _ARG_(( Vthread_t *, int, Void_t * ));
-extern int vtrun _ARG_(( Vthread_t *, void *( * )( void * ), void * ));
-extern int vtkill _ARG_(( Vthread_t * ));
-extern int vtwait _ARG_(( Vthread_t * ));
+extern Vthread_t *vtopen _ARG_(( Vthread_t *, int ) );
+extern int vtclose _ARG_(( Vthread_t * ) );
+extern int vtset _ARG_(( Vthread_t *, int, Void_t * ) );
+extern int vtrun _ARG_(( Vthread_t *, void *( * ) ( void * ), void * ) );
+extern int vtkill _ARG_(( Vthread_t * ) );
+extern int vtwait _ARG_(( Vthread_t * ) );
 
 extern int vtonce _ARG_((Vtonce_t *, void (*)()));
 
-extern Vtmutex_t *vtmtxopen _ARG_(( Vtmutex_t *, int ));
-extern int vtmtxclose _ARG_(( Vtmutex_t * ));
-extern int vtmtxlock _ARG_(( Vtmutex_t * ));
-extern int vtmtxtrylock _ARG_(( Vtmutex_t * ));
-extern int vtmtxunlock _ARG_(( Vtmutex_t * ));
-extern int vtmtxclrlock _ARG_(( Vtmutex_t * ));
+extern Vtmutex_t *vtmtxopen _ARG_(( Vtmutex_t *, int ) );
+extern int vtmtxclose _ARG_(( Vtmutex_t * ) );
+extern int vtmtxlock _ARG_(( Vtmutex_t * ) );
+extern int vtmtxtrylock _ARG_(( Vtmutex_t * ) );
+extern int vtmtxunlock _ARG_(( Vtmutex_t * ) );
+extern int vtmtxclrlock _ARG_(( Vtmutex_t * ) );
 
-extern Void_t *vtstatus _ARG_(( Vthread_t * ));
-extern int vterror _ARG_(( Vthread_t * ));
-extern int vtmtxerror _ARG_(( Vtmutex_t * ));
-extern int vtonceerror _ARG_(( Vtonce_t * ));
+extern Void_t *vtstatus _ARG_(( Vthread_t * ) );
+extern int vterror _ARG_(( Vthread_t * ) );
+extern int vtmtxerror _ARG_(( Vtmutex_t * ) );
+extern int vtonceerror _ARG_(( Vtonce_t * ) );
 
 _END_EXTERNS_
 
@@ -209,7 +209,7 @@ typedef int _vtattr_t;
             0                                                                \
         }
 
-#    define vtopen(vt, flgs) (( Vthread_t * )0)
+#    define vtopen(vt, flgs) (( Vthread_t * ) 0)
 #    define vtclose(vt) (-1)
 #    define vtkill(vt) (-1)
 #    define vtwait(vt) (-1)
@@ -218,14 +218,14 @@ typedef int _vtattr_t;
 #    define vtset(vt, t, v) (-1)
 #    define vtonce(on, fu) (-1)
 
-#    define vtmtxopen(mtx, flgs) (( Vtmutex_t * )0)
+#    define vtmtxopen(mtx, flgs) (( Vtmutex_t * ) 0)
 #    define vtmtxclose(mtx) (-1)
 #    define vtmtxlock(mtx) (-1)
 #    define vtmtxtrylock(mtx) (-1)
 #    define vtmtxunlock(mtx) (-1)
 #    define vtmtxclrlock(mtx) (-1)
 
-#    define vtstatus(vt) (( Void_t * )0)
+#    define vtstatus(vt) (( Void_t * ) 0)
 #    define vterror(vt) (0)
 #    define vtmtxerror(mtx) (0)
 #    define vtonceerror(once) (0)

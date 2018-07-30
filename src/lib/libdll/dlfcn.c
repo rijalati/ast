@@ -71,10 +71,10 @@ dlopen(const char *path, int mode)
     void *dll;
 
     if (!path)
-        return ( void * )&all;
+        return ( void * ) &all;
     if (mode)
         mode = (BIND_IMMEDIATE | BIND_FIRST | BIND_NOSTART);
-    if (!(dll = ( void * )shl_load(path, mode, 0L)))
+    if (!(dll = ( void * ) shl_load(path, mode, 0L)))
         err = errno;
     return dll;
 }
@@ -91,12 +91,12 @@ dlsym(void *dll, const char *name)
     shl_t handle;
     long addr;
 
-    handle = dll == ( void * )&all ? ( shl_t )0 : ( shl_t )dll;
+    handle = dll == ( void * ) &all ? ( shl_t ) 0 : ( shl_t ) dll;
     if (shl_findsym(&handle, name, TYPE_UNDEFINED, &addr)) {
         err = errno;
         return 0;
     }
-    return ( void * )addr;
+    return ( void * ) addr;
 }
 
 extern char *
@@ -139,7 +139,7 @@ dlopen(const char *path, int mode)
 {
     void *dll;
 
-    if (!(dll = ( void * )load(( char * )path, mode, getenv("LIBPATH"))))
+    if (!(dll = ( void * ) load(( char * ) path, mode, getenv("LIBPATH"))))
         err = errno;
     return dll;
 }
@@ -184,12 +184,12 @@ getinfo(void *module)
         info = ld_info;
     }
     while (n) {
-        if (( char * )(info->ldinfo_dataorg) <= ( char * )module
-            && ( char * )module <= (( char * )(info->ldinfo_dataorg)
-                                    + ( unsigned )(info->ldinfo_datasize)))
+        if (( char * ) (info->ldinfo_dataorg) <= ( char * ) module
+            && ( char * ) module <= (( char * ) (info->ldinfo_dataorg)
+                                     + ( unsigned ) (info->ldinfo_datasize)))
             return info;
         if (n = info->ldinfo_next)
-            info = ( void * )(( char * )info + n);
+            info = ( void * ) (( char * ) info + n);
     }
     return 0;
 }
@@ -208,13 +208,13 @@ getloc(struct hdr *hdr, char *data, char *name)
      * actually placed
      */
     /*N.B. o_sndata etc. are one based */
-    datareloc = ( ulong )data - hdr->s[hdr->a.o_sndata - 1].s_vaddr;
+    datareloc = ( ulong ) data - hdr->s[hdr->a.o_sndata - 1].s_vaddr;
     /*hdr is address of header, not text, so add text s_scnptr */
-    textreloc = ( ulong )hdr + hdr->s[hdr->a.o_sntext - 1].s_scnptr
+    textreloc = ( ulong ) hdr + hdr->s[hdr->a.o_sntext - 1].s_scnptr
                 - hdr->s[hdr->a.o_sntext - 1].s_vaddr;
     ldhdr
-    = ( void * )(( char * )hdr + hdr->s[hdr->a.o_snloader - 1].s_scnptr);
-    ldsym = ( void * )(ldhdr + 1);
+    = ( void * ) (( char * ) hdr + hdr->s[hdr->a.o_snloader - 1].s_scnptr);
+    ldsym = ( void * ) (ldhdr + 1);
     /* search the exports symbols */
     for (i = 0; i < ldhdr->l_nsyms; ldsym++, i++) {
         char *symname, symbuf[9];
@@ -230,10 +230,10 @@ getloc(struct hdr *hdr, char *data, char *name)
             symbuf[8] = 0;
         } else
             symname
-            = ( void * )(ldsym->l_offset + ( ulong )ldhdr + ldhdr->l_stoff);
+            = ( void * ) (ldsym->l_offset + ( ulong ) ldhdr + ldhdr->l_stoff);
         if (strcmp(symname, name))
             continue;
-        loc = ( char * )ldsym->l_value;
+        loc = ( char * ) ldsym->l_value;
         if ((ldsym->l_scnum == hdr->a.o_sndata)
             || (ldsym->l_scnum == hdr->a.o_snbss))
             loc += datareloc;
@@ -252,7 +252,7 @@ dlsym(void *handle, const char *name)
 
     if (!(info = getinfo(handle))
         || !(addr = getloc(
-             info->ldinfo_textorg, info->ldinfo_dataorg, ( char * )name))) {
+             info->ldinfo_textorg, info->ldinfo_dataorg, ( char * ) name))) {
         err = errno;
         return 0;
     }
@@ -288,7 +288,7 @@ dlopen(const char *path, int mode)
     void *dll;
 
     NoP(mode);
-    if (!(dll = ( void * )dllload(path)))
+    if (!(dll = ( void * ) dllload(path)))
         err = errno;
     return dll;
 }
@@ -304,7 +304,7 @@ dlsym(void *handle, const char *name)
 {
     void *addr;
 
-    if (!(addr = ( void * )dllqueryfn(handle, ( char * )name)))
+    if (!(addr = ( void * ) dllqueryfn(handle, ( char * ) name)))
         err = errno;
     return addr;
 }
@@ -341,7 +341,7 @@ typedef struct Dll_s
 } Dll_t;
 
 #                    define DL_MAGIC 0x04190c04
-#                    define DL_NEXT (( Dll_t * )RTLD_NEXT)
+#                    define DL_NEXT (( Dll_t * ) RTLD_NEXT)
 
 static const char *dlmessage = "no error";
 
@@ -418,13 +418,13 @@ dlopen(const char *path, int mode)
         strcpy(dll->path, path);
         dll->magic = DL_MAGIC;
     }
-    return ( void * )dll;
+    return ( void * ) dll;
 }
 
 extern int
 dlclose(void *handle)
 {
-    Dll_t *dll = ( Dll_t * )handle;
+    Dll_t *dll = ( Dll_t * ) handle;
 
     if (!dll || dll == DL_NEXT || dll->magic != DL_MAGIC) {
         dlmessage = e_handle;
@@ -445,7 +445,7 @@ lookup(Dll_t *dll, const char *name)
     if (dll == DL_NEXT) {
         if (!_dyld_func_lookup(name, &pun))
             return 0;
-        address = ( NSSymbol )pun;
+        address = ( NSSymbol ) pun;
     } else if (dll->module)
         address = NSLookupSymbolInModule(dll->module, name);
     else if (dll->image) {
@@ -465,7 +465,7 @@ lookup(Dll_t *dll, const char *name)
 extern void *
 dlsym(void *handle, const char *name)
 {
-    Dll_t *dll = ( Dll_t * )handle;
+    Dll_t *dll = ( Dll_t * ) handle;
     NSSymbol address;
     char buf[1024];
 
@@ -485,7 +485,7 @@ dlsym(void *handle, const char *name)
         dlmessage = dll == DL_NEXT ? e_cover : e_undefined;
         return 0;
     }
-    return ( void * )address;
+    return ( void * ) address;
 }
 
 extern char *
@@ -493,7 +493,7 @@ dlerror(void)
 {
     char *msg;
 
-    msg = ( char * )dlmessage;
+    msg = ( char * ) dlmessage;
     dlmessage = 0;
     return msg;
 }

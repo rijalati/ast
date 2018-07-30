@@ -46,18 +46,18 @@ size_t n;
     wbuf = buf;
     endbuf = buf + n;
     while (n > 0) {
-        if (( ssize_t )n < _Sfpage) /* no hole possible */
+        if (( ssize_t ) n < _Sfpage) /* no hole possible */
         {
             buf += n;
             s = n = 0;
         } else
-            while (( ssize_t )n
+            while (( ssize_t ) n
                    >= _Sfpage) { /* see if a hole of 0's starts here */
                 sp = buf + 1;
                 if (buf[0] == 0
                     && buf[_Sfpage - 1]
                        == 0) { /* check byte at a time until int-aligned */
-                    while ((( ulong )sp) % sizeof(int)) {
+                    while ((( ulong ) sp) % sizeof(int)) {
                         if (*sp != 0)
                             goto chk_hole;
                         sp += 1;
@@ -65,7 +65,7 @@ size_t n;
 
                     /* check using int to speed up */
                     while (sp < endbuf) {
-                        if (*(( int * )sp) != 0)
+                        if (*(( int * ) sp) != 0)
                             goto chk_hole;
                         sp += sizeof(int);
                     }
@@ -92,7 +92,7 @@ size_t n;
 
         /* write out current dirty pages */
         if (buf > wbuf) {
-            if (( ssize_t )n < _Sfpage) {
+            if (( ssize_t ) n < _Sfpage) {
                 buf = endbuf;
                 n = s = 0;
             }
@@ -108,7 +108,7 @@ size_t n;
         /* seek to a rounded boundary within the hole */
         if (s >= _Sfpage) {
             s = (s / _Sfpage) * _Sfpage;
-            if (SFSK(f, ( Sfoff_t )s, SEEK_CUR, NIL(Sfdisc_t *)) < 0)
+            if (SFSK(f, ( Sfoff_t ) s, SEEK_CUR, NIL(Sfdisc_t *)) < 0)
                 break;
             w += s;
             n -= s;
@@ -116,7 +116,7 @@ size_t n;
             f->bits |= SF_HOLE;
 
             if (n > 0) { /* next page must be dirty */
-                s = ( ssize_t )n <= _Sfpage ? 1 : _Sfpage;
+                s = ( ssize_t ) n <= _Sfpage ? 1 : _Sfpage;
                 buf += s;
                 n -= s;
             }
@@ -154,7 +154,7 @@ Sfdisc_t *disc;
 
     for (;;) { /* stream locked by sfsetfd() */
         if (!(f->flags & SF_STRING) && f->file < 0)
-            SFMTXRETURN(f, ( ssize_t )0);
+            SFMTXRETURN(f, ( ssize_t ) 0);
 
         /* clear current error states */
         f->flags &= ~(SF_EOF | SF_ERROR);
@@ -180,7 +180,7 @@ Sfdisc_t *disc;
                 >= 0) { /* make sure we are at the right place to write */
                 if (f->flags & SF_APPENDWR) {
                     if (f->here != f->extent || (f->flags & SF_SHARE)) {
-                        f->here = SFSK(f, ( Sfoff_t )0, SEEK_END, dc);
+                        f->here = SFSK(f, ( Sfoff_t ) 0, SEEK_END, dc);
                         f->extent = f->here;
                     }
                 } else if ((f->flags & SF_SHARE) && !(f->flags & SF_PUBLIC))
@@ -196,10 +196,10 @@ Sfdisc_t *disc;
                 w = n;
             else if (f->flags & SF_WHOLE)
                 goto do_write;
-            else if (( ssize_t )n >= _Sfpage
+            else if (( ssize_t ) n >= _Sfpage
                      && !(f->flags & (SF_SHARE | SF_APPENDWR))
                      && f->here == f->extent && (f->here % _Sfpage) == 0) {
-                if ((w = sfoutput(f, ( char * )buf, n)) <= 0)
+                if ((w = sfoutput(f, ( char * ) buf, n)) <= 0)
                     goto do_write;
             } else {
             do_write:
@@ -214,14 +214,14 @@ Sfdisc_t *disc;
                 if (!(f->bits & SF_DCDOWN)) {
                     if ((f->flags & (SF_APPENDWR | SF_PUBLIC))
                         && f->extent >= 0)
-                        f->here = SFSK(f, ( Sfoff_t )0, SEEK_CUR, dc);
+                        f->here = SFSK(f, ( Sfoff_t ) 0, SEEK_CUR, dc);
                     else
                         f->here += w;
                     if (f->extent >= 0 && f->here > f->extent)
                         f->extent = f->here;
                 }
 
-                SFMTXRETURN(f, ( ssize_t )w);
+                SFMTXRETURN(f, ( ssize_t ) w);
             }
         }
 
@@ -232,7 +232,7 @@ Sfdisc_t *disc;
             goto do_continue;
         case SF_EDONE:
             w = local ? 0 : w;
-            SFMTXRETURN(f, ( ssize_t )w);
+            SFMTXRETURN(f, ( ssize_t ) w);
         case SF_EDISC:
             if (!local && !(f->flags & SF_STRING))
                 goto do_continue;

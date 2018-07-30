@@ -63,7 +63,7 @@ typedef struct Ar_s
 static int
 tp_done(Pax_t *pax, Paxarchive_t *ap)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
 
     if (!ar)
         return -1;
@@ -90,14 +90,15 @@ tp_getprologue(Pax_t *pax,
     if (size < 2 * TP_BLOCK)
         return 0;
     w = 0;
-    for (e = (s = ( ui1 * )buf + TP_BLOCK) + TP_BLOCK; s < e; s += 2)
+    for (e = (s = ( ui1 * ) buf + TP_BLOCK) + TP_BLOCK; s < e; s += 2)
         w += s[0] + (s[1] << 8);
     if (w)
         return 0;
-    w = (( Dir_t * )buf)->checksum[0] + ((( Dir_t * )buf)->checksum[1] << 8);
+    w
+    = (( Dir_t * ) buf)->checksum[0] + ((( Dir_t * ) buf)->checksum[1] << 8);
     if (w < 0 || w > DIRMAG)
         w = DIRMAG;
-    n = ( size_t )w * sizeof(Dir_t);
+    n = ( size_t ) w * sizeof(Dir_t);
     if (!(ar = newof(0, Ar_t, 1, n - sizeof(Dir_t))))
         return paxnospace(pax);
     if (paxread(pax, ap, NiL, PAX_BLOCK, 0, 0) != PAX_BLOCK
@@ -117,7 +118,7 @@ tp_getprologue(Pax_t *pax,
 static int
 tp_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     Dir_t *dp;
     ui1 *s;
     ui1 *e;
@@ -129,7 +130,7 @@ tp_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         dp = ar->dp++;
     } while (!*dp->pathname);
     w = 0;
-    for (e = (s = ( ui1 * )ar->dir) + sizeof(Dir_t); s < e; s += 2)
+    for (e = (s = ( ui1 * ) ar->dir) + sizeof(Dir_t); s < e; s += 2)
         w += s[0] + (s[1] << 8);
     if (w) {
         error(2,

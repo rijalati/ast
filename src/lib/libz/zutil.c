@@ -245,14 +245,14 @@ voidpf
 zcalloc(voidpf opaque, unsigned items, unsigned size)
 {
     voidpf buf = opaque; /* just to make some compilers happy */
-    ulg bsize = ( ulg )items * size;
+    ulg bsize = ( ulg ) items * size;
 
     /* If we allocate less than 65520 bytes, we assume that farmalloc
      * will return a usable pointer which doesn't have to be normalized.
      */
     if (bsize < 65520L) {
         buf = farmalloc(bsize);
-        if (*( ush * )&buf != 0)
+        if (*( ush * ) &buf != 0)
             return buf;
     } else {
         buf = farmalloc(bsize + 16L);
@@ -262,8 +262,8 @@ zcalloc(voidpf opaque, unsigned items, unsigned size)
     table[next_ptr].org_ptr = buf;
 
     /* Normalize the pointer to seg:0 */
-    *(( ush * )&buf + 1) += ((ush)(( uch * )buf - 0) + 15) >> 4;
-    *( ush * )&buf = 0;
+    *(( ush * ) &buf + 1) += ((ush)(( uch * ) buf - 0) + 15) >> 4;
+    *( ush * ) &buf = 0;
     table[next_ptr++].new_ptr = buf;
     return buf;
 }
@@ -272,7 +272,7 @@ void
 zcfree(voidpf opaque, voidpf ptr)
 {
     int n;
-    if (*( ush * )&ptr != 0) { /* object < 64K */
+    if (*( ush * ) &ptr != 0) { /* object < 64K */
         farfree(ptr);
         return;
     }
@@ -310,7 +310,7 @@ zcalloc(voidpf opaque, unsigned items, unsigned size)
 {
     if (opaque)
         opaque = 0; /* to make compiler happy */
-    return _halloc(( long )items, size);
+    return _halloc(( long ) items, size);
 }
 
 void
@@ -342,8 +342,8 @@ unsigned size;
 {
     if (opaque)
         items += size - size; /* make compiler happy */
-    return sizeof(uInt) > 2 ? ( voidpf )malloc(items * size)
-                            : ( voidpf )calloc(items, size);
+    return sizeof(uInt) > 2 ? ( voidpf ) malloc(items * size)
+                            : ( voidpf ) calloc(items, size);
 }
 
 void zcfree(opaque, ptr) voidpf opaque;

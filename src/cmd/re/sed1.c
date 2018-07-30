@@ -23,10 +23,11 @@
 
 #include <ctype.h>
 
-#define ustrlen(p) strlen(( char * )(p))
-#define ustrcmp(p, q) strcmp(( char * )(p), ( char * )(q))
-#define ustrcpy(p, q) ( unsigned char * )strcpy(( char * )(p), ( char * )(q))
-#define ustrchr(p, c) ( unsigned char * )strchr(( char * )(p), c)
+#define ustrlen(p) strlen(( char * ) (p))
+#define ustrcmp(p, q) strcmp(( char * ) (p), ( char * ) (q))
+#define ustrcpy(p, q)                                                        \
+    ( unsigned char * ) strcpy(( char * ) (p), ( char * ) (q))
+#define ustrchr(p, c) ( unsigned char * ) strchr(( char * ) (p), c)
 
 int
 blank(Text *);
@@ -102,7 +103,7 @@ blank(Text *t)
 word *
 instr(unsigned char *p) /* get address of command word */
 {
-    word *q = ( word * )p;
+    word *q = ( word * ) p;
     while ((*q & IMASK) != IMASK)
         q++;
     return q;
@@ -113,7 +114,7 @@ succi(unsigned char *p)
 {
     word *q = instr(p);
     if (code(*q) == '{')
-        return ( unsigned char * )(q + 1);
+        return ( unsigned char * ) (q + 1);
     else
         return p + (*q & LMASK);
 }
@@ -131,7 +132,7 @@ void
 putword(Text *s, word n)
 {
     assure(s, sizeof(word));
-    *( word * )s->w = n;
+    *( word * ) s->w = n;
     s->w += sizeof(word);
 }
 
@@ -190,7 +191,7 @@ addr(Text *script, Text *t)
 regex_t *
 readdr(word x)
 {
-    return ( regex_t * )(rebuf.s + (x & AMASK));
+    return ( regex_t * ) (rebuf.s + (x & AMASK));
 }
 
 /* LABEL HANDLING */
@@ -217,20 +218,20 @@ lablook(unsigned char *l, Text *labels)
     for (p = labels->s; p < labels->w;) {
         q = p + sizeof(word);
         if (ustrcmp(q, l) == 0)
-            return ( word * )p;
+            return ( word * ) p;
         q += ustrlen(q) + 1;
-        p = ( unsigned char * )wordp(q);
+        p = ( unsigned char * ) wordp(q);
     }
     n = ustrlen(l);
     m = (p - labels->s);
     assure(labels, sizeof(word) + n + 1 + sizeof(word));
     p = labels->s + m;
-    *( word * )p = -1;
+    *( word * ) p = -1;
     q = p + sizeof(word);
     ustrcpy(q, l);
     q += ustrlen(q) + 1;
-    labels->w = ( unsigned char * )wordp(q);
-    return ( word * )p;
+    labels->w = ( unsigned char * ) wordp(q);
+    return ( word * ) p;
 }
 
 /* find pos in label list; assign value i to label if i>=0 */
@@ -254,7 +255,7 @@ getlab(Text *t, word i)
     else if (i != -1)
         syntax("duplicate label");
     *t->w = '\n';
-    return ( unsigned char * )p - labels.s;
+    return ( unsigned char * ) p - labels.s;
 }
 
 void
@@ -284,8 +285,8 @@ fixlabels(Text *script)
         case 'b':
             if (q[1] == -1)
                 q[1] = script->w - script->s;
-            else if (*( word * )(labels.s + q[1]) != -1)
-                q[1] = *( word * )(labels.s + q[1]);
+            else if (*( word * ) (labels.s + q[1]) != -1)
+                q[1] = *( word * ) (labels.s + q[1]);
             else
                 error(
                 3, "undefined label: %s", labels.s + q[1] + sizeof(word));
@@ -311,7 +312,7 @@ rc(Text *script, Text *t)
     if (u == t->w)
         syntax("missing file name");
     *t->w = 0;
-    putword(script, ( unsigned char * )lablook(u, &files) - files.s);
+    putword(script, ( unsigned char * ) lablook(u, &files) - files.s);
     *t->w = '\n';
 }
 
@@ -320,11 +321,11 @@ wc(Text *script, Text *t)
 {
     word *p;
     rc(script, t);
-    p = ( word * )(files.s + (( word * )script->w)[-1]);
+    p = ( word * ) (files.s + (( word * ) script->w)[-1]);
     if (*p != -1)
         return;
-    *( Sfio_t ** )p = sfopen(NiL, ( char * )(p + 1), "w");
-    if (*( Sfio_t ** )p == 0)
+    *( Sfio_t ** ) p = sfopen(NiL, ( char * ) (p + 1), "w");
+    if (*( Sfio_t ** ) p == 0)
         syntax("can't open file for writing");
 }
 
@@ -354,8 +355,8 @@ Rc(Text *script, Text *t)
     t = t;
     if (brack.w == 0 || (brack.w -= sizeof(word)) < brack.s)
         syntax("unmatched }");
-    l = *( word * )brack.w;
-    p = ( word * )(script->s + l);
+    l = *( word * ) brack.w;
+    p = ( word * ) (script->s + l);
     l = script->w - script->s - l;
     if (l >= LMASK - 3 * sizeof(word)) /* fixbrack could add 3 */
         syntax("{command-list} too long)");
@@ -374,7 +375,7 @@ fixbrack(Text *script)
     for (p = script->s; p < script->w; p = succi(p)) {
         q = instr(p);
         if (code(*q) == '{')
-            *q += ( unsigned char * )q - p;
+            *q += ( unsigned char * ) q - p;
     }
     free(brack.s);
 }
@@ -430,7 +431,7 @@ ac(Text *script, Text *t)
         case '\n':
             *script->w++ = *t->w;
             *script->w++ = 0;
-            script->w = ( unsigned char * )wordp(script->w);
+            script->w = ( unsigned char * ) wordp(script->w);
             return;
         case '\\':
             t->w++;
@@ -457,10 +458,10 @@ sc(Text *script, Text *t)
     n = recomp(&rebuf, t, 1);
     putword(script, n);
     re = readdr(n);
-    if (c = regsubcomp(re, ( char * )t->w, NiL, 0, 0))
+    if (c = regsubcomp(re, ( char * ) t->w, NiL, 0, 0))
         badre(re, c);
     t->w += re->re_npat;
-    script->w = ( unsigned char * )wordp(script->w);
+    script->w = ( unsigned char * ) wordp(script->w);
     if (re->re_sub->re_flags & REG_SUB_WRITE)
         wc(script, t);
 }
@@ -508,10 +509,10 @@ yc(Text *script, Text *t)
         x = roundof(x, sizeof(word));
         m++;
         assure(script, (m + 1) * sizeof(unsigned char *) + x);
-        w = ( unsigned char ** )script->w;
-        *w++ = ( unsigned char * )0 + m;
+        w = ( unsigned char ** ) script->w;
+        *w++ = ( unsigned char * ) 0 + m;
         script->w += (m + 1) * sizeof(unsigned char *);
-        v = ( unsigned char * )script->w;
+        v = ( unsigned char * ) script->w;
         script->w += x;
         for (i = 0; i < m; i++)
             w[i] = 0;
@@ -553,7 +554,7 @@ yc(Text *script, Text *t)
                 synwarn("redundant map");
             } else {
                 w[pc] = v;
-                *v++ = ( unsigned char )i;
+                *v++ = ( unsigned char ) i;
                 memcpy(v, qb, i);
                 v += i;
             }
@@ -564,9 +565,9 @@ yc(Text *script, Text *t)
         if ((delim = *t->w++) == '\n' || delim == '\\')
             syntax("missing delimiter");
         assure(script, sizeof(unsigned char *) + UCHAR_MAX + 1);
-        w = ( unsigned char ** )script->w;
+        w = ( unsigned char ** ) script->w;
         *w++ = 0;
-        s = ( unsigned char * )w;
+        s = ( unsigned char * ) w;
         script->w += sizeof(unsigned char *) + UCHAR_MAX + 1;
         for (i = 0; i < UCHAR_MAX + 1; i++)
             s[i] = 0;
@@ -608,7 +609,7 @@ yc(Text *script, Text *t)
             syntax("string lengths differ");
         for (i = 0; i < UCHAR_MAX + 1; i++)
             if (s[i] == 0)
-                s[i] = ( unsigned char )i;
+                s[i] = ( unsigned char ) i;
     }
     t->w = q;
 }
@@ -647,19 +648,19 @@ printscript(Text *script)
     unsigned char *s;
     word *q;
     for (s = script->s; s < script->w; s = succi(s)) {
-        q = ( word * )s;
+        q = ( word * ) s;
         if ((*q & IMASK) != IMASK) {
             if ((*q & REGADR) == 0)
                 printf("%d", *q);
             else
-                regdump(( regex_t * )(*q & AMASK));
+                regdump(( regex_t * ) (*q & AMASK));
             q++;
         }
         if ((*q & IMASK) != IMASK) {
             if ((*q & REGADR) == 0)
                 printf(",%d", *q);
             else
-                regdump(( regex_t * )(*q & AMASK));
+                regdump(( regex_t * ) (*q & AMASK));
             q += 2;
         }
         if (code(*q) == '\n')
@@ -722,10 +723,10 @@ compile(Text *script, Text *t)
             if (naddr < 2)
                 syntax("missing address");
         }
-        q = ( word * )script->w;
+        q = ( word * ) script->w;
         if (naddr == 2)
             *q++ = INACT;
-        script->w = ( unsigned char * )(q + 1);
+        script->w = ( unsigned char * ) (q + 1);
         neg = 0;
         for (;;) {
             while (blank(t))

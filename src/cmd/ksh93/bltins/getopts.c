@@ -35,7 +35,7 @@
 static int
 infof(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
 {
-    Shell_t *shp = *( Shell_t ** )(dp + 1);
+    Shell_t *shp = *( Shell_t ** ) (dp + 1);
     Stk_t *stkp = shp->stk;
 #if SHOPT_NAMESPACE
     if ((shp->namespace && sh_fsearch(shp, s, 0))
@@ -92,7 +92,7 @@ b_getopts(int argc, char *argv[], Shbltin_t *context)
     argv += opt_info.index;
     argc -= opt_info.index;
     if (error_info.errors || argc < 2)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     error_info.context->flags |= ERROR_SILENT;
     error_info.id = options;
     options = argv[0];
@@ -117,7 +117,7 @@ b_getopts(int argc, char *argv[], Shbltin_t *context)
         shp->st.opterror = 1;
         if (r == 0)
             return (2);
-        pp = ( struct checkpt * )shp->jmplist;
+        pp = ( struct checkpt * ) shp->jmplist;
         pp->mode = SH_JMPERREXIT;
         sh_exit(shp, 2);
     }
@@ -159,7 +159,7 @@ b_getopts(int argc, char *argv[], Shbltin_t *context)
             opt_info.index = flag;
             if (!mode && strchr(options, ' '))
                 errormsg(
-                SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+                SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
         }
         opt_info.arg = 0;
         options = value;
@@ -180,16 +180,16 @@ b_getopts(int argc, char *argv[], Shbltin_t *context)
     np = nv_open(nv_name(OPTARGNOD), shp->var_tree, 0);
     if (opt_info.num == LONG_MIN)
         nv_putval(np, opt_info.arg, NV_RDONLY);
-    else if (opt_info.arg && opt_info.num > 0 && isalpha(( char )opt_info.num)
-             && !isdigit(opt_info.arg[0]) && opt_info.arg[0] != '-'
-             && opt_info.arg[0] != '+') {
-        key[0] = ( char )opt_info.num;
+    else if (opt_info.arg && opt_info.num > 0
+             && isalpha(( char ) opt_info.num) && !isdigit(opt_info.arg[0])
+             && opt_info.arg[0] != '-' && opt_info.arg[0] != '+') {
+        key[0] = ( char ) opt_info.num;
         key[1] = 0;
         nv_putval(np, key, NV_RDONLY);
     } else if (extended) {
         Sfdouble_t d;
         d = opt_info.number;
-        nv_putval(np, ( char * )&d, NV_LDOUBLE | NV_RDONLY);
+        nv_putval(np, ( char * ) &d, NV_LDOUBLE | NV_RDONLY);
     } else
         nv_putval(np, opt_info.arg, NV_RDONLY);
     nv_close(np);

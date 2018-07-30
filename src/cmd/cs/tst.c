@@ -76,21 +76,21 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 
     switch (fp->status) {
     case CS_POLL_CLOSE:
-        if (con = ( Connection_t * )fp->data) {
+        if (con = ( Connection_t * ) fp->data) {
             if (con->args)
                 free(con->args);
             free(con);
         }
         return 0;
     case CS_POLL_READ:
-        con = ( Connection_t * )fp->data;
+        con = ( Connection_t * ) fp->data;
         if ((n = csread(css->state, fp->fd, dat, sizeof(dat), CS_LINE)) <= 0)
             return -1;
         dat[--n] = 0;
         if (isalpha(dat[0]) && (dat[1] == 0 || isdigit(dat[1])))
             switch (dat[0]) {
             case 'd':
-                error_info.trace = -( int )strtol(dat + 1, NiL, 0);
+                error_info.trace = -( int ) strtol(dat + 1, NiL, 0);
                 n = sfsprintf(
                 buf, sizeof(buf), "I debug level %d\n", -error_info.trace);
                 break;

@@ -30,7 +30,7 @@ tmain()
         return 0;
     }
 
-    if (!(f = sfopen(( Sfio_t * )0, tstfile("sf", 0), "w")))
+    if (!(f = sfopen(( Sfio_t * ) 0, tstfile("sf", 0), "w")))
         terror("Opening to write");
     if (sfputc(f, 'a') != 'a')
         terror("sfputc");

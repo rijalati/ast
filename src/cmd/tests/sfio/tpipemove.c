@@ -30,10 +30,10 @@ tmain()
         terror("Can't open pipe");
 
     if (!(fr = sfnew(
-          NIL(Sfio_t *), NIL(Void_t *), ( size_t )SF_UNBOUND, fd[0], SF_READ))
+          NIL(Sfio_t *), NIL(Void_t *), ( size_t ) SF_UNBOUND, fd[0], SF_READ))
         || !(fw = sfnew(NIL(Sfio_t *),
                         NIL(Void_t *),
-                        ( size_t )SF_UNBOUND,
+                        ( size_t ) SF_UNBOUND,
                         fd[1],
                         SF_WRITE)))
         terror("Can't open pipe streams");
@@ -48,7 +48,7 @@ tmain()
         if ((w = sfwrite(fw, "123456789\n", 10)) != 10)
             terror("Writing to pipe w=%d", w);
 
-    if ((n = ( int )sfmove(fr, sfstdout, ( Sfoff_t )100, '\n')) != 100)
+    if ((n = ( int ) sfmove(fr, sfstdout, ( Sfoff_t ) 100, '\n')) != 100)
         terror("sfmove failed n=%d", n);
     sfclose(sfstdout);
 

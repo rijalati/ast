@@ -105,21 +105,22 @@ tmain()
     else if (vl != 2)
         terror("asodeclong value failed -- expected %d, got %ld", 2, vl);
 
-    vp = ( void * )1;
-    if ((rp = asocasptr(&vp, ( void * )1, ( void * )2)) != ( void * )1)
+    vp = ( void * ) 1;
+    if ((rp = asocasptr(&vp, ( void * ) 1, ( void * ) 2)) != ( void * ) 1)
         terror("asocasptr return value failed -- expected %p, got %p",
-               ( void * )1,
+               ( void * ) 1,
                rp);
-    else if (vp != ( void * )2)
+    else if (vp != ( void * ) 2)
         terror(
-        "asocasptr value failed -- expected %p, got %p", ( void * )2, vp);
-    else if ((rp = asocasptr(&vp, ( void * )1, ( void * )3)) != ( void * )2)
+        "asocasptr value failed -- expected %p, got %p", ( void * ) 2, vp);
+    else if ((rp = asocasptr(&vp, ( void * ) 1, ( void * ) 3))
+             != ( void * ) 2)
         terror("asocasptr return value failed -- expected %p, got %p",
-               ( void * )2,
+               ( void * ) 2,
                rp);
-    else if (vp != ( void * )2)
+    else if (vp != ( void * ) 2)
         terror(
-        "asocasptr value failed -- expected %p, got %p", ( void * )2, vp);
+        "asocasptr value failed -- expected %p, got %p", ( void * ) 2, vp);
 
     texit(0);
 }

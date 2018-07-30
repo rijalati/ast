@@ -30,7 +30,7 @@
 
 #define NDFS_FLAG_OFF 1
 #define NDFS_ALLFLAGS (NDFS_FLAG_OFF)
-#define NDFS_HASFLAG_OFF(f) (( f )&NDFS_FLAG_OFF)
+#define NDFS_HASFLAG_OFF(f) (( f ) &NDFS_FLAG_OFF)
 
 #define NDFS_ISDIR 1
 #define NDFS_ISREG 2

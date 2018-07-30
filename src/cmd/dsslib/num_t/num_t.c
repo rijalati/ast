@@ -48,7 +48,7 @@
 #define FIXED_INTERNAL(f, w, value, format)                                  \
     {                                                                        \
         int i;                                                               \
-        f = ( intmax_t )w; /* signed cast is msvc workaround */              \
+        f = ( intmax_t ) w; /* signed cast is msvc workaround */             \
         if (i = (format)->fixedpoint)                                        \
             for (;;) {                                                       \
                 if (i < elementsof(pow_10)) {                                \
@@ -93,7 +93,7 @@ bcd_external(Cx_t *cx,
              size_t size,
              Cxdisc_t *disc)
 {
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *s = ( unsigned char * ) buf;
     unsigned char *e;
     Cxunsigned_t v;
     Cxnumber_t f;
@@ -107,7 +107,7 @@ bcd_external(Cx_t *cx,
         v = (Cxinteger_t)(-f);
         *e = 0xD;
     } else {
-        v = ( Cxinteger_t )f;
+        v = ( Cxinteger_t ) f;
         *e = 0xC;
     }
     *e |= bcd_pack[(v % 10) * 10];
@@ -171,7 +171,7 @@ bcd_internal(Cx_t *cx,
              Vmalloc_t *vm,
              Cxdisc_t *disc)
 {
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *s = ( unsigned char * ) buf;
     unsigned char *e;
     Cxinteger_t w;
     unsigned const char *p;
@@ -269,7 +269,7 @@ be_external(Cx_t *cx,
             size_t size,
             Cxdisc_t *disc)
 {
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *s = ( unsigned char * ) buf;
     unsigned char *e;
     unsigned char *u;
     Cxunsigned_t v;
@@ -285,11 +285,11 @@ be_external(Cx_t *cx,
         switch (format->width) {
         case 4:
             f4 = f;
-            u = ( unsigned char * )&f4;
+            u = ( unsigned char * ) &f4;
             break;
         case 8:
             f8 = f;
-            u = ( unsigned char * )&f8;
+            u = ( unsigned char * ) &f8;
             break;
         }
 #if _ast_intswap
@@ -299,7 +299,7 @@ be_external(Cx_t *cx,
             *s++ = *u++;
 #endif
     } else {
-        v = ( Cxinteger_t )f;
+        v = ( Cxinteger_t ) f;
         while (e > s) {
             *--e = v & 0xff;
             v >>= 8;
@@ -319,7 +319,7 @@ be_internal(Cx_t *cx,
             Vmalloc_t *vm,
             Cxdisc_t *disc)
 {
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *s = ( unsigned char * ) buf;
     unsigned char *e;
     unsigned char *u;
     Cxunsigned_t v;
@@ -333,7 +333,7 @@ be_internal(Cx_t *cx,
     if (format->flags & CX_FLOAT) {
         switch (format->width) {
         case 4:
-            u = ( unsigned char * )&f4;
+            u = ( unsigned char * ) &f4;
 #if _ast_intswap
             swapmem(_ast_intswap, u, s, format->width);
 #else
@@ -343,7 +343,7 @@ be_internal(Cx_t *cx,
             ret->value.number = f4;
             break;
         case 8:
-            u = ( unsigned char * )&f8;
+            u = ( unsigned char * ) &f8;
 #if _ast_intswap
             swapmem(_ast_intswap, u, s, format->width);
 #else
@@ -385,7 +385,7 @@ time(time_t *);
 static void *
 hash_init(void *data, Cxdisc_t *disc)
 {
-    Cxtype_t *type = ( Cxtype_t * )data;
+    Cxtype_t *type = ( Cxtype_t * ) data;
     const char *s;
     int n;
     Cxunsigned_t h;
@@ -396,8 +396,8 @@ hash_init(void *data, Cxdisc_t *disc)
     h = 0;
     for (s = type->name; n = *s++;)
         HASHPART(h, n);
-    h
-    ^= ( Cxunsigned_t )time(NiL) ^ ((( Cxunsigned_t )getpid()) << (h & 077));
+    h ^= ( Cxunsigned_t ) time(NiL)
+         ^ ((( Cxunsigned_t ) getpid()) << (h & 077));
     for (n = ((h >> 7) & 077) | 0100; n > 0; n--)
         HASHPART(h, n);
     hp->hash = h;
@@ -416,7 +416,7 @@ hash_external(Cx_t *cx,
               size_t size,
               Cxdisc_t *disc)
 {
-    Hash_t *hp = ( Hash_t * )type->data;
+    Hash_t *hp = ( Hash_t * ) type->data;
     unsigned char *s;
     unsigned char *e;
     unsigned char *t;
@@ -430,9 +430,9 @@ hash_external(Cx_t *cx,
     }
     if (value->string.size > size)
         return value->string.size;
-    s = ( unsigned char * )value->string.data;
+    s = ( unsigned char * ) value->string.data;
     e = s + value->string.size;
-    t = ( unsigned char * )buf;
+    t = ( unsigned char * ) buf;
     h = hp->hash;
     while (s < e) {
         c = *s++;
@@ -461,7 +461,7 @@ hash_internal(Cx_t *cx,
               Vmalloc_t *vm,
               Cxdisc_t *disc)
 {
-    Hash_t *hp = ( Hash_t * )type->data;
+    Hash_t *hp = ( Hash_t * ) type->data;
     unsigned char *s;
     unsigned char *e;
     unsigned char *t;
@@ -477,9 +477,9 @@ hash_internal(Cx_t *cx,
     }
     if (!(t = vmnewof(vm, 0, unsigned char, format->width, 1)))
         return -1;
-    ret->value.string.data = ( char * )t;
+    ret->value.string.data = ( char * ) t;
     ret->value.string.size = format->width;
-    s = ( unsigned char * )buf;
+    s = ( unsigned char * ) buf;
     e = s + size;
     h = hp->hash;
     while (s < e) {
@@ -529,7 +529,7 @@ heka_internal(Cx_t *cx,
               Vmalloc_t *vm,
               Cxdisc_t *disc)
 {
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *s = ( unsigned char * ) buf;
     unsigned char *e = s + format->width;
     Cxunsigned_t u;
     Cxnumber_t f;
@@ -586,7 +586,7 @@ heka_external(Cx_t *cx,
 
     FIXED_EXTERNAL(f, format, value);
     if (f >= 0 || (format->flags & CX_UNSIGNED)) {
-        u = ( Cxinteger_t )f;
+        u = ( Cxinteger_t ) f;
         neg = 0;
     } else {
         u = (Cxinteger_t)(-f);
@@ -610,7 +610,7 @@ heka_external(Cx_t *cx,
         *--t = neg ? '-' : '+';
     if ((c = s - t) > size)
         return c;
-    s = ( unsigned char * )buf;
+    s = ( unsigned char * ) buf;
     switch (c) {
     default:
         memcpy(s, t, c);
@@ -842,7 +842,7 @@ ibm_external(Cx_t *cx,
              size_t size,
              Cxdisc_t *disc)
 {
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *s = ( unsigned char * ) buf;
     unsigned int lo;
     unsigned int hi;
     unsigned int ex;
@@ -891,7 +891,7 @@ ibm_external(Cx_t *cx,
              * extract the fraction bits as integers
              */
 
-            f *= ( double )0x1000000;
+            f *= ( double ) 0x1000000;
             hi3 = FLOOR(f + 0.5);
 
             /*
@@ -958,13 +958,13 @@ ibm_external(Cx_t *cx,
              * extract the fraction bits as integers
              */
 
-            f *= ( double )0x1000000;
+            f *= ( double ) 0x1000000;
             hi3 = FLOOR(f);
             f -= hi3;
-            f *= ( double )0x10000;
+            f *= ( double ) 0x10000;
             md2 = FLOOR(f);
             f -= md2;
-            f *= ( double )0x10000;
+            f *= ( double ) 0x10000;
             lo2 = FLOOR(f + 0.5);
 
             /*
@@ -1026,7 +1026,7 @@ ibm_internal(Cx_t *cx,
              Vmalloc_t *vm,
              Cxdisc_t *disc)
 {
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *s = ( unsigned char * ) buf;
     Cxinteger_t i;
     double f;
 
@@ -1043,10 +1043,11 @@ ibm_internal(Cx_t *cx,
         i = (s[1] << 16) | (s[2] << 8) | s[3];
         f = i * (1.0 / 0x1000000);
         i = (s[4] << 8) | s[5];
-        f += i * ((1.0 / 0x1000000) / ( double )0x10000);
+        f += i * ((1.0 / 0x1000000) / ( double ) 0x10000);
         i = (s[6] << 8) | s[7];
         f
-        += i * (((1.0 / 0x1000000) / ( double )0x10000) / ( double )0x10000);
+        += i
+           * (((1.0 / 0x1000000) / ( double ) 0x10000) / ( double ) 0x10000);
         f *= (s[0] < 0x80) ? ibm_exp[s[0]] : -ibm_exp[s[0] & 0x7F];
         ret->value.number = f;
         return 8;
@@ -1064,7 +1065,7 @@ le_external(Cx_t *cx,
             size_t size,
             Cxdisc_t *disc)
 {
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *s = ( unsigned char * ) buf;
     unsigned char *e;
     unsigned char *u;
     Cxunsigned_t v;
@@ -1080,11 +1081,11 @@ le_external(Cx_t *cx,
         switch (format->width) {
         case 4:
             f4 = f;
-            u = ( unsigned char * )&f4;
+            u = ( unsigned char * ) &f4;
             break;
         case 8:
             f8 = f;
-            u = ( unsigned char * )&f8;
+            u = ( unsigned char * ) &f8;
             break;
         }
 #if _ast_intswap ^ 7
@@ -1094,7 +1095,7 @@ le_external(Cx_t *cx,
             *s++ = *u++;
 #endif
     } else {
-        v = ( Cxinteger_t )value->number;
+        v = ( Cxinteger_t ) value->number;
         while (s < e) {
             *s++ = v & 0xff;
             v >>= 8;
@@ -1114,7 +1115,7 @@ le_internal(Cx_t *cx,
             Vmalloc_t *vm,
             Cxdisc_t *disc)
 {
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *s = ( unsigned char * ) buf;
     unsigned char *e;
     unsigned char *u;
     Cxunsigned_t v;
@@ -1128,7 +1129,7 @@ le_internal(Cx_t *cx,
     if (format->flags & CX_FLOAT) {
         switch (format->width) {
         case 4:
-            u = ( unsigned char * )&f4;
+            u = ( unsigned char * ) &f4;
 #if _ast_intswap ^ 7
             swapmem(_ast_intswap ^ 7, u, s, format->width);
 #else
@@ -1138,7 +1139,7 @@ le_internal(Cx_t *cx,
             ret->value.number = f4;
             break;
         case 8:
-            u = ( unsigned char * )&f8;
+            u = ( unsigned char * ) &f8;
 #if _ast_intswap ^ 7
             swapmem(_ast_intswap ^ 7, u, s, format->width);
 #else
@@ -1204,11 +1205,11 @@ sf_internal(Cx_t *cx,
 {
     if (!size)
         return 4;
-    sfstrbuf(cx->buf, ( void * )buf, size, 0);
+    sfstrbuf(cx->buf, ( void * ) buf, size, 0);
     if (format->flags & CX_FLOAT)
         ret->value.number = sfgetd(cx->buf);
     else if (format->flags & CX_UNSIGNED)
-        ret->value.number = ( Cxinteger_t )sfgetu(cx->buf);
+        ret->value.number = ( Cxinteger_t ) sfgetu(cx->buf);
     else
         ret->value.number = sfgetl(cx->buf);
     if (sferror(cx->buf))
@@ -1220,7 +1221,7 @@ static Cxtype_t types[]
 = { { "bcd_t",
       "Binary coded decimal.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       bcd_external,
       bcd_internal,
@@ -1232,7 +1233,7 @@ static Cxtype_t types[]
     { "be_t",
       "Big endian binary.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       be_external,
       be_internal,
@@ -1244,7 +1245,7 @@ static Cxtype_t types[]
     { "hash_t",
       "Repeatable string hash.",
       CXH,
-      ( Cxtype_t * )"string",
+      ( Cxtype_t * ) "string",
       hash_init,
       hash_external,
       hash_internal,
@@ -1256,7 +1257,7 @@ static Cxtype_t types[]
     { "heka_t",
       "Base 100 binary integer.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       heka_external,
       heka_internal,
@@ -1268,7 +1269,7 @@ static Cxtype_t types[]
     { "ibm_t",
       "IBM 4 and 8 byte floating point.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       ibm_external,
       ibm_internal,
@@ -1280,7 +1281,7 @@ static Cxtype_t types[]
     { "le_t",
       "Little endian binary.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       le_external,
       le_internal,
@@ -1292,7 +1293,7 @@ static Cxtype_t types[]
     { "rand_t",
       "Non-repeatable pseudo-random string hash.",
       CXH,
-      ( Cxtype_t * )"string",
+      ( Cxtype_t * ) "string",
       hash_init,
       hash_external,
       hash_internal,
@@ -1308,7 +1309,7 @@ static Cxtype_t types[]
     { "sf_t",
       "sfio sfputd()/sfputl()/sfputu() encoding.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       sf_external,
       sf_internal },

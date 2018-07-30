@@ -30,8 +30,8 @@ typedef struct _bredge_s
     Gredge_t *edge; /* branching edge that this represents	*/
 } Bredge_t;
 
-#define BRNODE(n) (( Brnode_t * )grdtnode((n), Grbranching))
-#define BREDGE(e) (( Bredge_t * )grdtedge((e), Grbranching))
+#define BRNODE(n) (( Brnode_t * ) grdtnode((n), Grbranching))
+#define BREDGE(e) (( Bredge_t * ) grdtedge((e), Grbranching))
 
 /* compute the representative node in the shadowed union structure */
 #define GRLINK(n) ((n)->link == (n) ? (n) : grlink(n))
@@ -52,14 +52,14 @@ predge(Gredge_t *ed)
         PRINT(Fd, "Null edge\n", 0);
         return 0;
     }
-    PRINT(Fd, "%d", ( int )ed->tail->label);
-    PRINT(Fd, "(%d) -> ", ( int )grfind(ed->tail)->label);
-    PRINT(Fd, "%d", ( int )ed->head->label);
-    PRINT(Fd, "(%d), ", ( int )grfind(ed->head)->label);
+    PRINT(Fd, "%d", ( int ) ed->tail->label);
+    PRINT(Fd, "(%d) -> ", ( int ) grfind(ed->tail)->label);
+    PRINT(Fd, "%d", ( int ) ed->head->label);
+    PRINT(Fd, "(%d), ", ( int ) grfind(ed->head)->label);
     PRINT(
-    Fd, "root=%d, ", BREDGE(ed)->root ? ( int )BREDGE(ed)->root->label : -1);
-    PRINT(Fd, "wght=%d, ", ( int )BREDGE(ed)->wght);
-    PRINT(Fd, "wadj=%d\n", ( int )BREDGE(ed)->wadj);
+    Fd, "root=%d, ", BREDGE(ed)->root ? ( int ) BREDGE(ed)->root->label : -1);
+    PRINT(Fd, "wght=%d, ", ( int ) BREDGE(ed)->wght);
+    PRINT(Fd, "wadj=%d\n", ( int ) BREDGE(ed)->wadj);
     return 0;
 }
 static int
@@ -96,16 +96,16 @@ prnode(Grnode_t *nd)
         PRINT(Fd, "Null node\n", 0);
         return 0;
     }
-    PRINT(Fd, "node = %d", ( int )nd->label);
+    PRINT(Fd, "node = %d", ( int ) nd->label);
     PRINT(Fd, "(%d), ", grfind(nd)->label);
-    PRINT(Fd, "link = %d, ", nd->link ? ( int )nd->link->label : -1);
-    PRINT(Fd, "mark = %d\n", ( int )BRNODE(nd)->mark);
+    PRINT(Fd, "link = %d, ", nd->link ? ( int ) nd->link->label : -1);
+    PRINT(Fd, "mark = %d\n", ( int ) BRNODE(nd)->mark);
     return 0;
 }
 static int
 prid(Graph_t *gr, ssize_t id)
 {
-    return prnode(grnode(gr, ( void * )id, 0));
+    return prnode(grnode(gr, ( void * ) id, 0));
 }
 static int
 prcycl(Brcycl_t *cl)
@@ -123,8 +123,8 @@ prgraph(Graph_t *gr)
 {
     Grnode_t *nd;
     Gredge_t *ed;
-    for (nd = ( Grnode_t * )dtflatten(gr->nodes); nd;
-         nd = ( Grnode_t * )dtlink(gr->nodes, nd)) {
+    for (nd = ( Grnode_t * ) dtflatten(gr->nodes); nd;
+         nd = ( Grnode_t * ) dtlink(gr->nodes, nd)) {
         if (nd != grfind(nd))
             continue;
         prnode(nd);
@@ -144,8 +144,8 @@ grbranching(Graph_t *gr)
     Brcycl_t *clist, *cl, *endcl;
     ssize_t w;
 
-    for (w = 0, n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         w += 1, n = ( Grnode_t * )dtlink(gr->nodes, n)) {
+    for (w = 0, n = ( Grnode_t * ) dtflatten(gr->nodes); n;
+         w += 1, n = ( Grnode_t * ) dtlink(gr->nodes, n)) {
         n->link = n->fold = n; /* union structures: link kept as-is, fold does
                                   path-compression */
         n->oedge = NIL(Gredge_t *); /* wipe the out-edges */
@@ -171,13 +171,13 @@ grbranching(Graph_t *gr)
         return 0;
 
     /* space to keep cycle structures */
-    if (!(clist = cl = ( Brcycl_t * )calloc(w + 1, sizeof(Brcycl_t))))
+    if (!(clist = cl = ( Brcycl_t * ) calloc(w + 1, sizeof(Brcycl_t))))
         return -1;
     endcl = cl + w + 1;
 
     /* search and collapse cycles */
-    for (n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         n = ( Grnode_t * )dtlink(gr->nodes, n)) {
+    for (n = ( Grnode_t * ) dtflatten(gr->nodes); n;
+         n = ( Grnode_t * ) dtlink(gr->nodes, n)) {
         nc = grfind(n);
         if (BRNODE(nc)->mark) /* already searched */
             continue;
@@ -272,8 +272,8 @@ grbranching(Graph_t *gr)
 
     /* move the remaining branching edges to their real nodes */
     path = NIL(Gredge_t *);
-    for (n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         n = ( Grnode_t * )dtlink(gr->nodes, n)) {
+    for (n = ( Grnode_t * ) dtflatten(gr->nodes); n;
+         n = ( Grnode_t * ) dtlink(gr->nodes, n)) {
         if (!(e = n->iedge))
             continue;
         e->link = path;
@@ -305,8 +305,8 @@ grbranching(Graph_t *gr)
     }
 
     w = 0; /* construct the external branching representation */
-    for (n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         n = ( Grnode_t * )dtlink(gr->nodes, n)) {
+    for (n = ( Grnode_t * ) dtflatten(gr->nodes); n;
+         n = ( Grnode_t * ) dtlink(gr->nodes, n)) {
         if (!(e = n->iedge))
             continue;
         e->inext = NIL(Gredge_t *);
@@ -381,8 +381,8 @@ grbrgreedy(Graph_t *gr)
     ssize_t wght;
 
     list = NIL(Gredge_t *); /* link all edges into a big list */
-    for (n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         n = ( Grnode_t * )dtlink(gr->nodes, n)) {
+    for (n = ( Grnode_t * ) dtflatten(gr->nodes); n;
+         n = ( Grnode_t * ) dtlink(gr->nodes, n)) {
         for (e = n->oedge; e; e = e->onext) {
             e->link = list;
             list = e;
@@ -454,14 +454,14 @@ brdata(Gralgo_t *algo, int type, Grdata_t *data)
         return NIL(Grdata_t *);
 
     case GR_NODE | GR_OPENING:
-        if (!(brn = ( Brnode_t * )calloc(1, sizeof(Brnode_t))))
+        if (!(brn = ( Brnode_t * ) calloc(1, sizeof(Brnode_t))))
             return NIL(Grdata_t *);
-        return ( Grdata_t * )brn;
+        return ( Grdata_t * ) brn;
 
     case GR_EDGE | GR_OPENING:
-        if (!(bre = ( Bredge_t * )calloc(1, sizeof(Bredge_t))))
+        if (!(bre = ( Bredge_t * ) calloc(1, sizeof(Bredge_t))))
             return NIL(Grdata_t *);
-        return ( Grdata_t * )bre;
+        return ( Grdata_t * ) bre;
     }
 }
 
@@ -496,8 +496,8 @@ main(int argc, char **argv)
             continue;
         if (sscanf(buf, "%d,%d,%d", &t, &h, &w) != 3)
             continue;
-        tn = grnode(gr, ( Void_t * )(t), 1);
-        hn = grnode(gr, ( Void_t * )(h), 1);
+        tn = grnode(gr, ( Void_t * ) (t), 1);
+        hn = grnode(gr, ( Void_t * ) (h), 1);
         if (type > 0 && t >= h) /* only use edges with t < h */
             continue;
         if (type < 0 && t <= h) /* only use edges with t > h */
@@ -510,8 +510,8 @@ main(int argc, char **argv)
         printf("\nTotal weight=%d\n", grbrgreedy(gr));
     else
         printf("\nTotal weight=%d\n", grbranching(gr));
-    for (n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         n = ( Grnode_t * )dtlink(gr->nodes, n))
+    for (n = ( Grnode_t * ) dtflatten(gr->nodes); n;
+         n = ( Grnode_t * ) dtlink(gr->nodes, n))
         if ((e = n->iedge))
             fprintf(stderr,
                     "%d -> %d [%d]\n",

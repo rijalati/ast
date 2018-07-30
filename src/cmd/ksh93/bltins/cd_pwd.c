@@ -44,7 +44,7 @@
 static void
 invalidate(Namval_t *np, void *data)
 {
-    Pathcomp_t *pp = ( Pathcomp_t * )np->nvalue.cp;
+    Pathcomp_t *pp = ( Pathcomp_t * ) np->nvalue.cp;
     NOT_USED(data);
     if (pp && *pp->name != '/')
         _nv_unset(np, 0);
@@ -115,13 +115,13 @@ b_cd(int argc, char *argv[], Shbltin_t *context)
     argc -= opt_info.index;
     dir = argv[0];
     if (error_info.errors > 0 || argc > 2)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     shp->pwd = path_pwd(shp, 0);
-    oldpwd = ( char * )shp->pwd;
+    oldpwd = ( char * ) shp->pwd;
     opwdnod = (shp->subshell ? sh_assignok(OLDPWDNOD, 1) : OLDPWDNOD);
     pwdnod = (shp->subshell ? sh_assignok(PWDNOD, 1) : PWDNOD);
     if (dirfd != shp->pwdfd && dir == 0)
-        dir = ( char * )e_dot;
+        dir = ( char * ) e_dot;
     if (argc == 2)
         dir = sh_substitute(shp, oldpwd, dir, argv[1]);
     else if (!dir) {
@@ -147,11 +147,11 @@ b_cd(int argc, char *argv[], Shbltin_t *context)
     if (dirfd == shp->pwdfd && *dir != '/')
 #endif /* _WINIX */
     {
-        if (!(cdpath = ( Pathcomp_t * )shp->cdpathlist)
+        if (!(cdpath = ( Pathcomp_t * ) shp->cdpathlist)
             && (dp = sh_scoped(shp, CDPNOD)->nvalue.cp)) {
             if (cdpath
-                = path_addpath(shp, ( Pathcomp_t * )0, dp, PATH_CDPATH)) {
-                shp->cdpathlist = ( void * )cdpath;
+                = path_addpath(shp, ( Pathcomp_t * ) 0, dp, PATH_CDPATH)) {
+                shp->cdpathlist = ( void * ) cdpath;
                 cdpath->shp = shp;
             }
         }
@@ -186,7 +186,7 @@ b_cd(int argc, char *argv[], Shbltin_t *context)
         }
 #endif /* _WINIX */
         if (*stakptr(PATH_OFFSET) != '/' && dirfd == shp->pwdfd) {
-            char *last = ( char * )stakfreeze(1);
+            char *last = ( char * ) stakfreeze(1);
             stakseek(PATH_OFFSET);
             stakputs(oldpwd);
             /* don't add '/' of oldpwd is / itself */
@@ -270,7 +270,7 @@ success:
         }
         stakseek(dir - stakptr(0));
     }
-    dir = ( char * )stakfreeze(1) + PATH_OFFSET;
+    dir = ( char * ) stakfreeze(1) + PATH_OFFSET;
     if (*dp && (*dp != '.' || dp[1]) && strchr(dir, '/'))
         sfputr(sfstdout, dir, '\n');
     if (*dir != '/') {
@@ -279,7 +279,7 @@ success:
         dir = fgetcwd(newdirfd, 0, 0);
     }
     nv_putval(opwdnod, oldpwd, NV_RDONLY);
-    i = j = ( int )strlen(dir);
+    i = j = ( int ) strlen(dir);
     /* delete trailing '/' */
     while (--i > 0 && dir[i] == '/') {
         /* //@// exposed here and in pathrelative() -- rats */
@@ -293,7 +293,7 @@ success:
     nv_putval(pwdnod, dir, NV_RDONLY);
     nv_onattr(pwdnod, NV_NOFREE | NV_EXPORT);
     shp->pwd = pwdnod->nvalue.cp;
-    nv_scan(shp->track_tree, invalidate, ( void * )0, NV_TAGGED, NV_TAGGED);
+    nv_scan(shp->track_tree, invalidate, ( void * ) 0, NV_TAGGED, NV_TAGGED);
     path_newdir(shp, shp->pathlist);
     path_newdir(shp, shp->cdpathlist);
     if (oldpwd)
@@ -328,7 +328,7 @@ b_pwd(int argc, char *argv[], Shbltin_t *context)
             break;
         }
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (ffd != -1) {
         if (!(cp = fgetcwd(ffd, 0, 0)))
             errormsg(SH_DICT, ERROR_system(1), e_pwd);
@@ -342,7 +342,7 @@ b_pwd(int argc, char *argv[], Shbltin_t *context)
         if (shp->gd->lim.fs3d
             && (mc = mount(e_dot, NIL(char *), FS3D_GET | FS3D_VIEW, 0))
                >= 0) {
-            cp = ( char * )stakseek(++mc + PATH_MAX);
+            cp = ( char * ) stakseek(++mc + PATH_MAX);
             mount(e_dot, cp, FS3D_GET | FS3D_VIEW | FS3D_SIZE(mc), 0);
         } else
 #endif /* SHOPT_FS_3D */

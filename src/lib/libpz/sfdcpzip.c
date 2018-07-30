@@ -51,7 +51,7 @@ typedef struct
 static int
 sfpzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
 {
-    Sfpzip_t *pz = ( Sfpzip_t * )dp;
+    Sfpzip_t *pz = ( Sfpzip_t * ) dp;
     int r;
 
     NoP(sp);
@@ -76,7 +76,7 @@ sfpzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
     case SF_SYNC:
         return val ? 0 : pzsync(pz->pz);
     case SFPZ_HANDLE:
-        return (*(( Pz_t ** )val) = pz->pz) ? 1 : -1;
+        return (*(( Pz_t ** ) val) = pz->pz) ? 1 : -1;
     }
     return 0;
 }
@@ -88,7 +88,7 @@ sfpzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
 static ssize_t
 sfpzread(Sfio_t *fp, Void_t *buf, size_t size, Sfdisc_t *dp)
 {
-    Sfpzip_t *pz = ( Sfpzip_t * )dp;
+    Sfpzip_t *pz = ( Sfpzip_t * ) dp;
 
     return pzread(pz->pz, buf, size);
 }
@@ -100,7 +100,7 @@ sfpzread(Sfio_t *fp, Void_t *buf, size_t size, Sfdisc_t *dp)
 static ssize_t
 sfpzwrite(Sfio_t *fp, const Void_t *buf, size_t size, Sfdisc_t *dp)
 {
-    Sfpzip_t *pz = ( Sfpzip_t * )dp;
+    Sfpzip_t *pz = ( Sfpzip_t * ) dp;
 
     return pzwrite(pz->pz, pz->io, buf, size);
 }
@@ -126,7 +126,7 @@ sfdcpzip(Sfio_t *sp, const char *path, unsigned long flags, Pzdisc_t *disc)
     Pz_t *oz;
 
     if (flags & PZ_HANDLE) {
-        oz = ( Pz_t * )sp;
+        oz = ( Pz_t * ) sp;
         sp = oz->io;
     } else
         oz = 0;
@@ -141,7 +141,7 @@ sfdcpzip(Sfio_t *sp, const char *path, unsigned long flags, Pzdisc_t *disc)
 
         if (!(r = sfset(sp, 0, 0) & SF_SHARE))
             sfset(sp, SF_SHARE, 1);
-        s = ( unsigned char * )sfreserve(sp, PZ_GZ_MAGOFF + 2, 1);
+        s = ( unsigned char * ) sfreserve(sp, PZ_GZ_MAGOFF + 2, 1);
         if (!r)
             sfset(sp, SF_SHARE, 0);
         if (!s)
@@ -195,7 +195,7 @@ sfdcpzip(Sfio_t *sp, const char *path, unsigned long flags, Pzdisc_t *disc)
         if (disc->splitf)
             flags |= PZ_ACCEPT;
     }
-    if (!(pz->pz = pzopen(&pz->disc, ( char * )io, flags))
+    if (!(pz->pz = pzopen(&pz->disc, ( char * ) io, flags))
         || (sp->_file = open("/dev/null", 0)) < 0) {
         io->_file = -1;
         sfclose(io);

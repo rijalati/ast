@@ -49,7 +49,7 @@ typedef struct Ar_s
 static int
 arj_done(Pax_t *pax, Paxarchive_t *ap)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
 
     if (!ar)
         return -1;
@@ -111,7 +111,7 @@ bad:
 static int
 arj_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     unsigned char *buf;
     char *s;
     Tm_t tm;
@@ -122,11 +122,11 @@ arj_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
     Codexdata_t sum;
 
     for (;;) {
-        if (!(buf = ( unsigned char * )paxget(pax, ap, -4, NiL))
+        if (!(buf = ( unsigned char * ) paxget(pax, ap, -4, NiL))
             || !(n = swapget(3, buf + 2, 2)))
             return 0;
         if (n < 32 || n > 2600 || swapget(3, buf, 2) != MAGIC
-            || !(buf = ( unsigned char * )paxget(pax, ap, n + 4, NiL)))
+            || !(buf = ( unsigned char * ) paxget(pax, ap, n + 4, NiL)))
             break;
         sfsync(ar->sum);
         sfwrite(ar->sum, buf, n);
@@ -159,7 +159,7 @@ arj_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         }
         ar->checksum = swapget(3, buf + 20, 4);
         mode = swapget(3, buf + 26, 2);
-        s = ( char * )buf + buf[0];
+        s = ( char * ) buf + buf[0];
         f->name = paxstash(pax, &ap->stash.head, NiL, strlen(s) + 1);
         strcpy(f->name, s);
         while ((s = paxget(pax, ap, 2, NiL)) && (n = swapget(3, s, 2)))
@@ -195,7 +195,7 @@ arj_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         tm.tm_mday = ((dostime >> (16 + 0)) & 0x1f);
         tm.tm_hour = ((dostime >> 11) & 0x1f);
         tm.tm_min = ((dostime >> 5) & 0x3f);
-        tm.tm_sec = (( dostime )&0x1f) * 2;
+        tm.tm_sec = (( dostime ) &0x1f) * 2;
         f->st->st_mtime = f->st->st_ctime = f->st->st_atime
         = tmtime(&tm, TM_LOCALZONE);
         return 1;
@@ -207,7 +207,7 @@ bad:
 static int
 arj_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     Sfio_t *sp;
     off_t pos;
     ssize_t n;

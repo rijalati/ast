@@ -44,7 +44,7 @@ Dtmethod_t *meth;
 
     /* ask discipline if switching to new method is ok */
     if (disc->eventf
-        && (*disc->eventf)(dt, DT_METH, ( Void_t * )meth, disc) < 0)
+        && (*disc->eventf)(dt, DT_METH, ( Void_t * ) meth, disc) < 0)
         return NIL(Dtmethod_t *);
 
     list = dtextract(dt); /* extract elements out of dictionary */
@@ -66,7 +66,7 @@ Dtmethod_t *meth;
     dt->data = olddt;
     if (newdt) /* switch was successful, remove old data */
     {
-        ( void )(*dt->meth->eventf)(dt, DT_CLOSE, NIL(Void_t *));
+        ( void ) (*dt->meth->eventf)(dt, DT_CLOSE, NIL(Void_t *));
 
         if (dt->searchf == oldmt->searchf)
             dt->searchf = meth->searchf;
@@ -89,7 +89,8 @@ dtcustomize(Dt_t *dt, int type, int action)
 
     if ((type & DT_SHARE)
         && (!dt->meth->eventf
-            || (*dt->meth->eventf)(dt, DT_SHARE, ( Void_t * )(( long )action))
+            || (*dt->meth->eventf)(
+               dt, DT_SHARE, ( Void_t * ) (( long ) action))
                >= 0)) {
         if (action <= 0)
             dt->data->type &= ~DT_SHARE;
@@ -101,7 +102,7 @@ dtcustomize(Dt_t *dt, int type, int action)
     if ((type & DT_ANNOUNCE)
         && (!dt->meth->eventf
             || (*dt->meth->eventf)(
-               dt, DT_ANNOUNCE, ( Void_t * )(( long )action))
+               dt, DT_ANNOUNCE, ( Void_t * ) (( long ) action))
                >= 0)) {
         if (action <= 0)
             dt->data->type &= ~DT_ANNOUNCE;
@@ -113,7 +114,7 @@ dtcustomize(Dt_t *dt, int type, int action)
     if ((type & DT_OPTIMIZE)
         && (!dt->meth->eventf
             || (*dt->meth->eventf)(
-               dt, DT_OPTIMIZE, ( Void_t * )(( long )action))
+               dt, DT_OPTIMIZE, ( Void_t * ) (( long ) action))
                >= 0))
         done |= DT_OPTIMIZE;
 

@@ -86,11 +86,11 @@ static char sccsid[] = "@(#)gamma.c	8.1 (Berkeley) 6/4/93";
  *	Maximum observed error < 4ulp in 1,000,000 trials.
  */
 
-static double neg_gam __P(( double ));
-static double small_gam __P(( double ));
-static double smaller_gam __P(( double ));
-static struct Double large_gam __P(( double ));
-static struct Double ratfun_gam __P(( double, double ));
+static double neg_gam __P(( double ) );
+static double small_gam __P(( double ) );
+static double smaller_gam __P(( double ) );
+static struct Double large_gam __P(( double ) );
+static struct Double ratfun_gam __P(( double, double ) );
 
 /*
  * Rational approximation, A0 + x*x*P(x)/Q(x), on the interval
@@ -138,17 +138,17 @@ static int endian;
  */
 #    if defined(vax) || defined(tahoe)
 #        define _IEEE 0
-#        define TRUNC(x) x = ( double )( float )(x)
+#        define TRUNC(x) x = ( double ) ( float ) (x)
 #    else
 #        define _IEEE 1
-#        define TRUNC(x) *((( int * )&x) + endian) &= 0xf8000000
+#        define TRUNC(x) *((( int * ) &x) + endian) &= 0xf8000000
 #        define infnan(x) 0.0
 #    endif
 
 extern double gamma(x) double x;
 {
     struct Double u;
-    endian = (*( int * )&one) ? 1 : 0;
+    endian = (*( int * ) &one) ? 1 : 0;
 
     if (x >= 6) {
         if (x > 171.63)
@@ -336,7 +336,7 @@ static double neg_gam(x) double x;
     /* Special case: G(1-x) = Inf; G(x) may be nonzero. */
     if (x < -170) {
         if (x < -190)
-            return (( double )sgn * tiny * tiny);
+            return (( double ) sgn * tiny * tiny);
         y = one - x; /* exact: 128 < |x| < 255 */
         lg = large_gam(y);
         lsine = __log__D(M_PI / z); /* = TRUNC(log(u)) + small */

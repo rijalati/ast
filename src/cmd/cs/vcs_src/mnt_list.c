@@ -78,7 +78,7 @@ char **argv;
                     return (-1);
                 }
                 s += 5;
-                len = ( int )strtol(s, ( char ** )0, 0);
+                len = ( int ) strtol(s, ( char ** ) 0, 0);
             } else
                 printmtmsg(reply);
             seq++;

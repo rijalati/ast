@@ -66,9 +66,9 @@ static void addmapping(dp) Dosdisc_t *dp;
     int n;
     if ((n = dp->maptop++) >= dp->mapsize) {
         dp->mapsize *= 2;
-        if (!(dp->maptable = ( struct map * )realloc(( void * )dp->maptable,
-                                                     (dp->mapsize + 1)
-                                                     * sizeof(struct map)))) {
+        if (!(dp->maptable = ( struct map * ) realloc(
+              ( void * ) dp->maptable,
+              (dp->mapsize + 1) * sizeof(struct map)))) {
             dp->maptop--;
             dp->mapsize *= 2;
             return;
@@ -115,8 +115,8 @@ size_t size;
 Sfdisc_t *disc;
 #endif
 {
-    Dosdisc_t *dp = ( Dosdisc_t * )disc;
-    char *cp = ( char * )buff, *first, *cpmax;
+    Dosdisc_t *dp = ( Dosdisc_t * ) disc;
+    char *cp = ( char * ) buff, *first, *cpmax;
     int n, count, m;
     if (dp->extra) {
         dp->extra = 0;
@@ -152,7 +152,7 @@ Sfdisc_t *disc;
         if (cp > cpmax || *cp == '\n')
             break;
     }
-    dp->skip = cp - 1 - ( char * )buff;
+    dp->skip = cp - 1 - ( char * ) buff;
     /* if not \r\n in buffer, just return */
     if ((count = cpmax + 1 - cp) <= 0) {
         *cpmax = dp->last;
@@ -163,9 +163,9 @@ Sfdisc_t *disc;
         goto done;
     }
     if (!dp->maptable) {
-        dp->begin += cp - ( char * )buff - 1;
+        dp->begin += cp - ( char * ) buff - 1;
         if (dp->maptable
-            = ( struct map * )malloc((MINMAP + 1) * sizeof(struct map))) {
+            = ( struct map * ) malloc((MINMAP + 1) * sizeof(struct map))) {
             dp->mapsize = MINMAP;
             dp->maptable[0].logical = dp->begin;
             dp->maptable[0].physical = dp->maptable[0].logical + 1;
@@ -245,7 +245,7 @@ int whence;
     offset += n;
     if ((n -= dp->skip) > 0) {
         m = whence;
-        cp = ( char * )dp->buff;
+        cp = ( char * ) dp->buff;
         while (n--) {
             if (*cp++ == '\r' && *cp == '\n') {
                 m += whence;
@@ -269,14 +269,14 @@ int whence;
 Sfdisc_t *disc;
 #endif
 {
-    Dosdisc_t *dp = ( Dosdisc_t * )disc;
+    Dosdisc_t *dp = ( Dosdisc_t * ) disc;
     struct map dummy, *mp = 0;
     Sfoff_t physical;
     int n, size;
 retry:
     switch (whence) {
     case SEEK_CUR:
-        offset = sfsk(iop, ( Sfoff_t )0, SEEK_CUR, disc);
+        offset = sfsk(iop, ( Sfoff_t ) 0, SEEK_CUR, disc);
         if (offset <= dp->begin)
             return (offset);
         /* check for seek outside buffer */
@@ -300,7 +300,7 @@ retry:
         mp->logical = dp->llast;
         break;
     }
-    if (sfsetbuf(iop, ( char * )iop, 0))
+    if (sfsetbuf(iop, ( char * ) iop, 0))
         size = sfvalue(iop);
     else
         size = iop->endb - iop->data;
@@ -352,13 +352,13 @@ void *arg;
 Sfdisc_t *disc;
 #endif
 {
-    Dosdisc_t *dp = ( Dosdisc_t * )disc;
+    Dosdisc_t *dp = ( Dosdisc_t * ) disc;
     if (type == SF_DPOP || type == SF_FINAL) {
         if (dp->bsize > 0)
-            free(( void * )dp->buff);
+            free(( void * ) dp->buff);
         if (dp->mapsize)
-            free(( void * )dp->maptable);
-        free(( void * )disc);
+            free(( void * ) dp->maptable);
+        free(( void * ) disc);
     }
     return (0);
 }
@@ -376,7 +376,7 @@ int sfdcdos(f) Sfio_t *f;
     if (sfset(f, 0, 0) & SF_WRITE)
         return (-1);
 
-    if (!(dos = ( Dosdisc_t * )malloc(sizeof(Dosdisc_t))))
+    if (!(dos = ( Dosdisc_t * ) malloc(sizeof(Dosdisc_t))))
         return -1;
     memset(dos, '\0', sizeof(Dosdisc_t));
 
@@ -385,7 +385,7 @@ int sfdcdos(f) Sfio_t *f;
     dos->disc.seekf = dos_seek;
     dos->disc.exceptf = dos_except;
 
-    if (sfdisc(f, ( Sfdisc_t * )dos) != ( Sfdisc_t * )dos) {
+    if (sfdisc(f, ( Sfdisc_t * ) dos) != ( Sfdisc_t * ) dos) {
         free(dos);
         return -1;
     }

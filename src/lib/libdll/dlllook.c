@@ -40,7 +40,7 @@ dlllook(void *dll, const char *name)
     if (!(addr = dlsym(dll, name)) && strlen(name) < (sizeof(buf) - 2)) {
         buf[0] = '_';
         strcpy(buf + 1, name);
-        name = ( const char * )buf;
+        name = ( const char * ) buf;
         addr = dlsym(dll, name);
     }
     errorf("dll", NiL, -1, "dlllook: %s addr %p", name, addr);

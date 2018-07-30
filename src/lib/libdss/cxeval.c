@@ -79,7 +79,7 @@ cxbeg(Cx_t *cx, Cxexpr_t *expr, const char *method)
                       expr->argv[0]);
             opt = opt_info;
             opt_info.index = 0;
-            cx->state->header = ( Cxheader_t * )expr->query;
+            cx->state->header = ( Cxheader_t * ) expr->query;
             cx->expr = expr;
             r = (*expr->query->beg)(cx, expr, expr->argv, cx->disc);
             opt_info = opt;

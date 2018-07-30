@@ -134,7 +134,7 @@ overlay();
 int tty_check(fd) int fd;
 {
     savefd = -1;
-    return (tty_get(fd, ( struct termios * )0) == 0);
+    return (tty_get(fd, ( struct termios * ) 0) == 0);
 }
 
 /*
@@ -451,7 +451,7 @@ ed_window()
     int n = DFLTWINDOW - 1;
     char *cp = nam_strval(COLUMNS);
     if (cp) {
-        n = ( int )strtol(cp, ( char ** )0, 10) - 1;
+        n = ( int ) strtol(cp, ( char ** ) 0, 10) - 1;
         if (n > MAXWINDOW)
             n = MAXWINDOW;
     }
@@ -482,7 +482,7 @@ ed_flush()
     int fd = ERRIO;
     if (n <= 0)
         return;
-    write(fd, editb.e_outbase, ( unsigned )n);
+    write(fd, editb.e_outbase, ( unsigned ) n);
     editb.e_outptr = editb.e_outbase;
 #    ifdef _SELECT5_
     if (delay && n > delay / 100) {
@@ -491,7 +491,7 @@ ed_flush()
         n *= 10;
         timeloc.tv_sec = n / delay;
         timeloc.tv_usec = (1000000 * (n % delay)) / delay;
-        select(0, ( fd_set * )0, ( fd_set * )0, ( fd_set * )0, &timeloc);
+        select(0, ( fd_set * ) 0, ( fd_set * ) 0, ( fd_set * ) 0, &timeloc);
     }
 #    else
 #        ifdef IODELAY
@@ -660,8 +660,8 @@ ed_macro(i) int i;
         i = ed_internal(out, buff);
         out[LOOKAHEAD] = c;
 #        else
-        strncpy(( char * )buff, out, LOOKAHEAD);
-        i = strlen(( char * )buff);
+        strncpy(( char * ) buff, out, LOOKAHEAD);
+        i = strlen(( char * ) buff);
 #        endif /* MULTIBYTE */
         while (i-- > 0)
             ed_ungetchar(buff[i]);
@@ -686,8 +686,8 @@ int mode;
     int offset = staktell();
     char *staksav = stakptr(0);
     struct comnod *comptr
-    = ( struct comnod * )stakalloc(sizeof(struct comnod));
-    struct argnod *ap = ( struct argnod * )stakseek(ARGVAL);
+    = ( struct comnod * ) stakalloc(sizeof(struct comnod));
+    struct argnod *ap = ( struct argnod * ) stakseek(ARGVAL);
     char *out;
     char *begin;
     int addstar;
@@ -700,12 +700,12 @@ int mode;
         int c = *cur;
         genchar *cp;
         /* adjust cur */
-        cp = ( genchar * )outbuff + *cur;
+        cp = ( genchar * ) outbuff + *cur;
         c = *cp;
         *cp = 0;
-        *cur = ed_external(( genchar * )outbuff, ( char * )stakptr(0));
+        *cur = ed_external(( genchar * ) outbuff, ( char * ) stakptr(0));
         *cp = c;
-        *eol = ed_external(( genchar * )outbuff, outbuff);
+        *eol = ed_external(( genchar * ) outbuff, outbuff);
     }
 #        endif /* MULTIBYTE */
     out = outbuff + *cur;
@@ -721,7 +721,7 @@ int mode;
             /* go to beginning of word */
             do {
                 out--;
-                c = *( unsigned char * )out;
+                c = *( unsigned char * ) out;
             } while (out > outbuff && !isqmeta(c));
             /* copy word into arg */
             if (isqmeta(c))
@@ -735,7 +735,7 @@ int mode;
         strip = 1;
         /* copy word to arg and do ~ expansion */
         do {
-            c = *( unsigned char * )out;
+            c = *( unsigned char * ) out;
             if (isexp(c))
                 addstar = 0;
             if ((c == '/') && (addstar == 0))
@@ -849,10 +849,10 @@ done:
         out = outbuff + *cur;
         c = *out;
         *out = 0;
-        *cur = ed_internal(outbuff, ( genchar * )stakptr(0));
+        *cur = ed_internal(outbuff, ( genchar * ) stakptr(0));
         *out = c;
         outbuff[*eol + 1] = 0;
-        *eol = ed_internal(outbuff, ( genchar * )outbuff);
+        *eol = ed_internal(outbuff, ( genchar * ) outbuff);
     }
 #        endif /* MULTIBYTE */
     return (rval);
@@ -882,13 +882,13 @@ ed_fulledit()
             return (BAD);
         editb.e_inbuf[editb.e_eol + 1] = 0;
         p_setout(hist_ptr->fixfd);
-        p_str(( char * )editb.e_inbuf, 0);
+        p_str(( char * ) editb.e_inbuf, 0);
         st.states |= FIXFLG;
         hist_flush();
     }
-    cp = sh_copy(e_runvi, ( char * )editb.e_inbuf);
+    cp = sh_copy(e_runvi, ( char * ) editb.e_inbuf);
     cp = sh_copy(sh_itos(editb.e_hline), cp);
-    editb.e_eol = ( unsigned char * )cp - ( unsigned char * )editb.e_inbuf;
+    editb.e_eol = ( unsigned char * ) cp - ( unsigned char * ) editb.e_inbuf;
     return (GOOD);
 }
 #    endif /* KSHELL */
@@ -1115,7 +1115,7 @@ genchar *dest;
     genchar *dp = dest;
     int d;
     int size;
-    if (( unsigned char * )dest == src) {
+    if (( unsigned char * ) dest == src) {
         genchar buffer[MAXLINE];
         c = ed_internal(src, buffer);
         ed_gencpy(dp, buffer);
@@ -1153,7 +1153,7 @@ char *dest;
     char *dp = dest;
     int d;
     char *dpmax = dp + sizeof(genchar) * MAXLINE - 2;
-    if (( char * )src == dp) {
+    if (( char * ) src == dp) {
         char buffer[MAXLINE * sizeof(genchar)];
         c = ed_external(src, buffer);
         strcpy(dest, buffer);

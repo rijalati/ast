@@ -120,7 +120,7 @@ int n_copy;   /* length of match	*/
 
         STRPUTC(tab, i_add);
         if (!A_ISLOCAL(n_add))
-            STRPUTU(tab, ( ulong )A_PUT(n_add), buf);
+            STRPUTU(tab, ( ulong ) A_PUT(n_add), buf);
         STRWRITE(tab, begs, n_add);
     }
 
@@ -129,12 +129,12 @@ int n_copy;   /* length of match	*/
             STRPUTC(tab, i_copy);
 
         if (!C_ISLOCAL(n_copy))
-            STRPUTU(tab, ( ulong )C_PUT(n_copy), buf);
+            STRPUTU(tab, ( ulong ) C_PUT(n_copy), buf);
 
         if (k_type >= K_QUICK && k_type < (K_QUICK + K_QTYPE))
-            STRPUTC(tab, ( uchar )best);
+            STRPUTC(tab, ( uchar ) best);
         else
-            STRPUTU(tab, ( ulong )best, buf);
+            STRPUTU(tab, ( ulong ) best, buf);
     }
 
     return 0;
@@ -295,8 +295,8 @@ Void_t *delta;
         return -1;
 
     tab.n_tar = size;
-    tab.tar = ( uchar * )target;
-    tab.delta = ( uchar * )delta;
+    tab.tar = ( uchar * ) target;
+    tab.delta = ( uchar * ) delta;
     tab.link = NIL(int *);
     tab.hash = NIL(int *);
 
@@ -310,7 +310,7 @@ Void_t *delta;
         size = 64;
     k += size;
 
-    if (!(tab.hash = ( int * )malloc(k * sizeof(int))))
+    if (!(tab.hash = ( int * ) malloc(k * sizeof(int))))
         return -1;
     tab.link = tab.hash + size;
     tab.size = size - 1;
@@ -323,7 +323,7 @@ Void_t *delta;
     STRPUTU(&tab, tab.n_tar, buf);
     n = vdfold(&tab);
 
-    free(( Void_t * )tab.hash);
+    free(( Void_t * ) tab.hash);
 
-    return n < 0 ? -1 : (tab.delta - ( uchar * )delta);
+    return n < 0 ? -1 : (tab.delta - ( uchar * ) delta);
 }

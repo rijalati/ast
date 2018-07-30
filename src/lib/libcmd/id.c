@@ -87,7 +87,7 @@ static const char usage[]
 #    endif
 #endif
 
-#define power2(n) (!((n) & (( n )-1)))
+#define power2(n) (!((n) & (( n ) -1)))
 
 #define GG_FLAG (1 << 0)
 #define G_FLAG (1 << 1)
@@ -133,7 +133,7 @@ getfsids(Sfio_t *sp, const char *name, int flags, int lastchar)
                         n += strlen(s) + 1;
                     if (!(x = newof(0, char *, q - p, n)))
                         break;
-                    s = ( char * )(x + (q - p));
+                    s = ( char * ) (x + (q - p));
                     q = x;
                     while (t = *p++) {
                         *q++ = s;
@@ -275,16 +275,16 @@ getids(Sfio_t *sp, const char *name, int flags)
             fs_id = fsid(0);
 #endif
         if (flags & N_FLAG)
-            name = (pw = getpwuid(user)) ? pw->pw_name : ( char * )0;
+            name = (pw = getpwuid(user)) ? pw->pw_name : ( char * ) 0;
     }
     if (ngroups == 1 && groups[0] == group)
         ngroups = 0;
     if ((flags & N_FLAG) && (flags & G_FLAG))
-        gname = (grp = getgrgid(group)) ? grp->gr_name : ( char * )0;
+        gname = (grp = getgrgid(group)) ? grp->gr_name : ( char * ) 0;
 #if _lib_fsid
     if ((flags & N_FLAG) && (flags & S_FLAG)) {
         setfsgent();
-        fs_name = (fs = getfsgid(fs_id)) ? fs->fs_grp : ( char * )0;
+        fs_name = (fs = getfsgid(fs_id)) ? fs->fs_grp : ( char * ) 0;
     }
 #endif
     if ((flags & (U_FLAG | G_FLAG | S_FLAG)) == (U_FLAG | G_FLAG | S_FLAG)) {
@@ -322,13 +322,13 @@ getids(Sfio_t *sp, const char *name, int flags)
                 putid(sp,
                       flags,
                       " euid",
-                      (pw = getpwuid(euid)) ? pw->pw_name : ( char * )0,
+                      (pw = getpwuid(euid)) ? pw->pw_name : ( char * ) 0,
                       euid);
             if ((egid = getegid()) != group)
                 putid(sp,
                       flags,
                       " egid",
-                      (grp = getgrgid(egid)) ? grp->gr_name : ( char * )0,
+                      (grp = getgrgid(egid)) ? grp->gr_name : ( char * ) 0,
                       egid);
             if (ngroups > 0) {
                 sfputr(sp, " groups", -1);

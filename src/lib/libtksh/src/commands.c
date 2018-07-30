@@ -23,7 +23,7 @@ char *argv[];
     if ((index >= 0) && (index < listArgc)) {
         Tcl_SetResult(interp, listArgv[index], TCL_VOLATILE);
     }
-    free(( char * )listArgv);
+    free(( char * ) listArgv);
     return TCL_OK;
 }
 
@@ -60,7 +60,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " list\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -69,7 +69,7 @@ char **argv;        /* Argument strings. */
     }
 
 
-    free(( char * )listArgv);
+    free(( char * ) listArgv);
 
     sprintf(interp->result, "%d", listArgc);
     return TCL_OK;
@@ -108,7 +108,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " oldName newName\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (argv[2][0] == '\0') {
@@ -117,7 +117,7 @@ char **argv;        /* Argument strings. */
                              "can't delete \"",
                              argv[1],
                              "\": command doesn't exist",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         return TCL_OK;
@@ -128,7 +128,7 @@ char **argv;        /* Argument strings. */
                          "can't rename to \"",
                          argv[2],
                          "\": command already exists",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (!(namval = nv_open(argv[1], sh.fun_tree, NV_NOADD))
@@ -137,12 +137,12 @@ char **argv;        /* Argument strings. */
                          "can't rename \"",
                          argv[1],
                          "\":  command doesn't exist",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
-    commandData = ( TkshCommandData * )namval->nvfun;
+    commandData = ( TkshCommandData * ) namval->nvfun;
     sh_addbuiltin(
-    argv[2], ( Shbltin_f )namval->nvalue, ( void * )commandData);
+    argv[2], ( Shbltin_f ) namval->nvalue, ( void * ) commandData);
     nv_close(namval);
     sh_addbuiltin(argv[1], NULL, NULL);
     namval->nvalue = NULL; /* Having to do this is a ksh bug (??) XX */
@@ -153,7 +153,7 @@ int b_TkshSetlistCmd(argc, argv, context) int argc;
 char *argv[];
 Shbltin_t *context;
 {
-    Tcl_Interp *interp = ( Tcl_Interp * )context->ptr;
+    Tcl_Interp *interp = ( Tcl_Interp * ) context->ptr;
     char *kshList;
 
     if (argc < 2) {
@@ -178,7 +178,7 @@ Shbltin_t *context;
 {
     char c;
     int length;
-    Interp *iPtr = ( Interp * )context->ptr;
+    Interp *iPtr = ( Interp * ) context->ptr;
     if (argc < 2) {
         sfprintf(sfstderr,
                  "wrong # args: should be \"%s option ?arg arg ...?\"\n",
@@ -262,7 +262,7 @@ void *data;
     if (tksh_matchstr && !Tcl_StringMatch(nv_name(nv), tksh_matchstr))
         return;
 
-    commandData = ( TkshCommandData * )nv->nvfun;
+    commandData = ( TkshCommandData * ) nv->nvfun;
 
     if ((!commandData) || (TclIsProc(&(commandData->info)) == NULL))
         return;
@@ -294,7 +294,7 @@ Tcl_Interp *interp; /* Current interpreter. */
 int argc;           /* Number of arguments. */
 char **argv;        /* Argument strings. */
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     size_t length;
     int c;
     Arg *argPtr;
@@ -312,7 +312,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option ?arg arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -323,14 +323,14 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " args procname\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         procPtr = TclFindProc(iPtr, argv[2]);
         if (procPtr == NULL) {
         infoNoSuchProc:
             Tcl_AppendResult(
-            interp, "\"", argv[2], "\" isn't a procedure", ( char * )NULL);
+            interp, "\"", argv[2], "\" isn't a procedure", ( char * ) NULL);
             return TCL_ERROR;
         }
         for (argPtr = procPtr->argPtr; argPtr != NULL;
@@ -344,7 +344,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " body procname\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         procPtr = TclFindProc(iPtr, argv[2]);
@@ -360,7 +360,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " cmdcount\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         sprintf(iPtr->result, "%d", iPtr->cmdCount);
@@ -372,7 +372,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " commands ?pattern?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 #ifdef TCL_CODE
@@ -397,7 +397,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " complete command\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (Tcl_CommandComplete(argv[2])) {
@@ -412,7 +412,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " default procname arg varname\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         procPtr = TclFindProc(iPtr, argv[2]);
@@ -427,13 +427,13 @@ char **argv;        /* Argument strings. */
                                  "\" doesn't have an argument \"",
                                  argv[3],
                                  "\"",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
             if (strcmp(argv[3], argPtr->name) == 0) {
                 if (argPtr->defValue != NULL) {
                     if (Tcl_SetVar(
-                        ( Tcl_Interp * )iPtr, argv[4], argPtr->defValue, 0)
+                        ( Tcl_Interp * ) iPtr, argv[4], argPtr->defValue, 0)
                         == NULL) {
                     defStoreError:
                         Tcl_AppendResult(
@@ -441,12 +441,12 @@ char **argv;        /* Argument strings. */
                         "couldn't store default value in variable \"",
                         argv[4],
                         "\"",
-                        ( char * )NULL);
+                        ( char * ) NULL);
                         return TCL_ERROR;
                     }
                     iPtr->result = "1";
                 } else {
-                    if (Tcl_SetVar(( Tcl_Interp * )iPtr, argv[4], "", 0)
+                    if (Tcl_SetVar(( Tcl_Interp * ) iPtr, argv[4], "", 0)
                         == NULL) {
                         goto defStoreError;
                     }
@@ -462,10 +462,10 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " exists varName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
-        p = Tcl_GetVar(( Tcl_Interp * )iPtr, argv[2], 0);
+        p = Tcl_GetVar(( Tcl_Interp * ) iPtr, argv[2], 0);
 
         /*
          * The code below handles the special case where the name is for
@@ -495,7 +495,7 @@ char **argv;        /* Argument strings. */
             if (hPtr == NULL) {
                 goto noVar;
             }
-            varPtr = ( Var * )Tcl_GetHashValue(hPtr);
+            varPtr = ( Var * ) Tcl_GetHashValue(hPtr);
             if (varPtr->flags & VAR_UPVAR) {
                 varPtr = varPtr->value.upvarPtr;
             }
@@ -521,14 +521,14 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " globals ?pattern?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 #ifdef TCL_CODE /* Need to Search global list */
         for (hPtr = Tcl_FirstHashEntry(&iPtr->globalTable, &search);
              hPtr != NULL;
              hPtr = Tcl_NextHashEntry(&search)) {
-            varPtr = ( Var * )Tcl_GetHashValue(hPtr);
+            varPtr = ( Var * ) Tcl_GetHashValue(hPtr);
             if (varPtr->flags & VAR_UNDEFINED) {
                 continue;
             }
@@ -578,7 +578,7 @@ char **argv;        /* Argument strings. */
                 if (iPtr->varFramePtr == NULL) {
                 levelError:
                     Tcl_AppendResult(
-                    interp, "bad level \"", argv[2], "\"", ( char * )NULL);
+                    interp, "bad level \"", argv[2], "\"", ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 level += iPtr->varFramePtr->level;
@@ -593,7 +593,7 @@ char **argv;        /* Argument strings. */
                 goto levelError;
             }
             iPtr->result = Tcl_Merge(framePtr->argc, framePtr->argv);
-            iPtr->freeProc = ( Tcl_FreeProc * )free;
+            iPtr->freeProc = ( Tcl_FreeProc * ) free;
             return TCL_OK;
         }
 #else
@@ -610,7 +610,7 @@ char **argv;        /* Argument strings. */
                 if (!(framePtr = sh_getscope(0 - level, 1))) {
                 levelError:
                     Tcl_AppendResult(
-                    interp, "bad level \"", argv[2], "\"", ( char * )NULL);
+                    interp, "bad level \"", argv[2], "\"", ( char * ) NULL);
                     return TCL_ERROR;
                 }
             } else if (level > 0) {
@@ -622,14 +622,14 @@ char **argv;        /* Argument strings. */
                 goto levelError;
 
             iPtr->result = Tcl_Merge(framePtr->argc + 1, framePtr->argv);
-            iPtr->freeProc = ( Tcl_FreeProc * )free;
+            iPtr->freeProc = ( Tcl_FreeProc * ) free;
             return TCL_OK;
         }
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
                          " level [number]\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
 #endif
     } else if ((c == 'l') && (strncmp(argv[1], "library", length) == 0)
@@ -639,7 +639,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " library\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 #if TCL_MINOR_VERSION == 3
@@ -659,7 +659,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " loaded ?interp?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         return TclGetLoadedPackages(interp, argv[2]);
@@ -674,7 +674,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " locals ?pattern?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 #ifdef TCL_CODE /* Need to go through list of local variables */
@@ -684,7 +684,7 @@ char **argv;        /* Argument strings. */
         for (hPtr = Tcl_FirstHashEntry(&iPtr->varFramePtr->varTable, &search);
              hPtr != NULL;
              hPtr = Tcl_NextHashEntry(&search)) {
-            varPtr = ( Var * )Tcl_GetHashValue(hPtr);
+            varPtr = ( Var * ) Tcl_GetHashValue(hPtr);
             if (varPtr->flags & (VAR_UNDEFINED | VAR_UPVAR)) {
                 continue;
             }
@@ -711,7 +711,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " nameofexecutable\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (tclExecutableName != NULL) {
@@ -727,7 +727,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " patchlevel\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         value = Tcl_GetVar(
@@ -744,7 +744,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " procs ?pattern?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 #ifdef TCL_CODE /* Need to go through builtin list */
@@ -753,7 +753,7 @@ char **argv;        /* Argument strings. */
              hPtr = Tcl_NextHashEntry(&search)) {
             char *name = Tcl_GetHashKey(&iPtr->commandTable, hPtr);
 
-            cmdPtr = ( Command * )Tcl_GetHashValue(hPtr);
+            cmdPtr = ( Command * ) Tcl_GetHashValue(hPtr);
             if (!TclIsProc(cmdPtr)) {
                 continue;
             }
@@ -774,7 +774,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " script\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (iPtr->scriptFile != NULL) {
@@ -795,7 +795,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " sharedlibextension\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 #ifdef TCL_SHLIB_EXT
@@ -810,7 +810,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " tclversion\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         value = Tcl_GetVar(
@@ -831,7 +831,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " vars ?pattern?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 #ifdef TCL_CODE /* Need to go through variable tables */
@@ -842,7 +842,7 @@ char **argv;        /* Argument strings. */
         }
         for (hPtr = Tcl_FirstHashEntry(tablePtr, &search); hPtr != NULL;
              hPtr = Tcl_NextHashEntry(&search)) {
-            varPtr = ( Var * )Tcl_GetHashValue(hPtr);
+            varPtr = ( Var * ) Tcl_GetHashValue(hPtr);
             if (varPtr->flags & VAR_UNDEFINED) {
                 continue;
             }
@@ -877,7 +877,7 @@ char **argv;        /* Argument strings. */
                          "nameofexecutable, patchlevel, procs, script, ",
                          "sharedlibextension, tclversion, or vars",
 #endif
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 }

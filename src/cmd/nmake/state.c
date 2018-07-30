@@ -491,8 +491,8 @@ auxiliary(char *s, int force)
 int
 forcescan(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
-    int n = h ? *(( unsigned char * )h) : r->scan;
+    Rule_t *r = ( Rule_t * ) v;
+    int n = h ? *(( unsigned char * ) h) : r->scan;
 
     NoP(s);
     if ((r->property & P_staterule) && r->scan == n
@@ -700,7 +700,7 @@ code(const char *s)
 static int
 checkparam(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
     List_t *p;
     char *t;
     Time_t tm;
@@ -732,13 +732,13 @@ checkparam(const char *s, char *v, void *h)
 static int
 checkvar1(const char *s, char *u, void *h)
 {
-    Var_t *v = ( Var_t * )u;
+    Var_t *v = ( Var_t * ) u;
     Rule_t *r;
 
     NoP(h);
     if (v->property & V_scan) {
         state.fullscan = 1;
-        r = staterule(VAR, NiL, ( char * )s, 1);
+        r = staterule(VAR, NiL, ( char * ) s, 1);
         if (!r->scan) {
             debug((-5, "%s and %s force re-scan", v->name, r->name));
             r->scan = SCAN_STATE;
@@ -756,7 +756,7 @@ checkvar1(const char *s, char *u, void *h)
 static int
 checkvar2(const char *s, char *u, void *h)
 {
-    Rule_t *r = ( Rule_t * )u;
+    Rule_t *r = ( Rule_t * ) u;
     Var_t *v;
 
     NoP(s);
@@ -993,7 +993,7 @@ statetime(Rule_t *r, int sync)
     if (r->property & P_state) {
         if ((r->dynamic & D_triggered) && state.exec)
             r->time = ((r->property & P_statevar) && r->status == FAILED)
-                      ? ( Time_t )0
+                      ? ( Time_t ) 0
                       : CURTIME;
         return r->time;
     }
@@ -1072,9 +1072,10 @@ statetime(Rule_t *r, int sync)
             if (!localsync && !state.override && r->time && r->time != OLDTIME
                 && !(r->property & P_force)
                 && tmxgetmtime(&st) == tmxgetctime(&st)) {
-                if (((n = (tmxsec(r->time) - ( unsigned long )st.st_mtime - 1))
+                if (((n
+                      = (tmxsec(r->time) - ( unsigned long ) st.st_mtime - 1))
                      >= 0
-                     || (n = (CURSECS - ( unsigned long )st.st_mtime + 2))
+                     || (n = (CURSECS - ( unsigned long ) st.st_mtime + 2))
                         <= 0)
                     && (lstat(r->name, &ln) || !S_ISLNK(ln.st_mode))) {
                     /*

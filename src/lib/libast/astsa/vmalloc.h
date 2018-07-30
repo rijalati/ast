@@ -26,12 +26,12 @@
 #ifndef _VMALLOC_H
 #define _VMALLOC_H 1
 
-#define vmalloc(v, n) _vm_resize(v, ( void * )0, n)
-#define vmalign(v, n, a) _vm_resize(v, ( void * )0, n)
+#define vmalloc(v, n) _vm_resize(v, ( void * ) 0, n)
+#define vmalign(v, n, a) _vm_resize(v, ( void * ) 0, n)
 #define vmclose(v) _vm_close(v)
 #define vmfree(v, p)
 #define vmnewof(v, o, t, n, x)                                               \
-    ( t * )_vm_resize(v, ( void * )o, sizeof(t) * (n) + (x))
+    ( t * ) _vm_resize(v, ( void * ) o, sizeof(t) * (n) + (x))
 #define vmopen(a, b, c) _vm_open()
 #define vmresize(v, p, n, f) _vm_resize(v, p, n)
 

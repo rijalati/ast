@@ -69,6 +69,6 @@ tmgoff(const char *s, char **e, int d)
         }
     }
     if (e)
-        *e = ( char * )t;
+        *e = ( char * ) t;
     return n;
 }

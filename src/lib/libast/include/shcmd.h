@@ -90,7 +90,7 @@ struct Shbltin_s
 #        undef Shell_t
 #        undef Namval_t
 #    else
-#        define sh_context(c) (( Shbltin_t * )(c))
+#        define sh_context(c) (( Shbltin_t * ) (c))
 #        define sh_run(c, ac, av) ((c) ? (*sh_context(c)->shrun)(ac, av) : -1)
 #        define sh_system(c, str)                                            \
             ((c) ? (*sh_context(c)->shtrap)(str, 0) : system(str))
@@ -114,7 +114,7 @@ struct Shbltin_s
                     if ((ac) <= 0)                                           \
                         return (0);                                          \
                     (sh_context(c)->notify                                   \
-                     = (( flg )&ERROR_NOTIFY) ? 1 : 0);                      \
+                     = (( flg ) &ERROR_NOTIFY) ? 1 : 0);                     \
                 } while (0)
 #        endif
 #    endif

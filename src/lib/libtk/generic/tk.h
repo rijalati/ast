@@ -163,11 +163,11 @@ typedef int(Tk_OptionParseProc) _ANSI_ARGS_((ClientData clientData,
                                              char *value,
                                              char *widgRec,
                                              int offset));
-typedef char *( Tk_OptionPrintProc )_ANSI_ARGS_((ClientData clientData,
-                                                 Tk_Window tkwin,
-                                                 char *widgRec,
-                                                 int offset,
-                                                 Tcl_FreeProc **freeProcPtr));
+typedef char *( Tk_OptionPrintProc ) _ANSI_ARGS_((ClientData clientData,
+                                                  Tk_Window tkwin,
+                                                  char *widgRec,
+                                                  int offset,
+                                                  Tcl_FreeProc **freeProcPtr));
 
 typedef struct Tk_CustomOption
 {
@@ -247,10 +247,10 @@ typedef struct Tk_ConfigSpec
  */
 
 #        ifdef offsetof
-#            define Tk_Offset(type, field) (( int )offsetof(type, field))
+#            define Tk_Offset(type, field) (( int ) offsetof(type, field))
 #        else
 #            define Tk_Offset(type, field)                                   \
-                (( int )(( char * )&(( type * )0)->field))
+                (( int ) (( char * ) &(( type * ) 0)->field))
 #        endif
 
 /*
@@ -447,32 +447,32 @@ typedef XActivateDeactivateEvent XDeactivateEvent;
  *--------------------------------------------------------------
  */
 
-#        define Tk_Display(tkwin) ((( Tk_FakeWin * )(tkwin))->display)
-#        define Tk_ScreenNumber(tkwin) ((( Tk_FakeWin * )(tkwin))->screenNum)
+#        define Tk_Display(tkwin) ((( Tk_FakeWin * ) (tkwin))->display)
+#        define Tk_ScreenNumber(tkwin) ((( Tk_FakeWin * ) (tkwin))->screenNum)
 #        define Tk_Screen(tkwin)                                             \
             (ScreenOfDisplay(Tk_Display(tkwin), Tk_ScreenNumber(tkwin)))
-#        define Tk_Depth(tkwin) ((( Tk_FakeWin * )(tkwin))->depth)
-#        define Tk_Visual(tkwin) ((( Tk_FakeWin * )(tkwin))->visual)
-#        define Tk_WindowId(tkwin) ((( Tk_FakeWin * )(tkwin))->window)
-#        define Tk_PathName(tkwin) ((( Tk_FakeWin * )(tkwin))->pathName)
-#        define Tk_Name(tkwin) ((( Tk_FakeWin * )(tkwin))->nameUid)
-#        define Tk_Class(tkwin) ((( Tk_FakeWin * )(tkwin))->classUid)
-#        define Tk_X(tkwin) ((( Tk_FakeWin * )(tkwin))->changes.x)
-#        define Tk_Y(tkwin) ((( Tk_FakeWin * )(tkwin))->changes.y)
-#        define Tk_Width(tkwin) ((( Tk_FakeWin * )(tkwin))->changes.width)
-#        define Tk_Height(tkwin) ((( Tk_FakeWin * )(tkwin))->changes.height)
-#        define Tk_Changes(tkwin) (&(( Tk_FakeWin * )(tkwin))->changes)
-#        define Tk_Attributes(tkwin) (&(( Tk_FakeWin * )(tkwin))->atts)
+#        define Tk_Depth(tkwin) ((( Tk_FakeWin * ) (tkwin))->depth)
+#        define Tk_Visual(tkwin) ((( Tk_FakeWin * ) (tkwin))->visual)
+#        define Tk_WindowId(tkwin) ((( Tk_FakeWin * ) (tkwin))->window)
+#        define Tk_PathName(tkwin) ((( Tk_FakeWin * ) (tkwin))->pathName)
+#        define Tk_Name(tkwin) ((( Tk_FakeWin * ) (tkwin))->nameUid)
+#        define Tk_Class(tkwin) ((( Tk_FakeWin * ) (tkwin))->classUid)
+#        define Tk_X(tkwin) ((( Tk_FakeWin * ) (tkwin))->changes.x)
+#        define Tk_Y(tkwin) ((( Tk_FakeWin * ) (tkwin))->changes.y)
+#        define Tk_Width(tkwin) ((( Tk_FakeWin * ) (tkwin))->changes.width)
+#        define Tk_Height(tkwin) ((( Tk_FakeWin * ) (tkwin))->changes.height)
+#        define Tk_Changes(tkwin) (&(( Tk_FakeWin * ) (tkwin))->changes)
+#        define Tk_Attributes(tkwin) (&(( Tk_FakeWin * ) (tkwin))->atts)
 #        define Tk_IsMapped(tkwin)                                           \
-            ((( Tk_FakeWin * )(tkwin))->flags & TK_MAPPED)
+            ((( Tk_FakeWin * ) (tkwin))->flags & TK_MAPPED)
 #        define Tk_IsTopLevel(tkwin)                                         \
-            ((( Tk_FakeWin * )(tkwin))->flags & TK_TOP_LEVEL)
-#        define Tk_ReqWidth(tkwin) ((( Tk_FakeWin * )(tkwin))->reqWidth)
-#        define Tk_ReqHeight(tkwin) ((( Tk_FakeWin * )(tkwin))->reqHeight)
+            ((( Tk_FakeWin * ) (tkwin))->flags & TK_TOP_LEVEL)
+#        define Tk_ReqWidth(tkwin) ((( Tk_FakeWin * ) (tkwin))->reqWidth)
+#        define Tk_ReqHeight(tkwin) ((( Tk_FakeWin * ) (tkwin))->reqHeight)
 #        define Tk_InternalBorderWidth(tkwin)                                \
-            ((( Tk_FakeWin * )(tkwin))->internalBorderWidth)
-#        define Tk_Parent(tkwin) ((( Tk_FakeWin * )(tkwin))->parentPtr)
-#        define Tk_Colormap(tkwin) ((( Tk_FakeWin * )(tkwin))->atts.colormap)
+            ((( Tk_FakeWin * ) (tkwin))->internalBorderWidth)
+#        define Tk_Parent(tkwin) ((( Tk_FakeWin * ) (tkwin))->parentPtr)
+#        define Tk_Colormap(tkwin) ((( Tk_FakeWin * ) (tkwin))->atts.colormap)
 
 /*
  * The structure below is needed by the macros above so that they can
@@ -1318,14 +1318,14 @@ EXTERN Tk_Image Tk_GetImage _ANSI_ARGS_((Tcl_Interp * interp,
                                          char *name,
                                          Tk_ImageChangedProc *changeProc,
                                          ClientData clientData));
-EXTERN Tk_ItemType *Tk_GetItemTypes _ANSI_ARGS_(( void ));
+EXTERN Tk_ItemType *Tk_GetItemTypes _ANSI_ARGS_(( void ) );
 EXTERN int Tk_GetJoinStyle _ANSI_ARGS_((Tcl_Interp * interp,
                                         char *string,
                                         int *joinPtr));
 EXTERN int Tk_GetJustify _ANSI_ARGS_((Tcl_Interp * interp,
                                       char *string,
                                       Tk_Justify *justifyPtr));
-EXTERN int Tk_GetNumMainWindows _ANSI_ARGS_(( void ));
+EXTERN int Tk_GetNumMainWindows _ANSI_ARGS_(( void ) );
 EXTERN Tk_Uid Tk_GetOption _ANSI_ARGS_((Tk_Window tkwin,
                                         char *name,
                                         char *className));
@@ -1371,7 +1371,7 @@ EXTERN int Tk_Init _ANSI_ARGS_((Tcl_Interp * interp));
 EXTERN Atom Tk_InternAtom _ANSI_ARGS_((Tk_Window tkwin, char *name));
 EXTERN void
 Tk_Main _ANSI_ARGS_((int argc, char **argv, Tcl_AppInitProc *appInitProc));
-EXTERN void Tk_MainLoop _ANSI_ARGS_(( void ));
+EXTERN void Tk_MainLoop _ANSI_ARGS_(( void ) );
 EXTERN void Tk_MaintainGeometry _ANSI_ARGS_(
 (Tk_Window slave, Tk_Window master, int x, int y, int width, int height));
 EXTERN Tk_Window Tk_MainWindow _ANSI_ARGS_((Tcl_Interp * interp));

@@ -240,7 +240,7 @@ unstack(void)
 void
 alter(char *name)
 {
-    touch(name, ( time_t )0, (time_t)(-1), 0);
+    touch(name, ( time_t ) 0, (time_t)(-1), 0);
 }
 
 /*
@@ -348,7 +348,7 @@ normalize(char *addr, unsigned long type, char *buf, size_t size)
             if (buf) {
                 if ((n = p - addr) > size)
                     n = size;
-                addr = ( char * )memcpy(buf, addr, n);
+                addr = ( char * ) memcpy(buf, addr, n);
                 p = addr + n;
             }
             *p = 0;
@@ -414,7 +414,7 @@ normalize(char *addr, unsigned long type, char *buf, size_t size)
         if (!streq(addr, norm))
             return savestr(norm);
     }
-    return buf ? ( char * )0 : (type & GSTACK) ? savestr(addr) : addr;
+    return buf ? ( char * ) 0 : (type & GSTACK) ? savestr(addr) : addr;
 }
 
 /*
@@ -635,7 +635,7 @@ salloc(int size)
         note(PANIC, "String too large");
     if (!sp->s_topfree) {
         index = sp - &state.stringdope[0];
-        sp->s_topfree = ( char * )malloc(STRINGSIZE << index);
+        sp->s_topfree = ( char * ) malloc(STRINGSIZE << index);
         if (!sp->s_topfree)
             note(PANIC, "No room for dynamic string space %d", index);
         sp->s_nextfree = sp->s_topfree;
@@ -682,8 +682,8 @@ counts(int wide, off_t lines, off_t chars)
     sfsprintf(state.counts,
               sizeof(state.counts),
               wide ? "%5ld/%-7ld" : "%3ld/%-5ld",
-              ( long )lines,
-              ( long )chars);
+              ( long ) lines,
+              ( long ) chars);
     return state.counts;
 }
 

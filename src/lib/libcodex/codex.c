@@ -116,27 +116,28 @@ codex_except(Sfio_t *sp, int op, void *data, Sfdisc_t *disc)
         sfsync(sp);
         code->flags &= ~CODEX_FLUSH;
         if (data && code->meth->dataf
-            && !(r = (*code->meth->dataf)(code, ( Codexdata_t * )data))
-            && (( Codexdata_t * )data)->size)
+            && !(r = (*code->meth->dataf)(code, ( Codexdata_t * ) data))
+            && (( Codexdata_t * ) data)->size)
             r = 1;
         break;
     case CODEX_GETPOS:
         if (!code->meth->seekf
-            || (*(( Sfoff_t * )data)
-                = (*code->meth->seekf)(code, ( Sfoff_t )0, SEEK_CUR))
+            || (*(( Sfoff_t * ) data)
+                = (*code->meth->seekf)(code, ( Sfoff_t ) 0, SEEK_CUR))
                < 0)
             r = -1;
         break;
     case CODEX_SETPOS:
         if (!code->meth->seekf
-            || (*code->meth->seekf)(code, *(( Sfoff_t * )data), SEEK_SET) < 0)
+            || (*code->meth->seekf)(code, *(( Sfoff_t * ) data), SEEK_SET)
+               < 0)
             r = -1;
         break;
     case CODEX_SIZE:
         if (!data)
             r = -1;
         else
-            code->size = *(( Sfoff_t * )data);
+            code->size = *(( Sfoff_t * ) data);
         break;
     }
     return r;
@@ -368,7 +369,7 @@ trace_data(Codex_t *code, Codexdata_t *data)
     sfstderr, "codex: %d: %s: data()=%d", code->index, meth->name, r);
     if (r >= 0) {
         if (data->buf)
-            for (e = (u = ( unsigned char * )data->buf) + data->size; u < e;
+            for (e = (u = ( unsigned char * ) data->buf) + data->size; u < e;
                  u++)
                 sfprintf(sfstderr, "%02x", *u);
         else
@@ -405,12 +406,12 @@ setopt(void *a, const void *p, int n, const char *v)
 {
     NoP(a);
     if (p)
-        switch ((( Namval_t * )p)->value) {
+        switch ((( Namval_t * ) p)->value) {
         case OPT_TRACE:
-            codexstate.trace = n ? strdup(*v ? v : "*") : ( char * )0;
+            codexstate.trace = n ? strdup(*v ? v : "*") : ( char * ) 0;
             break;
         case OPT_VERBOSE:
-            codexstate.verbose = n ? strdup(*v ? v : "*") : ( char * )0;
+            codexstate.verbose = n ? strdup(*v ? v : "*") : ( char * ) 0;
             break;
         }
     return 0;
@@ -479,7 +480,7 @@ push(Sfio_t *sp,
     code = 0;
     cache = 0;
     deen = flags & (CODEX_DECODE | CODEX_ENCODE);
-    s = ( char * )name;
+    s = ( char * ) name;
     q = 0;
     b = s;
     while (c = *b++)
@@ -524,7 +525,7 @@ push(Sfio_t *sp,
         code->disc = disc;
         code->meth = meth;
         a = arg;
-        *a++ = ( char * )s;
+        *a++ = ( char * ) s;
         *a++ = b = can;
         d = dat;
         q = -1;
@@ -861,10 +862,10 @@ codex(Sfio_t *sp,
     }
     if (!disc)
         disc = &codexstate.disc;
-    if (!(s = ( char * )name) || !s[0] || s[0] == '-' && !s[1]) {
+    if (!(s = ( char * ) name) || !s[0] || s[0] == '-' && !s[1]) {
         if (!meth)
             return (flags & CODEX_DECODE) ? decodex(sp, flags, disc) : -1;
-        s = ( char * )(name = meth->name);
+        s = ( char * ) (name = meth->name);
     }
 
     /*

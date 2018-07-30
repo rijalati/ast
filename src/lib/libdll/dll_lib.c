@@ -54,9 +54,9 @@ dllnames(const char *id, const char *name, Dllnames_t *names)
         return 0;
     if (!names) {
         s = fmtbuf(sizeof(Dllnames_t *) + sizeof(names) - 1);
-        if (n = (s - ( char * )0) % sizeof(names))
+        if (n = (s - ( char * ) 0) % sizeof(names))
             s += sizeof(names) - n;
-        names = ( Dllnames_t * )s;
+        names = ( Dllnames_t * ) s;
     }
 
     /*
@@ -66,7 +66,7 @@ dllnames(const char *id, const char *name, Dllnames_t *names)
     if ((s = strrchr(name, '/')) || (s = strrchr(name, '\\')))
         s++;
     else
-        s = ( char * )name;
+        s = ( char * ) name;
     if (strneq(s, "lib", 3))
         s += 3;
     b = names->base = names->data;
@@ -90,12 +90,12 @@ dllnames(const char *id, const char *name, Dllnames_t *names)
             *b++ = *t;
         *b++ = 0;
     } else {
-        names->name = ( char * )name;
+        names->name = ( char * ) name;
         names->type = 0;
     }
     *(names->path = b) = 0;
     names->opts = 0;
-    names->id = ( char * )id;
+    names->id = ( char * ) id;
     return names;
 }
 
@@ -169,7 +169,7 @@ dll_lib(Dllnames_t *names,
      */
 
     sfsprintf(sym, sizeof(sym), "%s_lib", names->id);
-    if (!(libf = ( Dll_lib_f )dlllook(dll, sym))) {
+    if (!(libf = ( Dll_lib_f ) dlllook(dll, sym))) {
         if (dllerrorf)
             (*dllerrorf)(
             NiL,

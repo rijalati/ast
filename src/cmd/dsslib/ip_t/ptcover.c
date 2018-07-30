@@ -36,15 +36,15 @@ ptcover(Pt_t *a, Pt_t *b)
 
     if (!(t = ptopen(a->disc)))
         return 0;
-    ap = ( Ptprefix_t * )dtfirst(a->dict);
-    bp = ( Ptprefix_t * )dtfirst(b->dict);
+    ap = ( Ptprefix_t * ) dtfirst(a->dict);
+    bp = ( Ptprefix_t * ) dtfirst(b->dict);
     while (ap && bp) {
         if (ap->min > bp->max)
-            bp = ( Ptprefix_t * )dtnext(b->dict, bp);
+            bp = ( Ptprefix_t * ) dtnext(b->dict, bp);
         else {
             if (ap->max >= bp->min && !ptinsert(t, ap->min, ap->max))
                 break;
-            ap = ( Ptprefix_t * )dtnext(a->dict, ap);
+            ap = ( Ptprefix_t * ) dtnext(a->dict, ap);
         }
     }
     return t;

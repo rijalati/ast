@@ -97,7 +97,7 @@ _ast_catopen(const char *name, int flag)
         mc = mcopen(ip);
         sfclose(ip);
         if (mc)
-            return ( _ast_nl_catd )mc;
+            return ( _ast_nl_catd ) mc;
     }
 #if _lib_catopen
     if (strcmp(setlocale(LC_MESSAGES, NiL), "debug")) {
@@ -134,7 +134,7 @@ _ast_catopen(const char *name, int flag)
                      name,
                      cc->cat);
 #    endif
-            return ( _ast_nl_catd )cc;
+            return ( _ast_nl_catd ) cc;
         }
     }
 #endif
@@ -150,25 +150,25 @@ char *
 _ast_catgets(_ast_nl_catd cat, int set, int num, const char *msg)
 {
     if (cat == (_ast_nl_catd)(-1))
-        return ( char * )msg;
+        return ( char * ) msg;
 #if _lib_catopen
-    if (!(( Cc_t * )cat)->set) {
+    if (!(( Cc_t * ) cat)->set) {
         char *s;
         size_t n;
 
-        msg = ( char * )catgets((( Cc_t * )cat)->cat, set, num, msg);
-        if ((( Cc_t * )cat)->cvt != (iconv_t)(-1)) {
-            s = ( char * )msg;
+        msg = ( char * ) catgets((( Cc_t * ) cat)->cat, set, num, msg);
+        if ((( Cc_t * ) cat)->cvt != (iconv_t)(-1)) {
+            s = ( char * ) msg;
             n = strlen(s);
             iconv_write(
-            (( Cc_t * )cat)->cvt, (( Cc_t * )cat)->tmp, &s, &n, NiL);
-            if (s = sfstruse((( Cc_t * )cat)->tmp))
+            (( Cc_t * ) cat)->cvt, (( Cc_t * ) cat)->tmp, &s, &n, NiL);
+            if (s = sfstruse((( Cc_t * ) cat)->tmp))
                 return s;
         }
-        return ( char * )msg;
+        return ( char * ) msg;
     }
 #endif
-    return mcget(( Mc_t * )cat, set, num, msg);
+    return mcget(( Mc_t * ) cat, set, num, msg);
 }
 
 int
@@ -177,13 +177,13 @@ _ast_catclose(_ast_nl_catd cat)
     if (cat == (_ast_nl_catd)(-1))
         return -1;
 #if _lib_catopen
-    if (!(( Cc_t * )cat)->set) {
-        if ((( Cc_t * )cat)->cvt != (iconv_t)(-1))
-            iconv_close((( Cc_t * )cat)->cvt);
-        if ((( Cc_t * )cat)->tmp)
-            sfclose((( Cc_t * )cat)->tmp);
-        return catclose((( Cc_t * )cat)->cat);
+    if (!(( Cc_t * ) cat)->set) {
+        if ((( Cc_t * ) cat)->cvt != (iconv_t)(-1))
+            iconv_close((( Cc_t * ) cat)->cvt);
+        if ((( Cc_t * ) cat)->tmp)
+            sfclose((( Cc_t * ) cat)->tmp);
+        return catclose((( Cc_t * ) cat)->cat);
     }
 #endif
-    return mcclose(( Mc_t * )cat);
+    return mcclose(( Mc_t * ) cat);
 }

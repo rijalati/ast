@@ -368,7 +368,7 @@ main(int argc, char **argv)
             }
             now = time(NiL);
             start = tmdate(s, &t, &now);
-            if (!every && ( unsigned long )start <= ( unsigned long )now)
+            if (!every && ( unsigned long ) start <= ( unsigned long ) now)
                 start = tmdate(s - 3, &t, &now);
             if (*t)
                 error(3, "%s: invalid time specification", s);

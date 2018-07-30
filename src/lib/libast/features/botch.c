@@ -52,15 +52,15 @@ main()
         if ((n = getgroups((sizeof(groups) / sizeof(groups[0])) / r, groups))
             > 0)
             for (i = 1; i <= n; i++) {
-                groups[i] = (( gid_t )0);
+                groups[i] = (( gid_t ) 0);
                 if (getgroups(i, groups) != i)
                     goto botched;
-                if (groups[i] != (( gid_t )0))
+                if (groups[i] != (( gid_t ) 0))
                     goto botched;
-                groups[i] = (( gid_t )-1);
+                groups[i] = (( gid_t ) -1);
                 if (getgroups(i, groups) != i)
                     goto botched;
-                if (groups[i] != (( gid_t )-1))
+                if (groups[i] != (( gid_t ) -1))
                     goto botched;
             }
     }

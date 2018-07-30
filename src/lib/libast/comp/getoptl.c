@@ -100,7 +100,7 @@ golly(int argc,
         lastlongopts = longopts;
     }
     opt_info.index = (optind > 1 || optind == lastoptind) ? optind : 0;
-    if (opt_info.index >= argc || !(c = optget(( char ** )argv, usage))) {
+    if (opt_info.index >= argc || !(c = optget(( char ** ) argv, usage))) {
         sfstrclose(up);
         up = 0;
         c = -1;

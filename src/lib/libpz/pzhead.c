@@ -45,7 +45,7 @@ pzheadread(Pz_t *pz)
      * check the header magic
      */
 
-    if (s = ( unsigned char * )sfreserve(pz->io, 4, 1)) {
+    if (s = ( unsigned char * ) sfreserve(pz->io, 4, 1)) {
         i = s[0];
         n = s[1];
     } else
@@ -232,7 +232,7 @@ pzheadwrite(Pz_t *pz, Sfio_t *op)
             s = sfstrseek(pz->tmp, 0, SEEK_SET);
         } else {
             m = i;
-            if (!(s = ( char * )sfreserve(pz->io, m, 0))) {
+            if (!(s = ( char * ) sfreserve(pz->io, m, 0))) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz,
@@ -290,13 +290,13 @@ pzheadprint(Pz_t *pz, Sfio_t *op, int parts)
         }
     }
     if (parts) {
-        pp = pz->partdict ? ( Pzpart_t * )dtfirst(pz->partdict) : pz->part;
+        pp = pz->partdict ? ( Pzpart_t * ) dtfirst(pz->partdict) : pz->part;
         while (pp) {
             if (pzpartprint(pz, pp, op))
                 return -1;
             if (!pz->partdict)
                 break;
-            pp = ( Pzpart_t * )dtnext(pz->partdict, pp);
+            pp = ( Pzpart_t * ) dtnext(pz->partdict, pp);
         }
     }
     return sferror(op) ? -1 : 0;
@@ -337,7 +337,7 @@ pzfile(Pz_t *pz)
          */
 
         while ((n = sfgetu(pz->io)) && !sferror(pz->io) && !sfeof(pz->io)
-               && (s = ( unsigned char * )sfreserve(pz->io, n, 0)))
+               && (s = ( unsigned char * ) sfreserve(pz->io, n, 0)))
             if (pz->disc->eventf
                 && (*pz->disc->eventf)(pz, PZ_TAILREAD, s, n, pz->disc) < 0)
                 return -1;
@@ -355,7 +355,7 @@ pzfile(Pz_t *pz)
 
         sfungetc(pz->io, j);
         sfungetc(pz->io, i);
-        return pzopen(pz->disc, ( char * )pz, PZ_AGAIN) ? 1 : -1;
+        return pzopen(pz->disc, ( char * ) pz, PZ_AGAIN) ? 1 : -1;
     }
     if (pz->disc->errorf)
         (*pz->disc->errorf)(pz, pz->disc, 2, "%s: data corrupted", pz->path);

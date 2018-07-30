@@ -73,7 +73,7 @@
             if (write(1, pp.outbuf, n) != (n))                               \
                 pperror(ERROR_SYSTEM | 3, "%s: write error", pp.outfile);    \
             pp.offset += (n);                                                \
-            pp.lastout = pp.outbuf[( n )-1];                                 \
+            pp.lastout = pp.outbuf[( n ) -1];                                \
         } while (0)
 
 #    define pplastout() ((pp.outp > pp.outbuf) ? *(pp.outp - 1) : pp.lastout)
@@ -104,12 +104,12 @@
         } while (0)
 
 #    define ppsymget(t, n)                                                   \
-        ( struct ppsymbol * )hashlook(t, n, HASH_LOOKUP, NiL)
+        ( struct ppsymbol * ) hashlook(t, n, HASH_LOOKUP, NiL)
 #    define ppsymref(t, n)                                                   \
-        ( struct ppsymbol * )hashlook(                                       \
+        ( struct ppsymbol * ) hashlook(                                      \
         t, n, pp.truncate ? HASH_LOOKUP : HASH_LOOKUP | HASH_INTERNAL, NiL)
 #    define ppsymset(t, n)                                                   \
-        ( struct ppsymbol * )hashlook(                                       \
+        ( struct ppsymbol * ) hashlook(                                      \
         t, n, HASH_CREATE | HASH_SIZE(sizeof(struct ppsymbol)), NiL)
 
 #    if CHAR_MIN < 0
@@ -267,7 +267,7 @@
  * NOTE: preserve the token ranges and encodings for is*(x)
  */
 
-#    define ppisnumber(x) ((( x )&N_TEST) == N_NUMBER)
+#    define ppisnumber(x) ((( x ) &N_TEST) == N_NUMBER)
 #    define ppisinteger(x) (((x) & (N_TEST | N_REAL)) == N_NUMBER)
 #    define ppisreal(x) (((x) & (N_TEST | N_REAL)) == (N_NUMBER | N_REAL))
 #    define ppisassignop(x) (((x) >= T_MPYEQ) && ((x) <= T_OREQ))
@@ -417,7 +417,7 @@ struct ppsymbol /* pp symbol info		*/
 #    endif
 };
 
-#    define _PP_CONTEXT_BASE_ (( char * )&pp.lcldirs)
+#    define _PP_CONTEXT_BASE_ (( char * ) &pp.lcldirs)
 
 #    define _PP_CONTEXT_PUBLIC_                                              \
         struct ppdirs *lcldirs; /* the "..." dir list		*/                    \

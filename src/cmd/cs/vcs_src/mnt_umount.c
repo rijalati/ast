@@ -67,7 +67,7 @@ char **argv;
         if (vcs_write(buf) > 0 && vcs_read(reply, 1024) > 0) {
             if (strncmp(reply, "I 0 ok 0", 8) == 0) {
                 printf("%s deleted\n", s);
-                ( void )rm_entry(s);
+                ( void ) rm_entry(s);
             } else
                 printf(reply);
         }

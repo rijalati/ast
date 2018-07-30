@@ -42,7 +42,7 @@ static size_t Maxbusy = 0; /* size of max busy space at any time	*/
 static size_t Curbusy = 0; /* size of busy space at current time	*/
 
 #ifndef NIL
-#    define NIL(t) (( t )0)
+#    define NIL(t) (( t ) 0)
 #endif
 
 /* define alignment requirement */
@@ -90,7 +90,7 @@ simulate(void *arg)
     size_t sz, nalloc, lf;
     Piece_t *list, *up, *next;
     void *data;
-    int thread = ( int )(( long )arg);
+    int thread = ( int ) (( long ) arg);
     pthread_t ethread;
     Tdata_t *tdata = &Tdata[thread];
     int warn_align = 1;
@@ -118,7 +118,7 @@ simulate(void *arg)
                     terror("Thread %d: failed to realloc(org=%d sz=%d)",
                            up->size,
                            sz);
-                if ((a = ( unsigned long )(list[k].data) % ALIGNMENT) != 0)
+                if ((a = ( unsigned long ) (list[k].data) % ALIGNMENT) != 0)
                     terror("Thread %d: block=%#0x mod %d == %d",
                            thread,
                            list[k].data,
@@ -150,7 +150,7 @@ simulate(void *arg)
 
         if (!(list[k].data = malloc(sz)))
             terror("Thread %d: failed to malloc(%d)", thread, sz);
-        if ((a = ( unsigned long )(list[k].data) % ALIGNMENT) != 0) {
+        if ((a = ( unsigned long ) (list[k].data) % ALIGNMENT) != 0) {
             if (warn_align)
                 tinfo("Thread %d: block=%#0x mod %d == %d",
                       thread,
@@ -172,7 +172,7 @@ simulate(void *arg)
         }
     }
 
-    return ( void * )0;
+    return ( void * ) 0;
 }
 
 tmain()
@@ -215,7 +215,7 @@ tmain()
     for (i = 0; i < Nthread; ++i) {
         Tdata[i].nalloc = nalloc;
         sz = Tdata[i].nalloc * sizeof(Piece_t);
-        if (!(Tdata[i].list = ( Piece_t * )malloc(sz)))
+        if (!(Tdata[i].list = ( Piece_t * ) malloc(sz)))
             terror("Failed allocating list of objects nalloc=%d",
                    Tdata[i].nalloc);
         memset(Tdata[i].list, 0, Tdata[i].nalloc * sizeof(Piece_t));
@@ -236,8 +236,8 @@ tmain()
     Largelf);
 
     for (i = 0; i < Nthread; ++i) {
-        if ((rv
-             = pthread_create(&th[i], NULL, simulate, ( void * )(( long )i)))
+        if ((rv = pthread_create(
+             &th[i], NULL, simulate, ( void * ) (( long ) i)))
             != 0)
             terror("Failed to create simulation thread %d", i);
     }

@@ -100,7 +100,7 @@ identf_text_lsa_file(Dssfile_t *fp, void *buff_p, size_t size, Dssdisc_t *disc)
     ASSERT(disc);
 
     /* Check if first line is ascii-readable or not */
-    s = ( char * )buff_p;
+    s = ( char * ) buff_p;
     n = sizeof(magic_name) + sizeof(magic_version);
     if (size < n) {
         if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
@@ -196,7 +196,7 @@ write_text_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     ASSERT(disc);
     iop = fp->io;
     ASSERT(iop);
-    lsa_can_p = ( ospf_lsa_can_t * )(rp->data);
+    lsa_can_p = ( ospf_lsa_can_t * ) (rp->data);
     ASSERT(lsa_can_p);
 
     /* Write LSU header parameters */

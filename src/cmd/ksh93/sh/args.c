@@ -147,29 +147,29 @@ arraysort(const char *s1, const char *s2)
     Namfun_t fun;
     char *cp;
     memset(&fun, 0, sizeof(Namfun_t));
-    if (!(np1 = (( struct Node * )s1)->nodes[sp->cur])) {
+    if (!(np1 = (( struct Node * ) s1)->nodes[sp->cur])) {
         sfprintf(shp->strbuf,
                  "%s[%i].%s%c",
                  sp->name,
-                 (( struct Node * )s1)->index,
+                 (( struct Node * ) s1)->index,
                  sp->keys[sp->cur],
                  0);
         cp = sfstruse(shp->strbuf);
         np1 = nv_create(
         cp, sp->root, NV_VARNAME | NV_NOFAIL | NV_NOADD | NV_NOSCOPE, &fun);
-        (( struct Node * )s1)->nodes[sp->cur] = np1;
+        (( struct Node * ) s1)->nodes[sp->cur] = np1;
     }
-    if (!(np2 = (( struct Node * )s2)->nodes[sp->cur])) {
+    if (!(np2 = (( struct Node * ) s2)->nodes[sp->cur])) {
         sfprintf(shp->strbuf,
                  "%s[%i].%s%c",
                  sp->name,
-                 (( struct Node * )s2)->index,
+                 (( struct Node * ) s2)->index,
                  sp->keys[sp->cur],
                  0);
         cp = sfstruse(shp->strbuf);
         np2 = nv_create(
         cp, sp->root, NV_VARNAME | NV_NOFAIL | NV_NOADD | NV_NOSCOPE, &fun);
-        (( struct Node * )s2)->nodes[sp->cur] = np2;
+        (( struct Node * ) s2)->nodes[sp->cur] = np2;
     }
     if (sp->flags[sp->cur] & SORT_numeric) {
         Sfdouble_t d1 = np1 ? nv_getnum(np1) : 0;
@@ -200,9 +200,9 @@ alphasort(const char *s1, const char *s2)
     struct Sort *sp = Sp;
     int r = 0;
     char *sp1, *sp2;
-    nv_putsub(sp->np, NULL, (( struct Node * )s1)->index, 0);
+    nv_putsub(sp->np, NULL, (( struct Node * ) s1)->index, 0);
     sp1 = nv_getval(sp->np);
-    nv_putsub(sp->np, NULL, (( struct Node * )s2)->index, 0);
+    nv_putsub(sp->np, NULL, (( struct Node * ) s2)->index, 0);
     sp2 = nv_getval(sp->np);
     r = strcoll(sp1, sp2);
     if (sp->flags[0] & SORT_reverse)
@@ -216,9 +216,9 @@ numsort(const char *s1, const char *s2)
     struct Sort *sp = Sp;
     Sfdouble_t d1, d2;
     int r = 0;
-    nv_putsub(sp->np, NULL, (( struct Node * )s1)->index, 0);
+    nv_putsub(sp->np, NULL, (( struct Node * ) s1)->index, 0);
     d1 = nv_getnum(sp->np);
-    nv_putsub(sp->np, NULL, (( struct Node * )s2)->index, 0);
+    nv_putsub(sp->np, NULL, (( struct Node * ) s2)->index, 0);
     d2 = nv_getnum(sp->np);
     if (d2 < d1)
         r = 1;
@@ -235,7 +235,7 @@ void *
 sh_argopen(Shell_t *shp)
 {
     void *addr = newof(0, Arg_t, 1, 0);
-    Arg_t *ap = ( Arg_t * )addr;
+    Arg_t *ap = ( Arg_t * ) addr;
     ap->sh = shp;
     return (addr);
 }
@@ -270,12 +270,12 @@ infof(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
 int
 sh_argopts(int argc, char *argv[], void *context)
 {
-    Shell_t *shp = ( Shell_t * )context;
+    Shell_t *shp = ( Shell_t * ) context;
     int n, o;
-    Arg_t *ap = ( Arg_t * )(shp->arg_context);
-    Lex_t *lp = ( Lex_t * )(shp->lex_context);
+    Arg_t *ap = ( Arg_t * ) (shp->arg_context);
+    Lex_t *lp = ( Lex_t * ) (shp->lex_context);
     Shopt_t newflags;
-    int setflag = 0, action = 0, trace = ( int )sh_isoption(shp, SH_XTRACE);
+    int setflag = 0, action = 0, trace = ( int ) sh_isoption(shp, SH_XTRACE);
     Namval_t *np = NIL(Namval_t *);
     const char *sp;
     char *keylist = 0;
@@ -484,7 +484,7 @@ sh_argopts(int argc, char *argv[], void *context)
                 c = strlen(cp);
                 nodesize
                 = sizeof(struct Node) + (keys - 1) * sizeof(Namval_t *);
-                sp = ( struct Sort * )malloc(
+                sp = ( struct Sort * ) malloc(
                 sizeof(struct Sort) + strlen(keylist)
                 + (sizeof(char *) + 1) * keys
                 + (arp->nelem + 1) * (nodesize + sizeof(void *)) + c + 3);
@@ -494,26 +494,26 @@ sh_argopts(int argc, char *argv[], void *context)
                     sp->root = shp->var_tree;
                 sp->vp = args;
                 sp->cur = 0;
-                sp->nodes = ( struct Node * )&sp->keys[keys + 2];
+                sp->nodes = ( struct Node * ) &sp->keys[keys + 2];
                 memset(sp->nodes, 0, arp->nelem * nodesize);
-                sp->nptrs = ( struct Node ** )(( char * )sp->nodes
-                                               + arp->nelem * nodesize);
-                sp->flags = ( char * )&sp->nptrs[arp->nelem + 1];
+                sp->nptrs = ( struct Node ** ) (( char * ) sp->nodes
+                                                + arp->nelem * nodesize);
+                sp->flags = ( char * ) &sp->nptrs[arp->nelem + 1];
                 memset(sp->flags, 0, keys + 1);
                 sp->name = sp->flags + keys + 1;
                 memcpy(sp->name, cp, c + 1);
                 sp->keys[0] = sp->name + c + 1;
                 strcpy(sp->keys[0], keylist);
-                cp = ( char * )sp->nodes;
+                cp = ( char * ) sp->nodes;
                 for (c = 0; c < arp->nelem; c++) {
                     if (keylist != Empty && *keylist != ':') {
-                        (( struct Node * )cp)->index
+                        (( struct Node * ) cp)->index
                         = strtol(args[c].np->nvname, NULL, 10);
-                        (( struct Node * )cp)->bits = bits[c];
+                        (( struct Node * ) cp)->bits = bits[c];
                     } else
-                        (( struct Node * )cp)->index = c;
-                    (( struct Node * )cp)->vp = args[c];
-                    sp->nptrs[c] = ( struct Node * )cp;
+                        (( struct Node * ) cp)->index = c;
+                    (( struct Node * ) cp)->vp = args[c];
+                    sp->nptrs[c] = ( struct Node * ) cp;
                     cp += nodesize;
                 }
                 if (!(cp = sp->keys[0]))
@@ -545,13 +545,13 @@ sh_argopts(int argc, char *argv[], void *context)
                     sortfn = numsort;
                 else
                     sortfn = alphasort;
-                strsort(( char ** )sp->nptrs, arp->nelem, sortfn);
-                cp = ( char * )sp->nodes;
+                strsort(( char ** ) sp->nptrs, arp->nelem, sortfn);
+                cp = ( char * ) sp->nodes;
                 for (c = 0; c < arp->nelem; c++) {
-                    i = ( char * )sp->nptrs[c] - ( char * )&sp->nodes[0];
+                    i = ( char * ) sp->nptrs[c] - ( char * ) &sp->nodes[0];
                     if (i / nodesize != c) {
-                        args[c] = (( struct Node * )(cp + i))->vp;
-                        bits[c] = (( struct Node * )(cp + i))->bits;
+                        args[c] = (( struct Node * ) (cp + i))->vp;
+                        bits[c] = (( struct Node * ) (cp + i))->bits;
                     }
                 }
                 free(sp);
@@ -618,7 +618,7 @@ sh_applyopts(Shell_t *shp, Shopt_t newflags)
         && is_option(&newflags, SH_PRIVILEGED)
            != sh_isoption(shp, SH_PRIVILEGED)
         || sh_isstate(shp, SH_INIT)
-           && is_option(&(( Arg_t * )shp->arg_context)->sh->offoptions,
+           && is_option(&(( Arg_t * ) shp->arg_context)->sh->offoptions,
                         SH_PRIVILEGED)
            && shp->gd->userid != shp->gd->euserid) {
         if (!is_option(&newflags, SH_PRIVILEGED)) {
@@ -672,8 +672,8 @@ sh_applyopts(Shell_t *shp, Shopt_t newflags)
 char *
 sh_argdolminus(void *context)
 {
-    Shell_t *shp = ( Shell_t * )context;
-    Arg_t *ap = ( Arg_t * )shp->arg_context;
+    Shell_t *shp = ( Shell_t * ) context;
+    Arg_t *ap = ( Arg_t * ) shp->arg_context;
     const char *cp = optksh;
     char *flagp = ap->flagadr;
     while (cp < &optksh[NUM_OPTS]) {
@@ -713,7 +713,7 @@ sh_argfree(Shell_t *shp, struct dolnod *blk, int flag)
 {
     struct dolnod *argr = blk;
     struct dolnod *argblk;
-    Arg_t *ap = ( Arg_t * )shp->arg_context;
+    Arg_t *ap = ( Arg_t * ) shp->arg_context;
     if (argblk = argr) {
         if ((--argblk->dolrefcnt) == 0) {
             argr = argblk->dolnxt;
@@ -732,7 +732,7 @@ sh_argfree(Shell_t *shp, struct dolnod *blk, int flag)
                     argr->dolnxt = argblk->dolnxt;
                     argr = argblk->dolnxt;
                 }
-                free(( void * )argblk);
+                free(( void * ) argblk);
             }
         }
     }
@@ -759,7 +759,7 @@ sh_argcreate(char *argv[])
     dp->dolnum = n;
     dp->dolnxt = 0;
     pp = dp->dolval;
-    sp = ( char * )dp + sizeof(struct dolnod) + n * sizeof(char *);
+    sp = ( char * ) dp + sizeof(struct dolnod) + n * sizeof(char *);
     while (n--) {
         *pp++ = sp;
         sp = strcopy(sp, *argv++) + 1;
@@ -774,7 +774,7 @@ sh_argcreate(char *argv[])
 struct dolnod *
 sh_argnew(Shell_t *shp, char *argi[], struct dolnod **savargfor)
 {
-    Arg_t *ap = ( Arg_t * )shp->arg_context;
+    Arg_t *ap = ( Arg_t * ) shp->arg_context;
     struct dolnod *olddolh = ap->dolh;
     *savargfor = ap->argfor;
     ap->dolh = 0;
@@ -789,7 +789,7 @@ sh_argnew(Shell_t *shp, char *argi[], struct dolnod **savargfor)
 void
 sh_argreset(Shell_t *shp, struct dolnod *blk, struct dolnod *afor)
 {
-    Arg_t *ap = ( Arg_t * )shp->arg_context;
+    Arg_t *ap = ( Arg_t * ) shp->arg_context;
     while (ap->argfor = sh_argfree(shp, ap->argfor, 0))
         ;
     ap->argfor = afor;
@@ -806,7 +806,7 @@ struct dolnod *
 sh_arguse(Shell_t *shp)
 {
     struct dolnod *dh;
-    Arg_t *ap = ( Arg_t * )shp->arg_context;
+    Arg_t *ap = ( Arg_t * ) shp->arg_context;
     if (dh = ap->dolh)
         dh->dolrefcnt++;
     return (dh);
@@ -932,7 +932,7 @@ sh_argbuild(Shell_t *shp, int *nargs, const struct comnod *comptr, int flag)
             *nargs = 0;
             return (&null);
         } else if (!(ac->comtyp & COMSCAN)) {
-            struct dolnod *ap = ( struct dolnod * )ac->comarg;
+            struct dolnod *ap = ( struct dolnod * ) ac->comarg;
             *nargs = ap->dolnum;
             return (ap->dolval + ap->dolbot);
         }
@@ -966,8 +966,8 @@ sh_argbuild(Shell_t *shp, int *nargs, const struct comnod *comptr, int flag)
         /* allow room to prepend args */
         argn += 1;
 
-        comargn = ( char ** )stkalloc(
-        shp->stk, ( unsigned )(argn + 1) * sizeof(char *));
+        comargn = ( char ** ) stkalloc(
+        shp->stk, ( unsigned ) (argn + 1) * sizeof(char *));
         comargm = comargn += argn;
         *comargn = NIL(char *);
         if (!argp) {
@@ -1004,7 +1004,7 @@ sh_argprocsub(Shell_t *shp, struct argnod *argp)
     int nn, monitor, fd, pv[3];
     int subshell = shp->subshell;
     pid_t pid0;
-    ap = ( struct argnod * )stkseek(shp->stk, ARGVAL);
+    ap = ( struct argnod * ) stkseek(shp->stk, ARGVAL);
     ap->argflag |= ARG_MAKE;
     ap->argflag &= ~ARG_RAW;
     fd = argp->argflag & ARG_RAW;
@@ -1014,22 +1014,22 @@ sh_argprocsub(Shell_t *shp, struct argnod *argp)
     sfwrite(shp->stk, e_devfdNN, 8);
     pv[2] = 0;
     sh_pipe(pv);
-    sfputr(shp->stk, fmtbase(( long )pv[fd], 10, 0), 0);
+    sfputr(shp->stk, fmtbase(( long ) pv[fd], 10, 0), 0);
 #else
     pv[0] = -1;
     shp->fifo = pathtemp(0, 0, 0, "ksh.fifo", 0);
     mkfifo(shp->fifo, S_IRUSR | S_IWUSR);
     sfputr(shp->stk, shp->fifo, 0);
 #endif /* SHOPT_DEVFD */
-    ap = ( struct argnod * )stkfreeze(shp->stk, 0);
+    ap = ( struct argnod * ) stkfreeze(shp->stk, 0);
     shp->inpipe = shp->outpipe = 0;
     if (monitor = (sh_isstate(shp, SH_MONITOR) != 0))
         sh_offstate(shp, SH_MONITOR);
     shp->subshell = 0;
 #if SHOPT_DEVFD
 #    ifdef SPAWN_cwd
-    if (shp->vex || (shp->vex = ( void * )spawnvex_open(0)))
-        spawnvex_add(( Spawnvex_t * )shp->vex, pv[fd], pv[fd], 0, 0);
+    if (shp->vex || (shp->vex = ( void * ) spawnvex_open(0)))
+        spawnvex_add(( Spawnvex_t * ) shp->vex, pv[fd], pv[fd], 0, 0);
     else
 #    endif /* SPAWN_cwd */
         fcntl(pv[fd], F_SETFD, 0);
@@ -1048,23 +1048,23 @@ sh_argprocsub(Shell_t *shp, struct argnod *argp)
             *shp->procsub = 0;
         shp->inpipe = pv;
         sh_exec(shp,
-                ( Shnode_t * )argp->argchn.ap,
-                ( int )sh_isstate(shp, SH_ERREXIT));
+                ( Shnode_t * ) argp->argchn.ap,
+                ( int ) sh_isstate(shp, SH_ERREXIT));
         if (pid0)
             *shp->procsub = pid0;
         *procsub++ = job.lastpost;
     } else {
         shp->outpipe = pv;
         sh_exec(shp,
-                ( Shnode_t * )argp->argchn.ap,
-                ( int )sh_isstate(shp, SH_ERREXIT));
+                ( Shnode_t * ) argp->argchn.ap,
+                ( int ) sh_isstate(shp, SH_ERREXIT));
     }
     shp->subshell = subshell;
     if (monitor)
         sh_onstate(shp, SH_MONITOR);
 #if SHOPT_DEVFD
     sh_close(pv[1 - fd]);
-    sh_iosave(shp, -pv[fd], shp->topfd, ( char * )0);
+    sh_iosave(shp, -pv[fd], shp->topfd, ( char * ) 0);
 #else
     free(shp->fifo);
     shp->fifo = 0;

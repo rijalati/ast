@@ -56,21 +56,21 @@ MAIN()
     io.next = io.data;
     vciosetb(&io, io.bits, io.nbits, VC_DECODE);
     if ((v = vciogetg(&io)) != 1)
-        terror("vciogetg 1 != %d\n", ( int )v);
+        terror("vciogetg 1 != %d\n", ( int ) v);
     if ((v = vciogetg(&io)) != 11)
-        terror("vciogetg 11 != %d\n", ( int )v);
+        terror("vciogetg 11 != %d\n", ( int ) v);
     if ((v = vciogetg(&io)) != 101)
-        terror("vciogetg 101 != %d\n", ( int )v);
+        terror("vciogetg 101 != %d\n", ( int ) v);
     if ((v = vciogetg(&io)) != 1)
-        terror("vciogetg 1 != %d\n", ( int )v);
+        terror("vciogetg 1 != %d\n", ( int ) v);
     if ((v = vciogetg(&io)) != 1001)
-        terror("vciogetg 1001 != %d\n", ( int )v);
+        terror("vciogetg 1001 != %d\n", ( int ) v);
     if ((v = vciogetg(&io)) != 10001)
-        terror("vciogetg 10001 != %d\n", ( int )v);
+        terror("vciogetg 10001 != %d\n", ( int ) v);
     if ((v = vciogetg(&io)) != 1)
-        terror("vciogetg 1 != %d\n", ( int )v);
+        terror("vciogetg 1 != %d\n", ( int ) v);
     if ((v = vciogetg(&io)) != 100001)
-        terror("vciogetg 100001 != %d\n", ( int )v);
+        terror("vciogetg 100001 != %d\n", ( int ) v);
     vcioendb(&io, io.bits, io.nbits, VC_DECODE);
 
     /* Generate a list of positive integers.
@@ -124,17 +124,17 @@ MAIN()
     /* test integer list io */
     vcioinit(&io, buf, sizeof(buf));
     if ((v = vcioputlist(&io, list, N_LIST)) < 0)
-        terror("vcioputlist %d\n", ( int )v);
+        terror("vcioputlist %d\n", ( int ) v);
     twarn("vcioputlist %d: output size=%d\n", N_LIST, v);
 
     for (v = 0; v < N_LIST; ++v)
         list[v] = -1;
     vcioinit(&io, buf, sizeof(buf));
     if ((v = vciogetlist(&io, list, N_LIST)) != N_LIST)
-        terror("vciogetlist %d\n", ( int )v);
+        terror("vciogetlist %d\n", ( int ) v);
     for (v = 0; v < N_LIST; ++v)
         if (list[v] != copy[v])
-            terror("Wrong value %d\n", ( int )list[v]);
+            terror("Wrong value %d\n", ( int ) list[v]);
 
     exit(0);
 }

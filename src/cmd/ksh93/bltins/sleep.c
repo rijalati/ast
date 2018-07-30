@@ -77,7 +77,7 @@ b_sleep(int argc, char *argv[], Shbltin_t *context)
             if (*cp == 'P' || *cp == 'p')
                 ns = tmxdate(cp, &last, now);
             else if (*last == '.' && shp->decomma
-                     && d == ( unsigned long )d) {
+                     && d == ( unsigned long ) d) {
                 *(pp = last) = ',';
                 if (!strchr(cp, '.'))
                     d = strtod(cp, &last);
@@ -130,7 +130,7 @@ b_sleep(int argc, char *argv[], Shbltin_t *context)
             sh_sigcheck(shp);
             if (tloc < (now = time(NIL(time_t *))))
                 break;
-            d = ( double )(tloc - now);
+            d = ( double ) (tloc - now);
             if (shp->sigflag[SIGALRM] & SH_SIGTRAP)
                 sh_timetraps(shp);
         }
@@ -140,7 +140,7 @@ b_sleep(int argc, char *argv[], Shbltin_t *context)
 static void
 completed(void *handle)
 {
-    char *expired = ( char * )handle;
+    char *expired = ( char * ) handle;
     *expired = 1;
 }
 
@@ -152,10 +152,10 @@ void
 sh_delay(double t)
 {
     Shell_t *shp = sh_getinterp();
-    int n = ( int )t;
+    int n = ( int ) t;
     Tv_t ts, tx;
     ts.tv_sec = n;
-    ts.tv_nsec = 1000000000 * (t - ( double )n);
+    ts.tv_nsec = 1000000000 * (t - ( double ) n);
     while (tvsleep(&ts, &tx) < 0 && errno == EINTR) {
         if (shp->trapnote & (SH_SIGSET | SH_SIGTRAP))
             return;

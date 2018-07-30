@@ -34,7 +34,7 @@
 #define CPIO_EXTENDED 1
 #define CPIO_HEADER 76
 #define CPIO_TRAILER "TRAILER!!!"
-#define CPIO_TRUNCATE(x) (( x )&0177777)
+#define CPIO_TRUNCATE(x) (( x ) &0177777)
 #define CPIO_NAMESIZE 256
 #define CPIO_ALIGN 0
 
@@ -151,7 +151,7 @@ getxops(Archive_t *ap, File_t *f)
 static void
 setxops(Archive_t *ap, File_t *f)
 {
-    Cpio_t *cpio = ( Cpio_t * )ap->data;
+    Cpio_t *cpio = ( Cpio_t * ) ap->data;
     int n;
 
     if (n = cpio->ops - cpio->opsbuf) {
@@ -170,7 +170,7 @@ setxops(Archive_t *ap, File_t *f)
 static void
 putxops(Pax_t *pax, Archive_t *ap, File_t *f)
 {
-    Cpio_t *cpio = ( Cpio_t * )ap->data;
+    Cpio_t *cpio = ( Cpio_t * ) ap->data;
     int n;
 
     n = cpio->ops - cpio->opsbuf;
@@ -187,7 +187,7 @@ putxops(Pax_t *pax, Archive_t *ap, File_t *f)
 static void
 addxopstr(Archive_t *ap, int op, char *s)
 {
-    Cpio_t *cpio = ( Cpio_t * )ap->data;
+    Cpio_t *cpio = ( Cpio_t * ) ap->data;
     char *p = cpio->ops;
     char *e = cpio->opsbuf + sizeof(cpio->opsbuf) - 3;
 
@@ -225,7 +225,7 @@ init(Archive_t *ap)
     Cpio_t *cpio;
 
     if (ap->data) {
-        cpio = ( Cpio_t * )ap->data;
+        cpio = ( Cpio_t * ) ap->data;
         memset(cpio, 0, sizeof(*cpio));
     } else {
         if (!(cpio = newof(0, Cpio_t, 1, 0)))
@@ -249,7 +249,8 @@ cpio_getprologue(Pax_t *pax,
     int magic;
 
     if (size >= CPIO_HEADER && buf[0] == '0'
-        && sfsscanf(( char * )buf, "%6o", &magic) == 1 && magic == CPIO_MAGIC)
+        && sfsscanf(( char * ) buf, "%6o", &magic) == 1
+        && magic == CPIO_MAGIC)
         return init(ap);
     return 0;
 }
@@ -284,7 +285,7 @@ cpio_common(Pax_t *pax, Archive_t *ap, File_t *f, int align, int header)
             align = 0;
     }
     f->name = paxstash(pax, &ap->stash.head, NiL, f->namesize + align);
-    paxread(pax, ap, f->name, ( off_t )0, (off_t)(f->namesize + align), 1);
+    paxread(pax, ap, f->name, ( off_t ) 0, (off_t)(f->namesize + align), 1);
     if (f->name[f->namesize - 1]) {
         paxunread(pax, ap, &f->name[f->namesize - 1], 1);
         f->name[f->namesize - 1] = 0;
@@ -298,7 +299,7 @@ cpio_common(Pax_t *pax, Archive_t *ap, File_t *f, int align, int header)
     getxops(ap, f);
 #endif
     if (streq(f->name, CPIO_TRAILER)) {
-        (( Cpio_t * )ap->data)->trailer++;
+        (( Cpio_t * ) ap->data)->trailer++;
         getdeltaheader(ap, f);
         if (ap->delta)
             setinfo(ap, f);
@@ -329,7 +330,7 @@ cpio_common(Pax_t *pax, Archive_t *ap, File_t *f, int align, int header)
         f->linkpath = paxstash(pax, &ap->stash.link, NiL, f->st->st_size);
         f->linktype = SOFTLINK;
         s = f->linkpath;
-        while (paxread(pax, ap, s, ( off_t )1, ( off_t )1, 1) > 0) {
+        while (paxread(pax, ap, s, ( off_t ) 1, ( off_t ) 1, 1) > 0) {
             f->st->st_size--;
             if (!*s++)
                 break;
@@ -361,7 +362,8 @@ cpio_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
 {
     Localstat_t lst;
 
-    if (paxread(pax, ap, state.tmp.buffer, ( off_t )0, ( off_t )CPIO_HEADER, 0)
+    if (paxread(
+        pax, ap, state.tmp.buffer, ( off_t ) 0, ( off_t ) CPIO_HEADER, 0)
         <= 0)
         return 0;
     state.tmp.buffer[CPIO_HEADER] = 0;
@@ -400,7 +402,7 @@ cpio_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
 static int
 cpio_getepilogue(Pax_t *pax, Archive_t *ap)
 {
-    Cpio_t *cpio = ( Cpio_t * )ap->data;
+    Cpio_t *cpio = ( Cpio_t * ) ap->data;
 
     if (!cpio->trailer) {
         error(2,
@@ -430,15 +432,15 @@ cpio_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
         addxopstr(ap, 'U', f->uidname);
         addxopstr(ap, 'G', f->gidname);
         if (CPIO_TRUNCATE(idevice(f->st)) != idevice(f->st))
-            addxopnum(ap, 'd', ( Sflong_t )idevice(f->st));
+            addxopnum(ap, 'd', ( Sflong_t ) idevice(f->st));
 #    if NUMBER_EVEN_THOUGH_NAME
         if (CPIO_TRUNCATE(f->st->st_gid) != f->st->st_gid)
-            addxopnum(ap, 'g', ( Sflong_t )f->st->st_gid);
+            addxopnum(ap, 'g', ( Sflong_t ) f->st->st_gid);
         if (CPIO_TRUNCATE(f->st->st_uid) != f->st->st_uid)
-            addxopnum(ap, 'u', ( Sflong_t )f->st->st_uid);
+            addxopnum(ap, 'u', ( Sflong_t ) f->st->st_uid);
 #    endif
         if (f->st->st_size > 0x7fffffff)
-            addxopnum(ap, 's', ( Sflong_t )f->st->st_size);
+            addxopnum(ap, 's', ( Sflong_t ) f->st->st_size);
         setxops(ap, f);
     } else
 #endif
@@ -454,16 +456,16 @@ cpio_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
     state.tmp.buffer,
     state.tmp.buffersize,
     "%0.6lo%0.6lo%0.6lo%0.6lo%0.6lo%0.6lo%0.6lo%0.6lo%0.11lo%0.6o%0.11I*o",
-    ( long )CPIO_TRUNCATE(CPIO_MAGIC),
-    ( long )CPIO_TRUNCATE(f->st->st_dev),
-    ( long )CPIO_TRUNCATE(f->st->st_ino),
-    ( long )CPIO_TRUNCATE(f->st->st_mode),
-    ( long )CPIO_TRUNCATE(f->st->st_uid),
-    ( long )CPIO_TRUNCATE(f->st->st_gid),
-    ( long )CPIO_TRUNCATE(f->st->st_nlink),
-    ( long )CPIO_TRUNCATE(idevice(f->st)),
-    ( long )f->st->st_mtime,
-    ( long )f->namesize,
+    ( long ) CPIO_TRUNCATE(CPIO_MAGIC),
+    ( long ) CPIO_TRUNCATE(f->st->st_dev),
+    ( long ) CPIO_TRUNCATE(f->st->st_ino),
+    ( long ) CPIO_TRUNCATE(f->st->st_mode),
+    ( long ) CPIO_TRUNCATE(f->st->st_uid),
+    ( long ) CPIO_TRUNCATE(f->st->st_gid),
+    ( long ) CPIO_TRUNCATE(f->st->st_nlink),
+    ( long ) CPIO_TRUNCATE(idevice(f->st)),
+    ( long ) f->st->st_mtime,
+    ( long ) f->namesize,
     sizeof(intmax_t),
     (intmax_t)(f->st->st_size + (f->type == X_IFLNK ? f->linkpathsize : 0)));
     paxwrite(pax, ap, state.tmp.buffer, CPIO_HEADER);
@@ -515,7 +517,7 @@ cpio_event(Pax_t *pax,
             && paxread(pax,
                        ap,
                        state.tmp.buffer,
-                       ( off_t )0,
+                       ( off_t ) 0,
                        n = f->st->st_size + 6,
                        0)
                > 0) {
@@ -554,7 +556,7 @@ asc_getprologue(Pax_t *pax,
     unsigned int magic;
 
     if (size >= ASC_HEADER && buf[0] == '0'
-        && sfsscanf(( char * )buf, "%6o", &magic) == 1 && magic == ASC_MAGIC)
+        && sfsscanf(( char * ) buf, "%6o", &magic) == 1 && magic == ASC_MAGIC)
         return init(ap);
     return 0;
 }
@@ -564,7 +566,8 @@ asc_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
 {
     Localstat_t lst;
 
-    if (paxread(pax, ap, state.tmp.buffer, ( off_t )0, ( off_t )ASC_HEADER, 0)
+    if (paxread(
+        pax, ap, state.tmp.buffer, ( off_t ) 0, ( off_t ) ASC_HEADER, 0)
         <= 0)
         return 0;
     state.tmp.buffer[ASC_HEADER] = 0;
@@ -617,19 +620,19 @@ asc_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
               state.tmp.buffersize,
               "%0.6lo%0.8lx%0.8lx%0.8lx%0.8lx%0.8lx%0.8lx%0.8lx%0.8lx%0.8lx%"
               "0.8lx%0.8lx%0.8lx%0.8lx%0.8lx%0.8lx",
-              ( long )(ap->format->variant == ASC ? ASC_MAGIC : ASCHK_MAGIC),
-              ( long )f->st->st_ino,
-              ( long )f->st->st_mode,
-              ( long )f->st->st_uid,
-              ( long )f->st->st_gid,
-              ( long )f->st->st_nlink,
-              ( long )f->st->st_mtime,
-              ( long )f->st->st_size + ( long )f->linkpathsize,
-              ( long )major(f->st->st_dev),
-              ( long )minor(f->st->st_dev),
-              ( long )major(idevice(f->st)),
-              ( long )minor(idevice(f->st)),
-              ( long )f->namesize,
+              ( long ) (ap->format->variant == ASC ? ASC_MAGIC : ASCHK_MAGIC),
+              ( long ) f->st->st_ino,
+              ( long ) f->st->st_mode,
+              ( long ) f->st->st_uid,
+              ( long ) f->st->st_gid,
+              ( long ) f->st->st_nlink,
+              ( long ) f->st->st_mtime,
+              ( long ) f->st->st_size + ( long ) f->linkpathsize,
+              ( long ) major(f->st->st_dev),
+              ( long ) minor(f->st->st_dev),
+              ( long ) major(idevice(f->st)),
+              ( long ) minor(idevice(f->st)),
+              ( long ) f->namesize,
               f->checksum);
     paxwrite(pax, ap, state.tmp.buffer, ASC_HEADER);
     paxwrite(pax, ap, f->name, f->namesize);
@@ -650,7 +653,7 @@ aschk_getprologue(Pax_t *pax,
     unsigned int magic;
 
     if (size >= ASC_HEADER && buf[0] == '0'
-        && sfsscanf(( char * )buf, "%6o", &magic) == 1
+        && sfsscanf(( char * ) buf, "%6o", &magic) == 1
         && magic == ASCHK_MAGIC)
         return init(ap);
     return 0;
@@ -661,7 +664,8 @@ aschk_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
 {
     Localstat_t lst;
 
-    if (paxread(pax, ap, state.tmp.buffer, ( off_t )0, ( off_t )ASC_HEADER, 0)
+    if (paxread(
+        pax, ap, state.tmp.buffer, ( off_t ) 0, ( off_t ) ASC_HEADER, 0)
         <= 0)
         return 0;
     state.tmp.buffer[ASC_HEADER] = 0;
@@ -709,7 +713,7 @@ aschk_checksum(Pax_t *pax,
                size_t n,
                unsigned long sum)
 {
-    unsigned char *b = ( unsigned char * )ab;
+    unsigned char *b = ( unsigned char * ) ab;
     unsigned char *e;
 
     e = b + n;
@@ -783,7 +787,7 @@ binary_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
     Binary_header_t hdr;
 
     if (paxread(
-        pax, ap, &hdr, ( off_t )BINARY_HEADER, ( off_t )BINARY_HEADER, 0)
+        pax, ap, &hdr, ( off_t ) BINARY_HEADER, ( off_t ) BINARY_HEADER, 0)
         <= 0)
         return 0;
     if (ap->swap) {
@@ -829,7 +833,7 @@ binary_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
     hdr.rdev = idevice(f->st);
     if (hdr.rdev != idevice(f->st))
         error(1, "%s: special device numbers truncated", f->name);
-    binary_short(hdr.mtime, ( long )f->st->st_mtime);
+    binary_short(hdr.mtime, ( long ) f->st->st_mtime);
     paxwrite(pax, ap, &hdr, BINARY_HEADER);
     paxwrite(pax, ap, f->name, f->namesize);
     if (n = (BINARY_HEADER + f->namesize) % BINARY_ALIGN)

@@ -102,7 +102,7 @@ typedef struct
 static uint32_t
 memsum_4(uint32_t sum, const void *buf, size_t size)
 {
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *s = ( unsigned char * ) buf;
     unsigned char *e = s + size;
 
     while (s < e)
@@ -118,23 +118,23 @@ memsum_4(uint32_t sum, const void *buf, size_t size)
 static ssize_t
 cvtread(Pz_t *pz, Sfio_t *sp, void *data, Pzdisc_t *disc)
 {
-    State_t *state = ( State_t * )pz->discdata;
+    State_t *state = ( State_t * ) pz->discdata;
     Pzpart_t *pp = pz->part;
-    Cvt_t *cvt = ( Cvt_t * )pp->discdata;
+    Cvt_t *cvt = ( Cvt_t * ) pp->discdata;
     Chain_t *cp;
     ssize_t n;
     unsigned char *s;
     unsigned char *t;
 
     if (cvt->flags & CONVERT) {
-        cvt->last->buf = ( unsigned char * )data;
+        cvt->last->buf = ( unsigned char * ) data;
     again:
         cp = cvt->chain;
         if (state->readf) {
             s = state->buf;
             if ((n = (*state->readf)(pz, sp, s, disc)) <= 0)
                 return n;
-        } else if (!(s = ( unsigned char * )sfreserve(
+        } else if (!(s = ( unsigned char * ) sfreserve(
                      sp, cp->convert->from->row, 0)))
             return sfvalue(sp) ? -1 : 0;
         for (; cp; cp = cp->next) {
@@ -164,9 +164,9 @@ cvtread(Pz_t *pz, Sfio_t *sp, void *data, Pzdisc_t *disc)
 static ssize_t
 cvtwrite(Pz_t *pz, Sfio_t *sp, const void *data, Pzdisc_t *disc)
 {
-    State_t *state = ( State_t * )pz->discdata;
+    State_t *state = ( State_t * ) pz->discdata;
     Pzpart_t *pp = pz->part;
-    Cvt_t *cvt = ( Cvt_t * )pp->discdata;
+    Cvt_t *cvt = ( Cvt_t * ) pp->discdata;
     Chain_t *cp;
     ssize_t n;
     unsigned char *b;
@@ -176,11 +176,11 @@ cvtwrite(Pz_t *pz, Sfio_t *sp, const void *data, Pzdisc_t *disc)
     if (cvt->flags & CONVERT) {
         if (state->writef)
             b = state->buf;
-        else if (!(b = ( unsigned char * )sfreserve(
+        else if (!(b = ( unsigned char * ) sfreserve(
                    sp, cvt->last->convert->to->row, 1)))
             return -1;
         cvt->last->buf = b;
-        s = ( unsigned char * )data;
+        s = ( unsigned char * ) data;
         for (cp = cvt->chain; cp; cp = cp->next) {
             pz->count.converted++;
             t = cp->buf;
@@ -195,7 +195,7 @@ cvtwrite(Pz_t *pz, Sfio_t *sp, const void *data, Pzdisc_t *disc)
     } else {
         if (cvt->flags & CHECKSUM)
             cvt->checksum = memsum_4(cvt->checksum, data, pp->row);
-        b = ( unsigned char * )data;
+        b = ( unsigned char * ) data;
         n = pp->row;
     }
     return state->writef ? (*state->writef)(pz, sp, b, disc)
@@ -263,7 +263,7 @@ found:
 static Chain_t *
 chain(Pz_t *pz, Pzconvert_t *tab, int n, const char *f, const char *t)
 {
-    State_t *state = ( State_t * )pz->discdata;
+    State_t *state = ( State_t * ) pz->discdata;
     int i;
     int j;
     size_t m;
@@ -358,7 +358,7 @@ chain(Pz_t *pz, Pzconvert_t *tab, int n, const char *f, const char *t)
 static int
 cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
 {
-    State_t *state = ( State_t * )pz->discdata;
+    State_t *state = ( State_t * ) pz->discdata;
     Pzpart_t *pp = pz->part;
     Cvt_t *cvt;
     Pzconvert_t *xp;
@@ -417,7 +417,7 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                              i++)
                             ;
                         if (!vp[i]) {
-                            vp[i++] = ( char * )xp->from->name;
+                            vp[i++] = ( char * ) xp->from->name;
                             sfprintf(sfstdout,
                                      "%-16s  %5u  %s\n",
                                      xp->from->name,
@@ -427,7 +427,7 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                         for (i = 0; vp[i] && !streq(xp->to->name, vp[i]); i++)
                             ;
                         if (!vp[i]) {
-                            vp[i++] = ( char * )xp->to->name;
+                            vp[i++] = ( char * ) xp->to->name;
                             sfprintf(sfstdout,
                                      "%-16s  %5u  %s\n",
                                      xp->to->name,
@@ -442,10 +442,10 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
         }
         return 0;
     }
-    if (!(cvt = ( Cvt_t * )pp->discdata)) {
+    if (!(cvt = ( Cvt_t * ) pp->discdata)) {
         if (!(cvt = vmnewof(pz->vm, 0, Cvt_t, 1, 0)))
             return -1;
-        pp->discdata = ( void * )cvt;
+        pp->discdata = ( void * ) cvt;
     }
     switch (op) {
     case PZ_CLOSE:
@@ -684,7 +684,7 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
     case PZ_TAILWRITE:
         if (cvt->flags & CHECKSUM) {
             cvt->flags |= CHECKSUM_TAIL;
-            sp = ( Sfio_t * )data;
+            sp = ( Sfio_t * ) data;
             sfputu(state->tmp, CHECKSUM_OP);
             sfputu(state->tmp, cvt->checksum);
             n = sfstrtell(state->tmp);
@@ -712,11 +712,11 @@ pzdcconvert(Pz_t *pz, const Pzconvert_t *conversions)
             vmfree(pz->vm, state);
             return -1;
         }
-        state->conversions = ( Pzconvert_t * )conversions;
+        state->conversions = ( Pzconvert_t * ) conversions;
         state->readf = pz->disc->readf;
         state->writef = pz->disc->writef;
         state->eventf = pz->disc->eventf;
-        pz->discdata = ( void * )state;
+        pz->discdata = ( void * ) state;
         pz->disc->eventf = cvtevent;
         optget(NiL, usage);
     }

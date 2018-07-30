@@ -61,7 +61,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -72,7 +72,7 @@ char **argv;        /* Argument strings. */
                              "wrong # arguments: must be \"",
                              argv[0],
                              " clicks\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         sprintf(interp->result, "%lu", TclpGetClicks());
@@ -87,7 +87,7 @@ char **argv;        /* Argument strings. */
             "wrong # args: ",
             argv[0],
             " format clockval ?-format string? ?-gmt boolean?",
-            ( char * )NULL);
+            ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -109,7 +109,7 @@ char **argv;        /* Argument strings. */
                                  "bad option \"",
                                  argPtr[0],
                                  "\": must be -format or -gmt",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
             argPtr += 2;
@@ -132,7 +132,7 @@ char **argv;        /* Argument strings. */
             "wrong # args: ",
             argv[0],
             " scan dateString ?-base clockValue? ?-gmt boolean?",
-            ( char * )NULL);
+            ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -150,7 +150,7 @@ char **argv;        /* Argument strings. */
                                  "bad option \"",
                                  argPtr[0],
                                  "\": must be -base or -gmt",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
             argPtr += 2;
@@ -178,11 +178,11 @@ char **argv;        /* Argument strings. */
                              "unable to convert date-time string \"",
                              argv[2],
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 
-        sprintf(interp->result, "%lu", ( long )clockVal);
+        sprintf(interp->result, "%lu", ( long ) clockVal);
         return TCL_OK;
     } else if ((c == 's') && (strncmp(argv[1], "seconds", length) == 0)) {
         if (argc != 2) {
@@ -190,7 +190,7 @@ char **argv;        /* Argument strings. */
                              "wrong # arguments: must be \"",
                              argv[0],
                              " seconds\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         sprintf(interp->result, "%lu", TclpGetSeconds());
@@ -200,7 +200,7 @@ char **argv;        /* Argument strings. */
                          "unknown option \"",
                          argv[1],
                          "\": must be clicks, format, scan, or seconds",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 }
@@ -236,7 +236,7 @@ unsigned long *timePtr;
      * in advance.
      */
     errno = 0;
-    for (p = ( char * )string; isspace(UCHAR(*p)); p++) {
+    for (p = ( char * ) string; isspace(UCHAR(*p)); p++) {
         /* Empty loop body. */
     }
     if (*p == '+') {
@@ -249,7 +249,7 @@ unsigned long *timePtr;
     if (errno == ERANGE) {
         interp->result = "integer value too large to represent";
         Tcl_SetErrorCode(
-        interp, "ARITH", "IOVERFLOW", interp->result, ( char * )NULL);
+        interp, "ARITH", "IOVERFLOW", interp->result, ( char * ) NULL);
         return TCL_ERROR;
     }
     while ((*end != '\0') && isspace(UCHAR(*end))) {
@@ -259,15 +259,18 @@ unsigned long *timePtr;
         goto badTime;
     }
 
-    *timePtr = ( time_t )i;
+    *timePtr = ( time_t ) i;
     if (*timePtr != i) {
         goto badTime;
     }
     return TCL_OK;
 
 badTime:
-    Tcl_AppendResult(
-    interp, "expected unsigned time but got \"", string, "\"", ( char * )NULL);
+    Tcl_AppendResult(interp,
+                     "expected unsigned time but got \"",
+                     string,
+                     "\"",
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -337,7 +340,7 @@ char *format;           /* Format string */
     }
 #endif
 
-    timeDataPtr = TclpGetDate(( time_t * )&clockVal, useGMT);
+    timeDataPtr = TclpGetDate(( time_t * ) &clockVal, useGMT);
 
     /*
      * Make a guess at the upper limit on the substituted string size
@@ -355,10 +358,10 @@ char *format;           /* Format string */
     Tcl_DStringSetLength(&buffer, bufSize);
 
     if (TclStrftime(
-        buffer.string, ( unsigned int )bufSize, format, timeDataPtr)
+        buffer.string, ( unsigned int ) bufSize, format, timeDataPtr)
         == 0) {
         Tcl_DStringFree(&buffer);
-        Tcl_AppendResult(interp, "bad format string", ( char * )NULL);
+        Tcl_AppendResult(interp, "bad format string", ( char * ) NULL);
         return TCL_ERROR;
     }
 

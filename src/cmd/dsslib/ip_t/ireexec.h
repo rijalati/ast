@@ -106,7 +106,7 @@ static int
 IREEXEC(Ire_t *ire, void *data, size_t size)
 {
     Re_t *re = ire->re;
-    IREINT *lp = ( IREINT * )data;
+    IREINT *lp = ( IREINT * ) data;
     IREINT *rp = lp + size / sizeof(IREINT);
     int left = ire->left;
     int must = ire->must;

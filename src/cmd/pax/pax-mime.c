@@ -48,11 +48,11 @@ mime_getprologue(Pax_t *pax,
     size_t n;
 
     s = state.tmp.buffer;
-    if (paxread(pax, ap, s, ( off_t )0, ( off_t )MIME_HEADER, 0) <= 0)
+    if (paxread(pax, ap, s, ( off_t ) 0, ( off_t ) MIME_HEADER, 0) <= 0)
         return 0;
     paxunread(pax, ap, s, MIME_HEADER);
     if (s[0] != '-' || s[1] != '-'
-        || !(t = ( char * )memchr(s, '\n', MIME_HEADER - 2))
+        || !(t = ( char * ) memchr(s, '\n', MIME_HEADER - 2))
         || (t - s + 8) >= MIME_HEADER || strncasecmp(t + 1, "Content", 7))
         return 0;
     n = t - s + 1;
@@ -67,7 +67,7 @@ mime_getprologue(Pax_t *pax,
     mime->length = n;
     memcpy(mime->magic, s, mime->length);
     message((-1, "mime magic `%s'", mime->magic));
-    paxread(pax, ap, NiL, ( off_t )0, n, 0);
+    paxread(pax, ap, NiL, ( off_t ) 0, n, 0);
     return 1;
 }
 
@@ -84,7 +84,7 @@ mime_done(Pax_t *pax, Archive_t *ap)
 static int
 mime_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
 {
-    Mime_t *mime = ( Mime_t * )ap->data;
+    Mime_t *mime = ( Mime_t * ) ap->data;
     char *s;
     char *t;
     char *v;
@@ -212,7 +212,7 @@ mime_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                 f->gidname = 0;
                 return 1;
             }
-        paxseek(pax, ap, -( off_t )mime->length, SEEK_CUR, 0);
+        paxseek(pax, ap, -( off_t ) mime->length, SEEK_CUR, 0);
         paxsync(pax, ap, 0);
         f->st->st_size += m;
     }

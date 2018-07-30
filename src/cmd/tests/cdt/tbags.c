@@ -29,22 +29,22 @@ typedef struct _obj_s
 static int
 objcmp(Dt_t *dt, Void_t *arg1, Void_t *arg2, Dtdisc_t *disc)
 {
-    Obj_t *o1 = ( Obj_t * )arg1, *o2 = ( Obj_t * )arg2;
+    Obj_t *o1 = ( Obj_t * ) arg1, *o2 = ( Obj_t * ) arg2;
 
-    return ( int )(o1->key - o2->key);
+    return ( int ) (o1->key - o2->key);
 }
 
 static unsigned int
 objhash(Dt_t *dt, Void_t *arg, Dtdisc_t *disc)
 {
-    Obj_t *o = ( Obj_t * )arg;
-    return ( unsigned int )(o->key / 8); /* cause hash collisions */
+    Obj_t *o = ( Obj_t * ) arg;
+    return ( unsigned int ) (o->key / 8); /* cause hash collisions */
 }
 
 static char *
 objprint(Void_t *arg)
 {
-    Obj_t *obj = ( Obj_t * )arg;
+    Obj_t *obj = ( Obj_t * ) arg;
     static char buf[1024];
 
     sprintf(buf, "%ld,%ld", obj->key, obj->ord);
@@ -215,7 +215,8 @@ tmain()
             terror("%s: Walk backward n_mid=%d != %d", name, n_mid, R_OBJ);
 
         n_mid = n_obj = 0; /* walk flattened list and count objects */
-        for (o = ( Obj_t * )dtflatten(dt); o; o = ( Obj_t * )dtlink(dt, o)) {
+        for (o = ( Obj_t * ) dtflatten(dt); o;
+             o = ( Obj_t * ) dtlink(dt, o)) {
             n_obj += 1;
             if (o->key == mid)
                 n_mid += 1;
@@ -265,7 +266,7 @@ tmain()
         }
 
         n_obj = 0; /* count the left over */
-        for (o = ( Obj_t * )dtflatten(dt); o; o = ( Obj_t * )dtlink(dt, o))
+        for (o = ( Obj_t * ) dtflatten(dt); o; o = ( Obj_t * ) dtlink(dt, o))
             n_obj += 1;
         if ((n_obj + n_mid) != N_OBJ)
             terror("%s: wrong count (n_obj=%d + n_del=%d) != %d",

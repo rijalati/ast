@@ -31,7 +31,7 @@ _vdinit(reg Vdio_t *io)
 static void _vdinit(io) reg Vdio_t *io;
 #endif
 {
-    if ((io->data = ( uchar * )io->delta->data))
+    if ((io->data = ( uchar * ) io->delta->data))
         io->size = io->delta->size;
     else {
         io->data = io->buf;
@@ -131,7 +131,7 @@ reg ulong v;
     next = io->next;
     switch (len) {
     default:
-        memcpy(( Void_t * )next, ( Void_t * )s, len);
+        memcpy(( Void_t * ) next, ( Void_t * ) s, len);
         next += len;
         break;
     case 3:

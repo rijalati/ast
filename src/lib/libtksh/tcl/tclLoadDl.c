@@ -75,11 +75,11 @@ Tcl_PackageInitProc **proc1Ptr, **proc2Ptr;
                          fileName,
                          "\": ",
                          dlerror(),
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
-    *proc1Ptr = ( Tcl_PackageInitProc * )dlsym(handle, sym1);
-    *proc2Ptr = ( Tcl_PackageInitProc * )dlsym(handle, sym2);
+    *proc1Ptr = ( Tcl_PackageInitProc * ) dlsym(handle, sym1);
+    *proc2Ptr = ( Tcl_PackageInitProc * ) dlsym(handle, sym2);
     return TCL_OK;
 }
 

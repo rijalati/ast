@@ -166,7 +166,7 @@ predicate(int warn)
      * first gather the args
      */
 
-    index = ( int )hashref(pp.strtab, pp.token);
+    index = ( int ) hashref(pp.strtab, pp.token);
     if (warn && peekchr() != '(')
         switch (index) {
         case X_DEFINED:
@@ -230,7 +230,7 @@ predicate(int warn)
                 pp.mode |= HOSTED;
                 pp.flags |= PP_hosted;
             }
-            return *(args + 9) ? ( int )hashref(pp.strtab, args + 9) : 1;
+            return *(args + 9) ? ( int ) hashref(pp.strtab, args + 9) : 1;
         }
         break;
     case X_EXISTS:
@@ -257,7 +257,7 @@ predicate(int warn)
         if (warn && !(pp.mode & HOSTED) && (sym = ppsymref(pp.symtab, pred))
             && (sym->flags & SYM_PREDICATE))
             error(1, "use #%s(%s) to disambiguate", pred, args);
-        if (p = ( struct pplist * )hashget(pp.prdtab, pred)) {
+        if (p = ( struct pplist * ) hashget(pp.prdtab, pred)) {
             if (!*args)
                 return 1;
             while (p) {
@@ -425,13 +425,13 @@ subexpr(int precedence, int *pun)
             case '<':
                 switch (un) {
                 case 01:
-                    n = n < ( unsigned long )x;
+                    n = n < ( unsigned long ) x;
                     break;
                 case 02:
-                    n = ( unsigned long )n < x;
+                    n = ( unsigned long ) n < x;
                     break;
                 case 03:
-                    n = ( unsigned long )n < ( unsigned long )x;
+                    n = ( unsigned long ) n < ( unsigned long ) x;
                     break;
                 default:
                     n = n < x;
@@ -441,13 +441,13 @@ subexpr(int precedence, int *pun)
             case T_LE:
                 switch (un) {
                 case 01:
-                    n = n <= ( unsigned long )x;
+                    n = n <= ( unsigned long ) x;
                     break;
                 case 02:
-                    n = ( unsigned long )n <= x;
+                    n = ( unsigned long ) n <= x;
                     break;
                 case 03:
-                    n = ( unsigned long )n <= ( unsigned long )x;
+                    n = ( unsigned long ) n <= ( unsigned long ) x;
                     break;
                 default:
                     n = n <= x;
@@ -457,13 +457,13 @@ subexpr(int precedence, int *pun)
             case T_GE:
                 switch (un) {
                 case 01:
-                    n = n >= ( unsigned long )x;
+                    n = n >= ( unsigned long ) x;
                     break;
                 case 02:
-                    n = ( unsigned long )n >= x;
+                    n = ( unsigned long ) n >= x;
                     break;
                 case 03:
-                    n = ( unsigned long )n >= ( unsigned long )x;
+                    n = ( unsigned long ) n >= ( unsigned long ) x;
                     break;
                 default:
                     n = n >= x;
@@ -473,13 +473,13 @@ subexpr(int precedence, int *pun)
             case '>':
                 switch (un) {
                 case 01:
-                    n = n > ( unsigned long )x;
+                    n = n > ( unsigned long ) x;
                     break;
                 case 02:
-                    n = ( unsigned long )n > x;
+                    n = ( unsigned long ) n > x;
                     break;
                 case 03:
-                    n = ( unsigned long )n > ( unsigned long )x;
+                    n = ( unsigned long ) n > ( unsigned long ) x;
                     break;
                 default:
                     n = n > x;
@@ -555,7 +555,7 @@ subexpr(int precedence, int *pun)
             }
 #if CHAR_MIN < 0
             else
-                n = ( char )n;
+                n = ( char ) n;
 #endif
             goto gotoperand;
         case T_DECIMAL_U:
@@ -573,7 +573,7 @@ subexpr(int precedence, int *pun)
         case T_HEXADECIMAL:
         case T_HEXADECIMAL_L:
             n = strtoul(pp.token, NiL, 0);
-            if (( unsigned long )n > LONG_MAX)
+            if (( unsigned long ) n > LONG_MAX)
                 un |= 01;
             goto gotoperand;
         case T_WCHARCONST:
@@ -645,7 +645,7 @@ ppexpr(int *pun)
 int
 ppoption(char *s)
 {
-    switch (( int )hashget(pp.strtab, s)) {
+    switch (( int ) hashget(pp.strtab, s)) {
     case X_ALLMULTIPLE:
         return pp.mode & ALLMULTIPLE;
     case X_BUILTIN:

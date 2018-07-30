@@ -56,7 +56,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     size_t length;
 
     if ((argc != 1) && (argc != 3)) {
@@ -64,7 +64,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " ?-displayof window?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -75,7 +75,7 @@ char **argv;           /* Argument strings. */
                              "bad option \"",
                              argv[1],
                              "\": must be -displayof",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         tkwin = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -112,7 +112,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     TkWindow *winPtr;
     ClientData object;
 
@@ -121,18 +121,18 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " window ?pattern? ?command?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (argv[1][0] == '.') {
-        winPtr = ( TkWindow * )Tk_NameToWindow(interp, argv[1], tkwin);
+        winPtr = ( TkWindow * ) Tk_NameToWindow(interp, argv[1], tkwin);
         if (winPtr == NULL) {
             return TCL_ERROR;
         }
-        object = ( ClientData )winPtr->pathName;
+        object = ( ClientData ) winPtr->pathName;
     } else {
-        winPtr = ( TkWindow * )clientData;
-        object = ( ClientData )Tk_GetUid(argv[1]);
+        winPtr = ( TkWindow * ) clientData;
+        object = ( ClientData ) Tk_GetUid(argv[1]);
     }
 
     if (argc == 4) {
@@ -215,25 +215,25 @@ XEvent *eventPtr; /* Information about event. */
          */
 
         if (winPtr->numTags > MAX_OBJS) {
-            objPtr = ( ClientData * )ckalloc(
-            ( unsigned )(winPtr->numTags * sizeof(ClientData)));
+            objPtr = ( ClientData * ) ckalloc(
+            ( unsigned ) (winPtr->numTags * sizeof(ClientData)));
         }
         for (i = 0; i < winPtr->numTags; i++) {
-            p = ( char * )winPtr->tagPtr[i];
+            p = ( char * ) winPtr->tagPtr[i];
             if (*p == '.') {
                 hPtr = Tcl_FindHashEntry(&winPtr->mainPtr->nameTable, p);
                 if (hPtr != NULL) {
-                    p = (( TkWindow * )Tcl_GetHashValue(hPtr))->pathName;
+                    p = (( TkWindow * ) Tcl_GetHashValue(hPtr))->pathName;
                 } else {
                     p = NULL;
                 }
             }
-            objPtr[i] = ( ClientData )p;
+            objPtr[i] = ( ClientData ) p;
         }
         count = winPtr->numTags;
     } else {
-        objPtr[0] = ( ClientData )winPtr->pathName;
-        objPtr[1] = ( ClientData )winPtr->classUid;
+        objPtr[0] = ( ClientData ) winPtr->pathName;
+        objPtr[1] = ( ClientData ) winPtr->classUid;
         for (topLevPtr = winPtr;
              (topLevPtr != NULL) && !(topLevPtr->flags & TK_TOP_LEVEL);
              topLevPtr = topLevPtr->parentPtr) {
@@ -241,22 +241,22 @@ XEvent *eventPtr; /* Information about event. */
         }
         if ((winPtr != topLevPtr) && (topLevPtr != NULL)) {
             count = 4;
-            objPtr[2] = ( ClientData )topLevPtr->pathName;
+            objPtr[2] = ( ClientData ) topLevPtr->pathName;
         } else {
             count = 3;
         }
         if (allUid == NULL) {
             allUid = Tk_GetUid("all");
         }
-        objPtr[count - 1] = ( ClientData )allUid;
+        objPtr[count - 1] = ( ClientData ) allUid;
     }
     Tk_BindEvent(winPtr->mainPtr->bindingTable,
                  eventPtr,
-                 ( Tk_Window )winPtr,
+                 ( Tk_Window ) winPtr,
                  count,
                  objPtr);
     if (objPtr != objects) {
-        ckfree(( char * )objPtr);
+        ckfree(( char * ) objPtr);
     }
 }
 
@@ -283,7 +283,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     TkWindow *winPtr, *winPtr2;
     int i, tagArgc;
     char *p, **tagArgv;
@@ -293,10 +293,10 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " window ?tags?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
-    winPtr = ( TkWindow * )Tk_NameToWindow(interp, argv[1], tkwin);
+    winPtr = ( TkWindow * ) Tk_NameToWindow(interp, argv[1], tkwin);
     if (winPtr == NULL) {
         return TCL_ERROR;
     }
@@ -315,7 +315,7 @@ char **argv;           /* Argument strings. */
             Tcl_AppendElement(interp, "all");
         } else {
             for (i = 0; i < winPtr->numTags; i++) {
-                Tcl_AppendElement(interp, ( char * )winPtr->tagPtr[i]);
+                Tcl_AppendElement(interp, ( char * ) winPtr->tagPtr[i]);
             }
         }
         return TCL_OK;
@@ -331,7 +331,7 @@ char **argv;           /* Argument strings. */
     }
     winPtr->numTags = tagArgc;
     winPtr->tagPtr
-    = ( ClientData * )ckalloc(( unsigned )(tagArgc * sizeof(ClientData)));
+    = ( ClientData * ) ckalloc(( unsigned ) (tagArgc * sizeof(ClientData)));
     for (i = 0; i < tagArgc; i++) {
         p = tagArgv[i];
         if (p[0] == '.') {
@@ -344,14 +344,14 @@ char **argv;           /* Argument strings. */
              * if there is one.
              */
 
-            copy = ( char * )ckalloc(( unsigned )(strlen(p) + 1));
+            copy = ( char * ) ckalloc(( unsigned ) (strlen(p) + 1));
             strcpy(copy, p);
-            winPtr->tagPtr[i] = ( ClientData )copy;
+            winPtr->tagPtr[i] = ( ClientData ) copy;
         } else {
-            winPtr->tagPtr[i] = ( ClientData )Tk_GetUid(p);
+            winPtr->tagPtr[i] = ( ClientData ) Tk_GetUid(p);
         }
     }
-    ckfree(( char * )tagArgv);
+    ckfree(( char * ) tagArgv);
     return TCL_OK;
 }
 
@@ -380,7 +380,7 @@ void TkFreeBindingTags(winPtr) TkWindow *winPtr; /* Window whose tags are to
     char *p;
 
     for (i = 0; i < winPtr->numTags; i++) {
-        p = ( char * )(winPtr->tagPtr[i]);
+        p = ( char * ) (winPtr->tagPtr[i]);
         if (*p == '.') {
             /*
              * Names starting with "." are malloced rather than Uids, so
@@ -390,7 +390,7 @@ void TkFreeBindingTags(winPtr) TkWindow *winPtr; /* Window whose tags are to
             ckfree(p);
         }
     }
-    ckfree(( char * )winPtr->tagPtr);
+    ckfree(( char * ) winPtr->tagPtr);
     winPtr->numTags = 0;
     winPtr->tagPtr = NULL;
 }
@@ -420,7 +420,7 @@ int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
     Tk_Window window;
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     int i;
 
     for (i = 1; i < argc; i++) {
@@ -458,7 +458,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window main = ( Tk_Window )clientData;
+    Tk_Window main = ( Tk_Window ) clientData;
     Tk_Window tkwin, other;
 
     if ((argc != 2) && (argc != 3)) {
@@ -466,7 +466,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " window ?belowThis?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -489,7 +489,7 @@ char **argv;           /* Argument strings. */
                          "\" below \"",
                          argv[2],
                          "\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -520,7 +520,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window main = ( Tk_Window )clientData;
+    Tk_Window main = ( Tk_Window ) clientData;
     Tk_Window tkwin, other;
 
     if ((argc != 2) && (argc != 3)) {
@@ -528,7 +528,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " window ?aboveThis?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -551,7 +551,7 @@ char **argv;           /* Argument strings. */
                          "\" above \"",
                          argv[2],
                          "\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -584,7 +584,7 @@ char **argv;           /* Argument strings. */
 {
     char c;
     size_t length;
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     TkWindow *winPtr;
 
     if (argc < 2) {
@@ -592,19 +592,19 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option ?arg?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
     length = strlen(argv[1]);
     if ((c == 'a') && (strncmp(argv[1], "appname", length) == 0)) {
-        winPtr = (( TkWindow * )tkwin)->mainPtr->winPtr;
+        winPtr = (( TkWindow * ) tkwin)->mainPtr->winPtr;
         if (argc > 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
                              " appname ?newName?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (argc == 3) {
@@ -616,7 +616,7 @@ char **argv;           /* Argument strings. */
                          "bad option \"",
                          argv[1],
                          "\": must be appname",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -647,7 +647,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     int c, done;
     size_t length;
 
@@ -656,7 +656,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " variable|visibility|window name\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -667,7 +667,7 @@ char **argv;           /* Argument strings. */
                          argv[2],
                          TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                          WaitVariableProc,
-                         ( ClientData )&done)
+                         ( ClientData ) &done)
             != TCL_OK) {
             return TCL_ERROR;
         }
@@ -679,7 +679,7 @@ char **argv;           /* Argument strings. */
                        argv[2],
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                        WaitVariableProc,
-                       ( ClientData )&done);
+                       ( ClientData ) &done);
     } else if ((c == 'v') && (strncmp(argv[1], "visibility", length) == 0)
                && (length >= 2)) {
         Tk_Window window;
@@ -691,7 +691,7 @@ char **argv;           /* Argument strings. */
         Tk_CreateEventHandler(window,
                               VisibilityChangeMask | StructureNotifyMask,
                               WaitVisibilityProc,
-                              ( ClientData )&done);
+                              ( ClientData ) &done);
         done = 0;
         while (!done) {
             Tcl_DoOneEvent(0);
@@ -707,13 +707,13 @@ char **argv;           /* Argument strings. */
                              "window \"",
                              argv[2],
                              "\" was deleted before its visibility changed",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         Tk_DeleteEventHandler(window,
                               VisibilityChangeMask | StructureNotifyMask,
                               WaitVisibilityProc,
-                              ( ClientData )&done);
+                              ( ClientData ) &done);
     } else if ((c == 'w') && (strncmp(argv[1], "window", length) == 0)) {
         Tk_Window window;
 
@@ -722,7 +722,7 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         Tk_CreateEventHandler(
-        window, StructureNotifyMask, WaitWindowProc, ( ClientData )&done);
+        window, StructureNotifyMask, WaitWindowProc, ( ClientData ) &done);
         done = 0;
         while (!done) {
             Tcl_DoOneEvent(0);
@@ -736,7 +736,7 @@ char **argv;           /* Argument strings. */
                          "bad option \"",
                          argv[1],
                          "\": must be variable, visibility, or window",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -757,10 +757,10 @@ char *name1;           /* Name of variable. */
 char *name2;           /* Second part of variable name. */
 int flags;             /* Information about what happened. */
 {
-    int *donePtr = ( int * )clientData;
+    int *donePtr = ( int * ) clientData;
 
     *donePtr = 1;
-    return ( char * )NULL;
+    return ( char * ) NULL;
 }
 
 /*ARGSUSED*/
@@ -768,7 +768,7 @@ static void WaitVisibilityProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to integer to set to 1. */
 XEvent *eventPtr;      /* Information about event (not used). */
 {
-    int *donePtr = ( int * )clientData;
+    int *donePtr = ( int * ) clientData;
 
     if (eventPtr->type == VisibilityNotify) {
         *donePtr = 1;
@@ -782,7 +782,7 @@ static void WaitWindowProc(clientData, eventPtr)
 ClientData clientData; /* Pointer to integer to set to 1. */
 XEvent *eventPtr;      /* Information about event. */
 {
-    int *donePtr = ( int * )clientData;
+    int *donePtr = ( int * ) clientData;
 
     if (eventPtr->type == DestroyNotify) {
         *donePtr = 1;
@@ -814,7 +814,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     int flags;
     Display *display;
 
@@ -826,7 +826,7 @@ char **argv;           /* Argument strings. */
                              "bad option \"",
                              argv[1],
                              "\": must be idletasks",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         flags = TCL_IDLE_EVENTS;
@@ -835,7 +835,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " ?idletasks?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -892,7 +892,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     size_t length;
     char c, *argName;
     Tk_Window window;
@@ -913,7 +913,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option ?arg?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -934,7 +934,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " atom ?-displayof window? name\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         sprintf(interp->result, "%ld", Tk_InternAtom(tkwin, atomName));
@@ -956,10 +956,10 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " atomname ?-displayof window? id\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
-        if (Tcl_GetInt(interp, id, ( int * )&atom) != TCL_OK) {
+        if (Tcl_GetInt(interp, id, ( int * ) &atom) != TCL_OK) {
             return TCL_ERROR;
         }
         name = Tk_GetAtomName(tkwin, atom);
@@ -968,7 +968,7 @@ char **argv;           /* Argument strings. */
                              "no atom exists with id \"",
                              argv[2],
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         interp->result = name;
@@ -979,7 +979,7 @@ char **argv;           /* Argument strings. */
     } else if ((c == 'c') && (strncmp(argv[1], "children", length) == 0)
                && (length >= 2)) {
         SETUP("children");
-        for (winPtr = (( TkWindow * )window)->childList; winPtr != NULL;
+        for (winPtr = (( TkWindow * ) window)->childList; winPtr != NULL;
              winPtr = winPtr->nextPtr) {
             Tcl_AppendElement(interp, winPtr->pathName);
         }
@@ -1009,7 +1009,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " containing ?-displayof window? rootX rootY\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if ((Tk_GetPixels(interp, tkwin, argv[index], &rootX) != TCL_OK)
@@ -1031,7 +1031,7 @@ char **argv;           /* Argument strings. */
         }
         window = Tk_NameToWindow(interp, argv[2], tkwin);
         if ((window == NULL)
-            || ((( TkWindow * )window)->flags & TK_ALREADY_DEAD)) {
+            || ((( TkWindow * ) window)->flags & TK_ALREADY_DEAD)) {
             interp->result = "0";
         } else {
             interp->result = "1";
@@ -1045,7 +1045,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " fpixels window number\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         window = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -1072,7 +1072,7 @@ char **argv;           /* Argument strings. */
     } else if ((c == 'i') && (strcmp(argv[1], "id") == 0)) {
         SETUP("id");
         Tk_MakeWindowExist(window);
-        sprintf(interp->result, "0x%x", ( unsigned int )Tk_WindowId(window));
+        sprintf(interp->result, "0x%x", ( unsigned int ) Tk_WindowId(window));
     } else if ((c == 'i') && (strncmp(argv[1], "interps", length) == 0)
                && (length >= 2)) {
         if (argc == 4) {
@@ -1085,7 +1085,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " interps ?-displayof window?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         return TkGetInterpNames(interp, tkwin);
@@ -1095,7 +1095,7 @@ char **argv;           /* Argument strings. */
         interp->result = Tk_IsMapped(window) ? "1" : "0";
     } else if ((c == 'm') && (strncmp(argv[1], "manager", length) == 0)) {
         SETUP("manager");
-        winPtr = ( TkWindow * )window;
+        winPtr = ( TkWindow * ) window;
         if (winPtr->geomMgrPtr != NULL) {
             interp->result = winPtr->geomMgrPtr->name;
         }
@@ -1104,7 +1104,7 @@ char **argv;           /* Argument strings. */
         interp->result = Tk_Name(window);
     } else if ((c == 'p') && (strncmp(argv[1], "parent", length) == 0)) {
         SETUP("parent");
-        winPtr = ( TkWindow * )window;
+        winPtr = ( TkWindow * ) window;
         if (winPtr->parentPtr != NULL) {
             interp->result = winPtr->parentPtr->pathName;
         }
@@ -1125,21 +1125,21 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " pathname ?-displayof window? id\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (Tcl_GetInt(interp, argv[index], &id) != TCL_OK) {
             return TCL_ERROR;
         }
-        window = Tk_IdToWindow(Tk_Display(tkwin), ( Window )id);
+        window = Tk_IdToWindow(Tk_Display(tkwin), ( Window ) id);
         if ((window == NULL)
-            || ((( TkWindow * )window)->mainPtr
-                != (( TkWindow * )tkwin)->mainPtr)) {
+            || ((( TkWindow * ) window)->mainPtr
+                != (( TkWindow * ) tkwin)->mainPtr)) {
             Tcl_AppendResult(interp,
                              "window id \"",
                              argv[index],
                              "\" doesn't exist in this application",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         interp->result = Tk_PathName(window);
@@ -1152,7 +1152,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " pixels window number\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         window = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -1171,7 +1171,7 @@ char **argv;           /* Argument strings. */
         if (winPtr == NULL) {
             x = -1;
         } else {
-            TkGetPointerCoords(( Tk_Window )winPtr, &x, &y);
+            TkGetPointerCoords(( Tk_Window ) winPtr, &x, &y);
         }
         sprintf(interp->result, "%d", x);
     } else if ((c == 'p') && (strcmp(argv[1], "pointerxy") == 0)) {
@@ -1182,7 +1182,7 @@ char **argv;           /* Argument strings. */
         if (winPtr == NULL) {
             x = -1;
         } else {
-            TkGetPointerCoords(( Tk_Window )winPtr, &x, &y);
+            TkGetPointerCoords(( Tk_Window ) winPtr, &x, &y);
         }
         sprintf(interp->result, "%d %d", x, y);
     } else if ((c == 'p') && (strcmp(argv[1], "pointery") == 0)) {
@@ -1193,7 +1193,7 @@ char **argv;           /* Argument strings. */
         if (winPtr == NULL) {
             y = -1;
         } else {
-            TkGetPointerCoords(( Tk_Window )winPtr, &x, &y);
+            TkGetPointerCoords(( Tk_Window ) winPtr, &x, &y);
         }
         sprintf(interp->result, "%d", y);
     } else if ((c == 'r') && (strncmp(argv[1], "reqheight", length) == 0)
@@ -1213,7 +1213,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " rgb window colorName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         window = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -1248,7 +1248,7 @@ char **argv;           /* Argument strings. */
         SETUP("screen");
         sprintf(string, "%d", Tk_ScreenNumber(window));
         Tcl_AppendResult(
-        interp, Tk_DisplayName(window), ".", string, ( char * )NULL);
+        interp, Tk_DisplayName(window), ".", string, ( char * ) NULL);
     } else if ((c == 's') && (strncmp(argv[1], "screencells", length) == 0)
                && (length >= 7)) {
         SETUP("screencells");
@@ -1313,7 +1313,7 @@ char **argv;           /* Argument strings. */
     } else if ((c == 'v') && (strncmp(argv[1], "viewable", length) == 0)
                && (length >= 3)) {
         SETUP("viewable");
-        for (winPtr = ( TkWindow * )window;; winPtr = winPtr->parentPtr) {
+        for (winPtr = ( TkWindow * ) window;; winPtr = winPtr->parentPtr) {
             if ((winPtr == NULL) || !(winPtr->flags & TK_MAPPED)) {
                 interp->result = "0";
                 break;
@@ -1353,7 +1353,7 @@ char **argv;           /* Argument strings. */
         SETUP("visualid");
         sprintf(interp->result,
                 "0x%x",
-                ( unsigned int )XVisualIDFromVisual(Tk_Visual(window)));
+                ( unsigned int ) XVisualIDFromVisual(Tk_Visual(window)));
     } else if ((c == 'v')
                && (strncmp(argv[1], "visualsavailable", length) == 0)
                && (length >= 7)) {
@@ -1372,7 +1372,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " visualsavailable window ?includeids?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -1416,12 +1416,12 @@ char **argv;           /* Argument strings. */
             if (includeVisualId) {
                 sprintf(visualIdString,
                         " 0x%x",
-                        ( unsigned int )visInfoPtr[i].visualid);
+                        ( unsigned int ) visInfoPtr[i].visualid);
                 strcat(string, visualIdString);
             }
             Tcl_AppendElement(interp, string);
         }
-        XFree(( char * )visInfoPtr);
+        XFree(( char * ) visInfoPtr);
     } else if ((c == 'v') && (strncmp(argv[1], "vrootheight", length) == 0)
                && (length >= 6)) {
         int x, y;
@@ -1479,7 +1479,7 @@ char **argv;           /* Argument strings. */
         "toplevel, viewable, visual, visualid, visualsavailable, ",
         "vrootheight, vrootwidth, vrootx, vrooty, ",
         "width, x, or y",
-        ( char * )NULL);
+        ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -1491,7 +1491,7 @@ wrongArgs:
                      " ",
                      argName,
                      " window\"",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -1529,8 +1529,8 @@ char **argv;        /* Array of two strings.   First must be
                          "bad argument \"",
                          argv[0],
                          "\": must be -displayof",
-                         ( char * )NULL);
-        return ( Tk_Window )NULL;
+                         ( char * ) NULL);
+        return ( Tk_Window ) NULL;
     }
     return Tk_NameToWindow(interp, argv[1], tkwin);
 }
@@ -1565,7 +1565,7 @@ char **argv;        /* Argument strings. */
                      "can't invoke \"",
                      argv[0],
                      "\" command:  application has been destroyed",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -1591,7 +1591,7 @@ static TkWindow *GetToplevel(tkwin) Tk_Window tkwin; /* Window for which the
                                                       * toplevel should be
                                                       * deterined. */
 {
-    TkWindow *winPtr = ( TkWindow * )tkwin;
+    TkWindow *winPtr = ( TkWindow * ) tkwin;
 
     while (!(winPtr->flags & TK_TOP_LEVEL)) {
         winPtr = winPtr->parentPtr;

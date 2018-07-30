@@ -83,7 +83,7 @@ static Void_t *
 memory(Dt_t *dt, Void_t *addr, size_t size, Dtdisc_t *disc)
 {
     int k;
-    Disc_t *dc = ( Disc_t * )disc;
+    Disc_t *dc = ( Disc_t * ) disc;
 
     if (addr || size <= 0) /* no freeing */
         return NIL(Void_t *);
@@ -95,7 +95,7 @@ memory(Dt_t *dt, Void_t *addr, size_t size, Dtdisc_t *disc)
     size
     = ((size + sizeof(Void_t *) - 1) / sizeof(Void_t *)) * sizeof(Void_t *);
     if (size <= dc->size) {
-        addr = ( Void_t * )dc->addr;
+        addr = ( Void_t * ) dc->addr;
         dc->addr += size;
         dc->size -= size;
     } else
@@ -230,12 +230,12 @@ tmain()
                                                                    */
       + N_OBJ * sizeof(Obj_t) /*  Obj  */ + k; /* table memory */
     State
-    = ( State_t * )mmap(0, z, PROT_READ | PROT_WRITE, MAP_SHARED, zerof, 0);
-    if (!State || State == ( State_t * )(-1))
+    = ( State_t * ) mmap(0, z, PROT_READ | PROT_WRITE, MAP_SHARED, zerof, 0);
+    if (!State || State == ( State_t * ) (-1))
         terror("mmap failed");
-    Disc = ( Disc_t * )(State + 1);
-    Obj = ( Obj_t * )(Disc + 1);
-    Disc->addr = ( unsigned char * )(Obj + N_OBJ);
+    Disc = ( Disc_t * ) (State + 1);
+    Obj = ( Obj_t * ) (Disc + 1);
+    Disc->addr = ( unsigned char * ) (Obj + N_OBJ);
     Disc->size = k;
 
     memset(State, 0, sizeof(State_t));

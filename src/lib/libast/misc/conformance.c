@@ -73,7 +73,7 @@ initconformance(void)
         i = sfstrtell(sp);
         sfstrseek(sp, 0, SEEK_SET);
         if (p = newof(0, char *, j, i)) {
-            m = ( char * )(p + j--);
+            m = ( char * ) (p + j--);
             memcpy(m, sfstrbase(sp), i);
             i = 0;
             p[i++] = m;
@@ -87,7 +87,7 @@ initconformance(void)
         sfstrclose(sp);
     }
     if (!p)
-        p = ( char ** )dflt;
+        p = ( char ** ) dflt;
     return ids = p;
 }
 
@@ -106,12 +106,12 @@ conformance(const char *s, size_t n)
     const char *e;
     const char *t;
 
-    static uint32_t serial = ~( uint32_t )0;
+    static uint32_t serial = ~( uint32_t ) 0;
 
     if (!(p = ids) || serial != ast.env_serial) {
         serial = ast.env_serial;
         if (ids) {
-            if (ids != ( char ** )dflt)
+            if (ids != ( char ** ) dflt)
                 free(ids);
             ids = 0;
         }

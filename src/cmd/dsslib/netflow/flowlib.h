@@ -82,9 +82,9 @@ typedef struct Netflow_file_s /* flow file state		*/
     unsigned int version;
 } Netflow_file_t;
 
-#    define NS (( Nftime_t )1000000000)
-#    define US (( Nftime_t )1000000)
-#    define MS (( Nftime_t )1000)
+#    define NS (( Nftime_t ) 1000000000)
+#    define US (( Nftime_t ) 1000000)
+#    define MS (( Nftime_t ) 1000)
 
 #    define netflow_first_format (&netflow_fixed_format)
 #    define netflow_dump_next (&netflow_dumpv9_format)

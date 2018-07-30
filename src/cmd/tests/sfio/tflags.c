@@ -50,7 +50,7 @@ tmain()
         terror("Can't be eof or error yet2");
     if (sfwrite(f, "ab", 2) != 2)
         terror("Can't write data");
-    if (sfseek(f, ( Sfoff_t )0, 0) != 0)
+    if (sfseek(f, ( Sfoff_t ) 0, 0) != 0)
         terror("Can't seek back");
     if (sfgetc(f) != 'a')
         terror("Got wrong data3");
@@ -72,7 +72,7 @@ tmain()
     if (!(f = sfopen(NIL(Sfio_t *), tstfile("sf", 0), "w+")))
         terror("Reopening %s", tstfile("sf", 0));
     sfwrite(f, "1234567890", 10);
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
 
     if (sfopen(sfstdout, tstfile("sf", 1), "w") != sfstdout)
         terror("Opening %s", tstfile("sf", 1));

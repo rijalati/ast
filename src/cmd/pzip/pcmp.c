@@ -76,7 +76,7 @@ dif(unsigned char *f,
 
     if (!dp && !(dp = sfstropen()) || !vp && !(vp = sfstropen()))
         error(ERROR_SYSTEM | 3, "out of space [tmp streams]");
-    p = ( unsigned char * )memcpy(t, f, cols);
+    p = ( unsigned char * ) memcpy(t, f, cols);
     sfwrite(dp, p, cols);
     n = 1;
     for (e = f + fsize; f < e; f += cols) {
@@ -103,7 +103,7 @@ dif(unsigned char *f,
     sfwrite(dp, sfstrseek(vp, 0, SEEK_SET), fsize);
     fsize = sfstrtell(dp);
     return zip(
-    ( unsigned char * )sfstrseek(dp, 0, SEEK_SET), fsize, t, tsize);
+    ( unsigned char * ) sfstrseek(dp, 0, SEEK_SET), fsize, t, tsize);
 }
 
 main(int argc, char **argv)
@@ -179,7 +179,7 @@ main(int argc, char **argv)
      * loop over the probabilities
      */
 
-    h = ( unsigned int )time(NiL) ^ ( unsigned int )getpid();
+    h = ( unsigned int ) time(NiL) ^ ( unsigned int ) getpid();
     for (n = 0; n < 100; n++) {
         m = (UINT_MAX / 100) * n;
         memset(dat, 040, cols);

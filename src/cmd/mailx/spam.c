@@ -154,9 +154,9 @@ set_spamtest(struct var *vp, const char *value)
     const struct lab *p;
     long test;
 
-    s = ( char * )value;
+    s = ( char * ) value;
     if (!isdigit(*s)) {
-        test = *(( long * )vp->variable);
+        test = *(( long * ) vp->variable);
         do {
             for (t = s; *t && *t != ',' && *t != '|'; t++)
                 ;
@@ -182,7 +182,7 @@ set_spamtest(struct var *vp, const char *value)
                 }
             s = t;
         } while (*s++);
-        *(( long * )vp->variable) = test;
+        *(( long * ) vp->variable) = test;
     }
 }
 
@@ -201,14 +201,14 @@ addrmatch(const char *a, const char *b)
     int many = 0;
     int host;
 
-    ap = ( char * )a;
+    ap = ( char * ) a;
     for (;;) {
         while (isspace(*ap))
             ap++;
         if (ae = strchr(ap, ','))
             *ae = 0;
         ap = skin(ap, GDISPLAY | GCOMPARE);
-        bp = ( char * )b;
+        bp = ( char * ) b;
         for (;;) {
             while (isspace(*bp))
                 bp++;
@@ -262,13 +262,13 @@ hostmatch(const char *a, const char *b)
     char *be;
     int local = 1;
 
-    ap = ( char * )a;
+    ap = ( char * ) a;
     for (;;) {
         if (ae = strchr(ap, ','))
             *ae = 0;
         if ((ad = strchr(ap, '.')) && !strchr(++ad, '.'))
             ad = 0;
-        bp = ( char * )b;
+        bp = ( char * ) b;
         for (;;) {
             while (isspace(*bp))
                 bp++;
@@ -328,7 +328,7 @@ wordmatch(const char *a, const char *b)
     int u;
     int l;
 
-    bb = ( char * )b;
+    bb = ( char * ) b;
     for (;;) {
         while (isspace(*bb))
             bb++;
@@ -336,7 +336,7 @@ wordmatch(const char *a, const char *b)
             be = bb + strlen(bb);
         l = *bb;
         u = toupper(l);
-        ab = ap = ( char * )a;
+        ab = ap = ( char * ) a;
         do {
             if ((*ap == l || *ap == u) && (ap == ab || !isalnum(*(ap - 1)))) {
                 am = ap;
@@ -380,7 +380,7 @@ usermatch(const char *a, const char *b, int to)
 
     if (!*a || !*b)
         return 0;
-    ap = ( char * )a;
+    ap = ( char * ) a;
     while (*ap) {
         while (isspace(*ap))
             ap++;
@@ -392,7 +392,7 @@ usermatch(const char *a, const char *b, int to)
             return 1;
         }
         ad = strchr(ap, '@');
-        bp = ( char * )b;
+        bp = ( char * ) b;
         for (;;) {
             while (isspace(*bp))
                 bp++;
@@ -739,7 +739,7 @@ spammed(struct msg *mp)
             e = s + sizeof(buf) - 1;
             for (p = spamtest; p < &spamtest[elementsof(spamtest)]; p++)
                 if (test & p->type) {
-                    for (t = ( char * )p->name; *t && s < e; *s++ = *t++)
+                    for (t = ( char * ) p->name; *t && s < e; *s++ = *t++)
                         ;
                     if (s < e)
                         *s++ = '|';

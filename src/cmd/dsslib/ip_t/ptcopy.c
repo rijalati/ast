@@ -34,8 +34,8 @@ ptcopy(Pt_t *a)
 
     if (b = ptopen(a->disc)) {
         b->entries = a->entries;
-        for (ap = ( Ptprefix_t * )dtfirst(a->dict); ap;
-             ap = ( Ptprefix_t * )dtnext(a->dict, ap))
+        for (ap = ( Ptprefix_t * ) dtfirst(a->dict); ap;
+             ap = ( Ptprefix_t * ) dtnext(a->dict, ap))
             dtinsert(b->dict, ap);
     }
     return b;

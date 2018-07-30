@@ -71,62 +71,62 @@
 /* for static initialization of an Sfio_t structure */
 #define SFNEW(data, size, file, type, disc, mutex)                           \
     {                                                                        \
-        ( unsigned char * )(data),                        /* next		*/        \
-        ( unsigned char * )(data),                        /* endw		*/        \
-        ( unsigned char * )(data),                        /* endr		*/        \
-        ( unsigned char * )(data),                        /* endb		*/        \
-        ( Sfio_t * )0,                                    /* push		*/        \
-        ( unsigned short )(( type )&SF_FLAGS),            /* flags	*/        \
-        ( short )(file),                                  /* file		*/        \
-        ( unsigned char * )(data),                        /* data		*/        \
-        (ssize_t)(size),                                  /* size		*/        \
-        (ssize_t)(-1),                                    /* val		*/         \
-        ( Sfoff_t )0,                                     /* extent	*/       \
-        ( Sfoff_t )0,                                     /* here		*/        \
-        0,                                                /* ngetr	*/        \
-        { 0 },                                            /* tiny		*/        \
-        0,                                                /* bits		*/        \
-        ( unsigned int )(((type) & (SF_RDWR)) | SF_INIT), /* mode		*/        \
-        ( struct _sfdisc_s * )(disc),                     /* disc		*/        \
-        ( struct _sfpool_s * )0,                          /* pool		*/        \
-        ( struct _sfrsrv_s * )0,                          /* rsrv		*/        \
-        ( struct _sfproc_s * )0,                          /* proc		*/        \
-        (mutex),                                          /* mutex	*/        \
-        ( Void_t * )0,                                    /* stdio	*/        \
-        ( Sfoff_t )0,                                     /* lpos		*/        \
-        ( size_t )0,                                      /* iosz		*/        \
-        0,                                                /* blksz	*/        \
-        0                                                 /* getr		*/        \
+        ( unsigned char * ) (data),                        /* next		*/       \
+        ( unsigned char * ) (data),                        /* endw		*/       \
+        ( unsigned char * ) (data),                        /* endr		*/       \
+        ( unsigned char * ) (data),                        /* endb		*/       \
+        ( Sfio_t * ) 0,                                    /* push		*/       \
+        ( unsigned short ) (( type ) &SF_FLAGS),           /* flags	*/       \
+        ( short ) (file),                                  /* file		*/       \
+        ( unsigned char * ) (data),                        /* data		*/       \
+        (ssize_t)(size),                                   /* size		*/       \
+        (ssize_t)(-1),                                     /* val		*/        \
+        ( Sfoff_t ) 0,                                     /* extent	*/      \
+        ( Sfoff_t ) 0,                                     /* here		*/       \
+        0,                                                 /* ngetr	*/       \
+        { 0 },                                             /* tiny		*/       \
+        0,                                                 /* bits		*/       \
+        ( unsigned int ) (((type) & (SF_RDWR)) | SF_INIT), /* mode		*/       \
+        ( struct _sfdisc_s * ) (disc),                     /* disc		*/       \
+        ( struct _sfpool_s * ) 0,                          /* pool		*/       \
+        ( struct _sfrsrv_s * ) 0,                          /* rsrv		*/       \
+        ( struct _sfproc_s * ) 0,                          /* proc		*/       \
+        (mutex),                                           /* mutex	*/       \
+        ( Void_t * ) 0,                                    /* stdio	*/       \
+        ( Sfoff_t ) 0,                                     /* lpos		*/       \
+        ( size_t ) 0,                                      /* iosz		*/       \
+        0,                                                 /* blksz	*/       \
+        0                                                  /* getr		*/       \
     }
 
 /* function to clear an Sfio_t structure */
 #define SFCLEAR(f, mtx)                                                      \
-    ((f)->next = ( unsigned char * )0,    /* next		*/                        \
-     (f)->endw = ( unsigned char * )0,    /* endw		*/                        \
-     (f)->endr = ( unsigned char * )0,    /* endr		*/                        \
-     (f)->endb = ( unsigned char * )0,    /* endb		*/                        \
-     (f)->push = ( Sfio_t * )0,           /* push		*/                        \
-     (f)->flags = ( unsigned short )0,    /* flags	*/                        \
-     (f)->file = -1,                      /* file		*/                        \
-     (f)->data = ( unsigned char * )0,    /* data		*/                        \
-     (f)->size = (ssize_t)(-1),           /* size		*/                        \
-     (f)->val = (ssize_t)(-1),            /* val		*/                         \
-     (f)->extent = (Sfoff_t)(-1),         /* extent	*/                       \
-     (f)->here = ( Sfoff_t )0,            /* here		*/                        \
-     (f)->ngetr = 0,                      /* ngetr	*/                        \
-     (f)->tiny[0] = 0,                    /* tiny		*/                        \
-     (f)->bits = 0,                       /* bits		*/                        \
-     (f)->mode = 0,                       /* mode		*/                        \
-     (f)->disc = ( struct _sfdisc_s * )0, /* disc		*/                        \
-     (f)->pool = ( struct _sfpool_s * )0, /* pool		*/                        \
-     (f)->rsrv = ( struct _sfrsrv_s * )0, /* rsrv		*/                        \
-     (f)->proc = ( struct _sfproc_s * )0, /* proc		*/                        \
-     (f)->mutex = (mtx),                  /* mutex	*/                        \
-     (f)->stdio = ( Void_t * )0,          /* stdio	*/                        \
-     (f)->lpos = ( Sfoff_t )0,            /* lpos		*/                        \
-     (f)->iosz = ( size_t )0,             /* iosz		*/                        \
-     (f)->blksz = 0,                      /* blksz	*/                        \
-     (f)->getr = 0                        /* getr		*/                        \
+    ((f)->next = ( unsigned char * ) 0,    /* next		*/                       \
+     (f)->endw = ( unsigned char * ) 0,    /* endw		*/                       \
+     (f)->endr = ( unsigned char * ) 0,    /* endr		*/                       \
+     (f)->endb = ( unsigned char * ) 0,    /* endb		*/                       \
+     (f)->push = ( Sfio_t * ) 0,           /* push		*/                       \
+     (f)->flags = ( unsigned short ) 0,    /* flags	*/                       \
+     (f)->file = -1,                       /* file		*/                       \
+     (f)->data = ( unsigned char * ) 0,    /* data		*/                       \
+     (f)->size = (ssize_t)(-1),            /* size		*/                       \
+     (f)->val = (ssize_t)(-1),             /* val		*/                        \
+     (f)->extent = (Sfoff_t)(-1),          /* extent	*/                      \
+     (f)->here = ( Sfoff_t ) 0,            /* here		*/                       \
+     (f)->ngetr = 0,                       /* ngetr	*/                       \
+     (f)->tiny[0] = 0,                     /* tiny		*/                       \
+     (f)->bits = 0,                        /* bits		*/                       \
+     (f)->mode = 0,                        /* mode		*/                       \
+     (f)->disc = ( struct _sfdisc_s * ) 0, /* disc		*/                       \
+     (f)->pool = ( struct _sfpool_s * ) 0, /* pool		*/                       \
+     (f)->rsrv = ( struct _sfrsrv_s * ) 0, /* rsrv		*/                       \
+     (f)->proc = ( struct _sfproc_s * ) 0, /* proc		*/                       \
+     (f)->mutex = (mtx),                   /* mutex	*/                       \
+     (f)->stdio = ( Void_t * ) 0,          /* stdio	*/                       \
+     (f)->lpos = ( Sfoff_t ) 0,            /* lpos		*/                       \
+     (f)->iosz = ( size_t ) 0,             /* iosz		*/                       \
+     (f)->blksz = 0,                       /* blksz	*/                       \
+     (f)->getr = 0                         /* getr		*/                       \
     )
 
 /* expose next stream inside discipline function; state saved in int f */

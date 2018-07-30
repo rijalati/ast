@@ -99,7 +99,7 @@ char **argv;
 
     if (strcmp(cmd, "kill") == 0) {
         sfsprintf(buf, 2048, "%s\n", cmd);
-        ( void )vcs_write(buf);
+        ( void ) vcs_write(buf);
         close(istate.fd);
         istate.fd = -1;
         return (0);

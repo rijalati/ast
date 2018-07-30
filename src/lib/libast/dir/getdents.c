@@ -86,13 +86,13 @@ getdents(int fd, void *buf, size_t siz)
 
         m = (siz * 6) / 10;
         m = roundof(m, 8);
-        sp = ( char * )buf + siz - m - 1;
+        sp = ( char * ) buf + siz - m - 1;
         if (!(n = dirread(fd, sp, m)))
             return (0);
         if (n > 0) {
-            up = ( struct dirent * )buf;
+            up = ( struct dirent * ) buf;
             sp[n] = 0;
-            while (sp < ( char * )buf + siz - m + n) {
+            while (sp < ( char * ) buf + siz - m + n) {
                 i = 0;
                 while (*sp >= '0' && *sp <= '9')
                     i = 10 * i + *sp++ - '0';
@@ -107,10 +107,10 @@ getdents(int fd, void *buf, size_t siz)
                     up->d_reclen = sizeof(struct dirent) - sizeof(up->d_name)
                                    + (up->d_namlen = u - up->d_name) + 1;
                     up->d_reclen = roundof(up->d_reclen, 8);
-                    up = ( struct dirent * )(( char * )up + up->d_reclen);
+                    up = ( struct dirent * ) (( char * ) up + up->d_reclen);
                 }
             }
-            return (( char * )up - ( char * )buf);
+            return (( char * ) up - ( char * ) buf);
         }
     }
 #        else
@@ -136,16 +136,16 @@ getdents(int fd, void *buf, size_t siz)
          * we assume sizeof(struct dirent) > sizeof(struct direct)
          */
 
-        up = ( struct dirent * )buf;
+        up = ( struct dirent * ) buf;
         n = (siz / MAXREC) * sizeof(struct direct);
         if ((!(m = n & ~511) || m < MAXREC)
             && (!(m = n & ~255) || m < MAXREC))
             m = n;
         do {
-            if ((n = read(fd, ( char * )buf + siz - m, m)) <= 0)
+            if ((n = read(fd, ( char * ) buf + siz - m, m)) <= 0)
                 break;
-            sp = ( struct direct * )(( char * )buf + siz - m);
-            while (sp < ( struct direct * )(( char * )buf + siz - m + n)) {
+            sp = ( struct direct * ) (( char * ) buf + siz - m);
+            while (sp < ( struct direct * ) (( char * ) buf + siz - m + n)) {
                 if (sp->d_ino) {
                     up->d_fileno = sp->d_ino;
                     s = sp->d_name;
@@ -157,12 +157,12 @@ getdents(int fd, void *buf, size_t siz)
                     up->d_reclen = sizeof(struct dirent) - sizeof(up->d_name)
                                    + (up->d_namlen = u - tmp) + 1;
                     up->d_reclen = roundof(up->d_reclen, 8);
-                    up = ( struct dirent * )(( char * )up + up->d_reclen);
+                    up = ( struct dirent * ) (( char * ) up + up->d_reclen);
                 }
                 sp++;
             }
-        } while (up == ( struct dirent * )buf);
-        return (( char * )up - ( char * )buf);
+        } while (up == ( struct dirent * ) buf);
+        return (( char * ) up - ( char * ) buf);
     }
 #            endif
 #        endif

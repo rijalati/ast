@@ -189,7 +189,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option|pathName args",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -200,7 +200,7 @@ char **argv;           /* Argument strings. */
      */
 
     if (c == '.') {
-        tkwin = Tk_NameToWindow(interp, argv[1], ( Tk_Window )clientData);
+        tkwin = Tk_NameToWindow(interp, argv[1], ( Tk_Window ) clientData);
         if (tkwin == NULL) {
             return TCL_ERROR;
         }
@@ -213,7 +213,7 @@ char **argv;           /* Argument strings. */
      * by possible additional arguments.
      */
 
-    tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window )clientData);
+    tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window ) clientData);
     if (tkwin == NULL) {
         return TCL_ERROR;
     }
@@ -224,7 +224,7 @@ char **argv;           /* Argument strings. */
             "wrong # args: should be \"",
             argv[0],
             " configure pathName option value ?option value ...?\"",
-            ( char * )NULL);
+            ( char * ) NULL);
             return TCL_ERROR;
         }
         slavePtr = FindSlave(tkwin);
@@ -235,14 +235,14 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " forget pathName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
-        hPtr = Tcl_FindHashEntry(&slaveTable, ( char * )tkwin);
+        hPtr = Tcl_FindHashEntry(&slaveTable, ( char * ) tkwin);
         if (hPtr == NULL) {
             return TCL_OK;
         }
-        slavePtr = ( Slave * )Tcl_GetHashValue(hPtr);
+        slavePtr = ( Slave * ) Tcl_GetHashValue(hPtr);
         if ((slavePtr->masterPtr != NULL)
             && (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin))) {
             Tk_UnmaintainGeometry(slavePtr->tkwin,
@@ -253,10 +253,10 @@ char **argv;           /* Argument strings. */
         Tk_DeleteEventHandler(tkwin,
                               StructureNotifyMask,
                               SlaveStructureProc,
-                              ( ClientData )slavePtr);
-        Tk_ManageGeometry(tkwin, ( Tk_GeomMgr * )NULL, ( ClientData )NULL);
+                              ( ClientData ) slavePtr);
+        Tk_ManageGeometry(tkwin, ( Tk_GeomMgr * ) NULL, ( ClientData ) NULL);
         Tk_UnmapWindow(tkwin);
-        ckfree(( char * )slavePtr);
+        ckfree(( char * ) slavePtr);
     } else if ((c == 'i') && (strncmp(argv[1], "info", length) == 0)) {
         char buffer[50];
 
@@ -265,62 +265,62 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " info pathName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
-        hPtr = Tcl_FindHashEntry(&slaveTable, ( char * )tkwin);
+        hPtr = Tcl_FindHashEntry(&slaveTable, ( char * ) tkwin);
         if (hPtr == NULL) {
             return TCL_OK;
         }
-        slavePtr = ( Slave * )Tcl_GetHashValue(hPtr);
+        slavePtr = ( Slave * ) Tcl_GetHashValue(hPtr);
         sprintf(buffer, "-x %d", slavePtr->x);
-        Tcl_AppendResult(interp, buffer, ( char * )NULL);
+        Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         sprintf(buffer, " -relx %.4g", slavePtr->relX);
-        Tcl_AppendResult(interp, buffer, ( char * )NULL);
+        Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         sprintf(buffer, " -y %d", slavePtr->y);
-        Tcl_AppendResult(interp, buffer, ( char * )NULL);
+        Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         sprintf(buffer, " -rely %.4g", slavePtr->relY);
-        Tcl_AppendResult(interp, buffer, ( char * )NULL);
+        Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         if (slavePtr->flags & CHILD_WIDTH) {
             sprintf(buffer, " -width %d", slavePtr->width);
-            Tcl_AppendResult(interp, buffer, ( char * )NULL);
+            Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         } else {
-            Tcl_AppendResult(interp, " -width {}", ( char * )NULL);
+            Tcl_AppendResult(interp, " -width {}", ( char * ) NULL);
         }
         if (slavePtr->flags & CHILD_REL_WIDTH) {
             sprintf(buffer, " -relwidth %.4g", slavePtr->relWidth);
-            Tcl_AppendResult(interp, buffer, ( char * )NULL);
+            Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         } else {
-            Tcl_AppendResult(interp, " -relwidth {}", ( char * )NULL);
+            Tcl_AppendResult(interp, " -relwidth {}", ( char * ) NULL);
         }
         if (slavePtr->flags & CHILD_HEIGHT) {
             sprintf(buffer, " -height %d", slavePtr->height);
-            Tcl_AppendResult(interp, buffer, ( char * )NULL);
+            Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         } else {
-            Tcl_AppendResult(interp, " -height {}", ( char * )NULL);
+            Tcl_AppendResult(interp, " -height {}", ( char * ) NULL);
         }
         if (slavePtr->flags & CHILD_REL_HEIGHT) {
             sprintf(buffer, " -relheight %.4g", slavePtr->relHeight);
-            Tcl_AppendResult(interp, buffer, ( char * )NULL);
+            Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         } else {
-            Tcl_AppendResult(interp, " -relheight {}", ( char * )NULL);
+            Tcl_AppendResult(interp, " -relheight {}", ( char * ) NULL);
         }
 
         Tcl_AppendResult(interp,
                          " -anchor ",
                          Tk_NameOfAnchor(slavePtr->anchor),
-                         ( char * )NULL);
+                         ( char * ) NULL);
         if (slavePtr->borderMode == BM_OUTSIDE) {
-            Tcl_AppendResult(interp, " -bordermode outside", ( char * )NULL);
+            Tcl_AppendResult(interp, " -bordermode outside", ( char * ) NULL);
         } else if (slavePtr->borderMode == BM_IGNORE) {
-            Tcl_AppendResult(interp, " -bordermode ignore", ( char * )NULL);
+            Tcl_AppendResult(interp, " -bordermode ignore", ( char * ) NULL);
         }
         if ((slavePtr->masterPtr != NULL)
             && (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin))) {
             Tcl_AppendResult(interp,
                              " -in ",
                              Tk_PathName(slavePtr->masterPtr->tkwin),
-                             ( char * )NULL);
+                             ( char * ) NULL);
         }
     } else if ((c == 's') && (strncmp(argv[1], "slaves", length) == 0)) {
         if (argc != 3) {
@@ -328,13 +328,13 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " slaves pathName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
-        hPtr = Tcl_FindHashEntry(&masterTable, ( char * )tkwin);
+        hPtr = Tcl_FindHashEntry(&masterTable, ( char * ) tkwin);
         if (hPtr != NULL) {
             Master *masterPtr;
-            masterPtr = ( Master * )Tcl_GetHashValue(hPtr);
+            masterPtr = ( Master * ) Tcl_GetHashValue(hPtr);
             for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
                  slavePtr = slavePtr->nextPtr) {
                 Tcl_AppendElement(interp, Tk_PathName(slavePtr->tkwin));
@@ -345,7 +345,7 @@ char **argv;           /* Argument strings. */
                          "unknown or ambiguous option \"",
                          argv[1],
                          "\": must be configure, forget, info, or slaves",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -374,9 +374,9 @@ static Slave *FindSlave(tkwin) Tk_Window tkwin; /* Token for desired slave. */
     Slave *slavePtr;
     int new;
 
-    hPtr = Tcl_CreateHashEntry(&slaveTable, ( char * )tkwin, &new);
+    hPtr = Tcl_CreateHashEntry(&slaveTable, ( char * ) tkwin, &new);
     if (new) {
-        slavePtr = ( Slave * )ckalloc(sizeof(Slave));
+        slavePtr = ( Slave * ) ckalloc(sizeof(Slave));
         slavePtr->tkwin = tkwin;
         slavePtr->masterPtr = NULL;
         slavePtr->nextPtr = NULL;
@@ -391,10 +391,10 @@ static Slave *FindSlave(tkwin) Tk_Window tkwin; /* Token for desired slave. */
         Tk_CreateEventHandler(tkwin,
                               StructureNotifyMask,
                               SlaveStructureProc,
-                              ( ClientData )slavePtr);
-        Tk_ManageGeometry(tkwin, &placerType, ( ClientData )slavePtr);
+                              ( ClientData ) slavePtr);
+        Tk_ManageGeometry(tkwin, &placerType, ( ClientData ) slavePtr);
     } else {
-        slavePtr = ( Slave * )Tcl_GetHashValue(hPtr);
+        slavePtr = ( Slave * ) Tcl_GetHashValue(hPtr);
     }
     return slavePtr;
 }
@@ -466,9 +466,9 @@ static Master *FindMaster(tkwin) Tk_Window tkwin; /* Token for desired master.
     Master *masterPtr;
     int new;
 
-    hPtr = Tcl_CreateHashEntry(&masterTable, ( char * )tkwin, &new);
+    hPtr = Tcl_CreateHashEntry(&masterTable, ( char * ) tkwin, &new);
     if (new) {
-        masterPtr = ( Master * )ckalloc(sizeof(Master));
+        masterPtr = ( Master * ) ckalloc(sizeof(Master));
         masterPtr->tkwin = tkwin;
         masterPtr->slavePtr = NULL;
         masterPtr->flags = 0;
@@ -476,9 +476,9 @@ static Master *FindMaster(tkwin) Tk_Window tkwin; /* Token for desired master.
         Tk_CreateEventHandler(masterPtr->tkwin,
                               StructureNotifyMask,
                               MasterStructureProc,
-                              ( ClientData )masterPtr);
+                              ( ClientData ) masterPtr);
     } else {
-        masterPtr = ( Master * )Tcl_GetHashValue(hPtr);
+        masterPtr = ( Master * ) Tcl_GetHashValue(hPtr);
     }
     return masterPtr;
 }
@@ -520,7 +520,7 @@ char **argv;        /* String values for arguments. */
                          "can't use placer on top-level window \"",
                          Tk_PathName(slavePtr->tkwin),
                          "\"; use wm command instead",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     for (; argc > 0; argc -= 2, argv += 2) {
@@ -529,7 +529,7 @@ char **argv;        /* String values for arguments. */
                              "extra option \"",
                              argv[0],
                              "\" (option with no value?)",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -558,7 +558,7 @@ char **argv;        /* String values for arguments. */
                                  "bad border mode \"",
                                  argv[1],
                                  "\": must be ignore, inside, or outside",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 result = TCL_ERROR;
                 goto done;
             }
@@ -600,7 +600,7 @@ char **argv;        /* String values for arguments. */
                                      Tk_PathName(slavePtr->tkwin),
                                      " relative to ",
                                      Tk_PathName(tkwin),
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     result = TCL_ERROR;
                     goto done;
                 }
@@ -610,7 +610,7 @@ char **argv;        /* String values for arguments. */
                                  "can't place ",
                                  Tk_PathName(slavePtr->tkwin),
                                  " relative to itself",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 result = TCL_ERROR;
                 goto done;
             }
@@ -701,7 +701,7 @@ char **argv;        /* String values for arguments. */
             "\": must be -anchor, -bordermode, -height, ",
             "-in, -relheight, -relwidth, -relx, -rely, -width, ",
             "-x, or -y",
-            ( char * )NULL);
+            ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -722,7 +722,7 @@ done:
     }
     if (!(masterPtr->flags & PARENT_RECONFIG_PENDING)) {
         masterPtr->flags |= PARENT_RECONFIG_PENDING;
-        Tcl_DoWhenIdle(RecomputePlacement, ( ClientData )masterPtr);
+        Tcl_DoWhenIdle(RecomputePlacement, ( ClientData ) masterPtr);
     }
     return result;
 }
@@ -747,7 +747,7 @@ done:
 static void RecomputePlacement(clientData)
 ClientData clientData; /* Pointer to Master record. */
 {
-    Master *masterPtr = ( Master * )clientData;
+    Master *masterPtr = ( Master * ) clientData;
     Slave *slavePtr;
     int x, y, width, height, tmp;
     int masterWidth, masterHeight, masterBW;
@@ -940,14 +940,14 @@ ClientData clientData; /* Pointer to Master structure for window
                         * referred to by eventPtr. */
 XEvent *eventPtr;      /* Describes what just happened. */
 {
-    Master *masterPtr = ( Master * )clientData;
+    Master *masterPtr = ( Master * ) clientData;
     Slave *slavePtr, *nextPtr;
 
     if (eventPtr->type == ConfigureNotify) {
         if ((masterPtr->slavePtr != NULL)
             && !(masterPtr->flags & PARENT_RECONFIG_PENDING)) {
             masterPtr->flags |= PARENT_RECONFIG_PENDING;
-            Tcl_DoWhenIdle(RecomputePlacement, ( ClientData )masterPtr);
+            Tcl_DoWhenIdle(RecomputePlacement, ( ClientData ) masterPtr);
         }
     } else if (eventPtr->type == DestroyNotify) {
         for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
@@ -957,12 +957,12 @@ XEvent *eventPtr;      /* Describes what just happened. */
             slavePtr->nextPtr = NULL;
         }
         Tcl_DeleteHashEntry(
-        Tcl_FindHashEntry(&masterTable, ( char * )masterPtr->tkwin));
+        Tcl_FindHashEntry(&masterTable, ( char * ) masterPtr->tkwin));
         if (masterPtr->flags & PARENT_RECONFIG_PENDING) {
-            Tcl_CancelIdleCall(RecomputePlacement, ( ClientData )masterPtr);
+            Tcl_CancelIdleCall(RecomputePlacement, ( ClientData ) masterPtr);
         }
         masterPtr->tkwin = NULL;
-        ckfree(( char * )masterPtr);
+        ckfree(( char * ) masterPtr);
     } else if (eventPtr->type == MapNotify) {
         /*
          * When a master gets mapped, must redo the geometry computation
@@ -972,7 +972,7 @@ XEvent *eventPtr;      /* Describes what just happened. */
         if ((masterPtr->slavePtr != NULL)
             && !(masterPtr->flags & PARENT_RECONFIG_PENDING)) {
             masterPtr->flags |= PARENT_RECONFIG_PENDING;
-            Tcl_DoWhenIdle(RecomputePlacement, ( ClientData )masterPtr);
+            Tcl_DoWhenIdle(RecomputePlacement, ( ClientData ) masterPtr);
         }
     } else if (eventPtr->type == UnmapNotify) {
         /*
@@ -1009,13 +1009,13 @@ ClientData clientData; /* Pointer to Slave structure for window
                         * referred to by eventPtr. */
 XEvent *eventPtr;      /* Describes what just happened. */
 {
-    Slave *slavePtr = ( Slave * )clientData;
+    Slave *slavePtr = ( Slave * ) clientData;
 
     if (eventPtr->type == DestroyNotify) {
         UnlinkSlave(slavePtr);
         Tcl_DeleteHashEntry(
-        Tcl_FindHashEntry(&slaveTable, ( char * )slavePtr->tkwin));
-        ckfree(( char * )slavePtr);
+        Tcl_FindHashEntry(&slaveTable, ( char * ) slavePtr->tkwin));
+        ckfree(( char * ) slavePtr);
     }
 }
 
@@ -1043,7 +1043,7 @@ ClientData clientData; /* Pointer to our record for slave. */
 Tk_Window tkwin;       /* Window that changed its desired
                         * size. */
 {
-    Slave *slavePtr = ( Slave * )clientData;
+    Slave *slavePtr = ( Slave * ) clientData;
     Master *masterPtr;
 
     if (((slavePtr->flags & (CHILD_WIDTH | CHILD_REL_WIDTH)) != 0)
@@ -1056,7 +1056,7 @@ Tk_Window tkwin;       /* Window that changed its desired
     }
     if (!(masterPtr->flags & PARENT_RECONFIG_PENDING)) {
         masterPtr->flags |= PARENT_RECONFIG_PENDING;
-        Tcl_DoWhenIdle(RecomputePlacement, ( ClientData )masterPtr);
+        Tcl_DoWhenIdle(RecomputePlacement, ( ClientData ) masterPtr);
     }
 }
 
@@ -1083,15 +1083,15 @@ ClientData clientData; /* Slave structure for slave window that
                         * was stolen away. */
 Tk_Window tkwin;       /* Tk's handle for the slave window. */
 {
-    Slave *slavePtr = ( Slave * )clientData;
+    Slave *slavePtr = ( Slave * ) clientData;
 
     if (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin)) {
         Tk_UnmaintainGeometry(slavePtr->tkwin, slavePtr->masterPtr->tkwin);
     }
     Tk_UnmapWindow(tkwin);
     UnlinkSlave(slavePtr);
-    Tcl_DeleteHashEntry(Tcl_FindHashEntry(&slaveTable, ( char * )tkwin));
+    Tcl_DeleteHashEntry(Tcl_FindHashEntry(&slaveTable, ( char * ) tkwin));
     Tk_DeleteEventHandler(
-    tkwin, StructureNotifyMask, SlaveStructureProc, ( ClientData )slavePtr);
-    ckfree(( char * )slavePtr);
+    tkwin, StructureNotifyMask, SlaveStructureProc, ( ClientData ) slavePtr);
+    ckfree(( char * ) slavePtr);
 }

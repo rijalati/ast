@@ -36,7 +36,7 @@
 
 Tk_Window Tk_CanvasTkwin(canvas) Tk_Canvas canvas; /* Token for the canvas. */
 {
-    TkCanvas *canvasPtr = ( TkCanvas * )canvas;
+    TkCanvas *canvasPtr = ( TkCanvas * ) canvas;
     return canvasPtr->tkwin;
 }
 
@@ -68,7 +68,7 @@ double x, y;                        /* Coordinates in canvas space. */
 short *drawableXPtr, *drawableYPtr; /* Screen coordinates are stored
                                      * here. */
 {
-    TkCanvas *canvasPtr = ( TkCanvas * )canvas;
+    TkCanvas *canvasPtr = ( TkCanvas * ) canvas;
     double tmp;
 
     tmp = x - canvasPtr->drawableXOrigin;
@@ -127,7 +127,7 @@ double x, y;                    /* Coordinates in canvas space. */
 short *screenXPtr, *screenYPtr; /* Screen coordinates are stored
                                  * here. */
 {
-    TkCanvas *canvasPtr = ( TkCanvas * )canvas;
+    TkCanvas *canvasPtr = ( TkCanvas * ) canvas;
     double tmp;
 
     tmp = x - canvasPtr->xOrigin;
@@ -187,7 +187,7 @@ char *string;       /* Describes coordinate (any screen
                      * coordinate form may be used here). */
 double *doublePtr;  /* Place to store converted coordinate. */
 {
-    TkCanvas *canvasPtr = ( TkCanvas * )canvas;
+    TkCanvas *canvasPtr = ( TkCanvas * ) canvas;
     if (Tk_GetScreenMM(canvasPtr->interp, canvasPtr->tkwin, string, doublePtr)
         != TCL_OK) {
         return TCL_ERROR;
@@ -221,7 +221,7 @@ GC gc; /* Graphics context that is about to be
         * part of redisplaying the canvas. */
 
 {
-    TkCanvas *canvasPtr = ( TkCanvas * )canvas;
+    TkCanvas *canvasPtr = ( TkCanvas * ) canvas;
 
     XSetTSOrigin(canvasPtr->display,
                  gc,
@@ -255,7 +255,7 @@ GC gc; /* Graphics context that is about to be
 Tk_CanvasTextInfo *Tk_CanvasGetTextInfo(
 canvas) Tk_Canvas canvas; /* Token for the canvas widget. */
 {
-    return &(( TkCanvas * )canvas)->textInfo;
+    return &(( TkCanvas * ) canvas)->textInfo;
 }
 
 /*
@@ -285,7 +285,7 @@ char *value;           /* Value of option (list of tag
 char *widgRec;         /* Pointer to record for item. */
 int offset;            /* Offset into item (ignored). */
 {
-    Tk_Item *itemPtr = ( Tk_Item * )widgRec;
+    Tk_Item *itemPtr = ( Tk_Item * ) widgRec;
     int argc, i;
     char **argv;
     Tk_Uid *newPtr;
@@ -304,12 +304,12 @@ int offset;            /* Offset into item (ignored). */
      */
 
     if (itemPtr->tagSpace < argc) {
-        newPtr = ( Tk_Uid * )ckalloc(( unsigned )(argc * sizeof(Tk_Uid)));
+        newPtr = ( Tk_Uid * ) ckalloc(( unsigned ) (argc * sizeof(Tk_Uid)));
         for (i = itemPtr->numTags - 1; i >= 0; i--) {
             newPtr[i] = itemPtr->tagPtr[i];
         }
         if (itemPtr->tagPtr != itemPtr->staticTagSpace) {
-            ckfree(( char * )itemPtr->tagPtr);
+            ckfree(( char * ) itemPtr->tagPtr);
         }
         itemPtr->tagPtr = newPtr;
         itemPtr->tagSpace = argc;
@@ -318,7 +318,7 @@ int offset;            /* Offset into item (ignored). */
     for (i = 0; i < argc; i++) {
         itemPtr->tagPtr[i] = Tk_GetUid(argv[i]);
     }
-    ckfree(( char * )argv);
+    ckfree(( char * ) argv);
     return TCL_OK;
 }
 
@@ -353,16 +353,16 @@ Tcl_FreeProc **freeProcPtr; /* Pointer to variable to fill in with
                              * information about how to reclaim
                              * storage for return string. */
 {
-    Tk_Item *itemPtr = ( Tk_Item * )widgRec;
+    Tk_Item *itemPtr = ( Tk_Item * ) widgRec;
 
     if (itemPtr->numTags == 0) {
-        *freeProcPtr = ( Tcl_FreeProc * )NULL;
+        *freeProcPtr = ( Tcl_FreeProc * ) NULL;
         return "";
     }
     if (itemPtr->numTags == 1) {
-        *freeProcPtr = ( Tcl_FreeProc * )NULL;
-        return ( char * )itemPtr->tagPtr[0];
+        *freeProcPtr = ( Tcl_FreeProc * ) NULL;
+        return ( char * ) itemPtr->tagPtr[0];
     }
     *freeProcPtr = TCL_DYNAMIC;
-    return Tcl_Merge(itemPtr->numTags, ( char ** )itemPtr->tagPtr);
+    return Tcl_Merge(itemPtr->numTags, ( char ** ) itemPtr->tagPtr);
 }

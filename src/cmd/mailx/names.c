@@ -115,7 +115,7 @@ yankword(char *ap, char *wbuf)
         for (cp2 = wbuf; *cp && !strchr(" \t,(", *cp); *cp2++ = *cp++)
             ;
     *cp2 = 0;
-    return *wbuf ? cp : ( char * )0;
+    return *wbuf ? cp : ( char * ) 0;
 }
 
 /*
@@ -124,8 +124,9 @@ yankword(char *ap, char *wbuf)
 static int
 clear(Dt_t *dt, void *object, void *context)
 {
-    if (!((( struct name * )object)->flags &= ~(*( unsigned long * )context)))
-        (( struct name * )object)->flags |= GDONE;
+    if (!((( struct name * ) object)->flags
+          &= ~(*( unsigned long * ) context)))
+        (( struct name * ) object)->flags |= GDONE;
     return 0;
 }
 
@@ -205,7 +206,7 @@ extract(struct header *hp, unsigned long flags, char *s)
                     if (streq(x->name, s))
                         return;
                 hp->h_flags |= flags;
-                x = ( struct list * )salloc(sizeof(struct list) + n + 1);
+                x = ( struct list * ) salloc(sizeof(struct list) + n + 1);
                 strcpy(x->name, s);
                 x->next = 0;
                 if (hp->h_misc.tail)
@@ -234,8 +235,8 @@ typedef struct
 static int
 stringize(Dt_t *dt, void *object, void *context)
 {
-    struct name *np = ( struct name * )object;
-    Walk_str_t *ws = ( Walk_str_t * )context;
+    struct name *np = ( struct name * ) object;
+    Walk_str_t *ws = ( Walk_str_t * ) context;
     char *s;
     char *t;
 
@@ -325,8 +326,8 @@ mapadd(Walk_map_t *wm, struct name *np, char *name, unsigned long flags)
 static int
 mapuser(Dt_t *dt, void *object, void *context)
 {
-    struct name *np = ( struct name * )object;
-    Walk_map_t *wm = ( Walk_map_t * )context;
+    struct name *np = ( struct name * ) object;
+    Walk_map_t *wm = ( Walk_map_t * ) context;
     struct name *ap;
     struct list *mp;
     char *s;
@@ -338,7 +339,7 @@ mapuser(Dt_t *dt, void *object, void *context)
         dictsearch(&wm->seen, np->name, INSERT | IGNORECASE | STACK);
         if (*np->name != '\\'
             && (ap = dictsearch(&state.aliases, np->name, LOOKUP))) {
-            for (mp = ( struct list * )ap->value; mp; mp = mp->next)
+            for (mp = ( struct list * ) ap->value; mp; mp = mp->next)
                 mapadd(wm, np, mp->name, np->flags & ~(GMAP | GMETOO));
             return 0;
         }
@@ -356,8 +357,9 @@ mapuser(Dt_t *dt, void *object, void *context)
         }
     }
     if (!dictsearch(&state.aliases, np->name, LOOKUP))
-        dictsearch(
-        &wm->next, ( char * )np, INSERT | IGNORECASE | STACK | OBJECT | COPY);
+        dictsearch(&wm->next,
+                   ( char * ) np,
+                   INSERT | IGNORECASE | STACK | OBJECT | COPY);
     return 0;
 }
 
@@ -383,7 +385,7 @@ usermap(struct header *hp, int show)
         && ((np->flags & GMETOO) || streq(np->name, state.var.user))) {
         if (wm.show)
             note(0, "\"%s\" -> ADD", np->name);
-        dictsearch(&hp->h_names, ( char * )np, INSERT | IGNORECASE | OBJECT);
+        dictsearch(&hp->h_names, ( char * ) np, INSERT | IGNORECASE | OBJECT);
     }
     return hp->h_names != 0;
 }
@@ -439,5 +441,5 @@ record(char *author, unsigned long flags)
             *rp++ = '+';
         strncopy(rp, tp, ep - rp);
     }
-    return tp && *tp ? expand(tp, 1) : ( char * )0;
+    return tp && *tp ? expand(tp, 1) : ( char * ) 0;
 }

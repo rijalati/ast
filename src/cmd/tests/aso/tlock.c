@@ -46,11 +46,11 @@ lockobj(void *lck, ssize_t size, int locking)
     if (locking == 0) /* unlocking a slot */
     {
         if (size == sizeof(char))
-            lckv = *(( char * )lck);
+            lckv = *(( char * ) lck);
         else if (size == sizeof(short))
-            lckv = *(( short * )lck);
+            lckv = *(( short * ) lck);
         else
-            lckv = *(( int * )lck);
+            lckv = *(( int * ) lck);
         if (lckv != Pnum) /* unlocking a wrong lock */
             terror("Process %3d(pid=%d): unlocking %d(pid=%d)?",
                    Pnum,
@@ -99,11 +99,11 @@ lockobj(void *lck, ssize_t size, int locking)
     for (k = 0; k < 2; ++k, usleep(100)) /* make sure that lock is good */
     {
         if (size == sizeof(char))
-            lckv = *(( char * )lck);
+            lckv = *(( char * ) lck);
         else if (size == sizeof(short))
-            lckv = *(( short * )lck);
+            lckv = *(( short * ) lck);
         else
-            lckv = *(( int * )lck);
+            lckv = *(( int * ) lck);
         if (lckv != Pnum)
             terror("Process %3d(pid=%d): at step %d lock=%d?",
                    Pnum,
@@ -131,7 +131,7 @@ workload(int pnum)
             terror("Process %3d(pid=%d): bad int lock %d",
                    Pnum,
                    Pid[Pnum],
-                   ( int )Lcki[r]);
+                   ( int ) Lcki[r]);
         lockobj(Lcki + r, sizeof(int), 0);
 
         r = random() % N_SLOT;
@@ -140,7 +140,7 @@ workload(int pnum)
             terror("Process %3d(pid=%d): bad short lock %d",
                    Pnum,
                    Pid[Pnum],
-                   ( int )Lcks[r]);
+                   ( int ) Lcks[r]);
         lockobj(Lcks + r, sizeof(short), 0);
 
         r = random() % N_SLOT;
@@ -149,7 +149,7 @@ workload(int pnum)
             terror("Process %3d(pid=%d): bad char lock %d",
                    Pnum,
                    Pid[Pnum],
-                   ( int )Lckc[r]);
+                   ( int ) Lckc[r]);
         lockobj(Lckc + r, sizeof(char), 0);
     }
     asoincint(Done);
@@ -163,15 +163,15 @@ tmain()
 
     tchild();
 
-    Nproc = ( unsigned int * )tshared(
+    Nproc = ( unsigned int * ) tshared(
     sizeof(*Nproc) + (N_PROC + 1) * sizeof(pid_t) + sizeof(*Done)
     + N_SLOT * sizeof(unsigned char) + N_SLOT * sizeof(unsigned short)
     + N_SLOT * sizeof(unsigned int));
-    Pid = ( pid_t * )(Nproc + 1);
-    Done = ( unsigned int * )(Pid + (N_PROC + 1) * sizeof(pid_t));
-    Lcki = ( unsigned int * )(Done + 1);
-    Lcks = ( unsigned short * )(Lcki + N_SLOT);
-    Lckc = ( unsigned char * )(Lcks + N_SLOT);
+    Pid = ( pid_t * ) (Nproc + 1);
+    Done = ( unsigned int * ) (Pid + (N_PROC + 1) * sizeof(pid_t));
+    Lcki = ( unsigned int * ) (Done + 1);
+    Lcks = ( unsigned short * ) (Lcki + N_SLOT);
+    Lckc = ( unsigned char * ) (Lcks + N_SLOT);
 
     for (k = 1; k <= N_PROC; ++k) {
         if ((pid = fork()) < 0)

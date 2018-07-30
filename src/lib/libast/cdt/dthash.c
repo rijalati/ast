@@ -50,7 +50,7 @@ htable(Dt_t *dt)
     Dtlink_t **htbl, **t, **endt, *l, *next;
     ssize_t n, k;
     Dtdisc_t *disc = dt->disc;
-    Dthash_t *hash = ( Dthash_t * )dt->data;
+    Dthash_t *hash = ( Dthash_t * ) dt->data;
 
     if ((n = hash->tblz) > 0 && (hash->type & H_FIXED))
         return 0; /* fixed size table */
@@ -76,7 +76,7 @@ htable(Dt_t *dt)
         return 0;
 
     /* allocate new table */
-    if (!(htbl = ( Dtlink_t ** )(*dt->memoryf)(
+    if (!(htbl = ( Dtlink_t ** ) (*dt->memoryf)(
           dt, 0, n * sizeof(Dtlink_t *), disc))) {
         DTERROR(dt, "Error in allocating an extended hash table");
         return -1;
@@ -93,7 +93,7 @@ htable(Dt_t *dt)
     }
 
     if (hash->htbl) /* free old table and set new table */
-        ( void )(*dt->memoryf)(dt, hash->htbl, 0, disc);
+        ( void ) (*dt->memoryf)(dt, hash->htbl, 0, disc);
     hash->htbl = htbl;
     hash->tblz = n;
 
@@ -104,7 +104,7 @@ static Void_t *
 hclear(Dt_t *dt)
 {
     Dtlink_t **t, **endt, *l, *next;
-    Dthash_t *hash = ( Dthash_t * )dt->data;
+    Dthash_t *hash = ( Dthash_t * ) dt->data;
 
     hash->here = NIL(Dtlink_t *);
     hash->data.size = 0;
@@ -124,7 +124,7 @@ static Void_t *
 hfirst(Dt_t *dt)
 {
     Dtlink_t **tbl, **endt, *lnk;
-    Dthash_t *hash = ( Dthash_t * )dt->data;
+    Dthash_t *hash = ( Dthash_t * ) dt->data;
 
     lnk = NIL(Dtlink_t *);
     for (endt = (tbl = hash->htbl) + hash->tblz; tbl < endt; ++tbl)
@@ -138,7 +138,7 @@ static Void_t *
 hnext(Dt_t *dt, Dtlink_t *lnk)
 {
     Dtlink_t **tbl, **endt, *next;
-    Dthash_t *hash = ( Dthash_t * )dt->data;
+    Dthash_t *hash = ( Dthash_t * ) dt->data;
 
     if (!(next = lnk->_rght)) /* search for next object */
     {
@@ -157,7 +157,7 @@ static Void_t *
 hflatten(Dt_t *dt, int type)
 {
     Dtlink_t **tbl, **endt, *head, *tail, *lnk;
-    Dthash_t *hash = ( Dthash_t * )dt->data;
+    Dthash_t *hash = ( Dthash_t * ) dt->data;
 
     if (type == DT_FLATTEN || type == DT_EXTRACT) {
         head = tail = NIL(Dtlink_t *);
@@ -178,7 +178,7 @@ hflatten(Dt_t *dt, int type)
         } else
             hash->data.size = 0;
 
-        return ( Void_t * )head;
+        return ( Void_t * ) head;
     } else /* restoring a previous flattened list */
     {
         head = hash->here;
@@ -221,10 +221,10 @@ hlist(Dt_t *dt, Dtlink_t *list, int type)
         for (lnk = list; lnk; lnk = next) {
             next = lnk->_rght;
             obj = _DTOBJ(disc, lnk);
-            if ((*dt->meth->searchf)(dt, ( Void_t * )lnk, DT_RELINK) == obj)
+            if ((*dt->meth->searchf)(dt, ( Void_t * ) lnk, DT_RELINK) == obj)
                 dt->data->size += 1;
         }
-        return ( Void_t * )list;
+        return ( Void_t * ) list;
     }
 }
 
@@ -233,7 +233,7 @@ hstat(Dt_t *dt, Dtstat_t *st)
 {
     ssize_t n;
     Dtlink_t **tbl, **endt, *lnk;
-    Dthash_t *hash = ( Dthash_t * )dt->data;
+    Dthash_t *hash = ( Dthash_t * ) dt->data;
 
     if (st) {
         memset(st, 0, sizeof(Dtstat_t));
@@ -255,7 +255,7 @@ hstat(Dt_t *dt, Dtstat_t *st)
         }
     }
 
-    return ( Void_t * )hash->data.size;
+    return ( Void_t * ) hash->data.size;
 }
 
 #if __STD_C
@@ -272,7 +272,7 @@ int type;
     uint hsh;
     Dtlink_t **fngr = NIL(Dtlink_t **);
     Dtdisc_t *disc = dt->disc;
-    Dthash_t *hash = ( Dthash_t * )dt->data;
+    Dthash_t *hash = ( Dthash_t * ) dt->data;
 
     type = DTTYPE(dt, type); /* map type for upward compatibility */
     if (!(type & DT_OPERATIONS))
@@ -290,30 +290,30 @@ int type;
         & (DT_START | DT_STEP | DT_STOP | DT_FIRST | DT_LAST | DT_CLEAR
            | DT_EXTRACT | DT_RESTORE | DT_FLATTEN | DT_STAT)) {
         if (type & DT_START) {
-            if (!(fngr = ( Dtlink_t ** )(*dt->memoryf)(
+            if (!(fngr = ( Dtlink_t ** ) (*dt->memoryf)(
                   dt, NIL(Void_t *), sizeof(Dtlink_t *), disc)))
                 DTRETURN(obj, NIL(Void_t *));
             if (!obj) {
                 if (!(obj = hfirst(dt))) /* nothing to walk over */
                 {
-                    ( void )(*dt->memoryf)(dt, ( Void_t * )fngr, 0, disc);
+                    ( void ) (*dt->memoryf)(dt, ( Void_t * ) fngr, 0, disc);
                     DTRETURN(obj, NIL(Void_t *));
                 } else {
                     asoaddint(&hash->walk, 1); /* increase walk count */
                     *fngr = hash->here; /* set finger to first object */
-                    DTRETURN(obj, ( Void_t * )fngr);
+                    DTRETURN(obj, ( Void_t * ) fngr);
                 }
             }
             /* else: fall through to search for obj */
         } else if (type & DT_STEP) {
-            if (!(fngr = ( Dtlink_t ** )obj) || !(lnk = *fngr))
+            if (!(fngr = ( Dtlink_t ** ) obj) || !(lnk = *fngr))
                 DTRETURN(obj, NIL(Void_t *));
             obj = _DTOBJ(disc, lnk);
             *fngr = NIL(Dtlink_t *);
             /* fall through to search for obj */
         } else if (type & DT_STOP) {
             if (obj) /* free allocated memory */
-                ( void )(*dt->memoryf)(dt, obj, 0, disc);
+                ( void ) (*dt->memoryf)(dt, obj, 0, disc);
             asosubint(&hash->walk, 1); /* reduce walk count */
             DTRETURN(obj, NIL(Void_t *));
         } else if (type & (DT_FIRST | DT_LAST))
@@ -321,9 +321,9 @@ int type;
         else if (type & DT_CLEAR)
             DTRETURN(obj, hclear(dt));
         else if (type & DT_STAT)
-            DTRETURN(obj, hstat(dt, ( Dtstat_t * )obj));
+            DTRETURN(obj, hstat(dt, ( Dtstat_t * ) obj));
         else /*if(type&(DT_EXTRACT|DT_RESTORE|DT_FLATTEN))*/
-            DTRETURN(obj, hlist(dt, ( Dtlink_t * )obj, type));
+            DTRETURN(obj, hlist(dt, ( Dtlink_t * ) obj, type));
     }
 
     lnk = hash->here; /* fingered object */
@@ -336,7 +336,7 @@ int type;
             DTRETURN(obj, hnext(dt, lnk));
         else if (type & DT_START) {
             *fngr = lnk; /* set finger to found object */
-            DTRETURN(obj, ( Void_t * )fngr);
+            DTRETURN(obj, ( Void_t * ) fngr);
         } else if (type & DT_STEP) /* return obj and set finger to next */
         {
             *fngr = hnext(dt, lnk) ? hash->here : NIL(Dtlink_t *);
@@ -345,7 +345,7 @@ int type;
     }
 
     if (type & DT_RELINK) {
-        lnk = ( Dtlink_t * )obj;
+        lnk = ( Dtlink_t * ) obj;
         obj = _DTOBJ(disc, lnk);
         key = _DTKEY(disc, obj);
     } else {
@@ -392,7 +392,7 @@ int type;
         {
             *fngr = hash->here = ll;
             asoaddint(&hash->walk, 1); /* up reference count */
-            DTRETURN(obj, ( Void_t * )fngr);
+            DTRETURN(obj, ( Void_t * ) fngr);
         } else if (type & DT_STEP) /* return obj and set finger to next */
         {
             *fngr = hnext(dt, ll) ? hash->here : NIL(Dtlink_t *);
@@ -446,7 +446,7 @@ int type;
             type
             & (DT_INSERT | DT_INSTALL | DT_APPEND | DT_ATTACH | DT_RELINK))) {
             if (type & DT_START) /* cannot start a walk from nowhere */
-                ( void )(*dt->memoryf)(dt, ( Void_t * )fngr, 0, disc);
+                ( void ) (*dt->memoryf)(dt, ( Void_t * ) fngr, 0, disc);
             else if (type & DT_STEP)
                 *fngr = NIL(Dtlink_t *);
             DTRETURN(obj, NIL(Void_t *));
@@ -483,27 +483,27 @@ dt_return:
 static int
 hashevent(Dt_t *dt, int event, Void_t *arg)
 {
-    Dthash_t *hash = ( Dthash_t * )dt->data;
+    Dthash_t *hash = ( Dthash_t * ) dt->data;
 
     if (event == DT_OPEN) {
         if (hash)
             return 0;
-        if (!(hash = ( Dthash_t * )(*dt->memoryf)(
+        if (!(hash = ( Dthash_t * ) (*dt->memoryf)(
               dt, 0, sizeof(Dthash_t), dt->disc))) {
             DTERROR(dt, "Error in allocating a hash table with chaining");
             return -1;
         }
         memset(hash, 0, sizeof(Dthash_t));
-        dt->data = ( Dtdata_t * )hash;
+        dt->data = ( Dtdata_t * ) hash;
         return 1;
     } else if (event == DT_CLOSE) {
         if (!hash)
             return 0;
         if (hash->data.size > 0)
-            ( void )hclear(dt);
+            ( void ) hclear(dt);
         if (hash->htbl)
-            ( void )(*dt->memoryf)(dt, hash->htbl, 0, dt->disc);
-        ( void )(*dt->memoryf)(dt, hash, 0, dt->disc);
+            ( void ) (*dt->memoryf)(dt, hash->htbl, 0, dt->disc);
+        ( void ) (*dt->memoryf)(dt, hash, 0, dt->disc);
         dt->data = NIL(Dtdata_t *);
         return 0;
     } else

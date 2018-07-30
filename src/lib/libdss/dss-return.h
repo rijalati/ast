@@ -40,7 +40,7 @@ USAGE_LICENSE
 static int
 return_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     int errors = error_info.errors;
 
     for (;;) {

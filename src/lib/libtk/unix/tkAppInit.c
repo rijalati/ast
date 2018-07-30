@@ -22,7 +22,7 @@
 
 extern int
 matherr();
-int *tclDummyMathPtr = ( int * )matherr;
+int *tclDummyMathPtr = ( int * ) matherr;
 
 #ifdef TK_TEST
 EXTERN int Tktest_Init _ANSI_ARGS_((Tcl_Interp * interp));
@@ -79,13 +79,13 @@ int Tcl_AppInit(interp) Tcl_Interp *interp; /* Interpreter for application. */
     if (Tk_Init(interp) == TCL_ERROR) {
         return TCL_ERROR;
     }
-    Tcl_StaticPackage(interp, "Tk", Tk_Init, ( Tcl_PackageInitProc * )NULL);
+    Tcl_StaticPackage(interp, "Tk", Tk_Init, ( Tcl_PackageInitProc * ) NULL);
 #ifdef TK_TEST
     if (Tktest_Init(interp) == TCL_ERROR) {
         return TCL_ERROR;
     }
     Tcl_StaticPackage(
-    interp, "Tktest", Tktest_Init, ( Tcl_PackageInitProc * )NULL);
+    interp, "Tktest", Tktest_Init, ( Tcl_PackageInitProc * ) NULL);
 #endif /* TK_TEST */
 
 

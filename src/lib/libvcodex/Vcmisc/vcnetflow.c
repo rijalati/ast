@@ -65,9 +65,9 @@
 
 /* the below deal with network encoding of 16-bit integers */
 #define NETINT(d) (((d)[0] << 8) + (d)[1])
-#define PUTINT(d, i) (((d)[0] = ((i) >> 8) & 255), ((d)[1] = ( i )&255))
+#define PUTINT(d, i) (((d)[0] = ((i) >> 8) & 255), ((d)[1] = ( i ) &255))
 #define GETINT(d, i) (((i) = NETINT(d)), ((d) += 2), (i))
-#define BADINT(d, ed) ((d) > (( ed )-2)) /* not enough data */
+#define BADINT(d, ed) ((d) > (( ed ) -2)) /* not enough data */
 
 
 typedef struct _nflrcrd_s /* to hold a set of netflow records */
@@ -106,9 +106,9 @@ ssize_t sz;                                        /* data size			*/
     if ((z = rc->dtsz + sz) > rc->dtbf) {
         z = ((z + 1024) / 1024) * 1024;
         if (!rc->data || rc->dtbf == 0)
-            rc->data = ( Vcchar_t * )malloc(z);
+            rc->data = ( Vcchar_t * ) malloc(z);
         else
-            rc->data = ( Vcchar_t * )realloc(rc->data, z);
+            rc->data = ( Vcchar_t * ) realloc(rc->data, z);
         if (!rc->data)
             return -1;
         rc->dtbf = z;
@@ -268,7 +268,7 @@ Void_t **out;
 
     nfl = vcgetmtdata(vc, Netflow_t *);
     memset(&rcrd, 0, sizeof(rcrd));
-    for (npckt = 0, enddt = (dt = ( Vcchar_t * )data) + size; dt < enddt;
+    for (npckt = 0, enddt = (dt = ( Vcchar_t * ) data) + size; dt < enddt;
          dt = epckt) { /* make sure this is a well-defined packet */
         if ((sz = v9whole(nfl, dt, enddt, &epckt)) < 0)
             break; /**/
@@ -314,8 +314,8 @@ Void_t **out;
         return 0;
     else /* set amount of data actually processed */
     {
-        vc->undone = size - (dt - ( Vcchar_t * )data);
-        size = dt - ( Vcchar_t * )data;
+        vc->undone = size - (dt - ( Vcchar_t * ) data);
+        size = dt - ( Vcchar_t * ) data;
     }
 
     whole = V9WHOLE(npckt) ? V9_WHOLE : 0;
@@ -568,7 +568,7 @@ Void_t **out;
     ssize_t osz = -1;
     Netflow_t *nfl = vcgetmtdata(vc, Netflow_t *);
 
-    if (!(dt = ( Vcchar_t * )data) || (size < V5_HEADER && size < V7_HEADER))
+    if (!(dt = ( Vcchar_t * ) data) || (size < V5_HEADER && size < V7_HEADER))
         return 0;
     if ((fid = NETINT(dt)) == V1_PACKET) {
         hdz = V1_HEADER;
@@ -588,7 +588,7 @@ Void_t **out;
     memset(&rchd, 0, sizeof(rchd));
     memset(&rcrd, 0, sizeof(rcrd));
 
-    enddt = (dt = ( Vcchar_t * )data) + size;
+    enddt = (dt = ( Vcchar_t * ) data) + size;
     while ((pckt = dt) < enddt) {
         if (BADINT(dt, enddt) || GETINT(dt, id) != fid)
             break;
@@ -607,11 +607,11 @@ Void_t **out;
         dt += sz;
     }
 
-    if (pckt == ( Vcchar_t * )data)
+    if (pckt == ( Vcchar_t * ) data)
         return 0;
     else {
-        vc->undone = size - (pckt - ( Vcchar_t * )data);
-        size = pckt - ( Vcchar_t * )data;
+        vc->undone = size - (pckt - ( Vcchar_t * ) data);
+        size = pckt - ( Vcchar_t * ) data;
     }
 
     /* continuation processing of header data */
@@ -848,7 +848,7 @@ Void_t *two;
 Dtdisc_t *disc;
 #endif
 {
-    return ( int )((( Nflrcrd_t * )one)->id - (( Nflrcrd_t * )two)->id);
+    return ( int ) ((( Nflrcrd_t * ) one)->id - (( Nflrcrd_t * ) two)->id);
 }
 
 #if __STD_C
@@ -862,10 +862,10 @@ Dtdisc_t *disc;
 {
     Nflrcrd_t *rc;
 
-    if (!(rc = ( Nflrcrd_t * )calloc(1, sizeof(Nflrcrd_t))))
+    if (!(rc = ( Nflrcrd_t * ) calloc(1, sizeof(Nflrcrd_t))))
         return NIL(Void_t *);
-    rc->id = (( Nflrcrd_t * )arg)->id;
-    return ( Void_t * )rc;
+    rc->id = (( Nflrcrd_t * ) arg)->id;
+    return ( Void_t * ) rc;
 }
 
 #if __STD_C
@@ -877,7 +877,7 @@ Void_t *arg;
 Dtdisc_t *disc;
 #endif
 {
-    Nflrcrd_t *rc = ( Nflrcrd_t * )arg;
+    Nflrcrd_t *rc = ( Nflrcrd_t * ) arg;
 
     if (rc->data)
         free(rc->data);
@@ -897,7 +897,7 @@ Void_t *params;
     int rv = -1;
 
     if (type == VC_OPENING) {
-        if (!(nfl = ( Netflow_t * )calloc(1, sizeof(Netflow_t))))
+        if (!(nfl = ( Netflow_t * ) calloc(1, sizeof(Netflow_t))))
             return -1;
 
         /* handles to transform collected data */

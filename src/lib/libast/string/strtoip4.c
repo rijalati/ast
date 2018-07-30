@@ -127,7 +127,7 @@ strtoip4(const char *s, char **e, uint32_t *paddr, unsigned char *pbits)
         else
             bits = 24;
         if (*pbits = bits)
-            addr &= ~(((( uint32_t )1) << (32 - bits)) - 1);
+            addr &= ~(((( uint32_t ) 1) << (32 - bits)) - 1);
         else
             addr = 0;
     }
@@ -136,6 +136,6 @@ strtoip4(const char *s, char **e, uint32_t *paddr, unsigned char *pbits)
     r = 0;
 done:
     if (e)
-        *e = ( char * )(s - 1);
+        *e = ( char * ) (s - 1);
     return r;
 }

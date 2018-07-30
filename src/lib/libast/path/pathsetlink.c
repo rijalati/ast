@@ -35,9 +35,9 @@
 int
 pathsetlink(const char *buf, const char *name)
 {
-    char *t = ( char * )buf;
+    char *t = ( char * ) buf;
 #ifdef UNIV_MAX
-    char *s = ( char * )buf;
+    char *s = ( char * ) buf;
     char *v;
     int n;
     char tmp[PATH_MAX];
@@ -57,7 +57,7 @@ pathsetlink(const char *buf, const char *name)
                         ;
                     *t++ = '%';
 #    endif
-                    for (v = ( char * )buf; v < s; *t++ = *v++)
+                    for (v = ( char * ) buf; v < s; *t++ = *v++)
                         ;
                     for (v = univ_name[n]; *t = *v++; t++)
                         ;

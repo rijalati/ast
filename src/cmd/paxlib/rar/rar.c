@@ -46,7 +46,7 @@ typedef struct Ar_s
 static int
 rar_done(Pax_t *pax, Paxarchive_t *ap)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
 
     if (!ar)
         return -1;
@@ -93,7 +93,7 @@ rar_getprologue(Pax_t *pax,
 static int
 rar_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     unsigned char *buf;
     char *s;
     Tm_t tm;
@@ -109,7 +109,7 @@ rar_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 
     msg = 0;
     for (;;) {
-        if (!(buf = ( unsigned char * )paxget(pax, ap, -7, NiL)))
+        if (!(buf = ( unsigned char * ) paxget(pax, ap, -7, NiL)))
             return 0;
         checksum = swapget(3, buf + 0, 2);
         type = buf[2];
@@ -122,7 +122,7 @@ rar_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
             continue;
         sfsync(ar->sum);
         sfwrite(ar->sum, buf + 2, 5);
-        if (!(buf = ( unsigned char * )paxget(pax, ap, size, NiL))) {
+        if (!(buf = ( unsigned char * ) paxget(pax, ap, size, NiL))) {
             msg = "unexpected EOF";
             break;
         }
@@ -211,7 +211,7 @@ rar_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         tm.tm_mday = ((dostime >> (16 + 0)) & 0x1f);
         tm.tm_hour = ((dostime >> 11) & 0x1f);
         tm.tm_min = ((dostime >> 5) & 0x3f);
-        tm.tm_sec = (( dostime )&0x1f) * 2;
+        tm.tm_sec = (( dostime ) &0x1f) * 2;
         f->st->st_mtime = f->st->st_ctime = f->st->st_atime
         = tmtime(&tm, TM_LOCALZONE);
         return 1;
@@ -222,7 +222,7 @@ rar_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 static int
 rar_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     Sfio_t *sp;
     off_t pos;
     ssize_t n;

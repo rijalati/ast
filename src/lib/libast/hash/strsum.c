@@ -41,7 +41,7 @@
 unsigned long
 strsum(const char *as, unsigned long c)
 {
-    const unsigned char *s = ( const unsigned char * )as;
+    const unsigned char *s = ( const unsigned char * ) as;
     int n;
 
     while (n = *s++)

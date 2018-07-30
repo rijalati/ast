@@ -30,7 +30,7 @@ gzip_ident(Codexmeth_t *meth,
            char *name,
            size_t namesize)
 {
-    unsigned char *h = ( unsigned char * )head;
+    unsigned char *h = ( unsigned char * ) head;
 
     if (headsize >= 3 && h[0] == 0x1f && h[1] == 0x8b) {
         strncopy(name, meth->name, namesize);
@@ -55,7 +55,7 @@ gzip_open(Codex_t *p, char *const args[], Codexnum_t flags)
         if (isdigit(*s))
             v = strton(s, &e, NiL, 0);
         else {
-            e = ( char * )s;
+            e = ( char * ) s;
             if (e[0] == 'n' && e[1] == 'o') {
                 e += 2;
                 v = 0;
@@ -106,7 +106,7 @@ gzip_open(Codex_t *p, char *const args[], Codexnum_t flags)
 static int
 gzip_init(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
     char *m;
     char mode[8];
 
@@ -127,7 +127,7 @@ gzip_init(Codex_t *p)
 static int
 gzip_done(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
     int r;
 
     r = gzclose(state->gz) ? -1 : 0;
@@ -138,13 +138,13 @@ gzip_done(Codex_t *p)
 static ssize_t
 gzip_read(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *dp)
 {
-    return gzread((( State_t * )CODEX(dp)->data)->gz, buf, n);
+    return gzread((( State_t * ) CODEX(dp)->data)->gz, buf, n);
 }
 
 static ssize_t
 gzip_write(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *dp)
 {
-    return gzwrite((( State_t * )CODEX(dp)->data)->gz, buf, n);
+    return gzwrite((( State_t * ) CODEX(dp)->data)->gz, buf, n);
 }
 
 Codexmeth_t codex_gzip

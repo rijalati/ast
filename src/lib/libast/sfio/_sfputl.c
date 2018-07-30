@@ -51,16 +51,16 @@ Sflong_t v;                  /* the value to be written */
         *s = (uchar)(SFSVALUE(v) | SF_SIGN);
     } else
         *s = (uchar)(SFSVALUE(v));
-    v = ( Sfulong_t )v >> SF_SBITS;
+    v = ( Sfulong_t ) v >> SF_SBITS;
 
     while (v > 0) {
         *--s = (uchar)(SFUVALUE(v) | SF_MORE);
-        v = ( Sfulong_t )v >> SF_UBITS;
+        v = ( Sfulong_t ) v >> SF_UBITS;
     }
     n = (ps - s) + 1;
 
     if (n > 8 || SFWPEEK(f, ps, p) < n)
-        n = SFWRITE(f, ( Void_t * )s, n); /* write the hard way */
+        n = SFWRITE(f, ( Void_t * ) s, n); /* write the hard way */
     else {
         switch (n) {
         case 8:

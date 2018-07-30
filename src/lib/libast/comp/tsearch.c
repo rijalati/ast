@@ -70,7 +70,7 @@ typedef struct _tree_s
 typedef struct _treedisc_s
 {
     Dtdisc_t disc;
-    int(*comparf) _ARG_(( const Void_t *, const Void_t * ));
+    int(*comparf) _ARG_(( const Void_t *, const Void_t * ) );
 } Treedisc_t;
 
 #    if defined(__EXPORT__)
@@ -88,8 +88,8 @@ char *two;
 Dtdisc_t *disc;
 #    endif
 {
-    return (*(( Treedisc_t * )disc)->comparf)(( Void_t * )one,
-                                              ( Void_t * )two);
+    return (*(( Treedisc_t * ) disc)->comparf)(( Void_t * ) one,
+                                               ( Void_t * ) two);
 }
 
 static Treedisc_t Treedisc = { { sizeof(Dtlink_t),
@@ -119,26 +119,26 @@ int (*comparf)();
     reg Tree_t *o;
 
     if (!rootp
-        || (!(dt = *(( Dt_t ** )rootp))
-            && !(dt = dtopen(( Dtdisc_t * )(&Treedisc), Dtoset))))
+        || (!(dt = *(( Dt_t ** ) rootp))
+            && !(dt = dtopen(( Dtdisc_t * ) (&Treedisc), Dtoset))))
         return NIL(Void_t *);
 
     /* dangerous to set comparf on each call but that's tsearch */
     Treedisc.comparf = comparf;
 
-    if (!(o = ( Tree_t * )dtmatch(dt, key))) {
-        if (!(o = ( Tree_t * )malloc(sizeof(Tree_t))))
+    if (!(o = ( Tree_t * ) dtmatch(dt, key))) {
+        if (!(o = ( Tree_t * ) malloc(sizeof(Tree_t))))
             return NIL(Void_t *);
-        o->key = ( Void_t * )key;
+        o->key = ( Void_t * ) key;
         dtinsert(dt, o);
     }
 
     if (o)
-        *rootp = ( Void_t * )dt;
+        *rootp = ( Void_t * ) dt;
     else if (*rootp == NIL(Void_t *))
         dtclose(dt);
 
-    return ( Void_t * )(&o->key);
+    return ( Void_t * ) (&o->key);
 }
 
 extern
@@ -156,12 +156,12 @@ int (*comparf)();
     reg Dt_t *dt;
     reg Tree_t *o;
 
-    if (!rootp || !(dt = *(( Dt_t ** )rootp)))
+    if (!rootp || !(dt = *(( Dt_t ** ) rootp)))
         return NIL(Void_t *);
     Treedisc.comparf = comparf;
 
-    return (o = ( Tree_t * )dtmatch(dt, key)) ? ( Void_t * )(&o->key)
-                                              : NIL(Void_t *);
+    return (o = ( Tree_t * ) dtmatch(dt, key)) ? ( Void_t * ) (&o->key)
+                                               : NIL(Void_t *);
 }
 
 /* the original tdelete() specifies that it will return the parent pointer
@@ -185,12 +185,12 @@ int (*comparf)();
     reg Tree_t *o;
     Tree_t obj;
 
-    if (!rootp || !(dt = *(( Dt_t ** )rootp)))
+    if (!rootp || !(dt = *(( Dt_t ** ) rootp)))
         return NIL(Void_t *);
 
     Treedisc.comparf = comparf;
 
-    obj.key = ( Void_t * )key;
+    obj.key = ( Void_t * ) key;
     dtdelete(dt, &obj);
 
     if (!(o = dtfinger(dt))) {
@@ -198,7 +198,7 @@ int (*comparf)();
         *rootp = NIL(Void_t *);
     }
 
-    return o ? ( Void_t * )(&o->key) : NIL(Void_t *);
+    return o ? ( Void_t * ) (&o->key) : NIL(Void_t *);
 }
 
 /* the below routine assumes a particular layout of Dtlink_t.
@@ -217,15 +217,15 @@ int level;
 #    endif
 {
     if (!obj->lchild && !obj->rchild)
-        (*action)(( Void_t * )obj, leaf, level);
+        (*action)(( Void_t * ) obj, leaf, level);
     else {
-        (*action)(( Void_t * )obj, preorder, level);
+        (*action)(( Void_t * ) obj, preorder, level);
         if (obj->lchild)
-            _twalk(( Tree_t * )obj->lchild, action, level + 1);
-        (*action)(( Void_t * )obj, postorder, level);
+            _twalk(( Tree_t * ) obj->lchild, action, level + 1);
+        (*action)(( Void_t * ) obj, postorder, level);
         if (obj->rchild)
-            _twalk(( Tree_t * )obj->rchild, action, level + 1);
-        (*action)(( Void_t * )obj, endorder, level);
+            _twalk(( Tree_t * ) obj->rchild, action, level + 1);
+        (*action)(( Void_t * ) obj, endorder, level);
     }
 }
 
@@ -244,7 +244,7 @@ void (*action)();
 {
     reg Tree_t *o;
 
-    if (root && (o = ( Tree_t * )dtfinger(( Dt_t * )root)))
+    if (root && (o = ( Tree_t * ) dtfinger(( Dt_t * ) root)))
         _twalk(o, action, 0);
 }
 

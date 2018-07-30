@@ -217,7 +217,7 @@ srandom(unsigned int x)
         fptr = &state[rand_sep];
         rptr = &state[0];
         for (i = 0; i < 10 * rand_deg; ++i)
-            ( void )random();
+            ( void ) random();
     }
 }
 
@@ -235,7 +235,7 @@ srandom(unsigned int x)
 extern char *
 initstate(unsigned int seed, char *arg_state, size_t n)
 {
-    PTR ostate = ( PTR )&state[-1];
+    PTR ostate = ( PTR ) &state[-1];
 
     if (rand_type == TYPE_0)
         state[-1] = rand_type;
@@ -267,7 +267,7 @@ initstate(unsigned int seed, char *arg_state, size_t n)
         rand_sep = SEP_4;
     }
 
-    state = &(( long int * )arg_state)[1]; /* First location.  */
+    state = &(( long int * ) arg_state)[1]; /* First location.  */
     /* Must set END_PTR before srandom.  */
     end_ptr = &state[rand_deg];
     srandom(seed);
@@ -290,10 +290,10 @@ initstate(unsigned int seed, char *arg_state, size_t n)
 extern char *
 setstate(const char *arg_state)
 {
-    long int *new_state = ( long int * )arg_state;
+    long int *new_state = ( long int * ) arg_state;
     int type = new_state[0] % MAX_TYPES;
     int rear = new_state[0] / MAX_TYPES;
-    PTR ostate = ( PTR )&state[-1];
+    PTR ostate = ( PTR ) &state[-1];
 
     if (rand_type == TYPE_0)
         state[-1] = rand_type;

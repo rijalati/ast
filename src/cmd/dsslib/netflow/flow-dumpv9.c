@@ -80,8 +80,8 @@ dumpv9fopen(Dssfile_t *file, Dssdisc_t *disc)
 static int
 dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Netflow_file_t *pp = ( Netflow_file_t * )file->data;
-    Netflow_method_t *mp = ( Netflow_method_t * )file->dss->data;
+    Netflow_file_t *pp = ( Netflow_file_t * ) file->data;
+    Netflow_method_t *mp = ( Netflow_method_t * ) file->dss->data;
     Netflow_t *rp = &pp->record;
     Netflow_template_t *tp;
     Netflow_template_t *bp;
@@ -103,7 +103,7 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 sfprintf(sfstderr, "count %d\n", pp->count);
             while (!pp->count--) {
                 file->offset = sftell(file->io);
-                if (!(pp->data = ( unsigned char * )sfreserve(
+                if (!(pp->data = ( unsigned char * ) sfreserve(
                       file->io, NETFLOW_PACKET, 0))) {
                     if (sfvalue(file->io))
                         goto incomplete;
@@ -126,8 +126,8 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 rp->flow_sequence = BE4(pp->data);
                 rp->source_id = BE4(pp->data);
                 pp->boot
-                = (( Nftime_t )rp->time * MS - ( Nftime_t )rp->uptime) * US
-                  + ( Nftime_t )rp->nsec;
+                = (( Nftime_t ) rp->time * MS - ( Nftime_t ) rp->uptime) * US
+                  + ( Nftime_t ) rp->nsec;
             }
             if (file->dss->flags & DSS_DEBUG)
                 sfprintf(sfstderr,
@@ -171,7 +171,7 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 break;
             }
             if (n == FLOW_TEMPLATE) {
-                bp = (( Netflow_method_t * )file->dss->data)->base;
+                bp = (( Netflow_method_t * ) file->dss->data)->base;
                 pp->count++;
                 while (pp->data < (pp->last - 4)) {
                     n = BE2(pp->data);
@@ -227,7 +227,7 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 }
             } else if (n == FLOW_OPTION) {
                 pp->count++;
-                bp = (( Netflow_method_t * )file->dss->data)->base;
+                bp = (( Netflow_method_t * ) file->dss->data)->base;
                 while (pp->data < (pp->last - 6)) {
                     n = BE2(pp->data);
                     m = BE2(pp->data) / 4;

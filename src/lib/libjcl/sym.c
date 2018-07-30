@@ -45,12 +45,13 @@ jclsym(Jcl_t *jcl, const char *name, const char *value, int flags)
         return 0;
     else if (value)
         n = strlen(name);
-    else if (value = ( const char * )strchr(name, '='))
+    else if (value = ( const char * ) strchr(name, '='))
         n = value++ - name;
     else
         return 0;
     if (name[0] == '%' && name[1] == '%') {
-        name = ( const char * )sfprints("%s%-.*s", JCL_AUTO, n - 2, name + 2);
+        name
+        = ( const char * ) sfprints("%s%-.*s", JCL_AUTO, n - 2, name + 2);
         n = strlen(name);
         imported = (flags & JCL_SYM_SET) && (jcl->flags & JCL_IMPORT);
     } else
@@ -60,9 +61,9 @@ jclsym(Jcl_t *jcl, const char *name, const char *value, int flags)
         return 0;
     }
     memcpy(v->name, name, n);
-    strcpy(v->value = ( char * )(v + 1) + n + 1, value);
+    strcpy(v->value = ( char * ) (v + 1) + n + 1, value);
     v->flags = flags;
-    if (o = ( Jclsym_t * )dtsearch(jcl->step->syms, v)) {
+    if (o = ( Jclsym_t * ) dtsearch(jcl->step->syms, v)) {
         if (imported && (o->flags & JCL_SYM_IMPORT)
             || (flags & JCL_SYM_SET) && (o->flags & JCL_SYM_READONLY)) {
             vmfree(jcl->vs, v);

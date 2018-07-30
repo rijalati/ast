@@ -35,7 +35,7 @@
 
 #    define SPLICE (1 << BITTERM)
 
-#    define CODE(tok, act) (((( tok )-N_PP) << (BITTERM + 1)) | (act))
+#    define CODE(tok, act) (((( tok ) -N_PP) << (BITTERM + 1)) | (act))
 #    define TERM(st) ((st) & ((1 << (BITTERM + 1)) - 1))
 #    define NEXT(st) (((st) >> (BITTERM + 1)) & ((1 << BITNONTERM) - 1))
 #    define QUAL(st) (((st) << (BITTERM + 1)) | (S_QUAL))
@@ -58,7 +58,7 @@
  * NOTE: preserve the ranges
  */
 
-#    define INDEX(p) ((( p )-fsm[0]) / (MAX + 1))
+#    define INDEX(p) ((( p ) -fsm[0]) / (MAX + 1))
 
 #    define IDSTATE(x) (((x) >= 0 && INQMACRO(fsm[x])) ? QID : (x))
 

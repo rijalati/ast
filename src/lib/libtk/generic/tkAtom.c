@@ -91,7 +91,7 @@ static char *atomNameArray[] = { "PRIMARY",
                                  "CAP_HEIGHT",
                                  "WM_CLASS",
                                  "WM_TRANSIENT_FOR",
-                                 ( char * )NULL };
+                                 ( char * ) NULL };
 
 /*
  * Forward references to procedures defined in this file:
@@ -127,7 +127,7 @@ char *name;                               /* Name to turn into atom. */
     Tcl_HashEntry *hPtr;
     int new;
 
-    dispPtr = (( TkWindow * )tkwin)->dispPtr;
+    dispPtr = (( TkWindow * ) tkwin)->dispPtr;
     if (!dispPtr->atomInit) {
         AtomInit(dispPtr);
     }
@@ -140,10 +140,10 @@ char *name;                               /* Name to turn into atom. */
         atom = XInternAtom(dispPtr->display, name, False);
         Tcl_SetHashValue(hPtr, atom);
         hPtr2
-        = Tcl_CreateHashEntry(&dispPtr->atomTable, ( char * )atom, &new);
+        = Tcl_CreateHashEntry(&dispPtr->atomTable, ( char * ) atom, &new);
         Tcl_SetHashValue(hPtr2, Tcl_GetHashKey(&dispPtr->nameTable, hPtr));
     }
-    return ( Atom )Tcl_GetHashValue(hPtr);
+    return ( Atom ) Tcl_GetHashValue(hPtr);
 }
 
 /*
@@ -176,12 +176,12 @@ Atom atom; /* Atom whose name is wanted. */
     TkDisplay *dispPtr;
     Tcl_HashEntry *hPtr;
 
-    dispPtr = (( TkWindow * )tkwin)->dispPtr;
+    dispPtr = (( TkWindow * ) tkwin)->dispPtr;
     if (!dispPtr->atomInit) {
         AtomInit(dispPtr);
     }
 
-    hPtr = Tcl_FindHashEntry(&dispPtr->atomTable, ( char * )atom);
+    hPtr = Tcl_FindHashEntry(&dispPtr->atomTable, ( char * ) atom);
     if (hPtr == NULL) {
         char *name;
         Tk_ErrorHandler handler;
@@ -191,8 +191,8 @@ Atom atom; /* Atom whose name is wanted. */
                                         BadAtom,
                                         -1,
                                         -1,
-                                        ( Tk_ErrorProc * )NULL,
-                                        ( ClientData )NULL);
+                                        ( Tk_ErrorProc * ) NULL,
+                                        ( ClientData ) NULL);
         name = XGetAtomName(dispPtr->display, atom);
         mustFree = 1;
         if (name == NULL) {
@@ -200,16 +200,18 @@ Atom atom; /* Atom whose name is wanted. */
             mustFree = 0;
         }
         Tk_DeleteErrorHandler(handler);
-        hPtr = Tcl_CreateHashEntry(&dispPtr->nameTable, ( char * )name, &new);
+        hPtr
+        = Tcl_CreateHashEntry(&dispPtr->nameTable, ( char * ) name, &new);
         Tcl_SetHashValue(hPtr, atom);
         if (mustFree) {
             XFree(name);
         }
         name = Tcl_GetHashKey(&dispPtr->nameTable, hPtr);
-        hPtr = Tcl_CreateHashEntry(&dispPtr->atomTable, ( char * )atom, &new);
+        hPtr
+        = Tcl_CreateHashEntry(&dispPtr->atomTable, ( char * ) atom, &new);
         Tcl_SetHashValue(hPtr, name);
     }
-    return ( char * )Tcl_GetHashValue(hPtr);
+    return ( char * ) Tcl_GetHashValue(hPtr);
 }
 
 /*
@@ -238,18 +240,18 @@ static void AtomInit(dispPtr) TkDisplay *dispPtr; /* Display to initialize. */
     Tcl_InitHashTable(&dispPtr->atomTable, TCL_ONE_WORD_KEYS);
 
     for (atom = 1; atom <= XA_LAST_PREDEFINED; atom++) {
-        hPtr = Tcl_FindHashEntry(&dispPtr->atomTable, ( char * )atom);
+        hPtr = Tcl_FindHashEntry(&dispPtr->atomTable, ( char * ) atom);
         if (hPtr == NULL) {
             char *name;
             int new;
 
             name = atomNameArray[atom - 1];
             hPtr
-            = Tcl_CreateHashEntry(&dispPtr->nameTable, ( char * )name, &new);
+            = Tcl_CreateHashEntry(&dispPtr->nameTable, ( char * ) name, &new);
             Tcl_SetHashValue(hPtr, atom);
             name = Tcl_GetHashKey(&dispPtr->nameTable, hPtr);
             hPtr
-            = Tcl_CreateHashEntry(&dispPtr->atomTable, ( char * )atom, &new);
+            = Tcl_CreateHashEntry(&dispPtr->atomTable, ( char * ) atom, &new);
             Tcl_SetHashValue(hPtr, name);
         }
     }

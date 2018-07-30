@@ -61,16 +61,16 @@ regerror(int code, const regex_t *p, char *buf, size_t size)
 
     NoP(p);
     if (code++ == REG_VERSIONID)
-        s = ( const char * )fmtident(&id[1]);
+        s = ( const char * ) fmtident(&id[1]);
     else if (code >= 0 && code < elementsof(reg_error))
         s = reg_error[code];
     else
-        s = ( const char * )"unknown error";
+        s = ( const char * ) "unknown error";
     if (size) {
         strlcpy(buf, s, size);
         buf[size - 1] = 0;
     } else
-        buf = ( char * )s;
+        buf = ( char * ) s;
     return strlen(buf) + 1;
 }
 

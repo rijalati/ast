@@ -36,15 +36,15 @@ Vcwmethod_t *meth; /* window matching method	*/
 
     if (!disc || (!disc->srcf && !disc->tarf))
         return NIL(Vcwindow_t *);
-    if (disc->srcf && sfseek(disc->srcf, ( Sfoff_t )0, 0) < 0)
+    if (disc->srcf && sfseek(disc->srcf, ( Sfoff_t ) 0, 0) < 0)
         return NIL(Vcwindow_t *);
-    if (disc->tarf && sfseek(disc->tarf, ( Sfoff_t )0, 0) < 0)
+    if (disc->tarf && sfseek(disc->tarf, ( Sfoff_t ) 0, 0) < 0)
         return NIL(Vcwindow_t *);
 
     if (!meth)
         meth = Vcwdecode;
 
-    if (!(vcw = ( Vcwindow_t * )calloc(1, sizeof(Vcwindow_t))))
+    if (!(vcw = ( Vcwindow_t * ) calloc(1, sizeof(Vcwindow_t))))
         return NIL(Vcwindow_t *);
 
     vcw->disc = disc;

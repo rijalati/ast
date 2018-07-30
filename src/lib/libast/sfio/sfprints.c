@@ -45,7 +45,7 @@ va_list args;
         _Sfnotify = 0;
         f = sfnew(NIL(Sfio_t *),
                   NIL(char *),
-                  ( size_t )SF_UNBOUND,
+                  ( size_t ) SF_UNBOUND,
                   -1,
                   SF_WRITE | SF_STRING);
         _Sfnotify = notify;
@@ -53,14 +53,14 @@ va_list args;
             return NIL(char *);
     }
 
-    sfseek(f, ( Sfoff_t )0, SEEK_SET);
+    sfseek(f, ( Sfoff_t ) 0, SEEK_SET);
     rv = sfvprintf(f, form, args);
 
     if (rv < 0 || sfputc(f, '\0') < 0)
         return NIL(char *);
 
     _Sfi = (f->next - f->data) - 1;
-    return ( char * )f->data;
+    return ( char * ) f->data;
 }
 
 #if __STD_C
@@ -101,7 +101,7 @@ va_list args;
     if (!sp || !(s = sfvprints(form, args)))
         return -1;
     else {
-        if (!(*sp = ( char * )malloc(n = strlen(s) + 1)))
+        if (!(*sp = ( char * ) malloc(n = strlen(s) + 1)))
             return -1;
         memcpy(*sp, s, n);
         return n - 1;

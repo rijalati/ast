@@ -120,7 +120,7 @@ fgetcwd(int fd, char *buf, size_t len)
                         ERROR(ENOMEM);
                     if (f != FS3D_OFF)
                         fs3d(f);
-                    return ( char * )memcpy(buf, p, namlen);
+                    return ( char * ) memcpy(buf, p, namlen);
                 }
             }
         }

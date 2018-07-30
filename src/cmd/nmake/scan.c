@@ -601,7 +601,7 @@ scanquote(int fd,
     int e;
 
     for (x = g; q; q = q->next)
-        if ((flags & q->flags) && (t = ( unsigned char * )q->begin)
+        if ((flags & q->flags) && (t = ( unsigned char * ) q->begin)
             && *(g - 1) == *t++
             && (!(q->flags & QUOTE_space) || (g - 1) == *p || *(g - 2) == ' '
                 || *(g - 2) == '\t')) {
@@ -633,7 +633,7 @@ scanquote(int fd,
                         }
                         if (c == e && *(g - 2) != q->escape) {
                             z = g;
-                            t = ( unsigned char * )q->end + 1;
+                            t = ( unsigned char * ) q->end + 1;
                             /*UNDENT*/
                             for (;;) {
                                 if (!*t) {
@@ -1080,7 +1080,8 @@ scanmatch(List_t *p,
                     u->property |= P_dontcare;
                 else if (!(u->property & P_target))
                     u->property &= ~P_dontcare;
-                x = (u->dynamic & D_alias) ? getrule(u->name) : ( Rule_t * )0;
+                x
+                = (u->dynamic & D_alias) ? getrule(u->name) : ( Rule_t * ) 0;
                 if (a->attrprop) {
                     u->attribute &= ~a->attribute.clear;
                     u->attribute |= a->attribute.set;
@@ -1129,7 +1130,7 @@ scanmatch(List_t *p,
         if (split)
             tokclose(t);
     } else {
-        x = (r->dynamic & D_alias) ? getrule(r->name) : ( Rule_t * )0;
+        x = (r->dynamic & D_alias) ? getrule(r->name) : ( Rule_t * ) 0;
         if (a->attrprop) {
             r->attribute &= ~a->attribute.clear;
             r->attribute |= a->attribute.set;
@@ -1252,7 +1253,7 @@ scanexec(int fd, Rule_t *r, Scan_t *ss, List_t *p)
         state.frame = r->active = &frame;
     } else if (state.frame != r->active)
         state.frame = r->active;
-    tab = ss->classid ? ( Hash_table_t * )ss->data : ( Hash_table_t * )0;
+    tab = ss->classid ? ( Hash_table_t * ) ss->data : ( Hash_table_t * ) 0;
     iflev = (r->property & P_dontcare) ? 1 : 0;
     g = buf + 2 * SCANBUFFER;
     g[0] = 0;
@@ -1450,45 +1451,48 @@ scanexec(int fd, Rule_t *r, Scan_t *ss, List_t *p)
                                 Time_t date;
 
                                 if (date = strtol(
-                                    ( char * )b + arg[1].begin, NiL, 10))
+                                    ( char * ) b + arg[1].begin, NiL, 10))
                                     date = tmxsns(date, 0);
                                 else
-                                    date = tmxdate(
-                                    ( char * )b + arg[1].begin, NiL, TMX_NOW);
+                                    date
+                                    = tmxdate(( char * ) b + arg[1].begin,
+                                              NiL,
+                                              TMX_NOW);
                                 addfile(state.archive,
-                                        ( char * )b + arg[0].begin,
+                                        ( char * ) b + arg[0].begin,
                                         date);
                             } else
                                 error(2,
                                       "%s: `A' scan pattern for non-%s",
                                       r->name,
                                       internal.archive->name);
-                            a = ( char * )b + arg[0].begin;
+                            a = ( char * ) b + arg[0].begin;
                             break;
                         case 'B':
                             iflev++;
                             break;
                         case 'D':
                             if (r->property & P_parameter)
-                                p = scandefine(( char * )b + arg[0].begin, p);
+                                p
+                                = scandefine(( char * ) b + arg[0].begin, p);
                             break;
                         case 'E':
                             iflev--;
                             break;
                         case 'I':
                         case 'T':
-                            a = ( char * )b + arg[0].begin;
+                            a = ( char * ) b + arg[0].begin;
                             break;
                         }
                         p = scanmatch(
                         p,
                         &ss->action[*s],
                         r,
-                        ( char * )b,
+                        ( char * ) b,
                         a,
                         iflev,
                         c == 'T' ? -1
-                                 : a != null && a > ( char * )b
+                                 : a != null && a > ( char * ) b
                                    && (c = *(a - 1)) != '"' && c != '\''
                                    && (c != '<' || arg[0].replace != '>'));
                         for (c = 0; c < n; c++)
@@ -1591,7 +1595,7 @@ scanexec(int fd, Rule_t *r, Scan_t *ss, List_t *p)
                 if (h) {
                     *g = 0;
                     if ((v = getvar(b)) && (v->property & V_scan)) {
-                        u = staterule(VAR, NiL, ( char * )b, 1);
+                        u = staterule(VAR, NiL, ( char * ) b, 1);
                         if (!(u->mark & M_scan)) {
                             u->mark |= M_scan;
                             p = cons(u, p);
@@ -1726,7 +1730,7 @@ scan(Rule_t *r, Time_t *tm)
             r,
             ss,
             ss->before ? scanmatch(NiL, ss->before, r, null, null, 0, 1)
-                       : ( List_t * )0);
+                       : ( List_t * ) 0);
             close(fd);
         }
     }

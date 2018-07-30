@@ -37,10 +37,10 @@ typedef struct _sum_s
 } Sum_t;
 
 static Vcmtarg_t _Sumargs[]
-= { { "aes", "AES digest, aes=size to set size", ( Void_t * )SUM_AES },
-    { "md5", "MD5 digest, md5=size to set size", ( Void_t * )SUM_MD5 },
-    { "crc", "CRC digest, crc=size to set size", ( Void_t * )SUM_CRC },
-    { 0, "Default CRC digest", ( Void_t * )SUM_CRC } };
+= { { "aes", "AES digest, aes=size to set size", ( Void_t * ) SUM_AES },
+    { "md5", "MD5 digest, md5=size to set size", ( Void_t * ) SUM_MD5 },
+    { "crc", "CRC digest, crc=size to set size", ( Void_t * ) SUM_CRC },
+    { 0, "Default CRC digest", ( Void_t * ) SUM_CRC } };
 
 static ssize_t
 sum(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
@@ -54,7 +54,7 @@ sum(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
         return -1;
     vc->undone = 0;
 
-    if (!(dt = ( Vcchar_t * )data) || (sz = ( ssize_t )size) <= 0)
+    if (!(dt = ( Vcchar_t * ) data) || (sz = ( ssize_t ) size) <= 0)
         return 0;
 
     /* process data with secondary coder, then add checksum */
@@ -109,7 +109,7 @@ unsum(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
         return -1;
     vc->undone = 0;
 
-    if (!(dt = ( Vcchar_t * )data) || (sz = ( ssize_t )size) <= 0)
+    if (!(dt = ( Vcchar_t * ) data) || (sz = ( ssize_t ) size) <= 0)
         return 0;
 
     /* status if data was raw or processed by a 2ndary coder */
@@ -165,15 +165,15 @@ sumheader(Vcodex_t *vc, Vcmtcode_t *mtcd)
         if (!arg->name)
             return -1;
 
-        if (!vcstrcode(arg->name, ( char * )buf, sizeof(buf)))
+        if (!vcstrcode(arg->name, ( char * ) buf, sizeof(buf)))
             return -1;
 
-        sz = vcsizeu(sum->dgsize) + strlen(( char * )buf) + 1;
+        sz = vcsizeu(sum->dgsize) + strlen(( char * ) buf) + 1;
         if (!(dt = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
             return -1;
         vcioinit(&io, dt, sz);
         vcioputu(&io, sum->dgsize);
-        vcioputs(&io, ( char * )buf, strlen(( char * )buf));
+        vcioputs(&io, ( char * ) buf, strlen(( char * ) buf));
 
         /* The below code is partially for compatibility with an older
         ** version where the byte after the code name was always zero.
@@ -199,9 +199,10 @@ sumheader(Vcodex_t *vc, Vcmtcode_t *mtcd)
         head = vciogetc(&io); /* number of control bytes */
 
         for (arg = _Sumargs; arg->name; ++arg) {
-            if (!vcstrcode(arg->name, ( char * )buf, sizeof(buf)))
+            if (!vcstrcode(arg->name, ( char * ) buf, sizeof(buf)))
                 return -1;
-            if (strncmp(( char * )buf, ( char * )dt, sz) == 0 && buf[sz] == 0)
+            if (strncmp(( char * ) buf, ( char * ) dt, sz) == 0
+                && buf[sz] == 0)
                 break;
         }
         if (!arg->name)
@@ -211,9 +212,9 @@ sumheader(Vcodex_t *vc, Vcmtcode_t *mtcd)
         vcioinit(&io, buf, sizeof(buf));
         vcioputs(&io, arg->name, strlen(arg->name));
         vcioputc(&io, '=');
-        vcitoa(( Vcint_t )dgsz, ( char * )vcionext(&io), vciomore(&io));
+        vcitoa(( Vcint_t ) dgsz, ( char * ) vcionext(&io), vciomore(&io));
         if (!(mtcd->coder
-              = vcopen(0, Vcsum, ( Void_t * )buf, mtcd->coder, VC_DECODE)))
+              = vcopen(0, Vcsum, ( Void_t * ) buf, mtcd->coder, VC_DECODE)))
             return -1;
 
         if (!(sum = vcgetmtdata(mtcd->coder, Sum_t *)))
@@ -234,14 +235,14 @@ sumevent(Vcodex_t *vc, int type, Void_t *param)
     Sum_t *sum = NIL(Sum_t *);
 
     if (type == VC_OPENING) {
-        if (!(sum = ( Sum_t * )calloc(1, sizeof(Sum_t))))
+        if (!(sum = ( Sum_t * ) calloc(1, sizeof(Sum_t))))
             return -1;
 
         sum->type = SUM_CRC;
         meth = Vcxcrcsum;
         sum->head = 1; /* 1 control byte for now */
         sum->dgsize = 0;
-        for (data = ( char * )param; data;) {
+        for (data = ( char * ) param; data;) {
             val[0] = 0;
             data = vcgetmtarg(data, val, sizeof(val), _Sumargs, &arg);
             switch (TYPECAST(int, arg->data)) {
@@ -275,7 +276,7 @@ sumevent(Vcodex_t *vc, int type, Void_t *param)
         vcsetmtdata(vc, sum);
         return 0;
     } else if (type == VC_EXTRACT || type == VC_RESTORE)
-        return sumheader(vc, ( Vcmtcode_t * )param) < 0 ? -1 : 1;
+        return sumheader(vc, ( Vcmtcode_t * ) param) < 0 ? -1 : 1;
     else if (type == VC_CLOSING) {
         if ((sum = vcgetmtdata(vc, Sum_t *))) {
             vcxstop(&sum->digest);

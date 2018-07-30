@@ -175,7 +175,7 @@ dropcap(Cap_t *cap)
 static void
 drop(Dt_t *dt, void *object, Dtdisc_t *disc)
 {
-    Ent_t *ent = ( Ent_t * )object;
+    Ent_t *ent = ( Ent_t * ) object;
     Cap_t *cap;
 
     while (cap = ent->cap) {
@@ -279,7 +279,7 @@ mimeset(Mime_t *mp, char *s, unsigned long flags)
                 }
             } while (*(v = t));
         }
-        ent = ( Ent_t * )dtmatch(mp->cap, s);
+        ent = ( Ent_t * ) dtmatch(mp->cap, s);
         if (cap) {
             if (ent) {
                 Cap_t *dup;
@@ -328,7 +328,7 @@ mimeload(Mime_t *mp, const char *file, unsigned long flags)
     int n;
     Sfio_t *fp;
 
-    if (!(s = ( char * )file)) {
+    if (!(s = ( char * ) file)) {
         flags |= MIME_LIST;
         if (!(s = getenv(MIME_FILES_ENV)))
             s = MIME_FILES;
@@ -372,8 +372,8 @@ mimeload(Mime_t *mp, const char *file, unsigned long flags)
 static int
 list(Dt_t *dt, void *object, void *context)
 {
-    Walk_t *wp = ( Walk_t * )context;
-    Ent_t *ent = ( Ent_t * )object;
+    Walk_t *wp = ( Walk_t * ) context;
+    Ent_t *ent = ( Ent_t * ) object;
     Cap_t *cap;
     Att_t *att;
 
@@ -415,8 +415,8 @@ mimelist(Mime_t *mp, Sfio_t *fp, const char *pattern)
         for (s = pattern; *s && *s != '/'; s++)
             ;
         if (!*s || (!*(s + 1) || *(s + 1) == '*' && !*(s + 2)))
-            ws.prefix = s - ( char * )pattern;
-        else if (ent = ( Ent_t * )dtmatch(mp->cap, pattern)) {
+            ws.prefix = s - ( char * ) pattern;
+        else if (ent = ( Ent_t * ) dtmatch(mp->cap, pattern)) {
             ws.pattern = 0;
             list(mp->cap, ent, &ws);
             return ws.hit;
@@ -506,16 +506,16 @@ expand(Mime_t *mp,
         case '%':
             switch (c = *s++) {
             case 's':
-                sfputr(mp->buf, ( char * )name, -1);
+                sfputr(mp->buf, ( char * ) name, -1);
                 mp->disc->flags &= ~MIME_PIPE;
                 continue;
             case 't':
-                sfputr(mp->buf, ( char * )type, -1);
+                sfputr(mp->buf, ( char * ) type, -1);
                 continue;
             case '{':
                 for (t = s; *s && *s != '}'; s++)
                     ;
-                if (*s && (c = s++ - t) && (pp.next = ( char * )opts))
+                if (*s && (c = s++ - t) && (pp.next = ( char * ) opts))
                     while (arg(&pp, 0))
                         if (pp.name.size == c
                             && !strncasecmp(pp.name.data, t, c)) {
@@ -555,11 +555,11 @@ mimeview(Mime_t *mp,
     int c;
     char word[64];
 
-    if (!(ent = ( Ent_t * )dtmatch(mp->cap, type)) && (s = strchr(type, '/'))
-        && (c = s - ( char * )type) < sizeof(word)) {
+    if (!(ent = ( Ent_t * ) dtmatch(mp->cap, type)) && (s = strchr(type, '/'))
+        && (c = s - ( char * ) type) < sizeof(word)) {
         memcpy(word, type, c);
         word[c] = 0;
-        ent = ( Ent_t * )dtmatch(mp->cap, word);
+        ent = ( Ent_t * ) dtmatch(mp->cap, word);
     }
     if (ent) {
         cap = ent->cap;
@@ -684,7 +684,7 @@ mimecmp(const char *s, const char *v, char **e)
             return n;
     if (!isalnum(*s) && *s != '_' && *s != '-') {
         if (e)
-            *e = ( char * )s;
+            *e = ( char * ) s;
         return 0;
     }
     return lower(*s) - lower(*v);
@@ -713,15 +713,16 @@ mimehead(Mime_t *mp,
         set = mp->disc->valuef;
     if (!strncasecmp(s, "content-", 8)) {
         s += 8;
-        if ((p = strsearch(tab, num, siz, ( Strcmp_f )mimecmp, s, &e))
+        if ((p = strsearch(tab, num, siz, ( Strcmp_f ) mimecmp, s, &e))
             && *e == ':') {
             pp.next = e + 1;
             if (arg(&pp, 1)) {
                 if ((*set)(mp, p, pp.name.data, pp.name.size, mp->disc))
                     return 0;
                 while (arg(&pp, 0))
-                    if ((p = strsearch(
-                         tab, num, siz, ( Strcmp_f )mimecmp, pp.name.data, &e))
+                    if ((
+                        p = strsearch(
+                        tab, num, siz, ( Strcmp_f ) mimecmp, pp.name.data, &e))
                         && (*set)(
                            mp, p, pp.value.data, pp.value.size, mp->disc))
                         return 0;

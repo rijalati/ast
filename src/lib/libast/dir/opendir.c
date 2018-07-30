@@ -79,7 +79,7 @@ opendir(const char *path)
     dirp->dd_fd = fd;
     dirp->dd_loc = dirp->dd_size = 0; /* refill needed */
 #    if defined(_DIR_PRIVATE_) || _ptr_dd_buf
-    dirp->dd_buf = ( void * )(( char * )dirp + sizeof(DIR));
+    dirp->dd_buf = ( void * ) (( char * ) dirp + sizeof(DIR));
 #    endif
     return (dirp);
 }

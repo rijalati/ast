@@ -51,7 +51,7 @@ typedef struct Fixedstate_s
 static int
 fixedident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
 {
-    Magicid_t *mp = ( Magicid_t * )buf;
+    Magicid_t *mp = ( Magicid_t * ) buf;
     Magicid_data_t magic;
     int swap;
 
@@ -83,12 +83,12 @@ fixedopen(Dssfile_t *file, Dssdisc_t *disc)
             return -1;
         }
         if (!(file->data
-              = ( void * )vmnewof(file->dss->vm, 0, Fixedstate_t, 1, 0))) {
+              = ( void * ) vmnewof(file->dss->vm, 0, Fixedstate_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
-        (( Fixedstate_t * )file->data)->swap = file->ident;
+        (( Fixedstate_t * ) file->data)->swap = file->ident;
     } else if (!(file->flags & DSS_FILE_APPEND)) {
         Fixedheader_t hdr;
 
@@ -110,10 +110,10 @@ fixedopen(Dssfile_t *file, Dssdisc_t *disc)
 static int
 fixedread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Fixedstate_t *state = ( Fixedstate_t * )file->data;
+    Fixedstate_t *state = ( Fixedstate_t * ) file->data;
     Bgproute_t *rp;
 
-    if (!(rp = ( Bgproute_t * )sfreserve(file->io, sizeof(*rp), 0))) {
+    if (!(rp = ( Bgproute_t * ) sfreserve(file->io, sizeof(*rp), 0))) {
         if (sfvalue(file->io)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
@@ -126,7 +126,7 @@ fixedread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         return 0;
     }
     if (state->swap) {
-        swapmem(state->swap, rp, rp, ( char * )&rp->path - ( char * )rp);
+        swapmem(state->swap, rp, rp, ( char * ) &rp->path - ( char * ) rp);
         if (rp->cluster.size)
             swapmem(state->swap,
                     rp->data + rp->cluster.offset,
@@ -134,9 +134,9 @@ fixedread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     rp->cluster.size * sizeof(Bgpnum_t));
         if (state->swap & 1) {
             swapmem(state->swap & 1,
-                    ( char * )&rp->path,
-                    ( char * )&rp->path,
-                    ( char * )&rp->bits - ( char * )&rp->path);
+                    ( char * ) &rp->path,
+                    ( char * ) &rp->path,
+                    ( char * ) &rp->bits - ( char * ) &rp->path);
             if (rp->path.size)
                 swapmem(state->swap & 1,
                         rp->data + rp->path.offset,

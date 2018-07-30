@@ -499,7 +499,7 @@ printable(State_t *state, char *s)
 static int
 key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     FTSENT *ent;
     struct stat *st;
     char *s = 0;
@@ -519,14 +519,14 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
     else
         st = 0;
     t = TMX_NOTIME;
-    if (!(kp = ( Key_t * )dtmatch(state->keys, fp->t_str))) {
+    if (!(kp = ( Key_t * ) dtmatch(state->keys, fp->t_str))) {
         if (*fp->t_str != '$') {
             error(2, "%s: unknown format key", fp->t_str);
             return 0;
         }
         if (!(kp = vmnewof(state->vm, 0, Key_t, 1, strlen(fp->t_str) + 1)))
             goto nospace;
-        kp->name = ( char * )(kp + 1);
+        kp->name = ( char * ) (kp + 1);
         strcpy(kp->name, fp->t_str);
         kp->macro = getenv(fp->t_str + 1);
         kp->index = KEY_environ;
@@ -790,12 +790,12 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
             }
             if (!*arg)
                 arg = state->timefmt;
-            if (( unsigned long )n >= state->testdate) {
+            if (( unsigned long ) n >= state->testdate) {
                 n = state->testdate;
                 t = TMX_NOTIME;
             }
             *ps
-            = t == TMX_NOTIME ? fmttime(arg, ( time_t )n) : fmttmx(arg, t);
+            = t == TMX_NOTIME ? fmttime(arg, ( time_t ) n) : fmttmx(arg, t);
         }
     } else
         *pn = n;
@@ -1142,7 +1142,7 @@ order_name(FTSENT *f1, FTSENT *f2)
 static int
 order(FTSENT *const *f1, FTSENT *const *f2)
 {
-    State_t *state = ( State_t * )(*f1)->fts->fts_handle;
+    State_t *state = ( State_t * ) (*f1)->fts->fts_handle;
     int n;
 
     if ((state->lsflags & (LS_DIRECTORY | LS_LABEL)) == LS_LABEL
@@ -1309,14 +1309,14 @@ walk(const char *path,
     FTSENT *dd[2];
 
     flags |= FTS_NOPOSTORDER;
-    if (!(f = fts_open(( char *const * )path, flags, comparf))) {
-        if (!path || !(path = ( const char * )(*(( char ** )path))))
+    if (!(f = fts_open(( char *const * ) path, flags, comparf))) {
+        if (!path || !(path = ( const char * ) (*(( char ** ) path))))
             return -1;
         ns = strlen(path) + 1;
         if (!(e = vmnewof(state->vm, 0, FTSENT, 1, ns)))
             return -1;
         e->fts_accpath = e->fts_name = e->fts_path
-        = strcpy(( char * )(e + 1), path);
+        = strcpy(( char * ) (e + 1), path);
         e->fts_namelen = e->fts_pathlen = ns;
         e->fts_info = FTS_NS;
         e->fts_parent = e;
@@ -1635,7 +1635,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
                 opt_info.arg += 2;
                 s = 0;
             }
-            if (!(kp = ( Key_t * )dtmatch(state.keys, opt_info.arg))) {
+            if (!(kp = ( Key_t * ) dtmatch(state.keys, opt_info.arg))) {
                 if (!s)
                     break;
                 if (!(kp = vmnewof(state.vm, 0, Key_t, 1, 0))) {
@@ -1724,7 +1724,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
                     break;
                 /*FALLTHROUGH*/
             case 'a':
-                if (kp = ( Key_t * )dtmatch(state.keys, "name")) {
+                if (kp = ( Key_t * ) dtmatch(state.keys, "name")) {
                     stresc(kp->macro = fmt_color);
                     state.lsflags |= LS_STAT;
                 }
@@ -1893,7 +1893,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
         }
         if (argv[1])
             state.lsflags |= LS_LABEL;
-        walk(( char * )argv, ls, state.ftsflags, order, &state);
+        walk(( char * ) argv, ls, state.ftsflags, order, &state);
         if (keys[KEY_summary].macro)
             sfkeyprintf(sfstdout, NiL, keys[KEY_summary].macro, key, NiL);
     }

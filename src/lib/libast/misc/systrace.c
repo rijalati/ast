@@ -44,8 +44,8 @@ systrace(const char *id)
 
     if (!(s = getenv("HOME")))
         return;
-    if (!id && !(id = ( const char * )error_info.id))
-        id = ( const char * )trace[0];
+    if (!id && !(id = ( const char * ) error_info.id))
+        id = ( const char * ) trace[0];
     out = buf;
     out += sfsprintf(out, sizeof(buf), "%s/.%s/%s", s, trace[0], id);
     if (access(buf, F_OK))

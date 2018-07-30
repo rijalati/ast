@@ -62,7 +62,7 @@ hashalloc(Hash_table_t *ref, ...)
         region = va_arg(ap, Hash_region_f);
         handle = va_arg(ap, void *);
         n = va_arg(ap, int);
-        if (!(tab = ( Hash_table_t * )(*region)(
+        if (!(tab = ( Hash_table_t * ) (*region)(
               handle, NiL, sizeof(Hash_table_t), 0)))
             goto out;
         memset(tab, 0, sizeof(Hash_table_t));
@@ -76,7 +76,7 @@ hashalloc(Hash_table_t *ref, ...)
         internal = HASH_INTERNAL;
     } else {
         if (region) {
-            if (!(tab->root = ( Hash_root_t * )(*region)(
+            if (!(tab->root = ( Hash_root_t * ) (*region)(
                   handle, NiL, sizeof(Hash_root_t), 0)))
                 goto out;
             memset(tab->root, 0, sizeof(Hash_root_t));
@@ -179,7 +179,7 @@ hashalloc(Hash_table_t *ref, ...)
             if (!tab->table) {
                 if (region) {
                     if (!(
-                        tab->table = ( Hash_bucket_t ** )(*region)(
+                        tab->table = ( Hash_bucket_t ** ) (*region)(
                         handle, NiL, sizeof(Hash_bucket_t *) * tab->size, 0)))
                         goto out;
                     memset(

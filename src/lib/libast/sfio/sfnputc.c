@@ -54,7 +54,7 @@ size_t n;                           /* number of time to repeat */
         ps = buf;
         p = sizeof(buf);
     }
-    if (( size_t )p > n)
+    if (( size_t ) p > n)
         p = n;
     MEMSET(ps, c, p);
     ps -= p;
@@ -63,16 +63,16 @@ size_t n;                           /* number of time to repeat */
     if (ps == f->next) { /* simple sfwrite */
         f->next += p;
         if (c == '\n')
-            ( void )SFFLSBUF(f, -1);
+            ( void ) SFFLSBUF(f, -1);
         goto done;
     }
 
     for (;;) { /* hard write of data */
-        if ((p = SFWRITE(f, ( Void_t * )ps, p)) <= 0 || (n -= p) <= 0) {
+        if ((p = SFWRITE(f, ( Void_t * ) ps, p)) <= 0 || (n -= p) <= 0) {
             w -= n;
             goto done;
         }
-        if (( size_t )p > n)
+        if (( size_t ) p > n)
             p = n;
     }
 done:

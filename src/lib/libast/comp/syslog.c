@@ -132,7 +132,7 @@ str2inet(char *s, char *prot, struct sockaddr_in *addr)
         if (!hp || hp->h_addrtype != AF_INET
             || hp->h_length > sizeof(struct in_addr))
             return -1;
-        a = ( unsigned long )(( struct in_addr * )hp->h_addr)->s_addr;
+        a = ( unsigned long ) (( struct in_addr * ) hp->h_addr)->s_addr;
         n = 6;
         s = e + 1;
     }
@@ -158,7 +158,7 @@ str2inet(char *s, char *prot, struct sockaddr_in *addr)
         if (c != '.' && c != '/')
             return -1;
     }
-    memset(( char * )addr, 0, sizeof(*addr));
+    memset(( char * ) addr, 0, sizeof(*addr));
     addr->sin_family = AF_INET;
     addr->sin_addr.s_addr = a;
     addr->sin_port = p;
@@ -194,7 +194,7 @@ sockopen(const char *path)
             ua.sun_family = AF_UNIX;
             strcpy(ua.sun_path, buf);
             ul += sizeof(ua.sun_family) + 1;
-            if (!connect(fd, ( struct sockaddr * )&ua, ul))
+            if (!connect(fd, ( struct sockaddr * ) &ua, ul))
                 return fd;
             close(fd);
             return -1;
@@ -209,7 +209,7 @@ sockopen(const char *path)
     if ((fd = socket(AF_INET, buf[5] == 't' ? SOCK_STREAM : SOCK_DGRAM, 0))
         < 0)
         return -1;
-    if (connect(fd, ( struct sockaddr * )&addr, sizeof(addr))) {
+    if (connect(fd, ( struct sockaddr * ) &addr, sizeof(addr))) {
         close(fd);
         return -1;
     }
@@ -240,7 +240,7 @@ sendlog(const char *msg)
 
             if (log.attempt >= elementsof(attempt))
                 break;
-            p = ( Namval_t * )&attempt[log.attempt++];
+            p = ( Namval_t * ) &attempt[log.attempt++];
             if (p->value && !(p->value & log.flags))
                 continue;
             if (*(s = p->name) != '/'
@@ -271,7 +271,7 @@ extend(Sfio_t *sp, void *vp, Sffmt_t *dp)
         dp->flags |= SFFMT_VALUE;
         dp->fmt = 's';
         dp->size = -1;
-        *(( char ** )vp) = fmterror(errno);
+        *(( char ** ) vp) = fmterror(errno);
     }
     return 0;
 }
@@ -293,12 +293,12 @@ vsyslog(int priority, const char *format, va_list ap)
         sfputr(sp, fmttime("%b %d %H:%M:%S", time(NiL)), -1);
         if (log.flags & LOG_LEVEL) {
             if ((c = LOG_SEVERITY(priority)) < elementsof(log_severity))
-                s = ( char * )log_severity[c].name;
+                s = ( char * ) log_severity[c].name;
             else
                 sfsprintf(s = buf, sizeof(buf), "debug%d", c);
             sfprintf(sp, " %-8s ", s);
             if ((c = LOG_FACILITY(priority)) < elementsof(log_facility))
-                s = ( char * )log_facility[c].name;
+                s = ( char * ) log_facility[c].name;
             else
                 sfsprintf(s = buf, sizeof(buf), "local%d", c);
             sfprintf(sp, " %-8s ", s);
@@ -319,7 +319,7 @@ vsyslog(int priority, const char *format, va_list ap)
             sfprintf(sp, ": ");
             memset(&fmt, 0, sizeof(fmt));
             fmt.version = SFIO_VERSION;
-            fmt.form = ( char * )format;
+            fmt.form = ( char * ) format;
             fmt.extf = extend;
             va_copy(fmt.args, ap);
             sfprintf(sp, "%!", &fmt);

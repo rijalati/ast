@@ -79,7 +79,7 @@ MAIN()
     if (!(tz = vcopen(0, Vctable, 0, mtf, VC_ENCODE)))
         terror("Vctable: could not open handle to transform");
 
-    if ((n = vcextract(tz, ( Void_t ** )(&tstr))) <= 0)
+    if ((n = vcextract(tz, ( Void_t ** ) (&tstr))) <= 0)
         terror("Cannot get encoding string");
     memcpy(store, tstr, n);
 

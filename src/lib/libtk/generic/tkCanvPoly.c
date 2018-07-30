@@ -46,63 +46,63 @@ typedef struct PolygonItem
  */
 
 static Tk_CustomOption tagsOption
-= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData )NULL };
+= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData ) NULL };
 
 static Tk_ConfigSpec configSpecs[] = { { TK_CONFIG_COLOR,
                                          "-fill",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          "black",
                                          Tk_Offset(PolygonItem, fillColor),
                                          TK_CONFIG_NULL_OK },
                                        { TK_CONFIG_COLOR,
                                          "-outline",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          Tk_Offset(PolygonItem, outlineColor),
                                          TK_CONFIG_NULL_OK },
                                        { TK_CONFIG_BOOLEAN,
                                          "-smooth",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          "0",
                                          Tk_Offset(PolygonItem, smooth),
                                          TK_CONFIG_DONT_SET_DEFAULT },
                                        { TK_CONFIG_INT,
                                          "-splinesteps",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          "12",
                                          Tk_Offset(PolygonItem, splineSteps),
                                          TK_CONFIG_DONT_SET_DEFAULT },
                                        { TK_CONFIG_BITMAP,
                                          "-stipple",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          Tk_Offset(PolygonItem, fillStipple),
                                          TK_CONFIG_NULL_OK },
                                        { TK_CONFIG_CUSTOM,
                                          "-tags",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          0,
                                          TK_CONFIG_NULL_OK,
                                          &tagsOption },
                                        { TK_CONFIG_PIXELS,
                                          "-width",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          "1",
                                          Tk_Offset(PolygonItem, width),
                                          TK_CONFIG_DONT_SET_DEFAULT },
                                        { TK_CONFIG_END,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          0,
                                          0 } };
 
@@ -162,26 +162,26 @@ static void TranslatePolygon _ANSI_ARGS_(
  */
 
 Tk_ItemType tkPolygonType = {
-    "polygon",                      /* name */
-    sizeof(PolygonItem),            /* itemSize */
-    CreatePolygon,                  /* createProc */
-    configSpecs,                    /* configSpecs */
-    ConfigurePolygon,               /* configureProc */
-    PolygonCoords,                  /* coordProc */
-    DeletePolygon,                  /* deleteProc */
-    DisplayPolygon,                 /* displayProc */
-    0,                              /* alwaysRedraw */
-    PolygonToPoint,                 /* pointProc */
-    PolygonToArea,                  /* areaProc */
-    PolygonToPostscript,            /* postscriptProc */
-    ScalePolygon,                   /* scaleProc */
-    TranslatePolygon,               /* translateProc */
-    ( Tk_ItemIndexProc * )NULL,     /* indexProc */
-    ( Tk_ItemCursorProc * )NULL,    /* icursorProc */
-    ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL,    /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL,    /* dTextProc */
-    ( Tk_ItemType * )NULL           /* nextPtr */
+    "polygon",                       /* name */
+    sizeof(PolygonItem),             /* itemSize */
+    CreatePolygon,                   /* createProc */
+    configSpecs,                     /* configSpecs */
+    ConfigurePolygon,                /* configureProc */
+    PolygonCoords,                   /* coordProc */
+    DeletePolygon,                   /* deleteProc */
+    DisplayPolygon,                  /* displayProc */
+    0,                               /* alwaysRedraw */
+    PolygonToPoint,                  /* pointProc */
+    PolygonToArea,                   /* areaProc */
+    PolygonToPostscript,             /* postscriptProc */
+    ScalePolygon,                    /* scaleProc */
+    TranslatePolygon,                /* translateProc */
+    ( Tk_ItemIndexProc * ) NULL,     /* indexProc */
+    ( Tk_ItemCursorProc * ) NULL,    /* icursorProc */
+    ( Tk_ItemSelectionProc * ) NULL, /* selectionProc */
+    ( Tk_ItemInsertProc * ) NULL,    /* insertProc */
+    ( Tk_ItemDCharsProc * ) NULL,    /* dTextProc */
+    ( Tk_ItemType * ) NULL           /* nextPtr */
 };
 
 /*
@@ -221,7 +221,7 @@ Tk_Item *itemPtr;   /* Record to hold new item;  header
 int argc;           /* Number of arguments in argv. */
 char **argv;        /* Arguments describing polygon. */
 {
-    PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
+    PolygonItem *polyPtr = ( PolygonItem * ) itemPtr;
     int i;
 
     if (argc < 6) {
@@ -231,7 +231,7 @@ char **argv;        /* Arguments describing polygon. */
                          " create ",
                          itemPtr->typePtr->name,
                          " x1 y1 x2 y2 x3 y3 ?x4 y4 ...? ?options?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -306,7 +306,7 @@ int argc;           /* Number of coordinates supplied in
 char **argv;        /* Array of coordinates: x1, y1,
                      * x2, y2, ... */
 {
-    PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
+    PolygonItem *polyPtr = ( PolygonItem * ) itemPtr;
     char buffer[TCL_DOUBLE_SPACE];
     int i, numPoints;
 
@@ -319,18 +319,18 @@ char **argv;        /* Array of coordinates: x1, y1,
         Tcl_AppendResult(
         interp,
         "too few coordinates for polygon: must have at least 6",
-        ( char * )NULL);
+        ( char * ) NULL);
         return TCL_ERROR;
     } else if (argc & 1) {
         Tcl_AppendResult(interp,
                          "odd number of coordinates specified for polygon",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     } else {
         numPoints = argc / 2;
         if (polyPtr->pointsAllocated <= numPoints) {
             if (polyPtr->coordPtr != NULL) {
-                ckfree(( char * )polyPtr->coordPtr);
+                ckfree(( char * ) polyPtr->coordPtr);
             }
 
             /*
@@ -338,8 +338,8 @@ char **argv;        /* Array of coordinates: x1, y1,
              * to add another point to close the polygon.
              */
 
-            polyPtr->coordPtr
-            = ( double * )ckalloc(( unsigned )(sizeof(double) * (argc + 2)));
+            polyPtr->coordPtr = ( double * ) ckalloc(
+            ( unsigned ) (sizeof(double) * (argc + 2)));
             polyPtr->pointsAllocated = numPoints + 1;
         }
         for (i = argc - 1; i >= 0; i--) {
@@ -393,7 +393,7 @@ int argc;           /* Number of elements in argv.  */
 char **argv;        /* Arguments describing things to configure. */
 int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
-    PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
+    PolygonItem *polyPtr = ( PolygonItem * ) itemPtr;
     XGCValues gcValues;
     GC newGC;
     unsigned long mask;
@@ -401,7 +401,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     tkwin = Tk_CanvasTkwin(canvas);
     if (Tk_ConfigureWidget(
-        interp, tkwin, configSpecs, argc, argv, ( char * )polyPtr, flags)
+        interp, tkwin, configSpecs, argc, argv, ( char * ) polyPtr, flags)
         != TCL_OK) {
         return TCL_ERROR;
     }
@@ -485,10 +485,10 @@ Tk_Item *itemPtr; /* Item that is being deleted. */
 Display *display; /* Display containing window for
                    * canvas. */
 {
-    PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
+    PolygonItem *polyPtr = ( PolygonItem * ) itemPtr;
 
     if (polyPtr->coordPtr != NULL) {
-        ckfree(( char * )polyPtr->coordPtr);
+        ckfree(( char * ) polyPtr->coordPtr);
     }
     if (polyPtr->fillColor != NULL) {
         Tk_FreeColor(polyPtr->fillColor);
@@ -540,7 +540,7 @@ PolygonItem *polyPtr; /* Item whose bbox is to be
 
     for (i = 1, coordPtr = polyPtr->coordPtr + 2; i < polyPtr->numPoints;
          i++, coordPtr += 2) {
-        TkIncludePoint(( Tk_Item * )polyPtr, coordPtr);
+        TkIncludePoint(( Tk_Item * ) polyPtr, coordPtr);
     }
 
     /*
@@ -605,7 +605,7 @@ GC outlineGC;      /* If not None, use this to draw an
         pointPtr = staticPoints;
     } else {
         pointPtr
-        = ( XPoint * )ckalloc(( unsigned )(numPoints * sizeof(XPoint)));
+        = ( XPoint * ) ckalloc(( unsigned ) (numPoints * sizeof(XPoint)));
     }
 
     for (i = 0, pPtr = pointPtr; i < numPoints;
@@ -628,7 +628,7 @@ GC outlineGC;      /* If not None, use this to draw an
         display, drawable, outlineGC, pointPtr, numPoints, CoordModeOrigin);
     }
     if (pointPtr != staticPoints) {
-        ckfree(( char * )pointPtr);
+        ckfree(( char * ) pointPtr);
     }
 }
 
@@ -660,7 +660,7 @@ Drawable drawable;       /* Pixmap or window in which to draw
 int x, y, width, height; /* Describes region of canvas that
                           * must be redisplayed (not used). */
 {
-    PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
+    PolygonItem *polyPtr = ( PolygonItem * ) itemPtr;
 
     if ((polyPtr->fillGC == None) && (polyPtr->outlineGC == None)) {
         return;
@@ -699,14 +699,14 @@ int x, y, width, height; /* Describes region of canvas that
             pointPtr = staticPoints;
         } else {
             pointPtr
-            = ( XPoint * )ckalloc(( unsigned )(numPoints * sizeof(XPoint)));
+            = ( XPoint * ) ckalloc(( unsigned ) (numPoints * sizeof(XPoint)));
         }
         numPoints = TkMakeBezierCurve(canvas,
                                       polyPtr->coordPtr,
                                       polyPtr->numPoints,
                                       polyPtr->splineSteps,
                                       pointPtr,
-                                      ( double * )NULL);
+                                      ( double * ) NULL);
         if (polyPtr->fillGC != None) {
             XFillPolygon(display,
                          drawable,
@@ -725,7 +725,7 @@ int x, y, width, height; /* Describes region of canvas that
                        CoordModeOrigin);
         }
         if (pointPtr != staticPoints) {
-            ckfree(( char * )pointPtr);
+            ckfree(( char * ) pointPtr);
         }
     }
     if ((polyPtr->fillStipple != None) && (polyPtr->fillGC != None)) {
@@ -761,7 +761,7 @@ static double PolygonToPoint(canvas,
 Tk_Item *itemPtr; /* Item to check against point. */
 double *pointPtr; /* Pointer to x and y coordinates. */
 {
-    PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
+    PolygonItem *polyPtr = ( PolygonItem * ) itemPtr;
     double *coordPtr, distance;
     double staticSpace[2 * MAX_STATIC_POINTS];
     int numPoints;
@@ -779,18 +779,18 @@ double *pointPtr; /* Pointer to x and y coordinates. */
         if (numPoints <= MAX_STATIC_POINTS) {
             coordPtr = staticSpace;
         } else {
-            coordPtr = ( double * )ckalloc(
-            ( unsigned )(2 * numPoints * sizeof(double)));
+            coordPtr = ( double * ) ckalloc(
+            ( unsigned ) (2 * numPoints * sizeof(double)));
         }
         numPoints = TkMakeBezierCurve(canvas,
                                       polyPtr->coordPtr,
                                       polyPtr->numPoints,
                                       polyPtr->splineSteps,
-                                      ( XPoint * )NULL,
+                                      ( XPoint * ) NULL,
                                       coordPtr);
         distance = TkPolygonToPoint(coordPtr, numPoints, pointPtr);
         if (coordPtr != staticSpace) {
-            ckfree(( char * )coordPtr);
+            ckfree(( char * ) coordPtr);
         }
     }
     if (polyPtr->outlineColor != NULL) {
@@ -831,7 +831,7 @@ double *rectPtr;  /* Pointer to array of four coordinates
                    * (x1, y1, x2, y2) describing rectangular
                    * area.  */
 {
-    PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
+    PolygonItem *polyPtr = ( PolygonItem * ) itemPtr;
     double *coordPtr, rect2[4], halfWidth;
     double staticSpace[2 * MAX_STATIC_POINTS];
     int numPoints, result;
@@ -846,14 +846,14 @@ double *rectPtr;  /* Pointer to array of four coordinates
         if (numPoints <= MAX_STATIC_POINTS) {
             coordPtr = staticSpace;
         } else {
-            coordPtr = ( double * )ckalloc(
-            ( unsigned )(2 * numPoints * sizeof(double)));
+            coordPtr = ( double * ) ckalloc(
+            ( unsigned ) (2 * numPoints * sizeof(double)));
         }
         numPoints = TkMakeBezierCurve(canvas,
                                       polyPtr->coordPtr,
                                       polyPtr->numPoints,
                                       polyPtr->splineSteps,
-                                      ( XPoint * )NULL,
+                                      ( XPoint * ) NULL,
                                       coordPtr);
     } else {
         numPoints = polyPtr->numPoints;
@@ -875,7 +875,7 @@ double *rectPtr;  /* Pointer to array of four coordinates
 
         result = TkThickPolyLineToArea(coordPtr,
                                        numPoints,
-                                       ( double )polyPtr->width,
+                                       ( double ) polyPtr->width,
                                        CapRound,
                                        JoinRound,
                                        rectPtr);
@@ -905,7 +905,7 @@ double *rectPtr;  /* Pointer to array of four coordinates
 
 done:
     if ((coordPtr != staticSpace) && (coordPtr != polyPtr->coordPtr)) {
-        ckfree(( char * )coordPtr);
+        ckfree(( char * ) coordPtr);
     }
     return result;
 }
@@ -937,7 +937,7 @@ double originX, originY; /* Origin about which to scale rect. */
 double scaleX;           /* Amount to scale in X direction. */
 double scaleY;           /* Amount to scale in Y direction. */
 {
-    PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
+    PolygonItem *polyPtr = ( PolygonItem * ) itemPtr;
     double *coordPtr;
     int i;
 
@@ -974,7 +974,7 @@ Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
-    PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
+    PolygonItem *polyPtr = ( PolygonItem * ) itemPtr;
     double *coordPtr;
     int i;
 
@@ -1018,7 +1018,7 @@ int prepass;        /* 1 means this is a prepass to
                      * final Postscript is being created. */
 {
     char string[100];
-    PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
+    PolygonItem *polyPtr = ( PolygonItem * ) itemPtr;
 
     /*
      * Fill the area of the polygon.
@@ -1036,16 +1036,16 @@ int prepass;        /* 1 means this is a prepass to
             return TCL_ERROR;
         }
         if (polyPtr->fillStipple != None) {
-            Tcl_AppendResult(interp, "eoclip ", ( char * )NULL);
+            Tcl_AppendResult(interp, "eoclip ", ( char * ) NULL);
             if (Tk_CanvasPsStipple(interp, canvas, polyPtr->fillStipple)
                 != TCL_OK) {
                 return TCL_ERROR;
             }
             if (polyPtr->outlineColor != NULL) {
-                Tcl_AppendResult(interp, "grestore gsave\n", ( char * )NULL);
+                Tcl_AppendResult(interp, "grestore gsave\n", ( char * ) NULL);
             }
         } else {
-            Tcl_AppendResult(interp, "eofill\n", ( char * )NULL);
+            Tcl_AppendResult(interp, "eofill\n", ( char * ) NULL);
         }
     }
 
@@ -1064,12 +1064,12 @@ int prepass;        /* 1 means this is a prepass to
 
         sprintf(string, "%d setlinewidth\n", polyPtr->width);
         Tcl_AppendResult(
-        interp, string, "1 setlinecap\n1 setlinejoin\n", ( char * )NULL);
+        interp, string, "1 setlinecap\n1 setlinejoin\n", ( char * ) NULL);
         if (Tk_CanvasPsColor(interp, canvas, polyPtr->outlineColor)
             != TCL_OK) {
             return TCL_ERROR;
         }
-        Tcl_AppendResult(interp, "stroke\n", ( char * )NULL);
+        Tcl_AppendResult(interp, "stroke\n", ( char * ) NULL);
     }
     return TCL_OK;
 }

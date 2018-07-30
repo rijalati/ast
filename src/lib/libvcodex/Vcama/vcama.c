@@ -29,7 +29,7 @@
 ** and MUST BE SO for any new one that might be put in use.
 */
 #define EOL ('\n')                    /* the new line character	*/
-#define AMAEOL(x) (( x )&177)         /* \n is in low 7 bits	*/
+#define AMAEOL(x) (( x ) &177)        /* \n is in low 7 bits	*/
 #define AMA_TEXTLINE EOL              /* exclude \n in output	*/
 #define AMA_FULLLINE (EOL | (1 << 7)) /* include \n in output	*/
 
@@ -43,7 +43,7 @@
 #define MAXSIZE (1 << 16)                      /* max allowed record size	*/
 #define GETSIZE(dt) (((dt)[0] << 8) + (dt)[1]) /* record size	*/
 #define PUTSIZE(dt, v)                                                       \
-    (((dt)[0] = (((v) >> 8) & 0377)), ((dt)[1] = (( v )&0377)))
+    (((dt)[0] = (((v) >> 8) & 0377)), ((dt)[1] = (( v ) &0377)))
 
 typedef struct _vartbl_s
 {
@@ -69,13 +69,13 @@ static char *E2A[] = { "o2a", "h2a", "e2a", "i2a", "s2a" };
 static Vcmtarg_t _Amaargs[]
 = { { "etoa",
       "Mapping to ASCII text on decoding. 'etoa=[Vcmap type, default=o2a]'",
-      ( Void_t * )AMA_ETOA },
+      ( Void_t * ) AMA_ETOA },
     { "nl",
       "Records are text lines. 'nl=1' keeps \\n in output",
-      ( Void_t * )AMA_TEXTLINE },
+      ( Void_t * ) AMA_TEXTLINE },
     { 0,
       "Each records starts with a 2-byte header defining its size",
-      ( Void_t * )AMA_DFLT } };
+      ( Void_t * ) AMA_DFLT } };
 
 
 #if __STD_C
@@ -100,7 +100,7 @@ Void_t *obj2;
 Dtdisc_t *disc;
 #endif
 {
-    return ( int )(*(( ssize_t * )obj1)) - ( int )(*(( ssize_t * )obj2));
+    return ( int ) (*(( ssize_t * ) obj1)) - ( int ) (*(( ssize_t * ) obj2));
 }
 
 Dtdisc_t Tbldisc = { offsetof(Tbl_t, size),
@@ -147,7 +147,7 @@ Void_t **out;
     /* make the entry to keep table of sizes */
     z = -1;
     if (!(sztbl = dtmatch(szdt, &z))) {
-        if (!(sztbl = ( Tbl_t * )malloc(sizeof(Tbl_t))))
+        if (!(sztbl = ( Tbl_t * ) malloc(sizeof(Tbl_t))))
             RETURN(-1);
         sztbl->size = -1;
         sztbl->count = 0;
@@ -158,7 +158,7 @@ Void_t **out;
     }
 
     /* tally records of the same size */
-    for (enddt = (dt = ( Vcchar_t * )data) + size;;) {
+    for (enddt = (dt = ( Vcchar_t * ) data) + size;;) {
         if (var->type == AMA_DFLT) /* 2-byte record size header */
         {
             if (dt + AMA_SIZE > enddt) /* partial record */
@@ -198,7 +198,7 @@ Void_t **out;
         if ((tbl = dtmatch(szdt, &z)))
             tbl->count++;
         else { /* create handles for new record lengths */
-            if (!(tbl = ( Tbl_t * )calloc(1, sizeof(Tbl_t))))
+            if (!(tbl = ( Tbl_t * ) calloc(1, sizeof(Tbl_t))))
                 RETURN(-1);
 
             tbl->size = z;
@@ -211,7 +211,7 @@ Void_t **out;
         }
     }
 
-    if (dt == ( Vcchar_t * )data) /* no record seen */
+    if (dt == ( Vcchar_t * ) data) /* no record seen */
     {
         vc->undone = size;
         return 0;
@@ -245,7 +245,7 @@ Void_t **out;
     DEBUG_ASSERT((dt - tbldt) == sz);
 
     /* now partition records into groups of same size */
-    for (enddt = (dt = ( Vcchar_t * )data) + size; dt < enddt;) {
+    for (enddt = (dt = ( Vcchar_t * ) data) + size; dt < enddt;) {
         if (var->type == AMA_DFLT)
             z = GETSIZE(dt);
         else {
@@ -400,7 +400,7 @@ Void_t **out;
     /* reconstruct the table of record sizes */
     sz = -1;
     if (!(sztbl = dtmatch(szdt, &sz))) {
-        if (!(sztbl = ( Tbl_t * )calloc(1, sizeof(Tbl_t))))
+        if (!(sztbl = ( Tbl_t * ) calloc(1, sizeof(Tbl_t))))
             RETURN(-1);
         sztbl->count = 0;
         sztbl->size = sz;
@@ -429,7 +429,7 @@ Void_t **out;
             RETURN(-1);
 
         if (!(tbl = dtmatch(szdt, &sz))) {
-            if (!(tbl = ( Tbl_t * )calloc(1, sizeof(Tbl_t))))
+            if (!(tbl = ( Tbl_t * ) calloc(1, sizeof(Tbl_t))))
                 RETURN(-1);
             tbl->count = 0;
             tbl->size = sz;
@@ -486,7 +486,7 @@ Void_t **out;
 
     if (!(rawdt = vcbuffer(vc, NIL(Vcchar_t *), size, 0)))
         RETURN(-1);
-    data = ( Void_t * )rawdt;
+    data = ( Void_t * ) rawdt;
 
     for (enddt = (dt = sztbl->data) + sztbl->dtsz; dt < enddt;
          dt += 2) { /* get record size */
@@ -538,14 +538,14 @@ Void_t **out;
         tbl->data += tbl->size;
     }
 
-    if (sztbl->count != 0 || (rawdt - ( Vcchar_t * )data) != size)
+    if (sztbl->count != 0 || (rawdt - ( Vcchar_t * ) data) != size)
         RETURN(-1);
 
     if (out)
-        *out = ( Void_t * )data;
+        *out = ( Void_t * ) data;
 
     /**/ DEBUG_PRINT(2, "++++Decoded size=%d\n", size);
-    return ( ssize_t )size;
+    return ( ssize_t ) size;
 }
 
 #if __STD_C
@@ -580,7 +580,7 @@ Void_t *params;
         if (!(var = vcgetmtdata(vc, Vartbl_t *)))
             return -1;
     vc_setarg:
-        for (data = ( char * )params; data;) {
+        for (data = ( char * ) params; data;) {
             arg = NIL(Vcmtarg_t *);
             val[0] = 0;
             data = vcgetmtarg(data, val, sizeof(val), _Amaargs, &arg);

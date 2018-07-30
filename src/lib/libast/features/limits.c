@@ -141,12 +141,12 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
 #endif
 
 #ifndef SCHAR_MIN
-    val = ( unsigned char )(uc >> 1) + 1;
+    val = ( unsigned char ) (uc >> 1) + 1;
     printf("#define SCHAR_MIN	(-%lu)\n", val);
 #endif
 
 #ifndef SCHAR_MAX
-    val = ( unsigned char )(uc >> 1);
+    val = ( unsigned char ) (uc >> 1);
     printf("#define SCHAR_MAX	%lu\n", val);
 #endif
 
@@ -178,12 +178,12 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
 #endif
 
 #ifndef SHRT_MIN
-    val = ( unsigned short )(us >> 1) + 1;
+    val = ( unsigned short ) (us >> 1) + 1;
     printf("#define SHRT_MIN	(-%lu)\n", val);
 #endif
 
 #ifndef SHRT_MAX
-    val = ( unsigned short )(us >> 1);
+    val = ( unsigned short ) (us >> 1);
     printf("#define SHRT_MAX	%lu\n", val);
 #endif
 
@@ -210,7 +210,7 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
 #endif
 
 #ifndef INT_MIN
-        val = ( unsigned int )(ui >> 1) + 1;
+        val = ( unsigned int ) (ui >> 1) + 1;
         if (ui == ul)
             printf("#define INT_MIN		(-%lu-1)\n", val - 1);
         else
@@ -218,7 +218,7 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
 #endif
 
 #ifndef INT_MAX
-        val = ( unsigned int )(ui >> 1);
+        val = ( unsigned int ) (ui >> 1);
         printf("#define INT_MAX		%lu\n", val);
 #endif
     }
@@ -246,12 +246,12 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
 #endif
 
 #ifndef LONG_MIN
-        val = ( unsigned long )(ul >> 1) + 1;
+        val = ( unsigned long ) (ul >> 1) + 1;
         printf("#define LONG_MIN	(-%luL-1L)\n", val - 1);
 #endif
 
 #ifndef LONG_MAX
-        val = ( unsigned long )(ul >> 1);
+        val = ( unsigned long ) (ul >> 1);
         printf("#define LONG_MAX	%luL\n", val);
 #endif
     }

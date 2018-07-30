@@ -198,7 +198,7 @@ suffix(const char *path)
 
     while (s > path)
         if ((c = *--s) == '.')
-            return ( char * )s + 1;
+            return ( char * ) s + 1;
         else if (c == '/' || c == '\\')
             break;
     return 0;
@@ -311,13 +311,13 @@ alarm(unsigned int s)
 
     static unsigned int a;
 
-    n = ( unsigned int )time(NiL);
+    n = ( unsigned int ) time(NiL);
     if (a <= n)
         r = 0;
     else
         r = a - n;
     a = n + s - 1;
-    ( void )sysalarm(s);
+    ( void ) sysalarm(s);
     return r;
 }
 
@@ -492,7 +492,7 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
         pgrp = 0;
 #        endif
     if (!envv)
-        envv = ( char *const * )environ;
+        envv = ( char *const * ) environ;
     m1 = m2 = 0;
     oerrno = errno;
 #        if DEBUG
@@ -501,11 +501,11 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
 #        endif
     if (execrate(path, buf, sizeof(buf), 0)) {
         if (!sysstat(buf, &st))
-            path = ( const char * )buf;
+            path = ( const char * ) buf;
         else
             errno = oerrno;
     }
-    if (path != ( const char * )buf && sysstat(path, &st))
+    if (path != ( const char * ) buf && sysstat(path, &st))
         return -1;
     if (!S_ISREG(st.st_mode)
         || !(st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))) {
@@ -518,24 +518,24 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
         return -1;
 #        else
         ux = 1;
-        p = ( char ** )argv;
+        p = ( char ** ) argv;
         while (*p++)
             ;
-        if (!(v = ( char ** )malloc((p - ( char ** )argv + 2)
-                                    * sizeof(char *)))) {
+        if (!(v = ( char ** ) malloc((p - ( char ** ) argv + 2)
+                                     * sizeof(char *)))) {
             errno = EAGAIN;
             return -1;
         }
         m1 = v;
         p = v;
-        *p++ = ( char * )path;
-        *p++ = ( char * )path;
-        path = ( const char * )pathshell();
+        *p++ = ( char * ) path;
+        *p++ = ( char * ) path;
+        path = ( const char * ) pathshell();
         if (*argv)
             argv++;
-        while (*p++ = ( char * )*argv++)
+        while (*p++ = ( char * ) *argv++)
             ;
-        argv = ( char *const * )v;
+        argv = ( char *const * ) v;
 #        endif
     }
 
@@ -554,7 +554,7 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
      * by all cygwin executables, will be found
      */
 
-    if (p = ( char ** )envv) {
+    if (p = ( char ** ) envv) {
         n = 1;
         while (s = *p++)
             if (strneq(s, "PATH=", 5)) {
@@ -574,11 +574,11 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
                 break;
             }
         if (n) {
-            n = p - ( char ** )envv + 1;
-            p = ( char ** )envv;
-            if (v = ( char ** )malloc(n * sizeof(char *))) {
+            n = p - ( char ** ) envv + 1;
+            p = ( char ** ) envv;
+            if (v = ( char ** ) malloc(n * sizeof(char *))) {
                 m2 = v;
-                envv = ( char *const * )v;
+                envv = ( char *const * ) v;
                 *v++ = strcpy(tmp, "PATH=/bin");
                 while (*v++ = *p++)
                     ;
@@ -586,7 +586,7 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
         }
 #        if CONVERT
         if (!ux && (d = getenv(convertvars[0])))
-            for (p = ( char ** )envv; s = *p; p++)
+            for (p = ( char ** ) envv; s = *p; p++)
                 if ((n = convert(d, s))
                     && (m = cygwin_posix_to_win32_path_list_buf_size(s + n))
                        > 0) {
@@ -742,10 +742,10 @@ extern ssize_t
 write(int fd, const void *buf, size_t n)
 {
     if (fd >= 0 && fd < elementsof(exe) && exe[fd] && exe[fd]->test < 0)
-        exe[fd]->test = n >= 2 && (( unsigned char * )buf)[1] == 0x5a
-                        && ((( unsigned char * )buf)[0] == 0x4c
-                            || (( unsigned char * )buf)[0] == 0x4d)
-                        && !lseek(fd, ( off_t )0, SEEK_CUR);
+        exe[fd]->test = n >= 2 && (( unsigned char * ) buf)[1] == 0x5a
+                        && ((( unsigned char * ) buf)[0] == 0x4c
+                            || (( unsigned char * ) buf)[0] == 0x4d)
+                        && !lseek(fd, ( off_t ) 0, SEEK_CUR);
     return syswrite(fd, buf, n);
 }
 
@@ -779,7 +779,7 @@ open(const char *path, int flags, ...)
         && (mode & 0111)) {
         if (!suffix(path) && !fstat(fd, &st)
             && (exe[fd]
-                || (exe[fd] = ( Exe_test_t * )malloc(sizeof(Exe_test_t))))) {
+                || (exe[fd] = ( Exe_test_t * ) malloc(sizeof(Exe_test_t))))) {
             exe[fd]->test = -1;
             exe[fd]->ino = st.st_ino;
             strcpy(exe[fd]->path, path);
@@ -905,7 +905,7 @@ unlink(const char *path)
     if (!strncasecmp(nat + 1, ":\\temp\\", 7))
         goto try_unlink;
     drive = nat[0];
-    path = ( const char * )nat;
+    path = ( const char * ) nat;
     for (;;) {
         hp = CreateFile(path,
                         GENERIC_READ,
@@ -921,12 +921,12 @@ unlink(const char *path)
         }
         if (GetLastError() != ERROR_FILE_NOT_FOUND)
             break;
-        if (path == ( const char * )buf
+        if (path == ( const char * ) buf
             || !execrate(path, buf, sizeof(buf), 1)) {
             errno = ENOENT;
             return -1;
         }
-        path = ( const char * )buf;
+        path = ( const char * ) buf;
     }
 #        else
     if (sysaccess(path, 0))
@@ -935,7 +935,7 @@ unlink(const char *path)
         if (errno != ENOENT || !execrate(path, buf, sizeof(buf), 1)
             || sysaccess(buf, 0))
             return -1;
-        path = ( const char * )buf;
+        path = ( const char * ) buf;
     }
 #            else
         return -1;
@@ -952,7 +952,7 @@ unlink(const char *path)
     suffix = (getpid() & 0xfff) + count++;
     snprintf(tmp, sizeof(tmp), deleted, drive, base, suffix);
     if (!sysrename(path, tmp)) {
-        path = ( const char * )tmp;
+        path = ( const char * ) tmp;
         goto try_delete;
     }
     if (errno != ENOTDIR && errno != ENOENT)
@@ -974,14 +974,14 @@ unlink(const char *path)
     }
     tmp[DELETED_DIR_2] = '\\';
     if (!errno && !sysrename(path, tmp)) {
-        path = ( const char * )tmp;
+        path = ( const char * ) tmp;
         goto try_delete;
     }
 #        if !__CYGWIN__
     if (errno == ENOENT) {
 #            if !_win32_botch_access
         if (execrate(path, buf, sizeof(buf), 1) && !sysrename(buf, tmp))
-            path = ( const char * )tmp;
+            path = ( const char * ) tmp;
 #            endif
         goto try_unlink;
     }
@@ -990,7 +990,7 @@ unlink(const char *path)
     do {
         snprintf(tmp, sizeof(tmp), deleted, drive, base, suffix);
         if (!sysrename(path, tmp)) {
-            path = ( const char * )tmp;
+            path = ( const char * ) tmp;
             goto try_delete;
         }
         if (++suffix > 0xfff)
@@ -1133,7 +1133,7 @@ bzero(void *b, size_t n)
 
 #    ifdef _SC_PAGESIZE
 #        undef _AST_PAGESIZE
-#        define _AST_PAGESIZE ( int )sysconf(_SC_PAGESIZE)
+#        define _AST_PAGESIZE ( int ) sysconf(_SC_PAGESIZE)
 #    else
 #        ifndef _AST_PAGESIZE
 #            define _AST_PAGESIZE 4096

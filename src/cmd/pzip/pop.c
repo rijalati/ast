@@ -149,7 +149,7 @@ gather(Pz_t *pz, Pzpart_t *pp, Sfio_t *sp, Info_t *ip, size_t *map, size_t m)
     rows = 0;
     for (;;) {
         buf = pz->buf;
-        if ((r = sfread(sp, buf, pz->win)) < ( ssize_t )pp->row) {
+        if ((r = sfread(sp, buf, pz->win)) < ( ssize_t ) pp->row) {
             if (r < 0) {
                 error(ERROR_SYSTEM | 2, "read error");
                 return -1;
@@ -194,7 +194,7 @@ cut(Pz_t *pz, Pzpart_t *pp, int op, size_t *map, size_t m)
     for (;;) {
         ib = pz->buf;
         ob = pz->wrk;
-        if ((r = sfread(pz->io, ib, pz->win)) < ( ssize_t )pp->row) {
+        if ((r = sfread(pz->io, ib, pz->win)) < ( ssize_t ) pp->row) {
             if (r > 0)
                 error(1, "last record incomplete");
             break;
@@ -212,7 +212,7 @@ cut(Pz_t *pz, Pzpart_t *pp, int op, size_t *map, size_t m)
             ib += pp->row;
         }
         n = ob - pz->wrk;
-        if (sfwrite(sfstdout, pz->wrk, n) != ( ssize_t )n)
+        if (sfwrite(sfstdout, pz->wrk, n) != ( ssize_t ) n)
             error(ERROR_SYSTEM | 3, "write error");
     }
     return 0;

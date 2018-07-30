@@ -48,7 +48,7 @@ codexlist(Codexmeth_t *meth)
                 if (dll = dlopen(dle->path, RTLD_LAZY)) {
                     /* vcodex check works around obsolete vcodex<=>codex
                      * plugin */
-                    if ((lib = ( Codexlib_f )dlllook(dll, "codex_lib"))
+                    if ((lib = ( Codexlib_f ) dlllook(dll, "codex_lib"))
                         && (np = (*lib)(dle->name))
                         && !streq(np->name, "vcodex"))
                         for (lp = lp->next = np; lp->next; lp = lp->next)

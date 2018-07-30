@@ -61,13 +61,13 @@ svc_init(void *handle, int maxfd)
     if (!(state = newof(0, State_t, 1, (maxfd - 1) * sizeof(Connection_t))))
         exit(1);
     cstimeout(20 * 1000L);
-    return ( void * )state;
+    return ( void * ) state;
 }
 
 static int
 svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **argv)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     char *s;
     Sfio_t *sp;
     char **ap;
@@ -93,7 +93,7 @@ svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **argv)
 static int
 svc_read(void *handle, int fd)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     int n;
 
     if ((n = csread(fd, dat, sizeof(dat), CS_LINE)) <= 0)
@@ -102,7 +102,7 @@ svc_read(void *handle, int fd)
     if (isalpha(dat[0]) && (dat[1] == 0 || isdigit(dat[1])))
         switch (dat[0]) {
         case 'd':
-            error_info.trace = -( int )strtol(dat + 1, NiL, 0);
+            error_info.trace = -( int ) strtol(dat + 1, NiL, 0);
             n = sfsprintf(
             buf, sizeof(buf), "I debug level %d\n", -error_info.trace);
             break;
@@ -145,7 +145,7 @@ drop:
 static int
 svc_timeout(void *handle)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
 
     error(1, "timeout active=%d dormant=%d", state->active, state->dormant);
     if (state->active <= 0) {

@@ -183,7 +183,7 @@ Tk_EventProc *proc;    /* Procedure to call for each
 ClientData clientData; /* Arbitrary data to pass to proc. */
 {
     TkEventHandler *handlerPtr;
-    TkWindow *winPtr = ( TkWindow * )token;
+    TkWindow *winPtr = ( TkWindow * ) token;
     int found;
 
     /*
@@ -198,7 +198,7 @@ ClientData clientData; /* Arbitrary data to pass to proc. */
     found = 0;
     if (winPtr->handlerList == NULL) {
         handlerPtr
-        = ( TkEventHandler * )ckalloc(( unsigned )sizeof(TkEventHandler));
+        = ( TkEventHandler * ) ckalloc(( unsigned ) sizeof(TkEventHandler));
         winPtr->handlerList = handlerPtr;
         goto initHandler;
     } else {
@@ -221,7 +221,7 @@ ClientData clientData; /* Arbitrary data to pass to proc. */
 
     if (!found) {
         handlerPtr->nextPtr
-        = ( TkEventHandler * )ckalloc(sizeof(TkEventHandler));
+        = ( TkEventHandler * ) ckalloc(sizeof(TkEventHandler));
         handlerPtr = handlerPtr->nextPtr;
     initHandler:
         handlerPtr->mask = mask;
@@ -263,7 +263,7 @@ ClientData clientData;
     TkEventHandler *handlerPtr;
     InProgress *ipPtr;
     TkEventHandler *prevPtr;
-    TkWindow *winPtr = ( TkWindow * )token;
+    TkWindow *winPtr = ( TkWindow * ) token;
 
     /*
      * Find the event handler to be deleted, or return
@@ -301,7 +301,7 @@ ClientData clientData;
     } else {
         prevPtr->nextPtr = handlerPtr->nextPtr;
     }
-    ckfree(( char * )handlerPtr);
+    ckfree(( char * ) handlerPtr);
 
 
     /*
@@ -335,7 +335,7 @@ ClientData clientData; /* One-word value to pass to proc. */
 {
     GenericHandler *handlerPtr;
 
-    handlerPtr = ( GenericHandler * )ckalloc(sizeof(GenericHandler));
+    handlerPtr = ( GenericHandler * ) ckalloc(sizeof(GenericHandler));
 
     handlerPtr->proc = proc;
     handlerPtr->clientData = clientData;
@@ -407,7 +407,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
     InProgress ip;
     Window handlerWindow;
     TkDisplay *dispPtr;
-    Tcl_Interp *interp = ( Tcl_Interp * )NULL;
+    Tcl_Interp *interp = ( Tcl_Interp * ) NULL;
 
     /*
      * Next, invoke all the generic event handlers (those that are
@@ -435,7 +435,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
                 if (tmpPtr == NULL) {
                     lastGenericPtr = genPrevPtr;
                 }
-                ( void )ckfree(( char * )genericPtr);
+                ( void ) ckfree(( char * ) genericPtr);
                 genericPtr = tmpPtr;
                 continue;
             }
@@ -486,7 +486,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
         }
     }
     winPtr
-    = ( TkWindow * )Tk_IdToWindow(eventPtr->xany.display, handlerWindow);
+    = ( TkWindow * ) Tk_IdToWindow(eventPtr->xany.display, handlerWindow);
     if (winPtr == NULL) {
 
         /*
@@ -526,7 +526,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
          */
 
         interp = winPtr->mainPtr->interp;
-        Tcl_Preserve(( ClientData )interp);
+        Tcl_Preserve(( ClientData ) interp);
 
         /*
          * Call focus-related code to look at FocusIn, FocusOut, Enter,
@@ -536,7 +536,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
 
         if ((mask & (FocusChangeMask | EnterWindowMask | LeaveWindowMask))
             && !TkFocusFilterEvent(winPtr, eventPtr)) {
-            Tcl_Release(( ClientData )interp);
+            Tcl_Release(( ClientData ) interp);
             return;
         }
 
@@ -555,7 +555,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
             winPtr->dispPtr->lastEventTime = eventPtr->xkey.time;
             focusPtr = TkGetFocus(winPtr);
             if (focusPtr == NULL) {
-                Tcl_Release(( ClientData )interp);
+                Tcl_Release(( ClientData ) interp);
                 return;
             }
             if ((focusPtr->display != winPtr->display)
@@ -563,8 +563,8 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
                 eventPtr->xkey.x = -1;
                 eventPtr->xkey.y = -1;
             } else {
-                Tk_GetRootCoords(( Tk_Window )winPtr, &winX, &winY);
-                Tk_GetRootCoords(( Tk_Window )focusPtr, &focusX, &focusY);
+                Tk_GetRootCoords(( Tk_Window ) winPtr, &winX, &winY);
+                Tk_GetRootCoords(( Tk_Window ) focusPtr, &focusX, &focusY);
                 eventPtr->xkey.x -= focusX - winX;
                 eventPtr->xkey.y -= focusY - winY;
             }
@@ -643,10 +643,10 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
         if ((eventPtr->type == SelectionClear)
             || (eventPtr->type == SelectionRequest)
             || (eventPtr->type == SelectionNotify)) {
-            TkSelEventProc(( Tk_Window )winPtr, eventPtr);
+            TkSelEventProc(( Tk_Window ) winPtr, eventPtr);
         } else if ((eventPtr->type == ClientMessage)
                    && (eventPtr->xclient.message_type
-                       == Tk_InternAtom(( Tk_Window )winPtr,
+                       == Tk_InternAtom(( Tk_Window ) winPtr,
                                         "WM_PROTOCOLS"))) {
             TkWmProtocolEventProc(winPtr, eventPtr);
         }
@@ -680,8 +680,8 @@ done:
      * deleted if requested.
      */
 
-    if (interp != ( Tcl_Interp * )NULL) {
-        Tcl_Release(( ClientData )interp);
+    if (interp != ( Tcl_Interp * ) NULL) {
+        Tcl_Release(( ClientData ) interp);
     }
 }
 
@@ -728,7 +728,7 @@ void TkEventDeadWindow(winPtr) TkWindow *winPtr; /* Information about the
                 ipPtr->winPtr = None;
             }
         }
-        ckfree(( char * )handlerPtr);
+        ckfree(( char * ) handlerPtr);
     }
 }
 
@@ -885,11 +885,11 @@ Tcl_QueuePosition position; /* Where to put it on the queue:
 
             Tcl_QueueEvent(&dispPtr->delayedMotionPtr->header, position);
             dispPtr->delayedMotionPtr = NULL;
-            Tcl_CancelIdleCall(DelayedMotionProc, ( ClientData )dispPtr);
+            Tcl_CancelIdleCall(DelayedMotionProc, ( ClientData ) dispPtr);
         }
     }
 
-    wevPtr = ( TkWindowEvent * )ckalloc(sizeof(TkWindowEvent));
+    wevPtr = ( TkWindowEvent * ) ckalloc(sizeof(TkWindowEvent));
     wevPtr->header.proc = WindowEventProc;
     wevPtr->event = *eventPtr;
     if ((eventPtr->type == MotionNotify) && (position == TCL_QUEUE_TAIL)) {
@@ -904,7 +904,7 @@ Tcl_QueuePosition position; /* Where to put it on the queue:
             "Tk_QueueWindowEvent found unexpected delayed motion event");
         }
         dispPtr->delayedMotionPtr = wevPtr;
-        Tcl_DoWhenIdle(DelayedMotionProc, ( ClientData )dispPtr);
+        Tcl_DoWhenIdle(DelayedMotionProc, ( ClientData ) dispPtr);
     } else {
         Tcl_QueueEvent(&wevPtr->header, position);
     }
@@ -933,14 +933,14 @@ XEvent *eventPtr; /* The event to be sent. */
 {
     TkWindow *winPtr, *childPtr;
 
-    winPtr = ( TkWindow * )tkwin;
+    winPtr = ( TkWindow * ) tkwin;
     eventPtr->xany.window = winPtr->window;
     Tk_QueueWindowEvent(eventPtr, TCL_QUEUE_TAIL);
 
     childPtr = winPtr->childList;
     while (childPtr != NULL) {
         if (!Tk_IsTopLevel(childPtr)) {
-            TkQueueEventForAllChildren(( Tk_Window )childPtr, eventPtr);
+            TkQueueEventForAllChildren(( Tk_Window ) childPtr, eventPtr);
         }
         childPtr = childPtr->nextPtr;
     }
@@ -973,7 +973,7 @@ static int WindowEventProc(evPtr,
 int flags; /* Flags that indicate what events to
             * handle, such as TCL_WINDOW_EVENTS. */
 {
-    TkWindowEvent *wevPtr = ( TkWindowEvent * )evPtr;
+    TkWindowEvent *wevPtr = ( TkWindowEvent * ) evPtr;
     Tk_RestrictAction result;
 
     if (!(flags & TCL_WINDOW_EVENTS)) {
@@ -1020,7 +1020,7 @@ static void DelayedMotionProc(clientData)
 ClientData clientData; /* Pointer to display containing a delayed
                         * motion event to be serviced. */
 {
-    TkDisplay *dispPtr = ( TkDisplay * )clientData;
+    TkDisplay *dispPtr = ( TkDisplay * ) clientData;
 
     if (dispPtr->delayedMotionPtr == NULL) {
         panic("DelayedMotionProc found no delayed mouse motion event");

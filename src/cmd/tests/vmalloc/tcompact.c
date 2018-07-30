@@ -60,7 +60,7 @@ tmain()
 
     for (i = 0; i < 10; ++i) {
         addr[i] = vmalloc(vm, 15);
-        if (((( Vmulong_t )addr[i]) % ALIGN) != 0)
+        if (((( Vmulong_t ) addr[i]) % ALIGN) != 0)
             terror("Unaligned addr");
     }
 

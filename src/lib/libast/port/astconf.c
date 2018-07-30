@@ -377,7 +377,7 @@ synthesize(Feature_t *fp, const char *path, const char *value)
         state.prefix = strlen(state.name) + 1;
         n = state.prefix + 3 * MAXVAL;
         if ((s = getenv(state.name))
-            || getenv(state.strict) && (s = ( char * )state.standard))
+            || getenv(state.strict) && (s = ( char * ) state.standard))
             n += strlen(s) + 1;
         n = roundof(n, 32);
         if (!(state.data = newof(0, char, n, 0)))
@@ -428,7 +428,7 @@ synthesize(Feature_t *fp, const char *path, const char *value)
         n = strlen(value);
         goto ok;
     }
-    s = ( char * )fp->name;
+    s = ( char * ) fp->name;
     n = fp->length;
     d = state.data;
     for (;;) {
@@ -445,7 +445,7 @@ synthesize(Feature_t *fp, const char *path, const char *value)
                 for (s = d; *s && !isspace(*s); s++)
                     ;
                 n = s - d;
-                value = ( const char * )d;
+                value = ( const char * ) d;
                 goto ok;
             }
             for (s = p = d + n + 1; *s && !isspace(*s); s++)
@@ -510,13 +510,13 @@ synthesize(Feature_t *fp, const char *path, const char *value)
     }
     if (d != state.data)
         *d++ = ' ';
-    for (s = ( char * )fp->name; *d = *s++; d++)
+    for (s = ( char * ) fp->name; *d = *s++; d++)
         ;
     *d++ = ' ';
-    for (s = ( char * )path; *d = *s++; d++)
+    for (s = ( char * ) path; *d = *s++; d++)
         ;
     *d++ = ' ';
-    for (s = ( char * )value; *d = *s++; d++)
+    for (s = ( char * ) value; *d = *s++; d++)
         ;
 #if DEBUG_astconf
     error(-7, "astconf synthesize %s", state.data - state.prefix);
@@ -524,7 +524,7 @@ synthesize(Feature_t *fp, const char *path, const char *value)
     setenviron(state.data - state.prefix);
     if (state.notify)
         (*state.notify)(NiL, NiL, state.data - state.prefix);
-    n = s - ( char * )value - 1;
+    n = s - ( char * ) value - 1;
 ok:
     if (!(fp->flags & CONF_ALLOC))
         fp->value = 0;
@@ -748,8 +748,8 @@ format(Feature_t *fp,
               fp->ast,
               fp->value);
 #endif
-        if (state.synthesizing && value == ( char * )fp->std)
-            fp->value = ( char * )value;
+        if (state.synthesizing && value == ( char * ) fp->std)
+            fp->value = ( char * ) value;
         else if (!synthesize(fp, path, value))
             initialize(fp, path, NiL, fp->std, fp->value);
 #if DEBUG_astconf
@@ -819,8 +819,8 @@ format(Feature_t *fp,
     break;
 
     case OP_path_resolve:
-        if (state.synthesizing && value == ( char * )fp->std)
-            fp->value = ( char * )value;
+        if (state.synthesizing && value == ( char * ) fp->std)
+            fp->value = ( char * ) value;
         else if (!synthesize(fp, path, value))
             initialize(fp, path, NiL, "logical", DEFAULT(OP_path_resolve));
         break;
@@ -880,8 +880,8 @@ format(Feature_t *fp,
         break;
 
     default:
-        if (state.synthesizing && value == ( char * )fp->std)
-            fp->value = ( char * )value;
+        if (state.synthesizing && value == ( char * ) fp->std)
+            fp->value = ( char * ) value;
         else
             synthesize(fp, path, value);
         break;
@@ -934,8 +934,8 @@ feature(Feature_t *fp,
             return 0;
         }
         fp->op = -1;
-        fp->name = ( const char * )fp + sizeof(Feature_t);
-        strcpy(( char * )fp->name, name);
+        fp->name = ( const char * ) fp + sizeof(Feature_t);
+        strcpy(( char * ) fp->name, name);
         fp->length = n;
         fp->std = &null[0];
         fp->next = state.features;
@@ -962,7 +962,7 @@ feature(Feature_t *fp,
 static int
 lookup(Lookup_t *look, const char *name, unsigned int flags)
 {
-    Conf_t *mid = ( Conf_t * )conf;
+    Conf_t *mid = ( Conf_t * ) conf;
     Conf_t *lo = mid;
     Conf_t *hi = mid + conf_elements;
     int v;
@@ -996,10 +996,10 @@ again:
             }
             if (name[p->length] == '(' || name[p->length] == '#') {
                 look->conf = &num;
-                strlcpy(( char * )num.name, name, sizeof(num.name));
+                strlcpy(( char * ) num.name, name, sizeof(num.name));
                 num.call = p->call;
                 num.flags = *name == 'C' ? CONF_STRING : 0;
-                num.op = ( short )strtol(name + p->length + 1, &e, 10);
+                num.op = ( short ) strtol(name + p->length + 1, &e, 10);
                 if (name[p->length] == '(' && *e == ')')
                     e++;
                 if (*e)
@@ -1029,16 +1029,16 @@ again:
           flags,
           conf_elements);
 #endif
-    c = *(( unsigned char * )name);
+    c = *(( unsigned char * ) name);
     while (lo <= hi) {
         mid = lo + (hi - lo) / 2;
 #if DEBUG_astconf
         error(-7, "astconf lookup name=%s mid=%s", name, mid->name);
 #endif
-        if (!(v = c - *(( unsigned char * )mid->name))
+        if (!(v = c - *(( unsigned char * ) mid->name))
             && !(v = strcmp(name, mid->name))) {
             hi = mid;
-            lo = ( Conf_t * )conf;
+            lo = ( Conf_t * ) conf;
             do {
                 if ((look->standard < 0 || look->standard == mid->standard)
                     && (look->section < 0 || look->section == mid->section)
@@ -1224,7 +1224,7 @@ print(Sfio_t *sp,
             errno = EINVAL;
         } else if (v > 0) {
             buf[sizeof(buf) - 1] = 0;
-            s = ( const char * )buf;
+            s = ( const char * ) buf;
         } else
             defined = 0;
         break;
@@ -1255,7 +1255,7 @@ print(Sfio_t *sp,
 #if _lib_sysinfo
         if ((v = sysinfo(p->op, buf, sizeof(buf))) >= 0) {
             buf[sizeof(buf) - 1] = 0;
-            s = ( const char * )buf;
+            s = ( const char * ) buf;
         } else
             defined = 0;
         break;
@@ -1519,7 +1519,7 @@ bad:
         for (fp = state.features; fp; fp = fp->next)
             if (streq(name, fp->name))
                 return format(fp, path, 0, listflags, conferror);
-    return (listflags & ASTCONF_error) ? ( char * )0 : null;
+    return (listflags & ASTCONF_error) ? ( char * ) 0 : null;
 }
 
 /*
@@ -1537,8 +1537,8 @@ nativeconf(Proc_t **pp, const char *operand)
 #    if DEBUG_astconf
     error(-6, "astconf defer %s %s", _pth_getconf, operand);
 #    endif
-    cmd[0] = ( char * )state.id;
-    cmd[1] = ( char * )operand;
+    cmd[0] = ( char * ) state.id;
+    cmd[1] = ( char * ) operand;
     cmd[2] = 0;
     ops[0] = PROC_FD_DUP(open("/dev/null", O_WRONLY, 0), 2, PROC_FD_CHILD);
     ops[1] = 0;
@@ -1586,7 +1586,7 @@ astgetconf(const char *name,
     Sfio_t *tmp;
 
 #if __OBSOLETE__ < 20080101
-    if (pointerof(flags) == ( void * )errorf) {
+    if (pointerof(flags) == ( void * ) errorf) {
         conferror = errorf;
         flags = ASTCONF_error;
     } else if (conferror && conferror != errorf)
@@ -1624,7 +1624,7 @@ astgetconf(const char *name,
             errno = EINVAL;
             if (conferror)
                 (*conferror)(&state, &state, 2, "%s: cannot set value", name);
-            return (flags & ASTCONF_error) ? ( char * )0 : null;
+            return (flags & ASTCONF_error) ? ( char * ) 0 : null;
         }
         return print(NiL, &look, name, path, flags, conferror);
     }
@@ -1632,7 +1632,7 @@ astgetconf(const char *name,
         if (streq(name + n - 3, "DEV")) {
             if (tmp = sfstropen()) {
                 sfprintf(tmp, "/dev/");
-                for (s = ( char * )name; s < ( char * )name + n - 3; s++)
+                for (s = ( char * ) name; s < ( char * ) name + n - 3; s++)
                     sfputc(tmp, isupper(*s) ? tolower(*s) : *s);
                 if ((s = sfstruse(tmp)) && !access(s, F_OK)) {
                     if (value)
@@ -1657,7 +1657,7 @@ astgetconf(const char *name,
                     if (conferror)
                         (*conferror)(
                         &state, &state, 2, "%s: cannot set value", altname);
-                    return (flags & ASTCONF_error) ? ( char * )0 : null;
+                    return (flags & ASTCONF_error) ? ( char * ) 0 : null;
                 }
                 return print(NiL, &altlook, altname, path, flags, conferror);
             }
@@ -1686,7 +1686,7 @@ astgetconf(const char *name,
     errno = EINVAL;
     if (conferror && !(flags & ASTCONF_system))
         (*conferror)(&state, &state, 2, "%s: unknown name", name);
-    return (flags & ASTCONF_error) ? ( char * )0 : null;
+    return (flags & ASTCONF_error) ? ( char * ) 0 : null;
 }
 
 /*
@@ -1764,7 +1764,7 @@ astconflist(Sfio_t *sp, const char *path, int flags, const char *pattern)
     if (pattern) {
         memset(&redisc, 0, sizeof(redisc));
         redisc.re_version = REG_VERSION;
-        redisc.re_errorf = ( regerror_t )errorf;
+        redisc.re_errorf = ( regerror_t ) errorf;
         re.re_disc = &redisc;
         if (regcomp(&re,
                     pattern,
@@ -1772,8 +1772,8 @@ astconflist(Sfio_t *sp, const char *path, int flags, const char *pattern)
             return;
     }
     if (flags & ASTCONF_read) {
-        for (look.conf = ( Conf_t * )conf;
-             look.conf < ( Conf_t * )&conf[conf_elements];
+        for (look.conf = ( Conf_t * ) conf;
+             look.conf < ( Conf_t * ) &conf[conf_elements];
              look.conf++) {
             if (pattern) {
                 if (flags & ASTCONF_matchcall) {

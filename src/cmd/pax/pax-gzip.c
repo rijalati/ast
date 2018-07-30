@@ -38,8 +38,8 @@ gzip_getprologue(Pax_t *pax,
 
     if (size < 2 || buf[0] != 0x1f || buf[1] != 0x8b)
         return 0;
-    if ((pos = lseek(ap->io->fd, ( off_t )0, SEEK_CUR)) < 0
-        || lseek(ap->io->fd, ( off_t )-4, SEEK_END) <= 0
+    if ((pos = lseek(ap->io->fd, ( off_t ) 0, SEEK_CUR)) < 0
+        || lseek(ap->io->fd, ( off_t ) -4, SEEK_END) <= 0
         || read(ap->io->fd, num, sizeof(num)) != sizeof(num))
         ap->uncompressed = ap->io->size * 6;
     else

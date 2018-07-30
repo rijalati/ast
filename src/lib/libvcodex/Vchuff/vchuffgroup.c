@@ -29,7 +29,7 @@
 #define GRP_IMIN 4  /* min initial number of tables	*/
 #define GRP_ITER 3  /* desired number of iterations	*/
 
-#define GRP_HUGE ((ssize_t)((~(( size_t )0)) >> 1))
+#define GRP_HUGE ((ssize_t)((~(( size_t ) 0)) >> 1))
 
 typedef struct _table_s
 {
@@ -126,7 +126,7 @@ typedef struct _group_s
     }
 #define GRPFREQ(fr, o, n)                                                    \
     do {                                                                     \
-        Obj_t *oo = ( Obj_t * )(o);                                          \
+        Obj_t *oo = ( Obj_t * ) (o);                                         \
         ssize_t nn = (ssize_t)(n);                                           \
         for (; nn > 0; nn -= VCH_SW)                                         \
             GRPfreq(fr, oo, nn >= VCH_SW ? VCH_SW : nn);                     \
@@ -186,7 +186,7 @@ typedef struct _group_s
     }
 #define GRPSIZE(v, sz, o, n)                                                 \
     do {                                                                     \
-        Obj_t *oo = ( Obj_t * )(o);                                          \
+        Obj_t *oo = ( Obj_t * ) (o);                                         \
         ssize_t nn = (ssize_t)(n);                                           \
         v = 0;                                                               \
         for (; nn > 0; nn -= VCH_SW)                                         \
@@ -204,13 +204,13 @@ Void_t *hdl;
 #endif
 {
     int d;
-    Obj_t *o1 = ( Obj_t * )one;
-    Obj_t *o2 = ( Obj_t * )two;
+    Obj_t *o1 = ( Obj_t * ) one;
+    Obj_t *o2 = ( Obj_t * ) two;
 
     if ((d = o1->size - o2->size) != 0)
         return d;
     else
-        return ( int )o1->obj - ( int )o2->obj;
+        return ( int ) o1->obj - ( int ) o2->obj;
 }
 
 /* Construct a list of distinct objects and frequencies from data[]. This list
@@ -231,8 +231,8 @@ ssize_t ptsz;
     ssize_t freq[VCH_SIZE], size[VCH_SIZE];
     ssize_t i, k, d, p, npts;
 
-    if (ptsz >= ( ssize_t )dtsz)
-        ptsz = ( ssize_t )dtsz;
+    if (ptsz >= ( ssize_t ) dtsz)
+        ptsz = ( ssize_t ) dtsz;
     grp->ptsz = ptsz;
     grp->npts = npts = (dtsz + ptsz - 1) / ptsz; /* guaranteed >= 1 */
     grp->cmpsz
@@ -241,19 +241,19 @@ ssize_t ptsz;
 
     if (grp->part)
         free(grp->part);
-    if (!(grp->part = ( Vcchar_t * )calloc(2 * npts, sizeof(Vcchar_t))))
+    if (!(grp->part = ( Vcchar_t * ) calloc(2 * npts, sizeof(Vcchar_t))))
         return -1;
     grp->work = grp->part + npts;
 
     if (grp->ppos)
         free(grp->ppos);
-    if (!(grp->ppos = ( ssize_t * )calloc((2 * npts + 1), sizeof(ssize_t))))
+    if (!(grp->ppos = ( ssize_t * ) calloc((2 * npts + 1), sizeof(ssize_t))))
         return -1;
     grp->sort = grp->ppos + npts + 1;
 
     if (grp->obj)
         free(grp->obj);
-    if (!(grp->obj = ( Obj_t * )calloc(dtsz, sizeof(Obj_t))))
+    if (!(grp->obj = ( Obj_t * ) calloc(dtsz, sizeof(Obj_t))))
         return -1;
 
     /* ptsz is such that a object frequency should fit in a byte */
@@ -267,8 +267,8 @@ ssize_t ptsz;
         for (k = 0; k < VCH_SIZE; ++k) {
             if (freq[k] != 0) /* info of non-trivial code only */
             {
-                grp->obj[p].obj = ( Vchobj_t )k;
-                grp->obj[p].size = ( Vcchar_t )size[k];
+                grp->obj[p].obj = ( Vchobj_t ) k;
+                grp->obj[p].size = ( Vcchar_t ) size[k];
                 grp->obj[p].freq = freq[k];
                 p += 1;
             }
@@ -294,12 +294,12 @@ Void_t *disc;
 #endif
 {
     int p, q, n, m, d;
-    Group_t *grp = ( Group_t * )disc;
+    Group_t *grp = ( Group_t * ) disc;
 
-    p = *(( size_t * )one);
+    p = *(( size_t * ) one);
     m = grp->ppos[p + 1] - grp->ppos[p];
     p = grp->ppos[p];
-    q = *(( size_t * )two);
+    q = *(( size_t * ) two);
     n = grp->ppos[q + 1] - grp->ppos[q];
     q = grp->ppos[q];
     if (m > n)
@@ -308,12 +308,12 @@ Void_t *disc;
         m = 8;
 
     for (n = 0; n < m; ++n)
-        if ((d = ( int )grp->obj[p + n].obj - ( int )grp->obj[q + n].obj)
+        if ((d = ( int ) grp->obj[p + n].obj - ( int ) grp->obj[q + n].obj)
             != 0)
             return d;
 
     for (n = 0; n < m; ++n)
-        if ((d = ( int )grp->obj[p + n].freq - ( int )grp->obj[q + n].freq)
+        if ((d = ( int ) grp->obj[p + n].freq - ( int ) grp->obj[q + n].freq)
             != 0)
             return d;
 
@@ -587,7 +587,7 @@ Void_t **out; /* to return output buffer 	*/
     ptsz = grpptsz(dtsz);
 
     /* initialize data structures for fast frequency calculations */
-    if (grpinit(grp, ( Vcchar_t * )data, dtsz, ptsz) < 0)
+    if (grpinit(grp, ( Vcchar_t * ) data, dtsz, ptsz) < 0)
         return -1;
 
     /* now make the best grouping */
@@ -602,7 +602,7 @@ Void_t **out; /* to return output buffer 	*/
     grppart(grp, itbl, GRP_ITER);
     if (grp->ntbl == 0) /* single table, simplify */
     {
-        grpinit(grp, ( Vcchar_t * )data, dtsz, dtsz);
+        grpinit(grp, ( Vcchar_t * ) data, dtsz, dtsz);
         grppart(grp, 1, 1);
     }
 
@@ -660,7 +660,7 @@ Void_t **out; /* to return output buffer 	*/
 
         sz = tbl[part[i]].size;
         bt = bits[part[i]];
-        dt = (( Vcchar_t * )data) + p;
+        dt = (( Vcchar_t * ) data) + p;
         for (k = i == npts - 1 ? dtsz - p : ptsz; k > 0; --k, ++dt)
             vcioaddb(&io, b, n, bt[*dt], sz[*dt]);
     }
@@ -705,8 +705,8 @@ Void_t **out; /* to return output buffer 	*/
     if (dtsz == 0)
         return 0;
 
-    data = ( Vcchar_t * )orig;
-    sz = ( ssize_t )dtsz;
+    data = ( Vcchar_t * ) orig;
+    sz = ( ssize_t ) dtsz;
     if (vcrecode(vc, &data, &sz, 0, 0) < 0)
         return -1;
     dtsz = sz;
@@ -716,11 +716,11 @@ Void_t **out; /* to return output buffer 	*/
 
     vcioinit(&io, data, dtsz);
 
-    if ((sz = ( ssize_t )vciogetu(&io)) < 0) /* size of decoded data */
+    if ((sz = ( ssize_t ) vciogetu(&io)) < 0) /* size of decoded data */
         goto done;
-    if ((ntbl = ( ssize_t )vciogetu(&io)) < 0) /* # of coding tables	*/
+    if ((ntbl = ( ssize_t ) vciogetu(&io)) < 0) /* # of coding tables	*/
         goto done;
-    if ((ptsz = ( ssize_t )vciogetu(&io)) < 0) /* size of each part	*/
+    if ((ptsz = ( ssize_t ) vciogetu(&io)) < 0) /* size of each part	*/
         goto done;
 
     for (k = 0; k < ntbl; ++k) {
@@ -755,7 +755,7 @@ Void_t **out; /* to return output buffer 	*/
         goto done;
 
     /* buffer to reconstruct the original data */
-    if (!(output = vcbuffer(vc, ( Vcchar_t * )0, sz, 0)))
+    if (!(output = vcbuffer(vc, ( Vcchar_t * ) 0, sz, 0)))
         goto done;
     endo = (o = output) + sz;
 
@@ -766,7 +766,7 @@ Void_t **out; /* to return output buffer 	*/
         {
             p = tbl[part[k]].runb;
             while (o < dt)
-                *o++ = ( Vcchar_t )p;
+                *o++ = ( Vcchar_t ) p;
         } else /* reconstructing a Huffman-coded set of bytes */
         {
             node = trie[part[k]]->node;
@@ -778,7 +778,7 @@ Void_t **out; /* to return output buffer 	*/
                 p += (b >> (VC_BITSIZE - sz));
                 if (size[p] > 0) {
                     vciodelb(&io, b, n, size[p]);
-                    *o = ( Vcchar_t )node[p];
+                    *o = ( Vcchar_t ) node[p];
                     if ((o += 1) >= dt)
                         break;
                     sz = ntop;
@@ -828,7 +828,7 @@ Void_t *params;
     int rv = -1;
 
     if (type == VC_OPENING) {
-        if (!(grp = ( Group_t * )calloc(1, sizeof(Group_t))))
+        if (!(grp = ( Group_t * ) calloc(1, sizeof(Group_t))))
             return -1;
 
         /* open the entropy coder handle */

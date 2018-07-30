@@ -123,7 +123,7 @@ listall(void *context)
         char *argv[3];
 
         sfprintf(sfstdout, "\n");
-        argv[0] = ( char * )p;
+        argv[0] = ( char * ) p;
         argv[1] = "-l";
         argv[2] = 0;
         return sh_run(context, 2, argv);

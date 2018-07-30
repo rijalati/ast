@@ -32,7 +32,7 @@ NoN(memset)
 void *
 memset(void *asp, int c, size_t n)
 {
-    char *sp = ( char * )asp;
+    char *sp = ( char * ) asp;
 
     while (n-- > 0)
         *sp++ = c;

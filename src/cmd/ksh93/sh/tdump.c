@@ -63,7 +63,7 @@ static int
 outstring(Sfio_t *out, const char *string, int n)
 {
     int r;
-    char *cp = ( char * )string;
+    char *cp = ( char * ) string;
     ccmaps(cp, n, CC_NATIVE, CC_ASCII);
     r = sfwrite(out, cp, n);
     ccmaps(cp, n, CC_ASCII, CC_NATIVE);
@@ -85,7 +85,7 @@ p_tree(const Shnode_t *t)
     case TPAR:
         return (p_tree(t->par.partre));
     case TCOM:
-        return (p_comarg(( struct comnod * )t));
+        return (p_comarg(( struct comnod * ) t));
     case TSETIO:
     case TFORK:
         if (sfputu(outfile, t->fork.forkline) < 0)
@@ -101,7 +101,7 @@ p_tree(const Shnode_t *t)
         return (p_tree(t->if_.eltre));
     case TWH:
         if (t->wh.whinc) {
-            if (p_tree(( Shnode_t * )(t->wh.whinc)) < 0)
+            if (p_tree(( Shnode_t * ) (t->wh.whinc)) < 0)
                 return (-1);
         } else {
             if (sfputl(outfile, -1) < 0)
@@ -128,7 +128,7 @@ p_tree(const Shnode_t *t)
             return (-1);
         if (p_string(t->for_.fornam) < 0)
             return (-1);
-        return (p_tree(( Shnode_t * )t->for_.forlst));
+        return (p_tree(( Shnode_t * ) t->for_.forlst));
     case TSW:
         if (sfputu(outfile, t->sw.swline) < 0)
             return (-1);
@@ -142,7 +142,7 @@ p_tree(const Shnode_t *t)
             return (-1);
         if (p_tree(t->funct.functtre) < 0)
             return (-1);
-        return (p_tree(( Shnode_t * )t->funct.functargs));
+        return (p_tree(( Shnode_t * ) t->funct.functargs));
     case TTST:
         if (sfputu(outfile, t->tst.tstline) < 0)
             return (-1);
@@ -170,7 +170,7 @@ p_arg(const struct argnod *arg)
                 & ~(ARG_APPEND | ARG_MESSAGE | ARG_QUOTED | ARG_ARRAY)))
             fp = 0;
         else {
-            fp = ( struct fornod * )arg->argchn.ap;
+            fp = ( struct fornod * ) arg->argchn.ap;
             n = strlen(fp->fornam) + 1;
         }
         sfputu(outfile, n + 1);
@@ -184,7 +184,7 @@ p_arg(const struct argnod *arg)
             sfputu(outfile, fp->fortyp);
             p_tree(fp->fortre);
         } else if (n == 0 && (arg->argflag & ARG_EXP) && arg->argchn.ap)
-            p_tree(( Shnode_t * )arg->argchn.ap);
+            p_tree(( Shnode_t * ) arg->argchn.ap);
         arg = arg->argnxt.ap;
     }
     return (sfputu(outfile, 0));
@@ -223,7 +223,7 @@ p_comarg(const struct comnod *com)
     else if (com->comtyp & COMSCAN)
         p_arg(com->comarg);
     else
-        p_comlist(( struct dolnod * )com->comarg);
+        p_comlist(( struct dolnod * ) com->comarg);
     return (sfputu(outfile, com->comline));
 }
 

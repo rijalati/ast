@@ -102,7 +102,7 @@ csname(Cs_t *state, unsigned long addr)
 #    if CS_LIB_SOCKET || CS_LIB_V10
 #        if CS_LIB_SOCKET
             ha.s_addr = addr;
-            if ((hp = gethostbyaddr(( char * )&ha, sizeof(ha), AF_INET))
+            if ((hp = gethostbyaddr(( char * ) &ha, sizeof(ha), AF_INET))
                 && (s = hp->h_name))
 #        else
             if (s = in_host(addr))

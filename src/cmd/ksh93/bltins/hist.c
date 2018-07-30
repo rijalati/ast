@@ -58,7 +58,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
 #endif
     Histloc_t location;
     NOT_USED(argc);
-    if (!sh_histinit(( void * )shp))
+    if (!sh_histinit(( void * ) shp))
         errormsg(SH_DICT, ERROR_system(1), e_histopen);
     hp = shp->gd->hist_ptr;
     while ((flag = optget(argv, sh_opthist)))
@@ -98,7 +98,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
             break;
         }
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     argv += (opt_info.index - 1);
 #if SHOPT_HISTEXPAND
     if (pflag) {
@@ -131,7 +131,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
             while (isdigit(*arg));
             if (*arg == 0) {
                 arg = argv[1];
-                range[++flag] = ( int )strtol(arg, ( char ** )0, 10);
+                range[++flag] = ( int ) strtol(arg, ( char ** ) 0, 10);
                 if (*arg == '-')
                     range[flag] += (hist_max(hp) - 1);
                 argv++;
@@ -210,7 +210,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
     arg = edit;
     if (!arg && !(arg = nv_getval(sh_scoped(shp, HISTEDIT)))
         && !(arg = nv_getval(sh_scoped(shp, FCEDNOD)))) {
-        arg = ( char * )e_defedit;
+        arg = ( char * ) e_defedit;
         if (*arg != '/')
             errormsg(SH_DICT, ERROR_exit(1), "ed not found set FCEDIT");
     }
@@ -223,7 +223,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
     }
     fdo = sh_chkopen(fname);
     unlink(fname);
-    free(( void * )fname);
+    free(( void * ) fname);
     /* don't history fc itself unless forked */
     error_info.flags |= ERROR_SILENT;
     if (!sh_isstate(shp, SH_FORKED))
@@ -265,10 +265,10 @@ hist_subst(Shell_t *shp, const char *command, int fd, char *replace)
     char *string;
     while (*++newp != '=')
         ; /* skip to '=' */
-    if ((size = lseek(fd, ( off_t )0, SEEK_END)) < 0)
+    if ((size = lseek(fd, ( off_t ) 0, SEEK_END)) < 0)
         return;
-    lseek(fd, ( off_t )0, SEEK_SET);
-    c = ( int )size;
+    lseek(fd, ( off_t ) 0, SEEK_SET);
+    c = ( int ) size;
     string = stakalloc(c + 1);
     if (read(fd, string, c) != c)
         return;

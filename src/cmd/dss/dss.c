@@ -310,7 +310,7 @@ main(int argc, char **argv)
         sep = -streq(plugins, "?list");
         if (!*argv)
             for (lib = dsslib(NiL, DSS_VERBOSE, &disc); lib;
-                 lib = ( Dsslib_t * )dtnext(state->cx->libraries, lib))
+                 lib = ( Dsslib_t * ) dtnext(state->cx->libraries, lib))
                 showplugin(lib, plugins, tmp, &sep, &disc);
         else
             while (file = *argv++)

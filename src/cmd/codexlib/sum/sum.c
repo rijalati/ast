@@ -50,13 +50,13 @@ sum_open(Codex_t *p, char *const args[], Codexnum_t flags)
 static int
 sum_init(Codex_t *p)
 {
-    return suminit((( State_t * )p->data)->sum);
+    return suminit((( State_t * ) p->data)->sum);
 }
 
 static int
 sum_close(Codex_t *p)
 {
-    return sumclose((( State_t * )p->data)->sum);
+    return sumclose((( State_t * ) p->data)->sum);
 }
 
 static ssize_t
@@ -65,7 +65,7 @@ sum_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
     ssize_t r;
 
     if ((r = sfrd(sp, buf, n, disc)) > 0)
-        sumblock((( State_t * )CODEX(disc)->data)->sum, buf, r);
+        sumblock((( State_t * ) CODEX(disc)->data)->sum, buf, r);
     return r;
 }
 
@@ -75,15 +75,15 @@ sum_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
     ssize_t r;
 
     if ((r = sfwr(sp, buf, n, disc)) > 0)
-        sumblock((( State_t * )CODEX(disc)->data)->sum, buf, r);
+        sumblock((( State_t * ) CODEX(disc)->data)->sum, buf, r);
     return r;
 }
 
 static int
 sum_data(Codex_t *p, Codexdata_t *data)
 {
-    sumdone((( State_t * )p->data)->sum);
-    return sumdata((( State_t * )p->data)->sum, ( Sumdata_t * )data);
+    sumdone((( State_t * ) p->data)->sum);
+    return sumdata((( State_t * ) p->data)->sum, ( Sumdata_t * ) data);
 }
 
 Codexmeth_t codex_sum

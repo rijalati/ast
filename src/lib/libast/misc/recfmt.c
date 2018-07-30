@@ -61,7 +61,7 @@ recfmt(const void *buf, size_t size, off_t total)
      * check for V format
      */
 
-    s = ( unsigned char * )buf;
+    s = ( unsigned char * ) buf;
     t = s + size;
     while ((k = (t - s)) >= 4 && !s[2] && !s[3]) {
         if ((i = (s[0] << 8) | s[1]) > k)
@@ -70,15 +70,15 @@ recfmt(const void *buf, size_t size, off_t total)
     }
     if (!k || size > 2 * k)
         return REC_V_TYPE(4, 0, 2, 0, 1);
-    s = ( unsigned char * )buf;
+    s = ( unsigned char * ) buf;
 
     /*
      * check for terminated records
      */
 
     for (i = 0; i < elementsof(terminators); i++)
-        if ((t = ( unsigned char * )memchr(
-             ( void * )s, k = terminators[i], size / 2))
+        if ((t = ( unsigned char * ) memchr(
+             ( void * ) s, k = terminators[i], size / 2))
             && (n = t - s + 1) > 1 && (total <= 0 || !(total % n))) {
             for (j = n - 1; j < size; j += n)
                 if (s[j] != k) {

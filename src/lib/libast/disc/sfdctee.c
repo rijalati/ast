@@ -48,10 +48,10 @@ size_t size;    /* the data size */
 Sfdisc_t *disc; /* the tee discipline */
 #endif
 {
-    reg Tee_t *te = ( Tee_t * )disc;
+    reg Tee_t *te = ( Tee_t * ) disc;
 
     /* tee data if still ok */
-    if (te->status == 0 && sfwrite(te->tee, buf, size) != ( ssize_t )size)
+    if (te->status == 0 && sfwrite(te->tee, buf, size) != ( ssize_t ) size)
         te->status = -1;
 
     /* do the actual write */
@@ -85,7 +85,7 @@ Sfio_t *tee;                   /* stream to tee to	*/
 {
     reg Tee_t *te;
 
-    if (!(te = ( Tee_t * )malloc(sizeof(Tee_t))))
+    if (!(te = ( Tee_t * ) malloc(sizeof(Tee_t))))
         return -1;
 
     te->disc.readf = NIL(Sfread_f);
@@ -95,7 +95,7 @@ Sfio_t *tee;                   /* stream to tee to	*/
     te->tee = tee;
     te->status = 0;
 
-    if (sfdisc(f, ( Sfdisc_t * )te) != ( Sfdisc_t * )te) {
+    if (sfdisc(f, ( Sfdisc_t * ) te) != ( Sfdisc_t * ) te) {
         free(te);
         return -1;
     }

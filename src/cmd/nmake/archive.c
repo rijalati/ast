@@ -72,7 +72,7 @@ walkar(Ardir_t *ar, Dir_t *d, char *name)
     }
     while (ent = ardirnext(ar)) {
         if (d) {
-            if (( Seconds_t )ent->mtime > ( Seconds_t )ar->st.st_mtime)
+            if (( Seconds_t ) ent->mtime > ( Seconds_t ) ar->st.st_mtime)
                 message(
                 (-1, "member %s is newer than archive %s", ent->name, name));
             addfile(d,
@@ -103,7 +103,7 @@ walkar(Ardir_t *ar, Dir_t *d, char *name)
 static int
 chktouch(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
 
     NoP(s);
     NoP(h);

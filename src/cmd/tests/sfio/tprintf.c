@@ -46,7 +46,7 @@ Sffmt_t *fe;
     cp = va_arg(fe->args, Coord_t *);
     memcpy(type, fe->t_str, fe->n_str);
     type[fe->n_str] = 0;
-    s = *(( char ** )v) = sfprints(type, cp->x, cp->y);
+    s = *(( char ** ) v) = sfprints(type, cp->x, cp->y);
     fe->fmt = 's';
     fe->size = strlen(s);
     fe->flags |= SFFMT_VALUE;
@@ -83,15 +83,15 @@ Sffmt_t *fe;
         fe->base = -1;
         fe->flags &= ~SFFMT_LONG;
         fe->flags |= SFFMT_VALUE;
-        (( Value_t * )val)->l = 0x04050607;
-        (( Value_t * )val)->c = 0;
+        (( Value_t * ) val)->l = 0x04050607;
+        (( Value_t * ) val)->c = 0;
     } else if (fe->fmt == 'Y') {
         fe->fmt = 'c';
         fe->size = -1;
         fe->base = ':';
         fe->flags &= ~SFFMT_LONG;
         fe->flags |= SFFMT_VALUE;
-        (( Value_t * )val)->s = "abc";
+        (( Value_t * ) val)->s = "abc";
     }
     return 0;
 }
@@ -111,24 +111,24 @@ Sffmt_t *fe;
 
     switch (fe->fmt) {
     case 'd':
-        *(( int * )v) = 10;
+        *(( int * ) v) = 10;
         fe->flags |= SFFMT_VALUE;
         return 0;
 
     case 'O':
         fe->fmt = 'o';
-        *(( int * )v) = 11;
+        *(( int * ) v) = 11;
         fe->flags |= SFFMT_VALUE;
         return 0;
 
     case 'X':
         fe->fmt = 'x';
-        *(( int * )v) = 12;
+        *(( int * ) v) = 12;
         fe->flags |= SFFMT_VALUE;
         return 0;
 
     case 's':
-        *(( char ** )v) = OXstr;
+        *(( char ** ) v) = OXstr;
         fe->flags |= SFFMT_VALUE;
         return 0;
     }
@@ -172,7 +172,7 @@ Sffmt_t *fe;
 #endif
 {
     static int i = 1;
-    *(( int * )val) = i++;
+    *(( int * ) val) = i++;
     fe->flags |= SFFMT_VALUE;
     return 0;
 }
@@ -188,7 +188,7 @@ Sffmt_t *fe;
 {
     static short i = -2;
 
-    *(( short * )val) = i++;
+    *(( short * ) val) = i++;
     fe->size = sizeof(short);
     fe->flags |= SFFMT_VALUE;
 
@@ -265,7 +265,7 @@ tmain()
     sfsetbuf(f, buf1, 10);
     sfprintf(f, "%40s\n", "0123456789");
     sfsprintf(buf2, sizeof(buf2), "%40s", "0123456789");
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (!(s = sfgetr(f, '\n', 1)))
         terror("Failed getting string");
     if (strcmp(s, buf2) != 0)
@@ -425,7 +425,7 @@ tmain()
     if (strcmp(buf1, "-16#abc") != 0)
         terror("Failed %%..16d test");
 
-    sfsprintf(buf1, sizeof(buf1), "%#..16lu", ( long )0xc2c01576);
+    sfsprintf(buf1, sizeof(buf1), "%#..16lu", ( long ) 0xc2c01576);
     if (strcmp(buf1, "16#c2c01576") != 0)
         terror("Failed %%..16u test");
 
@@ -446,19 +446,19 @@ tmain()
         terror("Failed %%.4c test");
 
     sfsprintf(
-    buf1, sizeof(buf1), "%hd%c%hd%ld", ( short )1, '1', ( short )1, 1L);
+    buf1, sizeof(buf1), "%hd%c%hd%ld", ( short ) 1, '1', ( short ) 1, 1L);
     if (strcmp(buf1, "1111") != 0)
         terror("Failed %%hd test");
 
-    sfsprintf(buf1, sizeof(buf1), "%10.5E", ( double )0.0000625);
+    sfsprintf(buf1, sizeof(buf1), "%10.5E", ( double ) 0.0000625);
     if (strcmp(buf1, "6.25000E-05") != 0)
         terror("Failed %%E test");
 
-    sfsprintf(buf1, sizeof(buf1), "%10.5f", ( double )0.0000625);
+    sfsprintf(buf1, sizeof(buf1), "%10.5f", ( double ) 0.0000625);
     if (strcmp(buf1, "   0.00006") != 0)
         terror("Failed %%f test");
 
-    sfsprintf(buf1, sizeof(buf1), "%10.5G", ( double )0.0000625);
+    sfsprintf(buf1, sizeof(buf1), "%10.5G", ( double ) 0.0000625);
     if (strcmp(buf1, "  6.25E-05") != 0)
         terror("Failed %%G test");
 
@@ -522,35 +522,35 @@ tmain()
     {
         Sflong_t ll;
         char buf[128];
-        char *s = sfprints("%#..16llu", ~(( Sflong_t )0));
+        char *s = sfprints("%#..16llu", ~(( Sflong_t ) 0));
         sfsscanf(s, "%lli", &ll);
-        if (ll != (~(( Sflong_t )0)))
+        if (ll != (~(( Sflong_t ) 0)))
             terror("Failed inverting printf/scanf Sflong_t");
 
-        s = sfprints("%#..18lld", ~(( Sflong_t )0));
+        s = sfprints("%#..18lld", ~(( Sflong_t ) 0));
         sfsscanf(s, "%lli", &ll);
-        if (ll != (~(( Sflong_t )0)))
+        if (ll != (~(( Sflong_t ) 0)))
             terror("Failed inverting printf/scanf Sflong_t");
 
-        s = sfprints("%#..lli", ~(( Sflong_t )0));
+        s = sfprints("%#..lli", ~(( Sflong_t ) 0));
         sfsscanf(s, "%lli", &ll);
-        if (ll != (~(( Sflong_t )0)))
+        if (ll != (~(( Sflong_t ) 0)))
             terror("Failed inverting printf/scanf Sflong_t");
 
-        sfsprintf(buf, sizeof(buf), "%llu", (~(( Sflong_t )0) / 2));
-        s = sfprints("%Iu", (~(( Sflong_t )0) / 2));
+        sfsprintf(buf, sizeof(buf), "%llu", (~(( Sflong_t ) 0) / 2));
+        s = sfprints("%Iu", (~(( Sflong_t ) 0) / 2));
         if (strcmp(buf, s) != 0)
             terror("Failed conversion with I flag");
 
         if (sizeof(Sflong_t) * 8 == 64) {
-            s = sfprints("%I64u", (~(( Sflong_t )0) / 2));
+            s = sfprints("%I64u", (~(( Sflong_t ) 0) / 2));
             if (strcmp(buf, s) != 0)
                 terror("Failed conversion with I64 flag");
         }
     }
 #endif
 
-    i = ( int )(~(~(( unsigned int )0) >> 1));
+    i = ( int ) (~(~(( unsigned int ) 0) >> 1));
     s = sfprints("%d", i);
     j = atoi(s);
     if (i != j)
@@ -710,7 +710,7 @@ tmain()
     free(s);
 
     /* test 64-bit linux %g */
-    sfsprintf(buf1, sizeof(buf1), "%1.15g", ( double )987654321098782.0);
+    sfsprintf(buf1, sizeof(buf1), "%1.15g", ( double ) 987654321098782.0);
     if (strcmp(buf1, "987654321098782") != 0)
         terror("(double)987654321098782.0 %%1.15g format error: %s", buf1);
 

@@ -30,8 +30,8 @@ typedef struct _obj_s
 static int
 intcompare(Dt_t *dt, Void_t *arg1, Void_t *arg2, Dtdisc_t *disc)
 {
-    int *o1 = ( int * )arg1;
-    int *o2 = ( int * )arg2;
+    int *o1 = ( int * ) arg1;
+    int *o2 = ( int * ) arg2;
     return *o1 - *o2;
 }
 

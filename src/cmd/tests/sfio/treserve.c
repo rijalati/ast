@@ -37,27 +37,27 @@ tmain()
         terror("Opening file to read");
     sfsetbuf(f, buf, sizeof(buf));
 
-    if (!(s = ( char * )sfreserve(f, 10, 0)))
+    if (!(s = ( char * ) sfreserve(f, 10, 0)))
         terror("sfreserve failed");
     if (strncmp(s, "0123456789", 10) != 0)
         terror("Did not get correct data");
 
-    if ((s = ( char * )sfreserve(f, 10, 0)))
+    if ((s = ( char * ) sfreserve(f, 10, 0)))
         terror("sfreserve should not have succeeded");
     if (sfvalue(f) != 8)
         terror("sfreserve should have left the right unread record length");
 
-    if (!(s = ( char * )sfreserve(f, 4, 0)))
+    if (!(s = ( char * ) sfreserve(f, 4, 0)))
         terror("sfreserve should return 4 bytes");
     if (strncmp(s, "abcd", 4) != 0)
         terror("Got wrong data");
 
-    if ((s = ( char * )sfreserve(f, 10, 0)))
+    if ((s = ( char * ) sfreserve(f, 10, 0)))
         terror("sfreserve should not have succeeded2");
     if (sfvalue(f) != 4)
         terror("sfreserve should have left 4 bytes length");
 
-    if (!(s = ( char * )sfreserve(f, 0, SF_LASTR)))
+    if (!(s = ( char * ) sfreserve(f, 0, SF_LASTR)))
         terror("sfreserve should have returned last unread record");
     if (strncmp(s, "efgh", 4) != 0)
         terror("Record has wrong data");
@@ -66,11 +66,11 @@ tmain()
 
     sfsetbuf(sfstdout, buf, sizeof(buf));
     sfset(sfstdout, SF_SHARE | SF_PUBLIC, 0);
-    if ((s = ( char * )sfreserve(sfstdout, 0, 0)) != buf)
+    if ((s = ( char * ) sfreserve(sfstdout, 0, 0)) != buf)
         terror("Wrong buffer");
     if ((n = sfwrite(sfstdout, "foobar", 6)) != 6)
         terror("Write failed");
-    if (( char * )sfreserve(sfstdout, 0, 0) != s + 6)
+    if (( char * ) sfreserve(sfstdout, 0, 0) != s + 6)
         terror("Wrong reserved pointer");
     sfpurge(sfstdout);
 
@@ -123,7 +123,7 @@ tmain()
     if (i != n)
         terror("Did not read data");
 
-    if (sfseek(sfstdin, ( Sfoff_t )0, 0) != 0)
+    if (sfseek(sfstdin, ( Sfoff_t ) 0, 0) != 0)
         terror("sfseek failed0");
     sfsetbuf(sfstdin, bigbuf, sizeof(bigbuf));
     i = 0;
@@ -137,7 +137,7 @@ tmain()
         i += sfvalue(sfstdin);
     if (i != n)
         terror("Did not read data2");
-    sfsetbuf(sfstdin, NIL(Void_t *), ( size_t )SF_UNBOUND);
+    sfsetbuf(sfstdin, NIL(Void_t *), ( size_t ) SF_UNBOUND);
 
     if (sfopen(sfstdout, tstfile("sf", 0), "w") != sfstdout)
         terror("Can't open to write");
@@ -159,9 +159,9 @@ tmain()
             if (*s++ != ('0' + (k + i) % 10))
                 terror("Wrong data i=%d k=%d", i, k);
     }
-    if ((o = sfseek(sfstdin, -15 * (( Sfoff_t )sizeof(bigbuf)), 1))
+    if ((o = sfseek(sfstdin, -15 * (( Sfoff_t ) sizeof(bigbuf)), 1))
         != sizeof(bigbuf))
-        terror("sfseek failed o=%lld", ( Sflong_t )o);
+        terror("sfseek failed o=%lld", ( Sflong_t ) o);
     if (sfread(sfstdin, bigbuf, sizeof(bigbuf)) != sizeof(bigbuf))
         terror("sfread failed");
     s = bigbuf;
@@ -222,7 +222,7 @@ tmain()
     close(fd[1]);
 
     sfclose(sfstdin);
-    if (sfnew(sfstdin, NIL(Void_t *), ( size_t )SF_UNBOUND, fd[0], SF_READ)
+    if (sfnew(sfstdin, NIL(Void_t *), ( size_t ) SF_UNBOUND, fd[0], SF_READ)
         != sfstdin)
         terror("Can't creat pipe stream");
     if (!(s = sfgetr(sfstdin, '\n', 1))
@@ -250,7 +250,7 @@ tmain()
             terror("No file created");
 
         sfset(f, SF_READ, 1);
-        sfseek(f, ( Sfoff_t )0, 0);
+        sfseek(f, ( Sfoff_t ) 0, 0);
         if (sfgetc(f) != '0')
             terror("Getting the 0");
         if (!(s = sfreserve(f, 0, -1)) || sfvalue(f) != 9
@@ -268,7 +268,7 @@ tmain()
     if (sfwrite(f, bigbuf, 1000) != 1000)
         terror("Writing to file");
     sfsetbuf(f, buf, 100);
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (!(s = sfreserve(f, SF_UNBOUND, SF_LOCKR)))
         terror("sfreserve failed at bottom1");
     if (sfvalue(f) != 100)
@@ -293,10 +293,10 @@ tmain()
         sfread(f, s, 100);
     }
 
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     for (i = 0; i < 16; ++i)
         sfwrite(f, bigbuf, sizeof(bigbuf));
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     sfset(f, SF_WRITE, 0);
     sfsetbuf(f, NIL(Void_t *), 4096);
     if (!(s = sfreserve(f, SF_UNBOUND, SF_LOCKR)))

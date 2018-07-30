@@ -80,7 +80,7 @@ dumpbucket(Hash_table_t *tab, int flags)
                     && (!(tab->flags & HASH_VALUE) || b->value)) {
                     if (n = tab->root->namesize) {
                         sfprintf(sfstderr, " 0x");
-                        s = ( unsigned char * )hashname(b);
+                        s = ( unsigned char * ) hashname(b);
                         while (n-- > 0)
                             sfprintf(sfstderr, "%02x", *s++);
                     } else
@@ -97,7 +97,7 @@ dumpbucket(Hash_table_t *tab, int flags)
                             sfprintf(sfstderr, "opaque|");
                     }
                     if (tab->flags & HASH_VALUE)
-                        sfprintf(sfstderr, "=0x%08lx", ( long )b->value);
+                        sfprintf(sfstderr, "=0x%08lx", ( long ) b->value);
                 }
             sfprintf(sfstderr, "\n");
         }
@@ -124,11 +124,11 @@ dumptable(Hash_table_t *tab, int flags)
         sfprintf(sfstderr,
                  " level %d scope on 0x%08lx",
                  level,
-                 ( unsigned long )tab->scope);
+                 ( unsigned long ) tab->scope);
     }
     sfprintf(sfstderr, "\n");
     sfprintf(
-    sfstderr, "        address:     0x%08lx\n", ( unsigned long )tab);
+    sfstderr, "        address:     0x%08lx\n", ( unsigned long ) tab);
     sfprintf(sfstderr, "        flags:       ");
     if (tab->frozen)
         sfprintf(sfstderr, "frozen=%d ", tab->frozen);
@@ -154,28 +154,28 @@ dumproot(Hash_root_t *root, int flags)
 
     sfprintf(sfstderr, "    root\n");
     sfprintf(
-    sfstderr, "        address:     0x%08lx\n", ( unsigned long )root);
+    sfstderr, "        address:     0x%08lx\n", ( unsigned long ) root);
     sfprintf(sfstderr, "        flags:       ");
     dumpflags(root->flags);
     if (root->namesize)
         sfprintf(sfstderr, "namesize=%d ", root->namesize);
     if (root->local->alloc)
         sfprintf(
-        sfstderr, "alloc=0x%08lx ", ( unsigned long )root->local->alloc);
+        sfstderr, "alloc=0x%08lx ", ( unsigned long ) root->local->alloc);
     if (root->local->compare)
         sfprintf(
-        sfstderr, "compare=0x%08lx ", ( unsigned long )root->local->compare);
+        sfstderr, "compare=0x%08lx ", ( unsigned long ) root->local->compare);
     if (root->local->free)
         sfprintf(
-        sfstderr, "free=0x%08lx ", ( unsigned long )root->local->free);
+        sfstderr, "free=0x%08lx ", ( unsigned long ) root->local->free);
     if (root->local->hash)
         sfprintf(
-        sfstderr, "hash=0x%08lx ", ( unsigned long )root->local->hash);
+        sfstderr, "hash=0x%08lx ", ( unsigned long ) root->local->hash);
     if (root->local->region)
         sfprintf(sfstderr,
                  "region=0x%08lx handle=0x%08lx ",
-                 ( unsigned long )root->local->region,
-                 ( unsigned long )root->local->handle);
+                 ( unsigned long ) root->local->region,
+                 ( unsigned long ) root->local->handle);
     sfprintf(sfstderr, "\n");
     sfprintf(sfstderr, "        meanchain:   %d\n", root->meanchain);
     sfprintf(sfstderr, "        accesses:    %d\n", root->accesses);

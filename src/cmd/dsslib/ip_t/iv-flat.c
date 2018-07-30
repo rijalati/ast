@@ -52,15 +52,15 @@ static void *
 flatmake(Dt_t *dt, void *obj, Dtdisc_t *disc)
 {
     Flseg_t *sg;
-    int size = (( Flat_t * )disc)->iv->size;
+    int size = (( Flat_t * ) disc)->iv->size;
 
     /* the use of sizeof(Flseg_t) is deliberate */
     if (!(sg = newof(0, Flseg_t, 1, 2 * size)))
         return 0;
     fvcpy(
-    size, sg->seg.lo = ( unsigned char * )(sg + 1), (( Ivseg_t * )obj)->lo);
-    fvcpy(size, sg->seg.hi = sg->seg.lo + size, (( Ivseg_t * )obj)->hi);
-    sg->seg.data = (( Ivseg_t * )obj)->data;
+    size, sg->seg.lo = ( unsigned char * ) (sg + 1), (( Ivseg_t * ) obj)->lo);
+    fvcpy(size, sg->seg.hi = sg->seg.lo + size, (( Ivseg_t * ) obj)->hi);
+    sg->seg.data = (( Ivseg_t * ) obj)->data;
     return sg;
 }
 
@@ -68,9 +68,9 @@ flatmake(Dt_t *dt, void *obj, Dtdisc_t *disc)
 static void
 flatfree(Dt_t *dt, void *obj, Dtdisc_t *disc)
 {
-    if ((( Flat_t * )disc)->freef && (( Ivseg_t * )obj)->data)
-        (( Flat_t * )disc)
-        ->freef((( Flat_t * )disc)->iv, (( Ivseg_t * )obj)->data);
+    if ((( Flat_t * ) disc)->freef && (( Ivseg_t * ) obj)->data)
+        (( Flat_t * ) disc)
+        ->freef((( Flat_t * ) disc)->iv, (( Ivseg_t * ) obj)->data);
     free(obj);
 }
 
@@ -78,9 +78,9 @@ flatfree(Dt_t *dt, void *obj, Dtdisc_t *disc)
 static int
 flatbldcmp(Dt_t *dt, void *o1, void *o2, Dtdisc_t *disc)
 {
-    int size = (( Flat_t * )disc)->iv->size;
+    int size = (( Flat_t * ) disc)->iv->size;
 
-    return fvcmp(size, (( Ivseg_t * )o1)->lo, (( Ivseg_t * )o2)->lo);
+    return fvcmp(size, (( Ivseg_t * ) o1)->lo, (( Ivseg_t * ) o2)->lo);
 }
 
 /* during search, we are looking for a segment containing some point.
@@ -90,11 +90,11 @@ flatbldcmp(Dt_t *dt, void *o1, void *o2, Dtdisc_t *disc)
 static int
 flatsrchcmp(Dt_t *dt, void *o1, void *o2, Dtdisc_t *disc)
 {
-    int size = (( Flat_t * )disc)->iv->size;
+    int size = (( Flat_t * ) disc)->iv->size;
 
-    if (fvcmp(size, (( Ivseg_t * )o1)->hi, (( Ivseg_t * )o2)->lo) < 0)
+    if (fvcmp(size, (( Ivseg_t * ) o1)->hi, (( Ivseg_t * ) o2)->lo) < 0)
         return -1;
-    else if (fvcmp(size, (( Ivseg_t * )o1)->lo, (( Ivseg_t * )o2)->hi) > 0)
+    else if (fvcmp(size, (( Ivseg_t * ) o1)->lo, (( Ivseg_t * ) o2)->hi) > 0)
         return 1;
     else
         return 0;
@@ -111,7 +111,7 @@ flatset(Iv_t *iv, unsigned char *lo, unsigned char *hi, void *data)
     unsigned char *unmatched = iv->disc->unmatched;
     int size = iv->size;
 
-    if (!iv || !(fl = ( Flat_t * )iv->data) || !(dt = fl->dt))
+    if (!iv || !(fl = ( Flat_t * ) iv->data) || !(dt = fl->dt))
         return -1;
     if (fl->search) {
         fl->dc.comparf = flatbldcmp;
@@ -206,7 +206,7 @@ flatget(Iv_t *iv, unsigned char *pt)
     Flat_t *fl;
     Dt_t *dt;
 
-    if (!(fl = ( Flat_t * )iv->data) || !(dt = fl->dt))
+    if (!(fl = ( Flat_t * ) iv->data) || !(dt = fl->dt))
         return 0;
     if (!fl->search) {
         fl->dc.comparf = flatsrchcmp;
@@ -215,7 +215,7 @@ flatget(Iv_t *iv, unsigned char *pt)
     }
     /* see if inside some segment */
     seg.lo = seg.hi = pt;
-    sg = ( Ivseg_t * )dtsearch(dt, &seg);
+    sg = ( Ivseg_t * ) dtsearch(dt, &seg);
     return sg ? sg->data : iv->disc->unmatched;
 }
 
@@ -226,7 +226,7 @@ flatseg(Iv_t *iv, unsigned char *pt)
     Flat_t *fl;
     Dt_t *dt;
 
-    if (!(fl = ( Flat_t * )iv->data) || !(dt = fl->dt))
+    if (!(fl = ( Flat_t * ) iv->data) || !(dt = fl->dt))
         return 0;
     if (!fl->search) {
         fl->dc.comparf = flatsrchcmp;
@@ -235,7 +235,7 @@ flatseg(Iv_t *iv, unsigned char *pt)
     }
     /* find the segment containing pt or just beyond it */
     seg.lo = seg.hi = pt;
-    return ( Ivseg_t * )dtsearch(dt, &seg);
+    return ( Ivseg_t * ) dtsearch(dt, &seg);
 }
 
 static int
@@ -245,7 +245,7 @@ flatevent(Iv_t *iv, int type, void *data)
 
     switch (type) {
     case IV_OPEN:
-        if (!(fl = ( Flat_t * )malloc(sizeof(Flat_t))))
+        if (!(fl = ( Flat_t * ) malloc(sizeof(Flat_t))))
             return -1;
         fl->search = 0;
         DTDISC(&fl->dc,
@@ -264,10 +264,10 @@ flatevent(Iv_t *iv, int type, void *data)
         }
         fl->freef = iv->disc->freef;
         fl->iv = iv;
-        iv->data = ( void * )fl;
+        iv->data = ( void * ) fl;
         break;
     case IV_CLOSE:
-        if (!(fl = ( Flat_t * )iv->data))
+        if (!(fl = ( Flat_t * ) iv->data))
             return -1;
         if (fl->dt)
             dtclose(fl->dt);

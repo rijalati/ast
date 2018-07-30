@@ -102,7 +102,7 @@ read_real_link_path_canon(int argc,
     for (;;) {
         switch (optget(argv, usage)) {
         case 'd':
-            dirfd = ( int )opt_info.num;
+            dirfd = ( int ) opt_info.num;
             continue;
         case 'e':
             flags |= PATH_CANON | PATH_EXISTS;
@@ -172,7 +172,7 @@ read_real_link_path_canon(int argc,
                     error(
                     ERROR_SYSTEM | 2, "%s: cannot read link text", file);
                 r = 1;
-                path = ( char * )fail;
+                path = ( char * ) fail;
             }
         } else
             path = file;
@@ -187,10 +187,10 @@ read_real_link_path_canon(int argc,
                           *canonbuf ? " at " : "",
                           canonbuf);
                 r = 1;
-                path = ( char * )fail;
+                path = ( char * ) fail;
             }
         }
-        if (argc > 1 || path != ( char * )fail)
+        if (argc > 1 || path != ( char * ) fail)
             sfputr(sfstdout, path, separator);
     } while (file = *argv++);
     if (sfsync(sfstdout)) {

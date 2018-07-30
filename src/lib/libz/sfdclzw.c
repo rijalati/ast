@@ -175,8 +175,8 @@ typedef struct s_zstate
 #define codetabof(i) codetab[i]
 
 #define tab_prefixof(i) codetabof(i)
-#define tab_suffixof(i) (( char_type * )(htab))[i]
-#define de_stack (( char_type * )&tab_suffixof(1 << BITS))
+#define tab_suffixof(i) (( char_type * ) (htab))[i]
+#define de_stack (( char_type * ) &tab_suffixof(1 << BITS))
 
 #define CHECK_GAP 10000 /* Ratio check interval. */
 
@@ -416,10 +416,10 @@ cl_block(LZW_t *zs, Sfio_t *f, Sfdisc_t *dp) /* Table clear for block
         ratio = rat;
     else {
         ratio = 0;
-        cl_hash(zs, ( count_int )hsize);
+        cl_hash(zs, ( count_int ) hsize);
         free_ent = FIRST;
         clear_flg = 1;
-        if (output(zs, f, ( code_int )CLEAR, dp) == -1)
+        if (output(zs, f, ( code_int ) CLEAR, dp) == -1)
             return (-1);
     }
     return (0);
@@ -459,7 +459,7 @@ lzw_sync(LZW_t *zs, Sfio_t *f, Sfoff_t off, Sfdisc_t *dp)
 static int
 lzw_except(Sfio_t *f, int op, void *val, Sfdisc_t *dp)
 {
-    LZW_t *zs = ( LZW_t * )dp;
+    LZW_t *zs = ( LZW_t * ) dp;
     int flags;
     int r;
 
@@ -474,11 +474,11 @@ lzw_except(Sfio_t *f, int op, void *val, Sfdisc_t *dp)
         r = 0;
         if (dp->writef) {
             SFDCNEXT(f, flags);
-            if (output(zs, f, ( code_int )ent, dp) == -1)
+            if (output(zs, f, ( code_int ) ent, dp) == -1)
                 r = -1;
             else {
                 out_count++;
-                if (output(zs, f, ( code_int )-1, dp) == -1)
+                if (output(zs, f, ( code_int ) -1, dp) == -1)
                     r = -1;
             }
             SFDCPREV(f, flags);
@@ -490,15 +490,16 @@ lzw_except(Sfio_t *f, int op, void *val, Sfdisc_t *dp)
         return 1;
     case SF_READ:
     case SF_WRITE:
-        return *(( ssize_t * )val) < 0 ? -1 : 0;
+        return *(( ssize_t * ) val) < 0 ? -1 : 0;
     case SF_SYNC:
         return val ? 0 : lzw_sync(zs, f, -1, dp) == -1 ? -1 : 0;
     case SFGZ_HANDLE:
-        return (*(( LZW_t ** )val) = zs) ? 1 : -1;
+        return (*(( LZW_t ** ) val) = zs) ? 1 : -1;
     case SFGZ_GETPOS:
-        return (*(( Sfoff_t * )val) = lzw_sync(zs, f, -1, dp)) == -1 ? -1 : 0;
+        return (*(( Sfoff_t * ) val) = lzw_sync(zs, f, -1, dp)) == -1 ? -1
+                                                                      : 0;
     case SFGZ_SETPOS:
-        return lzw_sync(zs, f, *(( Sfoff_t * )val), dp) == -1 ? -1 : 0;
+        return lzw_sync(zs, f, *(( Sfoff_t * ) val), dp) == -1 ? -1 : 0;
     }
     return 0;
 }
@@ -532,9 +533,9 @@ lzw_write(Sfio_t *f, const Void_t *wbp, size_t num, Sfdisc_t *dp)
     if (num == 0)
         return (0);
 
-    zs = ( LZW_t * )dp;
+    zs = ( LZW_t * ) dp;
     count = num;
-    bp = ( u_char * )wbp;
+    bp = ( u_char * ) wbp;
     if (state == S_MIDDLE)
         goto middle;
     state = S_MIDDLE;
@@ -561,24 +562,24 @@ lzw_write(Sfio_t *f, const Void_t *wbp, size_t num, Sfdisc_t *dp)
     --count;
 
     hshift = 0;
-    for (fcode = ( long )hsize; fcode < 65536L; fcode *= 2L)
+    for (fcode = ( long ) hsize; fcode < 65536L; fcode *= 2L)
         hshift++;
     hshift = 8 - hshift; /* Set hash code range bound. */
 
     hsize_reg = hsize;
-    cl_hash(zs, ( count_int )hsize_reg); /* Clear hash table. */
+    cl_hash(zs, ( count_int ) hsize_reg); /* Clear hash table. */
 
 middle:
     for (i = 0; count--;) {
         c = *bp++;
         in_count++;
-        fcode = ( long )((( long )c << maxbits) + ent);
+        fcode = ( long ) ((( long ) c << maxbits) + ent);
         i = ((c << hshift) ^ ent); /* Xor hashing. */
 
         if (htabof(i) == fcode) {
             ent = codetabof(i);
             continue;
-        } else if (( long )htabof(i) < 0) /* Empty slot. */
+        } else if (( long ) htabof(i) < 0) /* Empty slot. */
             goto nomatch;
         disp = hsize_reg - i; /* Secondary hash (after G. Knott). */
         if (i == 0)
@@ -591,17 +592,17 @@ middle:
             ent = codetabof(i);
             continue;
         }
-        if (( long )htabof(i) >= 0)
+        if (( long ) htabof(i) >= 0)
             goto probe;
     nomatch:
-        if (output(zs, f, ( code_int )ent, dp) == -1)
+        if (output(zs, f, ( code_int ) ent, dp) == -1)
             return (-1);
         out_count++;
         ent = c;
         if (free_ent < maxmaxcode) {
             codetabof(i) = free_ent++; /* code -> hashtable */
             htabof(i) = fcode;
-        } else if (( count_int )in_count >= checkpoint && block_compress) {
+        } else if (( count_int ) in_count >= checkpoint && block_compress) {
             if (cl_block(zs, f, dp) == -1)
                 return (-1);
         }
@@ -625,9 +626,9 @@ lzw_read(Sfio_t *f, Void_t *rbp, size_t num, Sfdisc_t *dp)
     if (num == 0)
         return (0);
 
-    zs = ( LZW_t * )dp;
+    zs = ( LZW_t * ) dp;
     count = num;
-    bp = ( u_char * )rbp;
+    bp = ( u_char * ) rbp;
     switch (state) {
     case S_START:
         state = S_MIDDLE;
@@ -652,7 +653,7 @@ lzw_read(Sfio_t *f, Void_t *rbp, size_t num, Sfdisc_t *dp)
     maxcode = MAXCODE(n_bits = INIT_BITS);
     for (code = 255; code >= 0; code--) {
         tab_prefixof(code) = 0;
-        tab_suffixof(code) = ( char_type )code;
+        tab_suffixof(code) = ( char_type ) code;
     }
     free_ent = block_compress ? FIRST : 256;
 
@@ -661,7 +662,7 @@ lzw_read(Sfio_t *f, Void_t *rbp, size_t num, Sfdisc_t *dp)
         return (0);    /* Get out of here */
 
     /* First code must be 8 bits = char. */
-    *bp++ = ( u_char )finchar;
+    *bp++ = ( u_char ) finchar;
     count--;
     stackp = de_stack;
 
@@ -700,7 +701,7 @@ lzw_read(Sfio_t *f, Void_t *rbp, size_t num, Sfdisc_t *dp)
 
         /* Generate the new entry. */
         if ((code = free_ent) < maxmaxcode) {
-            tab_prefixof(code) = ( u_short )oldcode;
+            tab_prefixof(code) = ( u_short ) oldcode;
             tab_suffixof(code) = finchar;
             free_ent = code + 1;
         }
@@ -745,7 +746,7 @@ sfdclzw(Sfio_t *f, int flags)
 
         if (!(n = sfset(f, 0, 0) & SF_SHARE))
             sfset(f, SF_SHARE, 1);
-        s = ( unsigned char * )sfreserve(f, 2, 1);
+        s = ( unsigned char * ) sfreserve(f, 2, 1);
         if (!n)
             sfset(f, SF_SHARE, 0);
         if (!s)

@@ -89,7 +89,7 @@
 #    define FS3D_TEST FS3D_OP_TEST
 #    define FS3D_LIMIT(n) FS3D_OP(FS3D_OP_LIMIT, n)
 
-#    define FS3D_op(x) (( x )&07)
+#    define FS3D_op(x) (( x ) &07)
 #    define FS3D_arg(x) (((x) >> 3) & 07777)
 
 #    define FS3D_OP_OFF 0

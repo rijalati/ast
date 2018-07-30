@@ -51,7 +51,7 @@ extern Dsslib_t dss_lib_lookup;
 static int
 lookup_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     int errors = error_info.errors;
     char *s;
     State_t *state;
@@ -129,7 +129,7 @@ bad:
 static int
 lookup_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
     Cxoperand_t val;
 
     if (cxcast(cx, &val, state->variable, cx->state->type_string, data, NiL))
@@ -140,7 +140,7 @@ lookup_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 static int
 lookup_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
 
     vmclose(state->vm);
     return 0;

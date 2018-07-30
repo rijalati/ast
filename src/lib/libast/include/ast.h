@@ -141,7 +141,7 @@ struct _sfio_s;
 #    define PATH_DROP_HEAD_SLASH2 0x040
 #    define PATH_DROP_TAIL_SLASH 0x080
 #    define PATH_EXCEPT_LAST 0x100
-#    define PATH_VERIFIED(n) ((( n )&0xfffff) << 12)
+#    define PATH_VERIFIED(n) ((( n ) &0xfffff) << 12)
 #    define PATH_GET_VERIFIED(n) (((n) >> 12) & 0xfffff)
 
 typedef struct Pathpart_s
@@ -232,14 +232,14 @@ typedef struct
 
 #    define mbwidth(w) (ast.mb_width ? (*ast.mb_width)(w) : 1)
 #    define mbxfrm(t, f, n)                                                  \
-        (mbcoll() ? (*ast.mb_xfrm)(( char * )(t), ( char * )(f), n) : 0)
+        (mbcoll() ? (*ast.mb_xfrm)(( char * ) (t), ( char * ) (f), n) : 0)
 #    define mbalpha(w)                                                       \
-        (ast.mb_alpha ? (*ast.mb_alpha)(w) : isalpha(( w )&0xff))
+        (ast.mb_alpha ? (*ast.mb_alpha)(w) : isalpha(( w ) &0xff))
 
 #    define mbsrtowcs(w, s, n, q)                                            \
-        (*ast._ast_mbsrtowcs)((s), (w), (n), ( mbstate_t * )(q))
+        (*ast._ast_mbsrtowcs)((s), (w), (n), ( mbstate_t * ) (q))
 #    define wcsrtombs(s, w, n, q)                                            \
-        (*ast._ast_wcsrtombs)((s), (w), (n), ( mbstate_t * )(q))
+        (*ast._ast_wcsrtombs)((s), (w), (n), ( mbstate_t * ) (q))
 
 /* the converse does not always hold! */
 #    define utf32invalid(u)                                                  \
@@ -254,16 +254,16 @@ typedef struct
 
 #    define elementsof(x) (sizeof(x) / sizeof(x[0]))
 #    define getconf(x) strtol(astconf((x), NiL, NiL), NiL, 0)
-#    define integralof(x) ((( char * )(x)) - (( char * )0))
+#    define integralof(x) ((( char * ) (x)) - (( char * ) 0))
 #    define newof(p, t, n, x)                                                \
-        ((p) ? ( t * )realloc(( char * )(p), sizeof(t) * (n) + (x))          \
-             : ( t * )calloc(1, sizeof(t) * (n) + (x)))
+        ((p) ? ( t * ) realloc(( char * ) (p), sizeof(t) * (n) + (x))        \
+             : ( t * ) calloc(1, sizeof(t) * (n) + (x)))
 #    define oldof(p, t, n, x)                                                \
-        ((p) ? ( t * )realloc(( char * )(p), sizeof(t) * (n) + (x))          \
-             : ( t * )malloc(sizeof(t) * (n) + (x)))
-#    define pointerof(x) (( void * )(( char * )0 + (x)))
-#    define roundof(x, y) (((x) + ( y )-1) & ~(( y )-1))
-#    define ssizeof(x) (( int )sizeof(x))
+        ((p) ? ( t * ) realloc(( char * ) (p), sizeof(t) * (n) + (x))        \
+             : ( t * ) malloc(sizeof(t) * (n) + (x)))
+#    define pointerof(x) (( void * ) (( char * ) 0 + (x)))
+#    define roundof(x, y) (((x) + ( y ) -1) & ~(( y ) -1))
+#    define ssizeof(x) (( int ) sizeof(x))
 
 #    define streq(a, b) (*(a) == *(b) && !strcmp(a, b))
 #    define strneq(a, b, n) (*(a) == *(b) && !strncmp(a, b, n))
@@ -271,9 +271,9 @@ typedef struct
 
 #    if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
 #        define NiL 0
-#        define NoP(x) ( void )(x)
+#        define NoP(x) ( void ) (x)
 #    else
-#        define NiL (( char * )0)
+#        define NiL (( char * ) 0)
 #        define NoP(x) (&x, 1)
 #    endif
 
@@ -622,46 +622,47 @@ extern char **environ;
 #        define mbinit(q) (*(q) = ast._ast_mbstate_init)
 #        define mberrno(q) ((q)->mb_errno)
 #        define mbsize(s, n, q)                                              \
-            (*ast._ast_mbrlen)(( char * )(s), (n), ( mbstate_t * )(q))
+            (*ast._ast_mbrlen)(( char * ) (s), (n), ( mbstate_t * ) (q))
 #        define mbchar(w, s, n, q)                                           \
-            (((s)                                                            \
-              += (ast_mbrchar)(( wchar_t * )(w), ( char * )(s), (n), (q))),  \
+            (((s) += (ast_mbrchar)(                                          \
+              ( wchar_t * ) (w), ( char * ) (s), (n), (q))),                 \
              (*(w)))
 #        define mbconv(s, w, q)                                              \
-            (*ast._ast_wcrtomb)((s), (w), ( mbstate_t * )(q))
+            (*ast._ast_wcrtomb)((s), (w), ( mbstate_t * ) (q))
 
 #        define mbtinit(q) (mbwide() ? (mbinit(q), 0) : 0)
 #        define mbtsize(s, n, q) (mbwide() ? mbsize((s), (n), (q)) : (!!*(s)))
 #        define mbtchar(w, s, n, q)                                          \
             (mbwide() ? mbchar((w), (s), (n), (q))                           \
-                      : (*( unsigned char * )(s++)))
+                      : (*( unsigned char * ) (s++)))
 #        define mbtconv(s, w, q)                                             \
             (mbwide() ? mbconv((s), (w), (q)) : ((*(s) = (w)), 1))
 
 #    else
 
-#        define mb2wc(w, p, n) (*ast.mb_towc)(&(w), ( char * )(p), (n))
+#        define mb2wc(w, p, n) (*ast.mb_towc)(&(w), ( char * ) (p), (n))
 #        define mbchar(p)                                                    \
             (mbwide() ? ((ast.tmp_int = (*ast.mb_towc)(                      \
-                          &ast.tmp_wchar, ( char * )(p), mbmax()))           \
+                          &ast.tmp_wchar, ( char * ) (p), mbmax()))          \
                          > 0                                                 \
                          ? ((p += ast.tmp_int), ast.tmp_wchar)               \
                          : (p += ast.mb_sync + 1, ast.tmp_int))              \
-                      : (*( unsigned char * )(p++)))
+                      : (*( unsigned char * ) (p++)))
 #        define mbnchar(p, n)                                                \
             (mbwide() ? ((ast.tmp_int = (*ast.mb_towc)(                      \
-                          &ast.tmp_wchar, ( char * )(p), n))                 \
+                          &ast.tmp_wchar, ( char * ) (p), n))                \
                          > 0                                                 \
                          ? ((p += ast.tmp_int), ast.tmp_wchar)               \
                          : (p += ast.mb_sync + 1, ast.tmp_int))              \
-                      : (*( unsigned char * )(p++)))
+                      : (*( unsigned char * ) (p++)))
 #        define mbinit()                                                     \
-            (mbwide() ? (*ast.mb_towc)(( wchar_t * )0, ( char * )0, mbmax()) \
-                      : 0)
+            (mbwide()                                                        \
+             ? (*ast.mb_towc)(( wchar_t * ) 0, ( char * ) 0, mbmax())        \
+             : 0)
 #        define mbsize(p)                                                    \
-            (mbwide() ? (*ast.mb_len)(( char * )(p), mbmax()) : ((p), 1))
+            (mbwide() ? (*ast.mb_len)(( char * ) (p), mbmax()) : ((p), 1))
 #        define mbnsize(p, n)                                                \
-            (mbwide() ? (*ast.mb_len)(( char * )(p), n) : ((p), 1))
+            (mbwide() ? (*ast.mb_len)(( char * ) (p), n) : ((p), 1))
 #        define mbconv(s, w)                                                 \
             (ast.mb_conv ? (*ast.mb_conv)(s, w) : ((*(s) = (w)), 1))
 

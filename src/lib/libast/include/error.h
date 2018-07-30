@@ -58,11 +58,11 @@
             (error_info.translate                                            \
              && (ast.locale.set & (1 << AST_LC_MESSAGES)))
 #        define ERROR_translate(l, i, d, m)                                  \
-            (ERROR_translating() ? errorx(( const char * )(l),               \
-                                          ( const char * )(i),               \
-                                          ( const char * )(d),               \
-                                          ( const char * )(m))               \
-                                 : ( char * )(m))
+            (ERROR_translating() ? errorx(( const char * ) (l),              \
+                                          ( const char * ) (i),              \
+                                          ( const char * ) (d),              \
+                                          ( const char * ) (m))              \
+                                 : ( char * ) (m))
 #    endif
 
 #    define ERROR_INFO 0              /* info message -- no err_id	*/
@@ -105,12 +105,12 @@
 #        define ERROR_CONTEXT_T Error_info_t
 #    endif
 
-#    define ERROR_CONTEXT_BASE (( Error_context_t * )&error_info.context)
+#    define ERROR_CONTEXT_BASE (( Error_context_t * ) &error_info.context)
 
 #    define errorpush(p, f)                                                  \
         (*(p) = *ERROR_CONTEXT_BASE,                                         \
          *ERROR_CONTEXT_BASE = error_info.empty,                             \
-         error_info.context = ( Error_context_t * )(p),                      \
+         error_info.context = ( Error_context_t * ) (p),                     \
          error_info.flags = (f))
 #    define errorpop(p) (*ERROR_CONTEXT_BASE = *(p))
 

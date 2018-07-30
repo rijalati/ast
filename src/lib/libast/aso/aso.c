@@ -149,9 +149,9 @@ _aso_InterlockedCompareExchange64_32(LONGLONG volatile *p,
                                      LONGLONG o,
                                      LONGLONG n)
 {
-    LL_t *lp = ( LL_t * )p;
-    LL_t *op = ( LL_t * )&o;
-    LL_t *np = ( LL_t * )&n;
+    LL_t *lp = ( LL_t * ) p;
+    LL_t *op = ( LL_t * ) &o;
+    LL_t *np = ( LL_t * ) &n;
     LONGLONG r;
 
     r = *p;
@@ -169,7 +169,7 @@ _aso_InterlockedCompareExchange64_init(LONGLONG volatile *p,
                                        LONGLONG n)
 {
     if (!(_aso_InterlockedCompareExchange64
-          = ( _aso_InterlockedCompareExchange64_f )getsymbol(
+          = ( _aso_InterlockedCompareExchange64_f ) getsymbol(
           MODULE_kernel, "InterlockedCompareExchange64")))
         _aso_InterlockedCompareExchange64
         = _aso_InterlockedCompareExchange64_32;
@@ -383,8 +383,8 @@ asogetptr(void volatile *p)
     void *o;
 
     do {
-        o = *( void *volatile * )p;
-    } while (asocasptr(( void ** )p, o, o) != o);
+        o = *( void *volatile * ) p;
+    } while (asocasptr(( void ** ) p, o, o) != o);
     return o;
 }
 #    endif
@@ -791,8 +791,8 @@ asocas8(uint8_t volatile *p, int o, int n)
     int s;
     int i;
 
-    s = ( int )(integralof(p) & (sizeof(u.i) - 1));
-    a = ( U16_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
+    s = ( int ) (integralof(p) & (sizeof(u.i) - 1));
+    a = ( U16_8_t * ) (( char * ) 0 + (integralof(p) & ~(sizeof(u.i) - 1)));
     for (;;) {
         u.i = a->i;
         u.c[s] = o;
@@ -814,8 +814,8 @@ asocas8(uint8_t volatile *p, int o, int n)
     int s;
     int i;
 
-    s = ( int )(integralof(p) & (sizeof(u.i) - 1));
-    a = ( U32_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
+    s = ( int ) (integralof(p) & (sizeof(u.i) - 1));
+    a = ( U32_8_t * ) (( char * ) 0 + (integralof(p) & ~(sizeof(u.i) - 1)));
     for (;;) {
         u.i = a->i;
         u.c[s] = o;
@@ -837,8 +837,8 @@ asocas8(uint8_t volatile *p, int o, int n)
     int s;
     int i;
 
-    s = ( int )(integralof(p) & (sizeof(u.i) - 1));
-    a = ( U64_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
+    s = ( int ) (integralof(p) & (sizeof(u.i) - 1));
+    a = ( U64_8_t * ) (( char * ) 0 + (integralof(p) & ~(sizeof(u.i) - 1)));
     for (;;) {
         u.i = a->i;
         u.c[s] = o;
@@ -878,8 +878,8 @@ asocas16(uint16_t volatile *p, int o, int n)
     int s;
     int i;
 
-    s = ( int )(integralof(p) & (sizeof(u.i) - 1));
-    a = ( U32_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
+    s = ( int ) (integralof(p) & (sizeof(u.i) - 1));
+    a = ( U32_8_t * ) (( char * ) 0 + (integralof(p) & ~(sizeof(u.i) - 1)));
     for (;;) {
         u.i = a->i;
         u.c[s] = o;
@@ -901,8 +901,8 @@ asocas16(uint16_t volatile *p, int o, int n)
     int s;
     int i;
 
-    s = ( int )(integralof(p) & (sizeof(u.i) - 1));
-    a = ( U64_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
+    s = ( int ) (integralof(p) & (sizeof(u.i) - 1));
+    a = ( U64_8_t * ) (( char * ) 0 + (integralof(p) & ~(sizeof(u.i) - 1)));
     for (;;) {
         u.i = a->i;
         u.c[s] = o;
@@ -942,8 +942,8 @@ asocas32(uint32_t volatile *p, uint32_t o, uint32_t n)
     int s;
     int i;
 
-    s = ( int )(integralof(p) & (sizeof(u.i) - 1));
-    a = ( U64_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
+    s = ( int ) (integralof(p) & (sizeof(u.i) - 1));
+    a = ( U64_8_t * ) (( char * ) 0 + (integralof(p) & ~(sizeof(u.i) - 1)));
     for (;;) {
         u.i = a->i;
         u.c[s] = o;
@@ -1003,10 +1003,10 @@ asocasptr(void volatile *p, void *o, void *n)
     ssize_t k;
 
     k = lock(0);
-    if (*( void *volatile * )p == o)
-        *( void *volatile * )p = n;
+    if (*( void *volatile * ) p == o)
+        *( void *volatile * ) p = n;
     else
-        o = *( void *volatile * )p;
+        o = *( void *volatile * ) p;
     lock(k);
     return o;
 }

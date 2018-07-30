@@ -38,7 +38,7 @@ int *v;
     for (*v = 0; isdigit(*str); ++str)
         *v = *v * 10 + (*str - '0');
     *v -= 1;
-    return ( char * )str;
+    return ( char * ) str;
 }
 
 #if __STD_C
@@ -72,7 +72,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
     while ((n = *form)) {
         if (n != '%') /* collect the non-pattern chars */
         {
-            sp = ( char * )form;
+            sp = ( char * ) form;
             for (;;) {
                 form += SFMBLEN(form, &fmbs);
                 if (*form == 0 || *form == '%')
@@ -114,7 +114,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
     loop_flags: /* LOOP FOR \0, %, FLAGS, WIDTH, PRECISION, BASE, TYPE */
         switch ((fmt = *form++)) {
         case LEFTP: /* get the type enclosed in balanced parens */
-            t_str = ( char * )form;
+            t_str = ( char * ) form;
             for (v = 1;;) {
                 switch (*form++) {
                 case 0: /* not balancable, retract */
@@ -139,7 +139,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
                             maxp = n;
                         if (fp && fp[n].ft.fmt == 0) {
                             fp[n].ft.fmt = LEFTP;
-                            fp[n].ft.form = ( char * )form;
+                            fp[n].ft.form = ( char * ) form;
                         }
                         need[FP_STR] = n;
                     }
@@ -195,7 +195,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
             if (fp && fp[n].ft.fmt == 0) {
                 fp[n].ft.fmt = '.';
                 fp[n].ft.size = dot;
-                fp[n].ft.form = ( char * )form;
+                fp[n].ft.form = ( char * ) form;
             }
             if (dot <= 2)
                 need[dot] = n;
@@ -239,7 +239,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
                 if (fp && fp[n].ft.fmt == 0) {
                     fp[n].ft.fmt = 'I';
                     fp[n].ft.size = sizeof(int);
-                    fp[n].ft.form = ( char * )form;
+                    fp[n].ft.form = ( char * ) form;
                 }
                 need[FP_SIZE] = n;
             }
@@ -321,7 +321,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
             return NIL(Fmtpos_t *);
 
         if (fp && fp[argp].ft.fmt == 0) {
-            fp[argp].ft.form = ( char * )form;
+            fp[argp].ft.form = ( char * ) form;
             fp[argp].ft.fmt = fp[argp].fmt = fmt;
             fp[argp].ft.size = size;
             fp[argp].ft.flags = flags;
@@ -338,7 +338,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
     if (!fp) /* constructing position array only */
     {
         if (!dollar
-            || !(fp = ( Fmtpos_t * )malloc((maxp + 1) * sizeof(Fmtpos_t))))
+            || !(fp = ( Fmtpos_t * ) malloc((maxp + 1) * sizeof(Fmtpos_t))))
             return NIL(Fmtpos_t *);
         for (n = 0; n <= maxp; ++n)
             fp[n].ft.fmt = 0;
@@ -381,7 +381,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
             memcpy(ft, &fp[n].ft, sizeof(Sffmt_t));
             va_copy(ft->args, args);
             ft->flags |= SFFMT_ARGPOS;
-            v = (*ft->extf)(f, ( Void_t * )(&fp[n].argv), ft);
+            v = (*ft->extf)(f, ( Void_t * ) (&fp[n].argv), ft);
             va_copy(args, ft->args);
             memcpy(&fp[n].ft, ft, sizeof(Sffmt_t));
             if (v < 0) {
@@ -456,7 +456,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
                     else if ((fp[n].ft.flags & SFFMT_LONG)
                              || fp[n].ft.fmt == 'C') {
                         if (sizeof(wchar_t) <= sizeof(int))
-                            fp[n].argv.wc = ( wchar_t )va_arg(args, int);
+                            fp[n].argv.wc = ( wchar_t ) va_arg(args, int);
                         else
                             fp[n].argv.wc = va_arg(args, wchar_t);
                     }
@@ -498,26 +498,26 @@ sfcvinit()
 
     /* [0-9] */
     for (d = 0; d < 10; ++d) {
-        _Sfcv36[( uchar )_Sfdigits[d]] = d;
-        _Sfcv64[( uchar )_Sfdigits[d]] = d;
+        _Sfcv36[( uchar ) _Sfdigits[d]] = d;
+        _Sfcv64[( uchar ) _Sfdigits[d]] = d;
     }
 
     /* [a-z] */
     for (; d < 36; ++d) {
-        _Sfcv36[( uchar )_Sfdigits[d]] = d;
-        _Sfcv64[( uchar )_Sfdigits[d]] = d;
+        _Sfcv36[( uchar ) _Sfdigits[d]] = d;
+        _Sfcv64[( uchar ) _Sfdigits[d]] = d;
     }
 
     /* [A-Z] */
     for (l = 10; d < 62; ++l, ++d) {
-        _Sfcv36[( uchar )_Sfdigits[d]] = l;
-        _Sfcv64[( uchar )_Sfdigits[d]] = d;
+        _Sfcv36[( uchar ) _Sfdigits[d]] = l;
+        _Sfcv64[( uchar ) _Sfdigits[d]] = d;
     }
 
     /* remaining digits */
     for (; d < SF_RADIX; ++d) {
-        _Sfcv36[( uchar )_Sfdigits[d]] = d;
-        _Sfcv64[( uchar )_Sfdigits[d]] = d;
+        _Sfcv36[( uchar ) _Sfdigits[d]] = d;
+        _Sfcv64[( uchar ) _Sfdigits[d]] = d;
     }
 
     _Sftype['d'] = _Sftype['i'] = SFFMT_INT;
@@ -534,16 +534,16 @@ sfcvinit()
 
     /* IEEE floating point computed constants */
 
-    memcpy(( char * )&_Sffnan, ( char * )flt_nan, sizeof(_Sffnan));
-    memcpy(( char * )&_Sffinf, ( char * )flt_inf, sizeof(_Sffinf));
-    memcpy(( char * )&_Sfdnan, ( char * )dbl_nan, sizeof(_Sfdnan));
-    memcpy(( char * )&_Sfdinf, ( char * )dbl_inf, sizeof(_Sfdinf));
+    memcpy(( char * ) &_Sffnan, ( char * ) flt_nan, sizeof(_Sffnan));
+    memcpy(( char * ) &_Sffinf, ( char * ) flt_inf, sizeof(_Sffinf));
+    memcpy(( char * ) &_Sfdnan, ( char * ) dbl_nan, sizeof(_Sfdnan));
+    memcpy(( char * ) &_Sfdinf, ( char * ) dbl_inf, sizeof(_Sfdinf));
 #ifdef _ast_ldbl_nan_init
-    memcpy(( char * )&_Sflnan, ( char * )ldbl_nan, sizeof(_Sflnan));
-    memcpy(( char * )&_Sflinf, ( char * )ldbl_inf, sizeof(_Sflinf));
+    memcpy(( char * ) &_Sflnan, ( char * ) ldbl_nan, sizeof(_Sflnan));
+    memcpy(( char * ) &_Sflinf, ( char * ) ldbl_inf, sizeof(_Sflinf));
 #else
-    memcpy(( char * )&_Sflnan, ( char * )dbl_nan, sizeof(_Sfdnan));
-    memcpy(( char * )&_Sflinf, ( char * )dbl_inf, sizeof(_Sfdinf));
+    memcpy(( char * ) &_Sflnan, ( char * ) dbl_nan, sizeof(_Sfdnan));
+    memcpy(( char * ) &_Sflinf, ( char * ) dbl_inf, sizeof(_Sfdinf));
 #endif
 
     return 1;

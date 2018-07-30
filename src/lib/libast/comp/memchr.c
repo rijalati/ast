@@ -37,7 +37,7 @@ NoN(memchr)
 void *
 memchr(const void *asp, int c, size_t n)
 {
-    const char *sp = ( char * )asp;
+    const char *sp = ( char * ) asp;
     const char *ep = sp + n;
 
     while (sp < ep)

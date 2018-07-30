@@ -40,7 +40,7 @@ Sfdouble_t sfgetd(f) Sfio_t *f;
 
     SFMTXENTER(f, -1.);
 
-    if ((sign = sfgetc(f)) < 0 || (exp = ( int )sfgetu(f)) < 0)
+    if ((sign = sfgetc(f)) < 0 || (exp = ( int ) sfgetu(f)) < 0)
         SFMTXRETURN(f, -1.);
 
     if (f->mode != SF_READ && _sfmode(f, SF_READ, 0) < 0)

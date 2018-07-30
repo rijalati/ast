@@ -123,7 +123,7 @@ dropcap(Cap_t *cap)
 static void
 drop(Dt_t *dt, void *object, Dtdisc_t *disc)
 {
-    Ent_t *ent = ( Ent_t * )object;
+    Ent_t *ent = ( Ent_t * ) object;
     Cap_t *cap;
 
     while (cap = ent->cap) {
@@ -227,7 +227,7 @@ mimeset(Mime_t *mp, char *s, unsigned long flags)
                 }
             } while (*(v = t));
         }
-        ent = ( Ent_t * )dtmatch(mp->cap, s);
+        ent = ( Ent_t * ) dtmatch(mp->cap, s);
         if (cap) {
             if (ent) {
                 Cap_t *dup;
@@ -276,7 +276,7 @@ mimeload(Mime_t *mp, const char *file, unsigned long flags)
     int n;
     Sfio_t *fp;
 
-    if (!(s = ( char * )file)) {
+    if (!(s = ( char * ) file)) {
         flags |= MIME_LIST;
         if (!(s = getenv(MIME_FILES_ENV)))
             s = MIME_FILES;
@@ -321,8 +321,8 @@ mimeload(Mime_t *mp, const char *file, unsigned long flags)
 static int
 list(Dt_t *dt, void *object, void *context)
 {
-    Walk_t *wp = ( Walk_t * )context;
-    Ent_t *ent = ( Ent_t * )object;
+    Walk_t *wp = ( Walk_t * ) context;
+    Ent_t *ent = ( Ent_t * ) object;
     Cap_t *cap;
     Att_t *att;
 
@@ -368,8 +368,8 @@ find(Mime_t *mp, const char *type)
 
     static const char *prefix[] = { "", "", "x-", "x-", "" };
 
-    if ((ent = ( Ent_t * )dtmatch(mp->cap, type))
-        || !(rp = strchr(lp = ( char * )type, '/'))
+    if ((ent = ( Ent_t * ) dtmatch(mp->cap, type))
+        || !(rp = strchr(lp = ( char * ) type, '/'))
         || strlen(lp) >= sizeof(buf))
         return ent;
     strcpy(buf, type);
@@ -394,7 +394,7 @@ find(Mime_t *mp, const char *type)
                 mp->buf, "%s%s/%s%s", prefix[i], lp, prefix[i + 1], rp);
                 if (!(s = sfstruse(mp->buf)))
                     return 0;
-                if (ent = ( Ent_t * )dtmatch(mp->cap, s))
+                if (ent = ( Ent_t * ) dtmatch(mp->cap, s))
                     return ent;
                 if (rc) {
                     *rv = 0;
@@ -402,7 +402,7 @@ find(Mime_t *mp, const char *type)
                     mp->buf, "%s%s/%s%s", prefix[i], lp, prefix[i + 1], rp);
                     if (!(s = sfstruse(mp->buf)))
                         return 0;
-                    if (ent = ( Ent_t * )dtmatch(mp->cap, s))
+                    if (ent = ( Ent_t * ) dtmatch(mp->cap, s))
                         return ent;
                     *rv = rc;
                 }
@@ -413,7 +413,7 @@ find(Mime_t *mp, const char *type)
         while (*lp && *lp++ != '-')
             ;
     } while (*lp);
-    return ( Ent_t * )dtmatch(mp->cap, buf);
+    return ( Ent_t * ) dtmatch(mp->cap, buf);
 }
 
 /*
@@ -557,16 +557,16 @@ expand(Mime_t *mp,
                 t = 0;
             switch (c) {
             case 's':
-                v = ( char * )name;
+                v = ( char * ) name;
                 mp->disc->flags &= ~MIME_PIPE;
                 break;
             case 't':
-                v = ( char * )type;
+                v = ( char * ) type;
                 break;
             case '{':
                 for (t = s; *s && *s != '}'; s++)
                     ;
-                if (*s && (c = s++ - t) && (pp.next = ( char * )opts))
+                if (*s && (c = s++ - t) && (pp.next = ( char * ) opts))
                     while (arg(&pp, 0))
                         if (pp.name.size == c
                             && !strncasecmp(pp.name.data, t, c)) {
@@ -738,7 +738,7 @@ mimecmp(const char *s, const char *v, char **e)
             return n;
     if (!isalnum(*s) && *s != '_' && *s != '-') {
         if (e)
-            *e = ( char * )s;
+            *e = ( char * ) s;
         return 0;
     }
     return lower(*s) - lower(*v);
@@ -762,7 +762,7 @@ mimehead(Mime_t *mp, void *tab, size_t num, size_t siz, char *s)
         s += 9;
     if (!strncasecmp(s, "content-", 8)) {
         s += 8;
-        if ((p = strsearch(tab, num, siz, ( Strcmp_f )mimecmp, s, &e))
+        if ((p = strsearch(tab, num, siz, ( Strcmp_f ) mimecmp, s, &e))
             && *e == ':') {
             pp.next = e + 1;
             if (arg(&pp, 1)) {
@@ -773,7 +773,7 @@ mimehead(Mime_t *mp, void *tab, size_t num, size_t siz, char *s)
                         && (p = strsearch(tab,
                                           num,
                                           siz,
-                                          ( Strcmp_f )mimecmp,
+                                          ( Strcmp_f ) mimecmp,
                                           pp.name.data,
                                           &e))
                         && (*set)(

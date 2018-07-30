@@ -416,7 +416,7 @@ ppargs(char **argv, int last)
                 ppop(PP_FILEDEPS, n);
                 break;
             case 'P':
-                ppop(PP_LINE, ( PPLINESYNC )0);
+                ppop(PP_LINE, ( PPLINESYNC ) 0);
                 break;
             case 'U':
                 ppop(PP_UNDEF, opt_info.arg);

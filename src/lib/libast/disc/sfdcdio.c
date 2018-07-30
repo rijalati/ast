@@ -41,7 +41,7 @@ typedef struct _direct_s
 } Direct_t;
 
 /* convert a pointer to an int */
-#define P2I(p) (Sfulong_t)(( char * )(p) - ( char * )0)
+#define P2I(p) (Sfulong_t)(( char * ) (p) - ( char * ) 0)
 
 #if __STD_C
 static ssize_t
@@ -66,7 +66,7 @@ int type;
                                         right mode */
         if (!(di->cntl & FDIRECT)) {
             di->cntl |= FDIRECT;
-            ( void )fcntl(f->file, F_SETFL, di->cntl);
+            ( void ) fcntl(f->file, F_SETFL, di->cntl);
         }
 
         for (rw = (n / di->dio.d_miniosz) * di->dio.d_miniosz;;) {
@@ -82,7 +82,7 @@ int type;
             if (rv > 0) {
                 rw -= rv;
                 done += rv;
-                buf = ( Void_t * )(( char * )buf + rv);
+                buf = ( Void_t * ) (( char * ) buf + rv);
             }
 
             if (rv < io || rw < di->dio.d_miniosz)
@@ -93,7 +93,7 @@ int type;
     if (done < n && (di->cntl & FDIRECT)) { /* turn off directIO for remaining
                                                IO operation */
         di->cntl &= ~FDIRECT;
-        ( void )fcntl(f->file, F_SETFL, di->cntl);
+        ( void ) fcntl(f->file, F_SETFL, di->cntl);
     }
 #endif /*F_DIOINFO*/
 
@@ -116,7 +116,7 @@ size_t n;
 Sfdisc_t *disc;
 #endif
 {
-    return diordwr(f, buf, n, ( Direct_t * )disc, SF_READ);
+    return diordwr(f, buf, n, ( Direct_t * ) disc, SF_READ);
 }
 
 #if __STD_C
@@ -129,7 +129,7 @@ size_t n;
 Sfdisc_t *disc;
 #endif
 {
-    return diordwr(f, ( Void_t * )buf, n, ( Direct_t * )disc, SF_WRITE);
+    return diordwr(f, ( Void_t * ) buf, n, ( Direct_t * ) disc, SF_WRITE);
 }
 
 #if __STD_C
@@ -142,13 +142,13 @@ Void_t *data;
 Sfdisc_t *disc;
 #endif
 {
-    Direct_t *di = ( Direct_t * )disc;
+    Direct_t *di = ( Direct_t * ) disc;
 
     if (type == SF_FINAL || type == SF_DPOP) {
 #ifdef F_DIOINFO
         if (di->cntl & FDIRECT) {
             di->cntl &= ~FDIRECT;
-            ( void )fcntl(f->file, F_SETFL, di->cntl);
+            ( void ) fcntl(f->file, F_SETFL, di->cntl);
         }
 #endif
         free(disc);
@@ -195,10 +195,10 @@ size_t bufsize;
     if (bufsize > dio.d_maxiosz)
         bufsize = dio.d_maxiosz;
 
-    if (!(di = ( Direct_t * )malloc(sizeof(Direct_t))))
+    if (!(di = ( Direct_t * ) malloc(sizeof(Direct_t))))
         goto no_direct;
 
-    if (!(buf = ( Void_t * )memalign(dio.d_mem, bufsize))) {
+    if (!(buf = ( Void_t * ) memalign(dio.d_mem, bufsize))) {
         free(di);
         goto no_direct;
     }
@@ -219,11 +219,11 @@ size_t bufsize;
     di->cntl = cntl;
     di->dio = dio;
 
-    if (sfdisc(f, ( Sfdisc_t * )di) != ( Sfdisc_t * )di) {
+    if (sfdisc(f, ( Sfdisc_t * ) di) != ( Sfdisc_t * ) di) {
         free(di);
     no_direct:
         cntl &= ~FDIRECT;
-        ( void )fcntl(f->file, F_SETFL, cntl);
+        ( void ) fcntl(f->file, F_SETFL, cntl);
         return -1;
     }
 

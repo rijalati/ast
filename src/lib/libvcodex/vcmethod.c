@@ -65,7 +65,7 @@ static Vcmtlist_t *_Vcmtlist;
 static int _Doneinit;
 #define VCMTINIT() (_Doneinit ? 0 : (_Doneinit = 1, vcmtinit()))
 
-static int vcmtinit _ARG_(( void ));
+static int vcmtinit _ARG_(( void ) );
 
 /* add a list of methods - perhaps dynamically loaded */
 #if __STD_C
@@ -85,8 +85,8 @@ ssize_t size;                                /* number of them	*/
     if (!list || size < 0)
         return 0;
 
-    if (!(mtl = ( Vcmtlist_t * )malloc(sizeof(Vcmtlist_t)
-                                       + (size ? 0 : sizeof(Vcmethod_t **)))))
+    if (!(mtl = ( Vcmtlist_t * ) malloc(
+          sizeof(Vcmtlist_t) + (size ? 0 : sizeof(Vcmethod_t **)))))
         return -1;
 
     if (_Vcmtlist) {
@@ -97,8 +97,8 @@ ssize_t size;                                /* number of them	*/
         _Vcmtlist = mtl;
     }
     if (!size) {
-        lst = ( Vcmethod_t ** )(mtl + 1);
-        *lst = ( Vcmethod_t * )list;
+        lst = ( Vcmethod_t ** ) (mtl + 1);
+        *lst = ( Vcmethod_t * ) list;
         list = lst;
         size = 1;
     }
@@ -111,7 +111,7 @@ ssize_t size;                                /* number of them	*/
 
 #if _PACKAGE_ast
 
-typedef Vcmethod_t *( *Vclib_f )_ARG_(( const char * ));
+typedef Vcmethod_t *( *Vclib_f ) _ARG_(( const char * ) );
 
 #    if __STD_C
 static Vcmethod_t *
@@ -124,8 +124,8 @@ char *path;
     Vcmethod_t *meth;
     Vclib_f libf;
 
-    if ((libf = ( Vclib_f )dlllook(dll, VC_LIB)) && (meth = (*libf)(path))) {
-        vcaddmeth(( Vcmethod_t ** )meth, 0);
+    if ((libf = ( Vclib_f ) dlllook(dll, VC_LIB)) && (meth = (*libf)(path))) {
+        vcaddmeth(( Vcmethod_t ** ) meth, 0);
         return meth;
     }
     dlclose(dll);
@@ -203,7 +203,7 @@ int portable; /* name is in portable format	*/
 #if _PACKAGE_ast
     if (portable && (map = ccmap(CC_ASCII, CC_NATIVE))) {
         for (i = 0; i < sizeof(buf2) - 1; i++)
-            buf2[i] = map[(( unsigned char * )name)[i]];
+            buf2[i] = map[(( unsigned char * ) name)[i]];
         name = buf2;
     }
     if (dll = dllplugin(VC_ID,
@@ -240,7 +240,7 @@ Void_t *disc;
 
     for (mtl = _Vcmtlist; mtl; mtl = mtl->next) {
         for (i = 0; i < mtl->size; ++i) {
-            rv = (*walkf)(( Void_t * )mtl->list[i],
+            rv = (*walkf)(( Void_t * ) mtl->list[i],
                           mtl->list[i]->name,
                           mtl->list[i]->desc,
                           disc);
@@ -287,7 +287,7 @@ int type;    /* different coding types:	*/
 
     if (type == 0) /* string */
     {
-        if ((v = ( Vcchar_t * )val) != NIL(Vcchar_t *)) {
+        if ((v = ( Vcchar_t * ) val) != NIL(Vcchar_t *)) {
             data[k++] = '=';
             while (k < sizeof(data) - 1) {
                 if (*v == 0)
@@ -299,7 +299,7 @@ int type;    /* different coding types:	*/
     {
         data[k++] = '=';
 
-        type = ( unsigned char )TYPECAST(int, val);
+        type = ( unsigned char ) TYPECAST(int, val);
         data[k++] = '\\';
         if (type >= 64) {
             data[k++] = '0' + type / 64;
@@ -338,7 +338,7 @@ int type;    /* different coding types:	*/
 
     data[k] = 0;
 
-    return (*vc->meth->eventf)(vc, VC_SETMTARG, ( Void_t * )data);
+    return (*vc->meth->eventf)(vc, VC_SETMTARG, ( Void_t * ) data);
 }
 
 /* from a string specification, find an argument and its value if any */
@@ -563,7 +563,7 @@ sszie_t n; /* size of buffer		*/
 
 #ifdef VC_GETIDENT
     if (meth->eventf && /* ask the method for its identification string */
-        (*meth->eventf)(NIL(Vcodex_t *), VC_GETIDENT, ( Void_t * )(&ident))
+        (*meth->eventf)(NIL(Vcodex_t *), VC_GETIDENT, ( Void_t * ) (&ident))
         < 0)
         return NIL(char *);
 #endif

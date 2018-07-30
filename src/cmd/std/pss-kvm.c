@@ -141,7 +141,7 @@ kvm_init(Pss_t *pss)
 static int
 kvm_done(Pss_t *pss)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
 
     kvm_close(state->kd);
     return 1;
@@ -150,7 +150,7 @@ kvm_done(Pss_t *pss)
 static int
 kvm_readf(Pss_t *pss, Pss_id_t pid)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     int count;
 
     if (pid) {
@@ -175,7 +175,7 @@ kvm_readf(Pss_t *pss, Pss_id_t pid)
 static int
 kvm_part(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
 
     pe->pid = state->pr->p_pid;
     pe->pgrp = state->px->e_pgid;
@@ -210,7 +210,7 @@ kvm_part(Pss_t *pss, Pssent_t *pe)
 static int
 kvm_full(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     unsigned long fields = pss->disc->fields & pss->meth->fields;
     char *s;
     int i;

@@ -23,10 +23,10 @@
 static Tk_ArgvInfo defaultTable[]
 = { { "-help",
       TK_ARGV_HELP,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "Print summary of command-line options and abort" },
-    { NULL, TK_ARGV_END, ( char * )NULL, ( char * )NULL, ( char * )NULL } };
+    { NULL, TK_ARGV_END, ( char * ) NULL, ( char * ) NULL, ( char * ) NULL } };
 
 /*
  * Forward declarations for procedures defined in this file:
@@ -150,7 +150,7 @@ int flags;             /* Or'ed combination of various flag bits,
                                      "ambiguous option \"",
                                      curArg,
                                      "\"",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 matchPtr = infoPtr;
@@ -168,7 +168,7 @@ int flags;             /* Or'ed combination of various flag bits,
                                  "unrecognized argument \"",
                                  curArg,
                                  "\"",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
             argv[dstIndex] = curArg;
@@ -184,7 +184,7 @@ int flags;             /* Or'ed combination of various flag bits,
         infoPtr = matchPtr;
         switch (infoPtr->type) {
         case TK_ARGV_CONSTANT:
-            *(( int * )infoPtr->dst) = ( int )infoPtr->src;
+            *(( int * ) infoPtr->dst) = ( int ) infoPtr->src;
             break;
         case TK_ARGV_INT:
             if (argc == 0) {
@@ -192,7 +192,8 @@ int flags;             /* Or'ed combination of various flag bits,
             } else {
                 char *endPtr;
 
-                *(( int * )infoPtr->dst) = strtol(argv[srcIndex], &endPtr, 0);
+                *(( int * ) infoPtr->dst)
+                = strtol(argv[srcIndex], &endPtr, 0);
                 if ((endPtr == argv[srcIndex]) || (*endPtr != 0)) {
                     Tcl_AppendResult(interp,
                                      "expected integer argument ",
@@ -201,7 +202,7 @@ int flags;             /* Or'ed combination of various flag bits,
                                      "\" but got \"",
                                      argv[srcIndex],
                                      "\"",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 srcIndex++;
@@ -212,7 +213,7 @@ int flags;             /* Or'ed combination of various flag bits,
             if (argc == 0) {
                 goto missingArg;
             } else {
-                *(( char ** )infoPtr->dst) = argv[srcIndex];
+                *(( char ** ) infoPtr->dst) = argv[srcIndex];
                 srcIndex++;
                 argc--;
             }
@@ -221,13 +222,13 @@ int flags;             /* Or'ed combination of various flag bits,
             if (argc == 0) {
                 goto missingArg;
             } else {
-                *(( Tk_Uid * )infoPtr->dst) = Tk_GetUid(argv[srcIndex]);
+                *(( Tk_Uid * ) infoPtr->dst) = Tk_GetUid(argv[srcIndex]);
                 srcIndex++;
                 argc--;
             }
             break;
         case TK_ARGV_REST:
-            *(( int * )infoPtr->dst) = dstIndex;
+            *(( int * ) infoPtr->dst) = dstIndex;
             goto argsDone;
         case TK_ARGV_FLOAT:
             if (argc == 0) {
@@ -235,7 +236,8 @@ int flags;             /* Or'ed combination of various flag bits,
             } else {
                 char *endPtr;
 
-                *(( double * )infoPtr->dst) = strtod(argv[srcIndex], &endPtr);
+                *(( double * ) infoPtr->dst)
+                = strtod(argv[srcIndex], &endPtr);
                 if ((endPtr == argv[srcIndex]) || (*endPtr != 0)) {
                     Tcl_AppendResult(interp,
                                      "expected floating-point ",
@@ -244,7 +246,7 @@ int flags;             /* Or'ed combination of various flag bits,
                                      "\" but got \"",
                                      argv[srcIndex],
                                      "\"",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 srcIndex++;
@@ -254,7 +256,7 @@ int flags;             /* Or'ed combination of various flag bits,
         case TK_ARGV_FUNC: {
             int (*handlerProc)();
 
-            handlerProc = ( int (*)() )infoPtr->src;
+            handlerProc = ( int (*)() ) infoPtr->src;
 
             if ((*handlerProc)(infoPtr->dst, infoPtr->key, argv[srcIndex])) {
                 srcIndex += 1;
@@ -265,7 +267,7 @@ int flags;             /* Or'ed combination of various flag bits,
         case TK_ARGV_GENFUNC: {
             int (*handlerProc)();
 
-            handlerProc = ( int (*)() )infoPtr->src;
+            handlerProc = ( int (*)() ) infoPtr->src;
 
             argc = (*handlerProc)(
             infoPtr->dst, interp, infoPtr->key, argc, argv + srcIndex);
@@ -296,7 +298,7 @@ int flags;             /* Or'ed combination of various flag bits,
                                  "\"",
                                  curArg,
                                  "\" option requires two following arguments",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
             Tk_AddOption(
@@ -324,7 +326,7 @@ argsDone:
         dstIndex++;
         argc--;
     }
-    argv[dstIndex] = ( char * )NULL;
+    argv[dstIndex] = ( char * ) NULL;
     *argcPtr = dstIndex;
     return TCL_OK;
 
@@ -333,7 +335,7 @@ missingArg:
                      "\"",
                      curArg,
                      "\" option requires an additional argument",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -393,51 +395,52 @@ int flags;             /* If the TK_ARGV_NO_DEFAULTS bit is set
         }
     }
 
-    Tcl_AppendResult(interp, "Command-specific options:", ( char * )NULL);
+    Tcl_AppendResult(interp, "Command-specific options:", ( char * ) NULL);
     for (i = 0;; i++) {
         for (infoPtr = i ? defaultTable : argTable;
              infoPtr->type != TK_ARGV_END;
              infoPtr++) {
             if ((infoPtr->type == TK_ARGV_HELP) && (infoPtr->key == NULL)) {
-                Tcl_AppendResult(interp, "\n", infoPtr->help, ( char * )NULL);
+                Tcl_AppendResult(
+                interp, "\n", infoPtr->help, ( char * ) NULL);
                 continue;
             }
             Tcl_AppendResult(
-            interp, "\n ", infoPtr->key, ":", ( char * )NULL);
+            interp, "\n ", infoPtr->key, ":", ( char * ) NULL);
             numSpaces = width + 1 - strlen(infoPtr->key);
             while (numSpaces > 0) {
                 if (numSpaces >= NUM_SPACES) {
-                    Tcl_AppendResult(interp, spaces, ( char * )NULL);
+                    Tcl_AppendResult(interp, spaces, ( char * ) NULL);
                 } else {
                     Tcl_AppendResult(
-                    interp, spaces + NUM_SPACES - numSpaces, ( char * )NULL);
+                    interp, spaces + NUM_SPACES - numSpaces, ( char * ) NULL);
                 }
                 numSpaces -= NUM_SPACES;
             }
-            Tcl_AppendResult(interp, infoPtr->help, ( char * )NULL);
+            Tcl_AppendResult(interp, infoPtr->help, ( char * ) NULL);
             switch (infoPtr->type) {
             case TK_ARGV_INT: {
-                sprintf(tmp, "%d", *(( int * )infoPtr->dst));
+                sprintf(tmp, "%d", *(( int * ) infoPtr->dst));
                 Tcl_AppendResult(
-                interp, "\n\t\tDefault value: ", tmp, ( char * )NULL);
+                interp, "\n\t\tDefault value: ", tmp, ( char * ) NULL);
                 break;
             }
             case TK_ARGV_FLOAT: {
-                sprintf(tmp, "%g", *(( double * )infoPtr->dst));
+                sprintf(tmp, "%g", *(( double * ) infoPtr->dst));
                 Tcl_AppendResult(
-                interp, "\n\t\tDefault value: ", tmp, ( char * )NULL);
+                interp, "\n\t\tDefault value: ", tmp, ( char * ) NULL);
                 break;
             }
             case TK_ARGV_STRING: {
                 char *string;
 
-                string = *(( char ** )infoPtr->dst);
+                string = *(( char ** ) infoPtr->dst);
                 if (string != NULL) {
                     Tcl_AppendResult(interp,
                                      "\n\t\tDefault value: \"",
                                      string,
                                      "\"",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                 }
                 break;
             }
@@ -451,6 +454,6 @@ int flags;             /* If the TK_ARGV_NO_DEFAULTS bit is set
             break;
         }
         Tcl_AppendResult(
-        interp, "\nGeneric options for all commands:", ( char * )NULL);
+        interp, "\nGeneric options for all commands:", ( char * ) NULL);
     }
 }

@@ -77,9 +77,9 @@ ptopen(Ptdisc_t *disc)
     static Dtdisc_t prefixdisc;
 
     prefixdisc.link = offsetof(Ptprefix_t, link);
-    prefixdisc.comparf = ( Dtcompar_f )byprefix;
-    prefixdisc.makef = ( Dtmake_f )makef;
-    prefixdisc.freef = ( Dtfree_f )freef;
+    prefixdisc.comparf = ( Dtcompar_f ) byprefix;
+    prefixdisc.makef = ( Dtmake_f ) makef;
+    prefixdisc.freef = ( Dtfree_f ) freef;
     if (!(a = newof(0, Pt_t, 1, 0))
         || !(a->dict = dtopen(&prefixdisc, Dtoset))) {
         if (disc->errorf)
@@ -120,8 +120,8 @@ ptinsert(Pt_t *tab, Ptaddr_t min, Ptaddr_t max)
 
     tab->entries++;
     key.min = key.max = min ? (min - 1) : min;
-    if (!(xp = ( Ptprefix_t * )dtsearch(tab->dict, &key)))
-        xp = ( Ptprefix_t * )dtnext(tab->dict, &key);
+    if (!(xp = ( Ptprefix_t * ) dtsearch(tab->dict, &key)))
+        xp = ( Ptprefix_t * ) dtnext(tab->dict, &key);
     key.min = min;
     key.max = max;
     pp = 0;
@@ -134,14 +134,14 @@ ptinsert(Pt_t *tab, Ptaddr_t min, Ptaddr_t max)
             do {
                 max = xp->max;
                 pp = xp;
-                xp = ( Ptprefix_t * )dtnext(tab->dict, xp);
+                xp = ( Ptprefix_t * ) dtnext(tab->dict, xp);
                 dtdelete(tab->dict, pp);
             } while (xp && key.max >= (xp->min - 1));
             if (key.max < max)
                 key.max = max;
         }
     }
-    return ( Ptprefix_t * )dtinsert(tab->dict, &key);
+    return ( Ptprefix_t * ) dtinsert(tab->dict, &key);
 }
 
 /*
@@ -159,7 +159,7 @@ ptdelete(Pt_t *tab, Ptaddr_t min, Ptaddr_t max)
     tab->entries++;
     key.min = min;
     key.max = max;
-    if (xp = ( Ptprefix_t * )dtsearch(tab->dict, &key)) {
+    if (xp = ( Ptprefix_t * ) dtsearch(tab->dict, &key)) {
         do {
             cur.min = xp->min;
             cur.max = xp->max;
@@ -181,7 +181,7 @@ ptdelete(Pt_t *tab, Ptaddr_t min, Ptaddr_t max)
                 if (!dtinsert(tab->dict, xp))
                     goto bad;
             }
-        } while (xp = ( Ptprefix_t * )dtnext(tab->dict, xp));
+        } while (xp = ( Ptprefix_t * ) dtnext(tab->dict, xp));
     }
     return 0;
 bad:

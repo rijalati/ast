@@ -87,19 +87,19 @@ typedef struct Ar_s
 #define CALIB_LINE 256
 
 #define cabcd5(x)                                                            \
-    (((( unsigned char * )x)[0] >> 4) * 10000                                \
-     + ((( unsigned char * )x)[0] & 0xf) * 1000                              \
-     + ((( unsigned char * )x)[1] >> 4) * 100                                \
-     + ((( unsigned char * )x)[1] & 0xf) * 10                                \
-     + ((( unsigned char * )x)[2] >> 4))
+    (((( unsigned char * ) x)[0] >> 4) * 10000                               \
+     + ((( unsigned char * ) x)[0] & 0xf) * 1000                             \
+     + ((( unsigned char * ) x)[1] >> 4) * 100                               \
+     + ((( unsigned char * ) x)[1] & 0xf) * 10                               \
+     + ((( unsigned char * ) x)[2] >> 4))
 #define casize2(x)                                                           \
-    (((( unsigned char * )x)[0] << 8) | ((( unsigned char * )x)[1]))
+    (((( unsigned char * ) x)[0] << 8) | ((( unsigned char * ) x)[1]))
 #define casize3(x)                                                           \
-    (((( unsigned char * )x)[0] << 16) | ((( unsigned char * )x)[1] << 8)    \
-     | ((( unsigned char * )x)[2]))
+    (((( unsigned char * ) x)[0] << 16) | ((( unsigned char * ) x)[1] << 8)  \
+     | ((( unsigned char * ) x)[2]))
 #define casize4(x)                                                           \
-    (((( unsigned char * )x)[0] << 24) | ((( unsigned char * )x)[1] << 16)   \
-     | ((( unsigned char * )x)[2] << 8) | ((( unsigned char * )x)[3]))
+    (((( unsigned char * ) x)[0] << 24) | ((( unsigned char * ) x)[1] << 16) \
+     | ((( unsigned char * ) x)[2] << 8) | ((( unsigned char * ) x)[3]))
 
 /*
  * cobol keyword map
@@ -167,7 +167,7 @@ calib_done(Pax_t *pax, Paxarchive_t *ap)
 {
     Ar_t *ar;
 
-    if (ar = ( Ar_t * )ap->data) {
+    if (ar = ( Ar_t * ) ap->data) {
         if (ar->cam)
             camap_close(ar->cam);
         if (ar->dirs)
@@ -201,7 +201,7 @@ calib_getprologue(Pax_t *pax,
     if (sizeof(hdr) <= size)
         memcpy(hdr, buf, sizeof(hdr));
     else if (paxread(
-             pax, ap, hdr, ( off_t )sizeof(hdr), ( off_t )sizeof(hdr), 0)
+             pax, ap, hdr, ( off_t ) sizeof(hdr), ( off_t ) sizeof(hdr), 0)
              <= 0)
         return 0;
     else
@@ -228,7 +228,7 @@ calib_getprologue(Pax_t *pax,
                            ap->name,
                            ap->format->name);
         if (paxread(
-            pax, ap, blk, ( off_t )sizeof(blk), ( off_t )sizeof(blk), 0)
+            pax, ap, blk, ( off_t ) sizeof(blk), ( off_t ) sizeof(blk), 0)
             <= 0)
             (*pax->errorf)(NiL,
                            pax,
@@ -262,7 +262,7 @@ calib_getprologue(Pax_t *pax,
             blk[15]);
         while (k-- > 0) {
             if (paxread(
-                pax, ap, dir, ( off_t )sizeof(dir), ( off_t )sizeof(dir), 0)
+                pax, ap, dir, ( off_t ) sizeof(dir), ( off_t ) sizeof(dir), 0)
                 <= 0)
                 (*pax->errorf)(NiL,
                                pax,
@@ -330,7 +330,7 @@ calib_getprologue(Pax_t *pax,
 static int
 calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     const char *s;
     unsigned char *out;
     long sequence;
@@ -494,7 +494,7 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                 m = ar->imap;
             } else {
                 bits = 6;
-                m = ( unsigned char * )map;
+                m = ( unsigned char * ) map;
             }
             out = outbuf;
             if (pax->warn)
@@ -517,7 +517,7 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                             ap->name,
                             bits,
                             sizeof(off_t),
-                            paxseek(pax, ap, ( off_t )0, SEEK_CUR, 0)
+                            paxseek(pax, ap, ( off_t ) 0, SEEK_CUR, 0)
                             - ar->bufsize,
                             sizeof(index),
                             index,
@@ -585,7 +585,7 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                         s,
                         bits,
                         sizeof(off_t),
-                        paxseek(pax, ap, ( off_t )0, SEEK_CUR, 0)
+                        paxseek(pax, ap, ( off_t ) 0, SEEK_CUR, 0)
                         - ar->bufsize,
                         sizeof(index),
                         index,
@@ -606,7 +606,7 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                                 ap->name,
                                 bits,
                                 sizeof(off_t),
-                                paxseek(pax, ap, ( off_t )0, SEEK_CUR, 0)
+                                paxseek(pax, ap, ( off_t ) 0, SEEK_CUR, 0)
                                 - ar->bufsize,
                                 sizeof(index),
                                 index,
@@ -640,9 +640,9 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                         continue;
                     }
                     if (m == outbuf) {
-                        if ((b - m) == 7 && strneq(( char * )m, "NEWPAGE", 7)
+                        if ((b - m) == 7 && strneq(( char * ) m, "NEWPAGE", 7)
                             || (b - m) == 4
-                               && strneq(( char * )m, "FILE", 4)) {
+                               && strneq(( char * ) m, "FILE", 4)) {
                             suffix = ".EZT";
                             break;
                         } else if ((out - outbuf) > 2 && m[0] == 'C'
@@ -651,37 +651,37 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                             break;
                         }
                     } else if ((b - m) == 7
-                               && strneq(( char * )m, "INCLUDE", 7)
+                               && strneq(( char * ) m, "INCLUDE", 7)
                                || (b - m) == 4
-                                  && strneq(( char * )m, "NAME", 4)) {
+                                  && strneq(( char * ) m, "NAME", 4)) {
                         suffix = ".LNK";
                         break;
                     } else if ((b - m) == 5
-                               && (strneq(( char * )m, "TITLE", 5)
-                                   || strneq(( char * )m, "SPACE", 5))) {
+                               && (strneq(( char * ) m, "TITLE", 5)
+                                   || strneq(( char * ) m, "SPACE", 5))) {
                         suffix = ".ASM";
                         break;
                     } else if ((b - m) == 3
-                               && strneq(( char * )m, "DCL", 3)) {
+                               && strneq(( char * ) m, "DCL", 3)) {
                         suffix = ".PLI";
                         break;
                     } else if ((b - m) == 10
-                               && strneq(( char * )m, "SUBROUTINE", 10)
+                               && strneq(( char * ) m, "SUBROUTINE", 10)
                                || (b - m) == 9
-                                  && strneq(( char * )m, "DIMENSION", 9)
+                                  && strneq(( char * ) m, "DIMENSION", 9)
                                || (b - m) == 6
-                                  && strneq(( char * )m, "COMMON", 6)
+                                  && strneq(( char * ) m, "COMMON", 6)
                                || b < out && (b - m) >= 6
-                                  && strneq(( char * )m, "FORMAT", 6)
+                                  && strneq(( char * ) m, "FORMAT", 6)
                                   && (m[6] == '(' || m[6] == ' ')) {
                         suffix = ".F";
                         break;
                     }
                     if (b < out && *m++ == '.'
-                        && ((b - m) == 7 && strneq(( char * )m, "REPLACE", 7)
-                            || (b - m) == 5 && strneq(( char * )m, "QUOTE", 5)
+                        && ((b - m) == 7 && strneq(( char * ) m, "REPLACE", 7)
+                            || (b - m) == 5 && strneq(( char * ) m, "QUOTE", 5)
                             || (b - m) > 4
-                               && strneq(( char * )m, "END-", 4))) {
+                               && strneq(( char * ) m, "END-", 4))) {
                         suffix = ".QBL";
                         break;
                     }
@@ -705,7 +705,7 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                                 for (m = b; b < out && *b != '.'; b++)
                                     ;
                                 if (b < out && (b - m) == 8
-                                    && strneq(( char * )m, "DIVISION", 8)) {
+                                    && strneq(( char * ) m, "DIVISION", 8)) {
                                     suffix = ".COB";
                                     break;
                                 }
@@ -725,7 +725,7 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                             out += c;
                         }
                         b
-                        += sfsprintf(( char * )b,
+                        += sfsprintf(( char * ) b,
                                      ar->digits + 1,
                                      "%0.*lu",
                                      ar->digits,
@@ -774,7 +774,7 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                         ;
                     if (from[0])
                         c = sfsprintf(
-                        ( char * )outbuf,
+                        ( char * ) outbuf,
                         sizeof(outbuf),
                         "       COPY %-.*s REPLACING ==%s== BY ==%s==.\n",
                         m - b,
@@ -782,7 +782,7 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                         from,
                         to);
                     else
-                        c = sfsprintf(( char * )outbuf,
+                        c = sfsprintf(( char * ) outbuf,
                                       sizeof(outbuf),
                                       "       COPY %-.*s.\n",
                                       m - b,
@@ -803,13 +803,13 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                     for (; out > outbuf && *(out - 1) == ' '; out--)
                         ;
                     *out = 0;
-                    if (!streq(( char * )b, comment))
+                    if (!streq(( char * ) b, comment))
                         (*pax->errorf)(NiL,
                                        pax,
                                        0,
                                        "comment %s \"%s\"",
                                        error_info.file,
-                                       strcpy(comment, ( char * )b));
+                                       strcpy(comment, ( char * ) b));
                 }
             }
         }
@@ -828,8 +828,8 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
                                ap->name,
                                ap->format->name);
         }
-        if (!(ar->buffer = ( unsigned char * )paxget(
-              pax, ap, ( off_t )ar->bufsize, NiL)))
+        if (!(ar->buffer = ( unsigned char * ) paxget(
+              pax, ap, ( off_t ) ar->bufsize, NiL)))
             (*pax->errorf)(
             NiL,
             pax,
@@ -837,7 +837,7 @@ calib_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int wfd)
             "%s: format member read error (offset=%I*u block=%I*u)",
             ap->name,
             sizeof(off_t),
-            paxseek(pax, ap, ( off_t )0, SEEK_CUR, 0),
+            paxseek(pax, ap, ( off_t ) 0, SEEK_CUR, 0),
             sizeof(block),
             block);
         ar->blocksize = casize2(ar->buffer);
@@ -866,7 +866,7 @@ bad:
 static int
 calib_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     unsigned char *h;
     off_t n;
     char *s;
@@ -890,7 +890,7 @@ calib_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
                        ap->format->name);
     ar->nblocks = ar->dir->blocks;
     if (!(ar->buffer
-          = ( unsigned char * )paxget(pax, ap, ( off_t )ar->bufsize, NiL)))
+          = ( unsigned char * ) paxget(pax, ap, ( off_t ) ar->bufsize, NiL)))
         (*pax->errorf)(NiL,
                        pax,
                        3,
@@ -945,7 +945,7 @@ calib_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
                     ar->sequence = ar->sequence - 0x10000;
                 ar->sequence += ar->increment;
                 ccmapstr(ar->map, h, 24);
-                f->name = paxstash(pax, &ap->stash.head, ( char * )h, 28);
+                f->name = paxstash(pax, &ap->stash.head, ( char * ) h, 28);
                 for (s = f->name + 8; *(s - 1) == ' '; s--)
                     ;
                 *(ar->suffix = s) = 0;
@@ -994,7 +994,7 @@ calib_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
                     ar->sequence += ar->increment;
                 }
                 ccmapstr(ar->map, h, 32);
-                f->name = paxstash(pax, &ap->stash.head, ( char * )h, 13);
+                f->name = paxstash(pax, &ap->stash.head, ( char * ) h, 13);
                 for (s = f->name + 8; *(s - 1) == ' '; s--)
                     ;
                 *(ar->suffix = s) = 0;
@@ -1041,10 +1041,10 @@ calib_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
                         v = "ASM";
                         break;
                     default:
-                        t = ( char * )h + 34;
+                        t = ( char * ) h + 34;
                         ccmapstr(ar->map, t, 3);
                         v = suf;
-                        while (t < (( char * )h + 37) && *t != ' ')
+                        while (t < (( char * ) h + 37) && *t != ' ')
                             *v++ = *t++;
                         *v = 0;
                         if (!*(v = suf)) {

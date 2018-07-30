@@ -57,7 +57,7 @@ codexmeth(const char *name)
             do {
                 sfsprintf(tmp, sizeof(tmp), "%-.*s", s - name, name);
                 if (dll = dllplug("codex", tmp, NiL, RTLD_LAZY, NiL, 0)) {
-                    if ((lib = ( Codexlib_f )dlllook(dll, "codex_lib"))
+                    if ((lib = ( Codexlib_f ) dlllook(dll, "codex_lib"))
                         && (meth = (*lib)(name)))
                         last->next = meth;
                     break;

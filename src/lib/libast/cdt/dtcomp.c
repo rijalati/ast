@@ -33,28 +33,28 @@
 extern Dtlink_t *
 dtflatten(Dt_t *d)
 {
-    return ( Dtlink_t * )(*(_DT(d)->searchf))(
-    (d), ( Void_t * )(0), DT_FLATTEN);
+    return ( Dtlink_t * ) (*(_DT(d)->searchf))(
+    (d), ( Void_t * ) (0), DT_FLATTEN);
 }
 
 #undef dtextract
 extern Dtlink_t *
 dtextract(Dt_t *d)
 {
-    return ( Dtlink_t * )(*(_DT(d)->searchf))(
-    (d), ( Void_t * )(0), DT_EXTRACT);
+    return ( Dtlink_t * ) (*(_DT(d)->searchf))(
+    (d), ( Void_t * ) (0), DT_EXTRACT);
 }
 
 #undef dtrestore
 extern Dtlink_t *
 dtrestore(Dt_t *d, Void_t *l)
 {
-    return ( Dtlink_t * )(*(_DT(d)->searchf))((d), (l), DT_RESTORE);
+    return ( Dtlink_t * ) (*(_DT(d)->searchf))((d), (l), DT_RESTORE);
 }
 
 #undef dtsize
 extern ssize_t
 dtsize(Dt_t *d)
 {
-    return (ssize_t)(*(_DT(d)->searchf))((d), ( Void_t * )(0), DT_STAT);
+    return (ssize_t)(*(_DT(d)->searchf))((d), ( Void_t * ) (0), DT_STAT);
 }

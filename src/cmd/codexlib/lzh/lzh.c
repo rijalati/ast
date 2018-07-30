@@ -106,7 +106,7 @@ struct State_s
     ui1 text[1L << WINBIT_MAX];
 };
 
-#define GETCHAR(p) ((p)->ip < (p)->ie ? ( int )*(p)->ip++ : fill(p))
+#define GETCHAR(p) ((p)->ip < (p)->ie ? ( int ) *(p)->ip++ : fill(p))
 
 static int
 fill(State_t *state)
@@ -283,7 +283,7 @@ make_table(State_t *state,
     start[1] = 0;
     for (i = 1; i <= 16; i++)
         start[i + 1] = start[i] + (count[i] << (16 - i));
-    if (start[17] != (ushort)(( unsigned )1 << 16)) {
+    if (start[17] != (ushort)(( unsigned ) 1 << 16)) {
         if (state->codex->disc->errorf)
             (*state->codex->disc->errorf)(NiL,
                                           state->codex->disc,
@@ -296,22 +296,22 @@ make_table(State_t *state,
     jutbits = 16 - tablebits;
     for (i = 1; i <= tablebits; i++) {
         start[i] >>= jutbits;
-        weight[i] = ( unsigned )1 << (tablebits - i);
+        weight[i] = ( unsigned ) 1 << (tablebits - i);
     }
     while (i <= 16) {
-        weight[i] = ( unsigned )1 << (16 - i);
+        weight[i] = ( unsigned ) 1 << (16 - i);
         i++;
     }
 
     i = start[tablebits + 1] >> jutbits;
-    if (i != (ushort)(( unsigned )1 << 16)) {
+    if (i != (ushort)(( unsigned ) 1 << 16)) {
         k = 1 << tablebits;
         while (i != k)
             table[i++] = 0;
     }
 
     avail = nchar;
-    mask = ( unsigned )1 << (15 - tablebits);
+    mask = ( unsigned ) 1 << (15 - tablebits);
     for (ch = 0; ch < nchar; ch++) {
         if ((len = bitlen[ch]) == 0)
             continue;
@@ -754,7 +754,7 @@ decode_p_d0(State_t *state)
     int c;
 
     while (state->count > state->nextcount) {
-        make_new_node(state, ( int )(state->nextcount / 64));
+        make_new_node(state, ( int ) (state->nextcount / 64));
         if ((state->nextcount += 64) >= state->window)
             state->nextcount = 0xffffffff;
     }
@@ -1031,7 +1031,7 @@ lzh_decoder(char *s, int p, Codexdisc_t *disc)
                             s - 1);
         return -1;
     }
-    i += 2 * ( int )strtol(s, &s, 10);
+    i += 2 * ( int ) strtol(s, &s, 10);
     if (i < 0 || i >= (elementsof(decoders) / 2)) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%c%d: unknown decoder name", n, i);
@@ -1153,7 +1153,7 @@ lzh_open(Codex_t *p, char *const args[], Codexnum_t flags)
 static int
 lzh_init(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
 
     memset(&state->count, 0, sizeof(*state) - offsetof(State_t, count));
     state->ip = state->ie = 0;
@@ -1167,8 +1167,8 @@ lzh_init(Codex_t *p)
 static ssize_t
 lzh_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 {
-    State_t *state = ( State_t * )CODEX(disc)->data;
-    char *s = ( char * )buf;
+    State_t *state = ( State_t * ) CODEX(disc)->data;
+    char *s = ( char * ) buf;
     char *e = s + n;
     int c;
     int i;
@@ -1184,7 +1184,7 @@ lzh_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
             state->cpy = 0;
         state->cpylen--;
         if (s >= e)
-            return s - ( char * )buf;
+            return s - ( char * ) buf;
     }
     for (;;) {
         c = (*state->decode_c)(state);
@@ -1199,7 +1199,7 @@ lzh_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
                 break;
         } else {
             j = c - state->offset;
-            i = state->loc - (*state->decode_p)( state )-1;
+            i = state->loc - (*state->decode_p)( state ) -1;
             if (i < 0)
                 i += state->window;
             state->count += j;
@@ -1212,12 +1212,12 @@ lzh_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
                 if (s >= e) {
                     if (state->cpylen = j)
                         state->cpy = i;
-                    return s - ( char * )buf;
+                    return s - ( char * ) buf;
                 }
             }
         }
     }
-    return (n = s - ( char * )buf) ? n : -1;
+    return (n = s - ( char * ) buf) ? n : -1;
 }
 
 Codexmeth_t codex_lzh

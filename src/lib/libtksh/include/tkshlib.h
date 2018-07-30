@@ -29,7 +29,7 @@
  * macros such as isspace.
  */
 
-#    define UCHAR(c) (( unsigned char )(c))
+#    define UCHAR(c) (( unsigned char ) (c))
 
 /*
  * Given a size or address, the macro below "aligns" it to the machine's

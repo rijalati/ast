@@ -44,7 +44,7 @@ segmem(Vmalloc_t *vm, Void_t *ca, size_t cs, size_t ns, Vmdisc_t *dc)
     else if (Segn >= SEGN)
         return NIL(Void_t *);
     else
-        return ( Void_t * )Segm[Segn++];
+        return ( Void_t * ) Segm[Segn++];
 }
 
 static Vmdisc_t Disc = { segmem, NIL(Vmexcept_f), 1024 };

@@ -35,16 +35,16 @@ extern "C"
 
 #ifndef MD_CALLOC
 #    define MD_CALLOC(ptr, ptr_type, nelem, elsize)                          \
-        (ptr) = ( ptr_type )calloc((nelem), (elsize))
+        (ptr) = ( ptr_type ) calloc((nelem), (elsize))
 #endif /* MD_CALLOC */
 
 #ifndef MD_MALLOC
-#    define MD_MALLOC(ptr, ptr_type, size) (ptr) = ( ptr_type )malloc((size))
+#    define MD_MALLOC(ptr, ptr_type, size) (ptr) = ( ptr_type ) malloc((size))
 #endif /* MD_MALLOC */
 
 #ifndef MD_REALLOC
 #    define MD_REALLOC(new_ptr, ptr, ptr_type, size)                         \
-        (new_ptr) = ( ptr_type )realloc((ptr), (size))
+        (new_ptr) = ( ptr_type ) realloc((ptr), (size))
 #endif /* MD_REALLOC */
 
 #ifndef MD_FREE

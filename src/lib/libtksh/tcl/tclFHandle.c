@@ -79,17 +79,17 @@ int type; /* Type of file handle. */
     }
     key.osHandle = osHandle;
     key.type = type;
-    entryPtr = Tcl_CreateHashEntry(&fileTable, ( char * )&key, &new);
+    entryPtr = Tcl_CreateHashEntry(&fileTable, ( char * ) &key, &new);
     if (new) {
         FileHandle *newHandlePtr;
-        newHandlePtr = ( FileHandle * )ckalloc(sizeof(FileHandle));
+        newHandlePtr = ( FileHandle * ) ckalloc(sizeof(FileHandle));
         newHandlePtr->key = key;
         newHandlePtr->data = NULL;
         newHandlePtr->proc = NULL;
         Tcl_SetHashValue(entryPtr, newHandlePtr);
     }
 
-    return ( Tcl_File )Tcl_GetHashValue(entryPtr);
+    return ( Tcl_File ) Tcl_GetHashValue(entryPtr);
 }
 
 /*
@@ -111,7 +111,7 @@ int type; /* Type of file handle. */
 void Tcl_FreeFile(handle) Tcl_File handle;
 {
     Tcl_HashEntry *entryPtr;
-    FileHandle *handlePtr = ( FileHandle * )handle;
+    FileHandle *handlePtr = ( FileHandle * ) handle;
 
     /*
      * Invoke free procedure, then delete the handle.
@@ -133,12 +133,12 @@ void Tcl_FreeFile(handle) Tcl_File handle;
      */
 
     if (initialized) {
-        entryPtr = Tcl_FindHashEntry(&fileTable, ( char * )&handlePtr->key);
+        entryPtr = Tcl_FindHashEntry(&fileTable, ( char * ) &handlePtr->key);
         if (entryPtr) {
             Tcl_DeleteHashEntry(entryPtr);
         }
     }
-    ckfree(( char * )handlePtr);
+    ckfree(( char * ) handlePtr);
 }
 
 /*
@@ -162,7 +162,7 @@ void Tcl_FreeFile(handle) Tcl_File handle;
 ClientData Tcl_GetFileInfo(handle, typePtr) Tcl_File handle;
 int *typePtr;
 {
-    FileHandle *handlePtr = ( FileHandle * )handle;
+    FileHandle *handlePtr = ( FileHandle * ) handle;
 
     if (!handlePtr)
         return 0;
@@ -194,7 +194,7 @@ void Tcl_SetNotifierData(handle, proc, data) Tcl_File handle;
 Tcl_FileFreeProc *proc;
 ClientData data;
 {
-    FileHandle *handlePtr = ( FileHandle * )handle;
+    FileHandle *handlePtr = ( FileHandle * ) handle;
     handlePtr->proc = proc;
     handlePtr->data = data;
 }
@@ -221,7 +221,7 @@ ClientData data;
 ClientData Tcl_GetNotifierData(handle, procPtr) Tcl_File handle;
 Tcl_FileFreeProc **procPtr;
 {
-    FileHandle *handlePtr = ( FileHandle * )handle;
+    FileHandle *handlePtr = ( FileHandle * ) handle;
     if (procPtr != NULL) {
         *procPtr = handlePtr->proc;
     }

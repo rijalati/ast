@@ -62,8 +62,8 @@ int flags; /* Flags passed to Tk_DoOneEvent:
         if (XQLength(dispPtr->display) > 0) {
             Tcl_SetMaxBlockTime(&dontBlock);
         }
-        handle = Tcl_GetFile(( ClientData )ConnectionNumber(dispPtr->display),
-                             TCL_UNIX_FD);
+        handle = Tcl_GetFile(
+        ( ClientData ) ConnectionNumber(dispPtr->display), TCL_UNIX_FD);
         Tcl_WatchFile(handle, TCL_READABLE);
     }
 }
@@ -110,8 +110,8 @@ int flags; /* Flags passed to Tk_DoOneEvent:
          * calling XEventsQueued because it was done by DisplaySetupProc.
          */
 
-        handle = Tcl_GetFile(( ClientData )ConnectionNumber(dispPtr->display),
-                             TCL_UNIX_FD);
+        handle = Tcl_GetFile(
+        ( ClientData ) ConnectionNumber(dispPtr->display), TCL_UNIX_FD);
         if (Tcl_FileReady(handle, TCL_READABLE) != 0) {
             numFound = XEventsQueued(dispPtr->display, QueuedAfterReading);
             if (numFound == 0) {
@@ -141,10 +141,10 @@ int flags; /* Flags passed to Tk_DoOneEvent:
 
                 void (*oldHandler)();
 
-                oldHandler = ( void (*)() )signal(SIGPIPE, SIG_IGN);
+                oldHandler = ( void (*)() ) signal(SIGPIPE, SIG_IGN);
                 XNoOp(dispPtr->display);
                 XFlush(dispPtr->display);
-                ( void )signal(SIGPIPE, oldHandler);
+                ( void ) signal(SIGPIPE, oldHandler);
             }
         } else {
             numFound = XQLength(dispPtr->display);
@@ -186,7 +186,7 @@ TkCreateXEventSource()
 
     if (!initialized) {
         Tcl_CreateEventSource(
-        DisplaySetupProc, DisplayCheckProc, ( ClientData )NULL);
+        DisplaySetupProc, DisplayCheckProc, ( ClientData ) NULL);
         initialized = 1;
     }
 }

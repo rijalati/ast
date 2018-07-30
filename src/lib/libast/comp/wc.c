@@ -74,7 +74,7 @@ mbstowcs(wchar_t *t, const char *s, size_t n)
 {
     wchar_t *p = t;
     wchar_t *e = t + n;
-    unsigned char *u = ( unsigned char * )s;
+    unsigned char *u = ( unsigned char * ) s;
 
     if (t)
         while (p < e && (*p++ = *u++))

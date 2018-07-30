@@ -38,20 +38,20 @@ ssize_t dtsz;
     Vcinx_t *peak, period;
     Vcsfx_t *sfx;
 
-    if (!data || (sz = ( Vcinx_t )dtsz) <= 16 /* too little data */)
+    if (!data || (sz = ( Vcinx_t ) dtsz) <= 16 /* too little data */)
         return -1;
 
     /* sfx is the indices of substrings sorted in lex order */
-    if (!(lcp = ( Vcinx_t * )calloc(1, sz * sizeof(Vcinx_t))))
+    if (!(lcp = ( Vcinx_t * ) calloc(1, sz * sizeof(Vcinx_t))))
         return -1;
-    if (!(sfx = vcsfxsort(data, ( size_t )sz))) {
+    if (!(sfx = vcsfxsort(data, ( size_t ) sz))) {
         free(lcp);
         return -1;
     }
 
     /* lcp[] keeps lengths of longest common prefixes between adj elts in sfx
      */
-    for (dt = ( Vcchar_t * )data, p = 0, i = 0; i < sz; ++i) {
+    for (dt = ( Vcchar_t * ) data, p = 0, i = 0; i < sz; ++i) {
         if (sfx->inv[i] == 0)
             continue;
         k = sfx->idx[sfx->inv[i] - 1];
@@ -148,5 +148,5 @@ ssize_t dtsz;
 
     free(lcp);
     free(sfx);
-    return ( ssize_t )period;
+    return ( ssize_t ) period;
 }

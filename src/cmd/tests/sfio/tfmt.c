@@ -31,7 +31,7 @@ Sffmt_t *fe;
 {
     switch (fe->fmt) {
     case 's':
-        *(( char ** )v) = Mystr;
+        *(( char ** ) v) = Mystr;
         fe->flags |= SFFMT_VALUE;
         return 0;
     }

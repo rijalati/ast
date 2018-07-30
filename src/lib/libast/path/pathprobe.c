@@ -111,7 +111,7 @@ pathprobe_20100601(const char *lang,
                    char *attr,
                    size_t attrsize)
 {
-    char *proc = ( char * )aproc;
+    char *proc = ( char * ) aproc;
     char *p;
     char *k;
     char *x;
@@ -150,7 +150,7 @@ pathprobe_20100601(const char *lang,
                               PATH_ABSOLUTE | PATH_REGULAR | PATH_EXECUTE,
                               cmd,
                               sizeof(cmd))))
-            proc = ( char * )aproc;
+            proc = ( char * ) aproc;
         else if (p) {
             n = strlen(proc);
             strncopy(proc + n, p, PATH_MAX - n - 1);
@@ -181,7 +181,7 @@ pathprobe_20100601(const char *lang,
         if (n < (PATH_MAX - 5)) {
             strcpy(path + n, ".ini");
             if (!stat(path, &st) && st.st_size
-                && ptime < ( unsigned long )st.st_mtime)
+                && ptime < ( unsigned long ) st.st_mtime)
                 ptime = st.st_mtime;
             path[n] = 0;
         }
@@ -230,8 +230,8 @@ pathprobe_20100601(const char *lang,
     strncopy(p, k, x - p);
     force = 0;
     if (op >= 0 && !stat(path, &st)) {
-        if (ptime <= ( unsigned long )st.st_mtime
-            || ptime <= ( unsigned long )st.st_ctime) {
+        if (ptime <= ( unsigned long ) st.st_mtime
+            || ptime <= ( unsigned long ) st.st_ctime) {
             /*
              * verify (<sep><name><sep><option><sep><value>)* header
              */
@@ -333,8 +333,8 @@ pathprobe_20100601(const char *lang,
             *ap++ = "-f";
         if (op > 0)
             *ap++ = "-s";
-        *ap++ = ( char * )lang;
-        *ap++ = ( char * )tool;
+        *ap++ = ( char * ) lang;
+        *ap++ = ( char * ) tool;
         *ap++ = proc;
         *ap = 0;
         if (procrun(exe, arg, 0))

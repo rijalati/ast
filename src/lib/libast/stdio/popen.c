@@ -26,5 +26,5 @@
 Sfio_t *
 popen(const char *cmd, const char *mode)
 {
-    return sfpopen(( Sfio_t * )(-1), cmd, mode);
+    return sfpopen(( Sfio_t * ) (-1), cmd, mode);
 }

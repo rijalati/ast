@@ -216,15 +216,15 @@ static Tk_ConfigSpec configSpecs[]
     { TK_CONFIG_SYNONYM,
       "-bd",
       "borderWidth",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 },
     { TK_CONFIG_SYNONYM,
       "-bg",
       "background",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 },
     { TK_CONFIG_PIXELS,
@@ -340,10 +340,10 @@ static Tk_ConfigSpec configSpecs[]
       Tk_Offset(Scrollbar, width),
       0 },
     { TK_CONFIG_END,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 } };
 
@@ -390,7 +390,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     Scrollbar *scrollPtr;
     Tk_Window new;
 
@@ -399,11 +399,11 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " pathName ?options?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
-    new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * )NULL);
+    new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * ) NULL);
     if (new == NULL) {
         return TCL_ERROR;
     }
@@ -414,14 +414,14 @@ char **argv;           /* Argument strings. */
      * (e.g. resource pointers).
      */
 
-    scrollPtr = ( Scrollbar * )ckalloc(sizeof(Scrollbar));
+    scrollPtr = ( Scrollbar * ) ckalloc(sizeof(Scrollbar));
     scrollPtr->tkwin = new;
     scrollPtr->display = Tk_Display(new);
     scrollPtr->interp = interp;
     scrollPtr->widgetCmd = Tcl_CreateCommand(interp,
                                              Tk_PathName(scrollPtr->tkwin),
                                              ScrollbarWidgetCmd,
-                                             ( ClientData )scrollPtr,
+                                             ( ClientData ) scrollPtr,
                                              ScrollbarCmdDeletedProc);
     scrollPtr->orientUid = NULL;
     scrollPtr->vertical = 0;
@@ -462,7 +462,7 @@ char **argv;           /* Argument strings. */
                           ExposureMask | StructureNotifyMask
                           | FocusChangeMask,
                           ScrollbarEventProc,
-                          ( ClientData )scrollPtr);
+                          ( ClientData ) scrollPtr);
     if (ConfigureScrollbar(interp, scrollPtr, argc - 2, argv + 2, 0)
         != TCL_OK) {
         goto error;
@@ -501,7 +501,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Scrollbar *scrollPtr = ( Scrollbar * )clientData;
+    Scrollbar *scrollPtr = ( Scrollbar * ) clientData;
     int result = TCL_OK;
     size_t length;
     int c;
@@ -511,10 +511,10 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option ?arg arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
-    Tcl_Preserve(( ClientData )scrollPtr);
+    Tcl_Preserve(( ClientData ) scrollPtr);
     c = argv[1][0];
     length = strlen(argv[1]);
     if ((c == 'a') && (strncmp(argv[1], "activate", length) == 0)) {
@@ -537,7 +537,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " activate element\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         c = argv[2][0];
@@ -559,13 +559,13 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " cget option\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         result = Tk_ConfigureValue(interp,
                                    scrollPtr->tkwin,
                                    configSpecs,
-                                   ( char * )scrollPtr,
+                                   ( char * ) scrollPtr,
                                    argv[2],
                                    0);
     } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
@@ -574,14 +574,14 @@ char **argv;           /* Argument strings. */
             result = Tk_ConfigureInfo(interp,
                                       scrollPtr->tkwin,
                                       configSpecs,
-                                      ( char * )scrollPtr,
-                                      ( char * )NULL,
+                                      ( char * ) scrollPtr,
+                                      ( char * ) NULL,
                                       0);
         } else if (argc == 3) {
             result = Tk_ConfigureInfo(interp,
                                       scrollPtr->tkwin,
                                       configSpecs,
-                                      ( char * )scrollPtr,
+                                      ( char * ) scrollPtr,
                                       argv[2],
                                       0);
         } else {
@@ -597,7 +597,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " delta xDelta yDelta\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         if ((Tcl_GetInt(interp, argv[2], &xDelta) != TCL_OK)
@@ -616,7 +616,7 @@ char **argv;           /* Argument strings. */
         if (length == 0) {
             fraction = 0.0;
         } else {
-            fraction = (( double )pixels / ( double )length);
+            fraction = (( double ) pixels / ( double ) length);
         }
         sprintf(interp->result, "%g", fraction);
     } else if ((c == 'f') && (strncmp(argv[1], "fraction", length) == 0)) {
@@ -628,7 +628,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " fraction x y\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         if ((Tcl_GetInt(interp, argv[2], &x) != TCL_OK)
@@ -647,7 +647,7 @@ char **argv;           /* Argument strings. */
         if (length == 0) {
             fraction = 0.0;
         } else {
-            fraction = (( double )pos / ( double )length);
+            fraction = (( double ) pos / ( double ) length);
         }
         if (fraction < 0) {
             fraction = 0;
@@ -661,7 +661,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " get\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         if (scrollPtr->flags & NEW_STYLE_COMMANDS) {
@@ -669,7 +669,7 @@ char **argv;           /* Argument strings. */
 
             Tcl_PrintDouble(interp, scrollPtr->firstFraction, first);
             Tcl_PrintDouble(interp, scrollPtr->lastFraction, last);
-            Tcl_AppendResult(interp, first, " ", last, ( char * )NULL);
+            Tcl_AppendResult(interp, first, " ", last, ( char * ) NULL);
         } else {
             sprintf(interp->result,
                     "%d %d %d %d",
@@ -686,7 +686,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " identify x y\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         if ((Tcl_GetInt(interp, argv[2], &x) != TCL_OK)
@@ -772,9 +772,10 @@ char **argv;           /* Argument strings. */
                 scrollPtr->firstFraction = 0.0;
                 scrollPtr->lastFraction = 1.0;
             } else {
-                scrollPtr->firstFraction = (( double )firstUnit) / totalUnits;
+                scrollPtr->firstFraction
+                = (( double ) firstUnit) / totalUnits;
                 scrollPtr->lastFraction
-                = (( double )(lastUnit + 1)) / totalUnits;
+                = (( double ) (lastUnit + 1)) / totalUnits;
             }
             scrollPtr->flags &= ~NEW_STYLE_COMMANDS;
         } else {
@@ -785,7 +786,7 @@ char **argv;           /* Argument strings. */
             " set firstFraction lastFraction\" or \"",
             argv[0],
             " set totalUnits windowUnits firstUnit lastUnit\"",
-            ( char * )NULL);
+            ( char * ) NULL);
             goto error;
         }
         ComputeScrollbarGeometry(scrollPtr);
@@ -797,15 +798,15 @@ char **argv;           /* Argument strings. */
         argv[1],
         "\": must be activate, cget, configure, delta, fraction, ",
         "get, identify, or set",
-        ( char * )NULL);
+        ( char * ) NULL);
         goto error;
     }
 done:
-    Tcl_Release(( ClientData )scrollPtr);
+    Tcl_Release(( ClientData ) scrollPtr);
     return result;
 
 error:
-    Tcl_Release(( ClientData )scrollPtr);
+    Tcl_Release(( ClientData ) scrollPtr);
     return TCL_ERROR;
 }
 
@@ -830,7 +831,7 @@ error:
 static void DestroyScrollbar(memPtr) char *memPtr; /* Info about scrollbar
                                                       widget. */
 {
-    Scrollbar *scrollPtr = ( Scrollbar * )memPtr;
+    Scrollbar *scrollPtr = ( Scrollbar * ) memPtr;
 
     /*
      * Free up all the stuff that requires special handling, then
@@ -844,8 +845,8 @@ static void DestroyScrollbar(memPtr) char *memPtr; /* Info about scrollbar
     if (scrollPtr->copyGC != None) {
         Tk_FreeGC(scrollPtr->display, scrollPtr->copyGC);
     }
-    Tk_FreeOptions(configSpecs, ( char * )scrollPtr, scrollPtr->display, 0);
-    ckfree(( char * )scrollPtr);
+    Tk_FreeOptions(configSpecs, ( char * ) scrollPtr, scrollPtr->display, 0);
+    ckfree(( char * ) scrollPtr);
 }
 
 /*
@@ -888,7 +889,7 @@ int flags;            /* Flags to pass to
                            configSpecs,
                            argc,
                            argv,
-                           ( char * )scrollPtr,
+                           ( char * ) scrollPtr,
                            flags)
         != TCL_OK) {
         return TCL_ERROR;
@@ -909,7 +910,7 @@ int flags;            /* Flags to pass to
                          "bad orientation \"",
                          scrollPtr->orientUid,
                          "\": must be vertical or horizontal",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -966,7 +967,7 @@ int flags;            /* Flags to pass to
 static void DisplayScrollbar(clientData)
 ClientData clientData; /* Information about window. */
 {
-    Scrollbar *scrollPtr = ( Scrollbar * )clientData;
+    Scrollbar *scrollPtr = ( Scrollbar * ) clientData;
     Tk_Window tkwin = scrollPtr->tkwin;
     XPoint points[7];
     Tk_3DBorder border;
@@ -1024,8 +1025,8 @@ ClientData clientData; /* Information about window. */
                    scrollPtr->troughGC,
                    scrollPtr->inset,
                    scrollPtr->inset,
-                   ( unsigned )(Tk_Width(tkwin) - 2 * scrollPtr->inset),
-                   ( unsigned )(Tk_Height(tkwin) - 2 * scrollPtr->inset));
+                   ( unsigned ) (Tk_Width(tkwin) - 2 * scrollPtr->inset),
+                   ( unsigned ) (Tk_Height(tkwin) - 2 * scrollPtr->inset));
 
     /*
      * Draw the top or left arrow.  The coordinates of the polygon
@@ -1143,8 +1144,8 @@ ClientData clientData; /* Information about window. */
               scrollPtr->copyGC,
               0,
               0,
-              ( unsigned )Tk_Width(tkwin),
-              ( unsigned )Tk_Height(tkwin),
+              ( unsigned ) Tk_Width(tkwin),
+              ( unsigned ) Tk_Height(tkwin),
               0,
               0);
     Tk_FreePixmap(scrollPtr->display, pixmap);
@@ -1175,7 +1176,7 @@ static void ScrollbarEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
 XEvent *eventPtr;      /* Information about event. */
 {
-    Scrollbar *scrollPtr = ( Scrollbar * )clientData;
+    Scrollbar *scrollPtr = ( Scrollbar * ) clientData;
 
     if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0)) {
         EventuallyRedraw(scrollPtr);
@@ -1187,9 +1188,9 @@ XEvent *eventPtr;      /* Information about event. */
             Tcl_GetCommandName(scrollPtr->interp, scrollPtr->widgetCmd));
         }
         if (scrollPtr->flags & REDRAW_PENDING) {
-            Tcl_CancelIdleCall(DisplayScrollbar, ( ClientData )scrollPtr);
+            Tcl_CancelIdleCall(DisplayScrollbar, ( ClientData ) scrollPtr);
         }
-        Tcl_EventuallyFree(( ClientData )scrollPtr, DestroyScrollbar);
+        Tcl_EventuallyFree(( ClientData ) scrollPtr, DestroyScrollbar);
     } else if (eventPtr->type == ConfigureNotify) {
         ComputeScrollbarGeometry(scrollPtr);
         EventuallyRedraw(scrollPtr);
@@ -1231,7 +1232,7 @@ XEvent *eventPtr;      /* Information about event. */
 static void ScrollbarCmdDeletedProc(clientData)
 ClientData clientData; /* Pointer to widget record for widget. */
 {
-    Scrollbar *scrollPtr = ( Scrollbar * )clientData;
+    Scrollbar *scrollPtr = ( Scrollbar * ) clientData;
     Tk_Window tkwin = scrollPtr->tkwin;
 
     /*
@@ -1420,7 +1421,7 @@ scrollPtr) Scrollbar *scrollPtr; /* Information about widget. */
         return;
     }
     if ((scrollPtr->flags & REDRAW_PENDING) == 0) {
-        Tcl_DoWhenIdle(DisplayScrollbar, ( ClientData )scrollPtr);
+        Tcl_DoWhenIdle(DisplayScrollbar, ( ClientData ) scrollPtr);
         scrollPtr->flags |= REDRAW_PENDING;
     }
 }

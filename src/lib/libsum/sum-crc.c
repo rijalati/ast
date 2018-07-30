@@ -70,7 +70,7 @@ crc_open(const Method_t *method, const char *name)
     Crcnum_t x;
 
     if (sum = newof(0, Crc_t, 1, 0)) {
-        sum->method = ( Method_t * )method;
+        sum->method = ( Method_t * ) method;
         sum->name = name;
     }
     polynomial = 0xedb88320;
@@ -122,13 +122,13 @@ crc_open(const Method_t *method, const char *name)
             sum->tab[i] = x;
         }
     }
-    return ( Sum_t * )sum;
+    return ( Sum_t * ) sum;
 }
 
 static int
 crc_init(Sum_t *p)
 {
-    Crc_t *sum = ( Crc_t * )p;
+    Crc_t *sum = ( Crc_t * ) p;
 
     sum->sum = sum->init;
     return 0;
@@ -137,9 +137,9 @@ crc_init(Sum_t *p)
 static int
 crc_block(Sum_t *p, const void *s, size_t n)
 {
-    Crc_t *sum = ( Crc_t * )p;
+    Crc_t *sum = ( Crc_t * ) p;
     Crcnum_t c = sum->sum;
-    unsigned char *b = ( unsigned char * )s;
+    unsigned char *b = ( unsigned char * ) s;
     unsigned char *e = b + n;
 
     if (sum->rotate)
@@ -155,7 +155,7 @@ crc_block(Sum_t *p, const void *s, size_t n)
 static int
 crc_done(Sum_t *p)
 {
-    Crc_t *sum = ( Crc_t * )p;
+    Crc_t *sum = ( Crc_t * ) p;
     Crcnum_t c;
     uintmax_t n;
     int i;

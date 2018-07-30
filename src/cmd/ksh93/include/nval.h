@@ -142,7 +142,7 @@ struct Namval
 #    define NV_MINSZ                                                         \
         (sizeof(struct Namval) - sizeof(Dtlink_t) - sizeof(char *))
 #    define nv_namptr(p, n)                                                  \
-        (( Namval_t * )(( char * )(p) + ( n )*NV_MINSZ - sizeof(Dtlink_t)))
+        (( Namval_t * ) (( char * ) (p) + ( n ) *NV_MINSZ - sizeof(Dtlink_t)))
 
 /* The following attributes are for internal use */
 #    define NV_NOFREE 0x200  /* don't free the space when releasing value */
@@ -256,7 +256,7 @@ struct Namval
 extern Namarr_t *
 nv_arrayptr(Namval_t *);
 extern Namarr_t *
-nv_setarray(Namval_t *, void *( * )( Namval_t *, const char *, int ));
+nv_setarray(Namval_t *, void *( * ) ( Namval_t *, const char *, int ) );
 extern int
 nv_arraynsub(Namarr_t *);
 extern void *

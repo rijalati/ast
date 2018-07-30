@@ -90,7 +90,7 @@ regsubflags(regex_t *p,
     if (pm)
         *pm = minmatch;
     if (e)
-        *e = ( char * )s;
+        *e = ( char * ) s;
     return 0;
 }
 
@@ -125,9 +125,9 @@ regsubcomp(regex_t *p,
         regfree(p);
         return fatal(disc, REG_BADPAT, NiL);
     }
-    if (!(sub = ( regsub_t * )alloc(
+    if (!(sub = ( regsub_t * ) alloc(
           p->env->disc, 0, sizeof(regsub_t) + strlen(s)))
-        || !(sub->re_ops = ( regsubop_t * )alloc(
+        || !(sub->re_ops = ( regsubop_t * ) alloc(
              p->env->disc, 0, (nops = 8) * sizeof(regsubop_t)))) {
         if (sub)
             alloc(p->env->disc, sub, 0);
@@ -172,7 +172,7 @@ regsubcomp(regex_t *p,
         if (*s) {
             if (n = regsubflags(p, s, &e, d, map, &minmatch, &flags))
                 return n;
-            s = ( const char * )e;
+            s = ( const char * ) e;
         }
         p->re_npat = s - o;
         s = r;
@@ -267,7 +267,7 @@ regsubcomp(regex_t *p,
         set:
             if ((op->len = (t - sub->re_rhs) - op->off)
                 && (n = ++op - sub->re_ops) >= nops) {
-                if (!(sub->re_ops = ( regsubop_t * )alloc(
+                if (!(sub->re_ops = ( regsubop_t * ) alloc(
                       p->env->disc,
                       sub->re_ops,
                       (nops *= 2) * sizeof(regsubop_t)))) {
@@ -290,7 +290,7 @@ regsubcomp(regex_t *p,
         default:
             if (!sre) {
                 *t++ = chresc(s - 2, &e);
-                s = ( const char * )e;
+                s = ( const char * ) e;
                 continue;
             }
             s--;
@@ -302,7 +302,7 @@ regsubcomp(regex_t *p,
             return fatal(disc, REG_ESUBREG, s - 1);
         }
         if ((n = op - sub->re_ops) >= (nops - 2)) {
-            if (!(sub->re_ops = ( regsubop_t * )alloc(
+            if (!(sub->re_ops = ( regsubop_t * ) alloc(
                   p->env->disc,
                   sub->re_ops,
                   (nops *= 2) * sizeof(regsubop_t)))) {
@@ -322,7 +322,7 @@ regsubcomp(regex_t *p,
     }
     if ((op->len = (t - sub->re_rhs) - op->off)
         && (n = ++op - sub->re_ops) >= nops) {
-        if (!(sub->re_ops = ( regsubop_t * )alloc(
+        if (!(sub->re_ops = ( regsubop_t * ) alloc(
               p->env->disc, sub->re_ops, (nops *= 2) * sizeof(regsubop_t)))) {
             regfree(p);
             return fatal(disc, REG_ESPACE, NiL);

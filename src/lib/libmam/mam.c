@@ -220,7 +220,7 @@ mamscan(struct mam *mp, const char *file)
     sfsetbuf(input, buf, sizeof(buf));
 #endif
     ofile = error_info.file;
-    error_info.file = ( char * )file;
+    error_info.file = ( char * ) file;
     oline = error_info.line;
     error_info.line = 0;
     while (s = sfgetr(input, '\n', 1)) {
@@ -394,7 +394,7 @@ mamvar(struct proc *pp, const char *name, const char *value)
         v->name = putvar(pp, 0, v);
     }
     if (value)
-        v->value = ( char * )value;
+        v->value = ( char * ) value;
     return (v);
 }
 

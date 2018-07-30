@@ -49,7 +49,7 @@ size_t nsize;   /* new size				*/
 Vmdisc_t *disc; /* discipline structure			*/
 #endif
 {
-    Drvdisc_t *drvdc = ( Drvdisc_t * )disc;
+    Drvdisc_t *drvdc = ( Drvdisc_t * ) disc;
 
     if (csize == 0 && nsize == 0)
         return NIL(Void_t *);
@@ -64,7 +64,7 @@ Vmdisc_t *disc; /* discipline structure			*/
 static int
 drvexcept(Vmalloc_t *vm, int type, Void_t *arg, Vmdisc_t *disc)
 {
-    Drvdisc_t *dc = ( Drvdisc_t * )disc;
+    Drvdisc_t *dc = ( Drvdisc_t * ) disc;
     if (type == VM_ENDCLOSE) {
         if (dc->type > 0)
             vmfree(Vmheap, disc);
@@ -90,9 +90,9 @@ vmdcderive(Vmalloc_t *vm, ssize_t round, int heap)
     drvdc->type = heap ? 1 : 0;
     drvdc->vm = vm;
 
-    return ( Vmdisc_t * )drvdc;
+    return ( Vmdisc_t * ) drvdc;
 }
 
 /* standard discipline to allocate from the heap */
 static Drvdisc_t _Vmdcheap = { { drvgetmem, drvexcept, 0, 0 }, -1, &_Vmheap };
-__DEFINE__(Vmdisc_t *, Vmdcheap, ( Vmdisc_t * )(&_Vmdcheap));
+__DEFINE__(Vmdisc_t *, Vmdcheap, ( Vmdisc_t * ) (&_Vmdcheap));

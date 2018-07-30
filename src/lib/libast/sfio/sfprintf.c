@@ -69,7 +69,7 @@ va_list args;
     _Sfnotify = 0;
     f = sfnew(NIL(Sfio_t *),
               NIL(char *),
-              ( size_t )SF_UNBOUND,
+              ( size_t ) SF_UNBOUND,
               -1,
               SF_WRITE | SF_STRING);
     _Sfnotify = notify;

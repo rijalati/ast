@@ -64,7 +64,7 @@
 #        define INFINITY RLIM_INFINITY
 #    else
 #        ifndef INFINITY
-#            define INFINITY (( rlim_t )-1L)
+#            define INFINITY (( rlim_t ) -1L)
 #        endif /* INFINITY */
 #    endif     /* RLIM_INFINITY */
 

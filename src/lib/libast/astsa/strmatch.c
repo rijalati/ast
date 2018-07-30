@@ -519,12 +519,12 @@ strgrpmatch(const char *b, const char *p, ssize_t *sub, int n, int flags)
     char *e;
     Match_t match;
 
-    s = ( char * )b;
+    s = ( char * ) b;
     match.last_s = e = s + strlen(s);
     for (;;) {
         match.best.next_s = 0;
         match.current.groups = 0;
-        if ((i = grpmatch(&match, 0, s, ( char * )p, e, flags))
+        if ((i = grpmatch(&match, 0, s, ( char * ) p, e, flags))
             || match.best.next_s) {
             if (!i)
                 match.current = match.best;
@@ -541,7 +541,7 @@ strgrpmatch(const char *b, const char *p, ssize_t *sub, int n, int flags)
     if (!sub)
         return 1;
     match.current.beg[0] = s;
-    s = ( char * )b;
+    s = ( char * ) b;
     if (n > match.current.groups)
         n = match.current.groups;
     for (i = 0; i < n; i++) {

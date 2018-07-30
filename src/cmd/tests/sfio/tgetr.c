@@ -43,7 +43,7 @@ tmain()
         terror("sfgetr should have succeeded getting partial record");
 
     /* test type == -1 and type == 1 modes */
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (!(s = sfgetr(f, '\n', 1)) || strcmp(s, "111") != 0)
         terror("sfgetr failed in compatible mode");
 
@@ -67,7 +67,7 @@ tmain()
             sfputc(f, 'a');
         sfputc(f, '\n');
     }
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     sfsetbuf(f, buf, 50);
     if (!(s = sfgetr(f, '\n', 1)))
         terror("Can't get a record");

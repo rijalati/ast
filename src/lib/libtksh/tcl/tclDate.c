@@ -35,7 +35,7 @@
  */
 #define TM_YEAR_BASE 1900
 
-#define HOUR(x) (( int )(60 * x))
+#define HOUR(x) (( int ) (60 * x))
 #define SECSPERDAY (24L * 60L * 60L)
 
 
@@ -125,9 +125,9 @@ static int
 RelativeMonth _ANSI_ARGS_((time_t Start, time_t RelMonth, time_t *TimePtr));
 static int LookupWord _ANSI_ARGS_((char *buff));
 
-static int TclDatelex _ANSI_ARGS_(( void ));
+static int TclDatelex _ANSI_ARGS_(( void ) );
 
-int TclDateparse _ANSI_ARGS_(( void ));
+int TclDateparse _ANSI_ARGS_(( void ) );
 typedef union
 #ifdef __cplusplus
 YYSTYPE
@@ -420,7 +420,7 @@ time_t *TimePtr;
     DaysInMonth[1]
     = Year % 4 == 0 && (Year % 100 != 0 || Year % 400 == 0) ? 29 : 28;
     if (Month < 1 || Month > 12 || Year < START_OF_TIME || Year > END_OF_TIME
-        || Day < 1 || Day > DaysInMonth[( int )--Month])
+        || Day < 1 || Day > DaysInMonth[( int ) --Month])
         return -1;
 
     for (Julian = Day - 1, i = 0; i < Month; i++)
@@ -490,11 +490,11 @@ time_t *TimePtr;
     Year = Month / 12;
     Month = Month % 12 + 1;
     if (Convert(Month,
-                ( time_t )tm->tm_mday,
+                ( time_t ) tm->tm_mday,
                 Year,
-                ( time_t )tm->tm_hour,
-                ( time_t )tm->tm_min,
-                ( time_t )tm->tm_sec,
+                ( time_t ) tm->tm_hour,
+                ( time_t ) tm->tm_min,
+                ( time_t ) tm->tm_sec,
                 MER24,
                 DSTmaybe,
                 &Julian)
@@ -518,7 +518,7 @@ static int LookupWord(buff) char *buff;
      */
     for (p = buff; *p; p++) {
         if (isupper(UCHAR(*p))) {
-            *p = ( char )tolower(UCHAR(*p));
+            *p = ( char ) tolower(UCHAR(*p));
         }
     }
 
@@ -635,7 +635,7 @@ TclDatelex()
     int sign;
 
     for (;;) {
-        while (isspace(( unsigned char )(*TclDateInput))) {
+        while (isspace(( unsigned char ) (*TclDateInput))) {
             TclDateInput++;
         }
 
@@ -703,7 +703,7 @@ unsigned long *timePtr;
     int thisyear;
 
     TclDateInput = p;
-    tm = TclpGetDate(( time_t * )&now, 0);
+    tm = TclpGetDate(( time_t * ) &now, 0);
     thisyear = tm->tm_year + TM_YEAR_BASE;
     TclDateYear = thisyear;
     TclDateMonth = tm->tm_mon + 1;
@@ -933,9 +933,9 @@ char *TclDatereds[] = {
 #define YYRECOVERING() (!!TclDateerrflag)
 #define YYNEW(type) malloc(sizeof(type) * TclDatenewmax)
 #define YYCOPY(to, from, type)                                               \
-    ( type * )memcpy(to, ( char * )from, TclDatenewmax * sizeof(type))
+    ( type * ) memcpy(to, ( char * ) from, TclDatenewmax * sizeof(type))
 #define YYENLARGE(from, type)                                                \
-    ( type * )realloc(( char * )from, TclDatenewmax * sizeof(type))
+    ( type * ) realloc(( char * ) from, TclDatenewmax * sizeof(type))
 #ifndef YYDEBUG
 #    define YYDEBUG 1 /* make debugging available */
 #endif
@@ -1130,8 +1130,8 @@ TclDateparse()
             TclDatenewmax = 2 * TclDatemaxdepth; /* double table size */
             if (TclDatemaxdepth == YYMAXDEPTH)   /* first time growth */
             {
-                char *newTclDates = ( char * )YYNEW(int);
-                char *newTclDatev = ( char * )YYNEW(YYSTYPE);
+                char *newTclDates = ( char * ) YYNEW(int);
+                char *newTclDatev = ( char * ) YYNEW(YYSTYPE);
                 if (newTclDates != 0 && newTclDatev != 0) {
                     TclDates = YYCOPY(newTclDates, TclDates, int);
                     TclDatev = YYCOPY(newTclDatev, TclDatev, YYSTYPE);

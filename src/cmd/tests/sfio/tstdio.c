@@ -106,7 +106,7 @@ tmain()
     if (rbuf[i - 5] != '\n')
         terror("Bad data: did not get new-line");
     if ((s1 = ftell(f)) != 1010)
-        terror("Bad location in f: s1=%lld", ( Sflong_t )s1);
+        terror("Bad location in f: s1=%lld", ( Sflong_t ) s1);
 
     fseek(f, 0L, SEEK_CUR); /* switch mode so we can write */
     if (fputc('x', f) < 0)
@@ -114,14 +114,14 @@ tmain()
     if (fflush(f) < 0)
         terror("fflush failed");
     if ((s1 = ftell(f)) != 1011)
-        terror("Bad location in f: s1=%lld", ( Sflong_t )s1);
+        terror("Bad location in f: s1=%lld", ( Sflong_t ) s1);
     fseek(
     f, -1L, SEEK_CUR); /* set the seek location in the file descriptor */
 
     fflush(
     f2); /* assuming POSIX conformance and to set seek location to 1010 */
     if ((s2 = ftell(f2)) != 1010)
-        terror("Bad location in f2: s2=%lld", ( Sflong_t )s2);
+        terror("Bad location in f2: s2=%lld", ( Sflong_t ) s2);
 
     fread(rbuf, 10, 1, f2);
     if (rbuf[0] != 'x')

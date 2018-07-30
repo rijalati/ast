@@ -27,7 +27,7 @@
 
 #include "service.h"
 
-#define NOARG ((( int )1) << (CHAR_BIT * sizeof(int) - 2))
+#define NOARG ((( int ) 1) << (CHAR_BIT * sizeof(int) - 2))
 
 static struct
 {
@@ -68,7 +68,7 @@ cmdsend(int fd, int c, char *s, int n, int *code)
             *code = EXIT_NOEXEC;
         return (0);
     }
-    if (code && (n = ( int )strtol(s, NiL, 10)))
+    if (code && (n = ( int ) strtol(s, NiL, 10)))
         *code = n;
     if (state.indirect.con) {
         n = 0;
@@ -99,7 +99,8 @@ cmdsend(int fd, int c, char *s, int n, int *code)
                         }
                     } else if (csread(fds[m].fd, cmd, 7, CS_EXACT) == 7
                                && cmd[0] == '#')
-                        svc.pass[fds[m].fd] = ( int )strtol(cmd + 1, NiL, 10);
+                        svc.pass[fds[m].fd]
+                        = ( int ) strtol(cmd + 1, NiL, 10);
                     else {
                         close(fds[m].fd);
                         fds[m].events = 0;
@@ -181,7 +182,7 @@ command(int fd, char **ap)
     if (state.indirect.con) {
         if (!(
             svc.pass = newof(
-            0, int, ( int )strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0), 0)))
+            0, int, ( int ) strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0), 0)))
             error(3, "out of space [pass]");
         svc.pass[state.indirect.err] = 2;
         svc.pass[state.indirect.out] = 1;
@@ -219,7 +220,7 @@ command(int fd, char **ap)
                 s = *ap++;
             sfprintf(state.string, "#%05d\nS %c - 0 ", 0, c);
             if (!s || !*s)
-                sfprintf(state.string, "%s\n", ( char * )0);
+                sfprintf(state.string, "%s\n", ( char * ) 0);
             else
                 sfprintf(state.string, "(%d:%s)\n", strlen(s), s);
             break;
@@ -247,7 +248,7 @@ command(int fd, char **ap)
                 n = *s ? *s : NOARG;
             sfprintf(state.string, "#%05d\nS %c %c %d ", 0, c, m, n);
             if (!s || !*s)
-                sfprintf(state.string, "%s\n", ( char * )0);
+                sfprintf(state.string, "%s\n", ( char * ) 0);
             else
                 sfprintf(state.string, "(%d:%s)\n", strlen(s), s);
             break;
@@ -356,7 +357,7 @@ ffmtmode(int fd, int must)
     struct stat st;
 
     if (fstat(fd, &st))
-        return (must ? ( char * )0 : ( char * )"**ERROR** ");
+        return (must ? ( char * ) 0 : ( char * ) "**ERROR** ");
     p = fmtmode(st.st_mode ? st.st_mode : (S_IRUSR | S_IWUSR), 0);
     if (!st.st_mode)
 #ifdef S_ISSOCK
@@ -746,7 +747,7 @@ server(int fd, int op, int sub, int arg, char *dat)
         } while ((sp = sp->next) != state.shell);
         if (n = sv - state.shellv) {
             *sv = 0;
-            strsort(( char ** )(sv = state.shellv), n, byrank);
+            strsort(( char ** ) (sv = state.shellv), n, byrank);
             if (dat && (attr.global.set & SETPOOL) && attr.global.pool > 0
                 && attr.global.pool < n)
                 sv[attr.global.pool] = 0;
@@ -785,7 +786,7 @@ server(int fd, int op, int sub, int arg, char *dat)
         } while ((sp = sp->next) != state.shell);
         if (n = sv - state.shellv) {
             *sv = 0;
-            strsort(( char ** )(sv = state.shellv),
+            strsort(( char ** ) (sv = state.shellv),
                     n,
                     sub == 'a' || sub == 'e' || sub == 'p'
                     ? byname

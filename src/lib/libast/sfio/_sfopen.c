@@ -121,9 +121,9 @@ char *mode;                                    /* mode of the stream */
 
     if (sflags & SF_STRING) {
         f = sfnew(f,
-                  ( char * )file,
-                  file ? ( size_t )strlen(( char * )file)
-                       : ( size_t )SF_UNBOUND,
+                  ( char * ) file,
+                  file ? ( size_t ) strlen(( char * ) file)
+                       : ( size_t ) SF_UNBOUND,
                   -1,
                   sflags);
     } else {
@@ -134,13 +134,13 @@ char *mode;                                    /* mode of the stream */
 #    ifdef sysopenatf
         if (cwd == AT_FDCWD)
 #    endif
-            while ((fd = sysopenf(( char * )file, oflags, SF_CREATMODE)) < 0
+            while ((fd = sysopenf(( char * ) file, oflags, SF_CREATMODE)) < 0
                    && errno == EINTR)
                 errno = 0;
 #    ifdef sysopenatf
         else
             while (
-            (fd = sysopenatf(cwd, ( char * )file, oflags, SF_CREATMODE)) < 0
+            (fd = sysopenatf(cwd, ( char * ) file, oflags, SF_CREATMODE)) < 0
             && errno == EINTR)
                 errno = 0;
 #    endif
@@ -198,9 +198,9 @@ char *mode;                                    /* mode of the stream */
 
         /* we may have to reset the file descriptor to its old value */
         oldfd = f ? f->file : -1;
-        if ((f = sfnew(f, NIL(char *), ( size_t )SF_UNBOUND, fd, sflags))
+        if ((f = sfnew(f, NIL(char *), ( size_t ) SF_UNBOUND, fd, sflags))
             && oldfd >= 0)
-            ( void )sfsetfd(f, oldfd);
+            ( void ) sfsetfd(f, oldfd);
     }
 
     return f;

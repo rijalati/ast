@@ -61,7 +61,7 @@ prng_open(const Method_t *method, const char *name)
     int i;
 
     if (sum = newof(0, Prng_t, 1, 0)) {
-        sum->method = ( Method_t * )method;
+        sum->method = ( Method_t * ) method;
         sum->name = name;
     }
     s = name;
@@ -84,13 +84,13 @@ prng_open(const Method_t *method, const char *name)
         if (!sum->init)
             sum->init = FNV_INIT;
     }
-    return ( Sum_t * )sum;
+    return ( Sum_t * ) sum;
 }
 
 static int
 prng_init(Sum_t *p)
 {
-    Prng_t *sum = ( Prng_t * )p;
+    Prng_t *sum = ( Prng_t * ) p;
 
     sum->sum = sum->init;
     return 0;
@@ -99,9 +99,9 @@ prng_init(Sum_t *p)
 static int
 prng_block(Sum_t *p, const void *s, size_t n)
 {
-    Prng_t *sum = ( Prng_t * )p;
+    Prng_t *sum = ( Prng_t * ) p;
     Prngnum_t c = sum->sum;
-    unsigned char *b = ( unsigned char * )s;
+    unsigned char *b = ( unsigned char * ) s;
     unsigned char *e = b + n;
 
     while (b < e)

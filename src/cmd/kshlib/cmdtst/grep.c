@@ -208,7 +208,7 @@ labelcomp(const regex_t *re, const char *s, size_t len, regdisc_t *disc)
     n = 0;
     while (s < e)
         n = (n << 3) + (*s++ - '0');
-    return ( void * )(( char * )0 + n);
+    return ( void * ) (( char * ) 0 + n);
 }
 
 static int
@@ -221,7 +221,7 @@ labelexec(const regex_t *re,
           char **snxt,
           regdisc_t *disc)
 {
-    (( State_t * )disc)->hit = ( Item_t * )data;
+    (( State_t * ) disc)->hit = ( Item_t * ) data;
     return 0;
 }
 
@@ -270,7 +270,7 @@ addre(State_t *state, char *s)
                  "%s(?{%I*o})",
                  b,
                  sizeof(ptrdiff_t),
-                 ( char * )x - ( char * )0);
+                 ( char * ) x - ( char * ) 0);
         if (state->labels.tail)
             state->labels.tail = state->labels.tail->next = x;
         else
@@ -337,7 +337,7 @@ compile(State_t *state)
         }
         error_info.file = s;
         error_info.line = 0;
-        while (s = ( char * )sfreserve(f, SF_UNBOUND, SF_LOCKR)) {
+        while (s = ( char * ) sfreserve(f, SF_UNBOUND, SF_LOCKR)) {
             if (!(n = sfvalue(f)))
                 break;
             if (s[n - 1] != '\n') {
@@ -442,7 +442,7 @@ hit(State_t *state, const char *prefix, int line, const char *s, size_t len)
 static int
 record(void *handle, const char *s, size_t len)
 {
-    return hit(( State_t * )handle, error_info.file, 0, s, len);
+    return hit(( State_t * ) handle, error_info.file, 0, s, len);
 }
 
 static int
@@ -574,7 +574,7 @@ execute(State_t *state, Sfio_t *input, char *name, Shbltin_t *context)
                                       state->pos,
                                       state->options,
                                       '\n',
-                                      ( void * )state,
+                                      ( void * ) state,
                                       record)) {
                     if (result < 0)
                         goto done;
@@ -608,7 +608,7 @@ execute(State_t *state, Sfio_t *input, char *name, Shbltin_t *context)
                                           state->pos,
                                           state->options,
                                           '\n',
-                                          ( void * )state,
+                                          ( void * ) state,
                                           record)) {
                         if (result < 0)
                             goto done;
@@ -687,8 +687,8 @@ grep(char *id, int options, int argc, char **argv, Shbltin_t *context)
     }
     state.redisc.re_version = REG_VERSION;
     state.redisc.re_flags = REG_NOFREE;
-    state.redisc.re_resizef = ( regresize_t )vmgetmem;
-    state.redisc.re_resizehandle = ( void * )state.vm;
+    state.redisc.re_resizef = ( regresize_t ) vmgetmem;
+    state.redisc.re_resizehandle = ( void * ) state.vm;
     state.match = 1;
     state.options = REG_FIRST | REG_NOSUB | REG_NULL | REG_DISCIPLINE
                     | REG_MULTIPLE | options;
@@ -701,9 +701,9 @@ grep(char *id, int options, int argc, char **argv, Shbltin_t *context)
         switch (c) {
         case 'C':
             if (opt_info.arg) {
-                state.before = ( int )strtol(opt_info.arg, &s, 0);
+                state.before = ( int ) strtol(opt_info.arg, &s, 0);
                 state.after
-                = (*s == ',') ? ( int )strtol(s + 1, &s, 0) : state.before;
+                = (*s == ',') ? ( int ) strtol(s + 1, &s, 0) : state.before;
                 if (*s)
                     error(3, "%s: invalid context line count", s);
             } else

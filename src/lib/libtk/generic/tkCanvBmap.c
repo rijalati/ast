@@ -39,49 +39,49 @@ typedef struct BitmapItem
  */
 
 static Tk_CustomOption tagsOption
-= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData )NULL };
+= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData ) NULL };
 
 static Tk_ConfigSpec configSpecs[] = { { TK_CONFIG_ANCHOR,
                                          "-anchor",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          "center",
                                          Tk_Offset(BitmapItem, anchor),
                                          TK_CONFIG_DONT_SET_DEFAULT },
                                        { TK_CONFIG_COLOR,
                                          "-background",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          Tk_Offset(BitmapItem, bgColor),
                                          TK_CONFIG_NULL_OK },
                                        { TK_CONFIG_BITMAP,
                                          "-bitmap",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          Tk_Offset(BitmapItem, bitmap),
                                          TK_CONFIG_NULL_OK },
                                        { TK_CONFIG_COLOR,
                                          "-foreground",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          "black",
                                          Tk_Offset(BitmapItem, fgColor),
                                          0 },
                                        { TK_CONFIG_CUSTOM,
                                          "-tags",
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          0,
                                          TK_CONFIG_NULL_OK,
                                          &tagsOption },
                                        { TK_CONFIG_END,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
-                                         ( char * )NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
+                                         ( char * ) NULL,
                                          0,
                                          0 } };
 
@@ -141,26 +141,26 @@ static void TranslateBitmap _ANSI_ARGS_(
  */
 
 Tk_ItemType tkBitmapType = {
-    "bitmap",                       /* name */
-    sizeof(BitmapItem),             /* itemSize */
-    CreateBitmap,                   /* createProc */
-    configSpecs,                    /* configSpecs */
-    ConfigureBitmap,                /* configureProc */
-    BitmapCoords,                   /* coordProc */
-    DeleteBitmap,                   /* deleteProc */
-    DisplayBitmap,                  /* displayProc */
-    0,                              /* alwaysRedraw */
-    BitmapToPoint,                  /* pointProc */
-    BitmapToArea,                   /* areaProc */
-    BitmapToPostscript,             /* postscriptProc */
-    ScaleBitmap,                    /* scaleProc */
-    TranslateBitmap,                /* translateProc */
-    ( Tk_ItemIndexProc * )NULL,     /* indexProc */
-    ( Tk_ItemCursorProc * )NULL,    /* icursorProc */
-    ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL,    /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL,    /* dTextProc */
-    ( Tk_ItemType * )NULL           /* nextPtr */
+    "bitmap",                        /* name */
+    sizeof(BitmapItem),              /* itemSize */
+    CreateBitmap,                    /* createProc */
+    configSpecs,                     /* configSpecs */
+    ConfigureBitmap,                 /* configureProc */
+    BitmapCoords,                    /* coordProc */
+    DeleteBitmap,                    /* deleteProc */
+    DisplayBitmap,                   /* displayProc */
+    0,                               /* alwaysRedraw */
+    BitmapToPoint,                   /* pointProc */
+    BitmapToArea,                    /* areaProc */
+    BitmapToPostscript,              /* postscriptProc */
+    ScaleBitmap,                     /* scaleProc */
+    TranslateBitmap,                 /* translateProc */
+    ( Tk_ItemIndexProc * ) NULL,     /* indexProc */
+    ( Tk_ItemCursorProc * ) NULL,    /* icursorProc */
+    ( Tk_ItemSelectionProc * ) NULL, /* selectionProc */
+    ( Tk_ItemInsertProc * ) NULL,    /* insertProc */
+    ( Tk_ItemDCharsProc * ) NULL,    /* dTextProc */
+    ( Tk_ItemType * ) NULL           /* nextPtr */
 };
 
 /*
@@ -191,7 +191,7 @@ Tk_Item *itemPtr;   /* Record to hold new item;  header
 int argc;           /* Number of arguments in argv. */
 char **argv;        /* Arguments describing rectangle. */
 {
-    BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
+    BitmapItem *bmapPtr = ( BitmapItem * ) itemPtr;
 
     if (argc < 2) {
         Tcl_AppendResult(interp,
@@ -200,7 +200,7 @@ char **argv;        /* Arguments describing rectangle. */
                          " create ",
                          itemPtr->typePtr->name,
                          " x y ?options?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -260,13 +260,13 @@ int argc;           /* Number of coordinates supplied in
 char **argv;        /* Array of coordinates: x1, y1,
                      * x2, y2, ... */
 {
-    BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
+    BitmapItem *bmapPtr = ( BitmapItem * ) itemPtr;
     char x[TCL_DOUBLE_SPACE], y[TCL_DOUBLE_SPACE];
 
     if (argc == 0) {
         Tcl_PrintDouble(interp, bmapPtr->x, x);
         Tcl_PrintDouble(interp, bmapPtr->y, y);
-        Tcl_AppendResult(interp, x, " ", y, ( char * )NULL);
+        Tcl_AppendResult(interp, x, " ", y, ( char * ) NULL);
     } else if (argc == 2) {
         if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &bmapPtr->x) != TCL_OK)
             || (Tk_CanvasGetCoord(interp, canvas, argv[1], &bmapPtr->y)
@@ -308,7 +308,7 @@ int argc;           /* Number of elements in argv.  */
 char **argv;        /* Arguments describing things to configure. */
 int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
-    BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
+    BitmapItem *bmapPtr = ( BitmapItem * ) itemPtr;
     XGCValues gcValues;
     GC newGC;
     Tk_Window tkwin;
@@ -316,7 +316,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     tkwin = Tk_CanvasTkwin(canvas);
     if (Tk_ConfigureWidget(
-        interp, tkwin, configSpecs, argc, argv, ( char * )bmapPtr, flags)
+        interp, tkwin, configSpecs, argc, argv, ( char * ) bmapPtr, flags)
         != TCL_OK) {
         return TCL_ERROR;
     }
@@ -370,7 +370,7 @@ Tk_Item *itemPtr; /* Item that is being deleted. */
 Display *display; /* Display containing window for
                    * canvas. */
 {
-    BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
+    BitmapItem *bmapPtr = ( BitmapItem * ) itemPtr;
 
     if (bmapPtr->bitmap != None) {
         Tk_FreeBitmap(display, bmapPtr->bitmap);
@@ -502,7 +502,7 @@ Drawable drawable;       /* Pixmap or window in which to draw
 int x, y, width, height; /* Describes region of canvas that
                           * must be redisplayed (not used). */
 {
-    BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
+    BitmapItem *bmapPtr = ( BitmapItem * ) itemPtr;
     int bmapX, bmapY, bmapWidth, bmapHeight;
     short drawableX, drawableY;
 
@@ -536,8 +536,8 @@ int x, y, width, height; /* Describes region of canvas that
             }
         }
         Tk_CanvasDrawableCoords(canvas,
-                                ( double )(bmapPtr->header.x1 + bmapX),
-                                ( double )(bmapPtr->header.y1 + bmapY),
+                                ( double ) (bmapPtr->header.x1 + bmapX),
+                                ( double ) (bmapPtr->header.y1 + bmapY),
                                 &drawableX,
                                 &drawableY);
 
@@ -555,8 +555,8 @@ int x, y, width, height; /* Describes region of canvas that
                    bmapPtr->gc,
                    bmapX,
                    bmapY,
-                   ( unsigned int )bmapWidth,
-                   ( unsigned int )bmapHeight,
+                   ( unsigned int ) bmapWidth,
+                   ( unsigned int ) bmapHeight,
                    drawableX,
                    drawableY,
                    1);
@@ -591,7 +591,7 @@ static double BitmapToPoint(canvas,
 Tk_Item *itemPtr; /* Item to check against point. */
 double *coordPtr; /* Pointer to x and y coordinates. */
 {
-    BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
+    BitmapItem *bmapPtr = ( BitmapItem * ) itemPtr;
     double x1, x2, y1, y2, xDiff, yDiff;
 
     x1 = bmapPtr->header.x1;
@@ -651,7 +651,7 @@ double *rectPtr;  /* Pointer to array of four coordinates
                    * (x1, y1, x2, y2) describing rectangular
                    * area.  */
 {
-    BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
+    BitmapItem *bmapPtr = ( BitmapItem * ) itemPtr;
 
     if ((rectPtr[2] <= bmapPtr->header.x1)
         || (rectPtr[0] >= bmapPtr->header.x2)
@@ -696,7 +696,7 @@ double originX, originY; /* Origin about which to scale item. */
 double scaleX;           /* Amount to scale in X direction. */
 double scaleY;           /* Amount to scale in Y direction. */
 {
-    BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
+    BitmapItem *bmapPtr = ( BitmapItem * ) itemPtr;
 
     bmapPtr->x = originX + scaleX * (bmapPtr->x - originX);
     bmapPtr->y = originY + scaleY * (bmapPtr->y - originY);
@@ -727,7 +727,7 @@ Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
-    BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
+    BitmapItem *bmapPtr = ( BitmapItem * ) itemPtr;
 
     bmapPtr->x += deltaX;
     bmapPtr->y += deltaY;
@@ -765,7 +765,7 @@ int prepass;        /* 1 means this is a prepass to
                      * collect font information;  0 means
                      * final Postscript is being created. */
 {
-    BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
+    BitmapItem *bmapPtr = ( BitmapItem * ) itemPtr;
     double x, y;
     int width, height, rowsAtOnce, rowsThisTime;
     int curRow;
@@ -830,11 +830,11 @@ int prepass;        /* 1 means this is a prepass to
                 height,
                 -width,
                 "0 rlineto closepath");
-        Tcl_AppendResult(interp, buffer, ( char * )NULL);
+        Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         if (Tk_CanvasPsColor(interp, canvas, bmapPtr->bgColor) != TCL_OK) {
             return TCL_ERROR;
         }
-        Tcl_AppendResult(interp, "fill\n", ( char * )NULL);
+        Tcl_AppendResult(interp, "fill\n", ( char * ) NULL);
     }
 
     /*
@@ -853,7 +853,7 @@ int prepass;        /* 1 means this is a prepass to
             Tcl_AppendResult(interp,
                              "can't generate Postscript",
                              " for bitmaps more than 60000 pixels wide",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         rowsAtOnce = 60000 / width;
@@ -861,7 +861,7 @@ int prepass;        /* 1 means this is a prepass to
             rowsAtOnce = 1;
         }
         sprintf(buffer, "%.15g %.15g translate\n", x, y + height);
-        Tcl_AppendResult(interp, buffer, ( char * )NULL);
+        Tcl_AppendResult(interp, buffer, ( char * ) NULL);
         for (curRow = 0; curRow < height; curRow += rowsAtOnce) {
             rowsThisTime = rowsAtOnce;
             if (rowsThisTime > (height - curRow)) {
@@ -869,16 +869,16 @@ int prepass;        /* 1 means this is a prepass to
             }
             sprintf(buffer,
                     "0 -%.15g translate\n%d %d true matrix {\n",
-                    ( double )rowsThisTime,
+                    ( double ) rowsThisTime,
                     width,
                     rowsThisTime);
-            Tcl_AppendResult(interp, buffer, ( char * )NULL);
+            Tcl_AppendResult(interp, buffer, ( char * ) NULL);
             if (Tk_CanvasPsBitmap(
                 interp, canvas, bmapPtr->bitmap, 0, curRow, width, rowsThisTime)
                 != TCL_OK) {
                 return TCL_ERROR;
             }
-            Tcl_AppendResult(interp, "\n} imagemask\n", ( char * )NULL);
+            Tcl_AppendResult(interp, "\n} imagemask\n", ( char * ) NULL);
         }
     }
     return TCL_OK;

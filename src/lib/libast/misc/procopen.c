@@ -102,9 +102,9 @@ setopt(void *a, const void *p, int n, const char *v)
     NoP(v);
     if (p) {
         if (n)
-            *(( int * )a) |= (( Namval_t * )p)->value;
+            *(( int * ) a) |= (( Namval_t * ) p)->value;
         else
-            *(( int * )a) &= ~(( Namval_t * )p)->value;
+            *(( int * ) a) &= ~(( Namval_t * ) p)->value;
     }
     return 0;
 }
@@ -251,9 +251,9 @@ modify(Proc_t *proc, int forked, int op, long arg1, long arg2)
         case PROC_fd_dup | PROC_FD_PARENT:
         case PROC_fd_dup | PROC_FD_CHILD:
         case PROC_fd_dup | PROC_FD_PARENT | PROC_FD_CHILD:
-            m->arg.fd.parent.fd = ( short )arg1;
+            m->arg.fd.parent.fd = ( short ) arg1;
             m->arg.fd.parent.flag = fcntl(arg1, F_GETFD, 0);
-            if ((m->arg.fd.child.fd = ( short )arg2) != arg1) {
+            if ((m->arg.fd.child.fd = ( short ) arg2) != arg1) {
                 if (arg2 != PROC_ARG_NULL) {
                     m->arg.fd.child.flag = fcntl(arg2, F_GETFD, 0);
                     if ((m->save = fcntl(arg2, F_dupfd_cloexec, 3)) < 0) {
@@ -282,18 +282,18 @@ modify(Proc_t *proc, int forked, int op, long arg1, long arg2)
         case PROC_sig_dfl:
             if ((m->arg.handler = signal(arg1, SIG_DFL)) == SIG_DFL)
                 break;
-            m->save = ( short )arg1;
+            m->save = ( short ) arg1;
             return 0;
         case PROC_sig_ign:
             if ((m->arg.handler = signal(arg1, SIG_IGN)) == SIG_IGN)
                 break;
-            m->save = ( short )arg1;
+            m->save = ( short ) arg1;
             return 0;
         case PROC_sys_pgrp:
             proc->pgrp = arg1;
             break;
         case PROC_sys_umask:
-            if ((m->save = ( short )umask(arg1)) == arg1)
+            if ((m->save = ( short ) umask(arg1)) == arg1)
                 break;
             return 0;
         default:
@@ -464,7 +464,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
     sfsync(NiL);
     if (!envv && !(flags & (PROC_ENVCLEAR | PROC_PARANOID)))
         envv = environ;
-    else if (environ && envv != ( char ** )environ
+    else if (environ && envv != ( char ** ) environ
              && (envv || (flags & PROC_PARANOID)
                  || argv && (environ[0][0] != '_' || environ[0][1] != '='))) {
         if (!setenviron(NiL))
@@ -688,12 +688,12 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
             p = environ;
             while (*p++)
                 ;
-            if (!(oenviron = ( char ** )memdup(
+            if (!(oenviron = ( char ** ) memdup(
                   environ, (p - environ) * sizeof(char *))))
                 goto cleanup;
         }
 #endif
-        if (argv && envv != ( char ** )environ) {
+        if (argv && envv != ( char ** ) environ) {
 #if _use_spawnveg
             if (!newenv && environ[0][0] == '_' && environ[0][1] == '=')
                 oenviron0 = environ[0];
@@ -707,7 +707,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         if ((flags & PROC_PARANOID)
             && setenv("PATH", astconf("PATH", NiL, NiL), 1))
             goto cleanup;
-        if ((p = envv) && p != ( char ** )environ)
+        if ((p = envv) && p != ( char ** ) environ)
             while (*p)
                 if (!setenviron(*p++))
                     goto cleanup;

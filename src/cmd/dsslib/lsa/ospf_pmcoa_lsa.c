@@ -113,7 +113,7 @@ identf_pmcoa_lsa_file(Dssfile_t *fp,
                       size_t size,
                       Dssdisc_t *disc)
 {
-    Magicid_t *mp = ( Magicid_t * )data_p;
+    Magicid_t *mp = ( Magicid_t * ) data_p;
     Magicid_data_t version, m_size;
 
     ASSERT(fp);
@@ -242,7 +242,7 @@ open_pmcoa_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
         /* Create 'pmcoa_lsa_state_t' object and store it in 'fp->data'. */
         MD_CALLOC(fp->data, void *, 1, sizeof(pmcoa_lsa_state_t));
         ASSERT(fp->data);
-        state_p = ( pmcoa_lsa_state_t * )(fp->data);
+        state_p = ( pmcoa_lsa_state_t * ) (fp->data);
 
         /*
          * Allocate space to store an LSA in '*state_p'.
@@ -274,7 +274,7 @@ close_pmcoa_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
 #if 0
 	sfprintf(sfstderr, "close_pmcoa_lsa_file() file: %s\n", fp->path);
 #endif
-    state_p = ( pmcoa_lsa_state_t * )(fp->data);
+    state_p = ( pmcoa_lsa_state_t * ) (fp->data);
     if (!state_p) {
         return -1;
     }
@@ -314,7 +314,7 @@ read_pmcoa_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     ASSERT(fp);
     ASSERT(rp);
     ASSERT(disc);
-    state_p = ( pmcoa_lsa_state_t * )(fp->data);
+    state_p = ( pmcoa_lsa_state_t * ) (fp->data);
     ASSERT(state_p);
     lsa_can_p = &(state_p->lsa_can);
 
@@ -346,7 +346,7 @@ read_pmcoa_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
         ASSERT(state_p->pmcoa_lsap);
         state_p->pmcoa_lsa_max_len = LSA_HDR_LEN;
     }
-    lsap = ( ospf_lsa_t * )(state_p->pmcoa_lsap);
+    lsap = ( ospf_lsa_t * ) (state_p->pmcoa_lsap);
     if (sfread(fp->io, lsap, LSA_HDR_LEN) != LSA_HDR_LEN) {
         return 0;
     }

@@ -43,7 +43,7 @@ reg Rsobj_t *obj;
 #endif
 {
     reg Rsobj_t *r;
-    reg Rsradix_t *radix = ( Rsradix_t * )rs->methdata;
+    reg Rsradix_t *radix = ( Rsradix_t * ) rs->methdata;
 
     obj->equal = NIL(Rsobj_t *);
     if ((r = radix->list))
@@ -66,7 +66,7 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
     reg Rsobj_t **bin, *t, *empty, *list, *endl, *next, **lo, **maxpart;
     reg ssize_t n, maxph;
     Rsobj_t *part[UCHAR_MAX + 1];
-    reg Rsradix_t *radix = ( Rsradix_t * )rs->methdata;
+    reg Rsradix_t *radix = ( Rsradix_t * ) rs->methdata;
 
     if (!radix->list)
         return NIL(Rsobj_t *);
@@ -86,7 +86,7 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
 
             lo = maxpart;
             n = 0;
-            if ((ph = ( ssize_t )work->order) == maxph) {
+            if ((ph = ( ssize_t ) work->order) == maxph) {
                 for (; work; work = work->right) {
                     bin = part + work->key[ph];
                     if (!(r = *bin)) {
@@ -158,7 +158,7 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
             empty = NIL(Rsobj_t *);
             lo = maxpart;
             n = 0;
-            ph = ( ssize_t )work->order;
+            ph = ( ssize_t ) work->order;
             for (; work; work = work->right) {
                 if (ph >= work->keylen) {
                     if (!empty)

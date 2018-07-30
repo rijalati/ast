@@ -125,13 +125,16 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
 #        if defined(IPPROTO_TCP) && defined(TCP_NODELAY)
             if (sock == SOCK_STREAM) {
                 sl = 1;
-                setsockopt(
-                fd, IPPROTO_TCP, TCP_NODELAY, ( const char * )&sl, sizeof(sl));
+                setsockopt(fd,
+                           IPPROTO_TCP,
+                           TCP_NODELAY,
+                           ( const char * ) &sl,
+                           sizeof(sl));
             }
 #        endif
         }
 #        undef connect
-        if (!(r = connect(fd, ( struct sockaddr * )&nam, sizeof(nam)))
+        if (!(r = connect(fd, ( struct sockaddr * ) &nam, sizeof(nam)))
 #        ifdef EINPROGRESS
             || errno == EINPROGRESS
 #        endif
@@ -147,7 +150,7 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
                     setsockopt(fd,
                                IPPROTO_TCP,
                                TCP_NODELAY,
-                               ( const char * )&sl,
+                               ( const char * ) &sl,
                                sizeof(sl));
                 }
 #        endif
@@ -165,15 +168,15 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
             int n = 1;
 
             setsockopt(
-            fd, SOL_SOCKET, SO_REUSEADDR, ( const char * )&n, sizeof(n));
+            fd, SOL_SOCKET, SO_REUSEADDR, ( const char * ) &n, sizeof(n));
         }
 #        endif
-        if (!bind(fd, ( struct sockaddr * )&nam, sizeof(nam))
+        if (!bind(fd, ( struct sockaddr * ) &nam, sizeof(nam))
             && (sock != SOCK_STREAM || !listen(fd, 32))) {
-            if (!getsockname(fd, ( struct sockaddr * )&nam, &namlen)
+            if (!getsockname(fd, ( struct sockaddr * ) &nam, &namlen)
                 && namlen == sizeof(nam)) {
                 state->addr = nam.sin_addr.s_addr;
-                state->port = ntohs(( unsigned short )nam.sin_port);
+                state->port = ntohs(( unsigned short ) nam.sin_port);
             } else
                 messagef(
                 (state->id, NiL, -1, "bind: %s: getsockname error", type));

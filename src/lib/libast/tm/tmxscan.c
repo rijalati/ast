@@ -63,10 +63,10 @@ typedef struct
 #define NUMBER(d, m, x)                                                      \
     do {                                                                     \
         n = 0;                                                               \
-        u = ( char * )s;                                                     \
-        while (s < ( const char * )(u + d) && *s >= '0' && *s <= '9')        \
+        u = ( char * ) s;                                                    \
+        while (s < ( const char * ) (u + d) && *s >= '0' && *s <= '9')       \
             n = n * 10 + *s++ - '0';                                         \
-        if (u == ( char * )s || n < m || n > x)                              \
+        if (u == ( char * ) s || n < m || n > x)                             \
             goto next;                                                       \
     } while (0)
 
@@ -189,7 +189,7 @@ again:
                 format--;
                 break;
             }
-            format = ( const char * )*--sp;
+            format = ( const char * ) *--sp;
         } else if (!*s) {
             format--;
             break;
@@ -383,10 +383,10 @@ again:
             case '&':
                 x = gen(tm, &set);
                 x = tmxdate(s, e, t);
-                if (s == ( const char * )*e)
+                if (s == ( const char * ) *e)
                     goto next;
                 t = x;
-                s = ( const char * )*e;
+                s = ( const char * ) *e;
                 if (!*format || *format == '%' && *(format + 1) == '|')
                     goto done;
                 goto again;
@@ -395,8 +395,8 @@ again:
             }
             if (sp >= &stack[elementsof(stack)])
                 goto next;
-            *sp++ = ( char * )format;
-            format = ( const char * )p;
+            *sp++ = ( char * ) format;
+            format = ( const char * ) p;
         } else if (isspace(d))
             while (isspace(*s))
                 s++;
@@ -407,15 +407,15 @@ again:
     }
 next:
     if (sp > &stack[0])
-        format = ( const char * )stack[0];
+        format = ( const char * ) stack[0];
     if (*format) {
-        p = ( char * )format;
+        p = ( char * ) format;
         if (!*s && *p == '%' && *(p + 1) == '|')
             format += strlen(format);
         else
             while (*p)
                 if (*p++ == '%' && *p && *p++ == '|' && *p) {
-                    format = ( const char * )p;
+                    format = ( const char * ) p;
                     s = b;
                     goto again;
                 }
@@ -425,12 +425,12 @@ done:
     if (e) {
         while (isspace(*s))
             s++;
-        *e = ( char * )s;
+        *e = ( char * ) s;
     }
     if (f) {
         while (isspace(*format))
             format++;
-        *f = ( char * )format;
+        *f = ( char * ) format;
     }
     return t;
 }
@@ -472,7 +472,7 @@ tmxscan(const char *s,
                 m = sfseek(sp, 0L, SEEK_CUR);
                 if (p = newof(0, char *, n, m)) {
                     sfseek(sp, 0L, SEEK_SET);
-                    v = ( char * )(p + n);
+                    v = ( char * ) (p + n);
                     if (sfread(sp, v, m) != m) {
                         free(p);
                         p = 0;
@@ -502,11 +502,11 @@ tmxscan(const char *s,
                 }
             }
         if (f)
-            *f = ( char * )format;
+            *f = ( char * ) format;
         if (format)
             return tmxdate(s, e, t);
         if (e)
-            *e = ( char * )s;
+            *e = ( char * ) s;
         return 0;
     }
     return scan(s, e, format, f, t, flags);

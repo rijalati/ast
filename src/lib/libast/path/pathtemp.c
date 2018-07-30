@@ -129,7 +129,7 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
             dir = 0;
         if (streq(pfx, "check")) {
             tmp.nocheck = !dir;
-            return ( char * )pfx;
+            return ( char * ) pfx;
         } else if (streq(pfx, "cycle")) {
             if (!dir) {
                 tmp.manual = 1;
@@ -137,27 +137,27 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
                     tmp.dir = tmp.vec;
             } else
                 tmp.manual = streq(dir, "manual");
-            return ( char * )pfx;
+            return ( char * ) pfx;
         } else if (streq(pfx, "prefix")) {
             if (tmp.pfx)
                 free(tmp.pfx);
-            tmp.pfx = dir ? strdup(dir) : ( char * )0;
-            return ( char * )pfx;
+            tmp.pfx = dir ? strdup(dir) : ( char * ) 0;
+            return ( char * ) pfx;
         } else if (streq(pfx, "private")) {
             tmp.mode = S_IRUSR | S_IWUSR;
-            return ( char * )pfx;
+            return ( char * ) pfx;
         } else if (streq(pfx, "public")) {
             tmp.mode
             = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
-            return ( char * )pfx;
+            return ( char * ) pfx;
         } else if (streq(pfx, "seed")) {
             tmp.key
-            = (tmp.seed = (tmp.rng = dir ? ( uintmax_t )strtoul(dir, NiL, 0)
-                                         : ( uintmax_t )1)
+            = (tmp.seed = (tmp.rng = dir ? ( uintmax_t ) strtoul(dir, NiL, 0)
+                                         : ( uintmax_t ) 1)
                           != 0)
-              ? ( uintmax_t )0x63c63cd9L
+              ? ( uintmax_t ) 0x63c63cd9L
               : 0;
-            return ( char * )pfx;
+            return ( char * ) pfx;
         } else if (streq(pfx, TMP_ENV)) {
             if (tmp.vec) {
                 free(tmp.vec);
@@ -165,8 +165,8 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
             }
             if (tmp.tmpdir)
                 free(tmp.tmpdir);
-            tmp.tmpdir = dir ? strdup(dir) : ( char * )0;
-            return ( char * )pfx;
+            tmp.tmpdir = dir ? strdup(dir) : ( char * ) 0;
+            return ( char * ) pfx;
         } else if (streq(pfx, TMP_PATH_ENV)) {
             if (tmp.vec) {
                 free(tmp.vec);
@@ -174,8 +174,8 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
             }
             if (tmp.tmppath)
                 free(tmp.tmppath);
-            tmp.tmppath = dir ? strdup(dir) : ( char * )0;
-            return ( char * )pfx;
+            tmp.tmppath = dir ? strdup(dir) : ( char * ) 0;
+            return ( char * ) pfx;
         }
         return 0;
     }
@@ -183,7 +183,7 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
         tv.tv_nsec = 0;
     else
         tvgettime(&tv);
-    if (!(d = ( char * )dir) || *d && eaccess(d, W_OK | X_OK)) {
+    if (!(d = ( char * ) dir) || *d && eaccess(d, W_OK | X_OK)) {
         if (!tmp.vec) {
             if ((x = tmp.tmppath) || (x = getenv(TMP_PATH_ENV))) {
                 n = 2;
@@ -195,7 +195,7 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
                 if (!(tmp.vec = newof(0, char *, n, strlen(x) + 1)))
                     return 0;
                 tmp.dir = tmp.vec;
-                x = strcpy(( char * )(tmp.dir + n), x);
+                x = strcpy(( char * ) (tmp.dir + n), x);
                 *tmp.dir++ = x;
                 while (x = strchr(x, ':')) {
                     *x++ = 0;
@@ -212,7 +212,7 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
                 if (!(tmp.vec = newof(0, char *, 2, d ? (strlen(d) + 1) : 0)))
                     return 0;
                 if (d)
-                    *tmp.vec = strcpy(( char * )(tmp.vec + 2), d);
+                    *tmp.vec = strcpy(( char * ) (tmp.vec + 2), d);
             }
             tmp.dir = tmp.vec;
         }
@@ -238,10 +238,10 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
     if (directory = pfx[m - 1] == '/')
         m--;
     if (buf && dir
-        && (buf == ( char * )dir && (buf + strlen(buf) + 1) == ( char * )pfx
-            || buf == ( char * )pfx && !*dir)
-        && !strcmp(( char * )pfx + m + 1, "XXXXX")) {
-        d = ( char * )dir;
+        && (buf == ( char * ) dir && (buf + strlen(buf) + 1) == ( char * ) pfx
+            || buf == ( char * ) pfx && !*dir)
+        && !strcmp(( char * ) pfx + m + 1, "XXXXX")) {
+        d = ( char * ) dir;
         len = m += strlen(d) + 8;
         l = 3;
         r = 3;
@@ -290,10 +290,10 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
              */
 
             tmp.pid = getpid();
-            tmp.rng = ( uintmax_t )tmp.pid
-                      * (( uintmax_t )time(NiL)
-                         ^ ((( uintmax_t )integralof(&attempt)) >> 3)
-                         ^ ((( uintmax_t )integralof(tmp.dir)) >> 3));
+            tmp.rng = ( uintmax_t ) tmp.pid
+                      * (( uintmax_t ) time(NiL)
+                         ^ ((( uintmax_t ) integralof(&attempt)) >> 3)
+                         ^ ((( uintmax_t ) integralof(tmp.dir)) >> 3));
             if (!tmp.key)
                 tmp.key = (tmp.rng >> (sizeof(tmp.rng) * 4))
                           | ((tmp.rng & 0xffff) << (sizeof(tmp.rng) * 4));

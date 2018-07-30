@@ -250,15 +250,15 @@ static Tk_ConfigSpec configSpecs[]
     { TK_CONFIG_SYNONYM,
       "-bd",
       "borderWidth",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 },
     { TK_CONFIG_SYNONYM,
       "-bg",
       "background",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 },
     { TK_CONFIG_PIXELS,
@@ -292,8 +292,8 @@ static Tk_ConfigSpec configSpecs[]
     { TK_CONFIG_SYNONYM,
       "-fg",
       "foreground",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 },
     { TK_CONFIG_FONT,
@@ -472,10 +472,10 @@ static Tk_ConfigSpec configSpecs[]
       Tk_Offset(Scale, width),
       0 },
     { TK_CONFIG_END,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 } };
 
@@ -542,7 +542,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     Scale *scalePtr;
     Tk_Window new;
 
@@ -551,11 +551,11 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " pathName ?options?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
-    new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * )NULL);
+    new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * ) NULL);
     if (new == NULL) {
         return TCL_ERROR;
     }
@@ -566,14 +566,14 @@ char **argv;           /* Argument strings. */
      * (e.g. resource pointers).
      */
 
-    scalePtr = ( Scale * )ckalloc(sizeof(Scale));
+    scalePtr = ( Scale * ) ckalloc(sizeof(Scale));
     scalePtr->tkwin = new;
     scalePtr->display = Tk_Display(new);
     scalePtr->interp = interp;
     scalePtr->widgetCmd = Tcl_CreateCommand(interp,
                                             Tk_PathName(scalePtr->tkwin),
                                             ScaleWidgetCmd,
-                                            ( ClientData )scalePtr,
+                                            ( ClientData ) scalePtr,
                                             ScaleCmdDeletedProc);
     scalePtr->orientUid = NULL;
     scalePtr->vertical = 0;
@@ -626,7 +626,7 @@ char **argv;           /* Argument strings. */
                           ExposureMask | StructureNotifyMask
                           | FocusChangeMask,
                           ScaleEventProc,
-                          ( ClientData )scalePtr);
+                          ( ClientData ) scalePtr);
     if (ConfigureScale(interp, scalePtr, argc - 2, argv + 2, 0) != TCL_OK) {
         goto error;
     }
@@ -664,7 +664,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Scale *scalePtr = ( Scale * )clientData;
+    Scale *scalePtr = ( Scale * ) clientData;
     int result = TCL_OK;
     size_t length;
     int c;
@@ -674,10 +674,10 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option ?arg arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
-    Tcl_Preserve(( ClientData )scalePtr);
+    Tcl_Preserve(( ClientData ) scalePtr);
     c = argv[1][0];
     length = strlen(argv[1]);
     if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
@@ -687,25 +687,25 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " cget option\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         result = Tk_ConfigureValue(
-        interp, scalePtr->tkwin, configSpecs, ( char * )scalePtr, argv[2], 0);
+        interp, scalePtr->tkwin, configSpecs, ( char * ) scalePtr, argv[2], 0);
     } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
                && (length >= 3)) {
         if (argc == 2) {
             result = Tk_ConfigureInfo(interp,
                                       scalePtr->tkwin,
                                       configSpecs,
-                                      ( char * )scalePtr,
-                                      ( char * )NULL,
+                                      ( char * ) scalePtr,
+                                      ( char * ) NULL,
                                       0);
         } else if (argc == 3) {
             result = Tk_ConfigureInfo(interp,
                                       scalePtr->tkwin,
                                       configSpecs,
-                                      ( char * )scalePtr,
+                                      ( char * ) scalePtr,
                                       argv[2],
                                       0);
         } else {
@@ -722,7 +722,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " coords ?value?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         if (argc == 3) {
@@ -751,7 +751,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " get ?x y?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         if (argc == 2) {
@@ -772,7 +772,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " identify x y\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         if ((Tcl_GetInt(interp, argv[2], &x) != TCL_OK)
@@ -799,7 +799,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " set value\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto error;
         }
         if (Tcl_GetDouble(interp, argv[2], &value) != TCL_OK) {
@@ -814,14 +814,14 @@ char **argv;           /* Argument strings. */
         "bad option \"",
         argv[1],
         "\": must be cget, configure, coords, get, identify, or set",
-        ( char * )NULL);
+        ( char * ) NULL);
         goto error;
     }
-    Tcl_Release(( ClientData )scalePtr);
+    Tcl_Release(( ClientData ) scalePtr);
     return result;
 
 error:
-    Tcl_Release(( ClientData )scalePtr);
+    Tcl_Release(( ClientData ) scalePtr);
     return TCL_ERROR;
 }
 
@@ -845,7 +845,7 @@ error:
 
 static void DestroyScale(memPtr) char *memPtr; /* Info about scale widget. */
 {
-    Scale *scalePtr = ( Scale * )memPtr;
+    Scale *scalePtr = ( Scale * ) memPtr;
 
     /*
      * Free up all the stuff that requires special handling, then
@@ -858,7 +858,7 @@ static void DestroyScale(memPtr) char *memPtr; /* Info about scale widget. */
                        scalePtr->varName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                        ScaleVarProc,
-                       ( ClientData )scalePtr);
+                       ( ClientData ) scalePtr);
     }
     if (scalePtr->troughGC != None) {
         Tk_FreeGC(scalePtr->display, scalePtr->troughGC);
@@ -869,8 +869,8 @@ static void DestroyScale(memPtr) char *memPtr; /* Info about scale widget. */
     if (scalePtr->textGC != None) {
         Tk_FreeGC(scalePtr->display, scalePtr->textGC);
     }
-    Tk_FreeOptions(configSpecs, ( char * )scalePtr, scalePtr->display, 0);
-    ckfree(( char * )scalePtr);
+    Tk_FreeOptions(configSpecs, ( char * ) scalePtr, scalePtr->display, 0);
+    ckfree(( char * ) scalePtr);
 }
 
 /*
@@ -915,7 +915,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                        scalePtr->varName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                        ScaleVarProc,
-                       ( ClientData )scalePtr);
+                       ( ClientData ) scalePtr);
     }
 
     if (Tk_ConfigureWidget(interp,
@@ -923,7 +923,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                            configSpecs,
                            argc,
                            argv,
-                           ( char * )scalePtr,
+                           ( char * ) scalePtr,
                            flags)
         != TCL_OK) {
         return TCL_ERROR;
@@ -950,7 +950,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                      scalePtr->varName,
                      TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                      ScaleVarProc,
-                     ( ClientData )scalePtr);
+                     ( ClientData ) scalePtr);
     }
 
     /*
@@ -968,7 +968,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                          "bad orientation \"",
                          scalePtr->orientUid,
                          "\": must be vertical or horizontal",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -1009,7 +1009,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                          "bad state value \"",
                          scalePtr->state,
                          "\": must be normal, active, or disabled",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         scalePtr->state = tkNormalUid;
         return TCL_ERROR;
     }
@@ -1231,7 +1231,7 @@ scalePtr) Scale *scalePtr; /* Information about widget. */
     sprintf(valueString, scalePtr->format, scalePtr->fromValue);
     XTextExtents(scalePtr->fontPtr,
                  valueString,
-                 ( int )strlen(valueString),
+                 ( int ) strlen(valueString),
                  &dummy,
                  &dummy,
                  &dummy,
@@ -1240,7 +1240,7 @@ scalePtr) Scale *scalePtr; /* Information about widget. */
     sprintf(valueString, scalePtr->format, scalePtr->toValue);
     XTextExtents(scalePtr->fontPtr,
                  valueString,
-                 ( int )strlen(valueString),
+                 ( int ) strlen(valueString),
                  &dummy,
                  &dummy,
                  &dummy,
@@ -1407,9 +1407,9 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
                    scalePtr->troughGC,
                    scalePtr->vertTroughX + scalePtr->borderWidth,
                    scalePtr->inset + scalePtr->borderWidth,
-                   ( unsigned )scalePtr->width,
-                   ( unsigned )(Tk_Height(tkwin) - 2 * scalePtr->inset
-                                - 2 * scalePtr->borderWidth));
+                   ( unsigned ) scalePtr->width,
+                   ( unsigned ) (Tk_Height(tkwin) - 2 * scalePtr->inset
+                                 - 2 * scalePtr->borderWidth));
     if (scalePtr->state == tkActiveUid) {
         sliderBorder = scalePtr->activeBorder;
     } else {
@@ -1644,9 +1644,9 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
                    scalePtr->troughGC,
                    scalePtr->inset + scalePtr->borderWidth,
                    y + scalePtr->borderWidth,
-                   ( unsigned )(Tk_Width(tkwin) - 2 * scalePtr->inset
-                                - 2 * scalePtr->borderWidth),
-                   ( unsigned )scalePtr->width);
+                   ( unsigned ) (Tk_Width(tkwin) - 2 * scalePtr->inset
+                                 - 2 * scalePtr->borderWidth),
+                   ( unsigned ) scalePtr->width);
     if (scalePtr->state == tkActiveUid) {
         sliderBorder = scalePtr->activeBorder;
     } else {
@@ -1785,7 +1785,7 @@ int top;           /* Y-coordinate of top edge of text,
 static void DisplayScale(clientData) ClientData clientData; /* Widget record
                                                                for scale. */
 {
-    Scale *scalePtr = ( Scale * )clientData;
+    Scale *scalePtr = ( Scale * ) clientData;
     Tk_Window tkwin = scalePtr->tkwin;
     Tcl_Interp *interp = scalePtr->interp;
     Pixmap pixmap;
@@ -1801,24 +1801,24 @@ static void DisplayScale(clientData) ClientData clientData; /* Widget record
      * Invoke the scale's command if needed.
      */
 
-    Tcl_Preserve(( ClientData )scalePtr);
-    Tcl_Preserve(( ClientData )interp);
+    Tcl_Preserve(( ClientData ) scalePtr);
+    Tcl_Preserve(( ClientData ) interp);
     if ((scalePtr->flags & INVOKE_COMMAND) && (scalePtr->command != NULL)) {
         sprintf(string, scalePtr->format, scalePtr->value);
-        result
-        = Tcl_VarEval(interp, scalePtr->command, " ", string, ( char * )NULL);
+        result = Tcl_VarEval(
+        interp, scalePtr->command, " ", string, ( char * ) NULL);
         if (result != TCL_OK) {
             Tcl_AddErrorInfo(interp, "\n    (command executed by scale)");
             Tcl_BackgroundError(interp);
         }
     }
-    Tcl_Release(( ClientData )interp);
+    Tcl_Release(( ClientData ) interp);
     scalePtr->flags &= ~INVOKE_COMMAND;
     if (scalePtr->tkwin == NULL) {
-        Tcl_Release(( ClientData )scalePtr);
+        Tcl_Release(( ClientData ) scalePtr);
         return;
     }
-    Tcl_Release(( ClientData )scalePtr);
+    Tcl_Release(( ClientData ) scalePtr);
 
     /*
      * In order to avoid screen flashes, this procedure redraws
@@ -2061,8 +2061,8 @@ double value; /* Reading of the widget. */
     if (valueRange == 0) {
         y = 0;
     } else {
-        y = ( int )((value - scalePtr->fromValue) * pixelRange / valueRange
-                    + 0.5);
+        y = ( int ) ((value - scalePtr->fromValue) * pixelRange / valueRange
+                     + 0.5);
         if (y < 0) {
             y = 0;
         } else if (y > pixelRange) {
@@ -2095,7 +2095,7 @@ static void ScaleEventProc(clientData, eventPtr)
 ClientData clientData; /* Information about window. */
 XEvent *eventPtr;      /* Information about event. */
 {
-    Scale *scalePtr = ( Scale * )clientData;
+    Scale *scalePtr = ( Scale * ) clientData;
 
     if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0)) {
         EventuallyRedrawScale(scalePtr, REDRAW_ALL);
@@ -2107,9 +2107,9 @@ XEvent *eventPtr;      /* Information about event. */
             Tcl_GetCommandName(scalePtr->interp, scalePtr->widgetCmd));
         }
         if (scalePtr->flags & REDRAW_ALL) {
-            Tcl_CancelIdleCall(DisplayScale, ( ClientData )scalePtr);
+            Tcl_CancelIdleCall(DisplayScale, ( ClientData ) scalePtr);
         }
-        Tcl_EventuallyFree(( ClientData )scalePtr, DestroyScale);
+        Tcl_EventuallyFree(( ClientData ) scalePtr, DestroyScale);
     } else if (eventPtr->type == ConfigureNotify) {
         ComputeScaleGeometry(scalePtr);
         EventuallyRedrawScale(scalePtr, REDRAW_ALL);
@@ -2151,7 +2151,7 @@ XEvent *eventPtr;      /* Information about event. */
 static void ScaleCmdDeletedProc(clientData)
 ClientData clientData; /* Pointer to widget record for widget. */
 {
-    Scale *scalePtr = ( Scale * )clientData;
+    Scale *scalePtr = ( Scale * ) clientData;
     Tk_Window tkwin = scalePtr->tkwin;
 
     /*
@@ -2255,7 +2255,7 @@ int what; /* What to redraw:  REDRAW_SLIDER
         return;
     }
     if ((scalePtr->flags & REDRAW_ALL) == 0) {
-        Tcl_DoWhenIdle(DisplayScale, ( ClientData )scalePtr);
+        Tcl_DoWhenIdle(DisplayScale, ( ClientData ) scalePtr);
     }
     scalePtr->flags |= what;
 }
@@ -2328,7 +2328,7 @@ char *name1;           /* Name of variable. */
 char *name2;           /* Second part of variable name. */
 int flags;             /* Information about what happened. */
 {
-    Scale *scalePtr = ( Scale * )clientData;
+    Scale *scalePtr = ( Scale * ) clientData;
     char *stringValue, *end, *result;
     double value;
 
@@ -2349,7 +2349,7 @@ int flags;             /* Information about what happened. */
             scalePtr->flags |= NEVER_SET;
             SetScaleValue(scalePtr, scalePtr->value, 1, 0);
         }
-        return ( char * )NULL;
+        return ( char * ) NULL;
     }
 
     /*
@@ -2359,7 +2359,7 @@ int flags;             /* Information about what happened. */
      */
 
     if (scalePtr->flags & SETTING_VAR) {
-        return ( char * )NULL;
+        return ( char * ) NULL;
     }
     result = NULL;
     stringValue = Tcl_GetVar(interp, scalePtr->varName, TCL_GLOBAL_ONLY);

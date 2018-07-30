@@ -150,8 +150,8 @@ cxattr(Cx_t *cx, const char *s, char **p, Cxformat_t *f, Cxdisc_t *disc)
         if (!*s)
             break;
         if (!strncasecmp(s, "base=", 5)) {
-            f->base = ( int )strtol(s + 5, &e, 10);
-            s = ( const char * )e;
+            f->base = ( int ) strtol(s + 5, &e, 10);
+            s = ( const char * ) e;
         } else if (!strncasecmp(s, "code=", 5)) {
             t = s + 5;
             switch (*t++) {
@@ -177,7 +177,7 @@ cxattr(Cx_t *cx, const char *s, char **p, Cxformat_t *f, Cxdisc_t *disc)
                 break;
             default:
                 if (p)
-                    *p = ( char * )s;
+                    *p = ( char * ) s;
                 return 0;
             }
             if (*t == '2')
@@ -207,13 +207,13 @@ cxattr(Cx_t *cx, const char *s, char **p, Cxformat_t *f, Cxdisc_t *disc)
                 break;
             default:
                 if (p)
-                    *p = ( char * )s;
+                    *p = ( char * ) s;
                 return 0;
             }
             s = t;
         } else if (!strncasecmp(s, "width=", 6)) {
-            f->width = ( int )strtol(s + 6, &e, 10);
-            s = ( const char * )e;
+            f->width = ( int ) strtol(s + 6, &e, 10);
+            s = ( const char * ) e;
         } else {
             for (t = s; *t && *t != ':' && !isspace(*t); t++)
                 ;
@@ -238,27 +238,27 @@ cxattr(Cx_t *cx, const char *s, char **p, Cxformat_t *f, Cxdisc_t *disc)
 last:
     if (!cx || !isalpha(*s)) {
         type
-        = (!cx || (s == b)) ? ( Cxtype_t * )0 : cxtype(cx, "number", disc);
+        = (!cx || (s == b)) ? ( Cxtype_t * ) 0 : cxtype(cx, "number", disc);
         if (p)
-            *p = ( char * )s;
+            *p = ( char * ) s;
     } else {
         if (*t) {
             if ((t - s) >= sizeof(buf)) {
                 if (p)
-                    *p = ( char * )s;
+                    *p = ( char * ) s;
                 return 0;
             }
             memcpy(buf, s, t - s);
             buf[t - s] = 0;
             e = buf;
         } else
-            e = ( char * )s;
+            e = ( char * ) s;
         if (type = cxtype(cx, e, disc))
             s = t;
         else if (s != b)
             type = cxtype(cx, "number", disc);
         if (p)
-            *p = ( char * )s;
+            *p = ( char * ) s;
     }
     if (type && (f->flags & CX_FLOAT))
         f->base = 0;

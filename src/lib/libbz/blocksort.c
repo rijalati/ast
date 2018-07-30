@@ -404,7 +404,7 @@ qSort3(EState *s, Int32 loSt, Int32 hiSt, Int32 dSt)
             while (True) {
                 if (unLo > unHi)
                     break;
-                n = (( Int32 )block[zptr[unLo] + d]) - med;
+                n = (( Int32 ) block[zptr[unLo] + d]) - med;
                 if (n == 0) {
                     swap(zptr[unLo], zptr[ltLo]);
                     ltLo++;
@@ -418,7 +418,7 @@ qSort3(EState *s, Int32 loSt, Int32 hiSt, Int32 dSt)
             while (True) {
                 if (unLo > unHi)
                     break;
-                n = (( Int32 )block[zptr[unHi] + d]) - med;
+                n = (( Int32 ) block[zptr[unHi] + d]) - med;
                 if (n == 0) {
                     swap(zptr[unHi], zptr[gtHi]);
                     gtHi--;
@@ -641,7 +641,7 @@ sortMain(EState *s)
                 Int32 sbn = (ss << 8) + ss;
                 Int32 lo = ftab[sbn] & CLEARMASK;
                 Int32 hi = (ftab[sbn + 1] & CLEARMASK) - 1;
-                UChar ssc = ( UChar )ss;
+                UChar ssc = ( UChar ) ss;
                 put0 = lo;
                 get0 = ftab[ss << 8] & CLEARMASK;
                 put1 = hi;
@@ -799,7 +799,7 @@ blockSort(EState *s)
         VPrintf3("      %d work, %d block, ratio %5.2f\n",
                  s->workDone,
                  s->nblock - 1,
-                 ( float )(s->workDone) / ( float )(s->nblock - 1));
+                 ( float ) (s->workDone) / ( float ) (s->nblock - 1));
 
     if (s->workDone > s->workLimit && s->firstAttempt) {
         if (s->verbosity >= 2)
@@ -813,7 +813,7 @@ blockSort(EState *s)
             VPrintf3("      %d work, %d block, ratio %f\n",
                      s->workDone,
                      s->nblock - 1,
-                     ( float )(s->workDone) / ( float )(s->nblock - 1));
+                     ( float ) (s->workDone) / ( float ) (s->nblock - 1));
     }
 
     s->origPtr = -1;

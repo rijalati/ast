@@ -115,9 +115,9 @@ char **retp;                               /* to return the remainder of string 
 
         if (mode == IPART) { /* doing the integer part */
             if (dval == 0.)
-                dval = ( Sfdouble_t )n;
+                dval = ( Sfdouble_t ) n;
             else
-                dval = dval * sfpow10(m) + ( Sfdouble_t )n;
+                dval = dval * sfpow10(m) + ( Sfdouble_t ) n;
         } else if (mode == FPART) { /* doing the fractional part */
             fexp -= m;
             if (n > 0)
@@ -150,6 +150,6 @@ char **retp;                               /* to return the remainder of string 
     }
 
     if (retp)
-        *retp = ( char * )s;
+        *retp = ( char * ) s;
     return sign ? -dval : dval;
 }

@@ -95,10 +95,10 @@ static const char usage[]
 
 #    define elementsof(x) (sizeof(x) / sizeof(x[0]))
 #    define newof(p, t, n, x)                                                \
-        ((p) ? ( t * )realloc(( char * )(p), sizeof(t) * (n) + (x))          \
-             : ( t * )calloc(1, sizeof(t) * (n) + (x)))
+        ((p) ? ( t * ) realloc(( char * ) (p), sizeof(t) * (n) + (x))        \
+             : ( t * ) calloc(1, sizeof(t) * (n) + (x)))
 
-#    define NiL (( char * )0)
+#    define NiL (( char * ) 0)
 
 #endif
 
@@ -126,9 +126,9 @@ static const char usage[]
 
 #define CHUNK 1024
 #define KEY(a, b, c, d)                                                      \
-    (((( unsigned long )(a)) << 15) | ((( unsigned long )(b)) << 10)         \
-     | ((( unsigned long )(c)) << 5) | ((( unsigned long )(d))))
-#define NOW (( unsigned long )time(( time_t * )0))
+    (((( unsigned long ) (a)) << 15) | ((( unsigned long ) (b)) << 10)       \
+     | ((( unsigned long ) (c)) << 5) | ((( unsigned long ) (d))))
+#define NOW (( unsigned long ) time(( time_t * ) 0))
 #define ROTATE(p, l, r, t)                                                   \
     ((t) = (p)->l, (p)->l = (t)->r, (t)->r = (p), (p) = (t))
 
@@ -395,7 +395,7 @@ buffer(void)
         state.old = state.old->old;
     else if (!(buf = newof(0, Buf_t, 1, 0))
              || !(buf->buf = newof(0, char, CHUNK, 0)))
-        report(3, "out of space [buffer]", NiL, ( unsigned long )0);
+        report(3, "out of space [buffer]", NiL, ( unsigned long ) 0);
     buf->end = buf->buf + CHUNK;
     buf->nxt = buf->buf;
     return buf;
@@ -427,7 +427,7 @@ appendn(Buf_t *buf, char *str, int n)
         m = (((buf->end - buf->buf) + n + CHUNK + 1) / CHUNK) * CHUNK;
         if (!(buf->buf = newof(buf->buf, char, m, 0)))
             report(
-            3, "out of space [buffer resize]", NiL, ( unsigned long )0);
+            3, "out of space [buffer resize]", NiL, ( unsigned long ) 0);
         buf->end = buf->buf + m;
         buf->nxt = buf->buf + i;
     }
@@ -462,7 +462,7 @@ duplicate(char *s)
 
     n = strlen(s);
     if (!(t = newof(0, char, n, 1)))
-        report(3, "out of space [duplicate]", s, ( unsigned long )0);
+        report(3, "out of space [duplicate]", s, ( unsigned long ) 0);
     strcpy(t, s);
     return t;
 }
@@ -477,7 +477,7 @@ dictionary(void)
     Dict_t *dict;
 
     if (!(dict = newof(0, Dict_t, 1, 0)))
-        report(3, "out of space [dictionary]", NiL, ( unsigned long )0);
+        report(3, "out of space [dictionary]", NiL, ( unsigned long ) 0);
     return dict;
 }
 
@@ -542,7 +542,7 @@ search(Dict_t *dict, char *name, void *value)
             lroot = root->left;
     } else if (value) {
         if (!(root = newof(0, Dict_item_t, 1, strlen(name))))
-            report(3, "out of space [dictionary]", name, ( unsigned long )0);
+            report(3, "out of space [dictionary]", name, ( unsigned long ) 0);
         strcpy(root->name, name);
     }
     if (root) {
@@ -551,7 +551,7 @@ search(Dict_t *dict, char *name, void *value)
         root->left = lroot;
         root->right = rroot;
         dict->root = root;
-        return value ? ( void * )root->name : root->value;
+        return value ? ( void * ) root->name : root->value;
     }
     if (left) {
         left->right = rroot;
@@ -604,10 +604,10 @@ rule(char *name)
 {
     Rule_t *r;
 
-    if (!(r = ( Rule_t * )search(state.rules, name, NiL))) {
+    if (!(r = ( Rule_t * ) search(state.rules, name, NiL))) {
         if (!(r = newof(0, Rule_t, 1, 0)))
-            report(3, "out of space [rule]", name, ( unsigned long )0);
-        r->name = ( char * )search(state.rules, name, ( void * )r);
+            report(3, "out of space [rule]", name, ( unsigned long ) 0);
+        r->name = ( char * ) search(state.rules, name, ( void * ) r);
     }
     return r;
 }
@@ -625,7 +625,7 @@ cons(Rule_t *r, Rule_t *p)
         ;
     if (!x) {
         if (!(x = newof(0, List_t, 1, 0)))
-            report(3, "out of space [list]", r->name, ( unsigned long )0);
+            report(3, "out of space [list]", r->name, ( unsigned long ) 0);
         x->rule = p;
         x->next = r->prereqs;
         r->prereqs = x;
@@ -654,17 +654,17 @@ view(void)
     char buf[CHUNK];
 
     if (stat(".", &st))
-        report(3, "cannot stat", ".", ( unsigned long )0);
-    if ((s = ( char * )search(state.vars, "PWD", NiL)) && !stat(s, &ts)
+        report(3, "cannot stat", ".", ( unsigned long ) 0);
+    if ((s = ( char * ) search(state.vars, "PWD", NiL)) && !stat(s, &ts)
         && ts.st_dev == st.st_dev && ts.st_ino == st.st_ino)
         state.pwd = s;
     if (!state.pwd) {
         if (!getcwd(buf, sizeof(buf) - 1))
-            report(3, "cannot determine PWD", NiL, ( unsigned long )0);
+            report(3, "cannot determine PWD", NiL, ( unsigned long ) 0);
         state.pwd = duplicate(buf);
         search(state.vars, "PWD", state.pwd);
     }
-    if ((s = ( char * )search(state.vars, "VPATH", NiL)) && *s) {
+    if ((s = ( char * ) search(state.vars, "VPATH", NiL)) && *s) {
         zp = 0;
         for (;;) {
             for (t = s; *t && *t != ':'; t++)
@@ -677,9 +677,9 @@ view(void)
                  */
 
                 if (stat(s, &st))
-                    report(3, "cannot stat top view", s, ( unsigned long )0);
+                    report(3, "cannot stat top view", s, ( unsigned long ) 0);
                 if (stat(state.pwd, &ts))
-                    report(3, "cannot stat", state.pwd, ( unsigned long )0);
+                    report(3, "cannot stat", state.pwd, ( unsigned long ) 0);
                 if (ts.st_dev == st.st_dev && ts.st_ino == st.st_ino)
                     p = ".";
                 else {
@@ -690,13 +690,13 @@ view(void)
                                 report(3,
                                        ". not under VPATH",
                                        s,
-                                       ( unsigned long )0);
+                                       ( unsigned long ) 0);
                             *p = 0;
                             if (stat(state.pwd, &ts))
                                 report(3,
                                        "cannot stat",
                                        state.pwd,
-                                       ( unsigned long )0);
+                                       ( unsigned long ) 0);
                             *p = '/';
                             if (ts.st_dev == st.st_dev
                                 && ts.st_ino == st.st_ino) {
@@ -708,17 +708,17 @@ view(void)
                         report(3,
                                "cannot determine viewpath offset",
                                s,
-                               ( unsigned long )0);
+                               ( unsigned long ) 0);
                 }
             }
             n = strlen(s);
             if (!(vp = newof(0, View_t, 1, strlen(p) + n + 1)))
-                report(3, "out of space [view]", s, ( unsigned long )0);
+                report(3, "out of space [view]", s, ( unsigned long ) 0);
             vp->node = n + 1;
             strcpy(vp->dir, s);
             *(vp->dir + n) = '/';
             strcpy(vp->dir + n + 1, p);
-            report(-4, vp->dir, "view", ( unsigned long )0);
+            report(-4, vp->dir, "view", ( unsigned long ) 0);
             if (!state.view)
                 state.view = zp = vp;
             else
@@ -798,7 +798,7 @@ substitute(Buf_t *buf, char *s)
                 *s = c;
                 continue;
             }
-            v = ( char * )search(state.vars, t, NiL);
+            v = ( char * ) search(state.vars, t, NiL);
             if ((c == ':' || c == '=') && (!v || c == ':' && !*v)) {
                 append(buf, b);
                 *s = c;
@@ -950,7 +950,7 @@ find(Buf_t *buf, char *file, struct stat *st)
     int o;
 
     if (s = status(buf, 0, file, st)) {
-        report(-3, s, "find", ( unsigned long )0);
+        report(-3, s, "find", ( unsigned long ) 0);
         return s;
     }
     if (vp = state.view) {
@@ -980,7 +980,7 @@ find(Buf_t *buf, char *file, struct stat *st)
                 o = get(buf);
                 s = use(buf);
                 if (s = status(buf, o, s, st)) {
-                    report(-3, s, "find", ( unsigned long )0);
+                    report(-3, s, "find", ( unsigned long ) 0);
                     return s;
                 }
             } while (vp = vp->next);
@@ -1020,7 +1020,7 @@ pop(void)
     int r;
 
     if (!state.sp)
-        report(3, "input stack underflow", NiL, ( unsigned long )0);
+        report(3, "input stack underflow", NiL, ( unsigned long ) 0);
     if (!state.sp->fp || (state.sp->flags & STREAM_KEEP))
         r = 0;
     else if (state.sp->flags & STREAM_PIPE)
@@ -1048,11 +1048,11 @@ push(char *file, Stdio_t *fp, int flags)
     if (!state.sp)
         state.sp = state.streams;
     else if (++state.sp >= &state.streams[elementsof(state.streams)])
-        report(3, "input stream stack overflow", NiL, ( unsigned long )0);
+        report(3, "input stream stack overflow", NiL, ( unsigned long ) 0);
     if (state.sp->fp = fp)
         state.sp->file = "pipeline";
     else if (flags & STREAM_PIPE)
-        report(3, "pipe error", file, ( unsigned long )0);
+        report(3, "pipe error", file, ( unsigned long ) 0);
     else if (!file || !strcmp(file, "-") || !strcmp(file, "/dev/stdin")) {
         flags |= STREAM_KEEP;
         state.sp->file = "/dev/stdin";
@@ -1061,14 +1061,14 @@ push(char *file, Stdio_t *fp, int flags)
         buf = buffer();
         if (path = find(buf, file, &st)) {
             if (!(state.sp->fp = fopen(path, "r")))
-                report(3, "cannot read", path, ( unsigned long )0);
+                report(3, "cannot read", path, ( unsigned long ) 0);
             state.sp->file = duplicate(path);
             drop(buf);
         } else {
             drop(buf);
             pop();
             if (flags & STREAM_MUST)
-                report(3, "not found", file, ( unsigned long )0);
+                report(3, "not found", file, ( unsigned long ) 0);
             return 0;
         }
     }
@@ -1087,7 +1087,7 @@ input(void)
     char *e;
 
     if (!state.sp)
-        report(3, "no input file stream", NiL, ( unsigned long )0);
+        report(3, "no input file stream", NiL, ( unsigned long ) 0);
     if (state.peek)
         state.peek = 0;
     else if (!fgets(state.input, sizeof(state.input), state.sp->fp))
@@ -1112,7 +1112,7 @@ execute(char *s)
     Buf_t *buf;
 
     if (!state.shell
-        && (!(state.shell = ( char * )search(state.vars, "SHELL", NiL))
+        && (!(state.shell = ( char * ) search(state.vars, "SHELL", NiL))
             || !strcmp(state.shell, sh)))
         state.shell = sh;
     buf = buffer();
@@ -1130,7 +1130,7 @@ execute(char *s)
     }
     add(buf, '\'');
     s = use(buf);
-    report(-5, s, "exec", ( unsigned long )0);
+    report(-5, s, "exec", ( unsigned long ) 0);
     if ((c = system(s)) > 255)
         c >>= 8;
     drop(buf);
@@ -1176,7 +1176,7 @@ run(Rule_t *r, char *s)
                 append(buf, t);
                 continue;
             }
-            if ((q = ( Rule_t * )search(state.rules, t, NiL)) && q->path
+            if ((q = ( Rule_t * ) search(state.rules, t, NiL)) && q->path
                 && !(q->flags & RULE_generated))
                 append(buf, q->path);
             else {
@@ -1220,7 +1220,7 @@ run(Rule_t *r, char *s)
     if (x) {
         if (c = execute(s))
             dont(r, c, state.keepgoing);
-        if (status(( Buf_t * )0, 0, r->name, &st)) {
+        if (status(( Buf_t * ) 0, 0, r->name, &st)) {
             r->time = st.st_mtime;
             r->flags |= RULE_exists;
         } else
@@ -1258,8 +1258,8 @@ path(Buf_t *buf, char *s, int must)
     if ((x = status(buf, 0, s, &st))
         && (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)))
         return x;
-    if (!(p = ( char * )search(state.vars, "PATH", NiL)))
-        report(3, "variable not defined", "PATH", ( unsigned long )0);
+    if (!(p = ( char * ) search(state.vars, "PATH", NiL)))
+        report(3, "variable not defined", "PATH", ( unsigned long ) 0);
     do {
         for (d = p; *p && *p != ':'; p++)
             ;
@@ -1282,7 +1282,7 @@ path(Buf_t *buf, char *s, int must)
             return x;
     } while (*p++);
     if (must)
-        report(3, "command not found", s, ( unsigned long )0);
+        report(3, "command not found", s, ( unsigned long ) 0);
     return 0;
 }
 
@@ -1306,25 +1306,25 @@ probe(void)
     static char let[] = "ABCDEFGHIJKLMNOP";
     static char cmd[] = "mamprobe";
 
-    if (!(cc = ( char * )search(state.vars, "CC", NiL)))
+    if (!(cc = ( char * ) search(state.vars, "CC", NiL)))
         cc = "cc";
     buf = buffer();
     s = path(buf, cmd, 1);
-    q = stat(s, &st) ? ( unsigned long )0 : ( unsigned long )st.st_mtime;
+    q = stat(s, &st) ? ( unsigned long ) 0 : ( unsigned long ) st.st_mtime;
     pro = buffer();
     s = cc = path(pro, cc, 1);
     for (h = 0; *s; s++)
         h = h * 0x63c63cd9L + *s + 0x9c39c33dL;
-    if (!(s = ( char * )search(state.vars, "INSTALLROOT", NiL)))
+    if (!(s = ( char * ) search(state.vars, "INSTALLROOT", NiL)))
         report(
-        3, "variable must be defined", "INSTALLROOT", ( unsigned long )0);
+        3, "variable must be defined", "INSTALLROOT", ( unsigned long ) 0);
     append(buf, s);
     append(buf, "/lib/probe/C/mam/");
     for (h &= 0xffffffffL; h; h >>= 4)
         add(buf, let[h & 0xf]);
     s = use(buf);
-    h = stat(s, &st) ? ( unsigned long )0 : ( unsigned long )st.st_mtime;
-    if (h < q || !push(s, ( Stdio_t * )0, 0)) {
+    h = stat(s, &st) ? ( unsigned long ) 0 : ( unsigned long ) st.st_mtime;
+    if (h < q || !push(s, ( Stdio_t * ) 0, 0)) {
         tmp = buffer();
         append(tmp, cmd);
         add(tmp, ' ');
@@ -1332,10 +1332,10 @@ probe(void)
         add(tmp, ' ');
         append(tmp, cc);
         if (execute(use(tmp)))
-            report(3, "cannot generate probe info", s, ( unsigned long )0);
+            report(3, "cannot generate probe info", s, ( unsigned long ) 0);
         drop(tmp);
-        if (!push(s, ( Stdio_t * )0, 0))
-            report(3, "cannot read probe info", s, ( unsigned long )0);
+        if (!push(s, ( Stdio_t * ) 0, 0))
+            report(3, "cannot read probe info", s, ( unsigned long ) 0);
     }
     drop(pro);
     drop(buf);
@@ -1567,7 +1567,7 @@ make(Rule_t *r)
         case KEY('d', 'o', 'n', 'e'):
             q = rule(expand(buf, t));
             if (q != r && t[0] != '$')
-                report(2, "improper done statement", t, ( unsigned long )0);
+                report(2, "improper done statement", t, ( unsigned long ) 0);
             attributes(r, v);
             if (cmd && state.active
                 && (state.force || r->time < z || !r->time && !z)) {
@@ -1671,7 +1671,7 @@ make(Rule_t *r)
 static int
 verify(Dict_item_t *item, void *handle)
 {
-    Rule_t *r = ( Rule_t * )item->value;
+    Rule_t *r = ( Rule_t * ) item->value;
 
     if ((r->flags & (RULE_active | RULE_error | RULE_made)) == RULE_active)
         dont(r, 0, 1);
@@ -1729,7 +1729,7 @@ update(Rule_t *r)
 static int
 scan(Dict_item_t *item, void *handle)
 {
-    Rule_t *r = ( Rule_t * )item->value;
+    Rule_t *r = ( Rule_t * ) item->value;
     char *s;
     char *t;
     char *u;
@@ -1765,7 +1765,7 @@ scan(Dict_item_t *item, void *handle)
         append(buf, r->name);
         add(buf, '/');
         append(buf, files[i]);
-        if (push(use(buf), ( Stdio_t * )0, 0)) {
+        if (push(use(buf), ( Stdio_t * ) 0, 0)) {
             while (s = input()) {
                 j = p = 0;
                 while (*s) {
@@ -1828,10 +1828,10 @@ scan(Dict_item_t *item, void *handle)
                                 break;
                             }
                     if (k
-                        && ((q = ( Rule_t * )search(state.leaf, t, NiL))
+                        && ((q = ( Rule_t * ) search(state.leaf, t, NiL))
                             && q != r
                             || *t++ == 'l' && *t++ == 'i' && *t++ == 'b' && *t
-                               && (q = ( Rule_t * )search(state.leaf, t, NiL))
+                               && (q = ( Rule_t * ) search(state.leaf, t, NiL))
                                && q != r)) {
                         for (t = w = r->name; *w; w++)
                             if (*w == '/')
@@ -1859,7 +1859,7 @@ scan(Dict_item_t *item, void *handle)
                      */
 
                     *(s - 3) = 0;
-                    q = ( Rule_t * )search(state.leaf, r->name, NiL);
+                    q = ( Rule_t * ) search(state.leaf, r->name, NiL);
                     if (q && q != r)
                         cons(r, q);
                     for (t = w = r->name; *w; w++)
@@ -1867,7 +1867,7 @@ scan(Dict_item_t *item, void *handle)
                             t = w + 1;
                     append(buf, "lib");
                     append(buf, t);
-                    q = ( Rule_t * )search(state.leaf, use(buf), NiL);
+                    q = ( Rule_t * ) search(state.leaf, use(buf), NiL);
                     if (q && q != r)
                         cons(r, q);
                     *(s - 3) = 'l';
@@ -1884,7 +1884,7 @@ scan(Dict_item_t *item, void *handle)
                     while (--t > s) {
                         append(buf, "lib/lib");
                         appendn(buf, s, t - s);
-                        q = ( Rule_t * )search(state.leaf, use(buf), NiL);
+                        q = ( Rule_t * ) search(state.leaf, use(buf), NiL);
                         if (q && q != r)
                             cons(r, q);
                     }
@@ -1904,11 +1904,11 @@ scan(Dict_item_t *item, void *handle)
 static int
 descend(Dict_item_t *item, void *handle)
 {
-    Rule_t *r = ( Rule_t * )item->value;
+    Rule_t *r = ( Rule_t * ) item->value;
 
     if (!state.active
         && (!(r->flags & RULE_active)
-            || !(r = ( Rule_t * )search(state.leaf, r->name, NiL))))
+            || !(r = ( Rule_t * ) search(state.leaf, r->name, NiL))))
         return 0;
     return r->leaf && !(r->flags & RULE_made) ? update(r) : 0;
 }
@@ -1920,7 +1920,7 @@ descend(Dict_item_t *item, void *handle)
 static int
 active(Dict_item_t *item, void *handle)
 {
-    Rule_t *r = ( Rule_t * )item->value;
+    Rule_t *r = ( Rule_t * ) item->value;
 
     if (r->flags & RULE_active) {
         if (r->leaf || search(state.leaf, r->name, NiL))
@@ -2170,7 +2170,8 @@ main(int argc, char **argv)
             case 'D':
                 t = s;
                 if (!*++s && !(s = *++argv)) {
-                    report(2, "option value expected", t, ( unsigned long )0);
+                    report(
+                    2, "option value expected", t, ( unsigned long ) 0);
                     usage();
                 } else
                     switch (*t) {
@@ -2193,7 +2194,7 @@ main(int argc, char **argv)
                     }
                 break;
             default:
-                report(2, "unknown option", s, ( unsigned long )0);
+                report(2, "unknown option", s, ( unsigned long ) 0);
             case '?':
                 usage();
                 break;
@@ -2263,7 +2264,8 @@ main(int argc, char **argv)
      */
 
     if (state.directory && chdir(state.directory))
-        report(3, "cannot change working directory", NiL, ( unsigned long )0);
+        report(
+        3, "cannot change working directory", NiL, ( unsigned long ) 0);
     view();
 
     /*
@@ -2278,7 +2280,7 @@ main(int argc, char **argv)
      */
 
     search(state.vars, "MAMAKEARGS", duplicate(use(state.opt) + 1));
-    push(state.file, ( Stdio_t * )0, STREAM_MUST);
+    push(state.file, ( Stdio_t * ) 0, STREAM_MUST);
     make(rule(""));
     pop();
 

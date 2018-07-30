@@ -233,8 +233,8 @@ uname(struct utsname *ut)
 
 #define extra(m)                                                             \
     do {                                                                     \
-        if (( char * )&ut.m[sizeof(ut.m)] > last)                            \
-            last = ( char * )&ut.m[sizeof(ut.m)];                            \
+        if (( char * ) &ut.m[sizeof(ut.m)] > last)                           \
+            last = ( char * ) &ut.m[sizeof(ut.m)];                           \
     } while (0)
 
 #define output(f, v, u)                                                      \
@@ -242,7 +242,7 @@ uname(struct utsname *ut)
         if ((flags & (f))                                                    \
             && (*(v)                                                         \
                 || (flags & (OPT_all | OPT_total)) == OPT_all                \
-                   && (( f )&OPT_standard)                                   \
+                   && (( f ) &OPT_standard)                                  \
                 || !(flags & (OPT_all | OPT_total)))) {                      \
             if (sep)                                                         \
                 sfputc(sfstdout, ' ');                                       \
@@ -410,7 +410,7 @@ b_uname(int argc, char **argv, Shbltin_t *context)
                 if (t = strchr(hosttype, '.'))
                     t++;
                 else
-                    t = ( char * )hosttype;
+                    t = ( char * ) hosttype;
                 strncpy(s = buf, t, sizeof(buf) - 1);
             }
             output(OPT_implementation, s, "implementation");
@@ -468,7 +468,7 @@ b_uname(int argc, char **argv, Shbltin_t *context)
 #endif
         output(OPT_base, s, "base_rel");
         if (flags & OPT_extra) {
-            char *last = ( char * )&ut;
+            char *last = ( char * ) &ut;
 
             extra(sysname);
             extra(nodename);
@@ -484,9 +484,9 @@ b_uname(int argc, char **argv, Shbltin_t *context)
 #if _mem_base_rel_utsname
             extra(base_rel);
 #endif
-            if (last < (( char * )(&ut + 1))) {
+            if (last < (( char * ) (&ut + 1))) {
                 s = t = last;
-                while (s < ( char * )(&ut + 1)) {
+                while (s < ( char * ) (&ut + 1)) {
                     if (!(n = *s++)) {
                         if ((s - t) > 1) {
                             if (sep)

@@ -36,7 +36,7 @@ tmain()
     Region_t region[N_REGION];
     char *shmfile, *mapfile, *warn;
 
-    warn = ( char * )0;
+    warn = ( char * ) 0;
     size = 0;
     m = sizeof(char *) == 4 ? 2 : 16;
     for (k = 0; k < N_REGION; ++k) {
@@ -74,9 +74,9 @@ tmain()
         }
 
         for (i = 0; i < k; ++i) {
-            if (( char * )region[i].vm->data >= ( char * )region[k].vm->data
-                && ( char * )region[i].vm->data
-                   <= (( char * )region[k].vm->data + region[k].size))
+            if (( char * ) region[i].vm->data >= ( char * ) region[k].vm->data
+                && ( char * ) region[i].vm->data
+                   <= (( char * ) region[k].vm->data + region[k].size))
                 terror("Region[%d] and Region[%d] overlap", i, k);
         }
     }

@@ -96,7 +96,7 @@ Dtmethod_t *meth;
         return NIL(Dtmethod_t *);
 
     if (disc->eventf
-        && (*disc->eventf)(dt, DT_METH, ( Void_t * )meth, disc) < 0)
+        && (*disc->eventf)(dt, DT_METH, ( Void_t * ) meth, disc) < 0)
         return NIL(Dtmethod_t *);
 
     /* get the list of elements */
@@ -105,7 +105,7 @@ Dtmethod_t *meth;
         dt->data->head = NIL(Dtlink_t *);
     else if (dt->data->type & DT_HASH) {
         if (dt->data->ntab > 0)
-            (*dt->memoryf)(dt, ( Void_t * )dt->data->htab, 0, disc);
+            (*dt->memoryf)(dt, ( Void_t * ) dt->data->htab, 0, disc);
         dt->data->ntab = 0;
         dt->data->htab = NIL(Dtlink_t **);
     }
@@ -124,7 +124,7 @@ Dtmethod_t *meth;
         && nhash > 0) { /* set hash table to proper size */
         for (n = HSLOT; HLOAD(n) < nhash;)
             n = HRESIZE(n);
-        slot = ( Dtlink_t ** )(*dt->memoryf)(
+        slot = ( Dtlink_t ** ) (*dt->memoryf)(
         dt, NIL(Void_t *), n * sizeof(Dtlink_t *), disc);
         if (!slot)
             return NIL(Dtmethod_t *);
@@ -139,11 +139,11 @@ Dtmethod_t *meth;
     while (list) {
         t = list->right;
         if (n) {
-            reg char *key = ( char * )OBJ(list, disc);
-            key = KEY(( Void_t * )key, disc);
+            reg char *key = ( char * ) OBJ(list, disc);
+            key = KEY(( Void_t * ) key, disc);
             list->hash = HASH(dt, key, disc);
         }
-        ( void )(*searchf)(dt, ( Void_t * )list, DT_RENEW);
+        ( void ) (*searchf)(dt, ( Void_t * ) list, DT_RENEW);
         list = t;
     }
 

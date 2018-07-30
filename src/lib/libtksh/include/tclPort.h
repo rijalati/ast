@@ -32,7 +32,7 @@
 #    define NBBY (CHAR_BIT * sizeof(fd_mask))
 #endif
 #ifndef howmany
-#    define howmany(x, y) (((x) + (( y )-1)) / (y))
+#    define howmany(x, y) (((x) + (( y ) -1)) / (y))
 #endif
 #ifndef MASK_SIZE
 #    define MASK_SIZE howmany(FD_SETSIZE, NFDBITS)

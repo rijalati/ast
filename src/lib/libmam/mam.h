@@ -31,10 +31,11 @@
 #    include <ast.h>
 #    include <hash.h>
 
-#    define getrule(p, n) ( struct rule * )hashget((p)->rules, (n))
-#    define putrule(p, n, r) hashput((p)->rules, ( char * )(n), ( char * )(r))
-#    define getvar(p, n) ( struct var * )hashget((p)->vars, (n))
-#    define putvar(p, n, v) hashput((p)->vars, ( char * )(n), ( char * )(v))
+#    define getrule(p, n) ( struct rule * ) hashget((p)->rules, (n))
+#    define putrule(p, n, r)                                                 \
+        hashput((p)->rules, ( char * ) (n), ( char * ) (r))
+#    define getvar(p, n) ( struct var * ) hashget((p)->vars, (n))
+#    define putvar(p, n, v) hashput((p)->vars, ( char * ) (n), ( char * ) (v))
 
 #    define A_archive (1 << 0)  /* archive target		*/
 #    define A_dontcare (1 << 1) /* don't care if error		*/

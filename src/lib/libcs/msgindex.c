@@ -44,8 +44,8 @@ again:
     hi = msg_info.name + MSG_STD;
     while (lo <= hi) {
         mid = lo + (hi - lo) / 2;
-        n = ( unsigned char * )name;
-        m = ( unsigned char * )*mid;
+        n = ( unsigned char * ) name;
+        m = ( unsigned char * ) *mid;
         for (;;) {
             if (!*m) {
                 if (!isalnum(*n))

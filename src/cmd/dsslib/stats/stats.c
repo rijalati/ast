@@ -154,13 +154,13 @@ getop(Cx_t *cx,
       void *data,
       Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )(( Dssrecord_t * )data)->data;
+    State_t *state = ( State_t * ) (( Dssrecord_t * ) data)->data;
     Cxvariable_t *variable = pc->data.variable;
     Group_t *group;
     char *s;
     char *v;
 
-    if (variable->data == ( void * )&variables[0]) {
+    if (variable->data == ( void * ) &variables[0]) {
         state->op |= variable->index;
         if (variable->format.delimiter <= 0)
             variable->format.delimiter = ':';
@@ -203,7 +203,7 @@ getvalue(Cx_t *cx,
          void *data,
          Cxdisc_t *disc)
 {
-    Print_t *print = ( Print_t * )(( Dssrecord_t * )data)->data;
+    Print_t *print = ( Print_t * ) (( Dssrecord_t * ) data)->data;
     Cxvariable_t *variable = pc->data.variable;
     char *s;
     Group_t *group;
@@ -212,20 +212,20 @@ getvalue(Cx_t *cx,
     Cxnumber_t u;
     int sep;
 
-    if (variable->data == ( void * )&variables[0])
+    if (variable->data == ( void * ) &variables[0])
         switch (variable->index) {
         case STATS_AVERAGE:
             r->value.number
             = print->total->count
-              ? print->total->value / ( Cxinteger_t )print->total->count
+              ? print->total->value / ( Cxinteger_t ) print->total->count
               : 0;
             break;
         case STATS_COUNT:
-            r->value.number = ( Cxinteger_t )print->total->count;
+            r->value.number = ( Cxinteger_t ) print->total->count;
             break;
         case STATS_DEVIATION:
             if (print->total->count) {
-                u = print->total->value / ( Cxinteger_t )print->total->count;
+                u = print->total->value / ( Cxinteger_t ) print->total->count;
                 if ((u = print->total->square
                          + u * (u - 2 * print->total->value))
                     < 0)
@@ -239,7 +239,7 @@ getvalue(Cx_t *cx,
         case STATS_FIELD:
             if (!print->field
                 || !(r->value.string.data
-                     = ( char * )print->field->variable->name))
+                     = ( char * ) print->field->variable->name))
                 r->value.string.data = "-";
             r->value.string.size = strlen(r->value.string.data);
             break;
@@ -295,9 +295,9 @@ getvalue(Cx_t *cx,
 static int
 bucketcmp(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
-    Cxoperand_t *ka = ( Cxoperand_t * )a;
-    Cxoperand_t *kb = ( Cxoperand_t * )b;
+    State_t *state = ( State_t * ) disc;
+    Cxoperand_t *ka = ( Cxoperand_t * ) a;
+    Cxoperand_t *kb = ( Cxoperand_t * ) b;
     Group_t *group;
     int n;
 
@@ -323,7 +323,7 @@ bucketcmp(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 static int
 stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     int errors = error_info.errors;
     int all;
     int i;
@@ -447,10 +447,10 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         if (all) {
             do {
                 variable
-                = ( Cxvariable_t * )(variable ? dtnext(cx->fields, variable)
-                                              : dtfirst(cx->fields));
+                = ( Cxvariable_t * ) (variable ? dtnext(cx->fields, variable)
+                                               : dtfirst(cx->fields));
             } while (variable
-                     && (variable->data == ( void * )&variables[0]
+                     && (variable->data == ( void * ) &variables[0]
                          || !cxisnumber(variable->type)));
             if (!variable)
                 break;
@@ -475,7 +475,7 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         else
             lastfield = state->field = field;
         state->fields++;
-        if (state->fw < (i = ( int )strlen(variable->name)))
+        if (state->fw < (i = ( int ) strlen(variable->name)))
             state->fw = i;
     } while (all || *++argv);
     if (!state->fields) {
@@ -528,7 +528,7 @@ bad:
 static int
 stats_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
     Cxoperand_t *key;
     Field_t *field;
     Group_t *group;
@@ -553,7 +553,7 @@ stats_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             if (cxcast(
                 cx, key, group->variable, group->variable->type, data, NiL))
                 return -1;
-        if (bucket = ( Bucket_t * )dtmatch(state->buckets, state->key))
+        if (bucket = ( Bucket_t * ) dtmatch(state->buckets, state->key))
             total = bucket->total;
         else if (dtsize(state->buckets) < state->maxgroups) {
             if (!(bucket = vmnewof(state->vm,
@@ -615,8 +615,8 @@ number(Sfio_t *op, Cxnumber_t n, int fw)
 {
     if (n == 0
         || ((n >= 0) ? n : -n) >= 1 && n >= FLTMAX_INTMAX_MIN
-           && n <= FLTMAX_UINTMAX_MAX && n == ( Cxinteger_t )n)
-        sfprintf(op, " %*I*u", fw, sizeof(Cxinteger_t), ( Cxinteger_t )n);
+           && n <= FLTMAX_UINTMAX_MAX && n == ( Cxinteger_t ) n)
+        sfprintf(op, " %*I*u", fw, sizeof(Cxinteger_t), ( Cxinteger_t ) n);
     else {
         if (n >= 0)
             sfputc(op, ' ');
@@ -655,8 +655,8 @@ list(Cx_t *cx,
             if (field)
                 sfprintf(op, "%*s", state->fw, field->variable->name);
             if (state->op & STATS_COUNT)
-                number(op, ( Cxinteger_t )total->count, FW);
-            u = total->value / ( Cxinteger_t )total->count;
+                number(op, ( Cxinteger_t ) total->count, FW);
+            u = total->value / ( Cxinteger_t ) total->count;
             if (state->op & STATS_SUM)
                 number(op, total->value, FW);
             if (state->op & STATS_AVERAGE)
@@ -666,7 +666,7 @@ list(Cx_t *cx,
                     u = -u;
                 if (total->count > 1)
                     u /= (Cxinteger_t)(total->count - 1);
-                number(op, ( Cxnumber_t )sqrt(u), FW);
+                number(op, ( Cxnumber_t ) sqrt(u), FW);
             }
             if (state->op & STATS_RANGE) {
                 number(op, total->min, FW);
@@ -706,7 +706,7 @@ list(Cx_t *cx,
 static int
 stats_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
     Bucket_t *bucket;
     Group_t *group;
 
@@ -738,8 +738,8 @@ stats_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         sfprintf(expr->op, "\n");
     }
     if (state->buckets) {
-        for (bucket = ( Bucket_t * )dtfirst(state->buckets); bucket;
-             bucket = ( Bucket_t * )dtnext(state->buckets, bucket))
+        for (bucket = ( Bucket_t * ) dtfirst(state->buckets); bucket;
+             bucket = ( Bucket_t * ) dtnext(state->buckets, bucket))
             if (list(cx,
                      state,
                      expr->op,

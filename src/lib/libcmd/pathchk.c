@@ -128,7 +128,7 @@ pathchk(char *path, int mode)
             path_max = r;
         if (*cp != '/') {
             if (name_max == 0 || path_max == 0) {
-                if (!(cpold = getcwd(( char * )0, 0)) && errno == EINVAL
+                if (!(cpold = getcwd(( char * ) 0, 0)) && errno == EINVAL
                     && (cpold = newof(0, char, PATH_MAX, 0))
                     && !getcwd(cpold, PATH_MAX)) {
                     free(cpold);

@@ -65,13 +65,13 @@ _ast_libinit(void *in, void *out, void *err)
 {
     Sfio_t *sp;
 
-    sp = ( Sfio_t * )in;
+    sp = ( Sfio_t * ) in;
     *sp = _Sfstdin;
     sfstdin = sp;
-    sp = ( Sfio_t * )out;
+    sp = ( Sfio_t * ) out;
     *sp = _Sfstdout;
     sfstdout = sp;
-    sp = ( Sfio_t * )err;
+    sp = ( Sfio_t * ) err;
     *sp = _Sfstderr;
     sfstderr = sp;
 }

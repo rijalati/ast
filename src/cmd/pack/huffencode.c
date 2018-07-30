@@ -82,11 +82,12 @@ huffencode(Huff_t *hp, Sfio_t *infile, Sfio_t *outfile, int size)
     left = hp->left;
     hp->outsize = 0;
     if (!(outp = outbuff
-          = ( unsigned char * )sfreserve(fp, SF_UNBOUND, SF_LOCKR)))
+          = ( unsigned char * ) sfreserve(fp, SF_UNBOUND, SF_LOCKR)))
         return (-1);
     outend = outp + sfvalue(fp);
     do {
-        if (!(inbuff = ( unsigned char * )sfreserve(infile, SF_UNBOUND, 0))) {
+        if (!(inbuff
+              = ( unsigned char * ) sfreserve(infile, SF_UNBOUND, 0))) {
             if ((n = sfvalue(infile)) == 0) {
                 c = END;
                 goto endof;
@@ -128,7 +129,7 @@ putbuff(Sfio_t *fp, unsigned char *outp)
     int n = outp - outbuff;
     if (sfwrite(fp, outbuff, n) < 0)
         return (-1);
-    if (!(outbuff = ( unsigned char * )sfreserve(fp, SF_UNBOUND, SF_LOCKR)))
+    if (!(outbuff = ( unsigned char * ) sfreserve(fp, SF_UNBOUND, SF_LOCKR)))
         return (-1);
     outend = outbuff + (n = sfvalue(fp));
     return (n);

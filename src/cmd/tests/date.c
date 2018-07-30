@@ -46,7 +46,7 @@ static const char id[]
 #    ifdef __STDC__
 #        define NiL 0
 #    else
-#        define NiL ( char * )0
+#        define NiL ( char * ) 0
 #    endif
 #endif
 
@@ -71,7 +71,7 @@ static struct
 static void
 normal(char *s)
 {
-    unsigned char *u = ( unsigned char * )s;
+    unsigned char *u = ( unsigned char * ) s;
     int c;
 
     if (!u)

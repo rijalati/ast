@@ -69,7 +69,7 @@ pstat_init(Pss_t *pss)
 static int
 pstat_read(Pss_t *pss, Pss_id_t pid)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     int count;
 
     if (pid) {
@@ -99,7 +99,7 @@ pstat_read(Pss_t *pss, Pss_id_t pid)
 static int
 pstat_part(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     struct pst_status *pr = state->pr;
 
     pe->pid = pr->pst_pid;
@@ -109,7 +109,7 @@ pstat_part(Pss_t *pss, Pssent_t *pe)
               : makedev(pr->pst_term.psd_major, pr->pst_term.psd_minor);
     pe->uid = pr->pst_uid;
     pe->sid = pr->pst_sid;
-    switch (( int )pr->pst_stat) {
+    switch (( int ) pr->pst_stat) {
     case PS_IDLE:
         pe->state = 'I';
         break;
@@ -135,7 +135,7 @@ pstat_part(Pss_t *pss, Pssent_t *pe)
 static int
 pstat_full(Pss_t *pss, Pssent_t *pe)
 {
-    State_t *state = ( State_t * )pss->data;
+    State_t *state = ( State_t * ) pss->data;
     struct pst_status *pr = state->pr;
     unsigned long fields = pss->disc->fields & pss->meth->fields;
     char *s;
@@ -159,8 +159,8 @@ pstat_full(Pss_t *pss, Pssent_t *pe)
             pe->command = s;
         }
     }
-    pe->addr = ( void * )pr->pst_addr;
-    pe->wchan = ( void * )pr->pst_wchan;
+    pe->addr = ( void * ) pr->pst_addr;
+    pe->wchan = ( void * ) pr->pst_wchan;
     pe->flags = pr->pst_flag;
     pe->nice = pr->pst_nice;
     pe->ppid = pr->pst_ppid;

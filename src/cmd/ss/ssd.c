@@ -40,7 +40,7 @@ static const char id[] = "\n@(#)$Id: ssd (AT&T Research) 2007-11-19 $\0\n";
 #include <times.h>
 
 #define since(t)                                                             \
-    ((now > (( unsigned long )t)) ? (now - (( unsigned long )t)) : 0L)
+    ((now > (( unsigned long ) t)) ? (now - (( unsigned long ) t)) : 0L)
 
 /*
  * define enough of rwhod info to get by
@@ -231,13 +231,13 @@ struct symbol
  */
 
 static struct symbol symbols[] = {
-    "_avenrun",  ( char * )&avenrun,   sizeof(avenrun),  0,
-    "_boottime", ( char * )&boottime,  sizeof(boottime), 1,
+    "_avenrun",  ( char * ) &avenrun,   sizeof(avenrun),  0,
+    "_boottime", ( char * ) &boottime,  sizeof(boottime), 1,
 #    ifdef CP_TIME
-    "_maxcpu",   ( char * )&maxcpu,    sizeof(maxcpu),   0,
-    "_percpu",   ( char * )&percpu[0], sizeof(percpu),   0,
+    "_maxcpu",   ( char * ) &maxcpu,    sizeof(maxcpu),   0,
+    "_percpu",   ( char * ) &percpu[0], sizeof(percpu),   0,
 #    else
-    "_cp_time",  ( char * )&cp_time[0], sizeof(cp_time),  0,
+    "_cp_time",  ( char * ) &cp_time[0], sizeof(cp_time),  0,
 #    endif
 };
 
@@ -286,7 +286,7 @@ update(char *data, unsigned long now, int delay, CSSTAT *ss)
     if (ss->up < 0) {
         tm = CSTIME();
         if (down)
-            ss->up -= ( long )(tm - down);
+            ss->up -= ( long ) (tm - down);
         down = tm;
     }
     if (now) {
@@ -307,7 +307,7 @@ update(char *data, unsigned long now, int delay, CSSTAT *ss)
         tm = st.st_ctime;
         if (stat(data, &st))
             finish(1);
-        if (tm != ( unsigned long )st.st_ctime)
+        if (tm != ( unsigned long ) st.st_ctime)
             finish(0);
     }
 }
@@ -370,7 +370,7 @@ main(int argc, char **argv)
         if (!csaddr(data))
             error(3, "%s: unknown host", data);
         if (!stat(data, &st)
-            && ( long )(CSTIME() - ( unsigned long )st.st_ctime)
+            && ( long ) (CSTIME() - ( unsigned long ) st.st_ctime)
                < CS_STAT_DOWN)
             exit(0);
         sfsprintf(buf, sizeof(buf), "./%s", data);
@@ -515,7 +515,7 @@ main(int argc, char **argv)
 
         if (fstat(uf, &st))
             error(ERROR_SYSTEM | 3, "%s: stat error", usrfile);
-        if (usertime != ( unsigned long )st.st_mtime) {
+        if (usertime != ( unsigned long ) st.st_mtime) {
             usertime = st.st_mtime;
             if (lseek(uf, 0L, 0))
                 error(ERROR_SYSTEM | 3, "%s: seek error", usrfile);
@@ -610,8 +610,8 @@ main(int argc, char **argv)
 
             for (n = 0; n < elementsof(symbols); n++)
                 if (symbols[n].once >= 0) {
-                    if (lseek(kf, ( long )names[n].n_value, 0)
-                        != ( long )names[n].n_value)
+                    if (lseek(kf, ( long ) names[n].n_value, 0)
+                        != ( long ) names[n].n_value)
                         error(ERROR_SYSTEM | 3,
                               "%s: %s seek error",
                               memfile,

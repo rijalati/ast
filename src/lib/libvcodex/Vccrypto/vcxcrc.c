@@ -24,7 +24,7 @@
 ** Written by Kiem-Phong Vo
 */
 
-#define CRC_ONES (~(( Vcuint32_t )0))
+#define CRC_ONES (~(( Vcuint32_t ) 0))
 
 typedef struct _crc_s
 {
@@ -64,11 +64,11 @@ crc_init(Vcx_t *xx, Vcxmethod_t *meth, Vcchar_t *key, ssize_t keyz)
     if (meth != Vcxcrcsum)
         return -1;
 
-    if (!(crc = ( Crc_t * )calloc(1, sizeof(Crc_t))))
+    if (!(crc = ( Crc_t * ) calloc(1, sizeof(Crc_t))))
         return -1;
 
     xx->meth = Vcxcrcsum;
-    xx->data = ( Crc_t * )crc;
+    xx->data = ( Crc_t * ) crc;
     xx->keyz = 0;
     if (key) /* define internal key */
     {
@@ -91,7 +91,7 @@ crc_stop(Vcx_t *xx)
 {
     Crc_t *crc;
 
-    if (!xx || xx->meth != Vcxcrcsum || !(crc = ( Crc_t * )xx->data))
+    if (!xx || xx->meth != Vcxcrcsum || !(crc = ( Crc_t * ) xx->data))
         return -1;
 
     free(crc);
@@ -105,7 +105,7 @@ crc_digest(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
     Vcuint32_t k, c;
     Crc_t *crc;
 
-    if (!xx || xx->meth != Vcxcrcsum || !(crc = ( Crc_t * )xx->data))
+    if (!xx || xx->meth != Vcxcrcsum || !(crc = ( Crc_t * ) xx->data))
         return -1;
 
     if (data && size > 0) {

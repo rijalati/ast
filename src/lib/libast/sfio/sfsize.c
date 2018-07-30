@@ -39,7 +39,7 @@ Sfoff_t sfsize(f) Sfio_t *f;
 
     SFMTXENTER(f, (Sfoff_t)(-1));
 
-    if ((mode = f->mode & SF_RDWR) != ( int )f->mode
+    if ((mode = f->mode & SF_RDWR) != ( int ) f->mode
         && _sfmode(f, mode, 0) < 0)
         SFMTXRETURN(f, (Sfoff_t)(-1));
 
@@ -62,7 +62,7 @@ Sfoff_t sfsize(f) Sfio_t *f;
                 if ((e = SFSK(f, 0, SEEK_END, disc)) >= 0)
                     f->extent = e;
                 if (SFSK(f, f->here, SEEK_SET, disc) != f->here)
-                    f->here = SFSK(f, ( Sfoff_t )0, SEEK_CUR, disc);
+                    f->here = SFSK(f, ( Sfoff_t ) 0, SEEK_CUR, disc);
             }
 #if _sys_stat
             else {
@@ -70,13 +70,13 @@ Sfoff_t sfsize(f) Sfio_t *f;
                 if (sysfstatf(f->file, &st) < 0)
                     f->extent = -1;
                 else if ((f->extent = st.st_size) < f->here)
-                    f->here = SFSK(f, ( Sfoff_t )0, SEEK_CUR, disc);
+                    f->here = SFSK(f, ( Sfoff_t ) 0, SEEK_CUR, disc);
             }
 #endif
         }
 
         if ((f->flags & (SF_SHARE | SF_PUBLIC)) == (SF_SHARE | SF_PUBLIC))
-            f->here = SFSK(f, ( Sfoff_t )0, SEEK_CUR, f->disc);
+            f->here = SFSK(f, ( Sfoff_t ) 0, SEEK_CUR, f->disc);
     }
 
     if (f->here != s

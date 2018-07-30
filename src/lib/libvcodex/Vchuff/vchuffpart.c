@@ -186,7 +186,7 @@ Void_t **out; /* to return output buffer 	*/
         return 0;
 
     /* estimate table entropy */
-    e = entropy(freq, ( Vcchar_t * )data, size);
+    e = entropy(freq, ( Vcchar_t * ) data, size);
 
     /* estimate the cost of emitting a Huffman table */
     for (c = 0, n = 0; n < VCH_SIZE; ++n)
@@ -204,7 +204,7 @@ Void_t **out; /* to return output buffer 	*/
     vcioputu(&io, size); /* write out the original size */
 
     /* recursively partition into smaller segments and compress */
-    if (part(pt, ( Vcchar_t * )data, size, freq, e) < 0)
+    if (part(pt, ( Vcchar_t * ) data, size, freq, e) < 0)
         return -1;
 
     pt->io = NIL(Vcio_t *);
@@ -242,8 +242,8 @@ Void_t **out; /* to return output buffer 	*/
     if (size == 0)
         return 0;
 
-    data = ( Vcchar_t * )orig;
-    sz = ( ssize_t )size;
+    data = ( Vcchar_t * ) orig;
+    sz = ( ssize_t ) size;
     if (vcrecode(vc, &data, &sz, 0, 0) < 0)
         return -1;
     size = sz;
@@ -300,7 +300,7 @@ Void_t *params;
     Part_t *pt;
 
     if (type == VC_OPENING) {
-        if (!(pt = ( Part_t * )malloc(sizeof(Part_t))))
+        if (!(pt = ( Part_t * ) malloc(sizeof(Part_t))))
             return -1;
 
         /* open the entropy coder handle */

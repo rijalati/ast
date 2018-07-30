@@ -69,7 +69,7 @@ b_trap(int argc, char *argv[], Shbltin_t *context)
         }
     argv += opt_info.index;
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (pflag && aflag)
         errormsg(SH_DICT, ERROR_usage(2), "-a and -p are mutually exclusive");
     if (lflag) {
@@ -199,7 +199,7 @@ b_kill(int argc, char *argv[], Shbltin_t *context)
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             break;
         case 'n':
-            sig = ( int )opt_info.num;
+            sig = ( int ) opt_info.num;
             goto endopts;
         case 's':
             flag |= S_FLAG;
@@ -213,7 +213,7 @@ b_kill(int argc, char *argv[], Shbltin_t *context)
         case 'q':
             flag |= Q_FLAG;
             shp->sigval = opt_info.num;
-            if (( int )shp->sigval != shp->sigval)
+            if (( int ) shp->sigval != shp->sigval)
                 errormsg(SH_DICT,
                          ERROR_exit(1),
                          "%lld - too large for sizeof(integer)",
@@ -222,7 +222,7 @@ b_kill(int argc, char *argv[], Shbltin_t *context)
         case 'Q':
             flag |= Q_FLAG | QQ_FLAG;
             shp->sigval = opt_info.num;
-            if (( int )shp->sigval < 0)
+            if (( int ) shp->sigval < 0)
                 errormsg(SH_DICT,
                          ERROR_exit(1),
                          "%lld - Q must be unsigned",
@@ -240,7 +240,7 @@ endopts:
     if (error_info.errors || flag == (L_FLAG | S_FLAG)
         || (!(*argv) && !(flag & L_FLAG))) {
         shp->sigval = 0;
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     }
     /* just in case we send a kill -9 $$ */
     sfsync(sfstderr);
@@ -253,7 +253,7 @@ endopts:
                     sh_siglist(
                     shp,
                     sfstdout,
-                    (( int )strtol(signame, ( char ** )0, 10) & 0177) + 1);
+                    (( int ) strtol(signame, ( char ** ) 0, 10) & 0177) + 1);
                 else {
                     if ((sig = sig_number(shp, signame)) < 0) {
                         shp->exitval = 2;
@@ -289,7 +289,7 @@ sig_number(Shell_t *shp, const char *string)
     int n, o, sig = 0;
     char *last, *name;
     if (isdigit(*string)) {
-        n = ( int )strtol(string, &last, 10);
+        n = ( int ) strtol(string, &last, 10);
         if (*last)
             n = -1;
     } else {
@@ -306,19 +306,19 @@ sig_number(Shell_t *shp, const char *string)
             sig = 1;
             o += 3;
             if (isdigit(*stkptr(shp->stk, o))) {
-                n = ( int )strtol(stkptr(shp->stk, o), &last, 10);
+                n = ( int ) strtol(stkptr(shp->stk, o), &last, 10);
                 if (!*last)
                     return (n);
             }
         }
         tp = sh_locate(stkptr(shp->stk, o),
-                       ( const Shtable_t * )shtab_signals,
+                       ( const Shtable_t * ) shtab_signals,
                        sizeof(*shtab_signals));
         n = tp->sh_number;
         if (sig == 1 && (n >= (SH_TRAP - 1) && n < (1 << SH_SIGBITS))) {
             /* sig prefix cannot match internal traps */
             n = 0;
-            tp = ( Shtable_t * )(( char * )tp + sizeof(*shtab_signals));
+            tp = ( Shtable_t * ) (( char * ) tp + sizeof(*shtab_signals));
             if (strcmp(stkptr(shp->stk, o), tp->sh_name) == 0)
                 n = tp->sh_number;
         }
@@ -333,13 +333,15 @@ sig_number(Shell_t *shp, const char *string)
             && *name++ == 'R' && *name++ == 'T') {
             if (name[0] == 'M' && name[1] == 'I' && name[2] == 'N'
                 && name[3] == '+') {
-                if ((sig = ( int )strtol(name + 4, &name, 10)) >= 0 && !*name)
+                if ((sig = ( int ) strtol(name + 4, &name, 10)) >= 0
+                    && !*name)
                     n = shp->gd->sigruntime[SH_SIGRTMIN] + sig;
             } else if (name[0] == 'M' && name[1] == 'A' && name[2] == 'X'
                        && name[3] == '-') {
-                if ((sig = ( int )strtol(name + 4, &name, 10)) >= 0 && !*name)
+                if ((sig = ( int ) strtol(name + 4, &name, 10)) >= 0
+                    && !*name)
                     n = shp->gd->sigruntime[SH_SIGRTMAX] - sig;
-            } else if ((sig = ( int )strtol(name, &name, 10)) > 0 && !*name)
+            } else if ((sig = ( int ) strtol(name, &name, 10)) > 0 && !*name)
                 n = shp->gd->sigruntime[SH_SIGRTMIN] + sig - 1;
             if (n < shp->gd->sigruntime[SH_SIGRTMIN]
                 || n > shp->gd->sigruntime[SH_SIGRTMAX])

@@ -160,12 +160,12 @@ exwrite(char *name, FILE *fp, int f)
     }
     if (!(of = fileopen(name, "Ew")))
         return -1;
-    if (filecopy(NiL, fp, name, of, NiL, ( off_t )0, &lc, &cc, 0)) {
+    if (filecopy(NiL, fp, name, of, NiL, ( off_t ) 0, &lc, &cc, 0)) {
         fileclose(of);
         return -1;
     }
     fileclose(of);
-    note(0, "%ld/%ld", ( long )lc, ( long )cc);
+    note(0, "%ld/%ld", ( long ) lc, ( long ) cc);
     return 0;
 }
 
@@ -180,8 +180,8 @@ editmessage(struct header *hp, int c)
     FILE *fp;
 
     sigint = signal(SIGINT, SIG_IGN);
-    if (fp = run_editor(state.collect.fp, ( off_t )-1, hp, c, 0)) {
-        fseek(fp, ( off_t )0, SEEK_END);
+    if (fp = run_editor(state.collect.fp, ( off_t ) -1, hp, c, 0)) {
+        fseek(fp, ( off_t ) 0, SEEK_END);
         fileclose(state.collect.fp);
         state.collect.fp = fp;
     }
@@ -220,7 +220,7 @@ pipemessage(FILE *fp, char *cmd)
     /*
      * Take new files.
      */
-    fseek(nf, ( off_t )0, SEEK_END);
+    fseek(nf, ( off_t ) 0, SEEK_END);
     state.collect.fp = nf;
     fileclose(fp);
 out:
@@ -275,7 +275,7 @@ interpolate(char *ms, FILE *fp, int f, int followup)
         prefix = 0;
     } else if (!(prefix = state.var.indentprefix))
         prefix = "\t";
-    ignore = isupper(f) ? ( Dt_t ** )0 : &state.ignore;
+    ignore = isupper(f) ? ( Dt_t ** ) 0 : &state.ignore;
     if (!followup)
         printf("Interpolating:");
     for (ip = state.msg.list; ip->m_index; ip++) {
@@ -530,7 +530,7 @@ collect(struct header *hp, unsigned long flags)
                          state.var.signature,
                          state.collect.fp,
                          stdout,
-                         ( off_t )0,
+                         ( off_t ) 0,
                          NiL,
                          NiL,
                          0);
@@ -713,7 +713,7 @@ collect(struct header *hp, unsigned long flags)
                 fprintf(fp, "-------\nMessage contains:\n");
                 headout(fp, hp, GEDIT | GNL);
                 filecopy(
-                NiL, state.collect.fp, NiL, fp, NiL, ( off_t )0, NiL, NiL, 0);
+                NiL, state.collect.fp, NiL, fp, NiL, ( off_t ) 0, NiL, NiL, 0);
             }
             fileclose(fp);
             goto cont;
@@ -861,7 +861,7 @@ savedeadletter(FILE *fp)
     char *s;
 
     if (filesize(fp) && (s = deadletter()) && (dp = fileopen(s, "Ma"))) {
-        filecopy(NiL, fp, s, dp, NiL, ( off_t )0, NiL, NiL, 0);
+        filecopy(NiL, fp, s, dp, NiL, ( off_t ) 0, NiL, NiL, 0);
         fileclose(dp);
         rewind(fp);
     }

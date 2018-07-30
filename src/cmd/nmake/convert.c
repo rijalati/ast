@@ -36,8 +36,8 @@ static const char id[]
 #include "expand.h"
 
 #define EXBUF 1024
-#define DELETE (( char * )0)
-#define KEEP (( char * )sfstdout)
+#define DELETE (( char * ) 0)
+#define KEEP (( char * ) sfstdout)
 #define RE_ALL (1 << 0)
 #define RE_LOWER (1 << 1)
 #define RE_UPPER (1 << 2)
@@ -899,8 +899,8 @@ expand(char *xp, char *a)
 static int
 byop(const char *a, const char *b)
 {
-    Edit_map_t *ap = ( Edit_map_t * )a;
-    Edit_map_t *bp = ( Edit_map_t * )b;
+    Edit_map_t *ap = ( Edit_map_t * ) a;
+    Edit_map_t *bp = ( Edit_map_t * ) b;
 
     if (ap->cmd.type == ED_QUAL)
         return (-1);
@@ -944,10 +944,10 @@ main(int argc, char **argv)
     if (!(state.map = newof(0, Edit_map_t *, elementsof(editmap), 0)))
         error(ERROR_SYSTEM | 3, "out of space [editmap sort]");
     mpp = state.map;
-    mp = ( Edit_map_t * )editmap;
+    mp = ( Edit_map_t * ) editmap;
     while (mp < &editmap[elementsof(editmap)])
         *mpp++ = mp++;
-    strsort(( char ** )state.map, elementsof(editmap), byop);
+    strsort(( char ** ) state.map, elementsof(editmap), byop);
     while (c = optget(argv, "d:[delimiter]o:[longflag]D#[debug-level]"))
         switch (c) {
         case 'd':

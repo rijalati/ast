@@ -87,7 +87,7 @@ vecload(char *buf)
                 s++;
             }
         *p = 0;
-        *(vec - 1) = ( char * )p;
+        *(vec - 1) = ( char * ) p;
     }
     return (vec);
 }

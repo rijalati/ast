@@ -42,8 +42,8 @@ camap_init(void *ptr)
 int
 camap_write(void *ptr, void *buff, size_t size)
 {
-    char *hit = ( char * )ptr;
-    unsigned char *cp = ( unsigned char * )buff;
+    char *hit = ( char * ) ptr;
+    unsigned char *cp = ( unsigned char * ) buff;
     unsigned char *ep = cp + size;
 
     while (cp < ep)
@@ -84,7 +84,7 @@ camap_done(void *ptr, const char *file, int out)
 {
     unsigned char table[256];
     char header[80];
-    char *hit = ( char * )ptr;
+    char *hit = ( char * ) ptr;
     int i, j, k, m, n, in = -1, r = 0, sep = '(';
     for (i = 0; i < sizeof(special) / sizeof(*special); i++) {
         m = special[i];
@@ -117,7 +117,7 @@ camap_done(void *ptr, const char *file, int out)
     }
     if (in >= 0) {
         strcpy(&header[k], ")\n");
-        if (lseek(out, ( off_t )0, SEEK_SET) == 0)
+        if (lseek(out, ( off_t ) 0, SEEK_SET) == 0)
             r = tr(in, out, header, table);
         else
             r = -1;

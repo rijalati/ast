@@ -119,7 +119,7 @@ static char mapChars[]
  * Forward declarations for procedures defined in this file:
  */
 
-static void FontInit _ANSI_ARGS_(( void ));
+static void FontInit _ANSI_ARGS_(( void ) );
 static void SetFontMetrics _ANSI_ARGS_((TkFont * fontPtr));
 
 /*
@@ -169,9 +169,9 @@ Tk_Uid name;        /* Name of font (in form suitable for
 
     nameKey.name = name;
     nameKey.display = Tk_Display(tkwin);
-    nameHashPtr = Tcl_CreateHashEntry(&nameTable, ( char * )&nameKey, &new);
+    nameHashPtr = Tcl_CreateHashEntry(&nameTable, ( char * ) &nameKey, &new);
     if (!new) {
-        fontPtr = ( TkFont * )Tcl_GetHashValue(nameHashPtr);
+        fontPtr = ( TkFont * ) Tcl_GetHashValue(nameHashPtr);
         fontPtr->refCount++;
         return fontPtr->fontStructPtr;
     }
@@ -185,10 +185,10 @@ Tk_Uid name;        /* Name of font (in form suitable for
     if (fontStructPtr == NULL) {
         Tcl_DeleteHashEntry(nameHashPtr);
         Tcl_AppendResult(
-        interp, "font \"", name, "\" doesn't exist", ( char * )NULL);
+        interp, "font \"", name, "\" doesn't exist", ( char * ) NULL);
         return NULL;
     }
-    fontPtr = ( TkFont * )ckalloc(sizeof(TkFont));
+    fontPtr = ( TkFont * ) ckalloc(sizeof(TkFont));
     fontPtr->display = nameKey.display;
     fontPtr->fontStructPtr = fontStructPtr;
     fontPtr->refCount = 1;
@@ -196,7 +196,7 @@ Tk_Uid name;        /* Name of font (in form suitable for
     fontPtr->widths = NULL;
     fontPtr->nameHashPtr = nameHashPtr;
     fontHashPtr
-    = Tcl_CreateHashEntry(&fontTable, ( char * )fontStructPtr, &new);
+    = Tcl_CreateHashEntry(&fontTable, ( char * ) fontStructPtr, &new);
     if (!new) {
         panic("XFontStruct already registered in Tk_GetFontStruct");
     }
@@ -236,16 +236,16 @@ XFontStruct *fontStructPtr; /* Font whose name is desired. */
 
     if (!initialized) {
     printid:
-        sprintf(string, "font id 0x%x", ( unsigned int )fontStructPtr->fid);
+        sprintf(string, "font id 0x%x", ( unsigned int ) fontStructPtr->fid);
         return string;
     }
-    fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * )fontStructPtr);
+    fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * ) fontStructPtr);
     if (fontHashPtr == NULL) {
         goto printid;
     }
-    fontPtr = ( TkFont * )Tcl_GetHashValue(fontHashPtr);
+    fontPtr = ( TkFont * ) Tcl_GetHashValue(fontHashPtr);
     ptr = fontPtr->nameHashPtr->key.words;
-    return (( NameKey * )ptr)->name;
+    return (( NameKey * ) ptr)->name;
 }
 
 /*
@@ -277,11 +277,11 @@ XFontStruct *fontStructPtr; /* Font to be released. */
         panic("Tk_FreeFontStruct called before Tk_GetFontStruct");
     }
 
-    fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * )fontStructPtr);
+    fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * ) fontStructPtr);
     if (fontHashPtr == NULL) {
         panic("Tk_FreeFontStruct received unknown font argument");
     }
-    fontPtr = ( TkFont * )Tcl_GetHashValue(fontHashPtr);
+    fontPtr = ( TkFont * ) Tcl_GetHashValue(fontHashPtr);
     fontPtr->refCount--;
     if (fontPtr->refCount == 0) {
         /*
@@ -302,9 +302,9 @@ XFontStruct *fontStructPtr; /* Font to be released. */
             ckfree(fontPtr->types);
         }
         if (fontPtr->widths != NULL) {
-            ckfree(( char * )fontPtr->widths);
+            ckfree(( char * ) fontPtr->widths);
         }
-        ckfree(( char * )fontPtr);
+        ckfree(( char * ) fontPtr);
         lastFontStructPtr = NULL;
     }
 }
@@ -362,8 +362,8 @@ static void SetFontMetrics(fontPtr) TkFont *fontPtr; /* Font structure in
      * Pass 1: initialize the arrays.
      */
 
-    fontPtr->types = ( char * )ckalloc(256);
-    fontPtr->widths = ( unsigned char * )ckalloc(256);
+    fontPtr->types = ( char * ) ckalloc(256);
+    fontPtr->widths = ( unsigned char * ) ckalloc(256);
     for (i = 0; i < 256; i++) {
         fontPtr->types[i] = REPLACE;
     }
@@ -530,11 +530,11 @@ int *nextXPtr;              /* Return x-position of terminating
             panic("TkMeasureChars received unknown font argument");
         }
 
-        fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * )fontStructPtr);
+        fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * ) fontStructPtr);
         if (fontHashPtr == NULL) {
             goto badArg;
         }
-        fontPtr = ( TkFont * )Tcl_GetHashValue(fontHashPtr);
+        fontPtr = ( TkFont * ) Tcl_GetHashValue(fontHashPtr);
         lastFontStructPtr = fontPtr->fontStructPtr;
         lastFontPtr = fontPtr;
     }
@@ -688,11 +688,11 @@ int flags;                  /* Flags to control display.  Only
             panic("TkDisplayChars received unknown font argument");
         }
 
-        fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * )fontStructPtr);
+        fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * ) fontStructPtr);
         if (fontHashPtr == NULL) {
             goto badArg;
         }
-        fontPtr = ( TkFont * )Tcl_GetHashValue(fontHashPtr);
+        fontPtr = ( TkFont * ) Tcl_GetHashValue(fontHashPtr);
         lastFontStructPtr = fontPtr->fontStructPtr;
         lastFontPtr = fontPtr;
     }
@@ -841,7 +841,7 @@ int lastChar;               /* Index of last character to underline. */
                    string,
                    firstChar,
                    x,
-                   ( int )1000000,
+                   ( int ) 1000000,
                    tabOrigin,
                    flags,
                    &xUnder);
@@ -849,7 +849,7 @@ int lastChar;               /* Index of last character to underline. */
                    string + firstChar,
                    lastChar + 1 - firstChar,
                    xUnder,
-                   ( int )1000000,
+                   ( int ) 1000000,
                    tabOrigin,
                    flags,
                    &width);
@@ -860,8 +860,8 @@ int lastChar;               /* Index of last character to underline. */
                    gc,
                    xUnder,
                    yUnder,
-                   ( unsigned int )width,
-                   ( unsigned int )height);
+                   ( unsigned int ) width,
+                   ( unsigned int ) height);
 }
 
 /*

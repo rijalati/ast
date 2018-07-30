@@ -34,6 +34,6 @@ int _sfllen(v) Sflong_t v;
 {
     if (v < 0)
         v = -(v + 1);
-    v = ( Sfulong_t )v >> SF_SBITS;
+    v = ( Sfulong_t ) v >> SF_SBITS;
     return 1 + (v > 0 ? sfulen(v) : 0);
 }

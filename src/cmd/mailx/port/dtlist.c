@@ -98,7 +98,7 @@ reg int type;
                     if (disc->freef)
                         (*disc->freef)(dt, OBJ(r, disc), disc);
                     if (disc->link < 0)
-                        (*dt->memoryf)(dt, ( Void_t * )r, 0, disc);
+                        (*dt->memoryf)(dt, ( Void_t * ) r, 0, disc);
                 } while ((r = t));
             }
             dt->data->head = dt->data->here = NIL(Dtlink_t *);
@@ -115,10 +115,10 @@ reg int type;
     }
 
     if (type & DT_MATCH)
-        key = ( char * )obj;
+        key = ( char * ) obj;
     else {
         if (type & DT_RENEW) {
-            renew = ( Dtlink_t * )obj;
+            renew = ( Dtlink_t * ) obj;
             obj = OBJ(renew, disc);
         }
         key = KEY(obj, disc);
@@ -128,8 +128,8 @@ reg int type;
     prev = NIL(Dtlink_t *);
     if (!(t = dt->data->here) || OBJ(t, disc) != obj) {
         for (t = dt->data->head; t; prev = t->left, t = prev->right) {
-            k = ( char * )OBJ(t, disc);
-            k = KEY(( Void_t * )k, disc);
+            k = ( char * ) OBJ(t, disc);
+            k = KEY(( Void_t * ) k, disc);
             if (CMP(dt, key, k, disc) == 0)
                 break;
         }
@@ -168,7 +168,7 @@ reg int type;
                 if (disc->freef)
                     (*disc->freef)(dt, obj, disc);
                 if (disc->link < 0)
-                    (*disc->memoryf)(dt, ( Void_t * )t, 0, disc);
+                    (*disc->memoryf)(dt, ( Void_t * ) t, 0, disc);
                 if ((dt->data->size -= 1) < 0)
                     dt->data->size = -1;
                 return obj;
@@ -196,14 +196,14 @@ reg int type;
             if (disc->makef && !(obj = (*disc->makef)(dt, obj, disc)))
                 return NIL(Void_t *);
             if (disc->link < 0) {
-                r = ( Dtlink_t * )(*dt->memoryf)(
+                r = ( Dtlink_t * ) (*dt->memoryf)(
                 dt, NIL(Void_t *), sizeof(Dthold_t), disc);
                 if (!r) {
                     if (disc->freef && disc->makef)
                         (*disc->freef)(dt, obj, disc);
                     return NIL(Void_t *);
                 }
-                (( Dthold_t * )r)->obj = obj;
+                (( Dthold_t * ) r)->obj = obj;
             } else
                 r = ELT(obj, disc);
 

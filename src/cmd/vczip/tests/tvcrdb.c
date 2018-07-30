@@ -42,25 +42,25 @@ typedef struct _depend_s
 } Depend_t;
 
 Depend_t Field01[]
-= { { ( Vcchar_t * )"aaaaa", 5, ( Vcchar_t * )"AAAAAA", 6 },
-    { ( Vcchar_t * )"bbbbb", 5, ( Vcchar_t * )"BBBBBB", 6 },
-    { ( Vcchar_t * )"ccccc", 5, ( Vcchar_t * )"CCCCCC", 6 },
-    { ( Vcchar_t * )"ddddd", 5, ( Vcchar_t * )"DDDDDD", 6 },
-    { ( Vcchar_t * )"eeeee", 5, ( Vcchar_t * )"EEEEEE", 6 } };
+= { { ( Vcchar_t * ) "aaaaa", 5, ( Vcchar_t * ) "AAAAAA", 6 },
+    { ( Vcchar_t * ) "bbbbb", 5, ( Vcchar_t * ) "BBBBBB", 6 },
+    { ( Vcchar_t * ) "ccccc", 5, ( Vcchar_t * ) "CCCCCC", 6 },
+    { ( Vcchar_t * ) "ddddd", 5, ( Vcchar_t * ) "DDDDDD", 6 },
+    { ( Vcchar_t * ) "eeeee", 5, ( Vcchar_t * ) "EEEEEE", 6 } };
 
 Depend_t Field23[]
-= { { ( Vcchar_t * )"iiiii", 5, ( Vcchar_t * )"IIIIII", 6 },
-    { ( Vcchar_t * )"jjjjj", 5, ( Vcchar_t * )"JJJJJJ", 6 },
-    { ( Vcchar_t * )"kkkkk", 5, ( Vcchar_t * )"KKKKKK", 6 },
-    { ( Vcchar_t * )"lllll", 5, ( Vcchar_t * )"LLLLLL", 6 },
-    { ( Vcchar_t * )"mmmmm", 5, ( Vcchar_t * )"MMMMMM", 6 } };
+= { { ( Vcchar_t * ) "iiiii", 5, ( Vcchar_t * ) "IIIIII", 6 },
+    { ( Vcchar_t * ) "jjjjj", 5, ( Vcchar_t * ) "JJJJJJ", 6 },
+    { ( Vcchar_t * ) "kkkkk", 5, ( Vcchar_t * ) "KKKKKK", 6 },
+    { ( Vcchar_t * ) "lllll", 5, ( Vcchar_t * ) "LLLLLL", 6 },
+    { ( Vcchar_t * ) "mmmmm", 5, ( Vcchar_t * ) "MMMMMM", 6 } };
 
 Depend_t Field45[]
-= { { ( Vcchar_t * )"rrrrr", 5, ( Vcchar_t * )"RRRRRR", 6 },
-    { ( Vcchar_t * )"sssss", 5, ( Vcchar_t * )"SSSSSS", 6 },
-    { ( Vcchar_t * )"ttttt", 5, ( Vcchar_t * )"TTTTTT", 6 },
-    { ( Vcchar_t * )"uuuuu", 5, ( Vcchar_t * )"UUUUUU", 6 },
-    { ( Vcchar_t * )"vvvvv", 3, ( Vcchar_t * )"VVVVVV", 6 } };
+= { { ( Vcchar_t * ) "rrrrr", 5, ( Vcchar_t * ) "RRRRRR", 6 },
+    { ( Vcchar_t * ) "sssss", 5, ( Vcchar_t * ) "SSSSSS", 6 },
+    { ( Vcchar_t * ) "ttttt", 5, ( Vcchar_t * ) "TTTTTT", 6 },
+    { ( Vcchar_t * ) "uuuuu", 5, ( Vcchar_t * ) "UUUUUU", 6 },
+    { ( Vcchar_t * ) "vvvvv", 3, ( Vcchar_t * ) "VVVVVV", 6 } };
 
 Vcchar_t Data[N_RECORDS * 60 + 1]; /* (#fields=6) * (maxLength=9) +
                                       (Separators=6) = 60 */
@@ -327,8 +327,8 @@ MAIN()
     e);
 
     /* test transformation of records with missing fields */
-    strcpy(( char * )test, "1.2.3.4\na.b\n5.6.7.8\nc.d.\n");
-    k = strlen(( char * )test);
+    strcpy(( char * ) test, "1.2.3.4\na.b\n5.6.7.8\nc.d.\n");
+    k = strlen(( char * ) test);
 
     if (!(envc = vcopen(0, Vcrdb, "fsep=[.].rsep=[\\012]", entbl, VC_ENCODE))
         || !(devc

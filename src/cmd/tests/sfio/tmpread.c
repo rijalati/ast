@@ -36,7 +36,7 @@ tmain()
     if (pipe(p) < 0)
         terror("Making pipe for communication");
 
-    if (!(fr = sfnew(0, 0, ( size_t )SF_UNBOUND, p[0], SF_READ)))
+    if (!(fr = sfnew(0, 0, ( size_t ) SF_UNBOUND, p[0], SF_READ)))
         terror("Making read stream");
 
     for (i = 0; i < sizeof(wbuf); ++i)

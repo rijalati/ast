@@ -51,13 +51,13 @@ _STUB_vmdcshare()
 
 /* magic word signaling region is being initialized */
 #    define MM_JUST4US                                                       \
-        (( unsigned int )(('P' << 24) | ('N' << 16) | ('B' << 8)             \
-                          | ('I'))) /* 1347306057 */
+        (( unsigned int ) (('P' << 24) | ('N' << 16) | ('B' << 8)            \
+                           | ('I'))) /* 1347306057 */
 
 /* magic word signaling file/segment is ready */
 #    define MM_MAGIC                                                         \
-        (( unsigned int )(('P' << 24) | ('&' << 16) | ('N' << 8)             \
-                          | ('8'))) /* 1344687672 */
+        (( unsigned int ) (('P' << 24) | ('&' << 16) | ('N' << 8)            \
+                           | ('8'))) /* 1344687672 */
 
 /* default mimimum region size */
 #    define MM_MINSIZE (64 * _Vmpagesize)
@@ -68,7 +68,7 @@ _STUB_vmdcshare()
 
 /* macros to get the data section and size */
 #    define MMHEAD(name) ROUND(sizeof(Mmvm_t) + strlen(name), MEM_ALIGN)
-#    define MMDATA(mmvm) (( Vmuchar_t * )(mmvm)->base + MMHEAD(mmvm->name))
+#    define MMDATA(mmvm) (( Vmuchar_t * ) (mmvm)->base + MMHEAD(mmvm->name))
 #    define MMSIZE(mmvm) ((mmvm)->size - MMHEAD(mmvm->name))
 
 #    ifdef S_IRUSR
@@ -109,7 +109,7 @@ int
 _vmmdump(Vmalloc_t *vm, int fd)
 {
     char mesg[1024];
-    Mmdisc_t *mmdc = ( Mmdisc_t * )vm->disc;
+    Mmdisc_t *mmdc = ( Mmdisc_t * ) vm->disc;
 
     fd = fd < 0 ? 2 : fd;
     sprintf(mesg, "File: %s\n", mmdc->name);
@@ -156,7 +156,7 @@ mmkey(char *str, int proj)
         hash = (hash ^ str[0]) * FNV_PRIME;
     hash = (hash ^ proj) * FNV_PRIME; /* hash project number */
 
-    return (key = ( key_t )hash) <= 0 ? -key : key;
+    return (key = ( key_t ) hash) <= 0 ? -key : key;
 }
 
 /* fix the mapped address for a region */
@@ -166,22 +166,22 @@ mmfix(Mmvm_t *mmvm, Mmdisc_t *mmdc, int fd)
     Void_t *base = mmvm->base;
     ssize_t size = mmvm->size;
 
-    if (base != ( Void_t * )mmvm) /* mmvm is not right yet */
-    {                             /**/
+    if (base != ( Void_t * ) mmvm) /* mmvm is not right yet */
+    {                              /**/
         DEBUG_ASSERT(!base || (base && (VMLONG(base) % _Vmpagesize) == 0));
         if (mmdc->proj < 0) {
-            munmap(( Void_t * )mmvm, size);
-            mmvm = ( Mmvm_t * )mmap(base,
-                                    size,
-                                    (PROT_READ | PROT_WRITE),
-                                    (MAP_FIXED | MAP_SHARED),
-                                    fd,
-                                    ( off_t )0);
+            munmap(( Void_t * ) mmvm, size);
+            mmvm = ( Mmvm_t * ) mmap(base,
+                                     size,
+                                     (PROT_READ | PROT_WRITE),
+                                     (MAP_FIXED | MAP_SHARED),
+                                     fd,
+                                     ( off_t ) 0);
         } else {
-            shmdt(( Void_t * )mmvm);
-            mmvm = ( Mmvm_t * )shmat(mmdc->shmid, base, 0);
+            shmdt(( Void_t * ) mmvm);
+            mmvm = ( Mmvm_t * ) shmat(mmdc->shmid, base, 0);
         }
-        if (!mmvm || mmvm == ( Mmvm_t * )(-1))
+        if (!mmvm || mmvm == ( Mmvm_t * ) (-1))
             mmvm = NIL(Mmvm_t *);
     }
 
@@ -218,14 +218,15 @@ mminit(Mmdisc_t *mmdc)
         }
 
         /* Note that the location being written to is always zero! */
-        if ((extent = ( ssize_t )lseek(fd, ( off_t )0, SEEK_END)) < 0) { /**/
+        if ((extent = ( ssize_t ) lseek(fd, ( off_t ) 0, SEEK_END))
+            < 0) { /**/
             DEBUG_MESSAGE("vmdcshare: lseek() to get file size failed");
             goto done;
         }
 
         if (extent < size) /* make the file size large enough */
         {
-            if (lseek(fd, ( off_t )size, 0) != ( off_t )size
+            if (lseek(fd, ( off_t ) size, 0) != ( off_t ) size
                 || write(fd, "", 1) != 1) { /**/
                 DEBUG_MESSAGE("vmdcshare: attempt to extend file failed");
                 goto done;
@@ -233,14 +234,14 @@ mminit(Mmdisc_t *mmdc)
         }
 
         /* map the file into memory */
-        mmvm = ( Mmvm_t * )mmap(NIL(Void_t *),
-                                size,
-                                (PROT_READ | PROT_WRITE),
-                                MAP_SHARED,
-                                fd,
-                                ( off_t )0);
-        if (!mmvm || mmvm == ( Mmvm_t * )(-1)) /* initial mapping failed */
-        {                                      /**/
+        mmvm = ( Mmvm_t * ) mmap(NIL(Void_t *),
+                                 size,
+                                 (PROT_READ | PROT_WRITE),
+                                 MAP_SHARED,
+                                 fd,
+                                 ( off_t ) 0);
+        if (!mmvm || mmvm == ( Mmvm_t * ) (-1)) /* initial mapping failed */
+        {                                       /**/
             DEBUG_MESSAGE("vmdcshare: mmap() failed");
             goto done;
         }
@@ -254,9 +255,9 @@ mminit(Mmdisc_t *mmdc)
         }
 
         /* map the data segment into memory */
-        mmvm = ( Mmvm_t * )shmat(mmdc->shmid, NIL(Void_t *), 0);
-        if (!mmvm || mmvm == ( Mmvm_t * )(-1)) /* initial mapping failed */
-        {                                      /**/
+        mmvm = ( Mmvm_t * ) shmat(mmdc->shmid, NIL(Void_t *), 0);
+        if (!mmvm || mmvm == ( Mmvm_t * ) (-1)) /* initial mapping failed */
+        {                                       /**/
             DEBUG_MESSAGE("vmdcshare: attempt to attach memory failed");
             shmctl(mmdc->shmid, IPC_RMID, 0);
             goto done;
@@ -296,7 +297,7 @@ mminit(Mmdisc_t *mmdc)
         mmvm->proj = mmdc->proj;
         strcpy(mmvm->name, mmdc->name);
         if (mmdc->proj < 0) /* flush to file */
-            msync(( Void_t * )mmvm, MMHEAD(mmvm->name), MS_SYNC);
+            msync(( Void_t * ) mmvm, MMHEAD(mmvm->name), MS_SYNC);
 
         rv = 0; /* success, return this value to indicate a new map */
     } else      /* wait for someone else to finish initialization */
@@ -325,7 +326,8 @@ mminit(Mmdisc_t *mmdc)
             goto done;
         }
 
-        if (mmvm->base != ( Void_t * )mmvm) /* not yet at the right address */
+        if (mmvm->base
+            != ( Void_t * ) mmvm) /* not yet at the right address */
         {
             if (!(mmvm = mmfix(mmvm, mmdc, fd))) { /**/
                 DEBUG_MESSAGE("vmdcshare: Can't fix address");
@@ -338,19 +340,19 @@ mminit(Mmdisc_t *mmdc)
 
 done:
     if (fd >= 0)
-        ( void )close(fd);
+        ( void ) close(fd);
 
     if (rv >= 0) /* successful construction of region */
     {            /**/
-        DEBUG_ASSERT(mmvm && mmvm != ( Mmvm_t * )(-1));
+        DEBUG_ASSERT(mmvm && mmvm != ( Mmvm_t * ) (-1));
         mmdc->mmvm = mmvm;
-    } else if (mmvm && mmvm != ( Mmvm_t * )(-1)) /* error, remove map */
-    {                                            /**/
+    } else if (mmvm && mmvm != ( Mmvm_t * ) (-1)) /* error, remove map */
+    {                                             /**/
         DEBUG_MESSAGE("vmdcshare: error during opening region");
         if (mmdc->proj < 0)
-            ( void )munmap(( Void_t * )mmvm, size);
+            ( void ) munmap(( Void_t * ) mmvm, size);
         else
-            ( void )shmdt(( Void_t * )mmvm);
+            ( void ) shmdt(( Void_t * ) mmvm);
     }
 
     return rv;
@@ -370,21 +372,21 @@ static int mmend(mmdc) Mmdisc_t *mmdc;
         return 0;
 
     if (mmdc->proj < 0) {
-        ( void )msync(mmvm->base, mmvm->size, MS_ASYNC);
+        ( void ) msync(mmvm->base, mmvm->size, MS_ASYNC);
         if (mmdc->mode & MM_DETACH) {
             if (mmvm->base)
-                ( void )munmap(mmvm->base, mmvm->size);
+                ( void ) munmap(mmvm->base, mmvm->size);
         }
         if (mmdc->mode & MM_REMOVE)
-            ( void )unlink(mmdc->name);
+            ( void ) unlink(mmdc->name);
     } else {
         if (mmdc->mode & MM_DETACH) {
             if (mmvm->base)
-                ( void )shmdt(mmvm->base);
+                ( void ) shmdt(mmvm->base);
         }
         if (mmdc->mode & MM_REMOVE) {
             if (mmdc->shmid >= 0)
-                ( void )shmctl(mmdc->shmid, IPC_RMID, &shmds);
+                ( void ) shmctl(mmdc->shmid, IPC_RMID, &shmds);
         }
     }
 
@@ -408,7 +410,7 @@ Vmdisc_t *disc;
 #    endif
 {
     Mmvm_t *mmvm;
-    Mmdisc_t *mmdc = ( Mmdisc_t * )disc;
+    Mmdisc_t *mmdc = ( Mmdisc_t * ) disc;
 
     if (!(mmvm = mmdc->mmvm)) /* bad data */
         return NIL(Void_t *);
@@ -442,7 +444,7 @@ Vmdisc_t *disc;
 #    endif
 {
     int rv;
-    Mmdisc_t *mmdc = ( Mmdisc_t * )disc;
+    Mmdisc_t *mmdc = ( Mmdisc_t * ) disc;
 
     if (type == VM_OPEN) {
         if (data) /* VM_OPEN event at start of vmopen() */
@@ -458,7 +460,7 @@ Vmdisc_t *disc;
             {      /**/
                 DEBUG_ASSERT(mmdc->init == 0);
                 /**/ DEBUG_ASSERT(mmdc->mmvm->magic == MM_MAGIC);
-                *(( Void_t ** )data) = MMDATA(mmdc->mmvm);
+                *(( Void_t ** ) data) = MMDATA(mmdc->mmvm);
                 return 1;
             }
         } else
@@ -471,7 +473,7 @@ Vmdisc_t *disc;
             asocasint(&mmdc->mmvm->magic, MM_JUST4US, MM_MAGIC);
 
             if (mmdc->proj < 0) /* sync data to file now */
-                msync(( Void_t * )mmdc->mmvm, MMHEAD(mmdc->name), MS_SYNC);
+                msync(( Void_t * ) mmdc->mmvm, MMHEAD(mmdc->name), MS_SYNC);
         } /**/
         DEBUG_ASSERT(mmdc->mmvm->magic == MM_MAGIC);
         return 0;
@@ -479,8 +481,8 @@ Vmdisc_t *disc;
         return 1; /* tell vmclose not to free memory segments */
     else if (type == VM_ENDCLOSE) /* this is the final closing event */
     {
-        ( void )mmend(mmdc);
-        ( void )vmfree(Vmheap, mmdc);
+        ( void ) mmend(mmdc);
+        ( void ) vmfree(Vmheap, mmdc);
         return 0; /* all done */
     } else if (type == VM_DISC)
         return -1;
@@ -537,7 +539,7 @@ int mode;                             /*  1: keep memory segments		*/
     mmdc->proj = proj;
     strcpy(mmdc->name, name);
 
-    return ( Vmdisc_t * )mmdc;
+    return ( Vmdisc_t * ) mmdc;
 }
 
 #endif

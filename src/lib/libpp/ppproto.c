@@ -181,7 +181,7 @@ typedef struct Proto_s /* proto buffer state		*/
 #define T_VA_START (N_TOKEN + 1)
 
 #define RESERVED(b, e, n)                                                    \
-    (((( long )(b)) << 16) | ((( long )(e)) << 8) | (( long )(n)))
+    (((( long ) (b)) << 16) | ((( long ) (e)) << 8) | (( long ) (n)))
 
 #define KEYENT(s, m, v)                                                      \
     {                                                                        \
@@ -299,7 +299,7 @@ proto_error(char *iob, int level, char *msg, char *arg)
 
     p = stpcpy(buf, "proto: ");
     if (iob) {
-        Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
+        Proto_t *proto = ( Proto_t * ) (iob - sizeof(Proto_t));
 
         if (proto->line) {
             if (proto->file) {
@@ -355,7 +355,7 @@ memcopy(char *s, char *t, int n)
 
 #else
 
-#    define memcopy(s, t, n) ((( char * )memcpy(s, t, n)) + (n))
+#    define memcopy(s, t, n) ((( char * ) memcpy(s, t, n)) + (n))
 
 #endif
 
@@ -511,7 +511,7 @@ init(Proto_t *proto, char *op, int flags)
     } while (0)
 #define CACHEIN() (ip = proto->ip)
 #define CACHEOUT() (op = proto->op)
-#define GETCHR() (*( unsigned char * )ip++)
+#define GETCHR() (*( unsigned char * ) ip++)
 #define KEEPOUT() (ko = op)
 #define LASTOUT() (*(op - 1))
 #define PUTCHR(c) (*op++ = (c))
@@ -784,7 +784,7 @@ fsm_terminal:
         if (c == quot) {
 #if PROTOMAIN
             if (!(flags & DIRECTIVE))
-                qe = (c == '"') ? op : ( char * )0;
+                qe = (c == '"') ? op : ( char * ) 0;
 #endif
             PUTCHR(c);
 #if PROTOMAIN
@@ -1385,7 +1385,8 @@ if !defined(va_start)\n\
                                 *v++ = ' ';
                                 v = memcopy(v, im, ie - im);
                                 *v = 0;
-                                proto_error(( char * )proto + sizeof(Proto_t),
+                                proto_error(( char * ) proto
+                                            + sizeof(Proto_t),
                                             2,
                                             op,
                                             NiL);
@@ -1552,7 +1553,7 @@ if !defined(va_start)\n\
                                 } else if (*ie == ')') {
                                     if (op > om && *(op - 1) == '(')
                                         proto_error(
-                                        ( char * )proto + sizeof(Proto_t),
+                                        ( char * ) proto + sizeof(Proto_t),
                                         1,
                                         "function pointer argument prototype "
                                         "omitted",
@@ -2193,11 +2194,11 @@ if !defined(va_start)\n\
 void
 pppclose(char *iob)
 {
-    Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
+    Proto_t *proto = ( Proto_t * ) (iob - sizeof(Proto_t));
 
     if (proto->flags & MORE)
         close(proto->fd);
-    free(( char * )proto); /* some ANSI cc's botch the free() prototype */
+    free(( char * ) proto); /* some ANSI cc's botch the free() prototype */
 }
 
 /*
@@ -2290,7 +2291,7 @@ pppopen(char *file,
     }
     proto->fd = fd;
     proto->package = package;
-    iob = ( char * )proto + sizeof(Proto_t);
+    iob = ( char * ) proto + sizeof(Proto_t);
     proto->op = proto->ob = iob;
     proto->ip = proto->ib = iob + proto->oz + n;
     if (m)
@@ -2479,8 +2480,10 @@ pppopen(char *file,
                                              proto->cc[1],
                                              proto->cc[2]))
                         < 0)
-                        proto_error(
-                        ( char * )proto + sizeof(Proto_t), 1, proto->op, NiL);
+                        proto_error(( char * ) proto + sizeof(Proto_t),
+                                    1,
+                                    proto->op,
+                                    NiL);
                     else
                         proto->op += comlen;
                 }
@@ -2513,7 +2516,7 @@ pppopen(char *file,
                                      proto->cc[2]))
                 < 0)
                 proto_error(
-                ( char * )proto + sizeof(Proto_t), 1, proto->op, NiL);
+                ( char * ) proto + sizeof(Proto_t), 1, proto->op, NiL);
             else
                 proto->op += comlen;
         }
@@ -2574,7 +2577,7 @@ pppopen(char *file,
 int
 pppread(char *iob)
 {
-    Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
+    Proto_t *proto = ( Proto_t * ) (iob - sizeof(Proto_t));
     int n;
 
     if (proto->flags & PASS) {
@@ -2670,7 +2673,7 @@ pppread(char *iob)
 int
 pppdrop(char *iob)
 {
-    Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
+    Proto_t *proto = ( Proto_t * ) (iob - sizeof(Proto_t));
 
     if (proto->flags & MORE) {
         proto->flags &= ~MORE;

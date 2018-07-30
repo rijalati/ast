@@ -30,7 +30,7 @@ _BEGIN_EXTERNS_
 #    define extern __EXPORT__
 #endif
 
-extern long _sfgetl2 _ARG_(( Sfio_t *, long ));
+extern long _sfgetl2 _ARG_(( Sfio_t *, long ) );
 
 #undef extern
 _END_EXTERNS_

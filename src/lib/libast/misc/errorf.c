@@ -35,7 +35,7 @@ errorf(void *handle, void *discipline, int level, ...)
     va_list ap;
 
     va_start(ap, level);
-    errorv((discipline && handle) ? *(( char ** )handle) : ( char * )handle,
+    errorv((discipline && handle) ? *(( char ** ) handle) : ( char * ) handle,
            (discipline || level < 0) ? level : (level | ERROR_LIBRARY),
            ap);
     va_end(ap);

@@ -86,7 +86,7 @@ getmem(Suftree *root, int n)
 {
     Suftree *list;
 
-    if (!(list = ( Suftree * )malloc((n + 1) * sizeof(Suftree)))) {
+    if (!(list = ( Suftree * ) malloc((n + 1) * sizeof(Suftree)))) {
         if (root)
             delsuftree(root);
         return 0;

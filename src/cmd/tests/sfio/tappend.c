@@ -45,7 +45,7 @@ tmain()
     if ((p = sftell(f2)) != 20)
         terror("Bad sftell2");
 
-    if ((p = sfseek(f1, ( Sfoff_t )0, 0)) != 0)
+    if ((p = sfseek(f1, ( Sfoff_t ) 0, 0)) != 0)
         terror("Bad seek");
     if (!(s = sfgetr(f1, '\n', 1)))
         terror("Bad getr1");
@@ -60,7 +60,7 @@ tmain()
     if ((p = sftell(f1)) != 30)
         terror("Bad sftell4");
 
-    if ((p = sfseek(f2, ( Sfoff_t )10, 0)) != 10)
+    if ((p = sfseek(f2, ( Sfoff_t ) 10, 0)) != 10)
         terror("Bad seek");
     if (!(s = sfgetr(f2, '\n', 1)))
         terror("Bad getr2");
@@ -80,10 +80,10 @@ tmain()
         terror("writing w=%d", w);
     if (!(f1 = sfopen(f1, tstfile("sf", 0), "a")))
         terror("Can't open file to append");
-    sfseek(f1, ( Sfoff_t )0, 0);
+    sfseek(f1, ( Sfoff_t ) 0, 0);
     if ((w = sfwrite(f1, buf, 64)) != 64)
         terror("writing w=%d", w);
-    if ((r = ( int )sftell(f1)) != (1024 + 64))
+    if ((r = ( int ) sftell(f1)) != (1024 + 64))
         terror("seek position wrong s=%d", r);
 
     texit(0);

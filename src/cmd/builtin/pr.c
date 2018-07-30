@@ -154,7 +154,7 @@ static Pr_t *
 prinit(void)
 {
     Pr_t *pp;
-    if (!(pp = ( Pr_t * )stakalloc(DATESZ + sizeof(Pr_t))))
+    if (!(pp = ( Pr_t * ) stakalloc(DATESZ + sizeof(Pr_t))))
         return 0;
     pp->columns = 1;
     pp->pageskip = pp->pageno = 0;
@@ -166,7 +166,7 @@ prinit(void)
     pp->schar = 0;
     pp->numwidth = pp->width = pp->offset = 0;
     pp->header = 0;
-    pp->date = ( char * )(pp + 1);
+    pp->date = ( char * ) (pp + 1);
     memset(pp->state, 0, 1 << CHAR_BIT);
     return pp;
 }
@@ -286,13 +286,13 @@ outcol(Pr_t *pp, char *buff, int size, int spaces)
         if (size = spaces) {
             if (pp->ogap)
                 omod = pp->ogap - (pp->colno - size) % pp->ogap;
-            if (n = state[*( unsigned char * )cp++])
+            if (n = state[*( unsigned char * ) cp++])
                 goto skip;
             outspaces(pp, size, omod);
         }
         while (1) {
             /* skip over regular characters */
-            while ((n = state[*( unsigned char * )cp++]) == 0)
+            while ((n = state[*( unsigned char * ) cp++]) == 0)
                 ;
             size = cp - buff;
             col += (size - 1);
@@ -320,7 +320,7 @@ outcol(Pr_t *pp, char *buff, int size, int spaces)
                     n = (pp->igap - (col % pp->igap));
                 size += n;
                 col += n;
-                n = state[*( unsigned char * )cp++];
+                n = state[*( unsigned char * ) cp++];
             }
             if (n == S_NL) {
                 /* delete trailing white-space */
@@ -519,8 +519,8 @@ prcol(Pr_t *pp)
 static ssize_t
 c_read(Sfio_t *fp, void *buf, size_t n, Sfdisc_t *dp)
 {
-    Pr_t *pp = ( Pr_t * )dp;
-    char *s = ( char * )buf;
+    Pr_t *pp = ( Pr_t * ) dp;
+    char *s = ( char * ) buf;
     char *e = s + n;
     int c;
     ssize_t z;
@@ -558,14 +558,14 @@ c_read(Sfio_t *fp, void *buf, size_t n, Sfdisc_t *dp)
             }
         }
     }
-    return s - ( char * )buf;
+    return s - ( char * ) buf;
 }
 
 static ssize_t
 v_read(Sfio_t *fp, void *buf, size_t n, Sfdisc_t *dp)
 {
-    Pr_t *pp = ( Pr_t * )dp;
-    char *s = ( char * )buf;
+    Pr_t *pp = ( Pr_t * ) dp;
+    char *s = ( char * ) buf;
     char *e = s + n;
     char *t;
     int c;
@@ -604,7 +604,7 @@ v_read(Sfio_t *fp, void *buf, size_t n, Sfdisc_t *dp)
                 *s++ = c;
         }
     }
-    return s - ( char * )buf;
+    return s - ( char * ) buf;
 }
 
 int
@@ -782,9 +782,9 @@ b_pr(int argc, char **argv, Shbltin_t *context)
                 error(ERROR_exit(1), "width too small");
             n = (pp->pagelen * pp->columns + 1);
             if (!(pp->fieldlist
-                  = ( char ** )stakalloc(n * (sizeof(char *) + pp->width))))
+                  = ( char ** ) stakalloc(n * (sizeof(char *) + pp->width))))
                 error(ERROR_exit(1), "not enough memory");
-            pp->fieldbuff = pp->fieldptr = ( char * )(pp->fieldlist + n);
+            pp->fieldbuff = pp->fieldptr = ( char * ) (pp->fieldlist + n);
         }
     }
     if (pp->igap)
@@ -800,7 +800,7 @@ b_pr(int argc, char **argv, Shbltin_t *context)
             pp->offlen = pp->offset - n * (pp->ogap - 1);
         } else
             n = 0;
-        if (!(pp->margin = ( char * )stakalloc(pp->offset)))
+        if (!(pp->margin = ( char * ) stakalloc(pp->offset)))
             error(ERROR_exit(1), "not enough memory");
         for (cp = pp->margin; cp < pp->margin + pp->offlen; cp++) {
             if (n-- > 0)
@@ -833,14 +833,14 @@ b_pr(int argc, char **argv, Shbltin_t *context)
                     tmfmt(pp->date,
                           DATESZ,
                           "%b %e %H:%M %Y",
-                          fstat(sffileno(fp), &statb) ? ( time_t * )0
+                          fstat(sffileno(fp), &statb) ? ( time_t * ) 0
                                                       : &statb.st_mtime);
             }
             pp->lineno = pp->pageno = 0;
             pp->infile = fp;
             if (pp->flags & M_FLAG) {
                 pp->streams
-                = ( Sfio_t ** )stakalloc(pp->columns * sizeof(Sfio_t *));
+                = ( Sfio_t ** ) stakalloc(pp->columns * sizeof(Sfio_t *));
                 *pp->streams = fp;
                 n = 1;
                 continue;

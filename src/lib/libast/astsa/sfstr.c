@@ -25,7 +25,7 @@
 #define STR (8 * 1024)
 
 #define VALID(p, f)                                                          \
-    ((p = ( Sfstr_t * )f) >= &strs[0] && p < &strs[elementsof(strs)])
+    ((p = ( Sfstr_t * ) f) >= &strs[0] && p < &strs[elementsof(strs)])
 
 static Sfstr_t strs[64];
 
@@ -89,7 +89,7 @@ sfprints(const char *fmt, ...)
     va_start(ap, fmt);
     r = vsnprintf(buf, sizeof(buf), fmt, ap);
     va_end(ap);
-    return r > 0 ? buf : ( char * )0;
+    return r > 0 ? buf : ( char * ) 0;
 }
 
 int
@@ -155,7 +155,7 @@ sfstropen(void)
                 p->end = p->beg + STR;
             }
             p->nxt = p->beg;
-            return ( Sfio_t * )p;
+            return ( Sfio_t * ) p;
         }
     return 0;
 }
@@ -163,17 +163,17 @@ sfstropen(void)
 #define _sf_strseek(f, p, m)                                                 \
     ((m) == SEEK_SET                                                         \
      ? (((p) < 0 || (p) > ((f)->end - (f)->beg))                             \
-        ? ( char * )0                                                        \
-        : ( char * )((f)->nxt = (f)->beg + (p)))                             \
+        ? ( char * ) 0                                                       \
+        : ( char * ) ((f)->nxt = (f)->beg + (p)))                            \
      : (m) == SEEK_CUR                                                       \
        ? ((f)->nxt += (p),                                                   \
           (((f)->nxt < (f)->beg || (f)->nxt > (f)->end)                      \
-           ? ((f)->nxt -= (p), ( char * )0)                                  \
-           : ( char * )(f)->nxt))                                            \
+           ? ((f)->nxt -= (p), ( char * ) 0)                                 \
+           : ( char * ) (f)->nxt))                                           \
        : (m) == SEEK_END ? (((p) > 0 || (((f)->end - (f)->beg) + (p)) < 0)   \
-                            ? ( char * )0                                    \
-                            : ( char * )((f)->nxt = (f)->end + (p)))         \
-                         : ( char * )0)
+                            ? ( char * ) 0                                   \
+                            : ( char * ) ((f)->nxt = (f)->end + (p)))        \
+                         : ( char * ) 0)
 
 char *
 sfstrseek(Sfio_t *f, int n, int w)

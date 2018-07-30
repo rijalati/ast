@@ -43,8 +43,8 @@
             Ptaddr_t m;                                                      \
             Ptaddr_t x;                                                      \
             unsigned int b;                                                  \
-            for (_pt_p = ( Ptprefix_t * )dtfirst((t)->dict); _pt_p;          \
-                 _pt_p = ( Ptprefix_t * )dtnext((t)->dict, _pt_p)) {         \
+            for (_pt_p = ( Ptprefix_t * ) dtfirst((t)->dict); _pt_p;         \
+                 _pt_p = ( Ptprefix_t * ) dtnext((t)->dict, _pt_p)) {        \
                 _pt_min = _pt_p->min;                                        \
                 _pt_max = _pt_p->max;                                        \
                 do {                                                         \

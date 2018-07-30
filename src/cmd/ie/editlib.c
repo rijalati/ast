@@ -149,8 +149,8 @@ size_t n;
     if (!readfn) {
         if (!dll && !(dll = dllnext(RTLD_LAZY)))
             goto bad;
-        if (!(readfn = ( Read_f )dlsym(dll, "_read"))
-            && !(readfn = ( Read_f )dlsym(dll, "read")))
+        if (!(readfn = ( Read_f ) dlsym(dll, "_read"))
+            && !(readfn = ( Read_f ) dlsym(dll, "read")))
             goto bad;
     }
     r = (*readfn)(fd, buf, n);
@@ -167,7 +167,7 @@ void *buf;
 size_t n;
 {
     int r, flag;
-    char *buff = ( char * )buf;
+    char *buff = ( char * ) buf;
     if (fd == editfd && !beenhere)
         edit_Init();
     flag = (fd == editfd ? opt_flag & EDITMASK : 0);

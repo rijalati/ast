@@ -16,8 +16,8 @@ static int
 tksh_command(int argc, char *argv[], Shbltin_t *context)
 {
     int result, commandType, oldInterpType;
-    TkshCommandData *commandData = ( TkshCommandData * )context->ptr;
-    Interp *interp = ( Interp * )commandData->interp;
+    TkshCommandData *commandData = ( TkshCommandData * ) context->ptr;
+    Interp *interp = ( Interp * ) commandData->interp;
 
     interp->shbltin = context;
     Tcl_ResetResult(commandData->interp);
@@ -72,30 +72,30 @@ Tcl_CreateCommand(Tcl_Interp *interp,
     TkshCommandData *commandData;
     Namval_t *nv;
 
-    if ((( Interp * )interp)->flags & DELETED)
-        return ( Tcl_Command )NULL;
+    if ((( Interp * ) interp)->flags & DELETED)
+        return ( Tcl_Command ) NULL;
 
     if ((commandData
-         = ( TkshCommandData * )malloc(sizeof(TkshCommandData)))) {
+         = ( TkshCommandData * ) malloc(sizeof(TkshCommandData)))) {
         commandData->info.clientData = clientData;
         commandData->info.deleteData = clientData;
         commandData->info.deleteProc = deleteProc;
         commandData->info.proc = proc;
         commandData->interp = interp;
 #ifndef NO_TCL_EVAL
-        commandData->commandType = (( Interp * )interp)->interpType;
+        commandData->commandType = (( Interp * ) interp)->interpType;
         if ((cmdName[0] == '.') && (cmdName[1] == 0))
             cmdName = "tcl_dot"; /* General mapping coming soon */
         dprintf(("Tksh: Added builtin: %s (%s)\n",
                  cmdName,
                  Tksh_InterpString(commandData->commandType)));
 #endif
-        sh_addbuiltin(cmdName, tksh_command, ( void * )commandData);
+        sh_addbuiltin(cmdName, tksh_command, ( void * ) commandData);
     }
 
     nv = nv_search(cmdName, sh_bltin_tree(), 0);
     nv->nvflag |= NV_NOFREE;
-    return ( Tcl_Command )nv;
+    return ( Tcl_Command ) nv;
 }
 
 /*
@@ -119,7 +119,7 @@ Tcl_CreateCommand(Tcl_Interp *interp,
 char *
 Tcl_GetCommandName(Tcl_Interp *interp, Tcl_Command command)
 {
-    Namval_t *nv = ( Namval_t * )command;
+    Namval_t *nv = ( Namval_t * ) command;
     return nv_name(nv);
 }
 
@@ -130,8 +130,8 @@ Tcl_DeleteCommand(Tcl_Interp *interp, char *cmdName)
     TkshCommandData *commandData;
 
     if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD))) {
-        if (namval->nvalue == ( void * )tksh_command) {
-            commandData = ( TkshCommandData * )namval->nvfun;
+        if (namval->nvalue == ( void * ) tksh_command) {
+            commandData = ( TkshCommandData * ) namval->nvfun;
             if (commandData && commandData->info.deleteProc) {
                 commandData->info.deleteProc(commandData->info.deleteData);
                 if (commandData->commandType & COMMAND_ACTIVE)
@@ -156,13 +156,13 @@ Tcl_GetCommandInfo(Tcl_Interp *interp, char *cmdName, Tcl_CmdInfo *infoPtr)
     TkshCommandData *commandData = NULL;
 
     if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD))) {
-        commandData = ( TkshCommandData * )namval->nvfun;
-        if (( void * )namval->nvalue == ( void * )tksh_command)
+        commandData = ( TkshCommandData * ) namval->nvfun;
+        if (( void * ) namval->nvalue == ( void * ) tksh_command)
             *infoPtr = commandData->info;
         else {
-            infoPtr->clientData = ( ClientData )commandData;
-            infoPtr->proc = ( Tcl_CmdProc * )namval->nvalue;
-            infoPtr->deleteData = ( ClientData )namval->nvalue;
+            infoPtr->clientData = ( ClientData ) commandData;
+            infoPtr->proc = ( Tcl_CmdProc * ) namval->nvalue;
+            infoPtr->deleteData = ( ClientData ) namval->nvalue;
             /* proc matching deleteData indicates ksh builtin */
         }
         nv_close(namval);
@@ -178,7 +178,7 @@ Tcl_SetCommandInfo(Tcl_Interp *interp, char *cmdName, Tcl_CmdInfo *infoPtr)
     TkshCommandData *commandData;
 
     if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD))) {
-        commandData = ( TkshCommandData * )namval->nvfun;
+        commandData = ( TkshCommandData * ) namval->nvfun;
         commandData->info = *infoPtr;
         nv_close(namval);
         return 1;
@@ -193,7 +193,7 @@ Tksh_SetCommandType(Tcl_Interp *interp, char *cmdName, int tp)
     TkshCommandData *commandData;
 
     if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD))) {
-        commandData = ( TkshCommandData * )namval->nvfun;
+        commandData = ( TkshCommandData * ) namval->nvfun;
         commandData->commandType &= (~INTERP_MASK);
         commandData->commandType |= tp;
         nv_close(namval);
@@ -224,7 +224,7 @@ int
 Tksh_Eval(Tcl_Interp *interp, char *command, int flag)
 {
     Sfio_t *f;
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     int result, oldInterpType = iPtr->interpType;
 
     Tcl_FreeResult(interp);
@@ -261,7 +261,7 @@ Tksh_Eval(Tcl_Interp *interp, char *command, int flag)
 int
 Tcl_Eval(Tcl_Interp *interp, char *cmd)
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     int result;
     inEval++;
 
@@ -289,7 +289,7 @@ Tcl_Eval(Tcl_Interp *interp, char *cmd)
 int
 Tcl_TclEvalFile(Tcl_Interp *interp, char *fileName)
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     Sfio_t *script;
     char *cmdBuffer, *oldScriptFile;
     int result, oldInterpType, oldListMode;
@@ -315,7 +315,7 @@ Tcl_TclEvalFile(Tcl_Interp *interp, char *fileName)
     iPtr->interpType = oldInterpType;
     TkshSetListMode(oldListMode);
     if (result == TCL_RETURN) {
-        result = TclUpdateReturnInfo(( Interp * )interp);
+        result = TclUpdateReturnInfo(( Interp * ) interp);
     } else if (result == TCL_ERROR) {
         char msg[200];
 
@@ -338,7 +338,7 @@ Tcl_TclEvalFile(Tcl_Interp *interp, char *fileName)
 int
 Tcl_EvalFile(Tcl_Interp *interp, char *fileName)
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     char *oldScriptFile;
     int result;
 
@@ -442,7 +442,7 @@ Tcl_RecordAndEval(Tcl_Interp *interp, char *script, int flags)
         args[1] = "-s";
         args[2] = script;
         args[3] = 0;
-        b_print(3, args, ( Shbltin_t * )NULL);
+        b_print(3, args, ( Shbltin_t * ) NULL);
     }
 
     return result;

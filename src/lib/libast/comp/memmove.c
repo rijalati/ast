@@ -32,8 +32,8 @@ NoN(memmove)
 void *
 memmove(void *to, const void *from, size_t n)
 {
-    char *out = ( char * )to;
-    char *in = ( char * )from;
+    char *out = ( char * ) to;
+    char *in = ( char * ) from;
 
     if (n <= 0) /* works if size_t is signed or not */
         ;

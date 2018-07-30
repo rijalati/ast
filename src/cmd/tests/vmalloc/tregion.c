@@ -31,11 +31,11 @@ tmain()
 
     for (i = 0; i < 10; i += 2) {
         addr[i] = vmalloc(vm, 88);
-        if (((( Vmulong_t )addr[i]) % ALIGN) != 0)
+        if (((( Vmulong_t ) addr[i]) % ALIGN) != 0)
             terror("Unaligned addr");
 
         addr[i + 1] = vmalloc(Vmheap, 128);
-        if (((( Vmulong_t )addr[i + 1]) % ALIGN) != 0)
+        if (((( Vmulong_t ) addr[i + 1]) % ALIGN) != 0)
             terror("Unaligned addr");
     }
 

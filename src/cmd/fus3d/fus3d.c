@@ -108,7 +108,7 @@ main(int argc, char **argv)
             daemonmode = 0;
             continue;
         case 'l':
-            ndfs.level = ( int )opt_info.number;
+            ndfs.level = ( int ) opt_info.number;
             continue;
         case 's':
             multithreadmode = 0;

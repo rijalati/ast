@@ -89,7 +89,7 @@ tempinit(void)
         state.tmp.dir = _PATH_TMP;
     else {
         *++cp = 0;
-        if (!(cp = ( char * )malloc(cp - state.tmp.dir + 1)))
+        if (!(cp = ( char * ) malloc(cp - state.tmp.dir + 1)))
             note(ERROR | FATAL, "Out of space");
         strcpy(cp, state.tmp.dir);
         state.tmp.dir = cp;
@@ -138,7 +138,7 @@ edstop(void)
         return;
     holdsigs();
     news = state.var.news && *state.var.news ? fileopen(state.var.news, "w")
-                                             : ( FILE * )0;
+                                             : ( FILE * ) 0;
     update = MODIFY | MDELETE | MSTATUS;
     if (!state.var.keepsave)
         update |= MSAVE;
@@ -216,7 +216,7 @@ edstop(void)
                 reset(0);
             }
             fseek(ibuf, state.mailsize, SEEK_SET);
-            filecopy(NiL, ibuf, NiL, obuf, NiL, ( off_t )0, NiL, NiL, 0);
+            filecopy(NiL, ibuf, NiL, obuf, NiL, ( off_t ) 0, NiL, NiL, 0);
             fileclose(ibuf);
             fileclose(obuf);
             if (!(ibuf = fileopen(temp, "Er"))) {
@@ -247,7 +247,7 @@ edstop(void)
             }
         gotcha = !c && !ibuf;
         if (ibuf) {
-            filecopy(NiL, ibuf, NiL, obuf, NiL, ( off_t )0, NiL, NiL, 0);
+            filecopy(NiL, ibuf, NiL, obuf, NiL, ( off_t ) 0, NiL, NiL, 0);
             fileclose(ibuf);
         }
         if (fileclose(obuf)) {
@@ -285,7 +285,7 @@ writeback(FILE *res)
         return -1;
 #if !APPEND_MAILBOX
     if (res)
-        filecopy(NiL, res, NiL, obuf, NiL, ( off_t )0, NiL, NiL, 0);
+        filecopy(NiL, res, NiL, obuf, NiL, ( off_t ) 0, NiL, NiL, 0);
 #endif
     for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
         if ((mp->m_flag & MPRESERVE) || !(mp->m_flag & MTOUCH)) {
@@ -299,7 +299,7 @@ writeback(FILE *res)
 #if APPEND_MAILBOX
     if (res
         && filecopy(
-           NiL, res, state.path.mail, obuf, NiL, ( off_t )0, NiL, NiL, 0)) {
+           NiL, res, state.path.mail, obuf, NiL, ( off_t ) 0, NiL, NiL, 0)) {
         fileclose(obuf);
         return -1;
     }
@@ -387,7 +387,7 @@ quit(void)
                 goto newmail;
 #if APPEND_MAILBOX
             fseek(fbuf, state.mailsize, SEEK_SET);
-            filecopy(NiL, fbuf, NiL, rbuf, NiL, ( off_t )0, NiL, NiL, 0);
+            filecopy(NiL, fbuf, NiL, rbuf, NiL, ( off_t ) 0, NiL, NiL, 0);
 #else
             if (filecopy(NiL,
                          fbuf,
@@ -436,7 +436,7 @@ quit(void)
     }
     modify = 0;
     news = state.var.news && *state.var.news ? fileopen(state.var.news, "w")
-                                             : ( FILE * )0;
+                                             : ( FILE * ) 0;
     for (c = p = x = 0, mp = state.msg.list;
          mp < state.msg.list + state.msg.count;
          mp++) {
@@ -539,7 +539,7 @@ quit(void)
                          state.tmp.quit,
                          obuf,
                          NiL,
-                         ( off_t )0,
+                         ( off_t ) 0,
                          NiL,
                          NiL,
                          0)) {
@@ -601,7 +601,7 @@ quit(void)
 
     if (!state.var.append) {
         rewind(ibuf);
-        filecopy(NiL, ibuf, NiL, obuf, NiL, ( off_t )0, NiL, NiL, 0);
+        filecopy(NiL, ibuf, NiL, obuf, NiL, ( off_t ) 0, NiL, NiL, 0);
         fileclose(ibuf);
     }
     if (filetrunc(obuf)) {
@@ -635,7 +635,7 @@ cream:
     if (rbuf) {
         if (!(abuf = fileopen(state.path.mail, "r+")))
             goto newmail;
-        filecopy(NiL, rbuf, NiL, abuf, NiL, ( off_t )0, NiL, NiL, 0);
+        filecopy(NiL, rbuf, NiL, abuf, NiL, ( off_t ) 0, NiL, NiL, 0);
         fileclose(rbuf);
         filetrunc(abuf);
         fileclose(abuf);

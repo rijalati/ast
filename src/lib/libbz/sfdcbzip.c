@@ -73,7 +73,7 @@ typedef struct
 static int
 sfbzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
 {
-    Sfbzip_t *bz = ( Sfbzip_t * )dp;
+    Sfbzip_t *bz = ( Sfbzip_t * ) dp;
     int r;
 
     NoP(sp);
@@ -109,17 +109,17 @@ sfbzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
         return 1;
     case SF_READ:
     case SF_WRITE:
-        return *(( ssize_t * )val) < 0 ? -1 : 0;
+        return *(( ssize_t * ) val) < 0 ? -1 : 0;
     case SF_SYNC:
         return val ? 0 : bzflush(bz->bz);
     case SFBZ_HANDLE:
-        return (*(( Bz_t ** )val) = bz->bz) ? 1 : -1;
+        return (*(( Bz_t ** ) val) = bz->bz) ? 1 : -1;
     case SFBZ_GETPOS:
-        return (*(( Sfoff_t * )val) = bzsync(bz->bz, (z_off_t)(-1))) == -1
+        return (*(( Sfoff_t * ) val) = bzsync(bz->bz, (z_off_t)(-1))) == -1
                ? -1
                : 0;
     case SFBZ_SETPOS:
-        return bzsync(bz->bz, (z_off_t)(*(( Sfoff_t * )val))) == -1 ? -1 : 0;
+        return bzsync(bz->bz, (z_off_t)(*(( Sfoff_t * ) val))) == -1 ? -1 : 0;
     }
     return 0;
 }
@@ -131,7 +131,7 @@ sfbzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
 static ssize_t
 sfbzread(Sfio_t *fp, Void_t *buf, size_t size, Sfdisc_t *dp)
 {
-    Sfbzip_t *bz = ( Sfbzip_t * )dp;
+    Sfbzip_t *bz = ( Sfbzip_t * ) dp;
 
     return bzread(bz->bz, buf, size);
 }
@@ -143,9 +143,9 @@ sfbzread(Sfio_t *fp, Void_t *buf, size_t size, Sfdisc_t *dp)
 static ssize_t
 sfbzwrite(Sfio_t *fp, const Void_t *buf, size_t size, Sfdisc_t *dp)
 {
-    Sfbzip_t *bz = ( Sfbzip_t * )dp;
+    Sfbzip_t *bz = ( Sfbzip_t * ) dp;
 
-    return (bzwrite(bz->bz, ( void * )buf, size) < 0) ? -1 : size;
+    return (bzwrite(bz->bz, ( void * ) buf, size) < 0) ? -1 : size;
 }
 
 /*
@@ -180,7 +180,7 @@ sfdcbzip(Sfio_t *sp, int flags)
 
         if (!(n = sfset(sp, 0, 0) & SF_SHARE))
             sfset(sp, SF_SHARE, 1);
-        s = ( unsigned char * )sfreserve(sp, 4, 1);
+        s = ( unsigned char * ) sfreserve(sp, 4, 1);
         if (!n)
             sfset(sp, SF_SHARE, 0);
         if (!s)

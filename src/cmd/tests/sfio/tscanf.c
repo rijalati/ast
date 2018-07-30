@@ -38,7 +38,7 @@
 #    define MAXD DBL_MAX
 #endif
 #if !defined(MAXD)
-#    define MAXD ( double )(~(( unsigned long )0))
+#    define MAXD ( double ) (~(( unsigned long ) 0))
 #endif
 
 typedef struct Fmt_s
@@ -57,10 +57,10 @@ Void_t *vp;
 Sffmt_t *dp;
 #endif
 {
-    Fmt_t *fmt = ( Fmt_t * )dp;
+    Fmt_t *fmt = ( Fmt_t * ) dp;
 
     dp->flags |= SFFMT_VALUE;
-    *(( Void_t ** )vp) = fmt->args[fmt->arg++];
+    *(( Void_t ** ) vp) = fmt->args[fmt->arg++];
     return 0;
 }
 
@@ -185,10 +185,10 @@ tmain()
         terror("Opening temp file");
 
     for (k = 2; k <= 64; ++k) {
-        sfseek(sf, ( Sfoff_t )0, 0);
+        sfseek(sf, ( Sfoff_t ) 0, 0);
         for (i = 0; i < 1000; ++i)
             sfprintf(sf, "%#..*d\n", k, i);
-        sfseek(sf, ( Sfoff_t )0, 0);
+        sfseek(sf, ( Sfoff_t ) 0, 0);
         for (i = 0; i < 1000; ++i) {
             if (sfscanf(sf, "%i", &j) != 1)
                 terror("Scanf failed");
@@ -200,7 +200,7 @@ tmain()
     /* test %p */
     s = sfprints("%p", sf);
     sfsscanf(s, "%p", &vp);
-    if (vp != ( Void_t * )sf)
+    if (vp != ( Void_t * ) sf)
         terror("Wrong pointer scan");
 
     if (sfsscanf("2#1001", "%i", &i) != 1 || i != 9)
@@ -236,9 +236,9 @@ tmain()
     fmt.fmt.eventf = 0;
     fmt.fmt.form = "%d %g";
     fmt.arg = 0;
-    fmt.args[0] = ( Void_t * )&n;
+    fmt.args[0] = ( Void_t * ) &n;
     n = 0;
-    fmt.args[1] = ( Void_t * )&f;
+    fmt.args[1] = ( Void_t * ) &f;
     f = 0;
     i = sfsscanf("123 3.1415", "%!", &fmt.fmt);
     if (i != 2 || n != 123 || f <= 3.1414 || f >= 3.1416)

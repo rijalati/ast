@@ -80,7 +80,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         *pn = -1;
 #endif
     else if (streq(s, "format"))
-        *ps = ( char * )handle;
+        *ps = ( char * ) handle;
     else {
         error(2, "%s: unknown format identifier", s);
         return 0;

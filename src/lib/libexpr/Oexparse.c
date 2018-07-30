@@ -340,7 +340,7 @@ typedef short int yytype_int16;
 #    endif
 #endif
 
-#define YYSIZE_MAXIMUM (( YYSIZE_T )-1)
+#define YYSIZE_MAXIMUM (( YYSIZE_T ) -1)
 
 #ifndef YY_
 #    if defined YYENABLE_NLS && YYENABLE_NLS
@@ -356,7 +356,7 @@ typedef short int yytype_int16;
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if !defined lint || defined __GNUC__
-#    define YYUSE(e) (( void )(e))
+#    define YYUSE(e) (( void ) (e))
 #else
 #    define YYUSE(e) /* empty */
 #endif
@@ -528,7 +528,7 @@ union yyalloc
 #define YYMAXUTOK 323
 
 #define YYTRANSLATE(YYX)                                                     \
-    (( unsigned int )(YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+    (( unsigned int ) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
 /* YYTRANSLATE[YYLEX] -- Bison symbol number corresponding to YYLEX.  */
 static const yytype_uint8 yytranslate[]
@@ -983,7 +983,7 @@ static const yytype_uint8 yystos[]
 /* This macro is provided for backward compatibility. */
 
 #ifndef YY_LOCATION_PRINT
-#    define YY_LOCATION_PRINT(File, Loc) (( void )0)
+#    define YY_LOCATION_PRINT(File, Loc) (( void ) 0)
 #endif
 
 
@@ -1593,7 +1593,7 @@ yysetstate:
         {
             yytype_int16 *yyss1 = yyss;
             union yyalloc *yyptr
-            = ( union yyalloc * )YYSTACK_ALLOC(YYSTACK_BYTES(yystacksize));
+            = ( union yyalloc * ) YYSTACK_ALLOC(YYSTACK_BYTES(yystacksize));
             if (!yyptr)
                 goto yyexhaustedlab;
             YYSTACK_RELOCATE(yyss_alloc, yyss);
@@ -1610,7 +1610,7 @@ yysetstate:
 
         YYDPRINTF((stderr,
                    "Stack size increased to %lu\n",
-                   ( unsigned long int )yystacksize));
+                   ( unsigned long int ) yystacksize));
 
         if (yyss + yystacksize - 1 <= yyssp)
             YYABORT;
@@ -2149,7 +2149,7 @@ yyreduce:
                 sw->lastcase = (yyval.expr);
                 n = sw->cur - sw->base;
                 sw->cur = sw->base;
-                (yyval.expr)->data.select.constant = ( Extype_t ** )exalloc(
+                (yyval.expr)->data.select.constant = ( Extype_t ** ) exalloc(
                 expr.program, (n + 1) * sizeof(Extype_t *));
                 memcpy((yyval.expr)->data.select.constant,
                        sw->base,
@@ -2289,7 +2289,7 @@ yyreduce:
                         exnospace();
                     disc->key = offsetof(Exassoc_t, name);
                     if (!((yyvsp[(2) - (5)].id)->local.pointer
-                          = ( char * )dtopen(disc, Dtoset)))
+                          = ( char * ) dtopen(disc, Dtoset)))
                         exerror("%s: cannot initialize associative array",
                                 (yyvsp[(2) - (5)].id)->name);
                 }
@@ -3549,7 +3549,7 @@ yyerrlab:
             else if (yysyntax_error_status == 1) {
                 if (yymsg != yymsgbuf)
                     YYSTACK_FREE(yymsg);
-                yymsg = ( char * )YYSTACK_ALLOC(yymsg_alloc);
+                yymsg = ( char * ) YYSTACK_ALLOC(yymsg_alloc);
                 if (!yymsg) {
                     yymsg = yymsgbuf;
                     yymsg_alloc = sizeof yymsgbuf;

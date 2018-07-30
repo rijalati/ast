@@ -210,7 +210,7 @@ struct Dss_s /* dss handle			*/
          (d)->errorf = (Error_f)(e),                                         \
          dssstate(d))
 #    define dssformat(n, d, m)                                               \
-        (( Dssformat_t * )dtmatch((m)->formats, ( char * )(n)))
+        (( Dssformat_t * ) dtmatch((m)->formats, ( char * ) (n)))
 
 #    if DSS_STATIC || _BLD_STATIC || _BLD_STATIC_LINK
 #        define dssstatic(l, d)                                              \
@@ -222,8 +222,8 @@ struct Dss_s /* dss handle			*/
 #        define dssstatic(l, d)
 #    endif
 
-#    define DSS(c) (( Dss_t * )(c)->caller)
-#    define DSSRECORD(v) (( Dssrecord_t * )(v))
+#    define DSS(c) (( Dss_t * ) (c)->caller)
+#    define DSSRECORD(v) (( Dssrecord_t * ) (v))
 #    define DSSDATA(v) (DSSRECORD(v)->data)
 
 #    if defined(__EXPORT__)

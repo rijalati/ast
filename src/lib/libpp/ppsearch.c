@@ -256,7 +256,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                             *s++ = 0;
                         if (!*e)
                             break;
-                        switch (( int )hashref(pp.strtab, e)) {
+                        switch (( int ) hashref(pp.strtab, e)) {
                         case X_CHECKPOINT:
 #    if CHECKPOINT
                             dp->type |= TYPE_CHECKPOINT;
@@ -333,7 +333,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                             ap->size = strtol(t + 1, NiL, 10);
                             xp = ppsetfile(s);
                             xp->flags |= INC_MEMBER(dp->index);
-                            xp->bound[dp->index] = ( struct ppfile * )ap;
+                            xp->bound[dp->index] = ( struct ppfile * ) ap;
                             if (pp.test & 0x0020)
                                 error(1,
                                       "VDB#%d %s %s index=%d data=<%lu,%lu>",
@@ -514,9 +514,9 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                       pp.path,
                       index);
             if ((fp->flags & INC_MEMBER(index))
-                && (( struct ppmember * )fp->bound[index])->archive == dp) {
+                && (( struct ppmember * ) fp->bound[index])->archive == dp) {
                 fd = 0;
-                pp.member = ( struct ppmember * )fp->bound[index];
+                pp.member = ( struct ppmember * ) fp->bound[index];
                 if (pp.test & 0x0010)
                     error(1,
                           "SEARCH#%d file=%s path=%s index=%d data=<%lu,%lu>",

@@ -79,7 +79,7 @@ void TclpGetTime(tp) Tcl_Time *tp;
 unsigned long
 TclpGetSeconds()
 {
-    return time(( time_t * )NULL);
+    return time(( time_t * ) NULL);
 }
 
 /*
@@ -113,7 +113,7 @@ TclpGetClicks()
 #    endif
 
 #    ifdef NO_GETTOD
-    now = ( unsigned long )times(&dummy);
+    now = ( unsigned long ) times(&dummy);
 #    else
     gettimeofday(&date, &tz);
     now = date.tv_sec * 1000000 + date.tv_usec;
@@ -153,7 +153,7 @@ int TclpGetTimeZone(currentTime) unsigned long currentTime;
 
 #    if defined(HAVE_TM_TZADJ)
 #        define TCL_GOT_TIMEZONE
-    time_t curTime = ( time_t )currentTime;
+    time_t curTime = ( time_t ) currentTime;
     struct tm *timeDataPtr = localtime(&curTime);
     int timeZone;
 
@@ -167,7 +167,7 @@ int TclpGetTimeZone(currentTime) unsigned long currentTime;
 
 #    if defined(HAVE_TM_GMTOFF) && !defined(TCL_GOT_TIMEZONE)
 #        define TCL_GOT_TIMEZONE
-    time_t curTime = ( time_t )currentTime;
+    time_t curTime = ( time_t ) currentTime;
     struct tm *timeDataPtr = localtime(&currentTime);
     int timeZone;
 
@@ -252,7 +252,7 @@ void TclpGetTime(timePtr) Tcl_Time *timePtr; /* Location to store time
     struct timeval tv;
     struct timezone tz;
 
-    ( void )gettimeofday(&tv, &tz);
+    ( void ) gettimeofday(&tv, &tz);
     timePtr->sec = tv.tv_sec;
     timePtr->usec = tv.tv_usec;
 }

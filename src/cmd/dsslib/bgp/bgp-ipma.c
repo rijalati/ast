@@ -49,7 +49,7 @@ ipmaident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
     char *e1;
     char *e2;
 
-    s = ( char * )buf;
+    s = ( char * ) buf;
     e = s + n;
     e1 = e - sizeof(magic1) + 1;
     e2 = e - sizeof(magic2) + 1;
@@ -78,7 +78,7 @@ ipmaopen(Dssfile_t *file, Dssdisc_t *disc)
     int q;
 
     if (!(file->data
-          = ( void * )vmnewof(file->dss->vm, 0, Ipmastate_t, 1, 0))) {
+          = ( void * ) vmnewof(file->dss->vm, 0, Ipmastate_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -147,8 +147,8 @@ ipmaopen(Dssfile_t *file, Dssdisc_t *disc)
             }
             break;
         }
-        (( Ipmastate_t * )file->data)->route.attr = BGP_best;
-        (( Ipmastate_t * )file->data)->route.type = BGP_TYPE_table_dump;
+        (( Ipmastate_t * ) file->data)->route.attr = BGP_best;
+        (( Ipmastate_t * ) file->data)->route.type = BGP_TYPE_table_dump;
     } else if (!(file->flags & DSS_FILE_APPEND))
         sfprintf(file->io, "%s\n\n", magic1);
     return 0;
@@ -212,7 +212,7 @@ skip(char *s, char *e, int number)
 static int
 ipmaread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Ipmastate_t *state = ( Ipmastate_t * )file->data;
+    Ipmastate_t *state = ( Ipmastate_t * ) file->data;
     Bgproute_t *rp;
     char *s;
     int i;
@@ -263,7 +263,7 @@ ipmaread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         }
         i = 0;
         n = elementsof(rp->data) / sizeof(Bgpasn_t);
-        ap = ( Bgpasn_t * )rp->data;
+        ap = ( Bgpasn_t * ) rp->data;
         rp->path.offset = i;
         o = 0;
         p = s;
@@ -328,7 +328,7 @@ ipmaread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         else
             rp->origin = BGP_ORIGIN_incomplete;
         record->data = rp;
-        record->size = rp->size = ( char * )(rp->data + i) - ( char * )rp;
+        record->size = rp->size = ( char * ) (rp->data + i) - ( char * ) rp;
         return 1;
     }
     return 0;
@@ -341,8 +341,8 @@ ipmaread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 static int
 ipmawrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Ipmastate_t *state = ( Ipmastate_t * )file->data;
-    Bgproute_t *rp = ( Bgproute_t * )record->data;
+    Ipmastate_t *state = ( Ipmastate_t * ) file->data;
+    Bgproute_t *rp = ( Bgproute_t * ) record->data;
     Sfio_t *io = file->io;
     int i;
     int j;

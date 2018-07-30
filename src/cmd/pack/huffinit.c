@@ -54,11 +54,11 @@ huffinit(Sfio_t *infile, Sfoff_t insize)
     Heap_t heap[END + 2];
     if (!(hp = newof(0, Huff_t, 1, 0))) {
         errno = ENOMEM;
-        return (( Huff_t * )0);
+        return (( Huff_t * ) 0);
     }
     for (i = 0; i < END; i++)
         count[i] = 0;
-    while (inbuff = ( unsigned char * )sfreserve(infile, SF_UNBOUND, 0)) {
+    while (inbuff = ( unsigned char * ) sfreserve(infile, SF_UNBOUND, 0)) {
         n = sfvalue(infile);
         if (size >= 0) {
             if (n > size)
@@ -71,7 +71,7 @@ huffinit(Sfio_t *infile, Sfoff_t insize)
     }
     if (n < 0) {
         huffend(hp);
-        return (( Huff_t * )0);
+        return (( Huff_t * ) 0);
     }
     for (i = 0; i < END; i++)
         count[i] += count[i];

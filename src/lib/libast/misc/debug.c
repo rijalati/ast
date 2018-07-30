@@ -36,7 +36,7 @@ static int indent = 0;
  * stripped down printf -- only { %c %[I*|l|ll|z][dopux] %s }
  */
 
-#define SIZEOF(x) ( int )sizeof(x)
+#define SIZEOF(x) ( int ) sizeof(x)
 #define VASIGNED(a, n)                                                       \
     (((n) > SIZEOF(long)) ? va_arg(a, int64_t)                               \
                           : ((n) ? va_arg(a, long) : va_arg(a, int)))
@@ -177,7 +177,7 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
             case 'o':
                 u = VAUNSIGNED(ap, n);
                 do
-                    *b++ = ( char )(u & 07) + '0';
+                    *b++ = ( char ) (u & 07) + '0';
                 while (u >>= 3);
                 break;
             case 's':
@@ -209,7 +209,7 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
                     s = t;
                 if (w || l && x) {
                     if (!l || !x)
-                        x = ( int )strlen(s);
+                        x = ( int ) strlen(s);
                     if (!w)
                         w = x;
                     n = w - x;
@@ -253,7 +253,7 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
                 break;
             case 'p':
                 v = va_arg(ap, void *);
-                if (u = (uint64_t)(( char * )v - ( char * )0)) {
+                if (u = (uint64_t)(( char * ) v - ( char * ) 0)) {
                     if (SIZEOF(v) == 4)
                         u &= 0xffffffff;
                     g = 'x';
@@ -266,15 +266,15 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
                 u = VAUNSIGNED(ap, n);
             hex:
                 do
-                    *b++ = ((c = ( char )(u & 0xf)) >= 0xa) ? c - 0xa + 'a'
-                                                            : c + '0';
+                    *b++ = ((c = ( char ) (u & 0xf)) >= 0xa) ? c - 0xa + 'a'
+                                                             : c + '0';
                 while (u >>= 4);
                 break;
             case 'z':
                 u = VAUNSIGNED(ap, n);
                 do
-                    *b++ = ((c = ( char )(u & 0x1f)) >= 0xa) ? c - 0xa + 'a'
-                                                             : c + '0';
+                    *b++ = ((c = ( char ) (u & 0x1f)) >= 0xa) ? c - 0xa + 'a'
+                                                              : c + '0';
                 while (u >>= 5);
                 break;
             default:
@@ -441,8 +441,8 @@ debug_elapsed(int set)
     static double prev;
 
     getrusage(RUSAGE_SELF, &ru);
-    tm = ( double )ru.ru_utime.tv_sec
-         + ( double )ru.ru_utime.tv_usec / 1000000.0;
+    tm = ( double ) ru.ru_utime.tv_sec
+         + ( double ) ru.ru_utime.tv_usec / 1000000.0;
     if (set)
         return prev = tm;
     return tm - prev;

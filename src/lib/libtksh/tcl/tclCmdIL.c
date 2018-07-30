@@ -100,7 +100,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: no expression after \"",
                              argv[i - 1],
                              "\" argument",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         result = Tcl_ExprBoolean(interp, argv[i], &value);
@@ -116,7 +116,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: no script following \"",
                              argv[i - 1],
                              "\" argument",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (value) {
@@ -151,7 +151,7 @@ char **argv;        /* Argument strings. */
             Tcl_AppendResult(
             interp,
             "wrong # args: no script following \"else\" argument",
-            ( char * )NULL);
+            ( char * ) NULL);
             return TCL_ERROR;
         }
     }
@@ -190,7 +190,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " varName ?increment?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -259,7 +259,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " list ?joinString?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -268,12 +268,13 @@ char **argv;        /* Argument strings. */
     }
     for (i = 0; i < listArgc; i++) {
         if (i == 0) {
-            Tcl_AppendResult(interp, listArgv[0], ( char * )NULL);
+            Tcl_AppendResult(interp, listArgv[0], ( char * ) NULL);
         } else {
-            Tcl_AppendResult(interp, joinString, listArgv[i], ( char * )NULL);
+            Tcl_AppendResult(
+            interp, joinString, listArgv[i], ( char * ) NULL);
         }
     }
-    ckfree(( char * )listArgv);
+    ckfree(( char * ) listArgv);
     return TCL_OK;
 }
 
@@ -308,7 +309,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " list index\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if ((*argv[2] == 'e')
@@ -339,11 +340,12 @@ char **argv;        /* Argument strings. */
         return TCL_OK;
     }
     if (size >= TCL_RESULT_SIZE) {
-        interp->result = ( char * )ckalloc(( unsigned )size + 1);
+        interp->result = ( char * ) ckalloc(( unsigned ) size + 1);
         interp->freeProc = TCL_DYNAMIC;
     }
     if (parenthesized) {
-        memcpy(( VOID * )interp->result, ( VOID * )element, ( size_t )size);
+        memcpy(
+        ( VOID * ) interp->result, ( VOID * ) element, ( size_t ) size);
         interp->result[size] = 0;
     } else {
         TclCopyAndCollapse(size, element, interp->result);
@@ -383,7 +385,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " list index element ?element ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if ((*argv[2] == 'e')
@@ -402,13 +404,13 @@ char **argv;        /* Argument strings. */
     element = argv[1];
     for (count = 0, p = argv[1]; (count < index) && (*p != 0); count++) {
         result
-        = TclFindElement(interp, p, &element, &p, &size, ( int * )NULL);
+        = TclFindElement(interp, p, &element, &p, &size, ( int * ) NULL);
         if (result != TCL_OK) {
             return result;
         }
     }
     if (*p == 0) {
-        Tcl_AppendResult(interp, argv[1], ( char * )NULL);
+        Tcl_AppendResult(interp, argv[1], ( char * ) NULL);
     } else {
         char *end;
 
@@ -420,7 +422,7 @@ char **argv;        /* Argument strings. */
         }
         savedChar = *end;
         *end = 0;
-        Tcl_AppendResult(interp, argv[1], ( char * )NULL);
+        Tcl_AppendResult(interp, argv[1], ( char * ) NULL);
         *end = savedChar;
     }
 
@@ -437,7 +439,7 @@ char **argv;        /* Argument strings. */
      */
 
     if (*p != 0) {
-        Tcl_AppendResult(interp, " ", p, ( char * )NULL);
+        Tcl_AppendResult(interp, " ", p, ( char * ) NULL);
     }
     return TCL_OK;
 }
@@ -504,12 +506,12 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " list\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     for (count = 0, p = argv[1]; *p != 0; count++) {
         result = TclFindElement(
-        interp, p, &element, &p, ( int * )NULL, ( int * )NULL);
+        interp, p, &element, &p, ( int * ) NULL, ( int * ) NULL);
         if (result != TCL_OK) {
             return result;
         }
@@ -554,7 +556,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " list first last\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if ((*argv[2] == 'e')
@@ -580,7 +582,7 @@ char **argv;        /* Argument strings. */
                              "expected integer or \"end\" but got \"",
                              argv[3],
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
     }
@@ -594,7 +596,7 @@ char **argv;        /* Argument strings. */
 
     for (count = 0, begin = argv[1]; count < first; begin = next, count++) {
         result = TclFindElement(
-        interp, begin, &dummy, &next, ( int * )NULL, ( int * )NULL);
+        interp, begin, &dummy, &next, ( int * ) NULL, ( int * ) NULL);
         if (result != TCL_OK) {
             return result;
         }
@@ -610,7 +612,7 @@ char **argv;        /* Argument strings. */
     for (count = first, end = begin; (count <= last) && (*end != 0);
          count++) {
         result = TclFindElement(
-        interp, end, &dummy, &end, ( int * )NULL, ( int * )NULL);
+        interp, end, &dummy, &end, ( int * ) NULL, ( int * ) NULL);
         if (result != TCL_OK) {
             return result;
         }
@@ -666,7 +668,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " list first last ?element element ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if ((*argv[2] == 'e')
@@ -681,7 +683,7 @@ char **argv;        /* Argument strings. */
                              "bad index \"",
                              argv[2],
                              "\": must be integer or \"end\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
     }
@@ -695,7 +697,7 @@ char **argv;        /* Argument strings. */
                              "bad index \"",
                              argv[3],
                              "\": must be integer or \"end\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
     }
@@ -711,7 +713,7 @@ char **argv;        /* Argument strings. */
     element = argv[1];
     for (count = 0, p1 = argv[1]; (count < first) && (*p1 != 0); count++) {
         result
-        = TclFindElement(interp, p1, &element, &next, &size, ( int * )NULL);
+        = TclFindElement(interp, p1, &element, &next, &size, ( int * ) NULL);
         if (result != TCL_OK) {
             return result;
         }
@@ -722,7 +724,7 @@ char **argv;        /* Argument strings. */
     }
     if (*p1 == 0) {
         Tcl_AppendResult(
-        interp, "list doesn't contain element ", argv[2], ( char * )NULL);
+        interp, "list doesn't contain element ", argv[2], ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -732,7 +734,7 @@ char **argv;        /* Argument strings. */
 
     for (p2 = p1; (count <= last) && (*p2 != 0); count++) {
         result = TclFindElement(
-        interp, p2, &dummy, &p2, ( int * )NULL, ( int * )NULL);
+        interp, p2, &dummy, &p2, ( int * ) NULL, ( int * ) NULL);
         if (result != TCL_OK) {
             return result;
         }
@@ -751,7 +753,7 @@ char **argv;        /* Argument strings. */
     }
     savedChar = *p1;
     *p1 = 0;
-    Tcl_AppendResult(interp, argv[1], ( char * )NULL);
+    Tcl_AppendResult(interp, argv[1], ( char * ) NULL);
     *p1 = savedChar;
 
     /*
@@ -770,7 +772,7 @@ char **argv;        /* Argument strings. */
         if (*interp->result == 0) {
             Tcl_SetResult(interp, p2, TCL_VOLATILE);
         } else {
-            Tcl_AppendResult(interp, " ", p2, ( char * )NULL);
+            Tcl_AppendResult(interp, " ", p2, ( char * ) NULL);
         }
     }
     return TCL_OK;
@@ -820,7 +822,7 @@ char **argv;        /* Argument strings. */
                              "bad search mode \"",
                              argv[1],
                              "\": must be -exact, -glob, or -regexp",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
     } else if (argc != 3) {
@@ -828,7 +830,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " ?mode? list pattern\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (Tcl_SplitList(interp, argv[argc - 2], &listArgc, &listArgv)
@@ -848,7 +850,7 @@ char **argv;        /* Argument strings. */
         case REGEXP:
             match = Tcl_RegExpMatch(interp, listArgv[i], argv[argc - 1]);
             if (match < 0) {
-                ckfree(( char * )listArgv);
+                ckfree(( char * ) listArgv);
                 return TCL_ERROR;
             }
             break;
@@ -859,7 +861,7 @@ char **argv;        /* Argument strings. */
         }
     }
     sprintf(interp->result, "%d", index);
-    ckfree(( char * )listArgv);
+    ckfree(( char * ) listArgv);
     return TCL_OK;
 }
 
@@ -900,7 +902,7 @@ char **argv;        /* Argument strings. */
         argv[0],
         " ?-ascii? ?-integer? ?-real? ?-increasing? ?-decreasing?",
         " ?-command string? list\"",
-        ( char * )NULL);
+        ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -927,7 +929,7 @@ char **argv;        /* Argument strings. */
             argv[i],
             "\": must be -ascii, -integer, -real, -increasing",
             " -decreasing, or -command",
-            ( char * )NULL);
+            ( char * ) NULL);
             sortCode = TCL_ERROR;
             goto done;
         }
@@ -940,7 +942,7 @@ char **argv;        /* Argument strings. */
                 Tcl_AppendResult(interp,
                                  "\"-command\" must be",
                                  " followed by comparison command",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 sortCode = TCL_ERROR;
                 goto done;
             }
@@ -972,8 +974,10 @@ char **argv;        /* Argument strings. */
         sortCode = TCL_ERROR;
         goto done;
     }
-    qsort(
-    ( VOID * )listArgv, ( size_t )listArgc, sizeof(char *), SortCompareProc);
+    qsort(( VOID * ) listArgv,
+          ( size_t ) listArgc,
+          sizeof(char *),
+          SortCompareProc);
     if (sortCode == TCL_OK) {
         Tcl_ResetResult(interp);
         interp->result = Tcl_Merge(listArgc, listArgv);
@@ -982,7 +986,7 @@ char **argv;        /* Argument strings. */
     if (sortMode == COMMAND) {
         Tcl_DStringFree(&sortCmd);
     }
-    ckfree(( char * )listArgv);
+    ckfree(( char * ) listArgv);
 
 done:
     sortInterp = NULL;
@@ -1013,8 +1017,8 @@ static int SortCompareProc(first, second) CONST VOID *first,
 *second; /* Elements to be compared. */
 {
     int order;
-    char *firstString = *(( char ** )first);
-    char *secondString = *(( char ** )second);
+    char *firstString = *(( char ** ) first);
+    char *secondString = *(( char ** ) second);
 
     order = 0;
     if (sortCode != TCL_OK) {
@@ -1088,7 +1092,7 @@ static int SortCompareProc(first, second) CONST VOID *first,
             Tcl_ResetResult(sortInterp);
             Tcl_AppendResult(sortInterp,
                              "comparison command returned non-numeric result",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             sortCode = TCL_ERROR;
             return order;
         }

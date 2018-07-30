@@ -96,7 +96,7 @@ dssfind(const char *name,
     if (*name == ':') {
         sfsprintf(path, size, "%s", "schema-string");
         sp = sfnew(
-        NiL, ( char * )name + 1, strlen(name) - 1, -1, SF_READ | SF_STRING);
+        NiL, ( char * ) name + 1, strlen(name) - 1, -1, SF_READ | SF_STRING);
     } else if (!pathfind(name, id, suffix, path, size)) {
         if ((flags & DSS_VERBOSE) && disc->errorf)
             (*disc->errorf)(NiL,
@@ -151,7 +151,7 @@ dssidentf(Dssfile_t *file, void *buf, size_t size, Dssdisc_t *disc)
     char *s;
     char *e;
 
-    s = ( char * )buf;
+    s = ( char * ) buf;
     e = s + size;
     while (s < e && isspace(*s))
         s++;
@@ -327,11 +327,11 @@ init(void *dll,
 
     if (dll) {
         sfsprintf(buf, sizeof(buf), "%s_lib", id);
-        lib = (libf = ( Dsslib_f )dlllook(dll, buf)) ? (*libf)(path, disc)
-                                                     : ( Dsslib_t * )0;
+        lib = (libf = ( Dsslib_f ) dlllook(dll, buf)) ? (*libf)(path, disc)
+                                                      : ( Dsslib_t * ) 0;
     }
     if (lib) {
-        if (!(lib->path = ( const char * )strdup(path))) {
+        if (!(lib->path = ( const char * ) strdup(path))) {
             if (disc && disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -380,15 +380,15 @@ dsslib(const char *name, Dssflags_t flags, Dssdisc_t *disc)
                 dllsclose(dls);
             }
         }
-        return ( Dsslib_t * )dtfirst(state.cx->libraries);
+        return ( Dsslib_t * ) dtfirst(state.cx->libraries);
     }
     if (!dllnames(id, name, &names))
         return 0;
-    if ((lib = ( Dsslib_t * )dtmatch(state.cx->libraries, names.base))
-        || (lib = ( Dsslib_t * )dll_lib(
+    if ((lib = ( Dsslib_t * ) dtmatch(state.cx->libraries, names.base))
+        || (lib = ( Dsslib_t * ) dll_lib(
             &names,
             DSS_PLUGIN_VERSION,
-            (flags & DSS_VERBOSE) ? ( Error_f )disc->errorf : ( Error_f )0,
+            (flags & DSS_VERBOSE) ? ( Error_f ) disc->errorf : ( Error_f ) 0,
             disc)))
         init(NiL, lib, names.path, flags | DSS_VERBOSE, disc);
     return lib;
@@ -526,11 +526,11 @@ dss_mem_get(Cx_t *cx,
 
     switch (pc->data.variable->index) {
     case DSS_MEM_file:
-        r->value.string.data = ( char * )file->path;
+        r->value.string.data = ( char * ) file->path;
         r->value.string.size = strlen(file->path);
         break;
     case DSS_MEM_format:
-        r->value.string.data = ( char * )file->format->name;
+        r->value.string.data = ( char * ) file->format->name;
         r->value.string.size = strlen(file->format->name);
         break;
     case DSS_MEM_length:
@@ -555,13 +555,13 @@ dss_mem_get(Cx_t *cx,
 }
 
 static Cxmember_t dss_mem
-= { dss_mem_get, 0, ( Dt_t * )&dss_mem_struct[0], CX_VIRTUAL };
+= { dss_mem_get, 0, ( Dt_t * ) &dss_mem_struct[0], CX_VIRTUAL };
 
 static Cxtype_t dss_type[] = {
     { DSS_ID "_s",
       "Global state struct.",
       CXH,
-      ( Cxtype_t * )"void",
+      ( Cxtype_t * ) "void",
       0,
       0,
       0,
@@ -572,7 +572,7 @@ static Cxtype_t dss_type[] = {
       { 0 },
       0,
       &dss_mem },
-    { DSS_ID "_t", "Global state.", CXH, ( Cxtype_t * )DSS_ID "_s" },
+    { DSS_ID "_t", "Global state.", CXH, ( Cxtype_t * ) DSS_ID "_s" },
 };
 
 static Cxvariable_t dss_var[]
@@ -600,8 +600,8 @@ dssopen(Dssflags_t flags, Dssflags_t test, Dssdisc_t *disc, Dssmeth_t *meth)
          * find the first user library that defines a method
          */
 
-        lib = ( Dsslib_t * )dtfirst(state.cx->libraries);
-        while ((lib = ( Dsslib_t * )dtnext(state.cx->libraries, lib))
+        lib = ( Dsslib_t * ) dtfirst(state.cx->libraries);
+        while ((lib = ( Dsslib_t * ) dtnext(state.cx->libraries, lib))
                && !lib->meth)
             ;
         if (lib)
@@ -643,8 +643,8 @@ dssopen(Dssflags_t flags, Dssflags_t test, Dssdisc_t *disc, Dssmeth_t *meth)
     dss->cx->caller = dss;
     if (meth->openf && (*meth->openf)(dss, dss->disc))
         goto bad;
-    for (var = ( Cxvariable_t * )dtfirst(dss->cx->variables); var;
-         var = ( Cxvariable_t * )dtnext(dss->cx->variables, var))
+    for (var = ( Cxvariable_t * ) dtfirst(dss->cx->variables); var;
+         var = ( Cxvariable_t * ) dtnext(dss->cx->variables, var))
         if (var->format.map)
             var->format.map->header.flags |= CX_REFERENCED;
     for (i = 0; i < elementsof(dss_type); i++)
@@ -728,7 +728,7 @@ dssmethinit(const char *name,
         if (meth->methf) {
             ometh = meth;
             opt = opt_info;
-            state.cx->header = ( Cxheader_t * )meth;
+            state.cx->header = ( Cxheader_t * ) meth;
             state.meth = meth;
             meth = (*meth->methf)(name, options, schema, disc, meth);
             opt_info = opt;
@@ -763,17 +763,17 @@ dssmeth(const char *name, Dssdisc_t *disc)
         if (*s == ',' || *s == '\t' || *s == '\r' || *s == '\n') {
             if (!options) {
                 *s++ = 0;
-                options = ( char * )s;
+                options = ( char * ) s;
             }
         } else if (*s == ':') {
             *s++ = 0;
             schema = name + (s - buf);
             break;
         }
-    name = ( const char * )buf;
+    name = ( const char * ) buf;
     if (!*name)
         name = id;
-    if (!(meth = ( Dssmeth_t * )dtmatch(state.cx->methods, name))) {
+    if (!(meth = ( Dssmeth_t * ) dtmatch(state.cx->methods, name))) {
         if (pathfind(name, id, id, path, sizeof(path))) {
             meth = &dss_method;
             name = id;
@@ -897,7 +897,7 @@ dssrun(Dss_t *dss,
             x->done = expr->done;
             x->stack = expr->stack;
             x->op = expr->op;
-            x->query = ( Cxquery_t * )(x + 1);
+            x->query = ( Cxquery_t * ) (x + 1);
             x->group = expr;
             expr = x;
         }

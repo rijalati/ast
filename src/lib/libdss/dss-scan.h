@@ -38,7 +38,7 @@ static int
 scan_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
     Dss_t *dss = DSS(cx);
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     char **files = expr->files;
     char *file;
     Sfio_t *sp;

@@ -56,13 +56,13 @@ recstr(const char *s, char **e)
             n = '\n';
         else {
             if (*s == '0' && (*(s + 1) == 'x' || *(s + 1) == 'X'))
-                n = ( int )strtol(s, &t, 0);
+                n = ( int ) strtol(s, &t, 0);
             else
                 n = chresc(s, &t);
-            s = ( const char * )t;
+            s = ( const char * ) t;
         }
         if (e)
-            *e = ( char * )s;
+            *e = ( char * ) s;
         return REC_D_TYPE(n);
     case 'f':
     case 'F':
@@ -81,7 +81,7 @@ recstr(const char *s, char **e)
     case '8':
     case '9':
         n = strton(s, &t, NiL, 0);
-        if (n > 0 && t > ( char * )s) {
+        if (n > 0 && t > ( char * ) s) {
             if (e)
                 *e = t;
             return REC_F_TYPE(n);
@@ -91,7 +91,8 @@ recstr(const char *s, char **e)
     case 'M':
         while (*++s == ' ' || *s == '\t' || *s == ',')
             ;
-        for (t = ( char * )s; *t && *t != ' ' && *t != '\t' && *t != ','; t++)
+        for (t = ( char * ) s; *t && *t != ' ' && *t != '\t' && *t != ',';
+             t++)
             ;
         if ((t - s) == 4) {
             if (strneq(s, "data", 4)) {
@@ -191,27 +192,27 @@ recstr(const char *s, char **e)
             case '9':
                 v = 0;
                 a[n++] = strtol(s, &t, 0);
-                s = ( const char * )t - 1;
+                s = ( const char * ) t - 1;
                 continue;
             }
             break;
         }
         if (e)
-            *e = ( char * )s;
+            *e = ( char * ) s;
         if (a[3] > (a[1] - a[2]))
             a[3] = a[1] - a[2];
         return REC_V_RECORD(REC_V_TYPE(a[1], a[2], a[3], a[4], a[5]), a[0]);
     case '%':
         if (e)
-            *e = ( char * )s + 1;
+            *e = ( char * ) s + 1;
         return REC_M_TYPE(REC_M_path);
     case '-':
     case '?':
         if (e)
-            *e = ( char * )s + 1;
+            *e = ( char * ) s + 1;
         return REC_M_TYPE(REC_M_data);
     }
     if (e)
-        *e = ( char * )s;
+        *e = ( char * ) s;
     return REC_N_TYPE();
 }

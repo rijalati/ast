@@ -168,7 +168,7 @@ tmain()
 
     Disc.exceptf = except2;
     sfdisc(f, &Disc);
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (sfread(f, rbuf, 4) != 4)
         terror("reading 4 bytes");
     for (i = 0; i < 4; ++i)
@@ -176,17 +176,17 @@ tmain()
             terror("wrong 4 bytes");
 
     sfsync(f);
-    if ((o = lseek(sffileno(f), ( off_t )0, SEEK_CUR)) != 4)
-        terror("Wrong seek location %lld", ( Sfoff_t )o);
+    if ((o = lseek(sffileno(f), ( off_t ) 0, SEEK_CUR)) != 4)
+        terror("Wrong seek location %lld", ( Sfoff_t ) o);
 
     if ((i = dup(sffileno(f))) < 0)
         terror("Can't dup file descriptor");
-    if ((o = lseek(i, ( off_t )0, SEEK_CUR)) != 4)
-        terror("Wrong seek location %lld", ( Sfoff_t )o);
+    if ((o = lseek(i, ( off_t ) 0, SEEK_CUR)) != 4)
+        terror("Wrong seek location %lld", ( Sfoff_t ) o);
 
     sfclose(f);
-    if ((o = lseek(i, ( off_t )0, SEEK_CUR)) != 4)
-        terror("Wrong seek location %lld", ( Sfoff_t )o);
+    if ((o = lseek(i, ( off_t ) 0, SEEK_CUR)) != 4)
+        terror("Wrong seek location %lld", ( Sfoff_t ) o);
 
     texit(0);
 }

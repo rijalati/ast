@@ -31,19 +31,19 @@ tmain()
     if (!(null = sfopen(NIL(Sfio_t *), "/dev/null", "w")))
         terror("Opening /dev/null");
 
-    sfsetbuf(null, NIL(char *), ( size_t )SF_UNBOUND);
+    sfsetbuf(null, NIL(char *), ( size_t ) SF_UNBOUND);
 
     if (!(f = sfopen(NIL(Sfio_t *), tstfile("sf", 0), "w+")))
         terror("Creating %s", tstfile("sf", 0));
     sfwrite(f, "1234", 4);
-    sfseek(f, ( Sfoff_t )1, 0);
+    sfseek(f, ( Sfoff_t ) 1, 0);
     sfsync(f);
 
     sfsetfd(null, -1);
     sfsetfd(null, sffileno(f));
     sfsync(null);
 
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (sfread(f, buf, 4) != 4 || strncmp(buf, "1234", 4) != 0)
         terror("Bad data");
 
@@ -57,7 +57,7 @@ tmain()
     n = sizeof(buf) - 127;
     if (sfwrite(f, buf, n) != n)
         terror("Writing large buffer");
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (sfread(f, b, n) != n)
         terror("Reading large buffer");
     for (k = 0; k < n; ++k)

@@ -23,7 +23,7 @@
 
 #include <ctype.h>
 
-#define ustrchr(p, c) ( unsigned char * )strchr(( char * )(p), c)
+#define ustrchr(p, c) ( unsigned char * ) strchr(( char * ) (p), c)
 
 int
 selected(unsigned char *, Text *);
@@ -62,7 +62,7 @@ sel1(word addr, Text *data)
 {
     if (addr & REGADR)
         return reexec(
-               readdr(addr), ( char * )data->s, data->w - data->s, 0, 0, 0)
+               readdr(addr), ( char * ) data->s, data->w - data->s, 0, 0, 0)
                == 0;
     if (addr == recno)
         return 1;
@@ -82,8 +82,8 @@ int
 selected(unsigned char *pc, Text *data)
 {
     int active;
-    word *ipc = ( word * )pc; /* points to address words */
-    word *q = instr(pc);      /* points to instruction word */
+    word *ipc = ( word * ) pc; /* points to address words */
+    word *q = instr(pc);       /* points to instruction word */
     int neg = !!(*q & NEG);
     switch (q - ipc) {
     case 0: /* 0 address */
@@ -171,7 +171,7 @@ unsigned char *
 De(Text *script, unsigned char *pc, Text *data)
 {
     word n;
-    unsigned char *end = ( unsigned char * )ustrchr(data->s, '\n');
+    unsigned char *end = ( unsigned char * ) ustrchr(data->s, '\n');
     if (end == 0)
         return de(script, pc, data);
     end++;
@@ -247,7 +247,7 @@ ie(Text *script, unsigned char *pc, Text *data)
 {
     script = script;
     data = data;
-    if (sfprintf(sfstdout, "%s", ( char * )(instr(pc) + 1)) <= 0)
+    if (sfprintf(sfstdout, "%s", ( char * ) (instr(pc) + 1)) <= 0)
         error(ERROR_SYSTEM | 3, stdouterr);
     return nexti(pc);
 }
@@ -257,7 +257,7 @@ Le(Text *script, unsigned char *pc, Text *data)
 {
     script = script;
     data = data;
-    return ( unsigned char * )(instr(pc) + 1);
+    return ( unsigned char * ) (instr(pc) + 1);
 }
 
 unsigned char *
@@ -330,14 +330,14 @@ te(Text *script, unsigned char *pc, Text *data)
 unsigned char *
 ww(Text *script, unsigned char *pc, Text *data, word offset)
 {
-    word *q = ( word * )(files.s + offset);
-    Sfio_t *f = *( Sfio_t ** )q;
+    word *q = ( word * ) (files.s + offset);
+    Sfio_t *f = *( Sfio_t ** ) q;
     word n = data->w - data->s;
     assure(data, 1);
     *data->w = '\n';
     if (sfwrite(f, data->s, n + 1) != n + 1
         || sfsync(f) == EOF) /* in case of subsequent r */
-        error(ERROR_SYSTEM | 3, "%s: cannot write", ( char * )(q + 1));
+        error(ERROR_SYSTEM | 3, "%s: cannot write", ( char * ) (q + 1));
     *data->w = 0;
     script = script;
     return nexti(pc);
@@ -365,16 +365,16 @@ xe(Text *script, unsigned char *pc, Text *data)
 unsigned char *
 ye(Text *script, unsigned char *pc, Text *data)
 {
-    unsigned char *s = ( unsigned char * )data->s;
-    unsigned char *w = ( unsigned char * )data->w;
-    unsigned char **m = ( unsigned char ** )(instr(pc) + 1);
+    unsigned char *s = ( unsigned char * ) data->s;
+    unsigned char *w = ( unsigned char * ) data->w;
+    unsigned char **m = ( unsigned char ** ) (instr(pc) + 1);
     unsigned char *b;
     unsigned int c, x;
     wchar_t wc;
     Mbstate_t sq;
     int i, n;
     Sfio_t *f;
-    if (x = ( unsigned int )(*m++ - ( unsigned char * )0)) {
+    if (x = ( unsigned int ) (*m++ - ( unsigned char * ) 0)) {
         if (!(f = sfstropen()))
             error(ERROR_SYSTEM | 3, "out of space");
         mbtinit(&sq);
@@ -390,12 +390,12 @@ ye(Text *script, unsigned char *pc, Text *data)
                 while (b < s)
                     sfputc(f, *b++);
         }
-        x = ( unsigned int )sfstrtell(f);
+        x = ( unsigned int ) sfstrtell(f);
         assure(data, x);
         memcpy(data->s, sfstrbase(f), x);
         data->w = data->s + x;
     } else
-        for (b = ( unsigned char * )m; s < w; s++)
+        for (b = ( unsigned char * ) m; s < w; s++)
             *s = b[*s];
     script = script;
     return nexti(pc);
@@ -415,7 +415,7 @@ se(Text *script, unsigned char *pc, Text *data)
     if (flags & REG_SUB_PRINT)
         pe(script, pc, data);
     if (flags & REG_SUB_WRITE)
-        return ww(script, pc, data, (( word * )nexti(pc))[-1]);
+        return ww(script, pc, data, (( word * ) nexti(pc))[-1]);
     return nexti(pc);
 }
 
@@ -451,7 +451,7 @@ le(Text *script, unsigned char *pc, Text *data)
                 goto hit;
             }
         if (!isprint(*s))
-            b += sfsprintf(( char * )b, CHMAX + 1, "\\%3.3o", *s);
+            b += sfsprintf(( char * ) b, CHMAX + 1, "\\%3.3o", *s);
         else
             *b++ = *s;
     hit:
@@ -485,7 +485,7 @@ ae(Text *script, unsigned char *pc, Text *data)
     script = script;
     data = data;
     assure(&todo, sizeof(unsigned char *));
-    *( unsigned char ** )todo.w = pc;
+    *( unsigned char ** ) todo.w = pc;
     todo.w += sizeof(unsigned char *);
     return nexti(pc);
 }
@@ -493,7 +493,7 @@ ae(Text *script, unsigned char *pc, Text *data)
 unsigned char *
 ce(Text *script, unsigned char *pc, Text *data)
 {
-    if (sfprintf(sfstdout, "%s", ( char * )(instr(pc) + 1)) <= 0)
+    if (sfprintf(sfstdout, "%s", ( char * ) (instr(pc) + 1)) <= 0)
         error(ERROR_SYSTEM | 3, stdouterr);
     return de(script, pc, data);
 }
@@ -507,14 +507,14 @@ coda(void)
     if (todo.s == 0)
         return;
     for (p = todo.s; p < todo.w; p += sizeof(word)) {
-        q = instr(*( unsigned char ** )p);
+        q = instr(*( unsigned char ** ) p);
         switch (code(*q)) {
         case 'a':
-            if (sfprintf(sfstdout, "%s", ( char * )(q + 1)) <= 0)
+            if (sfprintf(sfstdout, "%s", ( char * ) (q + 1)) <= 0)
                 error(ERROR_SYSTEM | 3, stdouterr);
             continue;
         case 'r':
-            f = sfopen(NiL, ( char * )(files.s + q[1] + sizeof(word)), "r");
+            f = sfopen(NiL, ( char * ) (files.s + q[1] + sizeof(word)), "r");
             if (f == 0)
                 continue;
             if (sfmove(f, sfstdout, SF_UNBOUND, -1) < 0 || sferror(sfstdout)

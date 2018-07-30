@@ -74,7 +74,7 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
     }
 
     /* set and initialize the stream to a definite mode */
-    if (( int )SFMODE(f, local) != (mode = f->mode & SF_RDWR)) {
+    if (( int ) SFMODE(f, local) != (mode = f->mode & SF_RDWR)) {
         int flags = f->flags;
 
         if (hardseek & SF_PUBLIC) /* seek ptr must follow file descriptor */
@@ -98,13 +98,13 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
     }
 
     if (f->extent < 0) { /* let system call set errno */
-        ( void )SFSK(f, ( Sfoff_t )0, SEEK_CUR, f->disc);
+        ( void ) SFSK(f, ( Sfoff_t ) 0, SEEK_CUR, f->disc);
         SFMTXRETURN(f, (Sfoff_t)(-1));
     }
 
     /* throw away ungetc data */
     if (f->disc == _Sfudisc)
-        ( void )sfclose((*_Sfstack)(f, NIL(Sfio_t *)));
+        ( void ) sfclose((*_Sfstack)(f, NIL(Sfio_t *)));
 
     /* lock the stream for internal manipulations */
     SFLOCK(f, local);
@@ -127,8 +127,8 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
             f->next = f->data + p;
             f->here = p;
             if (p > f->extent)
-                memclear(( char * )(f->data + f->extent),
-                         ( int )(p - f->extent));
+                memclear(( char * ) (f->data + f->extent),
+                         ( int ) (p - f->extent));
             goto done;
         }
 
@@ -177,7 +177,7 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
     r = p + (type == SEEK_CUR ? s : 0);
     if (r <= f->here && r >= (f->here - (f->endb - f->data))) {
         if ((hardseek || (type == SEEK_CUR && p == 0))) {
-            if ((s = SFSK(f, ( Sfoff_t )0, SEEK_CUR, f->disc)) == f->here
+            if ((s = SFSK(f, ( Sfoff_t ) 0, SEEK_CUR, f->disc)) == f->here
                 || (s >= 0 && !(hardseek & SF_PUBLIC)
                     && (s = SFSK(f, f->here, SEEK_SET, f->disc)) == f->here))
                 goto near_done;
@@ -205,7 +205,7 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
                                 around too much */
 #    if _mmap_worthy < 2
         if ((f->next - f->data) < ((f->endb - f->data) / 4)) {
-            SFSETBUF(f, ( Void_t * )f->tiny, ( size_t )SF_UNBOUND);
+            SFSETBUF(f, ( Void_t * ) f->tiny, ( size_t ) SF_UNBOUND);
             hardseek = 1; /* this forces a hard seek below */
         } else
 #    endif
@@ -255,7 +255,7 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
 
     if (r < p) /* read to cover p */
     {
-        ( void )SFRD(f, f->data, f->size, f->disc);
+        ( void ) SFRD(f, f->data, f->size, f->disc);
         if (p <= f->here && p >= (f->here - (f->endb - f->data)))
             f->next = f->endb - (size_t)(f->here - p);
         else /* recover from read failure by just seeking to p */

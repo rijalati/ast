@@ -35,12 +35,12 @@ typedef struct _dtlist_s
 
 #ifdef DEBUG
 int
-dtlistprint(Dt_t *dt, Dtlink_t *here, char *(*objprintf)( Void_t * ))
+dtlistprint(Dt_t *dt, Dtlink_t *here, char *(*objprintf)( Void_t * ) )
 {
     int k;
     char *obj, *endb, buf[1024];
     Dtdisc_t *disc = dt->disc;
-    Dtlist_t *list = ( Dtlist_t * )dt->data;
+    Dtlist_t *list = ( Dtlist_t * ) dt->data;
 
     if (!here && !(here = list->link))
         return -1;
@@ -72,7 +72,7 @@ int type;
 {
     Dtlink_t *lnk;
     Dtdisc_t *disc = dt->disc;
-    Dtlist_t *list = ( Dtlist_t * )dt->data;
+    Dtlist_t *list = ( Dtlist_t * ) dt->data;
 
     if ((lnk = list->link)) {
         if (type & DT_LAST)
@@ -93,7 +93,7 @@ Void_t *lclear(dt) Dt_t *dt;
 {
     Dtlink_t *lnk, *next;
     Dtdisc_t *disc = dt->disc;
-    Dtlist_t *list = ( Dtlist_t * )dt->data;
+    Dtlist_t *list = ( Dtlist_t * ) dt->data;
 
     lnk = list->link;
     list->link = list->here = NIL(Dtlink_t *);
@@ -119,7 +119,7 @@ Dtlink_t *lnk;
 int type;
 #endif
 {
-    Dtlist_t *list = ( Dtlist_t * )dt->data;
+    Dtlist_t *list = ( Dtlist_t * ) dt->data;
 
     if (type & (DT_FLATTEN | DT_EXTRACT)) {
         if (lnk) /* error on calling */
@@ -142,7 +142,7 @@ int type;
             dt->data->size += 1;
     }
 
-    return ( Void_t * )lnk;
+    return ( Void_t * ) lnk;
 }
 
 #if __STD_C
@@ -162,7 +162,7 @@ Dtstat_t *st;
           + (dt->disc->link >= 0 ? 0 : dt->data->size * sizeof(Dthold_t));
     }
 
-    return ( Void_t * )dt->data->size;
+    return ( Void_t * ) dt->data->size;
 }
 
 #if __STD_C
@@ -178,7 +178,7 @@ int type;
     Void_t *key, *o, *k;
     Dtlink_t **fngr = NIL(Dtlink_t **);
     Dtdisc_t *disc = dt->disc;
-    Dtlist_t *list = ( Dtlist_t * )dt->data;
+    Dtlist_t *list = ( Dtlist_t * ) dt->data;
 
     type = DTTYPE(dt, type); /* map type for upward compatibility */
     if (!(type & DT_OPERATIONS))
@@ -189,34 +189,34 @@ int type;
     if (type & (DT_FIRST | DT_LAST))
         DTRETURN(obj, lfirstlast(dt, type));
     else if (type & (DT_EXTRACT | DT_RESTORE | DT_FLATTEN))
-        DTRETURN(obj, llist(dt, ( Dtlink_t * )obj, type));
+        DTRETURN(obj, llist(dt, ( Dtlink_t * ) obj, type));
     else if (type & DT_CLEAR)
         DTRETURN(obj, lclear(dt));
     else if (type & DT_STAT)
-        DTRETURN(obj, listat(dt, ( Dtstat_t * )obj));
+        DTRETURN(obj, listat(dt, ( Dtstat_t * ) obj));
     else if (type & DT_START) {
-        if (!(fngr = ( Dtlink_t ** )(*dt->memoryf)(
+        if (!(fngr = ( Dtlink_t ** ) (*dt->memoryf)(
               dt, NIL(Void_t *), sizeof(Dtlink_t *), disc)))
             DTRETURN(obj, NIL(Void_t *));
         if (!obj) {
             if (!list->link) {
-                ( void )(*dt->memoryf)(dt, ( Void_t * )fngr, 0, disc);
+                ( void ) (*dt->memoryf)(dt, ( Void_t * ) fngr, 0, disc);
                 DTRETURN(obj, NIL(Void_t *));
             } else {
                 *fngr = list->link;
-                DTRETURN(obj, ( Void_t * )fngr);
+                DTRETURN(obj, ( Void_t * ) fngr);
             }
         }
         /* else: fall through to search for obj */
     } else if (type & DT_STEP) {
-        if (!(fngr = ( Dtlink_t ** )obj) || !(r = *fngr))
+        if (!(fngr = ( Dtlink_t ** ) obj) || !(r = *fngr))
             DTRETURN(obj, NIL(Void_t *));
         obj = _DTOBJ(disc, r);
         *fngr = r->_rght;
         DTRETURN(obj, obj);
     } else if (type & DT_STOP) {
         if (obj) /* free allocated memory */
-            ( void )(*dt->memoryf)(dt, obj, 0, disc);
+            ( void ) (*dt->memoryf)(dt, obj, 0, disc);
         DTRETURN(obj, NIL(Void_t *));
     }
 
@@ -233,7 +233,7 @@ int type;
 
     if (type & DT_RELINK) /* relink object after some processing */
     {
-        r = ( Dtlink_t * )obj;
+        r = ( Dtlink_t * ) obj;
         goto do_insert;
     } else if (type & (DT_INSERT | DT_INSTALL | DT_APPEND | DT_ATTACH)) {
     dt_insert:
@@ -328,7 +328,7 @@ int type;
     if (!r) /* not found */
     {
         if (type & DT_START)
-            ( void )(*dt->memoryf)(dt, ( Void_t * )fngr, 0, disc);
+            ( void ) (*dt->memoryf)(dt, ( Void_t * ) fngr, 0, disc);
         else if (type & DT_STEP)
             *fngr = NIL(Dtlink_t *);
 
@@ -337,7 +337,7 @@ int type;
 
     if (type & DT_START) {
         *fngr = list->here = r;
-        DTRETURN(obj, ( Void_t * )fngr);
+        DTRETURN(obj, ( Void_t * ) fngr);
     } else if (type & (DT_DELETE | DT_DETACH | DT_REMOVE)) {
     dt_delete:
         if (r->_rght)
@@ -386,25 +386,25 @@ int event;
 Void_t *arg;
 #endif
 {
-    Dtlist_t *list = ( Dtlist_t * )dt->data;
+    Dtlist_t *list = ( Dtlist_t * ) dt->data;
 
     if (event == DT_OPEN) {
         if (list) /* already initialized */
             return 0;
-        if (!(list = ( Dtlist_t * )(*dt->memoryf)(
+        if (!(list = ( Dtlist_t * ) (*dt->memoryf)(
               dt, 0, sizeof(Dtlist_t), dt->disc))) {
             DTERROR(dt, "Error in allocating a list data structure");
             return -1;
         }
         memset(list, 0, sizeof(Dtlist_t));
-        dt->data = ( Dtdata_t * )list;
+        dt->data = ( Dtdata_t * ) list;
         return 1;
     } else if (event == DT_CLOSE) {
         if (!list) /* already closed */
             return 0;
         if (list->link) /* remove all items */
-            ( void )lclear(dt);
-        ( void )(*dt->memoryf)(dt, ( Void_t * )list, 0, dt->disc);
+            ( void ) lclear(dt);
+        ( void ) (*dt->memoryf)(dt, ( Void_t * ) list, 0, dt->disc);
         dt->data = NIL(Dtdata_t *);
         return 0;
     } else

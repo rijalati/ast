@@ -168,7 +168,7 @@ findopen(const char *file,
     if (!findcodes[1])
         findcodes[1] = getenv(FIND_CODES_ENV);
     if (disc->flags & FIND_GENERATE) {
-        if (!(fp = ( Find_t * )vmnewof(
+        if (!(fp = ( Find_t * ) vmnewof(
               vm, 0, Find_t, 1, sizeof(Encode_t) - sizeof(Code_t))))
             goto nospace;
         fp->vm = vm;
@@ -178,7 +178,7 @@ findopen(const char *file,
         if (file && (!*file || streq(file, "-")))
             file = 0;
         uid = geteuid();
-        j = (findcodes[0] = ( char * )file) && *file == '/'
+        j = (findcodes[0] = ( char * ) file) && *file == '/'
             ? 1
             : elementsof(findcodes);
 
@@ -317,7 +317,7 @@ findopen(const char *file,
             if (s)
                 *s = '/';
             if (!(fp->fp
-                  = sfnew(NiL, NiL, ( size_t )SF_UNBOUND, fd, SF_WRITE))) {
+                  = sfnew(NiL, NiL, ( size_t ) SF_UNBOUND, fd, SF_WRITE))) {
                 if (fp->disc->errorf)
                     (*fp->disc->errorf)(fp,
                                         fp->disc,
@@ -371,7 +371,7 @@ findopen(const char *file,
         if (!pattern || !*pattern)
             pattern = "*";
         i += (j = 2 * (strlen(pattern) + 1));
-        if (!(fp = ( Find_t * )vmnewof(vm, 0, Find_t, 1, i))) {
+        if (!(fp = ( Find_t * ) vmnewof(vm, 0, Find_t, 1, i))) {
             vmclose(vm);
             return 0;
         }
@@ -380,7 +380,7 @@ findopen(const char *file,
         fp->disc = disc;
         if (disc->flags & FIND_ICASE)
             fp->decode.ignorecase = 1;
-        j = (findcodes[0] = ( char * )file) && *file == '/'
+        j = (findcodes[0] = ( char * ) file) && *file == '/'
             ? 1
             : elementsof(findcodes);
         for (i = 0; i < j; i++)
@@ -450,7 +450,7 @@ findopen(const char *file,
         }
         if (streq(b, FF_typ_magic)) {
             if (type) {
-                type = ( const char * )typefix(
+                type = ( const char * ) typefix(
                 fp->decode.bigram2, sizeof(fp->decode.bigram2), type);
                 memset(fp->decode.bigram1, 0, sizeof(fp->decode.bigram1));
             }
@@ -585,7 +585,7 @@ findopen(const char *file,
          * prepend 0 for backwards match
          */
 
-        if (p = s = ( char * )pattern) {
+        if (p = s = ( char * ) pattern) {
             b = fp->decode.pattern;
             for (;;) {
                 switch (*b++ = *p++) {
@@ -855,7 +855,7 @@ next:
                 n = (*fp->verifyf)(fp, fp->decode.path, n, fp->disc);
             else if (stat(fp->decode.path, &st))
                 n = -1;
-            else if (( unsigned long )st.st_mtime > fp->stamp)
+            else if (( unsigned long ) st.st_mtime > fp->stamp)
                 n = 1;
             else
                 n = 0;
@@ -957,7 +957,7 @@ findwrite(Find_t *fp, const char *path, size_t len, const char *type)
         fp->encode.mark, sizeof(fp->encode.mark), "%-.*s/", len, path);
         path = fp->encode.mark;
     }
-    s = ( unsigned char * )path;
+    s = ( unsigned char * ) path;
     if (len <= 0)
         len = strlen(path);
     if (len < sizeof(fp->encode.path))
@@ -966,13 +966,13 @@ findwrite(Find_t *fp, const char *path, size_t len, const char *type)
         len = sizeof(fp->encode.path) - 1;
         e = s + len;
     }
-    p = ( unsigned char * )fp->encode.path;
+    p = ( unsigned char * ) fp->encode.path;
     while (s < e) {
         if (*s != *p++)
             break;
         s++;
     }
-    n = s - ( unsigned char * )path;
+    n = s - ( unsigned char * ) path;
     switch (fp->method) {
     case FF_gnu:
         d = n - fp->encode.prefix;
@@ -984,7 +984,7 @@ findwrite(Find_t *fp, const char *path, size_t len, const char *type)
             sfputc(fp->fp, d & 0xff);
         }
         fp->encode.prefix = n;
-        sfputr(fp->fp, ( char * )s, 0);
+        sfputr(fp->fp, ( char * ) s, 0);
         break;
     case FF_old:
         sfprintf(fp->fp, "%ld", n - fp->encode.prefix + FF_OFF);
@@ -1006,9 +1006,9 @@ findwrite(Find_t *fp, const char *path, size_t len, const char *type)
         break;
     case FF_typ:
         if (type) {
-            type = ( const char * )typefix(
-            ( char * )fp->encode.bigram, sizeof(fp->encode.bigram), type);
-            if (x = ( Type_t * )dtmatch(fp->encode.namedict, type))
+            type = ( const char * ) typefix(
+            ( char * ) fp->encode.bigram, sizeof(fp->encode.bigram), type);
+            if (x = ( Type_t * ) dtmatch(fp->encode.namedict, type))
                 u = x->index;
             else if (!(x = newof(0, Type_t, 1, strlen(type) + 1)))
                 u = 0;
@@ -1026,7 +1026,7 @@ findwrite(Find_t *fp, const char *path, size_t len, const char *type)
         d = n - fp->encode.prefix;
         sfputl(fp->fp, d);
         fp->encode.prefix = n;
-        sfputr(fp->fp, ( char * )s, 0);
+        sfputr(fp->fp, ( char * ) s, 0);
         break;
     }
     memcpy(fp->encode.path, path, len);
@@ -1139,7 +1139,7 @@ findsync(Find_t *fp)
          * commit the real file
          */
 
-        if (sfseek(fp->fp, ( Sfoff_t )0, SEEK_SET)) {
+        if (sfseek(fp->fp, ( Sfoff_t ) 0, SEEK_SET)) {
             if (fp->disc->errorf)
                 (*fp->disc->errorf)(
                 fp, fp->disc, ERROR_SYSTEM | 2, "cannot rewind tmp file");
@@ -1219,8 +1219,8 @@ findsync(Find_t *fp)
          * write the type table in index order starting with 1
          */
 
-        for (x = ( Type_t * )dtfirst(fp->encode.indexdict); x;
-             x = ( Type_t * )dtnext(fp->encode.indexdict, x))
+        for (x = ( Type_t * ) dtfirst(fp->encode.indexdict); x;
+             x = ( Type_t * ) dtnext(fp->encode.indexdict, x))
             sfputr(sp, x->name, 0);
         sfputc(sp, 0);
 

@@ -113,7 +113,7 @@ gettabs(const char *arg, int *ntab)
             cp++;
         if (c == 0)
             break;
-        tablist[n] = strtol(cp, ( char ** )&arg, 10) - 1;
+        tablist[n] = strtol(cp, ( char ** ) &arg, 10) - 1;
         if (cp == arg)
             error(ERROR_exit(1), "%c - invalid character in tablist", *cp);
         if (tablist[n] <= old)
@@ -148,12 +148,12 @@ expand(Sfio_t *in,
     while (buff = cp = sfreserve(in, SF_UNBOUND, 0)) {
         first = cp - n;
         cpend = cp + sfvalue(in);
-        if (state[n = *( unsigned char * )(cpend - 1)] == 0
+        if (state[n = *( unsigned char * ) (cpend - 1)] == 0
             || (n == ' ' && type == 0))
             cpend[-1] = 0; /* put in sentinal */
         savec = n;
         while (1) {
-            while ((n = state[*( unsigned char * )cp++]) == 0)
+            while ((n = state[*( unsigned char * ) cp++]) == 0)
                 ;
             switch (n) {
             case S_SPACE:
@@ -311,7 +311,7 @@ main(int argc, char **argv)
     else if (ntabs == 1)
         tablist[0] += 1;
     if (error_info.errors)
-        error(ERROR_usage(2), "%s", optusage(( char * )0));
+        error(ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (cp = *argv)
         argv++;
     do {

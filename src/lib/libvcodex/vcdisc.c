@@ -40,14 +40,14 @@ Vcdisc_t *disc;
 
     /* check with incumbent to see if it's ok with the change */
     if (old && old->eventf
-        && (*old->eventf)(vc, VC_DISC, ( Void_t * )disc, old) < 0)
+        && (*old->eventf)(vc, VC_DISC, ( Void_t * ) disc, old) < 0)
         return NIL(Vcdisc_t *);
 
     /* now announce to method */
     if (!vc->meth || !vc->meth->eventf)
         rv = 0;
     else
-        rv = (*vc->meth->eventf)(vc, VC_DISC, ( Void_t * )disc);
+        rv = (*vc->meth->eventf)(vc, VC_DISC, ( Void_t * ) disc);
 
     if (rv < 0)
         return NIL(Vcdisc_t *);

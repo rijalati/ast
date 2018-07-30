@@ -35,7 +35,7 @@ static const char id[]
 
 #else
 
-#    define fmtident(s) (( char * )(s) + 10)
+#    define fmtident(s) (( char * ) (s) + 10)
 
 static int
 quniq(char **argv, int n)
@@ -75,7 +75,7 @@ quniq(char **argv, int n)
 #    ifdef __STDC__
 #        define NiL 0
 #    else
-#        define NiL ( char * )0
+#        define NiL ( char * ) 0
 #    endif
 #endif
 
@@ -326,7 +326,7 @@ static struct
 static void
 quote(char *s)
 {
-    unsigned char *u = ( unsigned char * )s;
+    unsigned char *u = ( unsigned char * ) s;
     int c;
 
     if (!u)
@@ -502,7 +502,7 @@ gotcha(int sig)
 static int
 qstrcmp(const void *a, const void *b)
 {
-    return strcmp(*( char ** )a, *( char ** )b);
+    return strcmp(*( char ** ) a, *( char ** ) b);
 }
 
 static char *
@@ -1004,7 +1004,7 @@ main(int argc, char **argv)
             }
 #if GLOB_DISC
             if (fignore[0]) {
-                gl.gl_fignore = ( const char * )fignore;
+                gl.gl_fignore = ( const char * ) fignore;
                 flags |= GLOB_DISC;
             } else
                 gl.gl_fignore = 0;

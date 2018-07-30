@@ -62,7 +62,7 @@ tokopen(char *s, int f)
         return 0;
     p->chr = *(p->ptr.end = s);
     p->flg = f ? FLG_RESTORE : 0;
-    return ( char * )p;
+    return ( char * ) p;
 }
 
 /*
@@ -73,7 +73,7 @@ tokopen(char *s, int f)
 void
 tokclose(char *u)
 {
-    Tok_t *p = ( Tok_t * )u;
+    Tok_t *p = ( Tok_t * ) u;
 
     if (p->flg == FLG_RESTORE && *p->ptr.end != p->chr)
         *p->ptr.end = p->chr;
@@ -91,7 +91,7 @@ tokclose(char *u)
 char *
 tokread(char *u)
 {
-    Tok_t *p = ( Tok_t * )u;
+    Tok_t *p = ( Tok_t * ) u;
     char *s;
     char *r;
     int q;

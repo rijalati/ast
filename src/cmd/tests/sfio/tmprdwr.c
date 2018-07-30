@@ -40,7 +40,7 @@ size_t n;
 Sfdisc_t *disc;
 #endif
 {
-    Mydisc_t *dc = ( Mydisc_t * )disc;
+    Mydisc_t *dc = ( Mydisc_t * ) disc;
     int r;
 
     if (dc->size <= 0) {

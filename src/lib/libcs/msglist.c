@@ -48,7 +48,7 @@ buffer(Sfio_t *sp, char *s, int n)
     PUT(' ');
     PUT('"');
     while (s < se) {
-        c = *(( unsigned char * )s++);
+        c = *(( unsigned char * ) s++);
         if (iscntrl(c) || !isprint(c) || c == '"') {
             PUT('\\');
             switch (c) {
@@ -122,11 +122,11 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
                           MSG_CHANNEL_USR(msg->channel),
                           MSG_CHANNEL_SYS(msg->channel));
         if (flags & MSG_LIST_STAMP) {
-            if ((( unsigned long )msg->stamp) <= USHRT_MAX)
+            if ((( unsigned long ) msg->stamp) <= USHRT_MAX)
                 r += sfprintf(sp, " %lu", msg->stamp);
             else
-                r
-                += sfprintf(sp, " %s", fmttime("%?%K", ( time_t )msg->stamp));
+                r += sfprintf(
+                sp, " %s", fmttime("%?%K", ( time_t ) msg->stamp));
         }
         r += sfprintf(sp, " ] ");
     }
@@ -162,8 +162,9 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
             if ((msg->call & MSG_VALUE) && !(MSG_MASK(msg->call) & terse)) {
                 switch (MSG_CALL(msg->call)) {
                 case MSG_CALL(MSG_getdents):
-                    dp = ( struct dirent * )(ap++)->pointer;
-                    de = ( struct dirent * )(( char * )dp + msg->ret.number);
+                    dp = ( struct dirent * ) (ap++)->pointer;
+                    de
+                    = ( struct dirent * ) (( char * ) dp + msg->ret.number);
                     r += sfprintf(sp, " [");
                     while (dp < de) {
 #if _mem_d_fileno_dirent
@@ -176,7 +177,7 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
 #else
                         i = D_RECSIZ(dp, i);
 #endif
-                        dp = ( struct dirent * )(( char * )dp + i);
+                        dp = ( struct dirent * ) (( char * ) dp + i);
                     }
                     r += sfprintf(sp, " ]");
                     break;
@@ -193,7 +194,7 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
                     }
                     break;
                 case MSG_CALL(MSG_stat):
-                    st = ( struct stat * )(ap++)->pointer;
+                    st = ( struct stat * ) (ap++)->pointer;
                     r += sfprintf(sp,
                                   " [ dev=%d ino=%u mode=0%o nlink=%d uid=%d "
                                   "gid=%d size=%lu",
@@ -217,7 +218,7 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
                                   st->st_ctime);
                     break;
                 case MSG_CALL(MSG_statfs):
-                    fp = ( struct statvfs * )(ap++)->pointer;
+                    fp = ( struct statvfs * ) (ap++)->pointer;
                     r += sfprintf(sp,
                                   " [ bsize=%d frsize=%d blocks=%d bfree=%d "
                                   "bavail=%d files=%d ffree=%d favail=%d",

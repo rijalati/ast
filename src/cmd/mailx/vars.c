@@ -117,7 +117,7 @@ varinit(void)
         state.var.domain = varkeep(s);
     else
         for (i = 0; i < sizeof(domains) / sizeof(domains[0]); i++) {
-            s = ( char * )domains[i];
+            s = ( char * ) domains[i];
             do {
                 if (fp = fileopen(s, "r")) {
                     while (s = fgets(buf, sizeof(buf), fp)) {
@@ -176,7 +176,7 @@ varkeep(const char *val)
     if (!*val)
         return state.on;
     len = strlen(val) + 1;
-    if (!(p = ( char * )malloc(len)))
+    if (!(p = ( char * ) malloc(len)))
         note(PANIC, "Out of space");
     memcpy(p, val, len);
     stresc(p);
@@ -197,7 +197,7 @@ varlist(int all)
             if (all > 0 || !all && !(vp->flags & A)) {
                 printf("%16s", vp->name);
                 if (vp->flags & I)
-                    printf("=%ld\n", *(( long * )vp->variable));
+                    printf("=%ld\n", *(( long * ) vp->variable));
                 else if (**vp->variable)
                     printf("=\"%s\"\n", fmtesc(*vp->variable));
                 else
@@ -231,12 +231,12 @@ varset(const char *name, const char *value)
         value = 0;
     }
     for (;;) {
-        if (!(vp = ( struct var * )strsearch(state.vartab,
-                                             state.varnum,
-                                             sizeof(struct var),
-                                             stracmp,
-                                             name,
-                                             NiL))) {
+        if (!(vp = ( struct var * ) strsearch(state.vartab,
+                                              state.varnum,
+                                              sizeof(struct var),
+                                              stracmp,
+                                              name,
+                                              NiL))) {
             if (state.sourcing)
                 return 0;
             note(0, "\"%s\": unknown variable", name);
@@ -244,7 +244,7 @@ varset(const char *name, const char *value)
         }
         if (!(vp->flags & A))
             break;
-        name = ( const char * )vp->help;
+        name = ( const char * ) vp->help;
     }
     if ((vp->flags & C) && !state.cmdline) {
         note(0, "\"%s\": can only set variable on command line", name);
@@ -259,9 +259,9 @@ varset(const char *name, const char *value)
         return 1;
     } else if (vp->flags & I) {
         if (!value)
-            *(( long * )vp->variable) = 0;
+            *(( long * ) vp->variable) = 0;
         else if (isdigit(*value) || *value == '-' || *value == '+')
-            *(( long * )vp->variable) = strtol(value, NiL, 0);
+            *(( long * ) vp->variable) = strtol(value, NiL, 0);
     } else {
         if (value && (*value || !(vp->flags & N))) {
             if ((vp->flags & L) && *value && *vp->variable
@@ -275,17 +275,17 @@ varset(const char *name, const char *value)
                 memcpy(s, *vp->variable, m);
                 s[m] = '\n';
                 strcpy(s + m + 1, value);
-                value = ( const char * )s;
-            } else if (value != ( char * )vp->initialize)
+                value = ( const char * ) s;
+            } else if (value != ( char * ) vp->initialize)
                 value = varkeep(value);
         } else if (vp->flags & D)
             value = vp->initialize;
         else
             value = 0;
         if (*vp->variable && *vp->variable != state.on
-            && *vp->variable != ( char * )vp->initialize)
+            && *vp->variable != ( char * ) vp->initialize)
             free(*vp->variable);
-        *vp->variable = ( char * )value;
+        *vp->variable = ( char * ) value;
     }
     if (vp->set)
         (*vp->set)(vp, value);
@@ -303,12 +303,12 @@ varget(const char *name)
     char *s;
 
     for (;;) {
-        if (!(vp = ( struct var * )strsearch(state.vartab,
-                                             state.varnum,
-                                             sizeof(struct var),
-                                             stracmp,
-                                             name,
-                                             NiL))) {
+        if (!(vp = ( struct var * ) strsearch(state.vartab,
+                                              state.varnum,
+                                              sizeof(struct var),
+                                              stracmp,
+                                              name,
+                                              NiL))) {
             if (s = getenv(name))
                 return s;
             if (!state.sourcing)
@@ -317,11 +317,13 @@ varget(const char *name)
         }
         if (!(vp->flags & A))
             break;
-        name = ( const char * )vp->help;
+        name = ( const char * ) vp->help;
     }
     if (vp->flags & I) {
-        sfsprintf(
-        state.number, sizeof(state.number), "%ld", *(( long * )vp->variable));
+        sfsprintf(state.number,
+                  sizeof(state.number),
+                  "%ld",
+                  *(( long * ) vp->variable));
         return state.number;
     }
     return *vp->variable;
@@ -381,7 +383,7 @@ setheaders(struct var *vp, const char *value)
     unsigned long flags;
 
     flags = GTO;
-    p = ( char * )value;
+    p = ( char * ) value;
     while (b = wordnext(&p, state.path.path))
         for (lp = state.hdrtab;; lp++) {
             if (!(t = lp->name)) {
@@ -470,7 +472,7 @@ void
 set_justfrom(struct var *vp, const char *value)
 {
     if (value) {
-        state.var.justheaders = state.var.justfrom ? "" : ( char * )0;
+        state.var.justheaders = state.var.justfrom ? "" : ( char * ) 0;
         state.var.interactive = 0;
         state.var.screen = 0;
     }
@@ -661,7 +663,7 @@ set_spambody(struct var *vp, const char *value)
             note(PANIC, "Out of space");
         state.bodymatch = mp;
     }
-    s = ( char * )value;
+    s = ( char * ) value;
     for (;;) {
         if (t = strchr(s, '|'))
             n = t - s;
@@ -745,7 +747,7 @@ ignorecase(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 static void
 drop(Dt_t *dt, void *obj, Dtdisc_t *disc)
 {
-    struct name *np = ( struct name * )obj;
+    struct name *np = ( struct name * ) obj;
     struct list *ap;
     struct list *bp;
 
@@ -753,7 +755,7 @@ drop(Dt_t *dt, void *obj, Dtdisc_t *disc)
         if (!(np->flags & (GALIAS | GALTERNATE)))
             free(np->value);
         else {
-            ap = ( struct list * )np->value;
+            ap = ( struct list * ) np->value;
             do {
                 bp = ap->next;
                 free(ap);
@@ -789,7 +791,7 @@ dictsearch(Dt_t **dp, const char *name, int op)
         if (!(op & (CREATE | INSERT)))
             return 0;
         if (!(dict = (op & STACK)
-                     ? ( struct dict * )salloc(sizeof(struct dict))
+                     ? ( struct dict * ) salloc(sizeof(struct dict))
                      : newof(0, struct dict, 1, 0)))
             note(PANIC, "Out of space");
         memset(dict, 0, sizeof(*dict));
@@ -807,17 +809,17 @@ dictsearch(Dt_t **dp, const char *name, int op)
         *dp = dt;
     }
     if (op & OBJECT) {
-        object = ( struct name * )name;
-        name = ( const char * )object->name;
+        object = ( struct name * ) name;
+        name = ( const char * ) object->name;
     } else
         object = 0;
-    if (!(np = ( struct name * )dtmatch(dt, name))) {
+    if (!(np = ( struct name * ) dtmatch(dt, name))) {
         if (!(op & (CREATE | INSERT)))
             return 0;
         if (!(np = object) || (op & COPY)) {
             if (!(xp = (op & STACK)
-                       ? ( struct name * )salloc(sizeof(struct name)
-                                                 + strlen(name) + 1)
+                       ? ( struct name * ) salloc(sizeof(struct name)
+                                                  + strlen(name) + 1)
                        : newof(0, struct name, 1, strlen(name) + 1)))
                 note(PANIC, "Out of space");
             strcpy(xp->name, name);
@@ -825,7 +827,7 @@ dictsearch(Dt_t **dp, const char *name, int op)
             xp->flags = np ? np->flags : 0;
             np = xp;
         }
-        np = ( struct name * )dtinsert(dt, np);
+        np = ( struct name * ) dtinsert(dt, np);
     } else if (op & DELETE) {
         dtdelete(dt, np);
         np = 0;
@@ -855,7 +857,7 @@ dictreset(void)
     Dt_t *dt;
 
     while (dt = state.stacked) {
-        state.stacked = (( struct dict * )dt->disc)->next;
+        state.stacked = (( struct dict * ) dt->disc)->next;
         dtclose(dt);
     }
 }

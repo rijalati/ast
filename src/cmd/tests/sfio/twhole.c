@@ -38,8 +38,11 @@ Sfdisc_t *disc;
     return write(sffileno(f), buf, n);
 }
 
-Sfdisc_t Disc
-= { ( Sfread_f )0, writef, ( Sfseek_f )0, ( Sfexcept_f )0, ( Sfdisc_t * )0 };
+Sfdisc_t Disc = { ( Sfread_f ) 0,
+                  writef,
+                  ( Sfseek_f ) 0,
+                  ( Sfexcept_f ) 0,
+                  ( Sfdisc_t * ) 0 };
 
 tmain()
 {

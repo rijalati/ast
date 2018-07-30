@@ -88,13 +88,13 @@ number(Sfio_t *op, const char *label, Cxnumber_t n, Cxformat_t *format)
             n = FLTMAX_INTMAX_MAX;
         else if (n < FLTMAX_INTMAX_MIN)
             n = FLTMAX_INTMAX_MIN;
-        sfprintf(op, format->details, ( Cxinteger_t )n);
+        sfprintf(op, format->details, ( Cxinteger_t ) n);
     } else if (n == 0
                || ((n >= 0) ? n : -n) >= 1 && n >= FLTMAX_INTMAX_MIN
-                  && n <= FLTMAX_UINTMAX_MAX && n == ( Cxinteger_t )n)
+                  && n <= FLTMAX_UINTMAX_MAX && n == ( Cxinteger_t ) n)
         sfprintf(op,
                  (format->flags & CX_UNSIGNED) ? "%llu" : "%lld",
-                 ( Cxinteger_t )n);
+                 ( Cxinteger_t ) n);
     else
         sfprintf(op, "%1.15Lg", n);
 }
@@ -102,8 +102,8 @@ number(Sfio_t *op, const char *label, Cxnumber_t n, Cxformat_t *format)
 static int
 invalidcmp(Dt_t *dict, void *a, void *b, Dtdisc_t *disc)
 {
-    Invalid_t *ap = ( Invalid_t * )a;
-    Invalid_t *bp = ( Invalid_t * )b;
+    Invalid_t *ap = ( Invalid_t * ) a;
+    Invalid_t *bp = ( Invalid_t * ) b;
     size_t az;
     size_t bz;
     int r;
@@ -132,7 +132,7 @@ invalidcmp(Dt_t *dict, void *a, void *b, Dtdisc_t *disc)
 static int
 validate_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     int errors = error_info.errors;
     char *s;
     State_t *state;
@@ -209,8 +209,8 @@ validate_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     do {
         if (all) {
             if (!(variable
-                  = ( Cxvariable_t * )(variable ? dtnext(cx->fields, variable)
-                                                : dtfirst(cx->fields))))
+                  = ( Cxvariable_t * ) (variable ? dtnext(cx->fields, variable)
+                                                 : dtfirst(cx->fields))))
                 break;
         } else if (!(variable = cxvariable(cx, *argv, NiL, disc)))
             goto bad;
@@ -299,7 +299,7 @@ bad:
 static int
 validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
     Field_t *field;
     Cxconstraint_t *constraint;
     Cxoperand_t o;
@@ -333,7 +333,7 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             } else if (cxisnumber(field->variable->type)) {
                 if (cxnum2str(cx,
                               &field->variable->format,
-                              ( Cxinteger_t )o.value.number,
+                              ( Cxinteger_t ) o.value.number,
                               NiL)) {
                     if (state->verbose && disc->errorf)
                         (*disc->errorf)(NiL,
@@ -343,7 +343,7 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                                         cxlocation(cx, data),
                                         field->variable->name,
                                         sizeof(Cxinteger_t),
-                                        ( Cxinteger_t )o.value.number);
+                                        ( Cxinteger_t ) o.value.number);
                     goto invalid;
                 }
             }
@@ -391,7 +391,7 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         if (state->invalid) {
             key.variable = field->variable;
             key.value = o.value;
-            if (!(ip = ( Invalid_t * )dtsearch(state->invalid, &key))) {
+            if (!(ip = ( Invalid_t * ) dtsearch(state->invalid, &key))) {
                 n = cxsize(field->variable->type, &o.value);
                 if (!(ip = vmnewof(state->vm, 0, Invalid_t, 1, n))) {
                     if (disc->errorf)
@@ -402,7 +402,7 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                 *ip = key;
                 ip->value = o.value;
                 if (n) {
-                    ip->value.buffer.data = ( void * )(ip + 1);
+                    ip->value.buffer.data = ( void * ) (ip + 1);
                     memcpy(ip->value.buffer.data, o.value.buffer.data, n);
                 }
                 dtinsert(state->invalid, ip);
@@ -428,7 +428,7 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 static int
 validate_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
     Field_t *field;
     Invalid_t *ip;
     Cxoperand_t val;
@@ -439,8 +439,8 @@ validate_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         if (state->invalid && dtsize(state->invalid)) {
             heading = 0;
             sfprintf(expr->op, "%16s  %11s  %s\n", "FIELD", "COUNT", "VALUE");
-            for (ip = ( Invalid_t * )dtfirst(state->invalid); ip;
-                 ip = ( Invalid_t * )dtnext(state->invalid, ip)) {
+            for (ip = ( Invalid_t * ) dtfirst(state->invalid); ip;
+                 ip = ( Invalid_t * ) dtnext(state->invalid, ip)) {
                 val.type = ip->variable->type;
                 val.value = ip->value;
                 if (!cxcast(cx, &val, NiL, cx->state->type_string, NiL, NiL))

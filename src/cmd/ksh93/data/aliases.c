@@ -91,5 +91,5 @@ const struct shtable2 shtab_aliases[] = {
     "whence -v",
     "",
     0,
-    ( char * )0
+    ( char * ) 0
 };

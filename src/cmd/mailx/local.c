@@ -96,12 +96,12 @@ mailbox(const char *user, const char *mail)
     = { _PATH_MAILDIR, "/var/spool/mail", "/usr/spool/mail", "/usr/mail" };
 
     if (!user || !*user || !stat(mail, &st) && S_ISREG(st.st_mode))
-        return ( char * )mail;
+        return ( char * ) mail;
     if (mail) {
         if (imap_name(mail))
-            return ( char * )mail;
+            return ( char * ) mail;
         if (s = strrchr(mail, '/')) {
-            i = s - ( char * )mail;
+            i = s - ( char * ) mail;
             sfprintf(state.path.temp, "%-.*s/.", i, mail);
             if (!access(struse(state.path.temp), F_OK))
                 n = i;
@@ -253,7 +253,7 @@ isdate(char *s)
 {
     char *t;
 
-    ( void )tmdate(s, &t, NiL);
+    ( void ) tmdate(s, &t, NiL);
     return *t == 0 && strmatch(s, "*[a-zA-Z]*[0-9]:[0-9]*");
 }
 
@@ -266,14 +266,14 @@ isdate(char *s)
 char *
 fmtesc(const char *as)
 {
-    unsigned char *s = ( unsigned char * )as;
+    unsigned char *s = ( unsigned char * ) as;
     char *b;
     int c;
 
     static char *buf;
     static int bufsiz;
 
-    c = 4 * (strlen(( char * )s) + 1);
+    c = 4 * (strlen(( char * ) s) + 1);
     if (bufsiz < c) {
         bufsiz = ((c + CHUNK - 1) / CHUNK) * CHUNK;
         if (!(buf = newof(buf, char, bufsiz, 0)))
@@ -331,7 +331,7 @@ fmtesc(const char *as)
 char *
 fmtident(const char *a)
 {
-    char *s = ( char * )a;
+    char *s = ( char * ) a;
     char *t;
     char *buf;
     int i;
@@ -400,7 +400,7 @@ setscreensize(void)
     struct winsize ws;
     int speed;
 
-    if (ioctl(1, TIOCGWINSZ, ( char * )&ws) < 0)
+    if (ioctl(1, TIOCGWINSZ, ( char * ) &ws) < 0)
         ws.ws_col = ws.ws_row = 0;
     if (tcgetattr(1, &tbuf) < 0)
         speed = B9600;
@@ -671,7 +671,7 @@ chresc(const char *s, char **p)
         break;
     }
     if (p)
-        *p = ( char * )s;
+        *p = ( char * ) s;
     return c;
 }
 
@@ -737,7 +737,7 @@ strpsearch(const void *tab,
            const char *name,
            char **next)
 {
-    char *lo = ( char * )tab;
+    char *lo = ( char * ) tab;
     char *hi = lo + (num - 1) * siz;
     char *mid;
     unsigned char *s;
@@ -746,12 +746,12 @@ strpsearch(const void *tab,
     int v;
     int sequential = 0;
 
-    c = *(( unsigned char * )name);
+    c = *(( unsigned char * ) name);
     while (lo <= hi) {
         mid = lo + (sequential ? 0 : (((hi - lo) / siz) / 2) * siz);
-        if (!(v = c - *(s = *(( unsigned char ** )mid)))
+        if (!(v = c - *(s = *(( unsigned char ** ) mid)))
             || *s == '[' && !(v = c - *++s) && (v = 1)) {
-            t = ( unsigned char * )name;
+            t = ( unsigned char * ) name;
             for (;;) {
                 if (!v && *s == '[') {
                     v = 1;
@@ -762,12 +762,12 @@ strpsearch(const void *tab,
                 } else if (!isalpha(*t)) {
                     if (v || !*s) {
                         if (next)
-                            *next = ( char * )t;
-                        return ( void * )mid;
+                            *next = ( char * ) t;
+                        return ( void * ) mid;
                     }
                     if (!sequential) {
                         while ((mid -= siz) >= lo
-                               && (c == *(s = *(( unsigned char ** )mid))
+                               && (c == *(s = *(( unsigned char ** ) mid))
                                    || *s == '[' && c == *(s + 1)))
                             ;
                         sequential = 1;
@@ -812,17 +812,18 @@ strsearch(const void *tab,
           const char *name,
           void *context)
 {
-    char *lo = ( char * )tab;
+    char *lo = ( char * ) tab;
     char *hi = lo + (num - 1) * siz;
     char *mid;
     int v;
 
     while (lo <= hi) {
         mid = lo + (((hi - lo) / siz) / 2) * siz;
-        if (!(v = context ? (*( Compare_context_f )comparf)(
-                            name, *(( char ** )mid), context)
-                          : (*( Compare_f )comparf)(name, *(( char ** )mid))))
-            return ( void * )mid;
+        if (!(v = context
+                  ? (*( Compare_context_f ) comparf)(
+                    name, *(( char ** ) mid), context)
+                  : (*( Compare_f ) comparf)(name, *(( char ** ) mid))))
+            return ( void * ) mid;
         else if (v > 0)
             lo = mid + siz;
         else
@@ -859,11 +860,11 @@ touch(const char *file, time_t atime, time_t mtime, int force)
         st.st_mtime = st.st_atime = now;
     }
     if (force >= 0) {
-        if (atime == ( time_t )0)
+        if (atime == ( time_t ) 0)
             atime = now;
         else if (atime == (time_t)(-1))
             atime = st.st_atime;
-        if (mtime == ( time_t )0)
+        if (mtime == ( time_t ) 0)
             mtime = now;
         else if (mtime == (time_t)(-1))
             mtime = st.st_mtime;

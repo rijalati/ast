@@ -72,7 +72,7 @@ typedef struct _merge_s
             }                                                                \
             rsrv = endrsrv = cur = NIL(uchar *);                             \
             rr = r <= RS_RESERVE ? RS_RESERVE : ((r / 1024) + 1) * 1024;     \
-            if (!(rsrv = ( uchar * )sfreserve(mg->f, rr, SF_LOCKR))) {       \
+            if (!(rsrv = ( uchar * ) sfreserve(mg->f, rr, SF_LOCKR))) {      \
                 if ((rr = sfvalue(mg->f)) < r) {                             \
                     if (rr <= 0) {                                           \
                         MGSETEOF(mg);                                        \
@@ -80,7 +80,7 @@ typedef struct _merge_s
                     }                                                        \
                     rr = r;                                                  \
                 }                                                            \
-                if (!(rsrv = ( uchar * )sfreserve(mg->f, rr, SF_LOCKR))) {   \
+                if (!(rsrv = ( uchar * ) sfreserve(mg->f, rr, SF_LOCKR))) {  \
                     MGSETEOF(mg);                                            \
                     action;                                                  \
                 }                                                            \
@@ -98,10 +98,10 @@ typedef struct _merge_s
             }                                                                \
             rsrv = endrsrv = cur = NIL(uchar *);                             \
             rw = w <= RS_RESERVE ? RS_RESERVE : ((w / 1024) + 1) * 1024;     \
-            if (!(rsrv = ( uchar * )sfreserve(rs->f, rw, SF_LOCKR))) {       \
+            if (!(rsrv = ( uchar * ) sfreserve(rs->f, rw, SF_LOCKR))) {      \
                 if ((rw = sfvalue(rs->f)) < w)                               \
                     rw = w;                                                  \
-                if (!(rsrv = ( uchar * )sfreserve(rs->f, rw, SF_LOCKR))) {   \
+                if (!(rsrv = ( uchar * ) sfreserve(rs->f, rw, SF_LOCKR))) {  \
                     action;                                                  \
                 }                                                            \
             }                                                                \
@@ -204,7 +204,7 @@ Merge_t *mg;
                         break;
                 } else
 #endif
-                if ((t = ( uchar * )memchr(cur, rsc, x))) {
+                if ((t = ( uchar * ) memchr(cur, rsc, x))) {
                     datalen = (t - cur) + 1;
                     break;
                 }
@@ -227,7 +227,7 @@ Merge_t *mg;
         if (mg->match == 0) /* get group size */
         {
             MGRESERVE(mg, rsrv, endrsrv, cur, sizeof(ssize_t), return -1);
-            t = ( uchar * )(&mg->match);
+            t = ( uchar * ) (&mg->match);
             MEMCPY(t, cur, sizeof(ssize_t));
             if (mg->match == 0) {
                 MGSETEOF(mg);
@@ -244,7 +244,7 @@ Merge_t *mg;
             else
 #endif
             {
-                t = ( uchar * )(&datalen);
+                t = ( uchar * ) (&datalen);
                 MEMCPY(t, cur, sizeof(ssize_t));
             }
             if (datalen < 0) {
@@ -297,7 +297,7 @@ Merge_t *mg;
                     s_key = 0;
                 }
                 if (!m_key) {
-                    if (!(m_key = ( uchar * )vmalloc(mg->vm, s))) {
+                    if (!(m_key = ( uchar * ) vmalloc(mg->vm, s))) {
                         MGSETEOF(mg);
                         return -1;
                     }
@@ -340,7 +340,7 @@ Merge_t *mg;
                         goto done;
                 } else
 #endif
-                if (!(t = ( uchar * )memchr(cur, rsc, endrsrv - cur)))
+                if (!(t = ( uchar * ) memchr(cur, rsc, endrsrv - cur)))
                     goto done;
                 else
                     datalen = (t - cur) + 1;
@@ -361,7 +361,7 @@ Merge_t *mg;
                 else
 #endif
                 {
-                    t = ( uchar * )(&datalen);
+                    t = ( uchar * ) (&datalen);
                     MEMCPY(t, cur, sizeof(ssize_t));
                 }
                 if (datalen < 0) {
@@ -426,7 +426,7 @@ int pos; /* stream position for resolving equal records	*/
     reg Merge_t *mg;
     Vmdisc_t *vmdisc;
 
-    if (!(mg = ( Merge_t * )vmresize(
+    if (!(mg = ( Merge_t * ) vmresize(
           Vmheap, NIL(Void_t *), sizeof(Merge_t), VM_RSZERO)))
         return NIL(Merge_t *);
 
@@ -660,7 +660,7 @@ ssize_t n;
             else {
                 MGRESERVE(
                 mg, mgrsrv, mgendrsrv, mgcur, sizeof(ssize_t), break);
-                d = ( uchar * )(&n_obj);
+                d = ( uchar * ) (&n_obj);
                 MEMCPY(d, mgcur, sizeof(ssize_t));
                 if (n_obj == 0) {
                     MGSETEOF(mg);
@@ -669,7 +669,7 @@ ssize_t n;
             }
             if (!(rs->type & RS_OTEXT)) {
                 RSRESERVE(rs, rsrv, endrsrv, cur, sizeof(ssize_t), goto done);
-                d = ( uchar * )(&n_obj);
+                d = ( uchar * ) (&n_obj);
                 MEMCPY(cur, d, sizeof(ssize_t));
             }
         }
@@ -741,7 +741,7 @@ ssize_t n;
                             break;
                     } else
 #endif
-                    if ((t = ( uchar * )memchr(mgcur, rsc, x))) {
+                    if ((t = ( uchar * ) memchr(mgcur, rsc, x))) {
                         len = (t - cur) + 1;
                         break;
                     } else if (o == x) {
@@ -838,7 +838,7 @@ ssize_t n;
             for (; n_obj > 0; --n_obj) {
                 MGRESERVE(
                 mg, mgrsrv, mgendrsrv, mgcur, sizeof(ssize_t), break);
-                d = ( uchar * )(&len);
+                d = ( uchar * ) (&len);
                 MEMCPY(d, mgcur, sizeof(ssize_t));
                 MGRESERVE(mg, mgrsrv, mgendrsrv, mgcur, len, break);
 
@@ -847,7 +847,7 @@ ssize_t n;
                 else {
                     w = len + sizeof(ssize_t);
                     RSRESERVE(rs, rsrv, endrsrv, cur, w, goto done);
-                    d = ( uchar * )(&len);
+                    d = ( uchar * ) (&len);
                     MEMCPY(cur, d, sizeof(ssize_t));
                 }
 
@@ -920,7 +920,7 @@ reg int n;       /* total in equivalence class	*/
 
         obj = mg->obj + mg->cpos;
         o = &first;
-        o->data = ( uchar * )vmalloc(Vmheap, obj->datalen + obj->keylen);
+        o->data = ( uchar * ) vmalloc(Vmheap, obj->datalen + obj->keylen);
         o->key = o->data + obj->datalen;
         memcpy(o->data, obj->data, obj->datalen);
         o->datalen = obj->datalen;
@@ -1020,7 +1020,7 @@ int type;                                    /* RS_ITEXT|RS_OTEXT		*/
 
     rsclear(rs);
 
-    if (!(list = ( Merge_t ** )vmalloc(Vmheap, n * sizeof(Merge_t *))))
+    if (!(list = ( Merge_t ** ) vmalloc(Vmheap, n * sizeof(Merge_t *))))
         return -1;
 
     rs->f = f;

@@ -72,7 +72,7 @@ static int initialized = 0; /* 0 means static structures haven't been
  * Forward declarations for procedures defined in this file:
  */
 
-static void CursorInit _ANSI_ARGS_(( void ));
+static void CursorInit _ANSI_ARGS_(( void ) );
 
 /*
  *----------------------------------------------------------------------
@@ -117,9 +117,9 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
 
     nameKey.name = string;
     nameKey.display = Tk_Display(tkwin);
-    nameHashPtr = Tcl_CreateHashEntry(&nameTable, ( char * )&nameKey, &new);
+    nameHashPtr = Tcl_CreateHashEntry(&nameTable, ( char * ) &nameKey, &new);
     if (!new) {
-        cursorPtr = ( TkCursor * )Tcl_GetHashValue(nameHashPtr);
+        cursorPtr = ( TkCursor * ) Tcl_GetHashValue(nameHashPtr);
         cursorPtr->refCount++;
         return cursorPtr->cursor;
     }
@@ -140,7 +140,7 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
     cursorPtr->hashPtr = nameHashPtr;
     idKey.display = nameKey.display;
     idKey.cursor = cursorPtr->cursor;
-    idHashPtr = Tcl_CreateHashEntry(&idTable, ( char * )&idKey, &new);
+    idHashPtr = Tcl_CreateHashEntry(&idTable, ( char * ) &idKey, &new);
     if (!new) {
         panic("cursor already registered in Tk_GetCursor");
     }
@@ -214,9 +214,9 @@ Tk_Uid bg;          /* Background color for cursor. */
     dataKey.fg = fg;
     dataKey.bg = bg;
     dataKey.display = Tk_Display(tkwin);
-    dataHashPtr = Tcl_CreateHashEntry(&dataTable, ( char * )&dataKey, &new);
+    dataHashPtr = Tcl_CreateHashEntry(&dataTable, ( char * ) &dataKey, &new);
     if (!new) {
-        cursorPtr = ( TkCursor * )Tcl_GetHashValue(dataHashPtr);
+        cursorPtr = ( TkCursor * ) Tcl_GetHashValue(dataHashPtr);
         cursorPtr->refCount++;
         return cursorPtr->cursor;
     }
@@ -228,12 +228,12 @@ Tk_Uid bg;          /* Background color for cursor. */
 
     if (XParseColor(dataKey.display, Tk_Colormap(tkwin), fg, &fgColor) == 0) {
         Tcl_AppendResult(
-        interp, "invalid color name \"", fg, "\"", ( char * )NULL);
+        interp, "invalid color name \"", fg, "\"", ( char * ) NULL);
         goto error;
     }
     if (XParseColor(dataKey.display, Tk_Colormap(tkwin), bg, &bgColor) == 0) {
         Tcl_AppendResult(
-        interp, "invalid color name \"", bg, "\"", ( char * )NULL);
+        interp, "invalid color name \"", bg, "\"", ( char * ) NULL);
         goto error;
     }
 
@@ -249,7 +249,7 @@ Tk_Uid bg;          /* Background color for cursor. */
     cursorPtr->hashPtr = dataHashPtr;
     idKey.display = dataKey.display;
     idKey.cursor = cursorPtr->cursor;
-    idHashPtr = Tcl_CreateHashEntry(&idTable, ( char * )&idKey, &new);
+    idHashPtr = Tcl_CreateHashEntry(&idTable, ( char * ) &idKey, &new);
     if (!new) {
         panic("cursor already registered in Tk_GetCursorFromData");
     }
@@ -302,16 +302,16 @@ Tk_Cursor cursor; /* Identifier for cursor whose name is
     }
     idKey.display = display;
     idKey.cursor = cursor;
-    idHashPtr = Tcl_FindHashEntry(&idTable, ( char * )&idKey);
+    idHashPtr = Tcl_FindHashEntry(&idTable, ( char * ) &idKey);
     if (idHashPtr == NULL) {
         goto printid;
     }
-    cursorPtr = ( TkCursor * )Tcl_GetHashValue(idHashPtr);
+    cursorPtr = ( TkCursor * ) Tcl_GetHashValue(idHashPtr);
     if (cursorPtr->otherTable != &nameTable) {
         goto printid;
     }
     ptr = cursorPtr->hashPtr->key.words;
-    return (( NameKey * )ptr)->name;
+    return (( NameKey * ) ptr)->name;
 }
 
 /*
@@ -347,11 +347,11 @@ Tk_Cursor cursor; /* Identifier for cursor to be released. */
 
     idKey.display = display;
     idKey.cursor = cursor;
-    idHashPtr = Tcl_FindHashEntry(&idTable, ( char * )&idKey);
+    idHashPtr = Tcl_FindHashEntry(&idTable, ( char * ) &idKey);
     if (idHashPtr == NULL) {
         panic("Tk_FreeCursor received unknown cursor argument");
     }
-    cursorPtr = ( TkCursor * )Tcl_GetHashValue(idHashPtr);
+    cursorPtr = ( TkCursor * ) Tcl_GetHashValue(idHashPtr);
     cursorPtr->refCount--;
     if (cursorPtr->refCount == 0) {
         Tcl_DeleteHashEntry(cursorPtr->hashPtr);

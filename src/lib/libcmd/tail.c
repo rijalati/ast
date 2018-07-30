@@ -117,7 +117,7 @@ static const char usage[]
 #define TIMEOUT (1 << 10)
 #define VERBOSE (1 << 11)
 
-#define NOW ( unsigned long )time(NiL)
+#define NOW ( unsigned long ) time(NiL)
 
 #define DEFAULT 10
 
@@ -164,7 +164,7 @@ tailpos(Sfio_t *fp, Sfoff_t number, int delim)
 
     error(-1, "AHA#%d tail number=%I*d", __LINE__, sizeof(number), number);
     last = sfsize(fp);
-    if ((first = sfseek(fp, ( Sfoff_t )0, SEEK_CUR)) < 0)
+    if ((first = sfseek(fp, ( Sfoff_t ) 0, SEEK_CUR)) < 0)
         return last || fstat(sffileno(fp), &st) || st.st_size
                || FIFO(st.st_mode)
                ? -1
@@ -227,7 +227,7 @@ pipetail(Sfio_t *infile, Sfio_t *outfile, Sfoff_t number, int delim)
         offset[fno] = sftell(out);
         if ((nleft -= n) <= 0) {
             out = tmp[fno = !fno];
-            sfseek(out, ( Sfoff_t )0, SEEK_SET);
+            sfseek(out, ( Sfoff_t ) 0, SEEK_SET);
             nleft = number;
         }
     }
@@ -235,14 +235,14 @@ pipetail(Sfio_t *infile, Sfio_t *outfile, Sfoff_t number, int delim)
         offset[fno] = 0;
         fno = !fno;
     }
-    sfseek(tmp[0], ( Sfoff_t )0, SEEK_SET);
+    sfseek(tmp[0], ( Sfoff_t ) 0, SEEK_SET);
 
     /*
      * see whether both files are needed
      */
 
     if (offset[fno]) {
-        sfseek(tmp[1], ( Sfoff_t )0, SEEK_SET);
+        sfseek(tmp[1], ( Sfoff_t ) 0, SEEK_SET);
         if ((n = number - nleft) > 0)
             sfmove(tmp[!fno], NiL, n, delim);
         if ((n = offset[!fno] - sftell(tmp[!fno])) > 0)
@@ -292,7 +292,7 @@ init(Tail_t *tp, Sfoff_t number, int delim, int flags, const char **format)
             sfset(tp->sp, SF_SHARE, !(flags & FOLLOW));
             if (number < -1) {
                 sfmove(tp->sp, NiL, -number - 1, delim);
-                offset = sfseek(tp->sp, ( Sfoff_t )0, SEEK_CUR);
+                offset = sfseek(tp->sp, ( Sfoff_t ) 0, SEEK_CUR);
             } else
                 offset = 0;
         } else if ((offset = tailpos(tp->sp, number, delim)) >= 0)
@@ -313,8 +313,8 @@ init(Tail_t *tp, Sfoff_t number, int delim, int flags, const char **format)
             op = (flags & REVERSE) ? sftmp(4 * SF_BUFSIZE) : sfstdout;
             pipetail(tp->sp ? tp->sp : sfstdin, op, number, delim);
             if (flags & REVERSE) {
-                sfseek(op, ( Sfoff_t )0, SEEK_SET);
-                rev_line(op, sfstdout, ( Sfoff_t )0);
+                sfseek(op, ( Sfoff_t ) 0, SEEK_SET);
+                rev_line(op, sfstdout, ( Sfoff_t ) 0);
                 sfclose(op);
             }
         }
@@ -585,7 +585,7 @@ b_tail(int argc, char **argv, Shbltin_t *context)
     if (error_info.errors)
         error(ERROR_usage(2), "%s", optusage(NiL));
     if (flags & FOLLOW) {
-        if (!(fp = ( Tail_t * )stakalloc(argc * sizeof(Tail_t))))
+        if (!(fp = ( Tail_t * ) stakalloc(argc * sizeof(Tail_t))))
             error(ERROR_system(1), "out of space");
         files = 0;
         s = *argv;
@@ -715,10 +715,10 @@ b_tail(int argc, char **argv, Shbltin_t *context)
                 if (number < -1
                     && (moved = sfmove(ip, NiL, -(number + 1), delim)) >= 0
                     && delim >= 0 && moved < -(number + 1))
-                    ( void )sfgetr(ip, delim, SF_LASTR);
+                    ( void ) sfgetr(ip, delim, SF_LASTR);
                 if (flags & REVERSE)
                     rev_line(
-                    ip, sfstdout, sfseek(ip, ( Sfoff_t )0, SEEK_CUR));
+                    ip, sfstdout, sfseek(ip, ( Sfoff_t ) 0, SEEK_CUR));
                 else
                     sfmove(ip, sfstdout, SF_UNBOUND, -1);
             } else {
@@ -734,8 +734,8 @@ b_tail(int argc, char **argv, Shbltin_t *context)
                     op = (flags & REVERSE) ? sftmp(4 * SF_BUFSIZE) : sfstdout;
                     pipetail(ip, op, number, delim);
                     if (flags & REVERSE) {
-                        sfseek(op, ( Sfoff_t )0, SEEK_SET);
-                        rev_line(op, sfstdout, ( Sfoff_t )0);
+                        sfseek(op, ( Sfoff_t ) 0, SEEK_SET);
+                        rev_line(op, sfstdout, ( Sfoff_t ) 0);
                         sfclose(op);
                     }
                     flags = 0;

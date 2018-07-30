@@ -34,7 +34,7 @@ static size_t Minsize = 100;
 static size_t Maxsize = 1000;
 
 #ifndef NIL
-#    define NIL(t) (( t )0)
+#    define NIL(t) (( t ) 0)
 #endif
 
 typedef struct _piece_s Piece_t;
@@ -205,7 +205,7 @@ tmain()
 
     tresource(-1, 0);
     sz = Nalloc * sizeof(Piece_t);
-    if (!(list = ( Piece_t * )malloc(sz)))
+    if (!(list = ( Piece_t * ) malloc(sz)))
         terror("Failed allocating list of objects nalloc=%d", Nalloc);
     memset(list, 0, sz);
 

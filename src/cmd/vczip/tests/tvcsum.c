@@ -41,15 +41,15 @@ MAIN()
     if (vcxinit(&xx, Vcxmd5sum, 0, 0) < 0)
         terror("Initializing md5 handle");
     for (k = 0; Md5[k].str; ++k) {
-        if ((n
-             = vcxencode(&xx, Md5[k].str, strlen(( char * )Md5[k].str), &sum))
+        if ((n = vcxencode(
+             &xx, Md5[k].str, strlen(( char * ) Md5[k].str), &sum))
             < 0)
             terror("Encoding data");
         if (n != 16)
             terror("Bad md5 digest length");
         if (vchexcode(sum, n, hex, sizeof(hex), 1) != 32)
             terror("Bad md5 hex coding length");
-        if (strcmp(( char * )Md5[k].sum, ( char * )hex) != 0)
+        if (strcmp(( char * ) Md5[k].sum, ( char * ) hex) != 0)
             terror("Bad md5 digest");
     }
     vcxstop(&xx);

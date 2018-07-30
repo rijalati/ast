@@ -77,14 +77,14 @@ time_internal(Cx_t *cx,
     char *e;
     char *f;
 
-    buf = ( const char * )cxcvt(cx, buf, size);
+    buf = ( const char * ) cxcvt(cx, buf, size);
     if (CXDETAILS(details, format, type, 0)) {
         ret->value.number = tmscan(buf, &e, details, &f, NiL, 0);
-        if (!*f && e > ( char * )buf)
-            return e - ( char * )buf;
+        if (!*f && e > ( char * ) buf)
+            return e - ( char * ) buf;
     }
     ret->value.number = tmdate(buf, &e, NiL);
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 static void *
@@ -127,7 +127,7 @@ n2s(Time_t t, int s)
 #if TMX_FLOAT
     m = t;
     t /= NS;
-    t = ( Tmxsec_t )t;
+    t = ( Tmxsec_t ) t;
     m -= t * NS;
     t *= SS;
     m *= SS;
@@ -148,7 +148,7 @@ s2n(Time_t t, int s)
 
 #if TMX_FLOAT
     m = t / SS;
-    m = ( Tmxnsec_t )m;
+    m = ( Tmxnsec_t ) m;
     m *= NS;
     m = t - m;
     m /= SS;
@@ -179,7 +179,7 @@ precise_external(Cx_t *cx,
 {
     char *s;
     Time_t t;
-    Precise_t *precise = ( Precise_t * )type->data;
+    Precise_t *precise = ( Precise_t * ) type->data;
 
     if (!size)
         return precise->size;
@@ -206,21 +206,21 @@ precise_internal(Cx_t *cx,
 {
     char *e;
     char *f;
-    Precise_t *precise = ( Precise_t * )type->data;
+    Precise_t *precise = ( Precise_t * ) type->data;
     Time_t now = TMX_NOW;
     Time_t t;
 
-    buf = ( const char * )cxcvt(cx, buf, size);
+    buf = ( const char * ) cxcvt(cx, buf, size);
     if (CXDETAILS(details, format, type, 0)) {
         t = tmxscan(buf, &e, details, &f, now, 0);
-        if (*f || (e - ( char * )buf) < size)
+        if (*f || (e - ( char * ) buf) < size)
             t = tmxdate(buf, &e, now);
     } else
         t = tmxdate(buf, &e, now);
     if (precise->shift)
         t = n2s(t, precise->shift);
     ret->value.number = t;
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 static ssize_t
@@ -236,7 +236,7 @@ elapsed_external(Cx_t *cx,
     char *s;
     ssize_t n;
 
-    s = fmtelapsed(( unsigned long )value->number, 1000);
+    s = fmtelapsed(( unsigned long ) value->number, 1000);
     n = strlen(s);
     if ((n + 1) > size)
         return n + 1;
@@ -258,9 +258,9 @@ elapsed_internal(Cx_t *cx,
     char *e;
 
     ret->value.number = strelapsed(buf, &e, 1000);
-    if (e == ( char * )buf)
+    if (e == ( char * ) buf)
         return -1;
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 static ssize_t
@@ -309,12 +309,12 @@ tm_hour_internal(Cx_t *cx,
     char *e;
 
     ret->value.number = strntol(buf, size, &e, 10);
-    if (e == ( char * )buf)
+    if (e == ( char * ) buf)
         return -1;
     if (tmlex(e, &e, tm_info.format + TM_MERIDIAN, TM_UT - TM_MERIDIAN, NiL, 0)
         == 1)
         ret->value.number += 12;
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 static ssize_t
@@ -365,8 +365,8 @@ tm_mon_internal(Cx_t *cx,
     char *e;
     int v;
 
-    v = ( int )strntol(buf, size, &e, 10);
-    if (e != ( char * )buf) {
+    v = ( int ) strntol(buf, size, &e, 10);
+    if (e != ( char * ) buf) {
         if (v < 1 || v > 12)
             return -1;
         v--;
@@ -381,7 +381,7 @@ tm_mon_internal(Cx_t *cx,
     else if (v >= 12)
         v -= 12;
     ret->value.number = v;
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 static ssize_t
@@ -432,8 +432,8 @@ tm_wday_internal(Cx_t *cx,
     char *e;
     int v;
 
-    v = ( int )strntol(buf, size, &e, 10);
-    if (e != ( char * )buf) {
+    v = ( int ) strntol(buf, size, &e, 10);
+    if (e != ( char * ) buf) {
         if (v < 1 || v > 7)
             return -1;
         v--;
@@ -448,7 +448,7 @@ tm_wday_internal(Cx_t *cx,
     else if (v >= 7)
         v -= 7;
     ret->value.number = v;
-    return e - ( char * )buf;
+    return e - ( char * ) buf;
 }
 
 #define TIME_T_sec 1
@@ -507,16 +507,16 @@ tm_get(Cx_t *cx,
        void *data,
        Cxdisc_t *disc)
 {
-    Tm_state_t *state = ( Tm_state_t * )pc->data.variable->member->data;
+    Tm_state_t *state = ( Tm_state_t * ) pc->data.variable->member->data;
     Time_t t;
     int shift;
 
     t = r->value.number;
     if (r->type && r->type->data) {
-        if (shift = (( Precise_t * )r->type->data)->shift)
+        if (shift = (( Precise_t * ) r->type->data)->shift)
             t = s2n(t, shift);
     } else if (b && b->type && b->type->data) {
-        if (shift = (( Precise_t * )b->type->data)->shift)
+        if (shift = (( Precise_t * ) b->type->data)->shift)
             t = s2n(t, shift);
     } else
         t *= NS;
@@ -570,17 +570,17 @@ tm_set(Cx_t *cx,
        void *data,
        Cxdisc_t *disc)
 {
-    Tm_state_t *state = ( Tm_state_t * )pc->data.variable->member->data;
+    Tm_state_t *state = ( Tm_state_t * ) pc->data.variable->member->data;
     Time_t t;
     int i;
     int shift;
 
     t = r->value.number;
     if (r->type && r->type->data) {
-        if (shift = (( Precise_t * )r->type->data)->shift)
+        if (shift = (( Precise_t * ) r->type->data)->shift)
             t = s2n(t, shift);
     } else if (b && b->type && b->type->data) {
-        if (shift = (( Precise_t * )b->type->data)->shift)
+        if (shift = (( Precise_t * ) b->type->data)->shift)
             t = s2n(t, shift);
     } else {
         shift = -1;
@@ -642,13 +642,13 @@ tm_set(Cx_t *cx,
     return 0;
 }
 
-static Cxmember_t tm_member = { tm_get, tm_set, ( Dt_t * )&tm_struct[0] };
+static Cxmember_t tm_member = { tm_get, tm_set, ( Dt_t * ) &tm_struct[0] };
 
 static Cxtype_t types[]
 = { { "tm_hour_t",
       "Hour since midnight with optional meridian (AM/PM).",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       tm_hour_external,
       tm_hour_internal,
@@ -663,7 +663,7 @@ static Cxtype_t types[]
     { "tm_mon_t",
       "Month name represented as a number [0-11], starting at January.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       tm_mon_external,
       tm_mon_internal,
@@ -678,7 +678,7 @@ static Cxtype_t types[]
     { "tm_wday_t",
       "Weekday name represented as a number [0-6], starting at Sunday.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       tm_wday_external,
       tm_wday_internal,
@@ -693,7 +693,7 @@ static Cxtype_t types[]
     { "tm_t",
       "Time parts.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       tm_init,
       0,
       0,
@@ -707,7 +707,7 @@ static Cxtype_t types[]
     { "elapsed_t",
       "Elapsed time in milliseconds.",
       CXH,
-      ( Cxtype_t * )"number",
+      ( Cxtype_t * ) "number",
       0,
       elapsed_external,
       elapsed_internal,
@@ -719,7 +719,7 @@ static Cxtype_t types[]
     { "ns_t",
       "64 bit nanoseconds since the epoch.",
       CXH,
-      ( Cxtype_t * )"tm_t",
+      ( Cxtype_t * ) "tm_t",
       ns_init,
       precise_external,
       precise_internal,
@@ -735,7 +735,7 @@ static Cxtype_t types[]
     { "stamp_t",
       "64 bit 1/2**32 seconds since the epoch.",
       CXH,
-      ( Cxtype_t * )"tm_t",
+      ( Cxtype_t * ) "tm_t",
       stamp_init,
       precise_external,
       precise_internal,
@@ -751,7 +751,7 @@ static Cxtype_t types[]
     { "time_t",
       "32 bit seconds since the epoch.",
       CXH,
-      ( Cxtype_t * )"tm_t",
+      ( Cxtype_t * ) "tm_t",
       0,
       time_external,
       time_internal,

@@ -55,13 +55,13 @@ size_t n;                            /* number of bytes to be read. 	*/
             SFMTXRETURN(f, (ssize_t)(-1));
 
         if (f->mode & SF_GETR) {
-            if ((( uchar * )buf + f->val) != f->next
-                && (!f->rsrv || f->rsrv->data != ( uchar * )buf))
+            if ((( uchar * ) buf + f->val) != f->next
+                && (!f->rsrv || f->rsrv->data != ( uchar * ) buf))
                 SFMTXRETURN(f, (ssize_t)(-1));
             f->mode &= ~SF_PEEK;
             SFMTXRETURN(f, 0);
         } else {
-            if (( uchar * )buf != f->next)
+            if (( uchar * ) buf != f->next)
                 SFMTXRETURN(f, (ssize_t)(-1));
             f->mode &= ~SF_PEEK;
             if (f->mode & SF_PKRD) { /* actually read the data now */
@@ -77,19 +77,19 @@ size_t n;                            /* number of bytes to be read. 	*/
         }
     }
 
-    s = begs = ( uchar * )buf;
+    s = begs = ( uchar * ) buf;
     for (;; f->mode &= ~SF_LOCK) { /* check stream mode */
         if (SFMODE(f, local) != SF_READ && _sfmode(f, SF_READ, local) < 0) {
             n = s > begs ? s - begs : (size_t)(-1);
-            SFMTXRETURN(f, ( ssize_t )n);
+            SFMTXRETURN(f, ( ssize_t ) n);
         }
 
         SFLOCK(f, local);
 
         if ((r = f->endb - f->next) > 0) /* has buffered data */
         {
-            if (r > ( ssize_t )n)
-                r = ( ssize_t )n;
+            if (r > ( ssize_t ) n)
+                r = ( ssize_t ) n;
             if (s != f->next)
                 memcpy(s, f->next, r);
             f->next += r;
@@ -105,18 +105,18 @@ size_t n;                            /* number of bytes to be read. 	*/
 
             /* exact IO is desirable for these cases */
             if (SFDIRECT(f, n) || ((f->flags & SF_SHARE) && f->extent < 0))
-                r = ( ssize_t )n;
+                r = ( ssize_t ) n;
             else if (justseek && n <= f->iosz && f->iosz <= f->size)
                 r = f->iosz; /* limit buffering */
             else
                 r = f->size; /* full buffering */
 
             /* if read almost full size, then just do it direct */
-            if (r > ( ssize_t )n && (r - r / 8) <= ( ssize_t )n)
-                r = ( ssize_t )n;
+            if (r > ( ssize_t ) n && (r - r / 8) <= ( ssize_t ) n)
+                r = ( ssize_t ) n;
 
             /* read directly to user's buffer */
-            if (r == ( ssize_t )n && (r = SFRD(f, s, r, f->disc)) >= 0) {
+            if (r == ( ssize_t ) n && (r = SFRD(f, s, r, f->disc)) >= 0) {
                 s += r;
                 n -= r;
                 if (r == 0 || n == 0) /* eof or eob */

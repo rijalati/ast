@@ -21,8 +21,8 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
     Tcl_CreateCommand(interp,
                       "checkmem",
                       CheckmemCmd,
-                      ( ClientData )0,
-                      ( Tcl_CmdDeleteProc * )NULL);
+                      ( ClientData ) 0,
+                      ( Tcl_CmdDeleteProc * ) NULL);
 #endif
 
     /*
@@ -122,7 +122,7 @@ b_tclinit(int argc, char *argv[], Shbltin_t *context)
     static char *av[] = { "tclinit", 0 };
 
     if (context)
-        av[0] = ( char * )context;
+        av[0] = ( char * ) context;
     if (argc == 0) /* Called from C code (not shell) */
     {
         argc = 1;
@@ -130,6 +130,6 @@ b_tclinit(int argc, char *argv[], Shbltin_t *context)
     }
 
     Tcl_Main(
-    argc, argv, (context ? (( Tcl_AppInitProc * )context) : Tcl_AppInit));
+    argc, argv, (context ? (( Tcl_AppInitProc * ) context) : Tcl_AppInit));
     return 0;
 }

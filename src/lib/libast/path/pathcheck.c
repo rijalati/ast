@@ -63,7 +63,7 @@ pathcheck(const char *package, const char *tool, Pathcheck_t *pc)
 
         n = time(NiL);
         o = st.st_ctime;
-        if (n > o && (n - o) > ( unsigned long )(60 * 60 * 24 * 90)
+        if (n > o && (n - o) > ( unsigned long ) (60 * 60 * 24 * 90)
             && (sp = sfopen(NiL, "/etc/hosts", "r"))) {
             /*
              * this part is infallible

@@ -413,7 +413,7 @@ autoeval(Jcl_t *jcl, char *s, char **r)
                     sfprintf(
                     jcl->tp,
                     "%d",
-                    tmisleapyear(( int )strtol(fmttime("%Y", x), NiL, 10)));
+                    tmisleapyear(( int ) strtol(fmttime("%Y", x), NiL, 10)));
                     goto done;
                 }
                 break;
@@ -959,7 +959,7 @@ cond(Jcl_t *jcl, char *b, char **p)
             nospace(jcl, NiL);
             return 0;
         } else {
-            x->code = ( short )strtol(s, &e, 10);
+            x->code = ( short ) strtol(s, &e, 10);
             if (*e == ',') {
                 s = e + 2;
                 switch (*(e + 1)) {
@@ -1166,7 +1166,7 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
     }
     change = 0;
     if (*name) {
-        if (dd = ( Jcldd_t * )dtmatch(step->dd, name)) {
+        if (dd = ( Jcldd_t * ) dtmatch(step->dd, name)) {
             jcl->lastdd = dd;
             change = 1;
         } else if (!(dd = vmnewof(jcl->vs, NiL, Jcldd_t, 1, 0))) {
@@ -1221,9 +1221,9 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                         if (!(s = sfstruse(jcl->tp)))
                             nospace(jcl, NiL);
                         if (!(output
-                              = ( Jcloutput_t * )dtmatch(jcl->output, s)))
+                              = ( Jcloutput_t * ) dtmatch(jcl->output, s)))
                             output
-                            = ( Jcloutput_t * )dtmatch(jcl->output, val);
+                            = ( Jcloutput_t * ) dtmatch(jcl->output, val);
                         if (output) {
                             if (!(out
                                   = vmnewof(jcl->vs, NiL, Jclout_t, 1, 0))) {
@@ -1268,7 +1268,7 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                 *op = 0;
             else
                 op = 0;
-            pd = ( Jcldd_t * )dtmatch(step->dd, val);
+            pd = ( Jcldd_t * ) dtmatch(step->dd, val);
             if (op)
                 *op = ')';
             if (!pd) {
@@ -1285,7 +1285,7 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                    && (dd->flags |= JCL_DD_DUMMY)
                    || !jcl->pushed && tok != ST && (val = tok))) {
             if (dd->flags & JCL_DD_DUMMY) {
-                dd->path = ( char * )dummy;
+                dd->path = ( char * ) dummy;
                 dd->cat = dd->last = 0;
             } else {
                 if (pd)
@@ -1376,7 +1376,7 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                 else
                     d2 = 0;
             } else if (streq(tok, "LRECL"))
-                dd->lrecl = pd ? pd->lrecl : ( int )strtol(val, NiL, 10);
+                dd->lrecl = pd ? pd->lrecl : ( int ) strtol(val, NiL, 10);
             else if (streq(tok, "RECFM")) {
                 if (pd)
                     dd->recfm = pd->recfm;
@@ -1447,7 +1447,7 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                             continue;
                         default:
                             if (!dd->space)
-                                dd->space = ( int )strtol(val - 1, NiL, 10);
+                                dd->space = ( int ) strtol(val - 1, NiL, 10);
                             continue;
                         }
                         break;
@@ -1531,7 +1531,7 @@ OUTPUT(Jcl_t *jcl, Jclstep_t *step, char *name)
         if (!(name = sfstruse(jcl->tp)))
             nospace(jcl, NiL);
     }
-    if (output = ( Jcloutput_t * )dtmatch(jcl->output, name)) {
+    if (output = ( Jcloutput_t * ) dtmatch(jcl->output, name)) {
         if (jcl->disc->errorf)
             (*jcl->disc->errorf)(
             NiL, jcl->disc, 2, "%s: OUTPUT alread defined", name);
@@ -1592,7 +1592,7 @@ operand(Jcl_t *jcl, char *s, char **e)
             return -1;
         }
     } else if (isdigit(*s)) {
-        rc = ( int )strtol(s, e, 10);
+        rc = ( int ) strtol(s, e, 10);
         s = *e;
     } else if (*s == 0 || *s == ')')
         rc = 0;
@@ -1602,7 +1602,7 @@ operand(Jcl_t *jcl, char *s, char **e)
             ;
         if (v) {
             *v = 0;
-            p = ( Rc_t * )dtmatch(jcl->rcs, t);
+            p = ( Rc_t * ) dtmatch(jcl->rcs, t);
             *v = '.';
             if (p) {
                 run = 1;
@@ -1639,10 +1639,10 @@ operand(Jcl_t *jcl, char *s, char **e)
         else if (streq(t, "TRUE"))
             rc = 1;
         else if (*t == 'S' && (s - t) == 5
-                 && (rc = ( int )strtol(t + 1, e, 10), !*e))
+                 && (rc = ( int ) strtol(t + 1, e, 10), !*e))
             /*OK*/;
         else if (*t == 'U' && (s - t) == 4
-                 && (rc = ( int )strtol(t + 1, e, 16), !*e))
+                 && (rc = ( int ) strtol(t + 1, e, 16), !*e))
             /*OK*/;
         else if (!streq(t, "RC")) {
             if (c) {
@@ -2040,9 +2040,9 @@ parse(Jcl_t *jcl, Jclstep_t *step)
                     if (val) {
                         if (*tok == '?' && *(tok + strlen(tok) - 1) == '?') {
                             if (streq(tok + 1, "ABEND?"))
-                                jcl->abend = ( int )strtol(val, NiL, 0);
+                                jcl->abend = ( int ) strtol(val, NiL, 0);
                             else if (streq(tok + 1, "RC?"))
-                                jcl->rc = ( int )strtol(val, NiL, 0);
+                                jcl->rc = ( int ) strtol(val, NiL, 0);
                         } else if (!lookup(jcl, tok, val, 0, i))
                             return -1;
                     }
@@ -2093,8 +2093,8 @@ jclstep(Jcl_t *jcl)
             continue;
         if (step->name)
             for (scope = jcl->scope; scope; scope = scope->scope)
-                for (dd = ( Jcldd_t * )dtfirst(scope->step->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(scope->step->dd, dd))
+                for (dd = ( Jcldd_t * ) dtfirst(scope->step->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(scope->step->dd, dd))
                     if (dd->reference
                         && strneq(dd->name, step->name, dd->reference)
                         && dd->name[dd->reference] == '.') {
@@ -2120,8 +2120,8 @@ jclstep(Jcl_t *jcl)
                             return 0;
                     }
         if (jcl->flags & JCL_MARKLENGTH)
-            for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-                 dd = ( Jcldd_t * )dtnext(step->dd, dd))
+            for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+                 dd = ( Jcldd_t * ) dtnext(step->dd, dd))
                 if (dd->path && (dd->recfm & (JCL_RECFM_F | JCL_RECFM_V))
                     && dd->lrecl && !(dd->flags & JCL_DD_DIR)) {
                     if (!streq(dd->path, dummy)) {
@@ -2206,7 +2206,7 @@ jclrc(Jcl_t *jcl, Jclstep_t *step, int rc)
     else if (rc > 256 && rc < 320)
         rc -= 256;
     if (step && step->name) {
-        if (!(rp = ( Rc_t * )dtmatch(jcl->rcs, step->name))) {
+        if (!(rp = ( Rc_t * ) dtmatch(jcl->rcs, step->name))) {
             if (!(rp = vmnewof(jcl->vm, 0, Rc_t, 1, strlen(step->name)))) {
                 nospace(jcl, NiL);
                 return -1;

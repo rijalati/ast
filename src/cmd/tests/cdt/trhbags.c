@@ -29,16 +29,16 @@ typedef struct _obj_s
 static int
 objcmp(Dt_t *dt, Void_t *arg1, Void_t *arg2, Dtdisc_t *disc)
 {
-    Obj_t *o1 = ( Obj_t * )arg1, *o2 = ( Obj_t * )arg2;
+    Obj_t *o1 = ( Obj_t * ) arg1, *o2 = ( Obj_t * ) arg2;
 
-    return ( int )(o1->key - o2->key);
+    return ( int ) (o1->key - o2->key);
 }
 
 static unsigned int
 objhash(Dt_t *dt, Void_t *arg, Dtdisc_t *disc)
 {
-    Obj_t *o = ( Obj_t * )arg;
-    return ( unsigned int )(o->key);
+    Obj_t *o = ( Obj_t * ) arg;
+    return ( unsigned int ) (o->key);
 }
 
 Dtdisc_t Disc = { 0, 0, 0, 0, 0, objcmp, objhash, 0, 0 };
@@ -76,8 +76,8 @@ tmain()
         }
 
         count = n = 0; /* count the group of elements with key == 0 */
-        for (o = ( Obj_t * )dtflatten(dt); o;
-             o = ( Obj_t * )dtlink(dt, o), count += 1)
+        for (o = ( Obj_t * ) dtflatten(dt); o;
+             o = ( Obj_t * ) dtlink(dt, o), count += 1)
             if (o->key == 0)
                 n += 1;
         if (count != N_OBJ || n != R_OBJ)
@@ -94,7 +94,7 @@ tmain()
                 terror("delete %s: i=%d", k == 0 ? "bag" : "obag", i);
 
         count = 0; /* count the left over */
-        for (o = ( Obj_t * )dtflatten(dt); o; o = ( Obj_t * )dtlink(dt, o))
+        for (o = ( Obj_t * ) dtflatten(dt); o; o = ( Obj_t * ) dtlink(dt, o))
             count += 1;
         if (count != N_OBJ - n)
             terror("%s wrong count %d", k == 0 ? "bag" : "obag", count);

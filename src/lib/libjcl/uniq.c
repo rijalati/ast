@@ -61,7 +61,7 @@ marked(const char *path, Jcldd_t *dd, Jcldisc_t *disc)
     size_t n;
     int f;
 
-    if (path && (s = strrchr(path, '%')) && s > ( char * )path
+    if (path && (s = strrchr(path, '%')) && s > ( char * ) path
         && *(s - 1) != '%') {
         f = 0;
         for (;;) {
@@ -150,7 +150,7 @@ mark(const char *name, int recfm, size_t size, Jcldisc_t *disc)
     int m;
 
     if (marked(name, NiL, disc))
-        return ( char * )name;
+        return ( char * ) name;
     if (!state.mark) {
         if (!size)
             return 0;
@@ -162,7 +162,7 @@ mark(const char *name, int recfm, size_t size, Jcldisc_t *disc)
             return 0;
         }
     }
-    if (u = ( Uniq_t * )dtmatch(state.mark, name)) {
+    if (u = ( Uniq_t * ) dtmatch(state.mark, name)) {
         if (disc->errorf) {
             if (size != u->size && size && u->size)
                 (*disc->errorf)(NiL,
@@ -190,7 +190,7 @@ mark(const char *name, int recfm, size_t size, Jcldisc_t *disc)
         nospace(NiL, disc);
         return 0;
     }
-    s = u->value = stpcpy(u->name = ( char * )(u + 1), name) + 1;
+    s = u->value = stpcpy(u->name = ( char * ) (u + 1), name) + 1;
     u->size = size;
     m -= suflen(name);
     sfsprintf(s,
@@ -212,13 +212,13 @@ uniqcmp(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 {
     int n;
 
-    if (!(n = strcmp((( Uniq_t * )a)->name, (( Uniq_t * )b)->name))) {
-        if ((( Uniq_t * )a)->value) {
-            if ((( Uniq_t * )b)->value)
-                n = strcmp((( Uniq_t * )a)->value, (( Uniq_t * )b)->value);
+    if (!(n = strcmp((( Uniq_t * ) a)->name, (( Uniq_t * ) b)->name))) {
+        if ((( Uniq_t * ) a)->value) {
+            if ((( Uniq_t * ) b)->value)
+                n = strcmp((( Uniq_t * ) a)->value, (( Uniq_t * ) b)->value);
             else
                 n = 1;
-        } else if ((( Uniq_t * )b)->value)
+        } else if ((( Uniq_t * ) b)->value)
             n = -1;
     }
     return n;
@@ -244,9 +244,9 @@ uniq(const char *name, const char *value, unsigned long flags, Jcldisc_t *disc)
             return;
         }
     }
-    k.name = ( char * )name;
-    k.value = ( char * )value;
-    if (u = ( Uniq_t * )dtsearch(state.uniq, &k))
+    k.name = ( char * ) name;
+    k.value = ( char * ) value;
+    if (u = ( Uniq_t * ) dtsearch(state.uniq, &k))
         u->count++;
     else {
         n = strlen(name) + 1;
@@ -257,7 +257,7 @@ uniq(const char *name, const char *value, unsigned long flags, Jcldisc_t *disc)
             return;
         }
         u->count = 1;
-        s = stpcpy(u->name = ( char * )(u + 1), name);
+        s = stpcpy(u->name = ( char * ) (u + 1), name);
         if (value)
             strcpy(u->value = s + 1, value);
         dtinsert(state.uniq, u);
@@ -285,7 +285,7 @@ diff(const char *name, const char *value, Jcldisc_t *disc)
             return -1;
         }
     }
-    if (u = ( Uniq_t * )dtmatch(state.diff, name)) {
+    if (u = ( Uniq_t * ) dtmatch(state.diff, name)) {
         u->count++;
         if (streq(value, u->value))
             return 0;
@@ -295,7 +295,7 @@ diff(const char *name, const char *value, Jcldisc_t *disc)
             return -1;
         }
         u->count = 1;
-        strcpy(u->name = ( char * )(u + 1), name);
+        strcpy(u->name = ( char * ) (u + 1), name);
         dtinsert(state.diff, u);
     }
     n = strlen(value);
@@ -359,16 +359,16 @@ jclstats(Sfio_t *sp, unsigned long flags, Jcldisc_t *disc)
         m = (flags & JCL_LIST);
         h = m & (m - 1);
         if (h && (m & (JCL_LISTJOBS | JCL_LISTSCRIPTS))) {
-            for (u = ( Uniq_t * )dtfirst(state.uniq); u;
-                 u = ( Uniq_t * )dtnext(state.uniq, u))
+            for (u = ( Uniq_t * ) dtfirst(state.uniq); u;
+                 u = ( Uniq_t * ) dtnext(state.uniq, u))
                 if (u->flags & JCL_LISTJOBS) {
                     u->flags &= ~JCL_LISTSCRIPTS;
                     stats(sp, u, c, h);
                 }
             m &= ~JCL_LISTJOBS;
         }
-        for (u = ( Uniq_t * )dtfirst(state.uniq); u;
-             u = ( Uniq_t * )dtnext(state.uniq, u))
+        for (u = ( Uniq_t * ) dtfirst(state.uniq); u;
+             u = ( Uniq_t * ) dtnext(state.uniq, u))
             if (!m || (u->flags & m))
                 stats(sp, u, c, h);
     }

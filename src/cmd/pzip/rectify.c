@@ -127,8 +127,8 @@ static struct
 static int
 bycount(const void *va, const void *vb)
 {
-    Item_t *a = ( Item_t * )va;
-    Item_t *b = ( Item_t * )vb;
+    Item_t *a = ( Item_t * ) va;
+    Item_t *b = ( Item_t * ) vb;
 
     if (a->count < b->count)
         return 1;
@@ -291,7 +291,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                 error(
                 3, "%c: nesting too deep -- %d max", op, elementsof(loop));
             count = number(&s);
-            loop[nest].offset = sfseek(dp, ( Sfoff_t )0, SEEK_CUR);
+            loop[nest].offset = sfseek(dp, ( Sfoff_t ) 0, SEEK_CUR);
             loop[nest].count = count;
             if (verbose && offset >= state.offset)
                 sfprintf(sfstdout,
@@ -355,7 +355,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                           sizeof(offset),
                           offset);
                 dump(sfstdout, p, size);
-            } else if (sfseek(fp, ( Sfoff_t )size, SEEK_CUR) < 0)
+            } else if (sfseek(fp, ( Sfoff_t ) size, SEEK_CUR) < 0)
                 error(ERROR_SYSTEM | 3,
                       "%s: cannot seek %ld bytes at %I*d",
                       file,
@@ -374,7 +374,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                          size,
                          t - s,
                          s);
-            if (sfseek(fp, ( Sfoff_t )size, SEEK_CUR) < 0)
+            if (sfseek(fp, ( Sfoff_t ) size, SEEK_CUR) < 0)
                 error(ERROR_SYSTEM | 3,
                       "%s: cannot seek %ld bytes at %I*d",
                       file,
@@ -568,10 +568,10 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                           sizeof(offset),
                           offset);
                 sfprintf(
-                sfstdout, "\"%s\"\n", fmtnesq(( char * )p, "\"", count));
+                sfstdout, "\"%s\"\n", fmtnesq(( char * ) p, "\"", count));
             } else {
                 offset += 2;
-                if (sfseek(fp, ( Sfoff_t )count, SEEK_CUR) < 0)
+                if (sfseek(fp, ( Sfoff_t ) count, SEEK_CUR) < 0)
                     error(ERROR_SYSTEM | 3,
                           "%s: cannot seek %ld bytes at %I*d",
                           file,
@@ -603,7 +603,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
         sfprintf(sfstdout, "=== %I*d === EOF\n", sizeof(offset), offset);
     error_info.file = 0;
     error_info.line = 0;
-    if (skip = sfseek(fp, ( Sfoff_t )0, SEEK_END) - offset)
+    if (skip = sfseek(fp, ( Sfoff_t ) 0, SEEK_END) - offset)
         error(1,
               "%s: %I*d bytes ignored at %I*d",
               file,

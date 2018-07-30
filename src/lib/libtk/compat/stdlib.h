@@ -22,7 +22,7 @@
 
 #include <tcl.h>
 
-extern void abort _ANSI_ARGS_(( void ));
+extern void abort _ANSI_ARGS_(( void ) );
 extern double atof _ANSI_ARGS_((CONST char *string));
 extern int atoi _ANSI_ARGS_((CONST char *string));
 extern long atol _ANSI_ARGS_((CONST char *string));

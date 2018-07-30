@@ -124,10 +124,10 @@ ClientData clientData;   /* Arbitrary value to pass to
      * Create the handler record.
      */
 
-    errorPtr = ( TkErrorHandler * )ckalloc(sizeof(TkErrorHandler));
+    errorPtr = ( TkErrorHandler * ) ckalloc(sizeof(TkErrorHandler));
     errorPtr->dispPtr = dispPtr;
     errorPtr->firstRequest = NextRequest(display);
-    errorPtr->lastRequest = ( unsigned )-1;
+    errorPtr->lastRequest = ( unsigned ) -1;
     errorPtr->error = error;
     errorPtr->request = request;
     errorPtr->minorCode = minorCode;
@@ -136,7 +136,7 @@ ClientData clientData;   /* Arbitrary value to pass to
     errorPtr->nextPtr = dispPtr->errorPtr;
     dispPtr->errorPtr = errorPtr;
 
-    return ( Tk_ErrorHandler )errorPtr;
+    return ( Tk_ErrorHandler ) errorPtr;
 }
 
 /*
@@ -166,7 +166,7 @@ Tk_ErrorHandler handler; /* Token for handler to delete;
                           * was previous return value from
                           * Tk_CreateErrorHandler. */
 {
-    TkErrorHandler *errorPtr = ( TkErrorHandler * )handler;
+    TkErrorHandler *errorPtr = ( TkErrorHandler * ) handler;
     TkDisplay *dispPtr = errorPtr->dispPtr;
 
     errorPtr->lastRequest = NextRequest(dispPtr->display) - 1;
@@ -204,7 +204,7 @@ Tk_ErrorHandler handler; /* Token for handler to delete;
                 } else {
                     prevPtr->nextPtr = nextPtr;
                 }
-                ckfree(( char * )errorPtr);
+                ckfree(( char * ) errorPtr);
                 continue;
             }
             prevPtr = errorPtr;
@@ -289,7 +289,7 @@ XErrorEvent *errEventPtr; /* Information about error. */
      */
 
     if ((errEventPtr->error_code == BadWindow)
-        && (Tk_IdToWindow(display, ( Window )errEventPtr->resourceid)
+        && (Tk_IdToWindow(display, ( Window ) errEventPtr->resourceid)
             != NULL)) {
         return 0;
     }

@@ -412,7 +412,7 @@ regdecomp(regex_t *p, regflags_t flags, char *buf, size_t n)
 
     if (!(sp = sfstropen()))
         return 0;
-    if (flags == ( regflags_t )~0)
+    if (flags == ( regflags_t ) ~0)
         flags = p->env->flags;
     switch (flags & (REG_AUGMENTED | REG_EXTENDED | REG_SHELL)) {
     case 0:

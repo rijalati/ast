@@ -43,20 +43,20 @@
 #endif     /* O_CREAT */
 
 #ifndef S_ISDIR
-#    define S_ISDIR(m) ((( m )&S_IFMT) == S_IFDIR)
+#    define S_ISDIR(m) ((( m ) &S_IFMT) == S_IFDIR)
 #endif /* S_ISDIR */
 #ifndef S_ISREG
-#    define S_ISREG(m) ((( m )&S_IFMT) == S_IFREG)
+#    define S_ISREG(m) ((( m ) &S_IFMT) == S_IFREG)
 #endif /* S_ISREG */
 #ifndef S_ISCHR
-#    define S_ISCHR(m) ((( m )&S_IFMT) == S_IFCHR)
+#    define S_ISCHR(m) ((( m ) &S_IFMT) == S_IFCHR)
 #endif /* S_ISCHR */
 #ifndef S_ISBLK
-#    define S_ISBLK(m) ((( m )&S_IFMT) == S_IFBLK)
+#    define S_ISBLK(m) ((( m ) &S_IFMT) == S_IFBLK)
 #endif /* S_ISBLK */
 #ifdef S_IFIFO
 #    ifndef S_ISFIFO
-#        define S_ISFIFO(m) ((( m )&S_IFMT) == S_IFIFO)
+#        define S_ISFIFO(m) ((( m ) &S_IFMT) == S_IFIFO)
 #    endif /* S_ISFIFO */
 #endif     /* S_IFIFO */
 #ifndef S_IRUSR
@@ -118,9 +118,9 @@
                           */
 
 #    define F_STRING                                                         \
-        (( unsigned char )NFILE) /* file number for incore files */
-#    define F_INFINITE 0x7fff    /* effectively infinite */
-#endif                           /* KSHELL */
+        (( unsigned char ) NFILE) /* file number for incore files */
+#    define F_INFINITE 0x7fff     /* effectively infinite */
+#endif                            /* KSHELL */
 
 /* SHELL file I/O structure */
 struct fileblk
@@ -140,7 +140,7 @@ struct fileblk
 #endif /* KSHELL */
 };
 
-#define filenum(fp) (( int )(fp->fdes))  /* file number */
+#define filenum(fp) (( int ) (fp->fdes)) /* file number */
 #define fnobuff(fp) ((fp)->flag & IONBF) /* file is unbuffered */
 
 #define IOREAD 0001

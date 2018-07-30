@@ -248,7 +248,7 @@ b_paste(int argc, char **argv, Shbltin_t *context)
     } else
         n = 1;
     if (!sflag) {
-        if (!(streams = ( Sfio_t ** )stakalloc(n * sizeof(Sfio_t *))))
+        if (!(streams = ( Sfio_t ** ) stakalloc(n * sizeof(Sfio_t *))))
             error(ERROR_exit(1), "out of space");
         n = 0;
     }

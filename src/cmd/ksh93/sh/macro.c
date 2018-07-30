@@ -51,7 +51,7 @@
 #    define isacii(c) ((c) <= UCHAR_MAX)
 #    include <lc.h>
 #else
-#    define mbchar(p) (*( unsigned char * )p++)
+#    define mbchar(p) (*( unsigned char * ) p++)
 #endif /* SHOPT_MULTIBYTE */
 
 #if _WINIX
@@ -93,7 +93,7 @@ typedef struct _mac_
 #define isbracechar(c)                                                       \
     ((c) == RBRACE || (_c_ = sh_lexstates[ST_BRACE][c]) == S_MOD1            \
      || _c_ == S_MOD2)
-#define ltos(x) fmtbase(( long )(x), 0, 0)
+#define ltos(x) fmtbase(( long ) (x), 0, 0)
 
 /* type of macro expansions */
 #define M_BRACE 1     /* ${var}	*/
@@ -139,7 +139,7 @@ void *
 sh_macopen(Shell_t *shp)
 {
     void *addr = newof(0, Mac_t, 1, 0);
-    Mac_t *mp = ( Mac_t * )addr;
+    Mac_t *mp = ( Mac_t * ) addr;
     mp->shp = shp;
     return (addr);
 }
@@ -175,7 +175,7 @@ sh_mactry(Shell_t *shp, char *string)
 char *
 sh_mactrim(Shell_t *shp, char *str, int mode)
 {
-    Mac_t *mp = ( Mac_t * )shp->mac_context;
+    Mac_t *mp = ( Mac_t * ) shp->mac_context;
     Stk_t *stkp = shp->stk;
     Mac_t savemac;
     savemac = *mp;
@@ -222,7 +222,7 @@ sh_macexpand(Shell_t *shp,
 {
     int flags = argp->argflag;
     char *str = argp->argval;
-    Mac_t *mp = ( Mac_t * )shp->mac_context;
+    Mac_t *mp = ( Mac_t * ) shp->mac_context;
     char **saveargaddr = shp->argaddr;
     Mac_t savemac;
     Stk_t *stkp = shp->stk;
@@ -233,7 +233,7 @@ sh_macexpand(Shell_t *shp,
     else
         mp->ifs = ' ';
     if ((flag & ARG_OPTIMIZE) && !shp->indebug && !(flags & ARG_MESSAGE))
-        shp->argaddr = ( char ** )&argp->argchn.ap;
+        shp->argaddr = ( char ** ) &argp->argchn.ap;
     else
         shp->argaddr = 0;
     mp->arghead = arghead;
@@ -287,8 +287,8 @@ sh_machere(Shell_t *shp, Sfio_t *infile, Sfio_t *outfile, char *string)
     int c, n;
     const char *state = sh_lexstates[ST_QUOTE];
     char *cp;
-    Mac_t *mp = ( Mac_t * )shp->mac_context;
-    Lex_t *lp = ( Lex_t * )mp->shp->lex_context;
+    Mac_t *mp = ( Mac_t * ) shp->mac_context;
+    Lex_t *lp = ( Lex_t * ) mp->shp->lex_context;
     Fcin_t save;
     Mac_t savemac;
     Stk_t *stkp = shp->stk;
@@ -317,7 +317,7 @@ sh_machere(Shell_t *shp, Sfio_t *infile, Sfio_t *outfile, char *string)
                 case -1: /* illegal multi-byte char */
                 case 0:
                 case 1:
-                    n = state[*( unsigned char * )cp++];
+                    n = state[*( unsigned char * ) cp++];
                     break;
                 default:
                     /* use state of alpha character */
@@ -327,7 +327,7 @@ sh_machere(Shell_t *shp, Sfio_t *infile, Sfio_t *outfile, char *string)
             } while (n == 0);
         } else
 #endif /* SHOPT_MULTIBYTE */
-            while ((n = state[*( unsigned char * )cp++]) == 0)
+            while ((n = state[*( unsigned char * ) cp++]) == 0)
                 ;
         if (n == S_NL || n == S_QUOTE || n == S_RBRA)
             continue;
@@ -355,7 +355,7 @@ sh_machere(Shell_t *shp, Sfio_t *infile, Sfio_t *outfile, char *string)
                 sfputc(outfile, ESCAPE);
             continue;
         case S_GRAVE:
-            comsubst(mp, ( Shnode_t * )0, 0);
+            comsubst(mp, ( Shnode_t * ) 0, 0);
             break;
         case S_DOL:
             c = fcget();
@@ -377,7 +377,7 @@ sh_machere(Shell_t *shp, Sfio_t *infile, Sfio_t *outfile, char *string)
                     c = fcget();
                     fcseek(-1);
                     if (sh_lexstates[ST_NORM][c] == S_BREAK) {
-                        comsubst(mp, ( Shnode_t * )0, 2);
+                        comsubst(mp, ( Shnode_t * ) 0, 2);
                         break;
                     }
                     sh_lexskip(lp, RBRACE, 1, ST_BRACE);
@@ -392,13 +392,13 @@ sh_machere(Shell_t *shp, Sfio_t *infile, Sfio_t *outfile, char *string)
                 fcsopen(stkptr(stkp, offset));
                 varsub(mp);
                 if (c = stktell(stkp) - offset2)
-                    sfwrite(outfile, ( char * )stkptr(stkp, offset2), c);
+                    sfwrite(outfile, ( char * ) stkptr(stkp, offset2), c);
                 fcrestore(&save2);
                 stkseek(stkp, offset);
                 break;
             }
             case S_PAR:
-                comsubst(mp, ( Shnode_t * )0, 3);
+                comsubst(mp, ( Shnode_t * ) 0, 3);
                 break;
             case S_EOF:
                 if ((c = fcfill()) > 0)
@@ -448,7 +448,7 @@ copyto(Mac_t *mp, int endch, int newquote)
     const char *state = sh_lexstates[ST_MACRO];
     char *cp, *first;
     Shell_t *shp = mp->shp;
-    Lex_t *lp = ( Lex_t * )shp->lex_context;
+    Lex_t *lp = ( Lex_t * ) shp->lex_context;
     int tilde = -1;
     int oldquote = mp->quote;
     int ansi_c = 0;
@@ -477,7 +477,7 @@ copyto(Mac_t *mp, int endch, int newquote)
                 case 0:
                     len = 1;
                 case 1:
-                    n = state[*( unsigned char * )cp++];
+                    n = state[*( unsigned char * ) cp++];
                     break;
                 default:
                     /* treat as if alpha */
@@ -489,7 +489,7 @@ copyto(Mac_t *mp, int endch, int newquote)
         } else
 #endif /* SHOPT_MULTIBYTE */
         {
-            while ((n = state[*( unsigned char * )cp++]) == 0)
+            while ((n = state[*( unsigned char * ) cp++]) == 0)
                 ;
             c = (cp - 1) - first;
         }
@@ -508,7 +508,7 @@ copyto(Mac_t *mp, int endch, int newquote)
                     int i;
                     unsigned char mb[8];
 
-                    n = mbconv(( char * )mb, c);
+                    n = mbconv(( char * ) mb, c);
                     for (i = 0; i < n; i++)
                         sfputc(stkp, mb[i]);
                 } else
@@ -534,14 +534,14 @@ copyto(Mac_t *mp, int endch, int newquote)
                 first = cp;
                 break;
             }
-            n = state[*( unsigned char * )cp];
+            n = state[*( unsigned char * ) cp];
             if (n == S_ENDCH && *cp != endch)
                 n = S_PAT;
             if (mp->pattern) {
                 /* preserve \digit for pattern matching */
                 /* also \alpha for extended patterns */
                 if (!mp->lit && !mp->quote) {
-                    int nc = *( unsigned char * )cp;
+                    int nc = *( unsigned char * ) cp;
                     if ((n == S_DIG
                          || ((paren + ere)
                              && (sh_lexstates[ST_DOL][nc] == S_ALP)
@@ -598,7 +598,7 @@ copyto(Mac_t *mp, int endch, int newquote)
             first = fcseek(c + 1);
             c = mp->pattern;
             if (n == S_GRAVE)
-                comsubst(mp, ( Shnode_t * )0, 0);
+                comsubst(mp, ( Shnode_t * ) 0, 0);
             else if ((n = *cp) == '"' && !mp->quote) {
                 int off = stktell(stkp);
                 char *dp;
@@ -616,7 +616,7 @@ copyto(Mac_t *mp, int endch, int newquote)
                 sfwrite(stkp, first, n);
                 sfputc(stkp, 0);
                 cp = stkptr(stkp, off);
-                dp = ( char * )sh_translate(cp);
+                dp = ( char * ) sh_translate(cp);
                 stkseek(stkp, off);
                 if (dp == cp) {
                     cp = first;
@@ -895,7 +895,7 @@ static char *
 getdolarg(Shell_t *shp, int n, int *size)
 {
     int c = S_DELIM, d = shp->ifstable['\\'];
-    unsigned char *first, *last, *cp = ( unsigned char * )shp->cur_line;
+    unsigned char *first, *last, *cp = ( unsigned char * ) shp->cur_line;
     int m = shp->offsets[0], delim = 0;
     if (m == 0)
         return (0);
@@ -917,7 +917,7 @@ getdolarg(Shell_t *shp, int n, int *size)
                 ;
         first = --cp;
         if (++m < MAX_OFFSETS)
-            shp->offsets[m] = (first - ( unsigned char * )shp->cur_line);
+            shp->offsets[m] = (first - ( unsigned char * ) shp->cur_line);
         while ((c = shp->ifstable[*cp++]) == 0)
             ;
         last = cp - 1;
@@ -940,7 +940,7 @@ getdolarg(Shell_t *shp, int n, int *size)
         first = last = 0;
     if (size)
         *size = last - first;
-    return (( char * )first);
+    return (( char * ) first);
 }
 #endif /* SHOPT_FILESCAN */
 
@@ -968,9 +968,9 @@ prefix(Shell_t *shp, char *id)
                 if (sub)
                     nv_putsub(np, sub, 0, 0L);
             }
-            id
-            = ( char * )malloc(strlen(cp) + 1 + (n = strlen(sp = nv_name(np)))
-                               + (sub ? strlen(sub) + 3 : 1));
+            id = ( char * ) malloc(strlen(cp) + 1
+                                   + (n = strlen(sp = nv_name(np)))
+                                   + (sub ? strlen(sub) + 3 : 1));
             memcpy(id, sp, n);
             if (sub) {
                 id[n++] = '[';
@@ -1018,7 +1018,7 @@ bool
 sh_macfun(Shell_t *shp, const char *name, int offset)
 {
     Namval_t *np, *nq;
-    np = nv_bfsearch(name, shp->fun_tree, &nq, ( char ** )0);
+    np = nv_bfsearch(name, shp->fun_tree, &nq, ( char ** ) 0);
     if (np) {
         /* treat ${x.foo} as ${x.foo;} */
         union
@@ -1039,7 +1039,7 @@ sh_macfun(Shell_t *shp, const char *name, int offset)
         d.dol.dolnum = 1;
         d.dol.dolval[0] = strdup(name);
         stkseek(shp->stk, offset);
-        comsubst(( Mac_t * )shp->mac_context, &t.node, 2);
+        comsubst(( Mac_t * ) shp->mac_context, &t.node, 2);
         free(d.dol.dolval[0]);
         return (true);
     }
@@ -1050,7 +1050,7 @@ static int
 namecount(Mac_t *mp, const char *prefix)
 {
     int count = 0;
-    mp->nvwalk = nv_diropen(( Namval_t * )0, prefix, mp->shp);
+    mp->nvwalk = nv_diropen(( Namval_t * ) 0, prefix, mp->shp);
     while (nv_dirnext(mp->nvwalk))
         count++;
     nv_dirclose(mp->nvwalk);
@@ -1062,8 +1062,8 @@ nextname(Mac_t *mp, const char *prefix, int len)
 {
     char *cp;
     if (len == 0) {
-        mp->nvwalk = nv_diropen(( Namval_t * )0, prefix, mp->shp);
-        return (( char * )mp->nvwalk);
+        mp->nvwalk = nv_diropen(( Namval_t * ) 0, prefix, mp->shp);
+        return (( char * ) mp->nvwalk);
     }
     if (!(cp = nv_dirnext(mp->nvwalk)))
         nv_dirclose(mp->nvwalk);
@@ -1082,7 +1082,7 @@ varsub(Mac_t *mp)
     char *v, *argp = 0;
     Namval_t *np = NIL(Namval_t *);
     int dolg = 0, mode = 0;
-    Lex_t *lp = ( Lex_t * )mp->shp->lex_context;
+    Lex_t *lp = ( Lex_t * ) mp->shp->lex_context;
     Namarr_t *ap = 0;
     int dolmax = 0, vsize = -1, offset = -1, nulflg, replen = 0, bysub = 0;
     char idbuff[3], *id = idbuff, *pattern = 0, *repstr = 0, *arrmax = 0;
@@ -1161,7 +1161,7 @@ retry1:
     case S_PAR:
         if (type)
             goto nosub;
-        comsubst(mp, ( Shnode_t * )0, 3);
+        comsubst(mp, ( Shnode_t * ) 0, 3);
         return (true);
     case S_DIG:
         var = 0;
@@ -1357,12 +1357,12 @@ retry1:
                     dolmax = 1;
                     if (array_assoc(ap))
                         arrmax = strdup(v);
-                    else if ((dolmax = ( int )sh_arith(mp->shp, v)) < 0)
+                    else if ((dolmax = ( int ) sh_arith(mp->shp, v)) < 0)
                         dolmax += array_maxindex(np);
                     if (type == M_SUBNAME)
                         bysub = 1;
                 } else {
-                    if (( int )sh_arith(mp->shp, v))
+                    if (( int ) sh_arith(mp->shp, v))
                         np = 0;
                 }
             } else if (ap && (isastchar(mode) || type == M_TREE)
@@ -1395,7 +1395,7 @@ retry1:
         c = (type > M_BRACE && isastchar(mode));
         if (np && (type == M_TREE || !c || !ap)) {
             char *savptr;
-            c = *(( unsigned char * )stkptr(stkp, offset - 1));
+            c = *(( unsigned char * ) stkptr(stkp, offset - 1));
             savptr = stkfreeze(stkp, 0);
             if (type == M_VNAME || (type == M_SUBNAME && ap)) {
                 type = M_BRACE;
@@ -1416,13 +1416,13 @@ retry1:
                 v = mp->shp->cur_line;
 #endif /* SHOPT_FILESCAN */
             else if (type == M_TREE)
-                v = nv_getvtree(np, ( Namfun_t * )0);
+                v = nv_getvtree(np, ( Namfun_t * ) 0);
             else {
                 if (type && fcpeek(0) == '+') {
                     if (ap)
-                        v = nv_arrayisset(np, ap) ? ( char * )"x" : 0;
+                        v = nv_arrayisset(np, ap) ? ( char * ) "x" : 0;
                     else
-                        v = nv_isnull(np) ? 0 : ( char * )"x";
+                        v = nv_isnull(np) ? 0 : ( char * ) "x";
                 } else
                     v = nv_getval(np);
                 mp->atmode = (v && mp->quoted && mode == '@');
@@ -1481,7 +1481,7 @@ retry1:
                 c = namecount(mp, id);
                 v = ltos(c);
             } else {
-                dolmax = ( int )strlen(id);
+                dolmax = ( int ) strlen(id);
                 dolg = -1;
                 nextname(mp, id, 0);
 #if 1
@@ -1516,7 +1516,7 @@ retry1:
             else if (dolg > 0) {
 #if SHOPT_FILESCAN
                 if (mp->shp->cur_line) {
-                    getdolarg(mp->shp, MAX_ARGN, ( int * )0);
+                    getdolarg(mp->shp, MAX_ARGN, ( int * ) 0);
                     c = mp->shp->offsets[0];
                 } else
 #endif /* SHOPT_FILESCAN */
@@ -1608,7 +1608,7 @@ skip:
     if (c == ':') /* ${name:expr1[:expr2]} */
     {
         char *ptr;
-        type = ( int )sh_strnum(mp->shp, argp, &ptr, 1);
+        type = ( int ) sh_strnum(mp->shp, argp, &ptr, 1);
         if (isastchar(mode)) {
             if (id == idbuff) /* ${@} or ${*} */
             {
@@ -1663,10 +1663,10 @@ skip:
 #endif /* SHOPT_MULTIBYTE */
             else
                 v += type;
-            vsize = v ? ( int )strlen(v) : 0;
+            vsize = v ? ( int ) strlen(v) : 0;
         }
         if (*ptr == ':') {
-            if ((type = ( int )sh_strnum(mp->shp, ptr + 1, &ptr, 1)) <= 0) {
+            if ((type = ( int ) sh_strnum(mp->shp, ptr + 1, &ptr, 1)) <= 0) {
                 v = 0;
                 mp->atmode = 0;
             } else if (isastchar(mode)) {
@@ -1691,7 +1691,7 @@ skip:
 #endif /* SHOPT_MULTIBYTE */
                 vsize = type;
             } else
-                vsize = v ? ( int )strlen(v) : 0;
+                vsize = v ? ( int ) strlen(v) : 0;
         }
         if (*ptr)
             mac_error(np);
@@ -1715,7 +1715,7 @@ skip:
         }
         pattern = strdup(argp);
         if ((type == '/' || c == '/') && (repstr = mac_getstring(pattern)))
-            replen = ( int )strlen(repstr);
+            replen = ( int ) strlen(repstr);
         if (v || c == '/' && offset >= 0)
             stkseek(stkp, offset);
     }
@@ -1737,7 +1737,7 @@ retry2:
                 if (c != '/')
                     flag |= STR_LEFT;
                 index = nmatch = 0;
-                tsize = ( int )strlen(v);
+                tsize = ( int ) strlen(v);
                 while (1) {
                     vsize = tsize;
                     oldv = v;
@@ -1749,7 +1749,7 @@ retry2:
                         nmatch = strngrpmatch(v,
                                               vsize,
                                               pattern,
-                                              ( ssize_t * )match,
+                                              ( ssize_t * ) match,
                                               elementsof(match) / 2,
                                               flag | STR_INT);
                     if (nmatch && repstr && !mp->macsub)
@@ -1869,7 +1869,7 @@ retry2:
             }
         }
         if (arrmax)
-            free(( void * )arrmax);
+            free(( void * ) arrmax);
     } else if (argp) {
         if (c == '/' && replen > 0 && pattern && strmatch("", pattern))
             mac_substitute(mp, repstr, v, 0, 0);
@@ -1921,7 +1921,7 @@ retry2:
 nosub:
     if (type == M_BRACE && sh_lexstates[ST_NORM][c] == S_BREAK) {
         fcseek(-1);
-        comsubst(mp, ( Shnode_t * )0, 2);
+        comsubst(mp, ( Shnode_t * ) 0, 2);
         return (true);
     }
     if (type)
@@ -1967,7 +1967,7 @@ comsubst(Mac_t *mp, Shnode_t *t, volatile int type)
         sp = 0;
         fcseek(-1);
         if (!t)
-            t = sh_dolparen(( Lex_t * )mp->shp->lex_context);
+            t = sh_dolparen(( Lex_t * ) mp->shp->lex_context);
         if (t && t->tre.tretyp == TARITH) {
             mp->shp->inarith = 1;
             fcsave(&save);
@@ -1982,12 +1982,12 @@ comsubst(Mac_t *mp, Shnode_t *t, volatile int type)
         out_offset:
             stkset(stkp, savptr, savtop);
             *mp = savemac;
-            if (num && ( Sfulong_t )num == num)
-                sfprintf(mp->shp->strbuf, "%llu", ( Sfulong_t )num);
-            else if (( Sflong_t )num != num)
+            if (num && ( Sfulong_t ) num == num)
+                sfprintf(mp->shp->strbuf, "%llu", ( Sfulong_t ) num);
+            else if (( Sflong_t ) num != num)
                 sfprintf(mp->shp->strbuf, "%.*Lg", LDBL_DIG, num);
             else if (num)
-                sfprintf(mp->shp->strbuf, "%lld", ( Sflong_t )num);
+                sfprintf(mp->shp->strbuf, "%lld", ( Sflong_t ) num);
             else
                 sfprintf(mp->shp->strbuf, "%Lg", num);
             str = sfstruse(mp->shp->strbuf);
@@ -2000,7 +2000,7 @@ comsubst(Mac_t *mp, Shnode_t *t, volatile int type)
             Namval_t *np;
             str = NULL;
             if (!(t->com.comtyp & COMSCAN)) {
-                struct dolnod *ap = ( struct dolnod * )t->com.comarg;
+                struct dolnod *ap = ( struct dolnod * ) t->com.comarg;
                 str = ap->dolval[ap->dolbot];
             } else if (t->com.comarg->argflag & ARG_RAW)
                 str = t->com.comarg->argval;
@@ -2026,7 +2026,7 @@ comsubst(Mac_t *mp, Shnode_t *t, volatile int type)
         sp = sfnew(NIL(Sfio_t *), str, c, -1, SF_STRING | SF_READ);
         c = mp->shp->inlineno;
         mp->shp->inlineno = error_info.line + mp->shp->st.firstline;
-        t = ( Shnode_t * )sh_parse(mp->shp, sp, SH_EOF | SH_NL);
+        t = ( Shnode_t * ) sh_parse(mp->shp, sp, SH_EOF | SH_NL);
         mp->shp->inlineno = c;
         type = 1;
     }
@@ -2053,13 +2053,13 @@ comsubst(Mac_t *mp, Shnode_t *t, volatile int type)
                 if (sp = mp->shp->sftable[fd])
                     num = sftell(sp);
                 else
-                    num = lseek(fd, ( off_t )0, SEEK_CUR);
+                    num = lseek(fd, ( off_t ) 0, SEEK_CUR);
                 goto out_offset;
             }
             if (!(sp = mp->shp->sftable[fd])
                 || (sffileno(sp) != fd && !(sfset(sp, 0, 0) & SF_STRING)))
                 sp = sfnew(NIL(Sfio_t *),
-                           ( char * )malloc(IOBSIZE + 1),
+                           ( char * ) malloc(IOBSIZE + 1),
                            IOBSIZE,
                            fd,
                            SF_READ | SF_MALLOC);
@@ -2089,9 +2089,9 @@ comsubst(Mac_t *mp, Shnode_t *t, volatile int type)
     sfpool(sp, NIL(Sfio_t *), SF_WRITE);
     sfset(sp, SF_WRITE | SF_PUBLIC | SF_SHARE, 0);
     sh_offstate(mp->shp, SH_INTERACTIVE);
-    if ((foff = sfseek(sp, ( Sfoff_t )0, SEEK_END)) > 0) {
+    if ((foff = sfseek(sp, ( Sfoff_t ) 0, SEEK_END)) > 0) {
         size_t soff = stktell(stkp);
-        sfseek(sp, ( Sfoff_t )0, SEEK_SET);
+        sfseek(sp, ( Sfoff_t ) 0, SEEK_SET);
         stkseek(stkp, soff + foff + 64);
         stkseek(stkp, soff);
     }
@@ -2099,7 +2099,7 @@ comsubst(Mac_t *mp, Shnode_t *t, volatile int type)
         sfsetbuf(sp, NULL, SF_UNBOUND);
     spid = mp->shp->spid;
     mp->shp->spid = 0;
-    while ((str = ( char * )sfreserve(sp, SF_UNBOUND, 0))
+    while ((str = ( char * ) sfreserve(sp, SF_UNBOUND, 0))
            && (c = bufsize = sfvalue(sp)) > 0) {
 #if SHOPT_CRNL
         /* eliminate <cr> */
@@ -2201,7 +2201,7 @@ mac_copy(Mac_t *mp, const char *str, size_t size)
                 continue;
             }
 #endif
-            c = state[n = *( unsigned char * )cp++];
+            c = state[n = *( unsigned char * ) cp++];
             if (mp->assign == 3 && mp->pattern != 4) {
                 if (c == S_BRACT) {
                     nopat = 0;
@@ -2227,7 +2227,7 @@ mac_copy(Mac_t *mp, const char *str, size_t size)
             } else if (mp->pattern == 2 && c == S_SLASH)
                 c = 1;
             else if (mp->pattern == 3 && c == S_ESC
-                     && (state[*( unsigned char * )cp] == S_DIG
+                     && (state[*( unsigned char * ) cp] == S_DIG
                          || (*cp == ESCAPE))) {
                 if (!(c = mp->quote))
                     cp++;
@@ -2260,7 +2260,7 @@ mac_copy(Mac_t *mp, const char *str, size_t size)
                 state[ESCAPE] = S_ESC;
         }
         while (size-- > 0) {
-            n = state[c = *( unsigned char * )cp++];
+            n = state[c = *( unsigned char * ) cp++];
 #if SHOPT_MULTIBYTE
             if (n != S_MBYTE && (len = mbnsize(cp - 1, ep - cp + 1)) > 1) {
                 sfwrite(stkp, cp - 1, len);
@@ -2291,7 +2291,7 @@ mac_copy(Mac_t *mp, const char *str, size_t size)
                 if (n == S_SPACE || n == S_NL) {
                     while (
                     size > 0
-                    && ((n = state[c = *( unsigned char * )cp++]) == S_SPACE
+                    && ((n = state[c = *( unsigned char * ) cp++]) == S_SPACE
                         || n == S_NL))
                         size--;
 #if SHOPT_MULTIBYTE
@@ -2313,7 +2313,7 @@ mac_copy(Mac_t *mp, const char *str, size_t size)
                 if (n == S_DELIM)
                     while (
                     size > 0
-                    && ((n = state[c = *( unsigned char * )cp++]) == S_SPACE
+                    && ((n = state[c = *( unsigned char * ) cp++]) == S_SPACE
                         || n == S_NL))
                         size--;
                 if (size <= 0)
@@ -2364,7 +2364,7 @@ endfield(Mac_t *mp, int split)
     int count = 0;
     Stk_t *stkp = mp->shp->stk;
     if (stktell(stkp) > ARGVAL || split) {
-        argp = ( struct argnod * )stkfreeze(stkp, 1);
+        argp = ( struct argnod * ) stkfreeze(stkp, 1);
         argp->argnxt.cp = 0;
         argp->argflag = 0;
         mp->atmode = 0;
@@ -2415,7 +2415,7 @@ substring(const char *string,
         if (n = strngrpmatch(sp,
                              len,
                              pat,
-                             ( ssize_t * )smatch,
+                             ( ssize_t * ) smatch,
                              elementsof(smatch) / 2,
                              STR_RIGHT | STR_MAXIMAL | STR_INT)) {
             memcpy(match, smatch, n * 2 * sizeof(smatch[0]));
@@ -2423,7 +2423,7 @@ substring(const char *string,
         }
         return (0);
     }
-    size = ( int )len;
+    size = ( int ) len;
     sp += size;
     while (sp >= string) {
 #if SHOPT_MULTIBYTE
@@ -2432,7 +2432,7 @@ substring(const char *string,
 #endif /* SHOPT_MULTIBYTE */
         if (n = strgrpmatch(sp,
                             pat,
-                            ( ssize_t * )smatch,
+                            ( ssize_t * ) smatch,
                             elementsof(smatch) / 2,
                             STR_RIGHT | STR_LEFT | STR_MAXIMAL | STR_INT)) {
             nmatch = n;
@@ -2456,7 +2456,7 @@ substring(const char *string,
 static char *
 lastchar(const char *string, const char *endstring)
 {
-    char *str = ( char * )string;
+    char *str = ( char * ) string;
     int c;
     mbinit();
     while (*str) {
@@ -2536,12 +2536,12 @@ tilde_expand2(Shell_t *shp, int offset)
     sfset(iop, SF_READ, 0);
     sfstdout = iop;
     if (np)
-        sh_fun(shp, np, ( Namval_t * )0, av);
+        sh_fun(shp, np, ( Namval_t * ) 0, av);
     else
         sh_btilde(2, av, &shp->bltindata);
     sfstdout = save;
     stkset(shp->stk, ptr, offset);
-    sfseek(iop, ( Sfoff_t )0, SEEK_SET);
+    sfseek(iop, ( Sfoff_t ) 0, SEEK_SET);
     sfset(iop, SF_READ, 1);
     if (ptr = sfreserve(iop, SF_UNBOUND, -1)) {
         Sfoff_t n = sfvalue(iop);
@@ -2591,9 +2591,9 @@ sh_tilde(Shell_t *shp, const char *string)
         char *s2;
         size_t len;
         int fd, offset = stktell(shp->stk);
-        Spawnvex_t *vc = ( Spawnvex_t * )shp->vex;
+        Spawnvex_t *vc = ( Spawnvex_t * ) shp->vex;
         if (!vc && (vc = spawnvex_open(0)))
-            shp->vex = ( void * )vc;
+            shp->vex = ( void * ) vc;
         if (!(s2 = strchr(string++, '}')))
             return (NIL(char *));
         len = s2 - string;
@@ -2610,13 +2610,13 @@ sh_tilde(Shell_t *shp, const char *string)
             = nv_open(s2, shp->var_tree, NV_VARNAME | NV_NOFAIL | NV_NOADD);
             if (!np)
                 return (NIL(char *));
-            fd = ( int )nv_getnum(np);
+            fd = ( int ) nv_getnum(np);
             nv_close(np);
         }
         if (fd < 0)
             return (NIL(char *));
 #ifdef _fd_pid_dir_fmt
-        sfprintf(shp->stk, _fd_pid_dir_fmt, ( long )getpid(), fd, "", "");
+        sfprintf(shp->stk, _fd_pid_dir_fmt, ( long ) getpid(), fd, "", "");
 #else
 #    ifdef _fd_self_dir_fmt
         sfprintf(shp->stk, _fd_self_dir_fmt, fd, "", "");
@@ -2686,7 +2686,7 @@ special(Shell_t *shp, int c)
     case '#':
 #if SHOPT_FILESCAN
         if (shp->cur_line) {
-            getdolarg(shp, MAX_ARGN, ( int * )0);
+            getdolarg(shp, MAX_ARGN, ( int * ) 0);
             return (ltos(shp->offsets[0]));
         }
 #endif /* SHOPT_FILESCAN */
@@ -2704,7 +2704,7 @@ special(Shell_t *shp, int c)
             return (ltos(shp->gd->pid));
         return (nv_getval(SH_DOLLARNOD));
     case '-':
-        return (sh_argdolminus(( void * )shp));
+        return (sh_argdolminus(( void * ) shp));
     case '?':
         return (ltos(shp->savexit));
     case 0:

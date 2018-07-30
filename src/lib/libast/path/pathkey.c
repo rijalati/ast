@@ -63,7 +63,7 @@ pathkey_20100601(const char *lang,
                  char *attr,
                  size_t attrsize)
 {
-    char *path = ( char * )apath;
+    char *path = ( char * ) apath;
     char *s;
     char *k;
     char *t;
@@ -192,7 +192,7 @@ pathkey_20100601(const char *lang,
                     k++;
             }
         usr[c] = 0;
-        ver[0] = ( char * )lang;
+        ver[0] = ( char * ) lang;
         ver[1] = k = (s = strrchr(path, '/')) ? s + 1 : path;
         s = buf;
         if (isdigit(*k)) {

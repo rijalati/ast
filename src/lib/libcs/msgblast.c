@@ -43,7 +43,7 @@ msgblast(Msg_call_t *msg)
     struct dirent *dp;
     struct statvfs *fp;
     struct stat *sp;
-    char **vp = ( char ** )msg->value;
+    char **vp = ( char ** ) msg->value;
 
     b = msg->data + MSG_SIZE_SIZE;
     e = msg->data + msg->size;
@@ -76,23 +76,23 @@ msgblast(Msg_call_t *msg)
         switch ((at >>= MSG_ARG_TYPE) & ((1 << MSG_ARG_TYPE) - 1)) {
         case MSG_ARG_array:
             (ap++)->number = r = msggetu(&b, e);
-            (ap++)->array = np = ( long * )vp;
+            (ap++)->array = np = ( long * ) vp;
             while (r-- > 0) {
                 n = msggetu(&b, e);
-                if (np < ((( long * )&msg->value[sizeof(msg->value)]) - 1))
+                if (np < ((( long * ) &msg->value[sizeof(msg->value)]) - 1))
                     *np++ = n;
                 if (e - b >= n)
                     b += n;
             }
-            if (np < ((( long * )&msg->value[sizeof(msg->value)]) - 1))
+            if (np < ((( long * ) &msg->value[sizeof(msg->value)]) - 1))
                 np++;
-            vp = ( char ** )np;
+            vp = ( char ** ) np;
             continue;
         case MSG_ARG_file:
-            (ap++)->file = ip = ( Msg_file_t * )vp;
+            (ap++)->file = ip = ( Msg_file_t * ) vp;
             for (n = 0; n < sizeof(*ip) / sizeof(ip->fid[0]); n++)
                 ip->fid[n] = msggetu(&b, e);
-            vp = ( char ** )((( char * )ip) + sizeof(*ip));
+            vp = ( char ** ) ((( char * ) ip) + sizeof(*ip));
             continue;
         case MSG_ARG_input:
             n = msggetu(&b, e);
@@ -109,7 +109,8 @@ msgblast(Msg_call_t *msg)
             if (msg->call & MSG_VALUE)
                 switch (MSG_CALL(msg->call)) {
                 case MSG_CALL(MSG_getdents):
-                    (ap++)->pointer = ( void * )(dp = ( struct dirent * )vp);
+                    (ap++)->pointer
+                    = ( void * ) (dp = ( struct dirent * ) vp);
                     while (n
                            = msggetz(&b, e, dp->d_name, sizeof(dp->d_name))) {
                         n--;
@@ -127,23 +128,23 @@ msgblast(Msg_call_t *msg)
 #if _mem_d_reclen_dirent
                         dp->d_reclen = n;
 #endif
-                        dp = ( struct dirent * )(( char * )dp + n);
+                        dp = ( struct dirent * ) (( char * ) dp + n);
                     }
-                    (ap++)->number = ( char * )dp - ( char * )vp;
+                    (ap++)->number = ( char * ) dp - ( char * ) vp;
                     msggetu(&b, e);
                     at >>= MSG_ARG_TYPE;
                     break;
                 case MSG_CALL(MSG_pipe):
-                    (ap++)->file = ip = ( Msg_file_t * )vp;
+                    (ap++)->file = ip = ( Msg_file_t * ) vp;
                     for (r = 0; r < 2; r++) {
                         for (n = 0; n < sizeof(*ip) / sizeof(ip->fid[0]); n++)
                             ip->fid[n] = msggetu(&b, e);
                         ip++;
                     }
-                    vp = ( char ** )ip;
+                    vp = ( char ** ) ip;
                     break;
                 case MSG_CALL(MSG_stat):
-                    (ap++)->pointer = ( void * )(sp = ( struct stat * )vp);
+                    (ap++)->pointer = ( void * ) (sp = ( struct stat * ) vp);
                     sp->st_dev = msggetu(&b, e);
                     sp->st_ino = msggetu(&b, e);
                     sp->st_mode = msggetu(&b, e);
@@ -164,7 +165,8 @@ msgblast(Msg_call_t *msg)
                     msggetu(&b, e);
                     break;
                 case MSG_CALL(MSG_statfs):
-                    (ap++)->pointer = ( void * )(fp = ( struct statvfs * )vp);
+                    (ap++)->pointer
+                    = ( void * ) (fp = ( struct statvfs * ) vp);
                     fp->f_bsize = msggetu(&b, e);
                     fp->f_frsize = msggetu(&b, e);
                     fp->f_blocks = msggetu(&b, e);
@@ -190,7 +192,7 @@ msgblast(Msg_call_t *msg)
                     break;
                 default:
                     n = msggetu(&b, e);
-                    (ap++)->pointer = ( void * )b;
+                    (ap++)->pointer = ( void * ) b;
                     (ap++)->number = n;
                     at >>= MSG_ARG_TYPE;
                     if (e - b >= n)
@@ -211,13 +213,13 @@ msgblast(Msg_call_t *msg)
         case MSG_ARG_vector:
             (ap++)->vector = vp;
             while (n = msggetu(&b, e)) {
-                if (vp < ((( char ** )&msg->value[sizeof(msg->value)]) - 1))
+                if (vp < ((( char ** ) &msg->value[sizeof(msg->value)]) - 1))
                     *vp++ = b;
                 if (e - b >= n)
                     b += n;
             }
             *vp = 0;
-            if (vp < ((( char ** )&msg->value[sizeof(msg->value)]) - 1))
+            if (vp < ((( char ** ) &msg->value[sizeof(msg->value)]) - 1))
                 vp++;
             continue;
         }

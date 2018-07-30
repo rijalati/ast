@@ -39,7 +39,7 @@ static void *
 worker(void *arg)
 {
     int i, j, k;
-    Worker_t *w = ( Worker_t * )arg;
+    Worker_t *w = ( Worker_t * ) arg;
 
     if (w->object)
         free(w->object);
@@ -47,14 +47,14 @@ worker(void *arg)
     for (i = 0; i < w->iterations; ++i) {
         char *obj;
 
-        if (!(obj = ( char * )malloc(w->objsize)))
+        if (!(obj = ( char * ) malloc(w->objsize)))
             terror("malloc failed");
 
         /* write into obj a bunch of times */
         for (j = 0; j < w->repetitions; ++j) {
             for (k = 0; k < w->objsize; ++k) {
                 volatile char ch;
-                obj[k] = ( char )k;
+                obj[k] = ( char ) k;
                 ch = obj[k];
                 ch += 1;
             }
@@ -65,7 +65,7 @@ worker(void *arg)
 
     free(w);
 
-    return ( void * )0;
+    return ( void * ) 0;
 }
 
 tmain()
@@ -109,16 +109,17 @@ tmain()
           repetitions);
 
     for (i = 0; i < nthreads; ++i)
-        if (!(objs[i] = ( char * )malloc(objsize)))
+        if (!(objs[i] = ( char * ) malloc(objsize)))
             terror("Can't allocate objs[%d]", i);
 
     for (i = 0; i < nthreads; ++i) {
-        Worker_t *w = ( Worker_t * )malloc(sizeof(Worker_t));
+        Worker_t *w = ( Worker_t * ) malloc(sizeof(Worker_t));
         w->object = objs[i];
         w->objsize = objsize;
         w->iterations = iterations;
         w->repetitions = repetitions / nthreads;
-        if ((rv = pthread_create(&thread[i], NULL, worker, ( void * )w)) != 0)
+        if ((rv = pthread_create(&thread[i], NULL, worker, ( void * ) w))
+            != 0)
             terror("Failed to create thread %d", i);
     }
     for (i = 0; i < nthreads; ++i)

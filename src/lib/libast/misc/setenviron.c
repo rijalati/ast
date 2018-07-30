@@ -48,7 +48,7 @@ setenviron(const char *akey)
     static char **last;    /* last free slot (0)		*/
     static char ok[] = ""; /* delete/optimization ok return*/
 
-    char *key = ( char * )akey;
+    char *key = ( char * ) akey;
     char **v = environ;
     char **p = envv;
     char *s;
@@ -120,7 +120,7 @@ setenviron(const char *akey)
                         return ok;
                     }
                     *p = key;
-                    return (s = strchr(key, '=')) ? s + 1 : ( char * )0;
+                    return (s = strchr(key, '=')) ? s + 1 : ( char * ) 0;
                 }
                 break;
             }

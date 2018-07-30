@@ -117,7 +117,7 @@ RshNop()
 
 int RshInit(tbl) struct agent_item *tbl;
 {
-    tbl->localdata = ( char * )&rsh_data;
+    tbl->localdata = ( char * ) &rsh_data;
     tbl->connect = RshNop;
     tbl->disconnect = RshNop;
     tbl->listdents = RshGetFile;

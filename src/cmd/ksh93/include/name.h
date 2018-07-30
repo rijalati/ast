@@ -181,7 +181,7 @@ struct argnod;
 /* ... for attributes */
 
 #    define nv_setattr(n, f) ((n)->nvflag = (f))
-#    define nv_context(n) (( void * )(n)->nvfun) /* for builtins */
+#    define nv_context(n) (( void * ) (n)->nvfun) /* for builtins */
 /* The following are for name references */
 #    define nv_refnode(n) ((n)->nvalue.nrp->np)
 #    define nv_reftree(n) ((n)->nvalue.nrp->root)
@@ -195,7 +195,7 @@ struct argnod;
 
 /* ... etc */
 
-#    define nv_setsize(n, s) ((n)->nvsize = (( s )*4) | 2)
+#    define nv_setsize(n, s) ((n)->nvsize = (( s ) *4) | 2)
 #    undef nv_size
 #    define nv_size(np) ((np)->nvsize >> 2)
 #    define nv_attr(np) ((np)->nvflag & ~NV_MINIMAL)

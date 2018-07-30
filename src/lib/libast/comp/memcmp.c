@@ -32,8 +32,8 @@ NoN(memcmp)
 int
 memcmp(const void *ab1, const void *ab2, size_t n)
 {
-    const unsigned char *b1 = ( const unsigned char * )ab1;
-    const unsigned char *b2 = ( const unsigned char * )ab2;
+    const unsigned char *b1 = ( const unsigned char * ) ab1;
+    const unsigned char *b2 = ( const unsigned char * ) ab2;
     const unsigned char *e = b1 + n;
 
     while (b1 < e)

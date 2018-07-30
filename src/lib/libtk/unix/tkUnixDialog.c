@@ -132,7 +132,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
 
     if (Tk_StrictMotif(tkwin)) {
         return EvalArgv(interp, "tkMotifFDialog", argc, argv);
@@ -164,7 +164,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
 
     if (Tk_StrictMotif(tkwin)) {
         return EvalArgv(interp, "tkMotifFDialog", argc, argv);

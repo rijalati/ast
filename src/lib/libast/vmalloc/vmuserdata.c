@@ -48,10 +48,10 @@ ssize_t size;      /* size of requested memory	*/
 
     if (!u && size > 0 && /* try making a new entry */
         (u = KPVALLOC(vm, sizeof(Vmuser_t) + size, vm->meth.allocf))) {
-        memset(( Void_t * )(u + 1), 0, size);
+        memset(( Void_t * ) (u + 1), 0, size);
         u->dtid = dtid;
         u->size = size;
-        u->data = ( Void_t * )(u + 1);
+        u->data = ( Void_t * ) (u + 1);
         u->next = vmdt->user;
         vmdt->user = u;
     }

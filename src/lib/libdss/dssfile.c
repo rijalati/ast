@@ -134,7 +134,7 @@ dssfopen(Dss_t *dss,
                  path, "", DSS_VERBOSE, buf, sizeof(buf), dss->disc)))
         return 0;
     else
-        path = ( const char * )buf;
+        path = ( const char * ) buf;
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0))) {
         if (dss->disc->errorf)
             (*dss->disc->errorf)(
@@ -150,7 +150,7 @@ dssfopen(Dss_t *dss,
         vmclose(vm);
         return 0;
     }
-    strcpy(file->path = ( char * )(file + 1), path);
+    strcpy(file->path = ( char * ) (file + 1), path);
     file->dss = dss;
     file->vm = vm;
     file->io = io;
@@ -196,11 +196,11 @@ dssfopen(Dss_t *dss,
                 dssfclose(file);
                 return 0;
             }
-            for (file->format = ( Dssformat_t * )dtfirst(dss->meth->formats);
+            for (file->format = ( Dssformat_t * ) dtfirst(dss->meth->formats);
                  file->format
                  && !(i = (*file->format->identf)(file, s, n, dss->disc));
                  file->format
-                 = ( Dssformat_t * )dtnext(dss->meth->formats, file->format))
+                 = ( Dssformat_t * ) dtnext(dss->meth->formats, file->format))
                 ;
             sfread(file->io, s, 0);
             if (!file->format) {
@@ -244,7 +244,7 @@ dssfopen(Dss_t *dss,
                            ? format
                            : dss->format
                              ? dss->format
-                             : ( Dssformat_t * )dtfirst(dss->meth->formats);
+                             : ( Dssformat_t * ) dtfirst(dss->meth->formats);
             file->readf = nullreadf;
         }
         file->writef = nowritef;
@@ -371,7 +371,7 @@ dsssave(Dssrecord_t *record)
     return record->file->format->savef
            ? (*record->file->format->savef)(
              record->file, record, record->file->dss->disc)
-           : ( Dssrecord_t * )0;
+           : ( Dssrecord_t * ) 0;
 }
 
 /*

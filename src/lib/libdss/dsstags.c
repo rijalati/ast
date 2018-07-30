@@ -30,7 +30,7 @@
 static int
 dss_method_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
     Dssmeth_t *meth;
 
     if (!(meth = dssmeth(data, state->disc)))
@@ -45,7 +45,7 @@ dss_field_name_dat(Tag_t *tag,
                    const char *data,
                    Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
 
     if (fp->prev->data) {
         if (disc->errorf)
@@ -65,7 +65,7 @@ dss_field_map_dat(Tag_t *tag,
                   const char *data,
                   Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
     Cxmap_t *map;
 
     if (!fp->prev->data) {
@@ -76,7 +76,7 @@ dss_field_map_dat(Tag_t *tag,
     }
     if (!(map = cxmap(NiL, data, state->disc)))
         return -1;
-    (( Cxvariable_t * )fp->prev->data)->format.map = map;
+    (( Cxvariable_t * ) fp->prev->data)->format.map = map;
     return 0;
 }
 
@@ -86,7 +86,7 @@ dss_field_con_dat(Tag_t *tag,
                   const char *data,
                   Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
     Cxconstraint_t *con;
 
     if (!fp->prev->data) {
@@ -100,7 +100,7 @@ dss_field_con_dat(Tag_t *tag,
             (*disc->errorf)(NiL, disc, 2, "%s: constraint not defined", data);
         return -1;
     }
-    (( Cxvariable_t * )fp->prev->data)->format.constraint = con;
+    (( Cxvariable_t * ) fp->prev->data)->format.constraint = con;
     return 0;
 }
 
@@ -145,7 +145,7 @@ dss_field_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
 static int
 dss_compress_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
 
     if (!(state->meth->compress = strdup(data))) {
         if (disc->errorf)
@@ -158,7 +158,7 @@ dss_compress_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 static int
 dss_print_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
 
     if (!(state->meth->print = strdup(data))) {
         if (disc->errorf)
@@ -239,8 +239,8 @@ map_part_item_name_dat(Tag_t *tag,
                        const char *data,
                        Tagdisc_t *disc)
 {
-    if (!((( Cxitem_t * )fp->prev->data)->name
-          = ( const char * )strdup(data))) {
+    if (!((( Cxitem_t * ) fp->prev->data)->name
+          = ( const char * ) strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -256,7 +256,7 @@ map_part_item_mask_dat(Tag_t *tag,
 {
     char *e;
 
-    (( Cxitem_t * )fp->prev->data)->mask = strtoul(data, &e, 0);
+    (( Cxitem_t * ) fp->prev->data)->mask = strtoul(data, &e, 0);
     if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
@@ -271,11 +271,11 @@ map_part_item_value_dat(Tag_t *tag,
                         const char *data,
                         Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
     char *e;
     Cxoperand_t r;
 
-    if (r.type = (( Cxpart_t * )fp->prev->prev->data)->type) {
+    if (r.type = (( Cxpart_t * ) fp->prev->prev->data)->type) {
         if ((*r.type->internalf)(state->meth->cx,
                                  r.type,
                                  NiL,
@@ -287,16 +287,17 @@ map_part_item_value_dat(Tag_t *tag,
                                  state->disc)
             < 0)
             return -1;
-        (( Cxitem_t * )fp->prev->data)->value = ( Cxinteger_t )r.value.number;
+        (( Cxitem_t * ) fp->prev->data)->value
+        = ( Cxinteger_t ) r.value.number;
     } else if (isdigit(*data) || *data == '-' || *data == '+') {
-        (( Cxitem_t * )fp->prev->data)->value = strtoll(data, &e, 0);
+        (( Cxitem_t * ) fp->prev->data)->value = strtoll(data, &e, 0);
         if (*e) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
             return -1;
         }
     } else
-        (( Cxitem_t * )fp->prev->data)->value = *data;
+        (( Cxitem_t * ) fp->prev->data)->value = *data;
     return 0;
 }
 
@@ -308,9 +309,9 @@ map_part_item_bit_dat(Tag_t *tag,
 {
     char *e;
 
-    (( Cxitem_t * )fp->prev->data)->mask
-    = (( Cxitem_t * )fp->prev->data)->value
-    = (( Cxunsigned_t )1) << strtoul(data, &e, 0);
+    (( Cxitem_t * ) fp->prev->data)->mask
+    = (( Cxitem_t * ) fp->prev->data)->value
+    = (( Cxunsigned_t ) 1) << strtoul(data, &e, 0);
     if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
@@ -324,7 +325,7 @@ map_part_item_map_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
 {
     if (dss_map_end(tag, fp, disc))
         return -1;
-    (( Cxitem_t * )fp->prev->data)->map = ( Cxmap_t * )fp->data;
+    (( Cxitem_t * ) fp->prev->data)->map = ( Cxmap_t * ) fp->data;
     return 0;
 }
 
@@ -376,11 +377,11 @@ map_part_item_beg(Tag_t *tag,
             return 0;
         }
         if (fp->prev->tail)
-            fp->prev->tail = (( Cxitem_t * )fp->prev->tail)->next
-            = ( Cxitem_t * )fp->data;
+            fp->prev->tail = (( Cxitem_t * ) fp->prev->tail)->next
+            = ( Cxitem_t * ) fp->data;
         else
-            fp->prev->tail = (( Cxpart_t * )fp->prev->data)->item
-            = ( Cxitem_t * )fp->data;
+            fp->prev->tail = (( Cxpart_t * ) fp->prev->data)->item
+            = ( Cxitem_t * ) fp->data;
     }
     return &tags_map_part_item[0];
 }
@@ -391,7 +392,7 @@ map_part_type_dat(Tag_t *tag,
                   const char *data,
                   Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
     Cxtype_t *type;
 
     if (!(type = cxtype(state->meth->cx, data, state->disc))) {
@@ -411,7 +412,7 @@ map_part_type_dat(Tag_t *tag,
             NiL, disc, 2, "%s: cannot convert string to map value type", data);
         return -1;
     }
-    (( Cxpart_t * )fp->prev->data)->type = type;
+    (( Cxpart_t * ) fp->prev->data)->type = type;
     return 0;
 }
 
@@ -423,7 +424,7 @@ map_part_shift_dat(Tag_t *tag,
 {
     char *e;
 
-    (( Cxpart_t * )fp->prev->data)->shift = strtoul(data, &e, 0);
+    (( Cxpart_t * ) fp->prev->data)->shift = strtoul(data, &e, 0);
     if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
@@ -440,7 +441,7 @@ map_part_mask_dat(Tag_t *tag,
 {
     char *e;
 
-    (( Cxpart_t * )fp->prev->data)->mask = strtoul(data, &e, 0);
+    (( Cxpart_t * ) fp->prev->data)->mask = strtoul(data, &e, 0);
     if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
@@ -455,7 +456,7 @@ map_part_edit_dat(Tag_t *tag,
                   const char *data,
                   Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
     Cxpart_t *part = fp->prev->data;
     Cxedit_t *edit;
 
@@ -533,11 +534,11 @@ map_part_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
             return 0;
         }
         if (fp->prev->tail)
-            fp->prev->tail = (( Cxpart_t * )fp->prev->tail)->next
-            = ( Cxpart_t * )fp->data;
+            fp->prev->tail = (( Cxpart_t * ) fp->prev->tail)->next
+            = ( Cxpart_t * ) fp->data;
         else
-            fp->prev->tail = (( Cxmap_t * )fp->prev->data)->part
-            = ( Cxpart_t * )fp->data;
+            fp->prev->tail = (( Cxmap_t * ) fp->prev->data)->part
+            = ( Cxpart_t * ) fp->data;
     }
     return &tags_map_part[0];
 }
@@ -545,11 +546,11 @@ map_part_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
 static int
 map_name_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
     Cxmap_t *map;
     Cxmap_t *ref;
 
-    map = ( Cxmap_t * )fp->prev->data;
+    map = ( Cxmap_t * ) fp->prev->data;
     if (ref = cxmap(NiL, data, state->disc)) {
         if (map->description || map->shift || map->mask || map->part
             || map->map) {
@@ -563,7 +564,7 @@ map_name_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
             return -1;
         }
         fp->prev->data = map = ref;
-    } else if (!(map->name = ( const char * )strdup(data))) {
+    } else if (!(map->name = ( const char * ) strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -577,8 +578,8 @@ map_description_dat(Tag_t *tag,
                     const char *data,
                     Tagdisc_t *disc)
 {
-    if (!((( Cxmap_t * )fp->prev->data)->description
-          = ( const char * )strdup(data))) {
+    if (!((( Cxmap_t * ) fp->prev->data)->description
+          = ( const char * ) strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -591,7 +592,7 @@ map_shift_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
     char *e;
 
-    (( Cxmap_t * )fp->prev->data)->shift = strtoul(data, &e, 0);
+    (( Cxmap_t * ) fp->prev->data)->shift = strtoul(data, &e, 0);
     if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
@@ -605,7 +606,7 @@ map_mask_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
     char *e;
 
-    (( Cxmap_t * )fp->prev->data)->mask = strtoul(data, &e, 0);
+    (( Cxmap_t * ) fp->prev->data)->mask = strtoul(data, &e, 0);
     if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
@@ -623,9 +624,9 @@ map_ignorecase_dat(Tag_t *tag,
     char *e;
 
     if (strtol(data, &e, 0))
-        (( Cxmap_t * )fp->prev->data)->header.flags |= CX_IGNORECASE;
+        (( Cxmap_t * ) fp->prev->data)->header.flags |= CX_IGNORECASE;
     else
-        (( Cxmap_t * )fp->prev->data)->header.flags &= ~CX_IGNORECASE;
+        (( Cxmap_t * ) fp->prev->data)->header.flags &= ~CX_IGNORECASE;
     if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
@@ -706,7 +707,7 @@ dss_map_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
 int
 dss_map_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
     Cxmap_t *map;
 
     if (!(map = cxmap(NiL, data, state->disc))) {
@@ -715,7 +716,7 @@ dss_map_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
             return -1;
         }
     }
-    (( Cxmap_t * )fp->data)->map = map;
+    (( Cxmap_t * ) fp->data)->map = map;
     return 0;
 }
 
@@ -726,8 +727,8 @@ dss_map_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 int
 dss_map_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
-    Cxmap_t *map = ( Cxmap_t * )fp->data;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
+    Cxmap_t *map = ( Cxmap_t * ) fp->data;
     Cxmap_t *tmp;
 
     while (map->map && !map->shift && !map->mask && !map->part
@@ -747,7 +748,7 @@ constraint_def(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
 {
     Cxconstraint_t *con;
 
-    if (!(con = ( Cxconstraint_t * )fp->prev->data)
+    if (!(con = ( Cxconstraint_t * ) fp->prev->data)
         && !(fp->prev->data = con = newof(0, Cxconstraint_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -762,7 +763,7 @@ constraint_name_dat(Tag_t *tag,
                     const char *data,
                     Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
     Cxconstraint_t *con;
 
     if (!(con = constraint_def(tag, fp, disc)))
@@ -819,10 +820,10 @@ constraint_match_dat(Tag_t *tag,
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    redisc = ( regdisc_t * )(con->re + 1);
-    strcpy(( char * )(con->pattern = ( const char * )(redisc + 1)), data);
+    redisc = ( regdisc_t * ) (con->re + 1);
+    strcpy(( char * ) (con->pattern = ( const char * ) (redisc + 1)), data);
     redisc->re_version = REG_VERSION;
-    redisc->re_errorf = ( regerror_t )disc->errorf;
+    redisc->re_errorf = ( regerror_t ) disc->errorf;
     con->re->re_disc = redisc;
     return regcomp(con->re, data, REG_AUGMENTED | REG_DISCIPLINE) ? -1 : 0;
 }
@@ -957,8 +958,8 @@ method_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 static int
 method_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
-    char *name = ( char * )fp->data;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
+    char *name = ( char * ) fp->data;
     Dssmeth_t *meth;
 
     if (!name) {
@@ -968,7 +969,7 @@ method_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
         return -1;
     }
     if (!streq(name, state->meth->name)) {
-        sfseek(tagsync(tag), ( Sfoff_t )0, SEEK_END);
+        sfseek(tagsync(tag), ( Sfoff_t ) 0, SEEK_END);
         if (!(meth = dssmeth(sfprints("%s:%s", name, error_info.file),
                              state->disc))) {
             free(name);
@@ -999,7 +1000,7 @@ dss_con_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
 int
 dss_con_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
-    Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
+    Dsstagdisc_t *state = ( Dsstagdisc_t * ) disc;
 
     if (fp->data) {
         if (disc->errorf)

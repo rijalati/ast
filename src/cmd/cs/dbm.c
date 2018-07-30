@@ -106,7 +106,7 @@ typedef struct /* server state			*/
 static void *
 svc_init(void *handle, int fdmax)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
 
     state->conmax = fdmax;
     if (!(state->con = newof(0, Con_t, state->conmax, 0)))
@@ -124,7 +124,7 @@ svc_init(void *handle, int fdmax)
 static int
 svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **args)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     Con_t *cp;
 
     NoP(id);
@@ -145,7 +145,7 @@ svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **args)
 static int
 svc_read(void *handle, int fd)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     Con_t *cp;
     Db_t *dp;
     int n;
@@ -189,7 +189,7 @@ svc_read(void *handle, int fd)
         case 'n':
             if (!cp->db)
                 goto notopen;
-            n = *(( char * )key.dptr);
+            n = *(( char * ) key.dptr);
             if (!cp->scan) {
                 cp->scan = 1;
                 key = dbm_firstkey(cp->db->dbm);
@@ -237,7 +237,7 @@ svc_read(void *handle, int fd)
             for (s = val.dptr; *s; s++)
                 if (*s == 'w')
                     break;
-            cp->readonly = *(( char * )val.dptr) && !*s;
+            cp->readonly = *(( char * ) val.dptr) && !*s;
             sfsprintf(ret, sizeof(ret), "%s.dir", key.dptr);
             if (!stat(ret, &st))
                 for (dp = state->dbs; dp < state->dbs + state->conmax; dp++)
@@ -275,7 +275,7 @@ svc_read(void *handle, int fd)
                 n = sfsprintf(ret, sizeof(ret), "E db is readonly\n");
                 break;
             }
-            if (*(( char * )val.dptr)) {
+            if (*(( char * ) val.dptr)) {
                 if (!dbm_store(cp->db->dbm, key, val, DBM_REPLACE))
                     n = sfsprintf(ret, sizeof(ret), "I entered\n");
                 else if (dbm_error(cp->db->dbm)) {
@@ -336,7 +336,7 @@ drop:
 static int
 svc_timeout(void *handle)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
 
     if (!state->active) {
         if (state->dormant)
@@ -353,7 +353,7 @@ svc_timeout(void *handle)
 static int
 svc_done(void *handle, int sig)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     Db_t *dp;
 
     NoP(sig);

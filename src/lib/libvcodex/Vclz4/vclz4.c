@@ -38,8 +38,8 @@ typedef struct _lz4_s
 } Lz4_t;
 
 static Vcmtarg_t _Lz4args[]
-= { { "clevel", "Compression level (0-9)", ( Void_t * )LZ4_CLEVEL },
-    { 0, "Compression level 0", ( Void_t * )0 } };
+= { { "clevel", "Compression level (0-9)", ( Void_t * ) LZ4_CLEVEL },
+    { 0, "Compression level 0", ( Void_t * ) 0 } };
 
 #if __STD_C
 static int
@@ -56,7 +56,7 @@ Void_t *params;
     if (!(lz4 = vcgetmtdata(vc, Lz4_t *))) {
         return -1;
     }
-    for (data = ( char * )params; data;) {
+    for (data = ( char * ) params; data;) {
         data = vcgetmtarg(data, val, sizeof(val), _Lz4args, &arg);
         if (arg) {
             switch (TYPECAST(int, arg->data)) {
@@ -82,7 +82,7 @@ Void_t *params;
     /*
      * Construct the Lz4_t to hold the parameters
      */
-    if (!(lz4 = ( Lz4_t * )calloc(1, sizeof(Lz4_t)))) {
+    if (!(lz4 = ( Lz4_t * ) calloc(1, sizeof(Lz4_t)))) {
         return -1;
     }
     lz4->clevel = 0;
@@ -156,12 +156,12 @@ Void_t **out;
     case 0:
     default:
         os = LZ4_compress_limitedOutput(
-        data, ( char * )vcionext(&io), dtsz, vciomore(&io));
+        data, ( char * ) vcionext(&io), dtsz, vciomore(&io));
         break;
 
     case 1:
         os = LZ4_compressHC_limitedOutput(
-        data, ( char * )vcionext(&io), dtsz, vciomore(&io));
+        data, ( char * ) vcionext(&io), dtsz, vciomore(&io));
         break;
     }
 
@@ -226,8 +226,8 @@ Void_t **out; /* return decoded data	*/
     if (dtsz == 0) {
         return 0;
     }
-    data = ( Vcchar_t * )orig;
-    sz = ( ssize_t )dtsz;
+    data = ( Vcchar_t * ) orig;
+    sz = ( ssize_t ) dtsz;
 
     /*
      * Let the downstream transforms operate first
@@ -245,7 +245,7 @@ Void_t **out; /* return decoded data	*/
     /*
      * Read out the original size so we can allocate a buffer for decoding
      */
-    sz = ( ssize_t )vciogetu(&io);
+    sz = ( ssize_t ) vciogetu(&io);
 
     /*
      * Allocate the output buffer
@@ -257,7 +257,7 @@ Void_t **out; /* return decoded data	*/
      * Do the LZ4 decoding from data to output
      */
     if ((dsz = LZ4_uncompress_unknownOutputSize(
-         ( char * )vcionext(&io), ( char * )output, vciomore(&io), sz))
+         ( char * ) vcionext(&io), ( char * ) output, vciomore(&io), sz))
         < 0) {
         vcbuffer(vc, output, -1, -1);
         return -1;

@@ -90,7 +90,7 @@ gl_dirnext(glob_t *gp, void *handle)
 {
     struct dirent *dp;
 
-    while (dp = ( struct dirent * )(*gp->gl_readdir)(handle)) {
+    while (dp = ( struct dirent * ) (*gp->gl_readdir)(handle)) {
 #ifdef D_TYPE
         if (D_TYPE(dp) != DT_UNKNOWN && D_TYPE(dp) != DT_DIR
             && D_TYPE(dp) != DT_LNK)
@@ -253,8 +253,8 @@ addmatch(glob_t *gp,
             stakputc(0);
         stakputc(0);
         rescan = stakptr(offset);
-        ap = ( globlist_t * )stakfreeze(0);
-        ap->gl_begin = ( char * )rescan;
+        ap = ( globlist_t * ) stakfreeze(0);
+        ap->gl_begin = ( char * ) rescan;
         ap->gl_next = gp->gl_rescan;
         gp->gl_rescan = ap;
     } else {
@@ -266,7 +266,7 @@ addmatch(glob_t *gp,
             } else if (type == GLOB_DIR && (gp->gl_flags & GLOB_MARK))
                 stakputc(gp->gl_delim);
         }
-        ap = ( globlist_t * )stakfreeze(1);
+        ap = ( globlist_t * ) stakfreeze(1);
         ap->gl_next = gp->gl_match;
         gp->gl_match = ap;
         gp->gl_pathc++;
@@ -452,7 +452,7 @@ skip:
         if (complete) {
             if (!(dirname = (*gp->gl_nextdir)(gp, dirname)))
                 break;
-            prefix = streq(dirname, ".") ? ( char * )0 : dirname;
+            prefix = streq(dirname, ".") ? ( char * ) 0 : dirname;
         }
         if ((!starstar && !gp->gl_starstar
              || (*gp->gl_type)(gp, dirname, GLOB_STARSTAR) == GLOB_DIR)
@@ -603,14 +603,14 @@ glob(const char *pattern,
             gp->gl_extra = 0;
         }
         if (!(flags & GLOB_ALTDIRFUNC)) {
-            gp->gl_opendir = ( GL_opendir_f )opendir;
-            gp->gl_readdir = ( GL_readdir_f )readdir;
-            gp->gl_closedir = ( GL_closedir_f )closedir;
+            gp->gl_opendir = ( GL_opendir_f ) opendir;
+            gp->gl_readdir = ( GL_readdir_f ) readdir;
+            gp->gl_closedir = ( GL_closedir_f ) closedir;
             if (!gp->gl_stat)
-                gp->gl_stat = ( GL_stat_f )pathstat;
+                gp->gl_stat = ( GL_stat_f ) pathstat;
         }
         if (!gp->gl_lstat)
-            gp->gl_lstat = ( GL_stat_f )lstat;
+            gp->gl_lstat = ( GL_stat_f ) lstat;
         if (!gp->gl_intr)
             gp->gl_intr = &intr;
         if (!gp->gl_delim)
@@ -650,7 +650,7 @@ glob(const char *pattern,
         extra += gp->gl_offs;
     if (gp->gl_suffix)
         suflen = strlen(gp->gl_suffix);
-    if (*(pat = ( char * )pattern) == '~' && *(pat + 1) == '(') {
+    if (*(pat = ( char * ) pattern) == '~' && *(pat + 1) == '(') {
         f = gp->gl_flags;
         n = 1;
         x = 1;
@@ -697,7 +697,7 @@ glob(const char *pattern,
                 else
                     gp->re_flags &= ~REG_ICASE;
                 if (x)
-                    optlen = pat - ( char * )pattern;
+                    optlen = pat - ( char * ) pattern;
                 break;
             default:
                 x = 0;
@@ -706,9 +706,9 @@ glob(const char *pattern,
             break;
         }
     }
-    top = ap
-    = ( globlist_t * )stakalloc((optlen ? 2 : 1) * strlen(pattern)
-                                + sizeof(globlist_t) + suflen + gp->gl_extra);
+    top = ap = ( globlist_t * ) stakalloc((optlen ? 2 : 1) * strlen(pattern)
+                                          + sizeof(globlist_t) + suflen
+                                          + gp->gl_extra);
     ap->gl_next = 0;
     ap->gl_flags = 0;
     ap->gl_begin = ap->gl_path + gp->gl_extra;
@@ -741,7 +741,7 @@ glob(const char *pattern,
     if (flags & GLOB_LIST)
         gp->gl_list = gp->gl_match;
     else {
-        argv = ( char ** )stakalloc((gp->gl_pathc + extra) * sizeof(char *));
+        argv = ( char ** ) stakalloc((gp->gl_pathc + extra) * sizeof(char *));
         if (gp->gl_flags & GLOB_APPEND) {
             skip += --extra;
             memcpy(argv, gp->gl_pathv, skip * sizeof(char *));

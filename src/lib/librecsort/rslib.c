@@ -46,11 +46,11 @@ int flags;
 
     static const char symbol[] = "rs_disc";
 
-    for (s = ( char * )lib;
+    for (s = ( char * ) lib;
          *s && *s != ',' && *s != '\t' && *s != '\r' && *s != '\n';
          s++)
         ;
-    sfsprintf(path, sizeof(path), "%-.*s", s - ( char * )lib, lib);
+    sfsprintf(path, sizeof(path), "%-.*s", s - ( char * ) lib, lib);
     if (!(dll = dllplugin("sort",
                           path,
                           NiL,
@@ -64,7 +64,7 @@ int flags;
             kp, kp->keydisc, 2, "%s: library not found", path);
         return -1;
     }
-    if (!(fun = ( Rslib_f )dlllook(dll, symbol))) {
+    if (!(fun = ( Rslib_f ) dlllook(dll, symbol))) {
         if (!(flags & RS_IGNORE) && kp->keydisc->errorf)
             (*kp->keydisc->errorf)(
             kp,

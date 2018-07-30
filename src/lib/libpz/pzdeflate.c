@@ -65,7 +65,7 @@ pzdeflate(Pz_t *pz, Sfio_t *op)
         n = pz->part->row;
         if (readf = pz->disc->readf)
             for (;;) {
-                if (!(buf = ( unsigned char * )sfreserve(op, n, 1))) {
+                if (!(buf = ( unsigned char * ) sfreserve(op, n, 1))) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(
                         pz, pz->disc, 2, "%s: output write error", pz->path);
@@ -110,7 +110,7 @@ pzdeflate(Pz_t *pz, Sfio_t *op)
         pp = pz->part;
         readf = pz->disc->readf;
         indexf = (pz->disc->version >= PZ_VERSION_SPLIT) ? pz->disc->indexf
-                                                         : ( Pzindex_f )0;
+                                                         : ( Pzindex_f ) 0;
         wrk = pz->wrk;
         pat = pz->pat;
         low = pp->low;
@@ -124,7 +124,7 @@ pzdeflate(Pz_t *pz, Sfio_t *op)
                 pz->sort.orderdisc.key = offsetof(Pzelt_t, buf);
                 pz->sort.orderdisc.size = pp->row;
                 if (!(elt
-                      = ( Pzelt_t * )vmnewof(pz->vm, 0, char, pp->col *m, 0))
+                      = ( Pzelt_t * ) vmnewof(pz->vm, 0, char, pp->col *m, 0))
                     || !(pz->sort.order
                          = dtnew(pz->vm, &pz->sort.orderdisc, Dtobag))
                     || !(pz->sort.free
@@ -133,7 +133,7 @@ pzdeflate(Pz_t *pz, Sfio_t *op)
                 ;
                 for (i = 0; i < pp->col; i++) {
                     dtinsert(pz->sort.free, elt);
-                    elt = ( Pzelt_t * )(( char * )elt + m);
+                    elt = ( Pzelt_t * ) (( char * ) elt + m);
                 }
             }
             elt = 0;
@@ -157,13 +157,13 @@ pzdeflate(Pz_t *pz, Sfio_t *op)
             }
             if (order) {
                 if (!elt) {
-                    elt = ( Pzelt_t * )dtfirst(pz->sort.free);
+                    elt = ( Pzelt_t * ) dtfirst(pz->sort.free);
                     dtdelete(pz->sort.free, elt);
                     memcpy(elt->buf, pat, pp->row);
                     dtinsert(order, elt);
                 }
                 for (i = dtsize(order); i < pp->col; i++) {
-                    elt = ( Pzelt_t * )dtfirst(pz->sort.free);
+                    elt = ( Pzelt_t * ) dtfirst(pz->sort.free);
                     dtdelete(pz->sort.free, elt);
                     if ((r = readf ? (*readf)(pz, pz->io, elt->buf, pz->disc)
                                    : sfread(pz->io, elt->buf, pp->row))
@@ -173,7 +173,7 @@ pzdeflate(Pz_t *pz, Sfio_t *op)
                     }
                     dtinsert(order, elt);
                 }
-                elt = ( Pzelt_t * )dtfirst(order);
+                elt = ( Pzelt_t * ) dtfirst(order);
                 memcpy(pat, elt->buf, pp->row);
             }
 
@@ -195,7 +195,7 @@ pzdeflate(Pz_t *pz, Sfio_t *op)
             for (n = 1; n < pp->col; n++) {
                 if (order) {
                     old = elt;
-                    elt = ( Pzelt_t * )dtnext(order, elt);
+                    elt = ( Pzelt_t * ) dtnext(order, elt);
                     dtdelete(order, old);
                     dtinsert(pz->sort.free, old);
                     if (!elt)

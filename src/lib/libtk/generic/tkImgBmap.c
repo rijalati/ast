@@ -101,13 +101,13 @@ static void ImgBmapFree _ANSI_ARGS_((ClientData clientData,
 static void ImgBmapDelete _ANSI_ARGS_((ClientData clientData));
 
 Tk_ImageType tkBitmapImageType = {
-    "bitmap",              /* name */
-    ImgBmapCreate,         /* createProc */
-    ImgBmapGet,            /* getProc */
-    ImgBmapDisplay,        /* displayProc */
-    ImgBmapFree,           /* freeProc */
-    ImgBmapDelete,         /* deleteProc */
-    ( Tk_ImageType * )NULL /* nextPtr */
+    "bitmap",               /* name */
+    ImgBmapCreate,          /* createProc */
+    ImgBmapGet,             /* getProc */
+    ImgBmapDisplay,         /* displayProc */
+    ImgBmapFree,            /* freeProc */
+    ImgBmapDelete,          /* deleteProc */
+    ( Tk_ImageType * ) NULL /* nextPtr */
 };
 
 /*
@@ -117,51 +117,51 @@ Tk_ImageType tkBitmapImageType = {
 static Tk_ConfigSpec configSpecs[]
 = { { TK_CONFIG_UID,
       "-background",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "",
       Tk_Offset(BitmapMaster, bgUid),
       0 },
     { TK_CONFIG_STRING,
       "-data",
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       Tk_Offset(BitmapMaster, dataString),
       TK_CONFIG_NULL_OK },
     { TK_CONFIG_STRING,
       "-file",
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       Tk_Offset(BitmapMaster, fileString),
       TK_CONFIG_NULL_OK },
     { TK_CONFIG_UID,
       "-foreground",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "#000000",
       Tk_Offset(BitmapMaster, fgUid),
       0 },
     { TK_CONFIG_STRING,
       "-maskdata",
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       Tk_Offset(BitmapMaster, maskDataString),
       TK_CONFIG_NULL_OK },
     { TK_CONFIG_STRING,
       "-maskfile",
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       Tk_Offset(BitmapMaster, maskFileString),
       TK_CONFIG_NULL_OK },
     { TK_CONFIG_END,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 } };
 
@@ -232,11 +232,11 @@ ClientData *clientDataPtr; /* Store manager's token for image here;
 {
     BitmapMaster *masterPtr;
 
-    masterPtr = ( BitmapMaster * )ckalloc(sizeof(BitmapMaster));
+    masterPtr = ( BitmapMaster * ) ckalloc(sizeof(BitmapMaster));
     masterPtr->tkMaster = master;
     masterPtr->interp = interp;
     masterPtr->imageCmd = Tcl_CreateCommand(
-    interp, name, ImgBmapCmd, ( ClientData )masterPtr, ImgBmapCmdDeletedProc);
+    interp, name, ImgBmapCmd, ( ClientData ) masterPtr, ImgBmapCmdDeletedProc);
     masterPtr->width = masterPtr->height = 0;
     masterPtr->data = NULL;
     masterPtr->maskData = NULL;
@@ -248,10 +248,10 @@ ClientData *clientDataPtr; /* Store manager's token for image here;
     masterPtr->maskDataString = NULL;
     masterPtr->instancePtr = NULL;
     if (ImgBmapConfigureMaster(masterPtr, argc, argv, 0) != TCL_OK) {
-        ImgBmapDelete(( ClientData )masterPtr);
+        ImgBmapDelete(( ClientData ) masterPtr);
         return TCL_ERROR;
     }
-    *clientDataPtr = ( ClientData )masterPtr;
+    *clientDataPtr = ( ClientData ) masterPtr;
     return TCL_OK;
 }
 
@@ -291,7 +291,7 @@ int flags;               /* Flags to pass to Tk_ConfigureWidget,
                            configSpecs,
                            argc,
                            argv,
-                           ( char * )masterPtr,
+                           ( char * ) masterPtr,
                            flags)
         != TCL_OK) {
         return TCL_ERROR;
@@ -435,8 +435,8 @@ BitmapInstance *instancePtr; /* Instance to reconfigure. */
         Tk_Display(instancePtr->tkwin),
         RootWindowOfScreen(Tk_Screen(instancePtr->tkwin)),
         masterPtr->data,
-        ( unsigned )masterPtr->width,
-        ( unsigned )masterPtr->height);
+        ( unsigned ) masterPtr->width,
+        ( unsigned ) masterPtr->height);
     }
 
     if (instancePtr->mask != None) {
@@ -448,8 +448,8 @@ BitmapInstance *instancePtr; /* Instance to reconfigure. */
         Tk_Display(instancePtr->tkwin),
         RootWindowOfScreen(Tk_Screen(instancePtr->tkwin)),
         masterPtr->maskData,
-        ( unsigned )masterPtr->width,
-        ( unsigned )masterPtr->height);
+        ( unsigned ) masterPtr->width,
+        ( unsigned ) masterPtr->height);
     }
 
     if (masterPtr->data != NULL) {
@@ -554,7 +554,7 @@ int *hotXPtr, *hotYPtr;    /* Position of hot spot or -1,-1. */
                              fileName,
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return NULL;
         }
     } else {
@@ -635,7 +635,7 @@ int *hotXPtr, *hotYPtr;    /* Position of hot spot or -1,-1. */
             Tcl_AppendResult(interp,
                              "format error in bitmap data; ",
                              "looks like it's an obsolete X10 bitmap file",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             goto errorCleanup;
         }
     }
@@ -650,7 +650,7 @@ getData:
         goto error;
     }
     numBytes = ((width + 7) / 8) * height;
-    data = ( char * )ckalloc(( unsigned )numBytes);
+    data = ( char * ) ckalloc(( unsigned ) numBytes);
     for (p = data; numBytes > 0; p++, numBytes--) {
         if (NextBitmapWord(&pi) != TCL_OK) {
             goto error;
@@ -779,7 +779,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    BitmapMaster *masterPtr = ( BitmapMaster * )clientData;
+    BitmapMaster *masterPtr = ( BitmapMaster * ) clientData;
     int c, code;
     size_t length;
 
@@ -798,13 +798,13 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " cget option\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         return Tk_ConfigureValue(interp,
                                  Tk_MainWindow(interp),
                                  configSpecs,
-                                 ( char * )masterPtr,
+                                 ( char * ) masterPtr,
                                  argv[2],
                                  0);
     } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
@@ -813,14 +813,14 @@ char **argv;           /* Argument strings. */
             code = Tk_ConfigureInfo(interp,
                                     Tk_MainWindow(interp),
                                     configSpecs,
-                                    ( char * )masterPtr,
-                                    ( char * )NULL,
+                                    ( char * ) masterPtr,
+                                    ( char * ) NULL,
                                     0);
         } else if (argc == 3) {
             code = Tk_ConfigureInfo(interp,
                                     Tk_MainWindow(interp),
                                     configSpecs,
-                                    ( char * )masterPtr,
+                                    ( char * ) masterPtr,
                                     argv[2],
                                     0);
         } else {
@@ -833,7 +833,7 @@ char **argv;           /* Argument strings. */
                          "bad option \"",
                          argv[1],
                          "\": must be cget or configure",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 }
@@ -863,7 +863,7 @@ ImgBmapGet(tkwin, masterData) Tk_Window tkwin; /* Window in which the instance
 ClientData masterData; /* Pointer to our master structure for the
                         * image. */
 {
-    BitmapMaster *masterPtr = ( BitmapMaster * )masterData;
+    BitmapMaster *masterPtr = ( BitmapMaster * ) masterData;
     BitmapInstance *instancePtr;
 
     /*
@@ -875,7 +875,7 @@ ClientData masterData; /* Pointer to our master structure for the
          instancePtr = instancePtr->nextPtr) {
         if (instancePtr->tkwin == tkwin) {
             instancePtr->refCount++;
-            return ( ClientData )instancePtr;
+            return ( ClientData ) instancePtr;
         }
     }
 
@@ -884,7 +884,7 @@ ClientData masterData; /* Pointer to our master structure for the
      * instance of the image.
      */
 
-    instancePtr = ( BitmapInstance * )ckalloc(sizeof(BitmapInstance));
+    instancePtr = ( BitmapInstance * ) ckalloc(sizeof(BitmapInstance));
     instancePtr->refCount = 1;
     instancePtr->masterPtr = masterPtr;
     instancePtr->tkwin = tkwin;
@@ -906,7 +906,7 @@ ClientData masterData; /* Pointer to our master structure for the
         masterPtr->tkMaster, 0, 0, 0, 0, masterPtr->width, masterPtr->height);
     }
 
-    return ( ClientData )instancePtr;
+    return ( ClientData ) instancePtr;
 }
 
 /*
@@ -944,7 +944,7 @@ int width, height;        /* Dimensions of region within image to draw. */
 int drawableX, drawableY; /* Coordinates within drawable that
                            * correspond to imageX and imageY. */
 {
-    BitmapInstance *instancePtr = ( BitmapInstance * )clientData;
+    BitmapInstance *instancePtr = ( BitmapInstance * ) clientData;
     int masking;
 
     /*
@@ -974,8 +974,8 @@ int drawableX, drawableY; /* Coordinates within drawable that
                instancePtr->gc,
                imageX,
                imageY,
-               ( unsigned )width,
-               ( unsigned )height,
+               ( unsigned ) width,
+               ( unsigned ) height,
                drawableX,
                drawableY,
                1);
@@ -1006,7 +1006,7 @@ ClientData clientData; /* Pointer to BitmapInstance structure for
                         * for instance to be displayed. */
 Display *display;      /* Display containing window that used image. */
 {
-    BitmapInstance *instancePtr = ( BitmapInstance * )clientData;
+    BitmapInstance *instancePtr = ( BitmapInstance * ) clientData;
     BitmapInstance *prevPtr;
 
     instancePtr->refCount--;
@@ -1044,7 +1044,7 @@ Display *display;      /* Display containing window that used image. */
         }
         prevPtr->nextPtr = instancePtr->nextPtr;
     }
-    ckfree(( char * )instancePtr);
+    ckfree(( char * ) instancePtr);
 }
 
 /*
@@ -1068,7 +1068,7 @@ static void ImgBmapDelete(masterData)
 ClientData masterData; /* Pointer to BitmapMaster structure for
                         * image.  Must not have any more instances. */
 {
-    BitmapMaster *masterPtr = ( BitmapMaster * )masterData;
+    BitmapMaster *masterPtr = ( BitmapMaster * ) masterData;
 
     if (masterPtr->instancePtr != NULL) {
         panic("tried to delete bitmap image when instances still exist");
@@ -1085,8 +1085,8 @@ ClientData masterData; /* Pointer to BitmapMaster structure for
     if (masterPtr->maskData != NULL) {
         ckfree(masterPtr->maskData);
     }
-    Tk_FreeOptions(configSpecs, ( char * )masterPtr, ( Display * )NULL, 0);
-    ckfree(( char * )masterPtr);
+    Tk_FreeOptions(configSpecs, ( char * ) masterPtr, ( Display * ) NULL, 0);
+    ckfree(( char * ) masterPtr);
 }
 
 /*
@@ -1110,7 +1110,7 @@ static void ImgBmapCmdDeletedProc(clientData)
 ClientData clientData; /* Pointer to BitmapMaster structure for
                         * image. */
 {
-    BitmapMaster *masterPtr = ( BitmapMaster * )clientData;
+    BitmapMaster *masterPtr = ( BitmapMaster * ) clientData;
 
     masterPtr->imageCmd = NULL;
     if (masterPtr->tkMaster != NULL) {

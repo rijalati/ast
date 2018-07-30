@@ -91,7 +91,7 @@
 
 /* user-supplied functions to do io */
 typedef struct _vddisc_s Vddisc_t;
-typedef int(*Vdio_f) _ARG_(( Void_t *, int, long, Vddisc_t * ));
+typedef int(*Vdio_f) _ARG_(( Void_t *, int, long, Vddisc_t * ) );
 struct _vddisc_s
 {
     long size;     /* total data size	*/
@@ -105,10 +105,10 @@ struct _vddisc_s
 #define VD_MAGIC_OLD "vd02"
 
 _BEGIN_EXTERNS_
-extern long vddelta _ARG_(( Vddisc_t *, Vddisc_t *, Vddisc_t * ));
-extern long vdupdate _ARG_(( Vddisc_t *, Vddisc_t *, Vddisc_t * ));
-extern int vdsqueeze _ARG_(( Void_t *, int, Void_t * ));
-extern int vdexpand _ARG_(( Void_t *, int, Void_t * ));
+extern long vddelta _ARG_(( Vddisc_t *, Vddisc_t *, Vddisc_t * ) );
+extern long vdupdate _ARG_(( Vddisc_t *, Vddisc_t *, Vddisc_t * ) );
+extern int vdsqueeze _ARG_(( Void_t *, int, Void_t * ) );
+extern int vdexpand _ARG_(( Void_t *, int, Void_t * ) );
 _END_EXTERNS_
 
 #endif /*_VDELTA_H*/

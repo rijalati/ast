@@ -53,7 +53,7 @@ csto(Cs_t *state, int fd, const void *buf, size_t siz, Csaddr_t *addr)
     nam.sin_family = AF_INET;
     nam.sin_addr.s_addr = addr->addr[0];
     nam.sin_port = addr->addr[1];
-    return sendto(fd, buf, siz, 0, ( struct sockaddr * )&nam, sizeof(nam));
+    return sendto(fd, buf, siz, 0, ( struct sockaddr * ) &nam, sizeof(nam));
 
 #    else
 

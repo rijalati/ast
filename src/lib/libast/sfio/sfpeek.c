@@ -46,7 +46,7 @@ reg size_t size;                                  /* size of peek */
     /* query for the extent of the remainder of the buffer */
     if ((sz = size) == 0 || !bp) {
         if (f->mode & SF_INIT)
-            ( void )_sfmode(f, 0, 0);
+            ( void ) _sfmode(f, 0, 0);
 
         if ((f->flags & SF_RDWRSTR) == SF_RDWRSTR) {
             SFSTRSIZE(f);
@@ -58,7 +58,7 @@ reg size_t size;                                  /* size of peek */
             return n;
         else if (n > 0) /* size == 0 */
         {
-            *bp = ( Void_t * )f->next;
+            *bp = ( Void_t * ) f->next;
             return 0;
         }
         /* else fall down and fill buffer */
@@ -66,7 +66,7 @@ reg size_t size;                                  /* size of peek */
 
     if (!(mode = f->flags & SF_READ))
         mode = SF_WRITE;
-    if (( int )f->mode != mode && _sfmode(f, mode, 0) < 0)
+    if (( int ) f->mode != mode && _sfmode(f, mode, 0) < 0)
         return -1;
 
     *bp = sfreserve(f, sz <= 0 ? 0 : sz > f->size ? f->size : sz, 0);
@@ -75,7 +75,7 @@ reg size_t size;                                  /* size of peek */
         return sz;
 
     if ((n = sfvalue(f)) > 0) {
-        *bp = ( Void_t * )f->next;
+        *bp = ( Void_t * ) f->next;
         if (sz < 0) {
             f->mode |= SF_PEEK;
             f->endr = f->endw = f->data;

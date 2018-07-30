@@ -364,7 +364,7 @@ again:
                 c = '=';
             else if (q == '%' && c == '%') {
                 if (ex->input->fp)
-                    ex->more = ( const char * )ex->input->fp;
+                    ex->more = ( const char * ) ex->input->fp;
                 else
                     ex->more = ex->input->sp;
                 goto eof;
@@ -592,8 +592,8 @@ again:
                     sfputc(ex->tmp, c);
                 exunlex(ex, c);
                 s = exstash(ex->tmp, NiL);
-                v = expr.declare ? dtview(ex->symbols, NiL) : ( Dt_t * )0;
-                exlval.id = ( Exid_t * )dtmatch(ex->symbols, s);
+                v = expr.declare ? dtview(ex->symbols, NiL) : ( Dt_t * ) 0;
+                exlval.id = ( Exid_t * ) dtmatch(ex->symbols, s);
                 if (v)
                     dtview(ex->symbols, v);
                 if (!exlval.id) {

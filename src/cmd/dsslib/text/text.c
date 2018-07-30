@@ -82,7 +82,7 @@ textfopen(Dssfile_t *file, Dssdisc_t *disc)
     if (!(file->data = vmnewof(file->dss->vm,
                                0,
                                Cxvalue_t,
-                               (( Text_t * )file->dss->meth->data)->vars,
+                               (( Text_t * ) file->dss->meth->data)->vars,
                                0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -180,8 +180,8 @@ lextok(char *s, int c, Cxstring_t *p)
 static int
 textread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Cxvalue_t *data = ( Cxvalue_t * )file->data;
-    Text_t *text = ( Text_t * )file->dss->meth->data;
+    Cxvalue_t *data = ( Cxvalue_t * ) file->data;
+    Text_t *text = ( Text_t * ) file->dss->meth->data;
     char *s;
     char *f;
     int c;
@@ -310,8 +310,8 @@ textread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 static int
 textwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Text_t *text = ( Text_t * )file->dss->meth->data;
-    Cxvalue_t *data = ( Cxvalue_t * )record->data;
+    Text_t *text = ( Text_t * ) file->dss->meth->data;
+    Cxvalue_t *data = ( Cxvalue_t * ) record->data;
     char *f;
     int c;
     int num;
@@ -340,18 +340,18 @@ textwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 sfputc(file->io, '%');
                 continue;
             case 'c':
-                sfputc(file->io, ( int )data[num].number);
+                sfputc(file->io, ( int ) data[num].number);
                 num++;
                 break;
             case 'd':
             case 'n':
             case 'u':
-                sfprintf(file->io, "%d", ( long )data[num].number);
+                sfprintf(file->io, "%d", ( long ) data[num].number);
                 num++;
                 break;
             case 'i':
                 sfprintf(
-                file->io, "%s", fmtip4(( Ipaddr_t )data[num].number, -1));
+                file->io, "%s", fmtip4(( Ipaddr_t ) data[num].number, -1));
                 num++;
                 break;
             case 'f':
@@ -360,11 +360,11 @@ textwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 num++;
                 break;
             case 'o':
-                sfprintf(file->io, "%o", ( long )data[num].number);
+                sfprintf(file->io, "%o", ( long ) data[num].number);
                 num++;
                 break;
             case 'x':
-                sfprintf(file->io, "%x", ( long )data[num].number);
+                sfprintf(file->io, "%x", ( long ) data[num].number);
                 num++;
                 break;
             case 's':
@@ -376,7 +376,7 @@ textwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 break;
             case 't':
                 sfprintf(
-                file->io, "%s", fmttime("%K", ( time_t )data[num].number));
+                file->io, "%s", fmttime("%K", ( time_t ) data[num].number));
                 num++;
                 break;
             }
@@ -409,8 +409,8 @@ op_get(Cx_t *cx,
        void *data,
        Cxdisc_t *disc)
 {
-    r->value = (( Cxvalue_t * )DSSDATA(
-    data))[(( Cxvariable_t * )pc->data.variable)->index];
+    r->value = (( Cxvalue_t * ) DSSDATA(
+    data))[(( Cxvariable_t * ) pc->data.variable)->index];
     return 0;
 }
 
@@ -471,10 +471,10 @@ textmeth(const char *name,
         return 0;
     }
     *meth = *ometh;
-    meth->data = text = ( Text_t * )(meth + 1);
+    meth->data = text = ( Text_t * ) (meth + 1);
     text->format = stpcpy(text->name, name) + 1;
     index = 0;
-    s = ( char * )schema;
+    s = ( char * ) schema;
     f = text->format;
     for (;;) {
         switch (c = *s++) {
@@ -551,7 +551,7 @@ textmeth(const char *name,
                     goto drop;
                 }
                 var->index = index;
-                t = stpcpy(( char * )(var->name = ( char * )(var + 1)), f);
+                t = stpcpy(( char * ) (var->name = ( char * ) (var + 1)), f);
                 if (d)
                     var->description = strcpy(t + 1, d);
                 break;
@@ -590,16 +590,16 @@ textmeth(const char *name,
                 case 'o':
                 case 'u':
                 case 'x':
-                    var->type = ( Cxtype_t * )"number";
+                    var->type = ( Cxtype_t * ) "number";
                     break;
                 case 'i':
-                    var->type = ( Cxtype_t * )"ipaddr_t";
+                    var->type = ( Cxtype_t * ) "ipaddr_t";
                     break;
                 case 's':
-                    var->type = ( Cxtype_t * )"string";
+                    var->type = ( Cxtype_t * ) "string";
                     break;
                 case 't':
-                    var->type = ( Cxtype_t * )"time_t";
+                    var->type = ( Cxtype_t * ) "time_t";
                     break;
                 default:
                     if (disc->errorf)

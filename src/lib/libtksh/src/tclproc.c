@@ -33,7 +33,7 @@ Tcl_Interp *interp; /* Current interpreter. */
 int argc;           /* Number of arguments. */
 char **argv;        /* Argument strings. */
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     Proc *procPtr;
     int result, argCount, i;
     char **argArray = NULL;
@@ -46,14 +46,14 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " name args body\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
-    procPtr = ( Proc * )ckalloc(sizeof(Proc));
+    procPtr = ( Proc * ) ckalloc(sizeof(Proc));
     procPtr->iPtr = iPtr;
     procPtr->refCount = 1;
-    procPtr->command = ( char * )ckalloc(( unsigned )strlen(argv[3]) + 1);
+    procPtr->command = ( char * ) ckalloc(( unsigned ) strlen(argv[3]) + 1);
     strcpy(procPtr->command, argv[3]);
     procPtr->argPtr = NULL;
 
@@ -81,22 +81,22 @@ char **argv;        /* Argument strings. */
             goto procError;
         }
         if (fieldCount > 2) {
-            ckfree(( char * )fieldValues);
+            ckfree(( char * ) fieldValues);
             Tcl_AppendResult(interp,
                              "too many fields in argument specifier \"",
                              argArray[i],
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto procError;
         }
         if ((fieldCount == 0) || (*fieldValues[0] == 0)) {
-            ckfree(( char * )fieldValues);
+            ckfree(( char * ) fieldValues);
             Tcl_AppendResult(interp,
                              "procedure \"",
                              argv[1],
                              "\" has argument with no name",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto procError;
         }
@@ -107,8 +107,8 @@ char **argv;        /* Argument strings. */
             valueLength = 0;
         }
         argPtr
-        = ( Arg * )ckalloc(( unsigned )(sizeof(Arg) - sizeof(argPtr->name)
-                                        + nameLength + valueLength));
+        = ( Arg * ) ckalloc(( unsigned ) (sizeof(Arg) - sizeof(argPtr->name)
+                                          + nameLength + valueLength));
         if (lastArgPtr == NULL) {
             procPtr->argPtr = argPtr;
         } else {
@@ -123,15 +123,15 @@ char **argv;        /* Argument strings. */
         } else {
             argPtr->defValue = NULL;
         }
-        ckfree(( char * )fieldValues);
+        ckfree(( char * ) fieldValues);
     }
 
     Tcl_CreateCommand(interp,
                       TkshMapName(argv[1]),
                       InterpProc,
-                      ( ClientData )procPtr,
+                      ( ClientData ) procPtr,
                       ProcDeleteProc);
-    ckfree(( char * )argArray);
+    ckfree(( char * ) argArray);
     return TCL_OK;
 
 procError:
@@ -139,11 +139,11 @@ procError:
     while (procPtr->argPtr != NULL) {
         argPtr = procPtr->argPtr;
         procPtr->argPtr = argPtr->nextPtr;
-        ckfree(( char * )argPtr);
+        ckfree(( char * ) argPtr);
     }
-    ckfree(( char * )procPtr);
+    ckfree(( char * ) procPtr);
     if (argArray != NULL) {
-        ckfree(( char * )argArray);
+        ckfree(( char * ) argArray);
     }
     return result;
 }
@@ -169,20 +169,20 @@ procError:
 Proc *TclIsProc(cmdPtr) Tcl_CmdInfo *cmdPtr; /* Command to test. */
 {
     if (cmdPtr->proc == InterpProc) {
-        return ( Proc * )cmdPtr->clientData;
+        return ( Proc * ) cmdPtr->clientData;
     }
-    return ( Proc * )0;
+    return ( Proc * ) 0;
 }
 
 Proc *
 TclFindProc(Interp *iPtr, char *procName)
 {
     Tcl_CmdInfo procInfo;
-    if (Tcl_GetCommandInfo(( Tcl_Interp * )iPtr, procName, &procInfo)) {
+    if (Tcl_GetCommandInfo(( Tcl_Interp * ) iPtr, procName, &procInfo)) {
         if (procInfo.proc == InterpProc)
-            return ( Proc * )procInfo.clientData;
+            return ( Proc * ) procInfo.clientData;
     }
-    return ( Proc * )0;
+    return ( Proc * ) 0;
 }
 
 struct InterpProcArgs
@@ -224,7 +224,7 @@ int argc;              /* Count of number of arguments to this
                         * procedure. */
 char **argv;           /* Argument values. */
 {
-    Proc *procPtr = ( Proc * )clientData;
+    Proc *procPtr = ( Proc * ) clientData;
     struct InterpProcArgs iargs;
     int result;
     char **copiedArgv = NULL;
@@ -240,17 +240,17 @@ char **argv;           /* Argument values. */
          * proper list
          */
         int i;
-        copiedArgv = ( char ** )malloc((argc + 1) * sizeof(char *));
+        copiedArgv = ( char ** ) malloc((argc + 1) * sizeof(char *));
         for (i = 0; i < argc; i++)
             copiedArgv[i] = argv[i];
         copiedArgv[argc] = NULL;
         argv = copiedArgv;
     }
 
-    result = sh_funscope(argc, argv, InterpProcBody, ( void * )&iargs, 0);
+    result = sh_funscope(argc, argv, InterpProcBody, ( void * ) &iargs, 0);
 
     if (copiedArgv)
-        free(( void * )copiedArgv);
+        free(( void * ) copiedArgv);
 
     if (savnv.nvfun) {
         if (procPtr->iPtr->flags & ERR_IN_PROGRESS) {
@@ -278,7 +278,7 @@ clearlocals(Namval_t *nv, void *data)
 static int
 InterpProcBody(void *data)
 {
-    struct InterpProcArgs *iargs = ( struct InterpProcArgs * )data;
+    struct InterpProcArgs *iargs = ( struct InterpProcArgs * ) data;
     int argc = iargs->argc;
     char **argv = iargs->argv;
     Proc *procPtr = iargs->procPtr;
@@ -326,7 +326,7 @@ InterpProcBody(void *data)
                              "\" to \"",
                              argv[0],
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto procDone;
         }
@@ -337,7 +337,7 @@ InterpProcBody(void *data)
                          "called \"",
                          argv[0],
                          "\" with too many arguments",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         result = TCL_ERROR;
         goto procDone;
     }
@@ -361,14 +361,14 @@ InterpProcBody(void *data)
         if (result == TCL_ERROR) {
             Tcl_SetVar2(interp,
                         "errorCode",
-                        ( char * )NULL,
+                        ( char * ) NULL,
                         (iPtr->errorCode != NULL) ? iPtr->errorCode : "NONE",
                         TCL_GLOBAL_ONLY);
             iPtr->flags |= ERROR_CODE_SET;
             if (iPtr->errorInfo != NULL) {
                 Tcl_SetVar2(interp,
                             "errorInfo",
-                            ( char * )NULL,
+                            ( char * ) NULL,
                             iPtr->errorInfo,
                             TCL_GLOBAL_ONLY);
                 iPtr->flags |= ERR_IN_PROGRESS;
@@ -442,7 +442,7 @@ procDone:
 static void ProcDeleteProc(clientData)
 ClientData clientData; /* Procedure to be deleted. */
 {
-    Proc *procPtr = ( Proc * )clientData;
+    Proc *procPtr = ( Proc * ) clientData;
 
     procPtr->refCount--;
     if (procPtr->refCount <= 0) {
@@ -472,12 +472,12 @@ static void CleanupProc(procPtr) Proc *procPtr; /* Procedure to be deleted. */
 {
     Arg *argPtr;
 
-    ckfree(( char * )procPtr->command);
+    ckfree(( char * ) procPtr->command);
     for (argPtr = procPtr->argPtr; argPtr != NULL;) {
         Arg *nextPtr = argPtr->nextPtr;
 
-        ckfree(( char * )argPtr);
+        ckfree(( char * ) argPtr);
         argPtr = nextPtr;
     }
-    ckfree(( char * )procPtr);
+    ckfree(( char * ) procPtr);
 }

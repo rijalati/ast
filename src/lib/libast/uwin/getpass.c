@@ -57,7 +57,7 @@ getpass(const char *prompt)
     Sfio_t *iop;
     static char *cp, passwd[32];
     void (*savesig)(int);
-    if (!(iop = sfopen(( Sfio_t * )0, "/dev/tty", "r")))
+    if (!(iop = sfopen(( Sfio_t * ) 0, "/dev/tty", "r")))
         return (0);
     if (tcgetattr(sffileno(iop), &told) < 0)
         return (0);

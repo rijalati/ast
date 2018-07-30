@@ -47,7 +47,7 @@ wcstoutf32s(uint32_t *utf32, wchar_t *wchar, size_t n)
                 break;
             utf32[i] = wchar[i];
         }
-        res = ( ssize_t )i;
+        res = ( ssize_t ) i;
     } else {
         char *inbuf;
         char *inbuf_start;
@@ -57,10 +57,10 @@ wcstoutf32s(uint32_t *utf32, wchar_t *wchar, size_t n)
         size_t outbytesleft;
         int oerrno;
 
-        if (ast.mb_wc2uc == ( void * )(-1)
+        if (ast.mb_wc2uc == ( void * ) (-1)
             && (ast.mb_wc2uc
-                = ( void * )iconv_open("UTF-8", codeset(CODESET_ctype)))
-               == ( void * )-1)
+                = ( void * ) iconv_open("UTF-8", codeset(CODESET_ctype)))
+               == ( void * ) -1)
             ast.mb_wc2uc = 0;
         if (ast.mb_wc2uc == 0)
             return -1;
@@ -92,8 +92,8 @@ wcstoutf32s(uint32_t *utf32, wchar_t *wchar, size_t n)
         inbytesleft = inbuf - inbuf_start;
         inbuf = inbuf_start;
         outbuf = outbuf_start;
-        ( void )iconv(ast.mb_wc2uc, NiL, NiL, NiL, NiL);
-        if ((res = iconv(( iconv_t )ast.mb_wc2uc,
+        ( void ) iconv(ast.mb_wc2uc, NiL, NiL, NiL, NiL);
+        if ((res = iconv(( iconv_t ) ast.mb_wc2uc,
                          &inbuf,
                          &inbytesleft,
                          &outbuf,
@@ -101,7 +101,8 @@ wcstoutf32s(uint32_t *utf32, wchar_t *wchar, size_t n)
             >= 0) {
             const char *s;
 
-            for (s = outbuf_start, i = 0; i < n && s < ( const char * )outbuf;
+            for (s = outbuf_start, i = 0;
+                 i < n && s < ( const char * ) outbuf;
                  i++)
                 s += utf8toutf32v(&utf32[i], s);
             if (i < n)

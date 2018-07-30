@@ -77,8 +77,8 @@ _isblank(int);
 #    define ismetach(v) _ismetach(virtual[v])
 #else
 static genchar _c;
-#    define gencpy(a, b) strcpy(( char * )(a), ( char * )(b))
-#    define genncpy(a, b, n) strncpy(( char * )(a), ( char * )(b), n)
+#    define gencpy(a, b) strcpy(( char * ) (a), ( char * ) (b))
+#    define genncpy(a, b, n) strncpy(( char * ) (a), ( char * ) (b), n)
 #    define genlen(str) strlen(str)
 #    define isalph(v) ((_c = virtual[v]) == '_' || isalnum(_c))
 #    undef isblank
@@ -231,7 +231,7 @@ textmod(Vi_t *, int, int);
 int
 ed_viread(void *context, int fd, char *shbuf, int nchar, int reedit)
 {
-    Edit_t *ed = ( Edit_t * )context;
+    Edit_t *ed = ( Edit_t * ) context;
     int i;             /* general variable */
     int term_char = 0; /* read() termination character */
     Vi_t *vp = ed->e_vi;
@@ -255,7 +255,7 @@ ed_viread(void *context, int fd, char *shbuf, int nchar, int reedit)
 #endif     /* SHOPT_RAWONLY */
     if (!vp) {
         ed->e_vi = vp = newof(0, Vi_t, 1, 0);
-        vp->lastline = ( genchar * )malloc(MAXLINE * CHARSIZE);
+        vp->lastline = ( genchar * ) malloc(MAXLINE * CHARSIZE);
         vp->direction = -1;
         vp->ed = ed;
     }
@@ -360,10 +360,10 @@ ed_viread(void *context, int fd, char *shbuf, int nchar, int reedit)
 
     /*** Initialize some things ***/
 
-    virtual = ( genchar * )shbuf;
+    virtual = ( genchar * ) shbuf;
 #if SHOPT_MULTIBYTE
-    virtual
-    = ( genchar * )roundof(( char * )virtual - ( char * )0, sizeof(genchar));
+    virtual = ( genchar * ) roundof(( char * ) virtual - ( char * ) 0,
+                                    sizeof(genchar));
     shbuf[i + 1] = 0;
     i = ed_internal(shbuf, virtual) - 1;
 #endif /* SHOPT_MULTIBYTE */
@@ -389,7 +389,7 @@ ed_viread(void *context, int fd, char *shbuf, int nchar, int reedit)
     window[0] = '\0';
 
     if (!yankbuf)
-        yankbuf = ( genchar * )malloc(MAXLINE * CHARSIZE);
+        yankbuf = ( genchar * ) malloc(MAXLINE * CHARSIZE);
     if (vp->last_cmd == '\0') {
         /*** first time for this shell ***/
 
@@ -869,15 +869,15 @@ cntlmode(Vi_t *vp)
             cur_virt = INVALID;
         newhist:
             if (curhline != histmax || cur_virt == INVALID)
-                hist_copy(( char * )virtual, MAXLINE, curhline, -1);
+                hist_copy(( char * ) virtual, MAXLINE, curhline, -1);
             else {
-                strcpy(( char * )virtual, ( char * )vp->u_space);
+                strcpy(( char * ) virtual, ( char * ) vp->u_space);
 #if SHOPT_MULTIBYTE
-                ed_internal(( char * )vp->u_space, vp->u_space);
+                ed_internal(( char * ) vp->u_space, vp->u_space);
 #endif /* SHOPT_MULTIBYTE */
             }
 #if SHOPT_MULTIBYTE
-            ed_internal(( char * )virtual, virtual);
+            ed_internal(( char * ) virtual, virtual);
 #endif /* SHOPT_MULTIBYTE */
             if ((last_virt = genlen(virtual) - 1) >= 0 && cur_virt == INVALID)
                 cur_virt = 0;
@@ -1652,7 +1652,7 @@ mvcursor(Vi_t *vp, int motion)
         int nextc;
         tcur_virt = cur_virt;
         while (tcur_virt <= last_virt
-               && strchr(paren_chars, virtual[tcur_virt]) == ( char * )0)
+               && strchr(paren_chars, virtual[tcur_virt]) == ( char * ) 0)
             tcur_virt++;
         if (tcur_virt > last_virt)
             return (0);
@@ -1778,11 +1778,11 @@ refresh(Vi_t *vp, int mode)
         int n;
         virtual[last_virt + 1] = 0;
 #    if SHOPT_MULTIBYTE
-        ed_external(virtual, ( char * )virtual);
+        ed_external(virtual, ( char * ) virtual);
 #    endif /* SHOPT_MULTIBYTE */
-        n = ed_histgen(vp->ed, ( char * )virtual);
+        n = ed_histgen(vp->ed, ( char * ) virtual);
 #    if SHOPT_MULTIBYTE
-        ed_internal(( char * )virtual, virtual);
+        ed_internal(( char * ) virtual, virtual);
 #    endif /* SHOPT_MULTIBYTE */
         if (vp->ed->hlist) {
             ed_histlist(vp->ed, n);
@@ -2061,16 +2061,16 @@ curline_search(Vi_t *vp, const char *string)
     size_t len = strlen(string);
     const char *dp, *cp = string, *dpmax;
 #if SHOPT_MULTIBYTE
-    ed_external(vp->u_space, ( char * )vp->u_space);
+    ed_external(vp->u_space, ( char * ) vp->u_space);
 #endif /* SHOPT_MULTIBYTE */
-    for (dp = ( char * )vp->u_space, dpmax = dp + strlen(dp) - len;
+    for (dp = ( char * ) vp->u_space, dpmax = dp + strlen(dp) - len;
          dp <= dpmax;
          dp++) {
         if (*dp == *cp && memcmp(cp, dp, len) == 0)
-            return (dp - ( char * )vp->u_space);
+            return (dp - ( char * ) vp->u_space);
     }
 #if SHOPT_MULTIBYTE
-    ed_internal(( char * )vp->u_space, vp->u_space);
+    ed_internal(( char * ) vp->u_space, vp->u_space);
 #endif /* SHOPT_MULTIBYTE */
     return (-1);
 }
@@ -2105,10 +2105,10 @@ search(Vi_t *vp, int mode)
     if (cur_virt == 0 || fold(mode) == 'N') {
         /*** user wants repeat of last search ***/
         del_line(vp, BAD);
-        strcpy((( char * )virtual) + 1, lsearch);
+        strcpy((( char * ) virtual) + 1, lsearch);
 #if SHOPT_MULTIBYTE
-        *(( char * )virtual) = '/';
-        ed_internal(( char * )virtual, virtual);
+        *(( char * ) virtual) = '/';
+        ed_internal(( char * ) virtual, virtual);
 #endif /* SHOPT_MULTIBYTE */
     }
 
@@ -2122,10 +2122,10 @@ search(Vi_t *vp, int mode)
 
     oldcurhline = curhline;
 #if SHOPT_MULTIBYTE
-    ed_external(virtual, ( char * )virtual);
+    ed_external(virtual, ( char * ) virtual);
 #endif /* SHOPT_MULTIBYTE */
     if (mode == '?'
-        && (i = curline_search(vp, (( char * )virtual) + 1)) >= 0) {
+        && (i = curline_search(vp, (( char * ) virtual) + 1)) >= 0) {
         location.hist_command = curhline;
         location.hist_char = i;
     } else {
@@ -2133,10 +2133,10 @@ search(Vi_t *vp, int mode)
         if (new_direction == 1 && curhline >= histmax)
             curhline = histmin + 1;
         location = hist_find(
-        shgd->hist_ptr, (( char * )virtual) + 1, curhline, 1, new_direction);
+        shgd->hist_ptr, (( char * ) virtual) + 1, curhline, 1, new_direction);
     }
     cur_virt = i;
-    strncpy(lsearch, (( char * )virtual) + 1, SEARCHSIZE);
+    strncpy(lsearch, (( char * ) virtual) + 1, SEARCHSIZE);
     lsearch[SEARCHSIZE - 1] = 0;
     if ((curhline = location.hist_command) >= 0) {
         vp->ocur_virt = INVALID;
@@ -2274,7 +2274,7 @@ addin:
         if (mode >= 0 && c == '\\' && virtual[mode + 1] == '/')
             c = '=';
         if (ed_expand(vp->ed,
-                      ( char * )virtual,
+                      ( char * ) virtual,
                       &cur_virt,
                       &last_virt,
                       ch,
@@ -2325,13 +2325,14 @@ addin:
             genchar tmpbuf[MAXLINE];
             if (vp->repeat_set == 0)
                 vp->repeat = -1;
-            p = ( genchar * )hist_word(( char * )tmpbuf, MAXLINE, vp->repeat);
+            p
+            = ( genchar * ) hist_word(( char * ) tmpbuf, MAXLINE, vp->repeat);
             if (p == 0) {
                 ed_ringbell();
                 break;
             }
 #if SHOPT_MULTIBYTE
-            ed_internal(( char * )p, tmpbuf);
+            ed_internal(( char * ) p, tmpbuf);
             p = tmpbuf;
 #endif /* SHOPT_MULTIBYTE */
             i = ' ';

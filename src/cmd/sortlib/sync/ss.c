@@ -606,12 +606,12 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
                                 }
                                 if (x == 'B') {
                                     for (v = dp->value; s < e; s += 8)
-                                        *v++ = ( unsigned char )strntoul(
+                                        *v++ = ( unsigned char ) strntoul(
                                         s, 8, NiL, 2);
                                     c = v - dp->value;
                                 } else if (x == 'X') {
                                     for (v = dp->value; s < e; s += 2)
-                                        *v++ = ( unsigned char )strntoul(
+                                        *v++ = ( unsigned char ) strntoul(
                                         s, 2, NiL, 16);
                                     c = v - dp->value;
                                 } else {
@@ -1294,7 +1294,7 @@ group(Ss_t *ss, Ssfile_t *fp, const char *id)
             NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    strcpy(gp->id = ( char * )(gp + 1), id);
+    strcpy(gp->id = ( char * ) (gp + 1), id);
     if (fp->lastgroup)
         fp->lastgroup->next = gp;
     else
@@ -1376,7 +1376,7 @@ load(Ss_t *ss,
             return -1;
         }
     }
-    if (!(exitf = ( Ssexit_f )dlllook(dll, fun))) {
+    if (!(exitf = ( Ssexit_f ) dlllook(dll, fun))) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -1387,10 +1387,10 @@ load(Ss_t *ss,
                             usr);
         return -1;
     }
-    if ((interceptf = ( Ssintercept_f )dlllook(dll, "rs_intercept"))
-        || (interceptf = ( Ssintercept_f )dlllook(NiL, "rs_intercept")))
+    if ((interceptf = ( Ssintercept_f ) dlllook(dll, "rs_intercept"))
+        || (interceptf = ( Ssintercept_f ) dlllook(NiL, "rs_intercept")))
         ss->intercept = interceptf;
-    switch (( int )strtol(usr + 1, NiL, 10)) {
+    switch (( int ) strtol(usr + 1, NiL, 10)) {
     case 11:
     case 21:
     case 31:
@@ -1476,11 +1476,11 @@ ssopen(const char *file, Ssdisc_t *disc)
             NiL, disc, ERROR_SYSTEM | 2, "%s: cannot read", file);
         goto bad;
     }
-    ss->file = fp = ep = ( Ssfile_t * )(ss + 1);
+    ss->file = fp = ep = ( Ssfile_t * ) (ss + 1);
     fp->format = REC_N_TYPE();
     ss->data = null;
     error_info.line = 0;
-    error_info.file = ( char * )file;
+    error_info.file = ( char * ) file;
     while (s = lex(ss)) {
         if (s == SC)
             ;
@@ -1719,7 +1719,7 @@ listexpr(Ss_t *ss, Sfio_t *io, Ssexpr_t *xp)
             break;
         case SS_OP_value:
             sfprintf(io, "'");
-            for (e = (s = ( unsigned char * )xp->left.field->value)
+            for (e = (s = ( unsigned char * ) xp->left.field->value)
                      + xp->left.field->size;
                  s < e;
                  s++)
@@ -1761,7 +1761,7 @@ listfields(Ss_t *ss, Sfio_t *io, Ssfield_t *dp, const char *label)
                      dp->size,
                      dp->type ? dp->type : SS_void,
                      dp->reverse);
-            if (v = ( unsigned char * )dp->value) {
+            if (v = ( unsigned char * ) dp->value) {
                 sfprintf(io, " ");
                 for (e = v + dp->size; v < e; v++)
                     sfprintf(io, "%02x", *v);
@@ -1878,7 +1878,7 @@ sscopy(Ss_t *ss,
 
     v = fp->format == SS_V_IBM ? 4 : 0;
     if (!(dp = fp->out)) {
-        if (v && bsize >= 4 && (t = ( unsigned char * )buf)[2] == 0
+        if (v && bsize >= 4 && (t = ( unsigned char * ) buf)[2] == 0
             && t[3] == 0 && ((t[0] << 8) | t[1]) == bsize)
             v = 0;
         if ((rsize = bsize + v) > osize)
@@ -1887,10 +1887,10 @@ sscopy(Ss_t *ss,
     } else if ((rsize = fp->size + v) > osize)
         return rsize;
     else {
-        t = ( unsigned char * )out + v;
+        t = ( unsigned char * ) out + v;
         do {
-            s = dp->value ? ( unsigned char * )dp->value
-                          : (( unsigned char * )buf + dp->offset);
+            s = dp->value ? ( unsigned char * ) dp->value
+                          : (( unsigned char * ) buf + dp->offset);
             switch (dp->size) {
             case 7:
                 *t++ = *s++;
@@ -1915,7 +1915,7 @@ sscopy(Ss_t *ss,
         } while (dp = dp->next);
     }
     if (v) {
-        t = ( unsigned char * )out;
+        t = ( unsigned char * ) out;
         *t++ = (rsize >> 8) & 0xff;
         *t++ = rsize & 0xff;
         *t++ = 0;
@@ -1946,7 +1946,7 @@ sswrite(Ss_t *ss, Ssfile_t *fp, const char *buf, size_t size)
         size = fp->size;
     else if (fp->format == SS_V_IBM
              && (size < 4
-                 || (t = ( unsigned char * )buf)[2] == 0 && t[3] == 0
+                 || (t = ( unsigned char * ) buf)[2] == 0 && t[3] == 0
                     && ((t[0] << 8) | t[1]) == size))
         v = 0;
     r = size + v;
@@ -1958,11 +1958,11 @@ sswrite(Ss_t *ss, Ssfile_t *fp, const char *buf, size_t size)
             return -1;
         }
         z = (r < SS_RESERVE) ? SS_RESERVE : roundof(z, SS_BLOCK);
-        if (!(gp->beg = ( unsigned char * )sfreserve(gp->io, z, SF_LOCKR))) {
+        if (!(gp->beg = ( unsigned char * ) sfreserve(gp->io, z, SF_LOCKR))) {
             if ((z = sfvalue(gp->io)) < r)
                 z = r;
             if (!(gp->beg
-                  = ( unsigned char * )sfreserve(gp->io, z, SF_LOCKR))) {
+                  = ( unsigned char * ) sfreserve(gp->io, z, SF_LOCKR))) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(NiL,
                                         ss->disc,
@@ -1977,8 +1977,8 @@ sswrite(Ss_t *ss, Ssfile_t *fp, const char *buf, size_t size)
     t = gp->cur + v;
     if (dp) {
         do {
-            s = dp->value ? ( unsigned char * )dp->value
-                          : (( unsigned char * )buf + dp->offset);
+            s = dp->value ? ( unsigned char * ) dp->value
+                          : (( unsigned char * ) buf + dp->offset);
             switch (dp->size) {
             case 7:
                 *t++ = *s++;
@@ -2009,7 +2009,7 @@ sswrite(Ss_t *ss, Ssfile_t *fp, const char *buf, size_t size)
         s = gp->cur;
         r = t - s;
         *s++ = (r >> 8) & 0xff;
-        *s++ = ( r )&0xff;
+        *s++ = ( r ) &0xff;
         *s++ = 0;
         *s = 0;
     }
@@ -2033,8 +2033,8 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
     int j;
 
     do {
-        s = ( unsigned char * )buf + dp->offset;
-        t = ( unsigned char * )out + dp->offset;
+        s = ( unsigned char * ) buf + dp->offset;
+        t = ( unsigned char * ) out + dp->offset;
         switch (dp->type) {
         case SS_bcd:
             se = s + dp->size - 1;
@@ -2058,7 +2058,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
                 if (i && ss->disc->errorf)
                     (*ss->disc->errorf)(NiL, ss->disc, 1, "sum overflow");
             } else {
-                if ((j = ( int )bcd_unpack[*te] - ( int )bcd_unpack[*se])
+                if ((j = ( int ) bcd_unpack[*te] - ( int ) bcd_unpack[*se])
                     < 0) {
                     j += 10;
                     i = 1;
@@ -2067,7 +2067,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
                 *te = bcd_unit[j] | (*te & 0x0F);
                 while (se-- > s) {
                     te--;
-                    if ((j = ( int )bcd_unpack[*te] - ( int )bcd_unpack[*se]
+                    if ((j = ( int ) bcd_unpack[*te] - ( int ) bcd_unpack[*se]
                              - i)
                         < 0) {
                         j += 100;
@@ -2078,14 +2078,15 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
                 }
                 if (i) {
                     te = t + dp->size - 1;
-                    if ((j = ( int )0 - ( int )bcd_unpack[*te]) < 0) {
+                    if ((j = ( int ) 0 - ( int ) bcd_unpack[*te]) < 0) {
                         j += 10;
                         i = 1;
                     } else
                         i = 0;
                     *te = bcd_unit[j] | ((*te & 0x0F) == 0x0C ? 0x0D : 0x0C);
                     while (te-- > t) {
-                        if ((j = ( int )0 - ( int )bcd_unpack[*te] - i) < 0) {
+                        if ((j = ( int ) 0 - ( int ) bcd_unpack[*te] - i)
+                            < 0) {
                             j += 100;
                             i = 1;
                         } else
@@ -2117,7 +2118,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
             se = s + dp->size - 1;
             te = t + dp->size - 1;
             if ((*se ^ *te) & 0x10) {
-                if ((j = ( int )(*te & 0x0F) - ( int )(*se & 0x0F)) < 0) {
+                if ((j = ( int ) (*te & 0x0F) - ( int ) (*se & 0x0F)) < 0) {
                     j += 10;
                     i = 1;
                 } else
@@ -2125,7 +2126,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
                 *te = (*te & 0xF0) | j;
                 while (se-- > s) {
                     te--;
-                    if ((j = ( int )(*te & 0x0F) - ( int )(*se & 0x0F) - i)
+                    if ((j = ( int ) (*te & 0x0F) - ( int ) (*se & 0x0F) - i)
                         < 0) {
                         j += 10;
                         i = 1;
@@ -2135,14 +2136,14 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
                 }
                 if (i) {
                     te = t + dp->size - 1;
-                    if ((j = ( int )0 - ( int )(*te & 0x0F)) < 0) {
+                    if ((j = ( int ) 0 - ( int ) (*te & 0x0F)) < 0) {
                         j += 10;
                         i = 1;
                     } else
                         i = 0;
                     *te = ((*te & 0x10) ? 0xC0 : 0xD0) | j;
                     while (te-- > t) {
-                        if ((j = ( int )0 - ( int )(*te & 0x0F) - i) < 0) {
+                        if ((j = ( int ) 0 - ( int ) (*te & 0x0F) - i) < 0) {
                             j += 10;
                             i = 1;
                         } else
@@ -2267,13 +2268,13 @@ sseval(Ss_t *ss, Ssexpr_t *xp, const char *buf, size_t size)
                || sseval(ss, xp->right.expr, buf, size);
     }
     a = xp->left.expr->left.field->value
-        ? ( unsigned char * )xp->left.expr->left.field->value
-        : (( unsigned char * )buf + xp->left.expr->left.field->offset);
+        ? ( unsigned char * ) xp->left.expr->left.field->value
+        : (( unsigned char * ) buf + xp->left.expr->left.field->offset);
     e = a + xp->left.expr->left.field->size;
     b = xp->right.expr->left.field->value
-        ? ( unsigned char * )xp->right.expr->left.field->value
-        : (( unsigned char * )buf + xp->right.expr->left.field->offset);
-    while (a < e && !(r = ( int )*a++ - ( int )*b++))
+        ? ( unsigned char * ) xp->right.expr->left.field->value
+        : (( unsigned char * ) buf + xp->right.expr->left.field->offset);
+    while (a < e && !(r = ( int ) *a++ - ( int ) *b++))
         ;
     switch (xp->op) {
     case SS_OP_lt:
@@ -2302,7 +2303,7 @@ ssdd(const char *id, const char *name, Ssdisc_t *disc)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    dd->id = ( char * )(dd + 1);
+    dd->id = ( char * ) (dd + 1);
     dd->name = stpcpy(dd->id, id) + 1;
     strcpy(dd->name, name);
     dd->alt = dd->id + 3;

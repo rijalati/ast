@@ -26,8 +26,8 @@
 
 #define SWAP(le, re, ne)                                                     \
     do {                                                                     \
-        Vcchar_t *ll = ( Vcchar_t * )(le);                                   \
-        Vcchar_t *rr = ( Vcchar_t * )(re);                                   \
+        Vcchar_t *ll = ( Vcchar_t * ) (le);                                  \
+        Vcchar_t *rr = ( Vcchar_t * ) (re);                                  \
         ssize_t nn = (ne);                                                   \
         for (; nn > 0; --nn, ++ll, ++rr) {                                   \
             int ss = *ll;                                                    \
@@ -53,7 +53,7 @@ Void_t *disc;        /* adjunct struct for sortf()	*/
 #endif
 {
     ssize_t l, r;
-    Vcchar_t *base = ( Vcchar_t * )list;
+    Vcchar_t *base = ( Vcchar_t * ) list;
 
     if (n <= 1)
         return;

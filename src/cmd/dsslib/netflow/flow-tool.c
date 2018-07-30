@@ -41,10 +41,10 @@
 
 #define FT_S_VERSION 3
 
-#define R1(p) (( Rec_1_t * )(p))
-#define R5(p) (( Rec_5_t * )(p))
-#define R6(p) (( Rec_6_t * )(p))
-#define R7(p) (( Rec_7_t * )(p))
+#define R1(p) (( Rec_1_t * ) (p))
+#define R5(p) (( Rec_5_t * ) (p))
+#define R6(p) (( Rec_6_t * ) (p))
+#define R7(p) (( Rec_7_t * ) (p))
 
 typedef struct ft1header
 {
@@ -205,7 +205,7 @@ typedef struct State_s
 static int
 ftident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
 {
-    Hdr_t *h = ( Hdr_t * )buf;
+    Hdr_t *h = ( Hdr_t * ) buf;
     char *dp;
     char *ep;
     int size;
@@ -232,17 +232,17 @@ ftident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
         file->ident = sizeof(Hdr_t);
         if (n < file->ident)
             return 0;
-        version = swapget(swap, ( char * )buf, 2);
+        version = swapget(swap, ( char * ) buf, 2);
         break;
     case 3:
         if (n < 8)
             return 0;
-        file->ident = swapget(swap, ( char * )buf + 4, 4);
+        file->ident = swapget(swap, ( char * ) buf + 4, 4);
         if (n < file->ident)
             return 0;
         version = 0;
-        dp = ( char * )buf + 8;
-        ep = ( char * )buf + file->ident;
+        dp = ( char * ) buf + 8;
+        ep = ( char * ) buf + file->ident;
         while ((ep - dp) >= 4) {
             type = swapget(swap, dp, 2);
             dp += 2;
@@ -317,7 +317,7 @@ ftfopen(Dssfile_t *file, Dssdisc_t *disc)
     }
     state->chunk = (1024 * 1024 + state->size - 1) / state->size;
     if (file->flags & DSS_FILE_WRITE)
-        state->data = ( char * )(state + 1);
+        state->data = ( char * ) (state + 1);
     state->record.version = state->version;
     return 0;
 }
@@ -329,7 +329,7 @@ ftfopen(Dssfile_t *file, Dssdisc_t *disc)
 static int
 ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    State_t *state = ( State_t * )file->data;
+    State_t *state = ( State_t * ) file->data;
     Netflow_t *rp = &state->record;
     char *fp;
     size_t n;
@@ -337,7 +337,7 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 
     while (!state->count--) {
         if (state->data
-            = ( char * )sfreserve(file->io, state->chunk * state->size, 0)) {
+            = ( char * ) sfreserve(file->io, state->chunk * state->size, 0)) {
             state->count = state->chunk;
             break;
         }
@@ -365,20 +365,23 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             swapmem(n,
                     &R1(fp)->unix_secs,
                     &R1(fp)->unix_secs,
-                    ( char * )&R1(fp)->input - ( char * )&R1(fp)->unix_secs);
+                    ( char * ) &R1(fp)->input
+                    - ( char * ) &R1(fp)->unix_secs);
             swapmem(n,
                     &R1(fp)->dPkts,
                     &R1(fp)->dPkts,
-                    ( char * )&R1(fp)->srcport - ( char * )&R1(fp)->dPkts);
+                    ( char * ) &R1(fp)->srcport - ( char * ) &R1(fp)->dPkts);
             if (n &= 1) {
                 swapmem(n,
                         &R1(fp)->input,
                         &R1(fp)->input,
-                        ( char * )&R1(fp)->dPkts - ( char * )&R1(fp)->input);
+                        ( char * ) &R1(fp)->dPkts
+                        - ( char * ) &R1(fp)->input);
                 swapmem(n,
                         &R1(fp)->srcport,
                         &R1(fp)->srcport,
-                        ( char * )&R1(fp)->prot - ( char * )&R1(fp)->srcport);
+                        ( char * ) &R1(fp)->prot
+                        - ( char * ) &R1(fp)->srcport);
             }
         }
         rp->src_addrv4 = R1(fp)->srcaddr;
@@ -405,24 +408,27 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             swapmem(n,
                     &R5(fp)->unix_secs,
                     &R5(fp)->unix_secs,
-                    ( char * )&R5(fp)->input - ( char * )&R5(fp)->unix_secs);
+                    ( char * ) &R5(fp)->input
+                    - ( char * ) &R5(fp)->unix_secs);
             swapmem(n,
                     &R5(fp)->dPkts,
                     &R5(fp)->dPkts,
-                    ( char * )&R5(fp)->srcport - ( char * )&R5(fp)->dPkts);
+                    ( char * ) &R5(fp)->srcport - ( char * ) &R5(fp)->dPkts);
             if (n &= 1) {
                 swapmem(n,
                         &R5(fp)->input,
                         &R5(fp)->input,
-                        ( char * )&R5(fp)->dPkts - ( char * )&R5(fp)->input);
+                        ( char * ) &R5(fp)->dPkts
+                        - ( char * ) &R5(fp)->input);
                 swapmem(n,
                         &R5(fp)->srcport,
                         &R5(fp)->srcport,
-                        ( char * )&R5(fp)->prot - ( char * )&R5(fp)->srcport);
+                        ( char * ) &R5(fp)->prot
+                        - ( char * ) &R5(fp)->srcport);
                 swapmem(n,
                         &R5(fp)->src_as,
                         &R5(fp)->src_as,
-                        ( char * )(R5(fp) + 1) - ( char * )&R5(fp)->src_as);
+                        ( char * ) (R5(fp) + 1) - ( char * ) &R5(fp)->src_as);
             }
         }
         rp->src_addrv4 = R5(fp)->srcaddr;
@@ -455,24 +461,27 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             swapmem(n,
                     &R6(fp)->unix_secs,
                     &R6(fp)->unix_secs,
-                    ( char * )&R6(fp)->input - ( char * )&R6(fp)->unix_secs);
+                    ( char * ) &R6(fp)->input
+                    - ( char * ) &R6(fp)->unix_secs);
             swapmem(n,
                     &R6(fp)->dPkts,
                     &R6(fp)->dPkts,
-                    ( char * )&R6(fp)->srcport - ( char * )&R6(fp)->dPkts);
+                    ( char * ) &R6(fp)->srcport - ( char * ) &R6(fp)->dPkts);
             if (n &= 1) {
                 swapmem(n,
                         &R6(fp)->input,
                         &R6(fp)->input,
-                        ( char * )&R6(fp)->dPkts - ( char * )&R6(fp)->input);
+                        ( char * ) &R6(fp)->dPkts
+                        - ( char * ) &R6(fp)->input);
                 swapmem(n,
                         &R6(fp)->srcport,
                         &R6(fp)->srcport,
-                        ( char * )&R6(fp)->prot - ( char * )&R6(fp)->srcport);
+                        ( char * ) &R6(fp)->prot
+                        - ( char * ) &R6(fp)->srcport);
                 swapmem(n,
                         &R6(fp)->src_as,
                         &R6(fp)->src_as,
-                        ( char * )(R6(fp) + 1) - ( char * )&R6(fp)->src_as);
+                        ( char * ) (R6(fp) + 1) - ( char * ) &R6(fp)->src_as);
             }
         }
         rp->src_addrv4 = R6(fp)->srcaddr;
@@ -505,24 +514,27 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             swapmem(n,
                     &R7(fp)->unix_secs,
                     &R7(fp)->unix_secs,
-                    ( char * )&R7(fp)->input - ( char * )&R7(fp)->unix_secs);
+                    ( char * ) &R7(fp)->input
+                    - ( char * ) &R7(fp)->unix_secs);
             swapmem(n,
                     &R7(fp)->dPkts,
                     &R7(fp)->dPkts,
-                    ( char * )&R7(fp)->srcport - ( char * )&R7(fp)->dPkts);
+                    ( char * ) &R7(fp)->srcport - ( char * ) &R7(fp)->dPkts);
             if (n &= 1) {
                 swapmem(n,
                         &R7(fp)->input,
                         &R7(fp)->input,
-                        ( char * )&R7(fp)->dPkts - ( char * )&R7(fp)->input);
+                        ( char * ) &R7(fp)->dPkts
+                        - ( char * ) &R7(fp)->input);
                 swapmem(n,
                         &R7(fp)->srcport,
                         &R7(fp)->srcport,
-                        ( char * )&R7(fp)->prot - ( char * )&R7(fp)->srcport);
+                        ( char * ) &R7(fp)->prot
+                        - ( char * ) &R7(fp)->srcport);
                 swapmem(n,
                         &R7(fp)->src_as,
                         &R7(fp)->src_as,
-                        ( char * )(R7(fp) + 1) - ( char * )&R7(fp)->src_as);
+                        ( char * ) (R7(fp) + 1) - ( char * ) &R7(fp)->src_as);
             }
         }
         rp->src_addrv4 = R7(fp)->srcaddr;
@@ -551,10 +563,10 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         rp->uptime = R7(fp)->sysUpTime;
         break;
     }
-    boot = (( Nftime_t )rp->time * MS - ( Nftime_t )rp->uptime) * US
-           + ( Nftime_t )rp->nsec;
-    rp->start = boot + ( Nftime_t )rp->first * US;
-    rp->end = boot + ( Nftime_t )rp->last * US;
+    boot = (( Nftime_t ) rp->time * MS - ( Nftime_t ) rp->uptime) * US
+           + ( Nftime_t ) rp->nsec;
+    rp->start = boot + ( Nftime_t ) rp->first * US;
+    rp->end = boot + ( Nftime_t ) rp->last * US;
     record->size = sizeof(*rp);
     record->data = rp;
     return 1;
@@ -580,7 +592,7 @@ ftfwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 static int
 ftfclose(Dssfile_t *file, Dssdisc_t *disc)
 {
-    State_t *state = ( State_t * )file->data;
+    State_t *state = ( State_t * ) file->data;
 
     if (!state)
         return -1;

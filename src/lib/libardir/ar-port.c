@@ -77,7 +77,7 @@ portclose(Ardir_t *ar)
     int r;
     char buf[sizeof(state->header.ar_date) + 1];
 
-    if (!ar || !(state = ( State_t * )ar->data))
+    if (!ar || !(state = ( State_t * ) ar->data))
         r = -1;
     else {
         r = 0;
@@ -89,7 +89,7 @@ portclose(Ardir_t *ar)
                           sizeof(buf),
                           "%-*lu",
                           sizeof(buf) - 1,
-                          ( unsigned long )time(( time_t * )0) + 5);
+                          ( unsigned long ) time(( time_t * ) 0) + 5);
                 if (write(ar->fd, buf, sizeof(buf) - 1) != (sizeof(buf) - 1))
                     r = -1;
             }
@@ -126,7 +126,7 @@ portopen(Ardir_t *ar, char *buf, size_t n)
      * check for a symbol directory
      */
 
-    hdr = ( Header_t * )(buf + MAGIC_SIZE);
+    hdr = ( Header_t * ) (buf + MAGIC_SIZE);
     if (hdr->ar_fmag[0] != FMAG_port_0 || hdr->ar_fmag[1] != FMAG_port_1)
         return -1;
 #if __pdp11__ || pdp11
@@ -135,7 +135,7 @@ portopen(Ardir_t *ar, char *buf, size_t n)
 #else
     if (!(state = newof(0, State_t, 1, 0)))
         return -1;
-    ar->data = ( void * )state;
+    ar->data = ( void * ) state;
     state->offset = MAGIC_SIZE;
     ar->truncate = 14;
     name = hdr->ar_name;
@@ -143,7 +143,7 @@ portopen(Ardir_t *ar, char *buf, size_t n)
         i = strtol(name + 3, NiL, 10);
         if (n < (MAGIC_SIZE + sizeof(Header_t) + i))
             return -1;
-        name = ( char * )(hdr + 1);
+        name = ( char * ) (hdr + 1);
         ar->truncate = 0;
     }
     if (strmatch(name, SYMDIR_port)
@@ -154,7 +154,7 @@ portopen(Ardir_t *ar, char *buf, size_t n)
         state->offset += sizeof(Header_t) + size + (size & 01);
         if ((ar->flags & ARDIR_RANLIB)
             && (sfsscanf(hdr->ar_date, "%lu", &ar->symtime) != 1
-                || ( unsigned long )ar->st.st_mtime
+                || ( unsigned long ) ar->st.st_mtime
                    > ar->symtime
                      + (strmatch(name, SYMDIR_strict) ? 0 : SYMDIR_age)))
             ar->symtime = 0;
@@ -176,7 +176,7 @@ portopen(Ardir_t *ar, char *buf, size_t n)
     if (lseek(ar->fd, state->offset, SEEK_SET) < 0)
         goto nope;
     hdr = &state->header;
-    while (read(ar->fd, ( char * )hdr, sizeof(state->header))
+    while (read(ar->fd, ( char * ) hdr, sizeof(state->header))
            == sizeof(state->header)
            && hdr->ar_name[0] == TERM_port) {
         if (sfsscanf(hdr->ar_size, "%ld", &size) != 1)
@@ -199,7 +199,7 @@ portopen(Ardir_t *ar, char *buf, size_t n)
                         *name = 0;
         } else if (isdigit(hdr->ar_name[1]))
             break;
-        else if (lseek(ar->fd, ( off_t )size, SEEK_CUR) < 0)
+        else if (lseek(ar->fd, ( off_t ) size, SEEK_CUR) < 0)
             goto nope;
         state->offset += sizeof(state->header) + size;
     }
@@ -244,7 +244,7 @@ ar_uid_gid(Ardir_t *ar, char *b, long *p)
 static Ardirent_t *
 portnext(Ardir_t *ar)
 {
-    State_t *state = ( State_t * )ar->data;
+    State_t *state = ( State_t * ) ar->data;
     long n;
     ssize_t z;
     char *s;
@@ -254,9 +254,9 @@ portnext(Ardir_t *ar)
         ar->error = errno;
         return 0;
     }
-    if (read(ar->fd, ( char * )&state->header, sizeof(state->header))
+    if (read(ar->fd, ( char * ) &state->header, sizeof(state->header))
         != sizeof(state->header)) {
-        if ((z = read(ar->fd, ( char * )&state->header, 1)) < 0)
+        if ((z = read(ar->fd, ( char * ) &state->header, 1)) < 0)
             ar->error = errno;
         else if (z > 0)
             ar->error = EINVAL;
@@ -336,7 +336,7 @@ portnext(Ardir_t *ar)
 static int
 portchange(Ardir_t *ar, Ardirent_t *ent)
 {
-    State_t *state = ( State_t * )ar->data;
+    State_t *state = ( State_t * ) ar->data;
     off_t o;
     char buf[sizeof(state->header.ar_date) + 1];
 
@@ -346,7 +346,7 @@ portchange(Ardir_t *ar, Ardirent_t *ent)
         return -1;
     }
     sfsprintf(
-    buf, sizeof(buf), "%-*lu", sizeof(buf) - 1, ( unsigned long )ent->mtime);
+    buf, sizeof(buf), "%-*lu", sizeof(buf) - 1, ( unsigned long ) ent->mtime);
     if (write(ar->fd, buf, sizeof(buf) - 1) != (sizeof(buf) - 1)) {
         ar->error = errno;
         return -1;

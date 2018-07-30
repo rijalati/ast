@@ -81,7 +81,7 @@ realaddr(Cs_t *state, const char *name)
     addr.l = 0;
     n = 0;
     do {
-        addr.c[n] = strtol(s, ( char ** )&t, r) & 0xff;
+        addr.c[n] = strtol(s, ( char ** ) &t, r) & 0xff;
         if (t == s)
             break;
         s = t;
@@ -122,12 +122,12 @@ realaddr(Cs_t *state, const char *name)
 #if CS_LIB_V10 || CS_LIB_SOCKET
 
 #    if CS_LIB_V10
-    if ((addr.l = ( unsigned long )in_address(name)) == INADDR_ANY)
+    if ((addr.l = ( unsigned long ) in_address(name)) == INADDR_ANY)
         addr.l = 0;
 #    else
     addr.l = ((hp = gethostbyname(name)) && hp->h_addrtype == AF_INET
               && hp->h_length <= sizeof(struct in_addr))
-             ? ( unsigned long )(( struct in_addr * )hp->h_addr)->s_addr
+             ? ( unsigned long ) (( struct in_addr * ) hp->h_addr)->s_addr
              : 0;
 #    endif
     if (addr.c[0] == 127 && addr.c[1] == 0 && addr.c[2] == 0
@@ -165,7 +165,7 @@ realaddr(Cs_t *state, const char *name)
 unsigned long
 csaddr(Cs_t *state, const char *aname)
 {
-    char *name = ( char * )aname;
+    char *name = ( char * ) aname;
     char *s;
     unsigned long addr;
     Sfio_t *sp = 0;

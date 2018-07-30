@@ -192,7 +192,7 @@ struct Pss_s
 #    define pssinit(d, c, e)                                                 \
         (memset(d, 0, sizeof(*(d))),                                         \
          (d)->version = PSS_VERSION,                                         \
-         (d)->command = ( char * )(c),                                       \
+         (d)->command = ( char * ) (c),                                      \
          (d)->errorf = (Error_f)(e))
 
 extern Pss_t *

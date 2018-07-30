@@ -52,7 +52,7 @@ typedef struct State_s
 static int
 fixedident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
 {
-    Magicid_t *mp = ( Magicid_t * )buf;
+    Magicid_t *mp = ( Magicid_t * ) buf;
     Magicid_data_t magic;
     int swap;
 
@@ -84,12 +84,12 @@ fixedopen(Dssfile_t *file, Dssdisc_t *disc)
             return -1;
         }
         if (!(file->data
-              = ( void * )vmnewof(file->dss->vm, 0, State_t, 1, 0))) {
+              = ( void * ) vmnewof(file->dss->vm, 0, State_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
-        (( State_t * )file->data)->swap = file->ident;
+        (( State_t * ) file->data)->swap = file->ident;
     } else if (!(file->flags & DSS_FILE_APPEND)) {
         Fixedheader_t hdr;
 
@@ -111,10 +111,10 @@ fixedopen(Dssfile_t *file, Dssdisc_t *disc)
 static int
 fixedread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    State_t *state = ( State_t * )file->data;
+    State_t *state = ( State_t * ) file->data;
     Netflow_t *rp;
 
-    if (!(rp = ( Netflow_t * )sfreserve(file->io, sizeof(*rp), 0))) {
+    if (!(rp = ( Netflow_t * ) sfreserve(file->io, sizeof(*rp), 0))) {
         if (sfvalue(file->io)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,

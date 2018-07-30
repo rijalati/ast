@@ -71,7 +71,7 @@ coda(void);
 /* space management; assure room for n more chars in Text */
 #define assure(t, n)                                                         \
     do                                                                       \
-        if ((t)->s == 0 || (t)->w >= (t)->e - ( n )-1)                       \
+        if ((t)->s == 0 || (t)->w >= (t)->e - ( n ) -1)                      \
             grow((t), (n));                                                  \
     while (0)
 extern void
@@ -81,9 +81,9 @@ grow(Text *, word);
    portable to the cray; simpler tricks are not */
 
 #define wordp(p)                                                             \
-    ( word * )((p) + sizeof(word) - 1                                        \
-               - ((p) + sizeof(word) - 1 - ( unsigned char * )0)             \
-                 % sizeof(word))
+    ( word * ) ((p) + sizeof(word) - 1                                       \
+                - ((p) + sizeof(word) - 1 - ( unsigned char * ) 0)           \
+                  % sizeof(word))
 
 extern int reflags;
 extern int recno;

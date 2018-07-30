@@ -112,7 +112,7 @@ typedef struct Xargs_s
 static int
 run(int argc, char **argv, Cmddisc_t *disc)
 {
-    return sh_run((( Xargs_t * )disc)->context, argc, argv);
+    return sh_run((( Xargs_t * ) disc)->context, argc, argv);
 }
 
 int

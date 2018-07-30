@@ -7,7 +7,7 @@
 #    endif
 #endif
 
-#define NIL(t) (( t )0)
+#define NIL(t) (( t ) 0)
 
 #ifndef SH_SUBSHARE
 #    define SH_SUBSHARE (1L << 27) /* subshell shares state with parent */
@@ -24,7 +24,7 @@ typedef struct _fcin
     unsigned char *fclast; /* pointer to end of input buffer */
     unsigned char *fcptr;  /* pointer to next input char */
     unsigned char fcchar;  /* saved character */
-    void(*fcfun) __PROTO__(( Sfio_t *, const char *, int ));
+    void(*fcfun) __PROTO__(( Sfio_t *, const char *, int ) );
 } Fcin_t;
 extern __MANGLE__ Fcin_t _Fcin; /* used by macros */
 #    define fcsave(x) (*(x) = _Fcin)

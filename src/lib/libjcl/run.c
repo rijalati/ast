@@ -50,7 +50,7 @@ fmtexport(const char *name)
     if (isalpha(c) || c == '_')
         do {
             if (!(c = *s++))
-                return ( char * )name;
+                return ( char * ) name;
         } while (isalnum(c) || c == '_');
     n = 1;
     while (c = *s++)
@@ -258,17 +258,17 @@ jclrun(Jcl_t *scope)
              top = top->scope)
             ;
     while (step = jclstep(jcl)) {
-        for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-             dd = ( Jcldd_t * )dtnext(step->dd, dd))
+        for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+             dd = ( Jcldd_t * ) dtnext(step->dd, dd))
             if (dd->flags & JCL_DD_ALIAS) {
                 dd->flags &= ~JCL_DD_ALIAS;
                 xx = 0;
                 t = fmtbuf(n = strlen(step->name) + strlen(dd->path) + 2);
                 sfsprintf(t, n, "%s.%s", step->name, dd->path);
                 for (scope = jcl; scope; scope = scope->scope)
-                    if ((xx = ( Jcldd_t * )dtmatch(scope->step->dd, t))
-                        || (xx = ( Jcldd_t * )dtmatch(scope->step->dd,
-                                                      dd->path)))
+                    if ((xx = ( Jcldd_t * ) dtmatch(scope->step->dd, t))
+                        || (xx = ( Jcldd_t * ) dtmatch(scope->step->dd,
+                                                       dd->path)))
                         break;
                 if (!xx) {
                     if (jcl->disc->errorf)
@@ -284,8 +284,8 @@ jclrun(Jcl_t *scope)
                 dd->name = s;
             }
         if (!jcl->tmp) {
-            for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-                 dd = ( Jcldd_t * )dtnext(step->dd, dd)) {
+            for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+                 dd = ( Jcldd_t * ) dtnext(step->dd, dd)) {
                 if (dd->path && *dd->path == '&')
                     break;
                 for (cat = dd->cat; cat; cat = cat->next)
@@ -297,7 +297,7 @@ jclrun(Jcl_t *scope)
                     sfprintf(jcl->vp,
                              "tmp.%s.%lu.",
                              jcl->main->name,
-                             ( unsigned long )getpid());
+                             ( unsigned long ) getpid());
                 else {
                     if (jcl->flags & JCL_EXEC) {
                         if (!(s = getenv("TMPDIR")))
@@ -306,7 +306,7 @@ jclrun(Jcl_t *scope)
                                  "%s/job.%s.%lu.",
                                  s,
                                  jcl->main->name,
-                                 ( unsigned long )getpid());
+                                 ( unsigned long ) getpid());
                     } else
                         sfprintf(jcl->vp,
                                  "${TMPDIR:-/tmp}/job.%s.$$.",
@@ -342,8 +342,8 @@ jclrun(Jcl_t *scope)
             else if (jcl->flags & JCL_LISTEXEC)
                 uniq(step->command, NiL, JCL_LISTEXEC, jcl->disc);
             if (jcl->flags & (JCL_LISTINPUTS | JCL_LISTOUTPUTS)) {
-                for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(step->dd, dd)) {
+                for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(step->dd, dd)) {
                     flags = (dd->disp[0] == JCL_DISP_NEW
                              || dd->disp[0] == JCL_DISP_MOD)
                             ? JCL_LISTOUTPUTS
@@ -370,8 +370,8 @@ jclrun(Jcl_t *scope)
             if (step->flags & JCL_PGM) {
                 std[0] = std[1] = std[2] = std[3] = 0;
                 sfprintf(jcl->tp, ": %s\n", step->name);
-                for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(step->dd, dd))
+                for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(step->dd, dd))
                     switch (dd->flags
                             & (JCL_DD_DIR | JCL_DD_SYSIN | JCL_DD_SYSOUT
                                | JCL_DD_SYSERR | JCL_DD_REFERENCE)) {
@@ -405,8 +405,8 @@ jclrun(Jcl_t *scope)
                         }
                         break;
                     }
-                for (dd = ( Jcldd_t * )dtfirst(jcl->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(jcl->dd, dd))
+                for (dd = ( Jcldd_t * ) dtfirst(jcl->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(jcl->dd, dd))
                     if ((dd->flags
                          & (JCL_DD_MARKED | JCL_DD_SYSIN | JCL_DD_SYSOUT
                             | JCL_DD_SYSERR | JCL_DD_REFERENCE))
@@ -416,8 +416,8 @@ jclrun(Jcl_t *scope)
                         s = dsn(jcl, dd, dd->path, 0);
                         sfprintf(jcl->tp, "[[ -e %s ]] || > %s\n", s, s);
                     }
-                for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(step->dd, dd))
+                for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(step->dd, dd))
                     if ((dd->flags
                          & (JCL_DD_MARKED | JCL_DD_SYSIN | JCL_DD_SYSOUT
                             | JCL_DD_SYSERR | JCL_DD_REFERENCE))
@@ -439,8 +439,8 @@ jclrun(Jcl_t *scope)
                     sfprintf(jcl->tp, "%sJOBNAME=%s ", JCL_AUTO, top->name);
                 sfprintf(jcl->tp, "%s=%s", fmtexport("STEP"), step->name);
                 s = " \\\n";
-                for (dd = ( Jcldd_t * )dtfirst(jcl->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(jcl->dd, dd))
+                for (dd = ( Jcldd_t * ) dtfirst(jcl->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(jcl->dd, dd))
                     if (!(dd->flags & JCL_DD_REFERENCE)) {
                         sfprintf(jcl->tp,
                                  "%s%s=%s",
@@ -451,8 +451,8 @@ jclrun(Jcl_t *scope)
                             sfprintf(
                             jcl->tp, "'\n\t'%s", dsn(jcl, dd, cat->path, 1));
                     }
-                for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(step->dd, dd))
+                for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(step->dd, dd))
                     if (dd->path
                         && !(dd->flags
                              & (JCL_DD_SYSIN | JCL_DD_SYSOUT | JCL_DD_SYSERR
@@ -470,8 +470,8 @@ jclrun(Jcl_t *scope)
                 del = 0;
                 sfprintf(jcl->tp, "%sDDIN='", s);
                 s = "";
-                for (dd = ( Jcldd_t * )dtfirst(jcl->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(jcl->dd, dd))
+                for (dd = ( Jcldd_t * ) dtfirst(jcl->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(jcl->dd, dd))
                     if (!(dd->flags
                           & (JCL_DD_SYSIN | JCL_DD_SYSOUT | JCL_DD_SYSERR
                              | JCL_DD_REFERENCE))
@@ -480,8 +480,8 @@ jclrun(Jcl_t *scope)
                         sfprintf(jcl->tp, "%s%s", s, fmtexport(dd->name));
                         s = " ";
                     }
-                for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(step->dd, dd))
+                for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(step->dd, dd))
                     if (!(dd->flags
                           & (JCL_DD_SYSIN | JCL_DD_SYSOUT | JCL_DD_SYSERR
                              | JCL_DD_REFERENCE))
@@ -492,8 +492,8 @@ jclrun(Jcl_t *scope)
                     }
                 sfprintf(jcl->tp, "' \\\nDDOUT='");
                 s = "";
-                for (dd = ( Jcldd_t * )dtfirst(jcl->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(jcl->dd, dd))
+                for (dd = ( Jcldd_t * ) dtfirst(jcl->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(jcl->dd, dd))
                     if (!(dd->flags
                           & (JCL_DD_SYSIN | JCL_DD_SYSOUT | JCL_DD_SYSERR
                              | JCL_DD_REFERENCE))
@@ -502,8 +502,8 @@ jclrun(Jcl_t *scope)
                         sfprintf(jcl->tp, "%s%s", s, fmtexport(dd->name));
                         s = " ";
                     }
-                for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-                     dd = ( Jcldd_t * )dtnext(step->dd, dd)) {
+                for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+                     dd = ( Jcldd_t * ) dtnext(step->dd, dd)) {
                     if (!(dd->flags
                           & (JCL_DD_SYSIN | JCL_DD_SYSOUT | JCL_DD_SYSERR
                              | JCL_DD_REFERENCE))
@@ -538,8 +538,8 @@ jclrun(Jcl_t *scope)
                              " %s",
                              fmtquote(s, "$'", "'", strlen(s), FMT_SHELL));
                 }
-                for (sym = ( Jclsym_t * )dtfirst(step->syms); sym;
-                     sym = ( Jclsym_t * )dtnext(step->syms, sym))
+                for (sym = ( Jclsym_t * ) dtfirst(step->syms); sym;
+                     sym = ( Jclsym_t * ) dtnext(step->syms, sym))
                     sfprintf(
                     jcl->tp,
                     " %s=%s",
@@ -564,8 +564,8 @@ jclrun(Jcl_t *scope)
                 if (del && !(jcl->flags & JCL_SUBTMP)) {
                     if (del & 1) {
                         sfprintf(jcl->tp, "if (( ! $code ))\nthen\n\trm -rf");
-                        for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-                             dd = ( Jcldd_t * )dtnext(step->dd, dd))
+                        for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+                             dd = ( Jcldd_t * ) dtnext(step->dd, dd))
                             if (dd->disp[1] == JCL_DISP_DELETE)
                                 sfprintf(
                                 jcl->tp, " %s", dsn(jcl, dd, dd->path, 0));
@@ -576,8 +576,8 @@ jclrun(Jcl_t *scope)
                         else
                             sfprintf(jcl->tp, "\nif (( $code ))\nthen\n");
                         sfprintf(jcl->tp, "\trm -rf");
-                        for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
-                             dd = ( Jcldd_t * )dtnext(step->dd, dd))
+                        for (dd = ( Jcldd_t * ) dtfirst(step->dd); dd;
+                             dd = ( Jcldd_t * ) dtnext(step->dd, dd))
                             if (dd->disp[2] == JCL_DISP_DELETE)
                                 sfprintf(
                                 jcl->tp, " %s", dsn(jcl, dd, dd->path, 0));
@@ -673,7 +673,7 @@ bad:
             start = tmxgettime() - start;
             user = (co->user - user) / CO_QUANT;
             sys = (co->sys - sys) / CO_QUANT;
-            if (pct = (real = ( double )start / 1e9))
+            if (pct = (real = ( double ) start / 1e9))
                 pct = 100.0 * ((user + sys) / pct);
             sfprintf(sfstdout,
                      "USAGE CPU=%.2f%% REAL=%.2f USR=%.2f SYS=%.2f\n",

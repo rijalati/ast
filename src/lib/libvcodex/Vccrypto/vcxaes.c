@@ -618,7 +618,7 @@ aes_init(Vcx_t *xx, Vcxmethod_t *meth, Vcchar_t *key, ssize_t keyz)
         && meth != Vcxaessum)
         return -1;
 
-    if (!(aes = ( Aes_t * )calloc(1, sizeof(Aes_t))))
+    if (!(aes = ( Aes_t * ) calloc(1, sizeof(Aes_t))))
         return -1;
     aes->tdsz = aes->pdsz = 0;
 
@@ -655,7 +655,7 @@ aes_init(Vcx_t *xx, Vcxmethod_t *meth, Vcchar_t *key, ssize_t keyz)
 
     ExpandKey(aes, xx->key, aes->ekey); /* expanded encryption key */
     xx->meth = meth;
-    xx->data = ( Void_t * )aes;
+    xx->data = ( Void_t * ) aes;
 
     /* initialize the salt using the key itself */
     AesEncrypt(aes, aes->ekey, xx->key, aes->salt);
@@ -668,7 +668,7 @@ aes_stop(Vcx_t *xx)
 {
     Aes_t *aes;
 
-    if (!xx || !(aes = ( Aes_t * )xx->data))
+    if (!xx || !(aes = ( Aes_t * ) xx->data))
         return -1;
     if (xx->meth != Vcxaes128 && xx->meth != Vcxaes192
         && xx->meth != Vcxaes256 && xx->meth != Vcxaessum)
@@ -689,7 +689,7 @@ aes_encode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
     Vcchar_t blk[AES_BLOCK], *salt, *obdt;
     Aes_t *aes;
 
-    if (!xx || !(aes = ( Aes_t * )xx->data))
+    if (!xx || !(aes = ( Aes_t * ) xx->data))
         return -1;
     if (xx->meth != Vcxaes128 && xx->meth != Vcxaes192
         && xx->meth != Vcxaes256 && xx->meth != Vcxaessum)
@@ -718,7 +718,7 @@ aes_encode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
             obsz
             = ((aes->pdsz + size + AES_BLOCK - 1) / AES_BLOCK) * AES_BLOCK;
             if (obsz > aes->obsz) {
-                if (!(aes->obuf = ( Vcchar_t * )realloc(aes->obuf, obsz))) {
+                if (!(aes->obuf = ( Vcchar_t * ) realloc(aes->obuf, obsz))) {
                     aes->obsz = 0;
                     return -1;
                 } else
@@ -813,7 +813,7 @@ aes_decode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
     Vcchar_t *obdt;
     Aes_t *aes;
 
-    if (!xx || !(aes = ( Aes_t * )xx->data))
+    if (!xx || !(aes = ( Aes_t * ) xx->data))
         return -1;
     if (xx->meth != Vcxaes128 && xx->meth != Vcxaes192
         && xx->meth != Vcxaes256)
@@ -827,7 +827,7 @@ aes_decode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
 
     if (aes->obuf)
         free(aes->obuf);
-    if (!(aes->obuf = ( Vcchar_t * )malloc(size))) {
+    if (!(aes->obuf = ( Vcchar_t * ) malloc(size))) {
         aes->obsz = 0;
         return -1;
     }
@@ -844,7 +844,7 @@ aes_decode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
     }
 
     /* the last byte keeps the data size % AES_BLOCK */
-    k = ( ssize_t )aes->obuf[aes->obsz - 1]; /**/
+    k = ( ssize_t ) aes->obuf[aes->obsz - 1]; /**/
     DEBUG_ASSERT(k < AES_BLOCK);
 
     *out = aes->obuf;

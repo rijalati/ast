@@ -41,7 +41,7 @@ tmain()
     if (pipe(fd) < 0)
         terror("Can't open pipe");
 
-    if (sfnew(sfstdin, NIL(Void_t *), ( size_t )SF_UNBOUND, fd[0], SF_READ)
+    if (sfnew(sfstdin, NIL(Void_t *), ( size_t ) SF_UNBOUND, fd[0], SF_READ)
         != sfstdin)
         terror("Can't initialize sfstdin");
     sfset(sfstdin, SF_SHARE, 1);

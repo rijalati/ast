@@ -230,7 +230,7 @@ keep(State_t *state, const char *name, int mode)
         if (s = strrchr(name, '/'))
             s++;
         else
-            s = ( char * )name;
+            s = ( char * ) name;
         if (strmatch(s, state->skip.data))
             return 0;
     }
@@ -375,7 +375,7 @@ add(State_t *state,
             }
         }
     }
-    if (!(fp = ( File_t * )dtmatch(state->files, s))) {
+    if (!(fp = ( File_t * ) dtmatch(state->files, s))) {
         if (!keep(state, s, -1))
             return 0;
         if (!(fp = newof(0, File_t, 1, strlen(s))))
@@ -386,7 +386,7 @@ add(State_t *state,
         if (t = strrchr(s, '/'))
             do {
                 *t = 0;
-                if (dp = ( File_t * )dtmatch(state->files, s)) {
+                if (dp = ( File_t * ) dtmatch(state->files, s)) {
                     *t = '/';
                     break;
                 }
@@ -522,7 +522,7 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
     char buf[8 * 1024];
 
     perlwarn = state->perlwarn && strmatch(path, "*.(html|htm|HTML|HTM)");
-    prefix = (s = strrchr(path, '/')) ? s - ( char * )path + 1 : 0;
+    prefix = (s = strrchr(path, '/')) ? s - ( char * ) path + 1 : 0;
     flags = EXTERNAL;
     for (;;) {
         switch (c = sfgetc(ip)) {
@@ -619,7 +619,7 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
 
                                         if (t = strrchr(p, '/'))
                                             *t = 0;
-                                        fts = fts_open(( char ** )p,
+                                        fts = fts_open(( char ** ) p,
                                                        FTS_ONEPATH | FTS_META
                                                        | FTS_PHYSICAL
                                                        | FTS_NOPOSTORDER,
@@ -1041,9 +1041,9 @@ main(int argc, char **argv)
     if (!state->user.size)
         state->user.size = strlen(state->user.data = fmtuid(geteuid()));
     if (!state->root.size || *state->root.data != '/') {
-        www[0] = ( const char * )state->index.data;
+        www[0] = ( const char * ) state->index.data;
         if (state->root.size)
-            www[1] = ( const char * )state->root.data;
+            www[1] = ( const char * ) state->root.data;
         if (!(pwd = getpwnam(state->user.data)))
             error(3, "%s: unknown user", state->user.data);
         s = pwd->pw_dir;
@@ -1075,8 +1075,8 @@ main(int argc, char **argv)
     }
     while (state->more) {
         state->more = 0;
-        for (fp = ( File_t * )dtfirst(state->files); fp;
-             fp = ( File_t * )dtnext(state->files, fp)) {
+        for (fp = ( File_t * ) dtfirst(state->files); fp;
+             fp = ( File_t * ) dtnext(state->files, fp)) {
             if (!(fp->flags & SCANNED)) {
                 fp->flags |= SCANNED;
                 if (streq(fp->name, "-") || streq(fp->name, "/dev/stdin")
@@ -1096,8 +1096,8 @@ main(int argc, char **argv)
     }
     if (state->copy.size) {
         p = state->buf;
-        for (fp = ( File_t * )dtfirst(state->files); fp;
-             fp = ( File_t * )dtnext(state->files, fp))
+        for (fp = ( File_t * ) dtfirst(state->files); fp;
+             fp = ( File_t * ) dtnext(state->files, fp))
             if (!(fp->flags & (CHECKED | COPIED | MISSING))) {
                 fp->flags |= CHECKED;
                 sfsprintf(p,
@@ -1203,7 +1203,7 @@ main(int argc, char **argv)
                 }
             }
         if (state->unreferenced) {
-            if (!(fts = fts_open(( char ** )state->copy.data,
+            if (!(fts = fts_open(( char ** ) state->copy.data,
                                  FTS_ONEPATH | FTS_META | FTS_PHYSICAL
                                  | FTS_NOPREORDER,
                                  order)))
@@ -1292,8 +1292,8 @@ main(int argc, char **argv)
             error(
             ERROR_SYSTEM | 3, "%s: directory read error", state->root.data);
     } else {
-        for (fp = ( File_t * )dtfirst(state->files); fp;
-             fp = ( File_t * )dtnext(state->files, fp))
+        for (fp = ( File_t * ) dtfirst(state->files); fp;
+             fp = ( File_t * ) dtnext(state->files, fp))
             if (state->all || (fp->flags & MISSING) == state->missing) {
                 sfprintf(sfstdout,
                          "%s",

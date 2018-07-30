@@ -56,7 +56,7 @@ lha_method(unsigned char *s)
 static int
 lha_done(Pax_t *pax, Paxarchive_t *ap)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
 
     if (!ar)
         return -1;
@@ -103,7 +103,7 @@ lha_getprologue(Pax_t *pax,
 static int
 lha_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     unsigned char *hdr;
     char *s;
     Tm_t tm;
@@ -170,7 +170,7 @@ lha_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         tm.tm_mday = ((dostime >> (16 + 0)) & 0x1f);
         tm.tm_hour = ((dostime >> 11) & 0x1f);
         tm.tm_min = ((dostime >> 5) & 0x3f);
-        tm.tm_sec = (( dostime )&0x1f) * 2;
+        tm.tm_sec = (( dostime ) &0x1f) * 2;
         f->st->st_mtime = tmtime(&tm, TM_LOCALZONE);
         if (mode & 0x10)
             mode = X_IFDIR | X_IRUSR | X_IWUSR | X_IXUSR | X_IRGRP | X_IWGRP
@@ -201,7 +201,7 @@ lha_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
 static int
 lha_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
 {
-    Ar_t *ar = ( Ar_t * )ap->data;
+    Ar_t *ar = ( Ar_t * ) ap->data;
     Sfio_t *sp;
     off_t pos;
     ssize_t n;

@@ -102,7 +102,7 @@ int mask; /* OR'ed combination of TCL_READABLE,
     int fd, type, index;
     fd_mask bit;
 
-    fd = ( int )Tcl_GetFileInfo(file, &type);
+    fd = ( int ) Tcl_GetFileInfo(file, &type);
 
     if (type != TCL_UNIX_FD) {
         panic("Tcl_WatchFile: unexpected file type");
@@ -167,7 +167,7 @@ int mask;                              /* OR'ed combination of TCL_READABLE,
     int index, result, type, fd;
     fd_mask bit;
 
-    fd = ( int )Tcl_GetFileInfo(file, &type);
+    fd = ( int ) Tcl_GetFileInfo(file, &type);
     if (type != TCL_UNIX_FD) {
         panic("Tcl_FileReady: unexpected file type");
     }
@@ -259,15 +259,15 @@ timePtr) Tcl_Time *timePtr; /* Specifies the maximum amount of time
         return TCL_OK;
     if (winFd < 0)
         winFd = open("/dev/windows", 0);
-    Tcl_WatchFile(Tcl_GetFile(( ClientData )winFd, TCL_UNIX_FD),
+    Tcl_WatchFile(Tcl_GetFile(( ClientData ) winFd, TCL_UNIX_FD),
                   TCL_READABLE);
 #endif
 
-    memcpy(( VOID * )readyMasks,
-           ( VOID * )checkMasks,
+    memcpy(( VOID * ) readyMasks,
+           ( VOID * ) checkMasks,
            3 * MASK_SIZE * sizeof(fd_mask));
     if (timePtr == NULL) {
-        if ((numFdBits == 0) || (MaskEmpty(( long * )readyMasks))) {
+        if ((numFdBits == 0) || (MaskEmpty(( long * ) readyMasks))) {
             return TCL_ERROR;
         }
         timeoutPtr = NULL;
@@ -277,13 +277,13 @@ timePtr) Tcl_Time *timePtr; /* Specifies the maximum amount of time
         timeout.tv_usec = timePtr->usec;
     }
     numFound = select(numFdBits,
-                      ( SELECT_MASK * )&readyMasks[0],
-                      ( SELECT_MASK * )&readyMasks[MASK_SIZE],
-                      ( SELECT_MASK * )&readyMasks[2 * MASK_SIZE],
+                      ( SELECT_MASK * ) &readyMasks[0],
+                      ( SELECT_MASK * ) &readyMasks[MASK_SIZE],
+                      ( SELECT_MASK * ) &readyMasks[2 * MASK_SIZE],
                       timeoutPtr);
 
 #ifdef WIN32
-    if (FD_ISSET(winFd, (( SELECT_MASK * )&readyMasks[0]))) {
+    if (FD_ISSET(winFd, (( SELECT_MASK * ) &readyMasks[0]))) {
         MSG msg;
         GetMessage(&msg, NULL, 0, 0);
         TranslateMessage(&msg);
@@ -298,7 +298,7 @@ timePtr) Tcl_Time *timePtr; /* Specifies the maximum amount of time
 
     eventsFound = numFound;
     if (numFound == -1) {
-        memset(( VOID * )readyMasks, 0, 3 * MASK_SIZE * sizeof(fd_mask));
+        memset(( VOID * ) readyMasks, 0, 3 * MASK_SIZE * sizeof(fd_mask));
     }
 
     /*
@@ -307,7 +307,7 @@ timePtr) Tcl_Time *timePtr; /* Specifies the maximum amount of time
      */
 
     numFdBits = 0;
-    memset(( VOID * )checkMasks, 0, 3 * MASK_SIZE * sizeof(fd_mask));
+    memset(( VOID * ) checkMasks, 0, 3 * MASK_SIZE * sizeof(fd_mask));
     return TCL_OK;
 }
 
@@ -360,12 +360,15 @@ void Tcl_Sleep(ms) int ms; /* Number of milliseconds to sleep. */
          * to zero, since delay.tv_usec is unsigned on some platforms.
          */
 
-        if (((( int )delay.tv_sec) < 0)
+        if (((( int ) delay.tv_sec) < 0)
             || ((delay.tv_usec == 0) && (delay.tv_sec == 0))) {
             break;
         }
-        ( void )select(
-        0, ( SELECT_MASK * )0, ( SELECT_MASK * )0, ( SELECT_MASK * )0, &delay);
+        ( void ) select(0,
+                        ( SELECT_MASK * ) 0,
+                        ( SELECT_MASK * ) 0,
+                        ( SELECT_MASK * ) 0,
+                        &delay);
         TclpGetTime(&before);
     }
 }

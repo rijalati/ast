@@ -34,7 +34,7 @@ csntoa(Cs_t *state, unsigned long addr)
     int32_t a;
 
     a = addr;
-    p = ( unsigned char * )&a;
+    p = ( unsigned char * ) &a;
     if ((!addr || p[0] == 127 && p[1] == 0 && p[2] == 0 && p[3] <= 1)
         && !state->ntoa[sizeof(state->ntoa) - 1]) {
         state->ntoa[sizeof(state->ntoa) - 1] = 1;

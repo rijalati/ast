@@ -106,9 +106,9 @@ tmain()
     s3 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     s4 = "!@#$%^&*()_-+={}[]~`':;?/><,|";
 
-    if (!(f1 = sfopen(( Sfio_t * )0, s1, "s"))
-        || !(f2 = sfopen(( Sfio_t * )0, s2, "s"))
-        || !(f3 = sfopen(( Sfio_t * )0, s3, "s")))
+    if (!(f1 = sfopen(( Sfio_t * ) 0, s1, "s"))
+        || !(f2 = sfopen(( Sfio_t * ) 0, s2, "s"))
+        || !(f3 = sfopen(( Sfio_t * ) 0, s3, "s")))
         terror("Opening strings");
 
     sfdisc(sfstdin, &Disc);
@@ -120,14 +120,14 @@ tmain()
         terror("Opening file");
     if (sfwrite(f, "0123456789", 10) != 10)
         terror("Write file");
-    if (sfseek(f, ( Sfoff_t )0, 0) != 0)
+    if (sfseek(f, ( Sfoff_t ) 0, 0) != 0)
         terror("Seek file");
 
     if (sfstack(sfstdin, f) != sfstdin)
         terror("Stacking on stdin2");
     if (sfopen(sfstdout, "/dev/null", "w") != sfstdout)
         terror("Opening sfstdout");
-    if (sfmove(sfstdin, sfstdout, ( Sfoff_t )SF_UNBOUND, -1) != 10
+    if (sfmove(sfstdin, sfstdout, ( Sfoff_t ) SF_UNBOUND, -1) != 10
         || !sfeof(sfstdin) || sferror(sfstdout))
         terror("Bad sfmove");
 
@@ -135,9 +135,9 @@ tmain()
 
     if (!(f = sftmp(0)))
         terror("Opening temp file");
-    if (sfputr(f, s4, -1) != ( ssize_t )strlen(s4))
+    if (sfputr(f, s4, -1) != ( ssize_t ) strlen(s4))
         terror("Writing s4");
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
 
 #if FIX_THIS_TEST_2008_08_11
     if (sfstack(f, f3) != f)
@@ -162,11 +162,11 @@ tmain()
         terror("Expect=%s Got=%s", str, ss);
 #endif
 
-    if (!(f1 = sfopen(( Sfio_t * )0, s1, "s"))
-        || !(f2 = sfopen(( Sfio_t * )0, s2, "s"))
-        || !(f3 = sfopen(( Sfio_t * )0, s3, "s")))
+    if (!(f1 = sfopen(( Sfio_t * ) 0, s1, "s"))
+        || !(f2 = sfopen(( Sfio_t * ) 0, s2, "s"))
+        || !(f3 = sfopen(( Sfio_t * ) 0, s3, "s")))
         terror("Opening strings2");
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
 
     if (sfstack(f, f3) != f || sfstack(f, f2) != f || sfstack(f, f1) != f)
         terror("Stacking streams2");
@@ -187,7 +187,7 @@ tmain()
     if (pipe(fd) < 0)
         terror("Can't create pipe");
     if (!(f1 = sfnew(
-          0, NIL(Void_t *), ( size_t )SF_UNBOUND, fd[0], SF_READ | SF_WRITE)))
+          0, NIL(Void_t *), ( size_t ) SF_UNBOUND, fd[0], SF_READ | SF_WRITE)))
         terror("Can't create stream");
 
     if (write(fd[1], "0123", 4) != 4)

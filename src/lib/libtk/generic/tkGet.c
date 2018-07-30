@@ -103,7 +103,7 @@ error:
                      "bad anchor position \"",
                      string,
                      "\": must be n, ne, e, se, s, sw, w, nw, or center",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -200,7 +200,7 @@ int *joinPtr;       /* Where to store join style corresponding
                      "bad join style \"",
                      string,
                      "\": must be bevel, miter, or round",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -284,7 +284,7 @@ int *capPtr;        /* Where to store cap style corresponding
                      "bad cap style \"",
                      string,
                      "\": must be butt, projecting, or round",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -368,7 +368,7 @@ Tk_Justify *justifyPtr; /* Where to store Tk_Justify corresponding
                      "bad justification \"",
                      string,
                      "\": must be left, right, or center",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -435,7 +435,7 @@ Tk_Uid Tk_GetUid(string) char *string; /* String to convert. */
         Tcl_InitHashTable(&uidTable, TCL_STRING_KEYS);
         initialized = 1;
     }
-    return ( Tk_Uid )Tcl_GetHashKey(
+    return ( Tk_Uid ) Tcl_GetHashKey(
     &uidTable, Tcl_CreateHashEntry(&uidTable, string, &dummy));
 }
 
@@ -475,7 +475,7 @@ double *doublePtr;  /* Place to store converted result. */
     if (end == string) {
     error:
         Tcl_AppendResult(
-        interp, "bad screen distance \"", string, "\"", ( char * )NULL);
+        interp, "bad screen distance \"", string, "\"", ( char * ) NULL);
         return TCL_ERROR;
     }
     while ((*end != '\0') && isspace(UCHAR(*end))) {
@@ -550,7 +550,7 @@ int *intPtr;        /* Place to store converted result. */
     if (end == string) {
     error:
         Tcl_AppendResult(
-        interp, "bad screen distance \"", string, "\"", ( char * )NULL);
+        interp, "bad screen distance \"", string, "\"", ( char * ) NULL);
         return TCL_ERROR;
     }
     while ((*end != '\0') && isspace(UCHAR(*end))) {
@@ -589,9 +589,9 @@ int *intPtr;        /* Place to store converted result. */
         goto error;
     }
     if (d < 0) {
-        *intPtr = ( int )(d - 0.5);
+        *intPtr = ( int ) (d - 0.5);
     } else {
-        *intPtr = ( int )(d + 0.5);
+        *intPtr = ( int ) (d + 0.5);
     }
     return TCL_OK;
 }

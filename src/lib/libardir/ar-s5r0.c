@@ -75,7 +75,7 @@ s5r0close(Ardir_t *ar)
     int r;
     Header_t header;
 
-    if (!ar || !(state = ( State_t * )ar->data))
+    if (!ar || !(state = ( State_t * ) ar->data))
         r = -1;
     else {
         r = 0;
@@ -83,10 +83,11 @@ s5r0close(Ardir_t *ar)
             if (lseek(ar->fd, state->patch, SEEK_SET) != state->patch)
                 r = -1;
             else {
-                swapput(0,
-                        ( char * )&header.ar_date,
-                        sizeof(header.ar_date),
-                        (intmax_t)(( unsigned long )time(( time_t * )0) + 5));
+                swapput(
+                0,
+                ( char * ) &header.ar_date,
+                sizeof(header.ar_date),
+                (intmax_t)(( unsigned long ) time(( time_t * ) 0) + 5));
                 if (write(ar->fd, &header.ar_date, sizeof(header.ar_date))
                     != sizeof(header.ar_date))
                     r = -1;
@@ -109,12 +110,12 @@ s5r0open(Ardir_t *ar, char *buf, size_t n)
 
     if (n <= sizeof(Header_t))
         return -1;
-    hdr = ( Header_t * )buf;
+    hdr = ( Header_t * ) buf;
     if (memcmp(hdr->ar_magic, MAGIC, MAGIC_SIZE))
         return -1;
     if (!(state = newof(0, State_t, 1, 0)))
         return -1;
-    ar->data = ( void * )state;
+    ar->data = ( void * ) state;
     state->patch = offsetof(Header_t, ar_date);
     state->offset
     = sizeof(Header_t)
@@ -130,7 +131,7 @@ s5r0open(Ardir_t *ar, char *buf, size_t n)
 static Ardirent_t *
 s5r0next(Ardir_t *ar)
 {
-    State_t *state = ( State_t * )ar->data;
+    State_t *state = ( State_t * ) ar->data;
     ssize_t z;
 
     state->current = state->offset;
@@ -138,9 +139,9 @@ s5r0next(Ardir_t *ar)
         ar->error = errno;
         return 0;
     }
-    if (read(ar->fd, ( char * )&state->member, sizeof(state->member))
+    if (read(ar->fd, ( char * ) &state->member, sizeof(state->member))
         != sizeof(state->member)) {
-        if ((z = read(ar->fd, ( char * )&state->member, 1)) < 0)
+        if ((z = read(ar->fd, ( char * ) &state->member, 1)) < 0)
             ar->error = errno;
         else if (z > 0)
             ar->error = EINVAL;
@@ -148,16 +149,16 @@ s5r0next(Ardir_t *ar)
     }
     ar->dirent.name = state->member.arf_name;
     ar->dirent.mtime = swapget(
-    0, ( char * )&state->member.arf_date, sizeof(state->member.arf_date));
+    0, ( char * ) &state->member.arf_date, sizeof(state->member.arf_date));
     ar->dirent.uid = swapget(
-    0, ( char * )&state->member.arf_uid, sizeof(state->member.arf_uid));
+    0, ( char * ) &state->member.arf_uid, sizeof(state->member.arf_uid));
     ar->dirent.gid = swapget(
-    0, ( char * )&state->member.arf_gid, sizeof(state->member.arf_gid));
+    0, ( char * ) &state->member.arf_gid, sizeof(state->member.arf_gid));
     ar->dirent.mode = swapget(
-    0, ( char * )&state->member.arf_mode, sizeof(state->member.arf_mode));
+    0, ( char * ) &state->member.arf_mode, sizeof(state->member.arf_mode));
     ar->dirent.offset = state->offset += sizeof(state->member);
     ar->dirent.size = swapget(
-    0, ( char * )&state->member.arf_size, sizeof(state->member.arf_size));
+    0, ( char * ) &state->member.arf_size, sizeof(state->member.arf_size));
     state->offset += ar->dirent.size + (ar->dirent.size & 01);
     return &ar->dirent;
 }
@@ -169,7 +170,7 @@ s5r0next(Ardir_t *ar)
 static int
 s5r0change(Ardir_t *ar, Ardirent_t *ent)
 {
-    State_t *state = ( State_t * )ar->data;
+    State_t *state = ( State_t * ) ar->data;
     off_t o;
 
     o = state->current + offsetof(Member_t, arf_date);
@@ -178,9 +179,9 @@ s5r0change(Ardir_t *ar, Ardirent_t *ent)
         return -1;
     }
     swapput(0,
-            ( char * )&state->member.arf_date,
+            ( char * ) &state->member.arf_date,
             sizeof(state->member.arf_date),
-            ( intmax_t )ent->mtime);
+            ( intmax_t ) ent->mtime);
     if (write(ar->fd, &state->member.arf_date, sizeof(state->member.arf_date))
         != sizeof(state->member.arf_date)) {
         ar->error = errno;

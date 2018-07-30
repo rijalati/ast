@@ -36,7 +36,7 @@
 
 #define VCRD_VECTOR 00100000 /* did transform vector already	*/
 
-#define VCRD_MATCH (( Vcodex_t * )(-1)) /* use matching in vcrdplan()	*/
+#define VCRD_MATCH (( Vcodex_t * ) (-1)) /* use matching in vcrdplan()	*/
 
 /* Information about a set of relational data. There are two cases:
 ** fldn > 0: fields may be fixed length or variable lengths:
@@ -105,22 +105,22 @@ _BEGIN_EXTERNS_
 extern Vcmethod_t *Vcrdb; /* relational data transform 	*/
 
 extern Vcrdformat_t *
-vcrdformat _ARG_(( Vcchar_t *, ssize_t, int, ssize_t, int ));
+vcrdformat _ARG_(( Vcchar_t *, ssize_t, int, ssize_t, int ) );
 
-extern Vcrdplan_t *vcrdmakeplan _ARG_(( Vcrdtable_t *, Vcodex_t * ));
-extern void vcrdfreeplan _ARG_(( Vcrdplan_t * ));
-extern int vcrdexecplan _ARG_(( Vcrdtable_t *, Vcrdplan_t *, int ));
+extern Vcrdplan_t *vcrdmakeplan _ARG_(( Vcrdtable_t *, Vcodex_t * ) );
+extern void vcrdfreeplan _ARG_(( Vcrdplan_t * ) );
+extern int vcrdexecplan _ARG_(( Vcrdtable_t *, Vcrdplan_t *, int ) );
 
 extern Vcrdtable_t *
-vcrdparse _ARG_(( Vcrdinfo_t *, Vcchar_t *, ssize_t, int ));
+vcrdparse _ARG_(( Vcrdinfo_t *, Vcchar_t *, ssize_t, int ) );
 extern ssize_t vcrdfield
 _ARG_((Vcrdtable_t *, ssize_t, ssize_t, Vcchar_t *data, ssize_t dtsz));
-extern int vcrdattrs _ARG_(( Vcrdtable_t *, ssize_t, int, int ));
+extern int vcrdattrs _ARG_(( Vcrdtable_t *, ssize_t, int, int ) );
 extern ssize_t
-vcrdextract _ARG_(( Vcrdtable_t *, ssize_t, Vcchar_t *, ssize_t, int ));
-extern void vcrdclose _ARG_(( Vcrdtable_t * ));
+vcrdextract _ARG_(( Vcrdtable_t *, ssize_t, Vcchar_t *, ssize_t, int ) );
+extern void vcrdclose _ARG_(( Vcrdtable_t * ) );
 extern int
-vcrdvector _ARG_(( Vcrdtable_t *, ssize_t, Vcchar_t *, ssize_t, int ));
+vcrdvector _ARG_(( Vcrdtable_t *, ssize_t, Vcchar_t *, ssize_t, int ) );
 _END_EXTERNS_
 
 #endif /*_VCRDB_H*/

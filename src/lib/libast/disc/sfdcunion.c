@@ -72,7 +72,7 @@ Sfdisc_t *disc; /* discipline */
     reg Union_t *un;
     reg ssize_t r, m;
 
-    un = ( Union_t * )disc;
+    un = ( Union_t * ) disc;
     m = n;
     f = un->f[un->c].f;
     while (1) {
@@ -85,7 +85,7 @@ Sfdisc_t *disc; /* discipline */
         if (m == 0)
             break;
 
-        buf = ( char * )buf + r;
+        buf = ( char * ) buf + r;
         if (sfeof(f) && un->c < un->n - 1)
             f = un->f[un->c += 1].f;
     }
@@ -106,7 +106,7 @@ Sfdisc_t *disc;
     reg int i;
     reg Sfoff_t extent, s;
 
-    un = ( Union_t * )disc;
+    un = ( Union_t * ) disc;
     if (un->type & UNSEEKABLE)
         return -1L;
 
@@ -176,7 +176,7 @@ int n;
         return -1;
 
     if (!(un
-          = ( Union_t * )malloc(sizeof(Union_t) + (n - 1) * sizeof(File_t))))
+          = ( Union_t * ) malloc(sizeof(Union_t) + (n - 1) * sizeof(File_t))))
         return -1;
     memset(un, 0, sizeof(*un));
 
@@ -189,13 +189,13 @@ int n;
     for (i = 0; i < n; ++i) {
         un->f[i].f = array[i];
         if (!(un->type & UNSEEKABLE)) {
-            un->f[i].lower = sfseek(array[i], ( Sfoff_t )0, 1);
+            un->f[i].lower = sfseek(array[i], ( Sfoff_t ) 0, 1);
             if (un->f[i].lower < 0)
                 un->type |= UNSEEKABLE;
         }
     }
 
-    if (sfdisc(f, ( Sfdisc_t * )un) != ( Sfdisc_t * )un) {
+    if (sfdisc(f, ( Sfdisc_t * ) un) != ( Sfdisc_t * ) un) {
         free(un);
         return -1;
     }

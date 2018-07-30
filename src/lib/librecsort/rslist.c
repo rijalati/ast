@@ -115,9 +115,9 @@ int n;
     Union_t **ulist, *uarray;
     reg int n_list;
 
-    if (!(ulist = ( Union_t ** )vmalloc(Vmheap, n * sizeof(Union_t *))))
+    if (!(ulist = ( Union_t ** ) vmalloc(Vmheap, n * sizeof(Union_t *))))
         return NIL(Rsobj_t *);
-    if (!(uarray = ( Union_t * )vmalloc(Vmheap, n * sizeof(Union_t)))) {
+    if (!(uarray = ( Union_t * ) vmalloc(Vmheap, n * sizeof(Union_t)))) {
         vmfree(Vmheap, ulist);
         return NIL(Rsobj_t *);
     }
@@ -233,10 +233,10 @@ Rsobj_t *rslist(rs) Rs_t *rs;
 
     if ((list = (*rs->meth->listf)(rs)) && rs->n_list > 0) {
         rs->list
-        = ( Rsobj_t ** )vmresize(rs->vm,
-                                 rs->list,
-                                 (rs->n_list + 1) * sizeof(Rsobj_t *),
-                                 VM_RSCOPY | VM_RSMOVE);
+        = ( Rsobj_t ** ) vmresize(rs->vm,
+                                  rs->list,
+                                  (rs->n_list + 1) * sizeof(Rsobj_t *),
+                                  VM_RSCOPY | VM_RSMOVE);
         if (!rs->list)
             return NIL(Rsobj_t *);
         rs->list[rs->n_list] = list;
@@ -256,8 +256,8 @@ Rsobj_t *rslist(rs) Rs_t *rs;
             if ((e = r->equal))
                 e->left->right = NIL(Rsobj_t *);
     } else {
-        int(*insertf) _ARG_(( Rs_t *, Rsobj_t * )) = rs->meth->insertf;
-        Rsobj_t *( *listf )_ARG_(( Rs_t * )) = rs->meth->listf;
+        int(*insertf) _ARG_(( Rs_t *, Rsobj_t * ) ) = rs->meth->insertf;
+        Rsobj_t *( *listf ) _ARG_(( Rs_t * ) ) = rs->meth->listf;
 
         for (p = NIL(Rsobj_t *), r = list; r; r = t) {
             t = r->right;

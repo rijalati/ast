@@ -142,14 +142,14 @@ int type;         /* VCRD_FIELD if field-oriented	*/
         fldn * recn * sizeof(Vcrdrecord_t)
         +                              /* pointers to record data in fields */
         fldn * recn * sizeof(ssize_t); /* space for transform vectors */
-    if (!(tbl = ( Vcrdtable_t * )calloc(1, z)))
+    if (!(tbl = ( Vcrdtable_t * ) calloc(1, z)))
         return NIL(Vcrdtable_t *);
     tbl->info = info;
     tbl->recn = recn;
     tbl->fldn = fldn;
-    tbl->fld = ( Vcrdfield_t * )(tbl + 1);
-    rcrd = ( Vcrdrecord_t * )(tbl->fld + fldn);
-    vect = ( ssize_t * )(rcrd + fldn * recn);
+    tbl->fld = ( Vcrdfield_t * ) (tbl + 1);
+    rcrd = ( Vcrdrecord_t * ) (tbl->fld + fldn);
+    vect = ( ssize_t * ) (rcrd + fldn * recn);
     for (f = 0; f < fldn; ++f, rcrd += recn, vect += recn) {
         tbl->fld[f].rcrd = rcrd;
         tbl->fld[f].vect = vect;
@@ -326,7 +326,7 @@ int *type;        /* conversion type	*/
                     return -1;
 
                 if (cvdt) /* set the converted byte */
-                    cvdt[f] = ( Vcchar_t )byte;
+                    cvdt[f] = ( Vcchar_t ) byte;
 
                 *type = ty;   /* return the format (dot or dot|slash) */
                 return f + 1; /* return number of converted bytes */
@@ -341,7 +341,7 @@ int *type;        /* conversion type	*/
                     ty |= VCRD_SLASH;
 
                 if (cvdt) /* set the converted byte */
-                    cvdt[f] = ( Vcchar_t )byte;
+                    cvdt[f] = ( Vcchar_t ) byte;
 
                 dt += 1; /* move to next conversion */
                 break;
@@ -414,7 +414,7 @@ int type;                                            /* DOT, SLASH, etc.	*/
             return -1;
         if ((sz -= 1) == 0) /* last part done, add ending character */
         {
-            *cvdt++ = ( Vcchar_t )flde;
+            *cvdt++ = ( Vcchar_t ) flde;
             return z;
         } else if (sz == 1 && (type & VCRD_SLASH)) /* n.n.../n notation */
             *cvdt++ = info->slash;
@@ -452,7 +452,7 @@ int type;                                            /* 1/0: encode/decode	*/
             return 0;
 
         /* allocate space and convert all records */
-        if (!(data = ( Vcchar_t * )malloc(z * tbl->recn)))
+        if (!(data = ( Vcchar_t * ) malloc(z * tbl->recn)))
             return 0;
         for (r = 0; r < tbl->recn; ++r)
             if (text2byte(info, rcrd[r].data, data + z * r, flde, &type) != z)
@@ -503,7 +503,7 @@ int type;                                            /* 1/0: encode/decode	*/
             if ((cvsz + z) > dtsz) {
                 dtsz += (dtsz - cvsz) + z; /* get a rounded and big buffer */
                 dtsz = ((dtsz + MAXBUF - 1) / MAXBUF) * MAXBUF;
-                if (!(data = ( Vcchar_t * )realloc(data, dtsz)))
+                if (!(data = ( Vcchar_t * ) realloc(data, dtsz)))
                     return -1;
             }
             memcpy(data + cvsz, cvdt, z);

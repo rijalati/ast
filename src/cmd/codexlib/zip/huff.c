@@ -89,7 +89,7 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
     } while (--i);
     if (c[0] == n) /* null input--all zero length codes */
     {
-        *t = ( Huff_t * )NULL;
+        *t = ( Huff_t * ) NULL;
         *m = 0;
         return 0;
     }
@@ -99,13 +99,13 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
         if (c[j])
             break;
     k = j; /* minimum code length */
-    if (( ulg )*m < j)
+    if (( ulg ) *m < j)
         *m = j;
     for (i = BMAX; i; i--)
         if (c[i])
             break;
     g = i; /* maximum code length */
-    if (( ulg )*m > i)
+    if (( ulg ) *m > i)
         *m = i;
 
     /* Adjust last length count to fill out codes, if needed */
@@ -134,13 +134,13 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
     n = x[g]; /* set n to length of v */
 
     /* Generate the Huffman codes and for each, make the table entries */
-    x[0] = i = 0;            /* first Huffman code is zero */
-    p = v;                   /* grab values in bit order */
-    h = -1;                  /* no tables yet--level -1 */
-    w = l[-1] = 0;           /* no bits decoded yet */
-    u[0] = ( Huff_t * )NULL; /* just to keep compilers happy */
-    q = ( Huff_t * )NULL;    /* ditto */
-    z = 0;                   /* ditto */
+    x[0] = i = 0;             /* first Huffman code is zero */
+    p = v;                    /* grab values in bit order */
+    h = -1;                   /* no tables yet--level -1 */
+    w = l[-1] = 0;            /* no bits decoded yet */
+    u[0] = ( Huff_t * ) NULL; /* just to keep compilers happy */
+    q = ( Huff_t * ) NULL;    /* ditto */
+    z = 0;                    /* ditto */
 
     /* go through the bit lengths (k already is bits in shortest code) */
     for (; k <= g; k++) {
@@ -152,7 +152,7 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
                 w += l[h++]; /* add bits already decoded */
 
                 /* compute minimum size table less than or equal to *m bits */
-                z = (z = g - w) > ( ulg )*m ? *m : z; /* upper limit */
+                z = (z = g - w) > ( ulg ) *m ? *m : z; /* upper limit */
                 if ((f = 1 << (j = k - w)) > a + 1) /* try a k-w bit table */
                 {               /* too few codes for k-w bit table */
                     f -= a + 1; /* deduct codes from patterns left */
@@ -164,26 +164,26 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
                         f -= *xp;  /* else deduct codes from patterns */
                     }
                 }
-                if (( ulg )w + j > el && ( ulg )w < el)
+                if (( ulg ) w + j > el && ( ulg ) w < el)
                     j = el - w; /* make EOB code end at table */
                 z = 1 << j;     /* table entries for j-bit table */
                 l[h] = j;       /* set table size in stack */
 
                 /* allocate and link in new table */
-                q = ( Huff_t * )vmalloc(vm, (z + 1) * sizeof(Huff_t));
+                q = ( Huff_t * ) vmalloc(vm, (z + 1) * sizeof(Huff_t));
                 if (q == NULL) {
                     return 3; /* not enough memory */
                 }
 
                 *t = q + 1; /* link to list for huft_free() */
-                *(t = &(q->v.t)) = ( Huff_t * )NULL;
+                *(t = &(q->v.t)) = ( Huff_t * ) NULL;
                 u[h] = ++q; /* table starts after link */
 
                 /* connect to last table, if there is one */
                 if (h) {
                     x[h] = i; /* save pattern for backing up */
                     r.b
-                    = ( uch )l[h - 1];   /* bits to dump before this table */
+                    = ( uch ) l[h - 1];  /* bits to dump before this table */
                     r.e = (uch)(16 + j); /* bits in this table */
                     r.v.t = q;           /* pointer to this table */
                     j = (i & ((1 << w) - 1)) >> (w - l[h - 1]);
@@ -198,9 +198,9 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
             else if (*p < s) {
                 r.e
                 = (uch)(*p < 256 ? 16 : 15); /* 256 is end-of-block code */
-                r.v.n = ( ush )*p++; /* simple code is just the value */
+                r.v.n = ( ush ) *p++; /* simple code is just the value */
             } else {
-                r.e = ( uch )e[*p - s]; /* non-simple--look up in lists */
+                r.e = ( uch ) e[*p - s]; /* non-simple--look up in lists */
                 r.v.n = d[*p++ - s];
             }
 

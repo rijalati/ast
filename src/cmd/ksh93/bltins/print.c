@@ -136,7 +136,7 @@ B_echo(int argc, char *argv[], Shbltin_t *context)
         prdata.sh->universe = 1;
     }
     if (!bsd_univ)
-        return (b_print(0, argv, ( Shbltin_t * )&prdata));
+        return (b_print(0, argv, ( Shbltin_t * ) &prdata));
     prdata.options = sh_optecho;
     prdata.raw = 1;
     while (argv[1] && *argv[1] == '-') {
@@ -154,7 +154,7 @@ B_echo(int argc, char *argv[], Shbltin_t *context)
             break;
         argv++;
     }
-    return (b_print(0, argv, ( Shbltin_t * )&prdata));
+    return (b_print(0, argv, ( Shbltin_t * ) &prdata));
 }
 
 int
@@ -165,7 +165,7 @@ b_printf(int argc, char *argv[], Shbltin_t *context)
     memset(&prdata, 0, sizeof(prdata));
     prdata.sh = context->shp;
     prdata.options = sh_optprintf;
-    return (b_print(-1, argv, ( Shbltin_t * )&prdata));
+    return (b_print(-1, argv, ( Shbltin_t * ) &prdata));
 }
 
 static int
@@ -202,7 +202,7 @@ b_print(int argc, char *argv[], Shbltin_t *context)
         nflag = rflag = 0;
         format = 0;
     } else {
-        struct print *pp = ( struct print * )context;
+        struct print *pp = ( struct print * ) context;
         shp = pp->sh;
         options = pp->options;
         if (argc == 0) {
@@ -226,7 +226,7 @@ b_print(int argc, char *argv[], Shbltin_t *context)
             break;
         case 's':
             /* print to history file */
-            if (!sh_histinit(( void * )shp))
+            if (!sh_histinit(( void * ) shp))
                 errormsg(SH_DICT, ERROR_system(1), e_history);
             outfile = shp->gd->hist_ptr->histfp;
             fd = sffileno(outfile);
@@ -245,7 +245,7 @@ b_print(int argc, char *argv[], Shbltin_t *context)
                 msg = e_query;
                 break;
             }
-            fd = ( int )strtol(opt_info.arg, &opt_info.arg, 10);
+            fd = ( int ) strtol(opt_info.arg, &opt_info.arg, 10);
             if (*opt_info.arg)
                 fd = -1;
             else if (!sh_iovalidfd(shp, fd))
@@ -301,7 +301,7 @@ b_print(int argc, char *argv[], Shbltin_t *context)
         }
     argv += opt_info.index;
     if (error_info.errors || (argc < 0 && !(format = *argv++)))
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (vflag && format)
         errormsg(
         SH_DICT, ERROR_usage(2), "-%c and -f are mutually exclusive", vflag);
@@ -376,7 +376,7 @@ printv:
     } else {
         /* echo style print */
         if (nflag && !argv[0])
-            sfsync(( Sfio_t * )0);
+            sfsync(( Sfio_t * ) 0);
         else if (sh_echolist(shp, outfile, rflag, argv) && !nflag)
             sfputc(outfile, '\n');
     }
@@ -484,7 +484,7 @@ genformat(Shell_t *shp, char *format)
     stkseek(shp->stk, 0);
     sfputr(shp->stk, preformat, -1);
     sfputr(shp->stk, format, -1);
-    fp = ( char * )stkfreeze(shp->stk, 1);
+    fp = ( char * ) stkfreeze(shp->stk, 1);
     strformat(fp + sizeof(preformat) - 1);
     return (fp);
 }
@@ -495,7 +495,7 @@ fmthtml(Shell_t *shp, const char *string, int flags)
     const char *cp = string;
     int c, offset = stktell(shp->stk);
     if (!(flags & SFFMT_ALTER)) {
-        while (c = *( unsigned char * )cp++) {
+        while (c = *( unsigned char * ) cp++) {
 #if SHOPT_MULTIBYTE
             int s;
             if ((s = mbsize(cp - 1)) > 1) {
@@ -521,7 +521,7 @@ fmthtml(Shell_t *shp, const char *string, int flags)
                 sfputc(shp->stk, c);
         }
     } else {
-        while (c = *( unsigned char * )cp++) {
+        while (c = *( unsigned char * ) cp++) {
             if (strchr("!*'();@&+$,#[]<>~.\"{}|\\-`^% ", c)
                 || (!isprint(c) && c != '\n' && c != '\r'))
                 sfprintf(stkstd, "%%%02X", CCMAPC(c, CC_NATIVE, CC_ASCII));
@@ -556,29 +556,29 @@ fmtbase64(Shell_t *shp, Sfio_t *iop, char *string, const char *fmt, int alt)
                 number.ld = d;
             } else if (nv_isattr(np, NV_SHORT)) {
                 size = sizeof(float);
-                number.f = ( float )d;
+                number.f = ( float ) d;
             } else {
                 size = sizeof(double);
-                number.d = ( double )d;
+                number.d = ( double ) d;
             }
         } else {
             if (nv_isattr(np, NV_LONG)) {
                 size = sizeof(Sflong_t);
-                number.ll = ( Sflong_t )d;
+                number.ll = ( Sflong_t ) d;
             } else if (nv_isattr(np, NV_SHORT)) {
                 size = sizeof(short);
-                number.h = ( short )d;
+                number.h = ( short ) d;
             } else {
                 size = sizeof(short);
-                number.i = ( int )d;
+                number.i = ( int ) d;
             }
         }
 #if 1
-        return (sfwrite(iop, ( void * )&number, size));
+        return (sfwrite(iop, ( void * ) &number, size));
 #else
         if (sz)
             *sz = size;
-        return (( void * )&number);
+        return (( void * ) &number);
 #endif
     }
     if (nv_isattr(np, NV_BINARY))
@@ -598,7 +598,7 @@ fmtbase64(Shell_t *shp, Sfio_t *iop, char *string, const char *fmt, int alt)
                 cp = nv_getval(np);
                 nv_offattr(np, NV_RAW);
             } else
-                cp = ( char * )np->nvalue.cp;
+                cp = ( char * ) np->nvalue.cp;
             if ((size = n) == 0)
                 size = strlen(cp);
             size = sfwrite(iop, cp, size);
@@ -642,7 +642,7 @@ fmtbase64(Shell_t *shp, Sfio_t *iop, char *string, const char *fmt, int alt)
         size = strlen(cp);
     if (sz)
         *sz = size;
-    return (( void * )cp);
+    return (( void * ) cp);
 #endif
 }
 
@@ -660,7 +660,7 @@ varname(const char *str, ssize_t n)
         len = mbsize(str);
         c = mbchar(str);
 #else
-        c = *( unsigned char * )str++;
+        c = *( unsigned char * ) str++;
 #endif
         if (dot && !(isalpha(c) || c == '_'))
             break;
@@ -695,8 +695,8 @@ extend(Sfio_t *sp, void *v, Sffmt_t *fe)
     int format = fe->fmt;
     int n;
     int fold = fe->base;
-    union types_t *value = ( union types_t * )v;
-    struct printf *pp = ( struct printf * )fe;
+    union types_t *value = ( union types_t * ) v;
+    struct printf *pp = ( struct printf * ) fe;
     Shell_t *shp = pp->sh;
     char *argp = *pp->nextarg;
     char *w, *s;
@@ -770,7 +770,7 @@ extend(Sfio_t *sp, void *v, Sffmt_t *fe)
     } else {
         switch (format) {
         case 'p':
-            value->p = ( char ** )strtol(argp, &lastchar, 10);
+            value->p = ( char ** ) strtol(argp, &lastchar, 10);
             break;
         case 'n': {
             Namval_t *np;
@@ -782,11 +782,12 @@ extend(Sfio_t *sp, void *v, Sffmt_t *fe)
                 *np->nvalue.lp = 0;
             nv_setsize(np, 10);
             if (sizeof(int) == sizeof(int32_t))
-                value->ip = ( int * )np->nvalue.lp;
+                value->ip = ( int * ) np->nvalue.lp;
             else {
                 int32_t sl = 1;
-                value->ip = ( int * )((( char * )np->nvalue.lp)
-                                      + (*(( char * )&sl) ? 0 : sizeof(int)));
+                value->ip
+                = ( int * ) ((( char * ) np->nvalue.lp)
+                             + (*(( char * ) &sl) ? 0 : sizeof(int)));
             }
             nv_close(np);
             break;
@@ -846,7 +847,7 @@ extend(Sfio_t *sp, void *v, Sffmt_t *fe)
             longmax = LDBL_ULLONG_MAX;
         case '.':
             if (fe->size == 2 && strchr("bcsqHPRQTZ", *fe->form)) {
-                value->ll = (( unsigned char * )argp)[0];
+                value->ll = (( unsigned char * ) argp)[0];
                 break;
             }
         case 'd':
@@ -859,7 +860,7 @@ extend(Sfio_t *sp, void *v, Sffmt_t *fe)
                 if (mbwide() && mbsize(w) > 1)
                     value->ll = mbchar(w);
                 else
-                    value->ll = *( unsigned char * )w++;
+                    value->ll = *( unsigned char * ) w++;
                 if (w[0] && (w[0] != argp[0] || w[1])) {
                     errormsg(SH_DICT, ERROR_warn(0), e_charconst, argp);
                     pp->err = 1;
@@ -876,7 +877,7 @@ extend(Sfio_t *sp, void *v, Sffmt_t *fe)
                     pp->err = 1;
                     d = longmax;
                 }
-                value->ll = ( Sflong_t )d;
+                value->ll = ( Sflong_t ) d;
                 if (lastchar == *pp->nextarg) {
                     value->ll = *argp;
                     lastchar = "";
@@ -899,7 +900,7 @@ extend(Sfio_t *sp, void *v, Sffmt_t *fe)
             switch (*argp) {
             case '\'':
             case '"':
-                d = (( unsigned char * )argp)[1];
+                d = (( unsigned char * ) argp)[1];
                 if (argp[2] && (argp[2] != argp[0] || argp[3])) {
                     errormsg(SH_DICT, ERROR_warn(0), e_charconst, argp);
                     pp->err = 1;
@@ -918,10 +919,11 @@ extend(Sfio_t *sp, void *v, Sffmt_t *fe)
             }
             break;
         case 'Q':
-            value->ll = ( Sflong_t )strelapsed(*pp->nextarg, &lastchar, 1);
+            value->ll = ( Sflong_t ) strelapsed(*pp->nextarg, &lastchar, 1);
             break;
         case 'T':
-            value->ll = ( Sflong_t )tmxdate(*pp->nextarg, &lastchar, TMX_NOW);
+            value->ll
+            = ( Sflong_t ) tmxdate(*pp->nextarg, &lastchar, TMX_NOW);
             break;
         default:
             value->ll = 0;
@@ -1039,7 +1041,7 @@ fmtvecho(Shell_t *shp, const char *string, struct printf *pp)
         return (-1);
     c = --cp - string;
     if (c > 0)
-        sfwrite(shp->stk, ( void * )string, c);
+        sfwrite(shp->stk, ( void * ) string, c);
     for (; c = *cp; cp++) {
 #if SHOPT_MULTIBYTE
         if (mbwide() && ((chlen = mbsize(cp)) > 1)) {

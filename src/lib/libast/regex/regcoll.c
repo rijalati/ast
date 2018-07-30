@@ -96,9 +96,9 @@ regcollate(const char *s, char **e, char *buf, size_t size, wchar_t *wc)
     tmp[i] = 0;
     if (mbxfrm(xfm, buf, sizeof(xfm)) >= mbxfrm(xfm, tmp, sizeof(xfm)))
         goto nope;
-    t = ( const char * )buf;
+    t = ( const char * ) buf;
 done:
-    if (r <= size && ( char * )t != buf) {
+    if (r <= size && ( char * ) t != buf) {
         memcpy(buf, t, r);
         if (r < size)
             buf[r] = 0;
@@ -106,12 +106,12 @@ done:
     if (wc)
         *wc = w;
     if (e)
-        *e = ( char * )s;
+        *e = ( char * ) s;
     return r;
 oops:
     s--;
 nope:
     if (e)
-        *e = ( char * )s;
+        *e = ( char * ) s;
     return -1;
 }

@@ -34,11 +34,11 @@ tag_t *tp;
     char *s;
     int len;
 
-    s = ( char * )tp + sizeof(int);
-    ( void )memset(( char * )tp, 0, sizeof(tag_t));
-    if (!sfread(f, ( char * )&(tp->length), sizeof(int))
+    s = ( char * ) tp + sizeof(int);
+    ( void ) memset(( char * ) tp, 0, sizeof(tag_t));
+    if (!sfread(f, ( char * ) &(tp->length), sizeof(int))
         || (len = tp->length - sizeof(int))
-           && sfread(f, ( char * )s, len) != len)
+           && sfread(f, ( char * ) s, len) != len)
         return (NULL);
 
     if (tp->type & LOG) {
@@ -57,7 +57,7 @@ int dsize;
 int domain;
 int type;
 {
-    memset(( char * )tp, 0, sizeof(tag_t));
+    memset(( char * ) tp, 0, sizeof(tag_t));
     tp->type = type;
     tp->dsize = dsize;
     tp->stat = *sp;

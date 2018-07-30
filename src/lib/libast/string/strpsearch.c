@@ -56,7 +56,7 @@ strpsearch(const void *tab,
            const char *name,
            char **next)
 {
-    char *lo = ( char * )tab;
+    char *lo = ( char * ) tab;
     char *hi = lo + (num - 1) * siz;
     char *mid;
 #if CC_NATIVE != CC_ASCII
@@ -71,12 +71,12 @@ strpsearch(const void *tab,
 #if CC_NATIVE != CC_ASCII
     m = ccmap(CC_NATIVE, CC_ASCII);
 #endif
-    c = MAP(m, *(( unsigned char * )name));
+    c = MAP(m, *(( unsigned char * ) name));
     while (lo <= hi) {
         mid = lo + (sequential ? 0 : (((hi - lo) / siz) / 2) * siz);
-        if (!(v = c - MAP(m, *(s = *(( unsigned char ** )mid))))
+        if (!(v = c - MAP(m, *(s = *(( unsigned char ** ) mid))))
             || *s == '[' && !(v = c - MAP(m, *++s)) && (v = 1)) {
-            t = ( unsigned char * )name;
+            t = ( unsigned char * ) name;
             for (;;) {
                 if (!v && (*s == '[' || *s == '*')) {
                     v = 1;
@@ -87,12 +87,12 @@ strpsearch(const void *tab,
                 } else if (!isalpha(*t)) {
                     if (v || !*s) {
                         if (next)
-                            *next = ( char * )t;
-                        return ( void * )mid;
+                            *next = ( char * ) t;
+                        return ( void * ) mid;
                     }
                     if (!sequential) {
                         while ((mid -= siz) >= lo
-                               && (s = *(( unsigned char ** )mid))
+                               && (s = *(( unsigned char ** ) mid))
                                && ((c == MAP(m, *s))
                                    || *s == '[' && c == MAP(m, *(s + 1))))
                             ;

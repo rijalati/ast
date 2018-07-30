@@ -390,20 +390,20 @@ fini(int code)
         sfprintf(sfstderr,
                  "%I*u+%I*u records in\n",
                  sizeof(Sfulong_t),
-                 ( Sfulong_t )state.in.complete,
+                 ( Sfulong_t ) state.in.complete,
                  sizeof(Sfulong_t),
                  (Sfulong_t)(state.in.partial + (state.in.remains > 0)));
         sfprintf(sfstderr,
                  "%I*u+%I*u records out\n",
                  sizeof(Sfulong_t),
-                 ( Sfulong_t )state.out.complete,
+                 ( Sfulong_t ) state.out.complete,
                  sizeof(Sfulong_t),
                  (Sfulong_t)(state.out.partial + (state.out.remains > 0)));
         if (state.in.truncated)
             sfprintf(sfstderr,
                      "%I*u truncated record%s\n",
                      sizeof(Sfulong_t),
-                     ( Sfulong_t )state.in.truncated,
+                     ( Sfulong_t ) state.in.truncated,
                      state.in.truncated == 1 ? "" : "s");
     }
     exit(code);
@@ -534,13 +534,13 @@ main(int argc, char **argv)
             do {
                 if (e = strchr(v, ','))
                     *e = 0;
-                vp = ( Operand_t * )strsearch(&state.conv_begin,
-                                              &state.conv_end
-                                              - &state.conv_begin + 1,
-                                              sizeof(Operand_t),
-                                              stracmp,
-                                              v,
-                                              NiL);
+                vp = ( Operand_t * ) strsearch(&state.conv_begin,
+                                               &state.conv_end
+                                               - &state.conv_begin + 1,
+                                               sizeof(Operand_t),
+                                               stracmp,
+                                               v,
+                                               NiL);
                 if (e)
                     *e++ = ',';
                 if (!vp)
@@ -584,8 +584,8 @@ main(int argc, char **argv)
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     error_info.exit = fini;
-    switch (( long )(state.conv.value.number
-                     & (A2E | A2I | A2N | A2O | E2A | I2A | N2A | O2A))) {
+    switch (( long ) (state.conv.value.number
+                      & (A2E | A2I | A2N | A2O | E2A | I2A | N2A | O2A))) {
     case 0:
         break;
     case A2E:

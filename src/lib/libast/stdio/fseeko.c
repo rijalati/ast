@@ -32,7 +32,7 @@ fseeko(Sfio_t *f, off_t off, int op)
 {
     STDIO_INT(f, "fseeko", int, ( Sfio_t *, off_t, int ), (f, off, op))
 
-    return sfseek(f, ( Sfoff_t )off, op | SF_SHARE) >= 0 ? 0 : -1;
+    return sfseek(f, ( Sfoff_t ) off, op | SF_SHARE) >= 0 ? 0 : -1;
 }
 
 #ifdef _typ_int64_t
@@ -42,7 +42,7 @@ fseeko64(Sfio_t *f, int64_t off, int op)
 {
     STDIO_INT(f, "fseeko64", int, ( Sfio_t *, int64_t, int ), (f, off, op))
 
-    return sfseek(f, ( Sfoff_t )off, op | SF_SHARE) >= 0 ? 0 : -1;
+    return sfseek(f, ( Sfoff_t ) off, op | SF_SHARE) >= 0 ? 0 : -1;
 }
 
 #endif

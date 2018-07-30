@@ -148,7 +148,7 @@ sum(Exsum_t *sum, const char *path)
     suminit(sum->sum);
     if (!(sp = sfopen(NiL, path, "r")))
         goto bad;
-    while (s = ( char * )sfreserve(sp, SF_UNBOUND, 0))
+    while (s = ( char * ) sfreserve(sp, SF_UNBOUND, 0))
         sumblock(sum->sum, s, sfvalue(sp));
     r = !!sfvalue(sp);
     if (sfclose(sp) || r)
@@ -176,13 +176,13 @@ fmturl(const char *path)
     static const char hex[] = "0123456789ABCDEF";
 
     n = 0;
-    p = ( unsigned char * )path;
+    p = ( unsigned char * ) path;
     while (c = *p++)
         if (!(isalnum(c) || c == '_' || c == '-' || c == '+' || c == '='
               || c == '/' || c == '.'))
             n++;
-    r = s = fmtbuf(n * 2 + (p - ( unsigned char * )path));
-    p = ( unsigned char * )path;
+    r = s = fmtbuf(n * 2 + (p - ( unsigned char * ) path));
+    p = ( unsigned char * ) path;
     while (c = *p++)
         if (!(isalnum(c) || c == '_' || c == '-' || c == '+' || c == '='
               || c == '/' || c == '.')) {
@@ -223,7 +223,7 @@ getval(Expr_t *pgm,
     NoP(node);
     NoP(disc);
     if (elt >= EX_SCALAR) {
-        ftw = ( Ftw_t * )env;
+        ftw = ( Ftw_t * ) env;
         if (ref && !(ftw = deref(ftw, sym, ref))) {
             v.integer = 0;
             return v;
@@ -248,7 +248,7 @@ getval(Expr_t *pgm,
 #endif
         break;
     case F_checksum:
-        v.string = sum(( Exsum_t * )node->local.pointer, PATH(ftw));
+        v.string = sum(( Exsum_t * ) node->local.pointer, PATH(ftw));
         goto string;
     case F_ctime:
         v.integer = st->st_ctime;
@@ -288,7 +288,7 @@ getval(Expr_t *pgm,
             sfclose(fp);
         goto string;
     case F_md5sum:
-        v.string = sum(( Exsum_t * )node->local.pointer, PATH(ftw));
+        v.string = sum(( Exsum_t * ) node->local.pointer, PATH(ftw));
         break;
     case F_mime:
         fp = sfopen(NiL, PATH(ftw), "r");
@@ -377,15 +377,15 @@ getval(Expr_t *pgm,
             3, "%s: reference invalid when members declared", sym->name);
         id.di[0] = st->st_dev;
         id.di[1] = st->st_ino;
-        if (vp = ( Visit_t * )dtmatch(state.vistab, &id))
+        if (vp = ( Visit_t * ) dtmatch(state.vistab, &id))
             v = vp->value[0];
         else
             v = exzero(INTEGER);
         break;
     case X_cmdarg:
         cmdarg(state.cmd,
-               (( Extype_t * )env)[0].string,
-               strlen((( Extype_t * )env)[0].string));
+               (( Extype_t * ) env)[0].string,
+               strlen((( Extype_t * ) env)[0].string));
         v.integer = 1;
         break;
     case X_cmdflush:
@@ -393,25 +393,25 @@ getval(Expr_t *pgm,
         v.integer = 1;
         break;
     case X_sum:
-        sp = ( Exsum_t * )node->local.pointer;
-        if (!sp->sum && !(sp->sum = sumopen((( Extype_t * )env)[0].string)))
+        sp = ( Exsum_t * ) node->local.pointer;
+        if (!sp->sum && !(sp->sum = sumopen((( Extype_t * ) env)[0].string)))
             error(ERROR_SYSTEM | 3,
                   "%s checksum initialization error",
-                  (( Extype_t * )env)[0].string);
-        ftw = ( Ftw_t * )((( Extype_t * )env)[-1].string);
+                  (( Extype_t * ) env)[0].string);
+        ftw = ( Ftw_t * ) ((( Extype_t * ) env)[-1].string);
         v.string = sum(sp, PATH(ftw));
         break;
     default:
         switch (MEMINDEX(sym->index)) {
         case F_local:
-            v = (lp = ( Local_t * )ftw->local.pointer)
+            v = (lp = ( Local_t * ) ftw->local.pointer)
                 ? lp->value[MEMOFFSET(sym->index)]
                 : exzero(sym->type);
             break;
         case F_visit:
             id.di[0] = st->st_dev;
             id.di[1] = st->st_ino;
-            v = (vp = ( Visit_t * )dtmatch(state.vistab, &id))
+            v = (vp = ( Visit_t * ) dtmatch(state.vistab, &id))
                 ? vp->value[MEMOFFSET(sym->index)]
                 : exzero(sym->type);
             break;
@@ -612,7 +612,7 @@ refval(Expr_t *pgm,
     sum:
         if (!(sp = newof(0, Exsum_t, 1, 0)) || !(sp->buf = sfstropen()))
             error(ERROR_SYSTEM | 3, "out of space [sum]");
-        node->local.pointer = ( char * )sp;
+        node->local.pointer = ( char * ) sp;
         if (m && !(sp->sum = sumopen(m)))
             error(ERROR_SYSTEM | 3, "sum(\"%s\") initialization error", m);
         break;
@@ -644,7 +644,7 @@ setval(Expr_t *pgm,
     NoP(disc);
     if (elt >= 0)
         error(3, "%s: arrays not supported", sym->name);
-    if (!(ftw = ( Ftw_t * )env) || ref && !(ftw = deref(ftw, sym, ref)))
+    if (!(ftw = ( Ftw_t * ) env) || ref && !(ftw = deref(ftw, sym, ref)))
         return -1;
     switch (sym->index) {
     case F_local:
@@ -663,7 +663,7 @@ setval(Expr_t *pgm,
             3, "%s: reference invalid when members declared", sym->name);
         id.di[0] = ftw->statb.st_dev;
         id.di[1] = ftw->statb.st_ino;
-        if (!(vp = ( Visit_t * )dtmatch(state.vistab, &id))) {
+        if (!(vp = ( Visit_t * ) dtmatch(state.vistab, &id))) {
             if (!(vp = newof(0, Visit_t, 1, 0)))
                 error(ERROR_SYSTEM | 3, "out of space [visit]");
             vp->id = id;
@@ -674,7 +674,7 @@ setval(Expr_t *pgm,
     default:
         switch (MEMINDEX(sym->index)) {
         case F_local:
-            if (!(lp = ( Local_t * )ftw->local.pointer)) {
+            if (!(lp = ( Local_t * ) ftw->local.pointer)) {
                 if (state.local) {
                     lp = state.local;
                     state.local = state.local->next;
@@ -687,14 +687,14 @@ setval(Expr_t *pgm,
                                         sizeof(Extype_t)
                                         * (state.localmem - 1))))
                     error(3, "out of space");
-                lp = ( Local_t * )ftw->local.pointer;
+                lp = ( Local_t * ) ftw->local.pointer;
             }
             lp->value[MEMOFFSET(sym->index)] = val;
             break;
         case F_visit:
             id.di[0] = ftw->statb.st_dev;
             id.di[1] = ftw->statb.st_ino;
-            if (!(vp = ( Visit_t * )dtmatch(state.vistab, &id))) {
+            if (!(vp = ( Visit_t * ) dtmatch(state.vistab, &id))) {
                 if (!(vp = newof(
                       0, Visit_t, 1, sizeof(Extype_t) * (state.visitmem - 1))))
                     error(3, "out of space [visit]");
@@ -729,7 +729,7 @@ matchval(Expr_t *pgm,
                        NiL,
                        0,
                        STR_MAXIMAL | STR_LEFT | STR_RIGHT
-                       | (env ? (( Ftw_t * )env)->ignorecase : 0));
+                       | (env ? (( Ftw_t * ) env)->ignorecase : 0));
 }
 
 /*
@@ -798,16 +798,16 @@ convert(Expr_t *prog,
                 tmfmt(s = buf, sizeof(buf), "%?%QL", &t);
                 break;
             case T_GID:
-                s = fmtgid(( gid_t )n);
+                s = fmtgid(( gid_t ) n);
                 break;
             case T_MODE:
-                s = fmtmode(( mode_t )n, 0);
+                s = fmtmode(( mode_t ) n, 0);
                 break;
             case T_PERM:
-                s = fmtmode(( mode_t )n, 0) + 1;
+                s = fmtmode(( mode_t ) n, 0) + 1;
                 break;
             case T_UID:
-                s = fmtuid(( uid_t )n);
+                s = fmtuid(( uid_t ) n);
                 break;
             default:
                 sfsprintf(s = buf, sizeof(buf), "%ld", n);
@@ -912,13 +912,13 @@ getnum(Exid_t *sym, Ftw_t *ftw)
 static int
 key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 {
-    Ftw_t *ftw = ( Ftw_t * )handle;
+    Ftw_t *ftw = ( Ftw_t * ) handle;
     Exid_t *sym;
     Extype_t v;
 
     if (!fp->t_str)
         return 0;
-    if (!(sym = ( Exid_t * )dtmatch(state.program->symbols, fp->t_str))) {
+    if (!(sym = ( Exid_t * ) dtmatch(state.program->symbols, fp->t_str))) {
         error(3, "%s: unknown format key", fp->t_str);
         return 0;
     }

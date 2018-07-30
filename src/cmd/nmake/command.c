@@ -31,7 +31,7 @@
 
 #if !_all_shells_the_same
 #    undef EXIT_CODE
-#    define EXIT_CODE(x) (( x )&0177)
+#    define EXIT_CODE(x) (( x ) &0177)
 #endif
 
 #define AFTER 0          /* done -- making after prereqs	*/
@@ -48,7 +48,7 @@
     ((state.mam.dynamic || (r) != state.frame->target                        \
       || ((r)->property & P_after))                                          \
      ? mamname(r)                                                            \
-     : ( char * )0)
+     : ( char * ) 0)
 
 #if DEBUG
 
@@ -158,7 +158,7 @@ acceptrule(Rule_t *r)
             if (stat(r->name, &st)
                 || tmxgetmtime(&st) < state.start
                    && tmxtouch(
-                      r->name, ( Time_t )0, ( Time_t )0, ( Time_t )0, 0))
+                      r->name, ( Time_t ) 0, ( Time_t ) 0, ( Time_t ) 0, 0))
                 error(ERROR_SYSTEM | 1, "cannot touch %s", r->name);
             statetime(r, 0);
         }
@@ -330,7 +330,7 @@ commit(Joblist_t *job, char *s)
             r->view = 0;
             r->time = tmxgetmtime(&st);
             if (r->dynamic & D_scanned)
-                unbind(NiL, ( char * )r, NiL);
+                unbind(NiL, ( char * ) r, NiL);
         }
         *t = '/';
     }
@@ -736,7 +736,7 @@ execute(Joblist_t *job)
             job->cojob = coexec(
             state.coshell, t, job->flags, state.tmpfile, NiL, sfstruse(att))))
             error(3, "%s: cannot send action to coshell", job->target->name);
-        job->cojob->local = ( void * )job;
+        job->cojob->local = ( void * ) job;
 
         /*
          * grab semaphores
@@ -1129,7 +1129,7 @@ block(int check)
             n = 0;
             for (job = jobs.firstjob; job; job = job->next)
                 if (job->target->must
-                    > (( unsigned int )(job->target->dynamic & D_intermediate)
+                    > (( unsigned int ) (job->target->dynamic & D_intermediate)
                        != 0)) {
                     n = 1;
                     break;
@@ -1167,9 +1167,9 @@ block(int check)
         state.waiting = 1;
         if ((cojob
              = cowait(state.coshell,
-                      check ? ( Cojob_t * )state.coshell : ( Cojob_t * )0,
+                      check ? ( Cojob_t * ) state.coshell : ( Cojob_t * ) 0,
                       -1))
-            && (job = ( Joblist_t * )cojob->local))
+            && (job = ( Joblist_t * ) cojob->local))
             job->cojob = 0;
         if (trap()) {
             if (state.interpreter)
@@ -1757,7 +1757,7 @@ dumpjobs(int level, int op)
                 : statusname[job->status & STATUS],
                 job->target->name,
                 (job->target->must
-                 > (( unsigned int )(job->target->dynamic & D_intermediate)
+                 > (( unsigned int ) (job->target->dynamic & D_intermediate)
                     != 0))
                 ? " [must]"
                 : null,

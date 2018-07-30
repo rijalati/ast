@@ -151,7 +151,7 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
             goto bad_recv;
         if (strtol(s, &e, 10) != SMTP_OK)
             goto bad_prot;
-    } while (*( unsigned char * )e == SMTP_OK);
+    } while (*( unsigned char * ) e == SMTP_OK);
 
     /*
      * from

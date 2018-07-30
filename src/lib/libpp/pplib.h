@@ -235,11 +235,11 @@ struct pathid /* physical file name and id	*/
 };
 
 #    define SAMEID(a, b)                                                     \
-        ((a)->st_ino == ( unsigned long )(b)->st_ino                         \
-         && (a)->st_dev == ( unsigned long )(b)->st_dev)
+        ((a)->st_ino == ( unsigned long ) (b)->st_ino                        \
+         && (a)->st_dev == ( unsigned long ) (b)->st_dev)
 #    define SAVEID(a, b)                                                     \
-        ((a)->st_ino = ( unsigned long )(b)->st_ino,                         \
-         (a)->st_dev = ( unsigned long )(b)->st_dev)
+        ((a)->st_ino = ( unsigned long ) (b)->st_ino,                        \
+         (a)->st_dev = ( unsigned long ) (b)->st_dev)
 
 #    define _PP_CONTEXT_PRIVATE_   /* ppglobals private context	*/           \
         struct ppcontext *context; /* current context		*/                    \
@@ -390,8 +390,8 @@ struct pathid /* physical file name and id	*/
 
 #    undef newof
 #    define newof(p, t, n, x)                                                \
-        ((p) ? ( t * )realloc(( char * )(p), sizeof(t) * (n) + (x))          \
-             : ( t * )calloc(1, sizeof(t) * (n) + (x)))
+        ((p) ? ( t * ) realloc(( char * ) (p), sizeof(t) * (n) + (x))        \
+             : ( t * ) calloc(1, sizeof(t) * (n) + (x)))
 
 #    include "pp.h"
 #    include "ppdef.h"
@@ -481,7 +481,7 @@ struct pathid /* physical file name and id	*/
 #    define keyname(x) ppkeyname(x, 0)
 #    define nextframe(m, p)                                                  \
         (m->next = m                                                         \
-                   + (p - ( char * )m + sizeof(struct ppmacstk) - 1)         \
+                   + (p - ( char * ) m + sizeof(struct ppmacstk) - 1)        \
                      / sizeof(struct ppmacstk)                               \
                    + 1)
 #    define popframe(m) (m = m->prev)
@@ -498,17 +498,17 @@ struct pathid /* physical file name and id	*/
 #    define tracing (error_info.trace < 0)
 
 #    define ppgetfile(x)                                                     \
-        (( struct ppfile * )hashlook(pp.filtab, x, HASH_LOOKUP, NiL))
+        (( struct ppfile * ) hashlook(pp.filtab, x, HASH_LOOKUP, NiL))
 #    define ppsetfile(x)                                                     \
-        (( struct ppfile * )hashlook(                                        \
+        (( struct ppfile * ) hashlook(                                       \
         pp.filtab, x, HASH_CREATE | HASH_SIZE(sizeof(struct ppfile)), NiL))
 
 #    define ppkeyget(t, n)                                                   \
-        ( struct ppsymkey * )hashlook(t, n, HASH_LOOKUP, NiL)
+        ( struct ppsymkey * ) hashlook(t, n, HASH_LOOKUP, NiL)
 #    define ppkeyref(t, n)                                                   \
-        ( struct ppsymkey * )hashlook(t, n, HASH_LOOKUP | HASH_INTERNAL, NiL)
+        ( struct ppsymkey * ) hashlook(t, n, HASH_LOOKUP | HASH_INTERNAL, NiL)
 #    define ppkeyset(t, n)                                                   \
-        ( struct ppsymkey * )hashlook(                                       \
+        ( struct ppsymkey * ) hashlook(                                      \
         t, n, HASH_CREATE | HASH_SIZE(sizeof(struct ppsymkey)), NiL)
 
 #    define MARK '@'      /* internal mark		*/
@@ -535,9 +535,9 @@ struct pathid /* physical file name and id	*/
         } while (0)
 
 #    define SETFILE(p, v)                                                    \
-        (p += sfsprintf(p, 16, "%c%c%lx%c", MARK, 'F', ( long )v, MARK))
+        (p += sfsprintf(p, 16, "%c%c%lx%c", MARK, 'F', ( long ) v, MARK))
 #    define SETLINE(p, v)                                                    \
-        (p += sfsprintf(p, 16, "%c%c%lx%c", MARK, 'L', ( long )v, MARK))
+        (p += sfsprintf(p, 16, "%c%c%lx%c", MARK, 'L', ( long ) v, MARK))
 
 #    define peekchr() (*pp.in->nextchr)
 #    define ungetchr(c) (*--pp.in->nextchr = (c))
@@ -572,9 +572,9 @@ struct pathid /* physical file name and id	*/
 #    define IN_SQUOTE 12              /* '...' macro arg (copied)	*/
 #    define IN_STRING 14              /* string			*/
 
-#    define INC_CLEAR (( struct ppsymbol * )0)
-#    define INC_IGNORE (( struct ppsymbol * )pp.addbuf)
-#    define INC_TEST (( struct ppsymbol * )pp.catbuf)
+#    define INC_CLEAR (( struct ppsymbol * ) 0)
+#    define INC_IGNORE (( struct ppsymbol * ) pp.addbuf)
+#    define INC_TEST (( struct ppsymbol * ) pp.catbuf)
 
 #    define INC_BOUND(n) (1 << (n))
 #    define INC_MEMBER(n) (1 << ((n) + INC_MAX))
@@ -611,7 +611,8 @@ struct pathid /* physical file name and id	*/
 #    define BLOCKBITS 3      /* block flag bits		*/
 
 #    define SETIFBLOCK(p)                                                    \
-        (*(p) = (*(( p )-1) & SKIP) | (( long )error_info.line << BLOCKBITS))
+        (*(p)                                                                \
+         = (*(( p ) -1) & SKIP) | (( long ) error_info.line << BLOCKBITS))
 #    define GETIFLINE(p)                                                     \
         ((*(p) >> BLOCKBITS)                                                 \
          & ((1L << (sizeof(long) * CHAR_BIT - BLOCKBITS)) - 1))
@@ -706,7 +707,7 @@ struct pathid /* physical file name and id	*/
             *pp.control = 0;                                                 \
             cur->file = error_info.file;                                     \
             n = strlen(error_info.file)                                      \
-                + strlen((( struct ppsymbol * )p)->name) + 24;               \
+                + strlen((( struct ppsymbol * ) p)->name) + 24;              \
             error_info.file = cur->buffer = newof(0, char, n, 0);            \
             sfsprintf(error_info.file,                                       \
                       n,                                                     \
@@ -826,13 +827,13 @@ struct ppsymkey /* pun for SYM_KEYWORD lex val	*/
 #            define NiL 0
 #            define NoP(x) (&x, 1)
 #        else
-#            define NiL (( char * )0)
+#            define NiL (( char * ) 0)
 #            define NoP(x)
 #        endif
 
 #        define newof(p, t, n, x)                                            \
-            ((p) ? ( t * )realloc(( char * )(p), sizeof(t) * (n) + (x))      \
-                 : ( t * )calloc(1, sizeof(t) * (n) + (x)))
+            ((p) ? ( t * ) realloc(( char * ) (p), sizeof(t) * (n) + (x))    \
+                 : ( t * ) calloc(1, sizeof(t) * (n) + (x)))
 
 #        define _PP_DELAY_ #
 
@@ -987,7 +988,7 @@ pptrace(int);
 #        include <vmalloc.h>
 
 #        undef free
-#        define free(p) vmfree(Vmregion, ( void * )p)
+#        define free(p) vmfree(Vmregion, ( void * ) p)
 #        undef newof
 #        define newof(p, t, n, x) vmnewof(Vmregion, p, t, n, x)
 #        undef oldof

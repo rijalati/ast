@@ -277,7 +277,7 @@ main(int argc, char **argv)
 #ifdef F_DUPFD_CLOEXEC
     printf("#ifndef F_DUPFD_CLOEXEC\n");
     printf("#define F_DUPFD_CLOEXEC	(%d)	/* %s */\n",
-           ( int )F_DUPFD_CLOEXEC,
+           ( int ) F_DUPFD_CLOEXEC,
            ORIGIN_FAILSAFE);
     printf("#endif\n");
 #endif
@@ -449,8 +449,8 @@ main(int argc, char **argv)
             unsigned int o_search_native[] = { O_SEARCH_native };
             snprintf(tmp, sizeof(tmp), "%s.s", argv[1]);
             if (!mkdir(tmp, S_IXUSR | S_IXGRP | S_IXOTH))
-                for (i = 0; i < ( int )(sizeof(o_search_native)
-                                        / sizeof(o_search_native[0]));
+                for (i = 0; i < ( int ) (sizeof(o_search_native)
+                                         / sizeof(o_search_native[0]));
                      i++)
                     if (!close(open(tmp, o_search_native[i]))) {
                         o_search_origin = "kernel bits otherwise undefined";
@@ -474,8 +474,8 @@ main(int argc, char **argv)
             unsigned int o_directory_native[] = { O_DIRECTORY_native };
             snprintf(tmp, sizeof(tmp), "%s.d", argv[1]);
             if (!mkdir(tmp, S_IXUSR | S_IXGRP | S_IXOTH))
-                for (i = 0; i < ( int )(sizeof(o_directory_native)
-                                        / sizeof(o_directory_native[0]));
+                for (i = 0; i < ( int ) (sizeof(o_directory_native)
+                                         / sizeof(o_directory_native[0]));
                      i++)
                     if (!close(open(tmp, O_DIRECTORY_native))) {
                         snprintf(tmp, sizeof(tmp), "%s.f", argv[1]);
@@ -520,7 +520,7 @@ main(int argc, char **argv)
     printf("#ifndef O_CLOEXEC\n");
 #ifdef O_CLOEXEC
     printf("#define O_CLOEXEC		%012o	/* %s */\n",
-           ( int )O_CLOEXEC,
+           ( int ) O_CLOEXEC,
            ORIGIN_FAILSAFE);
 #else
     o_local_use = o_local >> 2;
@@ -545,7 +545,7 @@ main(int argc, char **argv)
     printf("#ifdef  O_NDELAY\n");
 #    ifdef O_NDELAY
     printf("#define O_NONBLOCK		%012o	/* O_NDELAY */\n",
-           ( int )O_NDELAY);
+           ( int ) O_NDELAY);
 #    else
     printf("#define O_NONBLOCK		O_NDELAY\n");
 #    endif
@@ -590,21 +590,21 @@ main(int argc, char **argv)
 #ifdef O_DIRECT
     printf("#ifndef O_DIRECT\n");
     printf("#define O_DIRECT		%012o	/* %s */\n",
-           ( int )O_DIRECT,
+           ( int ) O_DIRECT,
            ORIGIN_FAILSAFE);
     printf("#endif\n");
 #endif
 #ifdef O_NOFOLLOW
     printf("#ifndef O_NOFOLLOW\n");
     printf("#define O_NOFOLLOW		%012o	/* %s */\n",
-           ( int )O_NOFOLLOW,
+           ( int ) O_NOFOLLOW,
            ORIGIN_FAILSAFE);
     printf("#endif\n");
 #endif
 #ifdef O_NOATIME
     printf("#ifndef O_NOATIME\n");
     printf("#define O_NOATIME		%012o	/* %s */\n",
-           ( int )O_NOATIME,
+           ( int ) O_NOATIME,
            ORIGIN_FAILSAFE);
     printf("#endif\n");
 #endif

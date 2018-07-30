@@ -81,7 +81,7 @@ MAIN()
             terror("Bad byte");
 
     /* test header encoding */
-    if ((n = vcextract(bwz, ( Void_t ** )&b)) < 0)
+    if ((n = vcextract(bwz, ( Void_t ** ) &b)) < 0)
         terror("vcextract() failed");
 
     /* test vcdecoder() */

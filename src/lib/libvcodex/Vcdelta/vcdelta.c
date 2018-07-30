@@ -30,7 +30,7 @@
 #define FREETABLE 00010 /* free the coding table on closing	*/
 
 static Vcmtarg_t _Diffargs[]
-= { { "s", "String matching via suffix sorting.", ( Void_t * )SFXSORT },
+= { { "s", "String matching via suffix sorting.", ( Void_t * ) SFXSORT },
     { 0, "String matching via hashing.", 0 } };
 
 #if __STD_C
@@ -205,7 +205,7 @@ ssize_t n;         /* number of fragments		*/
 #endif
 {
     ssize_t len, l, here;
-    Vcdiff_t *vcd = ( Vcdiff_t * )vcpa;
+    Vcdiff_t *vcd = ( Vcdiff_t * ) vcpa;
 
 #if 0
 {	Vcmatch_t* m;
@@ -273,9 +273,9 @@ Void_t **del;
         return 0;
 
     nsrc = disc ? disc->size : 0;
-    vcd->vcpa.src = nsrc == 0 ? NIL(Vcchar_t *) : ( Vcchar_t * )disc->data;
+    vcd->vcpa.src = nsrc == 0 ? NIL(Vcchar_t *) : ( Vcchar_t * ) disc->data;
     vcd->vcpa.nsrc = nsrc;
-    vcd->vcpa.tar = ( Vcchar_t * )tar;
+    vcd->vcpa.tar = ( Vcchar_t * ) tar;
     vcd->vcpa.ntar = ntar;
     vcd->vcpa.mmin = COPYMIN;
     vcd->vcpa.cmap = NIL(Vcchar_t *);
@@ -367,11 +367,11 @@ Void_t **out;
 
     /* read size of data buffers */
     vcioinit(&data, del, ndel);
-    ntar = ( ssize_t )vciogetu(&data); /* buffer size for target data		*/
-    ctrl = ( int )vciogetc(&data);  /* to see if datasets were compressed	*/
-    d = ( ssize_t )vciogetu(&data); /* size of unmatched data		*/
-    i = ( ssize_t )vciogetu(&data); /* size of instruction set		*/
-    a = ( ssize_t )vciogetu(&data); /* size of COPY addresses		*/
+    ntar = ( ssize_t ) vciogetu(&data); /* buffer size for target data		*/
+    ctrl = ( int ) vciogetc(&data);  /* to see if datasets were compressed	*/
+    d = ( ssize_t ) vciogetu(&data); /* size of unmatched data		*/
+    i = ( ssize_t ) vciogetu(&data); /* size of instruction set		*/
+    a = ( ssize_t ) vciogetu(&data); /* size of COPY addresses		*/
 
     /* make sure we have enough data for decoding */
     if ((d + i + a) != vciomore(&data))
@@ -411,7 +411,7 @@ Void_t **out;
         RETURN(-1);
     etar = tar + ntar;
     nsrc = disc ? disc->size : 0;
-    src = disc ? ( Vcchar_t * )disc->data : NIL(Vcchar_t *);
+    src = disc ? ( Vcchar_t * ) disc->data : NIL(Vcchar_t *);
 
     for (t = tar; t < etar;) {
         Vcdcode_t *cd;
@@ -440,7 +440,7 @@ Void_t **out;
             if (in->type == VCD_BYTE) {
                 d = in->mode;
                 for (; sz > 0; --sz)
-                    *t++ = ( Vcchar_t )d;
+                    *t++ = ( Vcchar_t ) d;
             } else if (in->type == VCD_COPY) {
                 if (vciomore(&addr) <= 0)
                     RETURN(-1);
@@ -466,7 +466,7 @@ Void_t **out;
                     RETURN(-1);
                 d = vciogetc(&data);
                 for (; sz > 0; --sz)
-                    *t++ = ( Vcchar_t )d;
+                    *t++ = ( Vcchar_t ) d;
             } else
                 RETURN(-1);
         }
@@ -476,7 +476,7 @@ Void_t **out;
         return -1;
 
     if (out)
-        *out = ( Void_t * )tar;
+        *out = ( Void_t * ) tar;
 
     return ntar;
 }
@@ -496,11 +496,11 @@ Void_t *init;
     _vcdtblinit(); /* initialize default code tables */
 
     if (type == VC_OPENING) {
-        if (!(vcd = ( Vcdiff_t * )calloc(1, sizeof(Vcdiff_t))))
+        if (!(vcd = ( Vcdiff_t * ) calloc(1, sizeof(Vcdiff_t))))
             return -1;
         VCDINIT(vcd);
 
-        vcgetmtarg(( char * )init, 0, 0, _Diffargs, &arg);
+        vcgetmtarg(( char * ) init, 0, 0, _Diffargs, &arg);
         if (arg)
             vcd->flags |= TYPECAST(int, arg->data);
 

@@ -184,7 +184,7 @@ char **argv;
         len = strlen(cmd);
         for (i = 0; i < CMD_MAX; i++) {
             if (cmdeq(cmd, i, len)) {
-                ( void )(*COMMAND[i].main)(nlist, elist);
+                ( void ) (*COMMAND[i].main)(nlist, elist);
                 break;
             }
         }
@@ -233,7 +233,7 @@ char **argv;
     if (argc == 1) {
         for (i = 0; i < CMD_MAX; i++) {
             if (COMMAND[i].help != NULL)
-                ( void )(*COMMAND[i].help)(COMMAND[i].name);
+                ( void ) (*COMMAND[i].help)(COMMAND[i].name);
             else
                 printf("\t%s\n", COMMAND[i].name);
         }
@@ -246,7 +246,7 @@ char **argv;
         for (i = 0; i < CMD_MAX; i++) {
             if (cmdeq(s, i, len)) {
                 if (COMMAND[i].help != NULL)
-                    ( void )(*COMMAND[i].help)(COMMAND[i].name);
+                    ( void ) (*COMMAND[i].help)(COMMAND[i].name);
                 else
                     printf("\t%s\n", COMMAND[i].name);
                 break;

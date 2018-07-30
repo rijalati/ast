@@ -82,7 +82,7 @@ register_file(FILE *fp, int pid)
 {
     struct file *fpp;
 
-    if (!(fpp = ( struct file * )malloc(sizeof *fpp)))
+    if (!(fpp = ( struct file * ) malloc(sizeof *fpp)))
         note(PANIC, "Out of space");
     fpp->fp = fp;
     fpp->pid = pid;
@@ -511,7 +511,7 @@ start_command(char *cmd,
     struct argvec vec;
 
     if (!a0 && a1)
-        args = ( char ** )a1;
+        args = ( char ** ) a1;
     else {
         initargs(&vec);
         getargs(&vec, cmd);
@@ -602,7 +602,7 @@ findchild(int pid)
     for (cpp = &state.children; *cpp && (*cpp)->pid != pid;
          cpp = &(*cpp)->link)
         ;
-    if (*cpp || (*cpp = ( struct child * )malloc(sizeof(struct child)))) {
+    if (*cpp || (*cpp = ( struct child * ) malloc(sizeof(struct child)))) {
         (*cpp)->pid = pid;
         (*cpp)->done = (*cpp)->free = 0;
         (*cpp)->link = 0;

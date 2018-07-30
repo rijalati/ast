@@ -101,9 +101,9 @@
 #    define I 02 /* INTEGER			*/
 #    define S 03 /* STRING			*/
 
-#    define A(n, t) ((t) << (( n )*2)) /* function arg n is type t	*/
-#    define N(t) ((t) >>= 2)           /* shift for next arg		*/
-#    define T(t) a2t[( t )&03]         /* get actual type for t	*/
+#    define A(n, t) ((t) << (( n ) *2)) /* function arg n is type t	*/
+#    define N(t) ((t) >>= 2)            /* shift for next arg		*/
+#    define T(t) a2t[( t ) &03]         /* get actual type for t	*/
 
 #    define exalloc(p, n) exnewof(p, 0, char, n, 0)
 #    define exnewof(p, o, t, n, x) vmnewof((p)->vm, o, t, n, x)

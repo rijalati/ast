@@ -58,7 +58,7 @@ int *intPtr;        /* Place to store converted result. */
     }
     if (*p == '-') {
         p++;
-        i = -( int )strtoul(p, &end, 0);
+        i = -( int ) strtoul(p, &end, 0);
     } else if (*p == '+') {
         p++;
         i = strtoul(p, &end, 0);
@@ -67,20 +67,20 @@ int *intPtr;        /* Place to store converted result. */
     }
     if (end == p) {
     badInteger:
-        if (interp != ( Tcl_Interp * )NULL) {
+        if (interp != ( Tcl_Interp * ) NULL) {
             Tcl_AppendResult(interp,
                              "expected integer but got \"",
                              string,
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
         }
         return TCL_ERROR;
     }
     if (errno == ERANGE) {
-        if (interp != ( Tcl_Interp * )NULL) {
+        if (interp != ( Tcl_Interp * ) NULL) {
             interp->result = "integer value too large to represent";
             Tcl_SetErrorCode(
-            interp, "ARITH", "IOVERFLOW", interp->result, ( char * )NULL);
+            interp, "ARITH", "IOVERFLOW", interp->result, ( char * ) NULL);
         }
         return TCL_ERROR;
     }
@@ -127,17 +127,17 @@ double *doublePtr;  /* Place to store converted result. */
     d = strtod(string, &end);
     if (end == string) {
     badDouble:
-        if (interp != ( Tcl_Interp * )NULL) {
+        if (interp != ( Tcl_Interp * ) NULL) {
             Tcl_AppendResult(interp,
                              "expected floating-point number but got \"",
                              string,
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
         }
         return TCL_ERROR;
     }
     if (errno != 0) {
-        if (interp != ( Tcl_Interp * )NULL) {
+        if (interp != ( Tcl_Interp * ) NULL) {
             TclExprFloatError(interp, d);
         }
         return TCL_ERROR;
@@ -194,7 +194,7 @@ int *boolPtr;       /* Place to store converted result, which
             break;
         }
         if ((c >= 'A') && (c <= 'Z')) {
-            c += ( char )('a' - 'A');
+            c += ( char ) ('a' - 'A');
         }
         lowerCase[i] = c;
     }
@@ -224,12 +224,12 @@ int *boolPtr;       /* Place to store converted result, which
         }
     } else {
     badBoolean:
-        if (interp != ( Tcl_Interp * )NULL) {
+        if (interp != ( Tcl_Interp * ) NULL) {
             Tcl_AppendResult(interp,
                              "expected boolean value but got \"",
                              string,
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
         }
         return TCL_ERROR;
     }

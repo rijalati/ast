@@ -60,10 +60,10 @@ trap_timeout(void *);
 static void *
 time_add(struct tevent *item, void *list)
 {
-    struct tevent *tp = ( struct tevent * )list;
+    struct tevent *tp = ( struct tevent * ) list;
     if (!tp || item->milli < tp->milli) {
         item->next = tp;
-        list = ( void * )item;
+        list = ( void * ) item;
     } else {
         while (tp->next && item->milli > tp->next->milli)
             tp = tp->next;
@@ -71,8 +71,8 @@ time_add(struct tevent *item, void *list)
         tp->next = item;
     }
     tp = item;
-    tp->timeout = ( void * )sh_timeradd(
-    tp->milli, tp->flags & R_FLAG, trap_timeout, ( void * )tp);
+    tp->timeout = ( void * ) sh_timeradd(
+    tp->milli, tp->flags & R_FLAG, trap_timeout, ( void * ) tp);
     return (list);
 }
 
@@ -82,9 +82,9 @@ time_add(struct tevent *item, void *list)
 static void *
 time_delete(struct tevent *item, void *list)
 {
-    struct tevent *tp = ( struct tevent * )list;
+    struct tevent *tp = ( struct tevent * ) list;
     if (item == tp)
-        list = ( void * )tp->next;
+        list = ( void * ) tp->next;
     else {
         while (tp && tp->next != item)
             tp = tp->next;
@@ -92,7 +92,7 @@ time_delete(struct tevent *item, void *list)
             tp->next = item->next;
     }
     if (item->timeout)
-        timerdel(( void * )item->timeout);
+        timerdel(( void * ) item->timeout);
     return (list);
 }
 
@@ -105,7 +105,7 @@ getnow(void)
     timeofday(&tmp);
     now = tmp.tv_sec + 1.e-6 * tmp.tv_usec;
 #else
-    now = ( Time_t )time(NIL(time_t *));
+    now = ( Time_t ) time(NIL(time_t *));
 #endif /* timeofday */
     return (now);
 }
@@ -113,7 +113,7 @@ getnow(void)
 static void
 print_alarms(void *list)
 {
-    struct tevent *tp = ( struct tevent * )list;
+    struct tevent *tp = ( struct tevent * ) list;
     while (tp) {
         if (tp->timeout) {
             char *name = nv_name(tp->node);
@@ -122,7 +122,7 @@ print_alarms(void *list)
                 sfprintf(sfstdout, e_alrm1, name, d / 1000.);
             } else {
                 Time_t num = nv_getnum(tp->node), now = getnow();
-                sfprintf(sfstdout, e_alrm2, name, ( double )num - now);
+                sfprintf(sfstdout, e_alrm2, name, ( double ) num - now);
             }
         }
         tp = tp->next;
@@ -132,7 +132,7 @@ print_alarms(void *list)
 static void
 trap_timeout(void *handle)
 {
-    struct tevent *tp = ( struct tevent * )handle;
+    struct tevent *tp = ( struct tevent * ) handle;
     tp->sh->trapnote |= SH_SIGALRM;
     if (!(tp->flags & R_FLAG))
         tp->timeout = 0;
@@ -152,7 +152,7 @@ sh_timetraps(Shell_t *shp)
     shp->trapnote &= ~SH_SIGALRM;
     while (1) {
         shp->sigflag[SIGALRM] &= ~SH_SIGALRM;
-        tptop = ( struct tevent * )shp->st.timetrap;
+        tptop = ( struct tevent * ) shp->st.timetrap;
         for (tp = tptop; tp; tp = tpnext) {
             tpnext = tp->next;
             if (tp->flags & L_FLAG) {
@@ -160,7 +160,7 @@ sh_timetraps(Shell_t *shp)
                 if (tp->action) {
                     fcsave(&savefc);
                     memcpy(ifstable, shp->ifstable, sizeof(ifstable));
-                    sh_fun(shp, tp->action, tp->node, ( char ** )0);
+                    sh_fun(shp, tp->action, tp->node, ( char ** ) 0);
                     fcrestore(&savefc);
                     memcpy(shp->ifstable, ifstable, sizeof(ifstable));
                 }
@@ -183,9 +183,9 @@ sh_timetraps(Shell_t *shp)
 static char *
 setdisc(Namval_t *np, const char *event, Namval_t *action, Namfun_t *fp)
 {
-    struct tevent *tp = ( struct tevent * )fp;
+    struct tevent *tp = ( struct tevent * ) fp;
     if (!event)
-        return (action ? "" : ( char * )ALARM);
+        return (action ? "" : ( char * ) ALARM);
     if (strcmp(event, ALARM) != 0) {
         /* try the next level */
         return (nv_setdisc(np, event, action, fp));
@@ -194,7 +194,7 @@ setdisc(Namval_t *np, const char *event, Namval_t *action, Namfun_t *fp)
         action = tp->action;
     else
         tp->action = action;
-    return (action ? ( char * )action : "");
+    return (action ? ( char * ) action : "");
 }
 
 /*
@@ -203,7 +203,7 @@ setdisc(Namval_t *np, const char *event, Namval_t *action, Namfun_t *fp)
 static void
 putval(Namval_t *np, const char *val, int flag, Namfun_t *fp)
 {
-    struct tevent *tp = ( struct tevent * )fp;
+    struct tevent *tp = ( struct tevent * ) fp;
     double d, x;
     Shell_t *shp = tp->sh;
     char *cp, *pp;
@@ -226,19 +226,19 @@ putval(Namval_t *np, const char *val, int flag, Namfun_t *fp)
                 d -= now;
             }
         }
-        nv_putv(np, ( char * )&x, NV_INTEGER | NV_DOUBLE, fp);
+        nv_putv(np, ( char * ) &x, NV_INTEGER | NV_DOUBLE, fp);
         tp->milli = 1000 * (d + .0005);
         if (tp->timeout)
             shp->st.timetrap = time_delete(tp, shp->st.timetrap);
         if (tp->milli > 0)
             shp->st.timetrap = time_add(tp, shp->st.timetrap);
     } else {
-        tp = ( struct tevent * )nv_stack(np, ( Namfun_t * )0);
+        tp = ( struct tevent * ) nv_stack(np, ( Namfun_t * ) 0);
         shp->st.timetrap = time_delete(tp, shp->st.timetrap);
         if (tp->action)
             nv_close(tp->action);
         nv_unset(np);
-        free(( void * )fp);
+        free(( void * ) fp);
     }
 }
 
@@ -268,13 +268,13 @@ b_alarm(int argc, char *argv[], Shbltin_t *context)
     argc -= opt_info.index;
     argv += opt_info.index;
     if (error_info.errors)
-        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * ) 0));
     if (argc == 0) {
         print_alarms(shp->st.timetrap);
         return (0);
     }
     if (argc != 2)
-        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * ) 0));
     np
     = nv_open(argv[0], shp->var_tree, NV_NOARRAY | NV_VARNAME | NV_NOASSIGN);
     if (!nv_isnull(np))
@@ -286,7 +286,7 @@ b_alarm(int argc, char *argv[], Shbltin_t *context)
     tp->flags = rflag;
     tp->node = np;
     tp->sh = shp;
-    nv_stack(np, ( Namfun_t * )tp);
+    nv_stack(np, ( Namfun_t * ) tp);
     nv_putval(np, argv[1], 0);
     return (0);
 }

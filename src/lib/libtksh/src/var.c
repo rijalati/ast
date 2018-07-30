@@ -20,7 +20,7 @@
 #define TKSH_TRACE_ELEMENT 0x400
 
 #define trace_element(ti) ((ti)->flags & TKSH_TRACE_ELEMENT)
-#define array_data(nf) (( TkshArrayInfo * )((nf) + 1))
+#define array_data(nf) (( TkshArrayInfo * ) ((nf) + 1))
 #define TkshClearArrayData(nv)                                               \
     do {                                                                     \
         TkshArrayInfo *a = TkshArrayData(nv);                                \
@@ -262,7 +262,7 @@ TkshArrayData(Namval_t *namval)
             return array_data(fp);
     }
 
-    nf_arr = ( Namfun_t * )calloc(1, tksh_trace_array.dsize);
+    nf_arr = ( Namfun_t * ) calloc(1, tksh_trace_array.dsize);
     nf_arr->next = NULL;
     nf_arr->disc = &tksh_trace_array;
     array_data(nf_arr)->clientData = NULL;
@@ -292,7 +292,7 @@ TkshUpVar(Tcl_Interp *interp,
     if (hashscope(sh.var_tree)
         && nv_open(newname, sh.var_tree, NV_NOSCOPE | NV_NOADD)) {
         Tcl_AppendResult(
-        interp, "variable \"", newname, "\" already exists", ( char * )NULL);
+        interp, "variable \"", newname, "\" already exists", ( char * ) NULL);
         return TCL_ERROR;
     }
     if (part2) {
@@ -321,9 +321,9 @@ TkshClearTraces(Namval_t *nv)
             && (fp->disc->putval != tksh_putval)) {
             continue;
         }
-        traceinfo = ( Tcl_Trace_Info * )(fp + 1);
+        traceinfo = ( Tcl_Trace_Info * ) (fp + 1);
         if (!(traceinfo->nv))
-            traceinfo = ( Tcl_Trace_Info * )(traceinfo->clientData);
+            traceinfo = ( Tcl_Trace_Info * ) (traceinfo->clientData);
         traceinfo->flags |= TCL_TRACE_DESTROYED;
         if (nv_disc(nv, fp, NV_POP))
             free(fp);
@@ -347,7 +347,7 @@ Tcl_SetVar2(Tcl_Interp *interp,
           = TkshOpenVar(interp, &part1, &part2, flags, OVAR_ARRAY, "set")))
         return NULL;
 
-    if (newValue == ( char * )NULL)
+    if (newValue == ( char * ) NULL)
         newValue = "";
     nf = namval->nvfun;
     if (flags & TCL_LIST_ELEMENT) {
@@ -359,7 +359,7 @@ Tcl_SetVar2(Tcl_Interp *interp,
             goto scalar;
         }
 
-        listValue = ( char * )malloc(len + 1);
+        listValue = ( char * ) malloc(len + 1);
         Tcl_ConvertElement(newValue, listValue, listFlags);
         newValue = listValue;
     }
@@ -592,7 +592,7 @@ tksh_putval(Namval_t *nv, const char *val, int flags, Namfun_t *nf)
         return;
     }
 
-    traceinfo = ( Tcl_Trace_Info * )(nf + 1);
+    traceinfo = ( Tcl_Trace_Info * ) (nf + 1);
     traceFlags = (traceinfo->flags & TCL_GLOBAL_ONLY)
                  | (val ? TCL_TRACE_WRITES : TCL_TRACE_UNSETS);
     if (!(traceinfo->flags & traceFlags & TCL_TRACE_MASK)) {
@@ -603,7 +603,7 @@ tksh_putval(Namval_t *nv, const char *val, int flags, Namfun_t *nf)
     dprintf(("Tksh: invoking tksh_putval (%s)\n", val ? val : "unset"));
 
     trace = traceinfo->nv ? *traceinfo
-                          : (*(( Tcl_Trace_Info * )traceinfo->clientData));
+                          : (*(( Tcl_Trace_Info * ) traceinfo->clientData));
 
     if (trace_element(traceinfo)) /* Trace on array element */
     {
@@ -664,11 +664,11 @@ tksh_getval(Namval_t *nv, Namfun_t *nf)
     if (tracesOff || nv_isattr(nv, NV_NODISC))
         return nv_getv(nv, nf);
 
-    traceinfo = ( Tcl_Trace_Info * )(nf + 1);
+    traceinfo = ( Tcl_Trace_Info * ) (nf + 1);
     if (traceinfo->flags & TCL_TRACE_DESTROYED)
         return nv_getv(nv, nf);
     trace = traceinfo->nv ? *traceinfo
-                          : (*(( Tcl_Trace_Info * )traceinfo->clientData));
+                          : (*(( Tcl_Trace_Info * ) traceinfo->clientData));
     traceFlags = (trace.flags & TCL_GLOBAL_ONLY) | TCL_TRACE_READS;
     if (trace_element(traceinfo)) /* Trace on array element */
     {
@@ -710,7 +710,7 @@ tksh_getval(Namval_t *nv, Namfun_t *nf)
                      : noSuchVar;
         return (trace_element(&trace) && !(trace.nv)->nvalue)
                ? NULL
-               : ( char * )nv->nvalue;
+               : ( char * ) nv->nvalue;
     }
     get_result = (trace_element(traceinfo) && traceinfo->nv->nvalue)
                  ? noSuchElement
@@ -746,10 +746,10 @@ Tcl_TraceVar2(Tcl_Interp *interp,
     if (part2 && !(nvsub = nv_opensub(namval)))
         goto scalar;
 
-    if (!(nf = ( Namfun_t * )calloc(1, TRACE_SIZE)))
+    if (!(nf = ( Namfun_t * ) calloc(1, TRACE_SIZE)))
         goto scalar;
 
-    traceinfo = ( Tcl_Trace_Info * )(nf + 1);
+    traceinfo = ( Tcl_Trace_Info * ) (nf + 1);
     traceinfo->clientData = clientData;
     traceinfo->flags = flags;
     traceinfo->proc = proc;
@@ -790,13 +790,13 @@ static Namfun_t *
 first_namfun(Namval_t *nv)
 {
     Namfun_t *first;
-    first = nv_stack(nv, ( Namfun_t * )NULL);
+    first = nv_stack(nv, ( Namfun_t * ) NULL);
     nv_stack(nv, first);
 
     return first;
 }
 
-#define share_flag(x, y, f) ((( x )&f) == (( y )&f))
+#define share_flag(x, y, f) ((( x ) &f) == (( y ) &f))
 static Namfun_t *
 find_namfun(Namval_t *nv,
             int flags,
@@ -807,7 +807,7 @@ find_namfun(Namval_t *nv,
     Namfun_t *first = first_namfun(nv), *node = first;
 
     while (node) {
-        traceinfo = ( Tcl_Trace_Info * )(node + 1);
+        traceinfo = ( Tcl_Trace_Info * ) (node + 1);
         if ((traceinfo->proc == proc)
             && share_flag(traceinfo->flags, flags, TCL_GLOBAL_ONLY)
             && (traceinfo->clientData == clientData)) {
@@ -874,7 +874,7 @@ Tcl_VarTraceInfo2(Tcl_Interp *interp,
 
     nf = first_namfun(namval);
     while (nf) {
-        traceinfo = ( Tcl_Trace_Info * )(nf + 1);
+        traceinfo = ( Tcl_Trace_Info * ) (nf + 1);
         if ((traceinfo->proc == proc)
             && share_flag(traceinfo->flags, flags, TCL_GLOBAL_ONLY)) {
             if (flag) {
@@ -967,9 +967,9 @@ char *reason;        /* String describing why operation failed. */
 {
     Tcl_ResetResult(interp);
     Tcl_AppendResult(
-    interp, "can't ", operation, " \"", part1, ( char * )NULL);
+    interp, "can't ", operation, " \"", part1, ( char * ) NULL);
     if (part2 != NULL) {
-        Tcl_AppendResult(interp, "(", part2, ")", ( char * )NULL);
+        Tcl_AppendResult(interp, "(", part2, ")", ( char * ) NULL);
     }
-    Tcl_AppendResult(interp, "\": ", reason, ( char * )NULL);
+    Tcl_AppendResult(interp, "\": ", reason, ( char * ) NULL);
 }

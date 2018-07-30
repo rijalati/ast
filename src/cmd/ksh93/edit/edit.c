@@ -184,7 +184,7 @@ static const char bellchr[] = "\a"; /* bell char */
 int
 tty_check(int fd)
 {
-    Edit_t *ep = ( Edit_t * )(shgd->ed_context);
+    Edit_t *ep = ( Edit_t * ) (shgd->ed_context);
     struct termios tty;
     ep->e_savefd = -1;
     return (tty_get(fd, &tty) == 0);
@@ -199,7 +199,7 @@ tty_check(int fd)
 int
 tty_get(int fd, struct termios *tty)
 {
-    Edit_t *ep = ( Edit_t * )(shgd->ed_context);
+    Edit_t *ep = ( Edit_t * ) (shgd->ed_context);
     if (fd == ep->e_savefd)
         *tty = ep->e_savetty;
     else {
@@ -225,7 +225,7 @@ tty_get(int fd, struct termios *tty)
 int
 tty_set(int fd, int action, struct termios *tty)
 {
-    Edit_t *ep = ( Edit_t * )(shgd->ed_context);
+    Edit_t *ep = ( Edit_t * ) (shgd->ed_context);
     if (fd >= 0) {
 #ifdef future
         if (ep->e_savefd >= 0
@@ -253,7 +253,7 @@ tty_set(int fd, int action, struct termios *tty)
 void
 tty_cooked(int fd)
 {
-    Edit_t *ep = ( Edit_t * )(shgd->ed_context);
+    Edit_t *ep = ( Edit_t * ) (shgd->ed_context);
     if (ep->sh->st.trap[SH_KEYTRAP] && savelex)
         memcpy(ep->sh->lex_context, savelex, ep->sh->lexsize);
     ep->e_keytrap = 0;
@@ -293,7 +293,7 @@ tty_raw(int fd, int echomode)
 #ifdef L_MASK
     struct ltchars lchars;
 #endif /* L_MASK */
-    Edit_t *ep = ( Edit_t * )(shgd->ed_context);
+    Edit_t *ep = ( Edit_t * ) (shgd->ed_context);
     if (ep->e_raw == RAWMODE)
         return (echo ? -1 : 0);
     else if (ep->e_raw == ECHOMODE)
@@ -414,7 +414,7 @@ tty_raw(int fd, int echomode)
 int
 tty_alt(int fd)
 {
-    Edit_t *ep = ( Edit_t * )(shgd->ed_context);
+    Edit_t *ep = ( Edit_t * ) (shgd->ed_context);
     int mask;
     struct tchars ttychars;
     switch (ep->e_raw) {
@@ -460,7 +460,7 @@ tty_alt(int fd)
 int
 tty_alt(int fd)
 {
-    Edit_t *ep = ( Edit_t * )(shgd->ed_context);
+    Edit_t *ep = ( Edit_t * ) (shgd->ed_context);
     switch (ep->e_raw) {
     case ECHOMODE:
         return (-1);
@@ -536,7 +536,7 @@ ed_window(void)
     int rows, cols;
     char *cp = nv_getval(COLUMNS);
     if (cp)
-        cols = ( int )strtol(cp, ( char ** )0, 10) - 1;
+        cols = ( int ) strtol(cp, ( char ** ) 0, 10) - 1;
     else {
         astwinsize(2, &rows, &cols);
         if (--cols < 0)
@@ -562,7 +562,7 @@ ed_flush(Edit_t *ep)
     int fd = ERRIO;
     if (n <= 0)
         return;
-    write(fd, ep->e_outbase, ( unsigned )n);
+    write(fd, ep->e_outbase, ( unsigned ) n);
     ep->e_outptr = ep->e_outbase;
 }
 
@@ -627,9 +627,9 @@ ed_setup(Edit_t *ep, int fd, int reedit)
         int32_t v;
         astwinsize(2, &rows, &cols);
         if (v = cols)
-            nv_putval(COLUMNS, ( char * )&v, NV_INT32 | NV_RDONLY);
+            nv_putval(COLUMNS, ( char * ) &v, NV_INT32 | NV_RDONLY);
         if (v = rows)
-            nv_putval(LINES, ( char * )&v, NV_INT32 | NV_RDONLY);
+            nv_putval(LINES, ( char * ) &v, NV_INT32 | NV_RDONLY);
         shp->winch = 0;
     }
 #endif
@@ -757,7 +757,7 @@ ed_setup(Edit_t *ep, int fd, int reedit)
         /* can't use output buffer when reading from stderr */
         static char *buff;
         if (!buff)
-            buff = ( char * )malloc(MAXLINE);
+            buff = ( char * ) malloc(MAXLINE);
         ep->e_outbase = ep->e_outptr = buff;
         ep->e_outlast = ep->e_outptr + MAXLINE;
         return;
@@ -765,7 +765,7 @@ ed_setup(Edit_t *ep, int fd, int reedit)
     qlen = sfset(sfstderr, SF_READ, 0);
     /* make sure SF_READ not on */
     ep->e_outbase = ep->e_outptr
-    = ( char * )sfreserve(sfstderr, SF_UNBOUND, SF_LOCKR);
+    = ( char * ) sfreserve(sfstderr, SF_UNBOUND, SF_LOCKR);
     ep->e_outlast = ep->e_outptr + sfvalue(sfstderr);
     if (qlen)
         sfset(sfstderr, SF_READ, 1);
@@ -804,7 +804,7 @@ ed_setup(Edit_t *ep, int fd, int reedit)
     }
     if (ep->sh->st.trap[SH_KEYTRAP]) {
         if (!savelex)
-            savelex = ( char * )malloc(shp->lexsize);
+            savelex = ( char * ) malloc(shp->lexsize);
         if (savelex)
             memcpy(savelex, ep->sh->lex_context, ep->sh->lexsize);
     }
@@ -837,7 +837,7 @@ ed_nputchar(Edit_t *ep, int n, int c)
 int
 ed_read(void *context, int fd, char *buff, int size, int reedit)
 {
-    Edit_t *ep = ( Edit_t * )context;
+    Edit_t *ep = ( Edit_t * ) context;
     int rv = -1;
     int delim = ((ep->e_raw & RAWMODE) ? nttyparm.c_cc[VEOL] : '\n');
     Shell_t *shp = ep->sh;
@@ -962,7 +962,7 @@ putstack(Edit_t *ep, char string[], int nbyte, int type)
     *(endp = &p[nbyte]) = 0;
     endp = &p[nbyte];
     do {
-        c = ( int )((*p) & STRIP);
+        c = ( int ) ((*p) & STRIP);
         if (c < 0x80 && c != '<') {
             if (type)
                 c = -c;
@@ -995,7 +995,7 @@ putstack(Edit_t *ep, char string[], int nbyte, int type)
                 return (c);
             } else {
                 ed_ringbell();
-                c = -( int )((*p) & STRIP);
+                c = -( int ) ((*p) & STRIP);
                 offset += mbmax() - 1;
             }
         }
@@ -1133,7 +1133,7 @@ ed_putchar(Edit_t *ep, int c)
     /* check for place holder */
     if (c == MARKER)
         return;
-    if ((size = mbconv(buf, ( wchar_t )c)) > 1) {
+    if ((size = mbconv(buf, ( wchar_t ) c)) > 1) {
         for (i = 0; i < (size - 1); i++)
             *dp++ = buf[i];
         c = buf[i];
@@ -1184,7 +1184,7 @@ ed_curpos(Edit_t *ep, genchar *phys, int off, int cur, Edpos_t curpos)
         if (c)
             c = *sp++;
 #if SHOPT_MULTIBYTE
-        if (c && (mbconv(p, ( wchar_t )c)) == 1 && p[0] == '\n')
+        if (c && (mbconv(p, ( wchar_t ) c)) == 1 && p[0] == '\n')
 #else
         if (c == '\n')
 #endif /* SHOPT_MULTIBYTE */
@@ -1313,7 +1313,7 @@ ed_virt_to_phys(Edit_t *ep,
         if (curp == sp)
             r = dp - phys;
 #if SHOPT_MULTIBYTE
-        d = mbwidth(( wchar_t )c);
+        d = mbwidth(( wchar_t ) c);
         if (d == 1 && is_cntrl(c))
             d = -1;
         if (d > 1) {
@@ -1365,20 +1365,21 @@ ed_virt_to_phys(Edit_t *ep,
 int
 ed_internal(const char *src, genchar *dest)
 {
-    const unsigned char *cp = ( unsigned char * )src;
+    const unsigned char *cp = ( unsigned char * ) src;
     int c;
-    wchar_t *dp = ( wchar_t * )dest;
+    wchar_t *dp = ( wchar_t * ) dest;
     if (dest
-        == ( genchar * )roundof(cp - ( unsigned char * )0, sizeof(genchar))) {
+        == ( genchar * ) roundof(cp - ( unsigned char * ) 0,
+                                 sizeof(genchar))) {
         genchar buffer[MAXLINE];
         c = ed_internal(src, buffer);
-        ed_gencpy(( genchar * )dp, buffer);
+        ed_gencpy(( genchar * ) dp, buffer);
         return (c);
     }
     while (*cp)
         *dp++ = mbchar(cp);
     *dp = 0;
-    return (dp - ( wchar_t * )dest);
+    return (dp - ( wchar_t * ) dest);
 }
 
 /*
@@ -1394,12 +1395,12 @@ ed_external(const genchar *src, char *dest)
     int c, size;
     char *dp = dest;
     char *dpmax = dp + sizeof(genchar) * MAXLINE - 2;
-    if (( char * )src == dp) {
+    if (( char * ) src == dp) {
         char buffer[MAXLINE * sizeof(genchar)];
         c = ed_external(src, buffer);
 
 #    ifdef _lib_wcscpy
-        wcscpy(( wchar_t * )dest, ( const wchar_t * )buffer);
+        wcscpy(( wchar_t * ) dest, ( const wchar_t * ) buffer);
 #    else
         strcpy(dest, buffer);
 #    endif
@@ -1424,9 +1425,9 @@ ed_external(const genchar *src, char *dest)
 void
 ed_gencpy(genchar *dp, const genchar *sp)
 {
-    dp = ( genchar * )roundof(( char * )dp - ( char * )0, sizeof(genchar));
-    sp
-    = ( const genchar * )roundof(( char * )sp - ( char * )0, sizeof(genchar));
+    dp = ( genchar * ) roundof(( char * ) dp - ( char * ) 0, sizeof(genchar));
+    sp = ( const genchar * ) roundof(( char * ) sp - ( char * ) 0,
+                                     sizeof(genchar));
     while (*dp++ = *sp++)
         ;
 }
@@ -1438,9 +1439,9 @@ ed_gencpy(genchar *dp, const genchar *sp)
 void
 ed_genncpy(genchar *dp, const genchar *sp, int n)
 {
-    dp = ( genchar * )roundof(( char * )dp - ( char * )0, sizeof(genchar));
-    sp
-    = ( const genchar * )roundof(( char * )sp - ( char * )0, sizeof(genchar));
+    dp = ( genchar * ) roundof(( char * ) dp - ( char * ) 0, sizeof(genchar));
+    sp = ( const genchar * ) roundof(( char * ) sp - ( char * ) 0,
+                                     sizeof(genchar));
     while (n-- > 0 && (*dp++ = *sp++))
         ;
 }
@@ -1454,8 +1455,8 @@ int
 ed_genlen(const genchar *str)
 {
     const genchar *sp = str;
-    sp
-    = ( const genchar * )roundof(( char * )sp - ( char * )0, sizeof(genchar));
+    sp = ( const genchar * ) roundof(( char * ) sp - ( char * ) 0,
+                                     sizeof(genchar));
     while (*sp++)
         ;
     return (sp - str - 1);
@@ -1501,8 +1502,8 @@ keytrap(Edit_t *ep, char *inbuff, int insize, int bufsize, int mode)
     } else
         *ep->e_vi_insert = 0;
     nv_putval(ED_CHRNOD, inbuff, NV_NOFREE);
-    nv_putval(ED_COLNOD, ( char * )&ep->e_col, NV_NOFREE | NV_INTEGER);
-    nv_putval(ED_TXTNOD, ( char * )cp, NV_NOFREE);
+    nv_putval(ED_COLNOD, ( char * ) &ep->e_col, NV_NOFREE | NV_INTEGER);
+    nv_putval(ED_TXTNOD, ( char * ) cp, NV_NOFREE);
     nv_putval(ED_MODENOD, ep->e_vi_insert, NV_NOFREE);
     savexit = shp->savexit;
     sh_trap(shp, shp->st.trap[SH_KEYTRAP], 0);
@@ -1512,7 +1513,7 @@ keytrap(Edit_t *ep, char *inbuff, int insize, int bufsize, int mode)
     else if (bufsize > 0) {
         strncpy(inbuff, cp, bufsize);
         inbuff[bufsize - 1] = '\0';
-        insize = ( int )strlen(inbuff);
+        insize = ( int ) strlen(inbuff);
     } else
         insize = 0;
     nv_unset(ED_TXTNOD);
@@ -1524,16 +1525,16 @@ keytrap(Edit_t *ep, char *inbuff, int insize, int bufsize, int mode)
 static int
 ed_sortdata(const char *s1, const char *s2)
 {
-    Histmatch_t *m1 = ( Histmatch_t * )s1;
-    Histmatch_t *m2 = ( Histmatch_t * )s2;
+    Histmatch_t *m1 = ( Histmatch_t * ) s1;
+    Histmatch_t *m2 = ( Histmatch_t * ) s2;
     return (strcmp(m1->data, m2->data));
 }
 
 static int
 ed_sortindex(const char *s1, const char *s2)
 {
-    Histmatch_t *m1 = ( Histmatch_t * )s1;
-    Histmatch_t *m2 = ( Histmatch_t * )s2;
+    Histmatch_t *m1 = ( Histmatch_t * ) s1;
+    Histmatch_t *m2 = ( Histmatch_t * ) s2;
     return (m2->index - m1->index);
 }
 
@@ -1594,10 +1595,10 @@ ed_histgen(Edit_t *ep, const char *pattern)
         m = strlen(ep->hpat) - 4;
         if (memcmp(pattern, ep->hpat + 2, m) == 0) {
             n = strcmp(cp, ep->hpat) == 0;
-            for (argv = av = ( char ** )ep->hlist, mp = ep->hfirst; mp;
+            for (argv = av = ( char ** ) ep->hlist, mp = ep->hfirst; mp;
                  mp = mp->next) {
                 if (n || strmatch(mp->data, cp))
-                    *av++ = ( char * )mp;
+                    *av++ = ( char * ) mp;
             }
             *av = 0;
             ep->hmax = av - argv;
@@ -1612,7 +1613,7 @@ ed_histgen(Edit_t *ep, const char *pattern)
     memcpy(ep->hpat, cp, m);
     ep->hpat[m] = 0;
     pattern = cp;
-    index1 = ( int )hp->histind;
+    index1 = ( int ) hp->histind;
     for (index2 = index1 - hp->histsize; index1 > index2; index1--) {
         offset = hist_tell(hp, index1);
         sfseek(hp->histfp, offset, SEEK_SET);
@@ -1621,9 +1622,9 @@ ed_histgen(Edit_t *ep, const char *pattern)
         if (*cp == '#')
             continue;
         if (strmatch(cp, pattern)) {
-            l = ed_histlencopy(cp, ( char * )0);
-            mp
-            = ( Histmatch_t * )stkalloc(ep->sh->stk, sizeof(Histmatch_t) + l);
+            l = ed_histlencopy(cp, ( char * ) 0);
+            mp = ( Histmatch_t * ) stkalloc(ep->sh->stk,
+                                            sizeof(Histmatch_t) + l);
             mp->next = mplast;
             mplast = mp;
             mp->len = l;
@@ -1637,33 +1638,33 @@ ed_histgen(Edit_t *ep, const char *pattern)
     if (ac > 0) {
         l = ac;
         argv = av
-        = ( char ** )stkalloc(ep->sh->stk, (ac + 1) * sizeof(char *));
-        for (mplast = 0; l >= 0 && (*av = ( char * )mp);
+        = ( char ** ) stkalloc(ep->sh->stk, (ac + 1) * sizeof(char *));
+        for (mplast = 0; l >= 0 && (*av = ( char * ) mp);
              mplast = mp, mp = mp->next, av++) {
             l--;
         }
         *av = 0;
         strsort(argv, ac, ed_sortdata);
-        mplast = ( Histmatch_t * )argv[0];
-        for (ar = av = &argv[1]; mp = ( Histmatch_t * )*av; av++) {
+        mplast = ( Histmatch_t * ) argv[0];
+        for (ar = av = &argv[1]; mp = ( Histmatch_t * ) *av; av++) {
             if (strcmp(mp->data, mplast->data) == 0) {
                 mplast->count++;
                 if (mp->index > mplast->index)
                     mplast->index = mp->index;
                 continue;
             }
-            *ar++ = ( char * )(mplast = mp);
+            *ar++ = ( char * ) (mplast = mp);
         }
         *ar = 0;
         mplast->next = 0;
         ac = ar - argv;
         strsort(argv, ac, ed_sortindex);
-        mplast = ( Histmatch_t * )argv[0];
-        for (av = &argv[1]; mp = ( Histmatch_t * )*av; av++, mplast = mp)
+        mplast = ( Histmatch_t * ) argv[0];
+        for (av = &argv[1]; mp = ( Histmatch_t * ) *av; av++, mplast = mp)
             mplast->next = mp;
         mplast->next = 0;
     }
-    ep->hlist = ( Histmatch_t ** )argv;
+    ep->hlist = ( Histmatch_t ** ) argv;
     ep->hfirst = ep->hlist ? ep->hlist[0] : 0;
     return (ep->hmax = ac);
 }
@@ -1721,7 +1722,7 @@ ed_open(Shell_t *shp)
     Edit_t *ed = newof(0, Edit_t, 1, 0);
     ed->sh = shp;
     strcpy(ed->e_macro, "_??");
-    return (( void * )ed);
+    return (( void * ) ed);
 }
 
 #undef ioctl
@@ -1733,13 +1734,13 @@ sh_ioctl(int fd, int cmd, void *val, int sz)
         while ((r = ioctl(fd, cmd, val)) < 0 && errno == EINTR)
             errno = err;
     } else {
-        Sflong_t l = ( Sflong_t )val;
+        Sflong_t l = ( Sflong_t ) val;
         if (sizeof(val) == sizeof(long)) {
-            while ((r = ioctl(fd, cmd, ( unsigned long )l)) < 0
+            while ((r = ioctl(fd, cmd, ( unsigned long ) l)) < 0
                    && errno == EINTR)
                 errno = err;
         } else if (sizeof(int) != sizeof(long)) {
-            while ((r = ioctl(fd, cmd, ( unsigned int )l)) < 0
+            while ((r = ioctl(fd, cmd, ( unsigned int ) l)) < 0
                    && errno == EINTR)
                 errno = err;
         }

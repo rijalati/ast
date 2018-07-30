@@ -68,9 +68,9 @@ static const char usage[]
 #define BREAK_PAGE 23
 #define BREAK_LINE 72
 
-#define LINE_GLOBAL ((off_t)(( off_t )1) << (CHAR_BIT * sizeof(off_t) - 1))
-#define LINE_MARKED ((off_t)(( off_t )1) << (CHAR_BIT * sizeof(off_t) - 2))
-#define LINE_NONE (( off_t )-1)
+#define LINE_GLOBAL ((off_t)(( off_t ) 1) << (CHAR_BIT * sizeof(off_t) - 1))
+#define LINE_MARKED ((off_t)(( off_t ) 1) << (CHAR_BIT * sizeof(off_t) - 2))
+#define LINE_NONE (( off_t ) -1)
 
 #define MARK_MIN 'a'
 #define MARK_MAX 'z'
@@ -293,7 +293,7 @@ getchr(void)
             ed.input[n--] = 0;
         ed.spbeg = ed.input;
         ed.spend
-        = (n >= 0 && ed.input[n] == '\\') ? (ed.input + n) : ( char * )0;
+        = (n >= 0 && ed.input[n] == '\\') ? (ed.input + n) : ( char * ) 0;
     }
     if (!(ed.lastc = *ed.input++)) {
         ed.input = 0;
@@ -380,8 +380,8 @@ init(void)
     for (c = 0; c < elementsof(signals); c++)
         if (signal(signals[c], interrupt) == SIG_IGN)
             signal(signals[c], SIG_IGN);
-    for (ss = ( Sfio_t ** )&ed.buffer;
-         ss < ( Sfio_t ** )((( char * )&ed.buffer) + sizeof(ed.buffer));
+    for (ss = ( Sfio_t ** ) &ed.buffer;
+         ss < ( Sfio_t ** ) ((( char * ) &ed.buffer) + sizeof(ed.buffer));
          ss++) {
         if (!(*ss = sfstropen()))
             error(ERROR_SYSTEM | 3, "cannot initialize internal buffer");
@@ -535,7 +535,7 @@ lineput(char *s)
               "temp file write error at offset %I*d",
               sizeof(off),
               off);
-    if ((ed.tmpoff = sfseek(ed.tmp, ( off_t )0, SEEK_CUR)) == ( off_t )-1)
+    if ((ed.tmpoff = sfseek(ed.tmp, ( off_t ) 0, SEEK_CUR)) == ( off_t ) -1)
         error(ERROR_SYSTEM | 2, "temp file tell error");
     return off;
 }

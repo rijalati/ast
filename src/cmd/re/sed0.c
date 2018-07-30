@@ -69,7 +69,7 @@ static int	initinput(int, char **);
 static Sfio_t*	aopen(char*, int);
 #endif
 
-#define ustrncmp(a, b, c) strncmp(( char * )(a), ( char * )(b), c)
+#define ustrncmp(a, b, c) strncmp(( char * ) (a), ( char * ) (b), c)
 
 int reflags = 0; /* regcomp() flags */
 int recno = 0;   /* current record number */
@@ -282,7 +282,7 @@ main(int argc, char **argv)
             bflag++;
             break;
         case 'e':
-            copyscript(&data, ( unsigned char * )opt_info.arg);
+            copyscript(&data, ( unsigned char * ) opt_info.arg);
             break;
         case 'f':
             readscript(&data, opt_info.arg);
@@ -312,12 +312,12 @@ main(int argc, char **argv)
     if (data.s == 0) {
         if (!*argv)
             error(3, "no script");
-        copyscript(&data, ( unsigned char * )*argv++);
+        copyscript(&data, ( unsigned char * ) *argv++);
         argc--;
     }
     if (ustrncmp(data.s, "#n", 2) == 0)
         nflag = 1;
-    copyscript(&data, ( const unsigned char * )"\n\n"); /* e.g. s/a/\ */
+    copyscript(&data, ( const unsigned char * ) "\n\n"); /* e.g. s/a/\ */
     compile(&script, &data);
 #if DEBUG
     printscript(&script);

@@ -124,9 +124,9 @@ typedef struct Disc_s
 static void *
 compf(const regex_t *re, const char *xstr, size_t xlen, regdisc_t *disc)
 {
-    Disc_t *dp = ( Disc_t * )disc;
+    Disc_t *dp = ( Disc_t * ) disc;
 
-    return ( void * )(( char * )0 + ++dp->ordinal);
+    return ( void * ) (( char * ) 0 + ++dp->ordinal);
 }
 
 static int
@@ -139,10 +139,14 @@ execf(const regex_t *re,
       char **snxt,
       regdisc_t *disc)
 {
-    Disc_t *dp = ( Disc_t * )disc;
+    Disc_t *dp = ( Disc_t * ) disc;
 
-    sfprintf(
-    dp->sp, "{%-.*s}(%lu:%d)", xlen, xstr, ( char * )data - ( char * )0, slen);
+    sfprintf(dp->sp,
+             "{%-.*s}(%lu:%d)",
+             xlen,
+             xstr,
+             ( char * ) data - ( char * ) 0,
+             slen);
     return atoi(xstr);
 }
 
@@ -151,7 +155,7 @@ resizef(void *handle, void *data, size_t size)
 {
     if (!size)
         return 0;
-    return stkalloc(( Sfio_t * )handle, size);
+    return stkalloc(( Sfio_t * ) handle, size);
 }
 
 #endif
@@ -160,7 +164,7 @@ resizef(void *handle, void *data, size_t size)
 #    ifdef __STDC__
 #        define NiL 0
 #    else
-#        define NiL ( char * )0
+#        define NiL ( char * ) 0
 #    endif
 #endif
 
@@ -617,7 +621,7 @@ static struct
 static void
 quote(char *s, int len, unsigned long test)
 {
-    unsigned char *u = ( unsigned char * )s;
+    unsigned char *u = ( unsigned char * ) s;
     unsigned char *e;
     int c;
 #ifdef MB_CUR_MAX
@@ -630,7 +634,7 @@ quote(char *s, int len, unsigned long test)
         printf("NULL");
     else if (test & TEST_EXPAND) {
         if (len < 0)
-            len = strlen(( char * )u);
+            len = strlen(( char * ) u);
         e = u + len;
         if (test & TEST_DELIMIT)
             printf("\"");
@@ -671,8 +675,8 @@ quote(char *s, int len, unsigned long test)
                 break;
             default:
 #ifdef MB_CUR_MAX
-                s = ( char * )u - 1;
-                if ((w = mblen(s, ( char * )e - s)) > 1) {
+                s = ( char * ) u - 1;
+                if ((w = mblen(s, ( char * ) e - s)) > 1) {
                     u += w - 1;
                     fwrite(s, 1, w, stdout);
                 } else
@@ -811,7 +815,7 @@ escape(char *s)
                 break;
             case 'u':
             case 'x':
-                q = *s == 'u' ? (s + 5) : ( char * )0;
+                q = *s == 'u' ? (s + 5) : ( char * ) 0;
                 c = 0;
                 e = s + 1;
                 while (!e || !q || s < q) {
@@ -1139,7 +1143,7 @@ note(unsigned long level, char *msg, unsigned long skip, unsigned long test)
     return skip | level;
 }
 
-#define TABS(n) &ts[7 - (( n )&7)]
+#define TABS(n) &ts[7 - (( n ) &7)]
 
 static char ts[] = "\t\t\t\t\t\t\t";
 
@@ -1359,7 +1363,7 @@ main(int argc, char **argv)
 
     state.NOMATCH.rm_so = state.NOMATCH.rm_eo = -2;
     p = unit;
-    version = ( char * )id + 10;
+    version = ( char * ) id + 10;
     while (p < &unit[sizeof(unit) - 1] && (*p = *version++) && !isspace(*p))
         p++;
     *p = 0;
@@ -1395,7 +1399,7 @@ main(int argc, char **argv)
                 if (!(state.stack = stkalloc(stkstd, 0)))
                     fprintf(stderr, "%s: out of space [stack]", unit);
                 state.disc.disc.re_resizef = resizef;
-                state.disc.disc.re_resizehandle = ( void * )stkstd;
+                state.disc.disc.re_resizehandle = ( void * ) stkstd;
 #endif
                 continue;
             case 'x':

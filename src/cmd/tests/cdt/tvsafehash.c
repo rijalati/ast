@@ -73,7 +73,7 @@ static Mmdisc_t Mapdisc, Shmdisc;
 Void_t *
 mmmemory(Dt_t *dt, Void_t *data, size_t size, Dtdisc_t *disc)
 {
-    return vmresize((( Mmdisc_t * )disc)->vm, data, size, 0);
+    return vmresize((( Mmdisc_t * ) disc)->vm, data, size, 0);
 }
 
 /* handle dictionary events */
@@ -81,7 +81,7 @@ static int
 mmevent(Dt_t *dt, int type, Void_t *data, Dtdisc_t *disc)
 {
     Cdtdata_t *cdtdt;
-    Mmdisc_t *mmdc = ( Mmdisc_t * )disc;
+    Mmdisc_t *mmdc = ( Mmdisc_t * ) disc;
 
     if (!(cdtdt = vmuserdata(mmdc->vm, CDT_DATA, sizeof(Cdtdata_t))))
         terror("Can't get shared memory data");
@@ -92,7 +92,7 @@ mmevent(Dt_t *dt, int type, Void_t *data, Dtdisc_t *disc)
                 return 0;
             else /* got data area, just return it */
             {
-                *(( Void_t ** )data) = cdtdt->data;
+                *(( Void_t ** ) data) = cdtdt->data;
                 return 1;
             }
         } else
@@ -102,8 +102,8 @@ mmevent(Dt_t *dt, int type, Void_t *data, Dtdisc_t *disc)
         if (!asogetptr(&cdtdt->data)) /* save data area for future references
                                        */
         {
-            asocasptr(&cdtdt->data, NIL(Void_t *), ( Void_t * )dt->data);
-            return asogetptr(&cdtdt->data) == ( Void_t * )dt->data ? 0 : -1;
+            asocasptr(&cdtdt->data, NIL(Void_t *), ( Void_t * ) dt->data);
+            return asogetptr(&cdtdt->data) == ( Void_t * ) dt->data ? 0 : -1;
         } else
             return 0;            /* data area existed */
     } else if (type == DT_CLOSE) /* starting to close dictionary */
@@ -122,7 +122,7 @@ mmevent(Dt_t *dt, int type, Void_t *data, Dtdisc_t *disc)
 static int
 mmcompare(Dt_t *dt, Void_t *key1, Void_t *key2, Dtdisc_t *disc)
 {
-    return *(( int * )key1) - *(( int * )key2);
+    return *(( int * ) key1) - *(( int * ) key2);
 }
 
 /* open a shared dictionary based on a common backing store */
@@ -146,13 +146,13 @@ opendictionary(int num, pid_t pid, char *store, int type)
 
     /* discipline for objects identified by their decimal values */
     mmdc = store == Mapstore ? &Mapdisc : &Shmdisc;
-    mmdc->disc.key = ( ssize_t )DTOFFSET(Obj_t, dval);
-    mmdc->disc.size = ( ssize_t )sizeof(int);
-    mmdc->disc.link = ( ssize_t )DTOFFSET(Obj_t, link);
-    mmdc->disc.makef = ( Dtmake_f )0;
-    mmdc->disc.freef = ( Dtfree_f )0;
+    mmdc->disc.key = ( ssize_t ) DTOFFSET(Obj_t, dval);
+    mmdc->disc.size = ( ssize_t ) sizeof(int);
+    mmdc->disc.link = ( ssize_t ) DTOFFSET(Obj_t, link);
+    mmdc->disc.makef = ( Dtmake_f ) 0;
+    mmdc->disc.freef = ( Dtfree_f ) 0;
     mmdc->disc.comparf = mmcompare;
-    mmdc->disc.hashf = ( Dthash_f )0;
+    mmdc->disc.hashf = ( Dthash_f ) 0;
     mmdc->disc.memoryf = mmmemory;
     mmdc->disc.eventf = mmevent;
     mmdc->store = store;
@@ -217,7 +217,7 @@ pingpong(char *procnum)
                num,
                pid,
                Mapstore);
-    if (!(mapdc = ( Mmdisc_t * )dtdisc(mapdt, NIL(Dtdisc_t *), 0)))
+    if (!(mapdc = ( Mmdisc_t * ) dtdisc(mapdt, NIL(Dtdisc_t *), 0)))
         terror(
         "Process[num=%d,pid=%d]: can't get dictionary discipline", num, pid);
     if (!(shmdt = opendictionary(num, pid, Shmstore, 1)))
@@ -225,7 +225,7 @@ pingpong(char *procnum)
                num,
                pid,
                Shmstore);
-    if (!(shmdc = ( Mmdisc_t * )dtdisc(shmdt, NIL(Dtdisc_t *), 0)))
+    if (!(shmdc = ( Mmdisc_t * ) dtdisc(shmdt, NIL(Dtdisc_t *), 0)))
         terror(
         "Process[num=%d,pid=%d]: can't get dictionary discipline", num, pid);
 
@@ -283,20 +283,20 @@ tmain()
         terror("Can't get process id");
     Mapstore = tstfile("map", -1);
     Shmstore = tstfile("shm", -1);
-    ( void )unlink(Mapstore);
-    ( void )unlink(Shmstore);
+    ( void ) unlink(Mapstore);
+    ( void ) unlink(Shmstore);
 
     tinfo("\tParent[pid=%d]: initializing shared dictionaries", ppid);
     if (!(mapdt = opendictionary(0, ppid, Mapstore, -1)))
         terror(
         "Parent[pid=%d]: Can't open dictionary for %s", ppid, Mapstore);
-    if (!(mapdc = ( Mmdisc_t * )dtdisc(mapdt, NIL(Dtdisc_t *), 0)))
+    if (!(mapdc = ( Mmdisc_t * ) dtdisc(mapdt, NIL(Dtdisc_t *), 0)))
         terror("Parent[pid=%d]: Can't get discipline for %s", ppid, Mapstore);
 
     if (!(shmdt = opendictionary(0, ppid, Shmstore, -1)))
         terror(
         "Parent[pid=%d]: Can't open dictionary for %s", ppid, Shmstore);
-    if (!(shmdc = ( Mmdisc_t * )dtdisc(shmdt, NIL(Dtdisc_t *), 0)))
+    if (!(shmdc = ( Mmdisc_t * ) dtdisc(shmdt, NIL(Dtdisc_t *), 0)))
         terror("Parent[pid=%d]: Can't get discipline for %s", ppid, Shmstore);
 
     for (k = 0; k < N_OBJ; ++k) {

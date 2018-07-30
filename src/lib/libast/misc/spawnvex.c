@@ -511,7 +511,7 @@ spawnvex_add(Spawnvex_t *vex,
             return -1;
         }
     }
-    switch (( int )op) {
+    switch (( int ) op) {
     case SPAWN_frame:
         arg = vex->frame;
         vex->frame = vex->cur;
@@ -642,7 +642,7 @@ spawnvex_apply(Spawnvex_t *vex, int cur, int flags)
                      * that's ok */
                     if (setpgid(0, arg) < 0 && arg && errno == EPERM)
                         setpgid(arg, 0);
-                    vex->pgrp = ( pid_t )arg;
+                    vex->pgrp = ( pid_t ) arg;
                     break;
                 case SPAWN_resetids:
                     if (arg == 1) {
@@ -720,7 +720,7 @@ spawnvex_apply(Spawnvex_t *vex, int cur, int flags)
             vex->frame = 0;
         else if (vex->op && (vex->op[vex->frame].number / 2) == SPAWN_frame) {
             cur = vex->frame;
-            vex->frame = ( unsigned int )vex->op[vex->frame + 1].number;
+            vex->frame = ( unsigned int ) vex->op[vex->frame + 1].number;
         }
         if (!(vex->cur = cur))
             VEXINIT(vex);
@@ -880,10 +880,10 @@ spawnvex(const char *path,
                 i += 2;
             switch (op /= 2) {
             case SPAWN_frame:
-                vex->frame = ( unsigned int )arg;
+                vex->frame = ( unsigned int ) arg;
                 break;
             case SPAWN_pgrp:
-                vex->pgrp = ( pid_t )arg;
+                vex->pgrp = ( pid_t ) arg;
                 break;
             default:
                 if (op >= 0) {
@@ -949,7 +949,7 @@ spawnvex(const char *path,
             case SPAWN_noexec:
                 break;
             case SPAWN_frame:
-                vex->frame = ( unsigned int )arg;
+                vex->frame = ( unsigned int ) arg;
                 break;
             case SPAWN_pgrp:
                 inherit.flags |= SPAWN_SETGROUP;
@@ -982,7 +982,7 @@ spawnvex(const char *path,
         }
     }
     pid = spawn(
-    path, m, map, &inherit, ( const char ** )argv, ( const char ** )envv);
+    path, m, map, &inherit, ( const char ** ) argv, ( const char ** ) envv);
 #        endif
     if (pid >= 0 && vex)
         VEXINIT(vex);

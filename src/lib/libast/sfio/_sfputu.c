@@ -48,13 +48,13 @@ Sfulong_t v;                 /* the unsigned value to be written */
 
     /* code v as integers in base SF_UBASE */
     s = ps = &(c[N_ARRAY - 1]);
-    *s = ( uchar )SFUVALUE(v);
+    *s = ( uchar ) SFUVALUE(v);
     while ((v >>= SF_UBITS))
         *--s = (uchar)(SFUVALUE(v) | SF_MORE);
     n = (ps - s) + 1;
 
     if (n > 8 || SFWPEEK(f, ps, p) < n)
-        n = SFWRITE(f, ( Void_t * )s, n); /* write the hard way */
+        n = SFWRITE(f, ( Void_t * ) s, n); /* write the hard way */
     else {
         switch (n) {
         case 8:
@@ -78,5 +78,5 @@ Sfulong_t v;                 /* the unsigned value to be written */
     }
 
     SFOPEN(f, 0);
-    SFMTXRETURN(f, ( int )n);
+    SFMTXRETURN(f, ( int ) n);
 }

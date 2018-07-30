@@ -38,12 +38,12 @@ tmain()
     for (k = 0; k < 10; ++k) {
         if (!(addr[k] = vmalloc(vm, ALLOCSZ)))
             terror("Allocation of block[%d] failed", k);
-        if (((( Vmulong_t )addr[k]) % ALIGN) != 0)
+        if (((( Vmulong_t ) addr[k]) % ALIGN) != 0)
             terror("Unaligned addr");
     }
 
     /* error for freeing something non-existent */
-    vmfree(vm, ( Void_t * )1);
+    vmfree(vm, ( Void_t * ) 1);
     if ((n = read(pfd[0], buf, sizeof(buf))) <= 0)
         terror("No corruption messages written");
     buf[n] = 0;
@@ -71,7 +71,7 @@ tmain()
     tinfo(buf);
 
     /* resize a non-existent block */
-    if (vmresize(vm, ( Void_t * )3, 256, VM_RSMOVE | VM_RSCOPY)
+    if (vmresize(vm, ( Void_t * ) 3, 256, VM_RSMOVE | VM_RSCOPY)
         != NIL(Void_t *))
         terror("Resizing a nonexistent block succeeded");
     if ((n = read(pfd[0], buf, sizeof(buf))) <= 0)

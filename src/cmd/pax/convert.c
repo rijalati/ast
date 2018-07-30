@@ -81,7 +81,7 @@ strupper(char *s)
 int
 portable(Archive_t *ap, const char *s)
 {
-    unsigned char *u = ( unsigned char * )s;
+    unsigned char *u = ( unsigned char * ) s;
     unsigned char *m;
     int c;
 
@@ -104,11 +104,11 @@ portable(Archive_t *ap, const char *s)
 
 #undef OHASHPART
 #define OHASHPART(b, h, c, l, r)                                             \
-    (h = ((h = (( unsigned )h << (l)) ^ (h >> (r)) ^ (c))                    \
-          & (( unsigned )1 << (b))                                           \
+    (h = ((h = (( unsigned ) h << (l)) ^ (h >> (r)) ^ (c))                   \
+          & (( unsigned ) 1 << (b))                                          \
           ? ~h                                                               \
           : h)                                                               \
-         & ((((( unsigned )1 << (( b )-1)) - 1) << 2) | 3))
+         & ((((( unsigned ) 1 << (( b ) -1)) - 1) << 2) | 3))
 
 #undef OHASHLPART
 #define OHASHLPART(h, c) OHASHPART(31, h, c, 3, 2)
@@ -119,7 +119,7 @@ omemsum(const void *b, int n, unsigned long c)
     unsigned char *p;
     unsigned char *e;
 
-    p = ( unsigned char * )b;
+    p = ( unsigned char * ) b;
     e = p + n;
     while (p < e)
         OHASHLPART(c, *p++ + 1);

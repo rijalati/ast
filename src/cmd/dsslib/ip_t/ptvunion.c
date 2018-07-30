@@ -33,8 +33,8 @@ ptvunion(Ptv_t *a, Ptv_t *b)
 
     if (!(a = ptvcopy(a)))
         return 0;
-    for (bp = ( Ptvprefix_t * )dtfirst(b->dict); bp;
-         bp = ( Ptvprefix_t * )dtnext(b->dict, bp))
+    for (bp = ( Ptvprefix_t * ) dtfirst(b->dict); bp;
+         bp = ( Ptvprefix_t * ) dtnext(b->dict, bp))
         if (!ptvinsert(a, bp->min, bp->max))
             break;
     return a;

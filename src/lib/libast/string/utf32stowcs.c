@@ -54,14 +54,14 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
         size_t inbytesleft;
         size_t outbytesleft;
 
-        if (ast.mb_uc2wc == ( void * )(-1)
+        if (ast.mb_uc2wc == ( void * ) (-1)
             && (ast.mb_uc2wc
-                = ( void * )iconv_open(codeset(CODESET_ctype), "UTF-8"))
-               == ( void * )(-1))
+                = ( void * ) iconv_open(codeset(CODESET_ctype), "UTF-8"))
+               == ( void * ) (-1))
             ast.mb_uc2wc = 0;
         if (ast.mb_uc2wc == 0)
             return -1;
-        ( void )iconv(ast.mb_wc2uc, NiL, NiL, NiL, NiL);
+        ( void ) iconv(ast.mb_wc2uc, NiL, NiL, NiL, NiL);
         if (n == 1) {
             char tmp_in[UTF8_LEN_MAX + 1];
             char tmp_out[16];
@@ -75,7 +75,7 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
             inbuf = tmp_in;
             outbuf = tmp_out;
             outbytesleft = sizeof(tmp_out);
-            if (iconv(( iconv_t )ast.mb_uc2wc,
+            if (iconv(( iconv_t ) ast.mb_uc2wc,
                       &inbuf,
                       &inbytesleft,
                       &outbuf,
@@ -84,7 +84,7 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
                 || inbytesleft)
                 return -1;
             if (!mbwide()) {
-                wchar[0] = *( unsigned char * )tmp_out;
+                wchar[0] = *( unsigned char * ) tmp_out;
 #if CC_NATIVE == CC_ASCII
                 if (utf32[0] > 0x7f && wchar[0] < 0x7f)
                     return -1;
@@ -92,7 +92,7 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
             } else {
                 inbuf = tmp_out;
                 mbinit(&q);
-                ( void )mbchar(wchar, inbuf, outbuf - tmp_out, &q);
+                ( void ) mbchar(wchar, inbuf, outbuf - tmp_out, &q);
                 if (mberrno(&q))
                     return -1;
             }
@@ -115,7 +115,7 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
             inbuf = inbuf_start;
             outbuf = outbuf_start;
             i = 0;
-            if (iconv(( iconv_t )ast.mb_uc2wc,
+            if (iconv(( iconv_t ) ast.mb_uc2wc,
                       &inbuf,
                       &inbytesleft,
                       &outbuf,
@@ -133,11 +133,11 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
                         break;
             } else
                 for (outbuf = outbuf_start; i < n && outbuf < inbuf; i++)
-                    wchar[i] = *( unsigned char * )outbuf++;
+                    wchar[i] = *( unsigned char * ) outbuf++;
             oerrno = errno;
             free(outbuf_start);
             errno = oerrno;
         }
     }
-    return ( ssize_t )i;
+    return ( ssize_t ) i;
 }

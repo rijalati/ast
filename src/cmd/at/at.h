@@ -70,7 +70,7 @@
 #            define AT_RUN_OK(d, j)                                          \
                 ((d)->st_uid == (j)->st_uid && S_ISREG((j)->st_mode)         \
                  && (((j)->st_mode) & S_IPERM) == AT_RUN_MODE                \
-                 && ( unsigned long )(j)->st_mtime <= NOW)
+                 && ( unsigned long ) (j)->st_mtime <= NOW)
 
 #        else
 
@@ -80,7 +80,7 @@
                 (S_ISREG((j)->st_mode) && (d)->st_uid == (j)->st_uid)
 #            define AT_OLD_OK(d, j) (AT_JOB_OK(d, j))
 #            define AT_RUN_OK(d, j)                                          \
-                (AT_JOB_OK(d, j) && ( unsigned long )(j)->st_mtime <= NOW)
+                (AT_JOB_OK(d, j) && ( unsigned long ) (j)->st_mtime <= NOW)
 
 #        endif
 
@@ -108,7 +108,7 @@
 #        define AT_RUN_OK(d, j)                                              \
             ((d)->st_uid == (j)->st_uid && S_ISREG((j)->st_mode)             \
              && (((j)->st_mode) & S_IPERM) == AT_RUN_MODE                    \
-             && ( unsigned long )(j)->st_mtime <= NOW)
+             && ( unsigned long ) (j)->st_mtime <= NOW)
 
 #    endif
 
@@ -147,7 +147,7 @@
 #    define AT_VERSION 'v'
 
 #    ifndef NOW
-#        define NOW ( unsigned long )time(( time_t * )0)
+#        define NOW ( unsigned long ) time(( time_t * ) 0)
 #    endif
 
 #endif

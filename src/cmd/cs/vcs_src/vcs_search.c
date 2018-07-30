@@ -37,7 +37,7 @@
 int cmptime(s1, s2) const void *s1;
 const void *s2;
 {
-#define TAGTIME(s) ((*(( rdirent_t ** )s))->tag->stat.st_mtime)
+#define TAGTIME(s) ((*(( rdirent_t ** ) s))->tag->stat.st_mtime)
     return (TAGTIME(s1) - TAGTIME(s2));
 }
 
@@ -122,9 +122,9 @@ tag_t **tpp;
             flag = (*s == '+') ? 0 : 1;
             *s = '\0';
             s++;
-            distance = ( int )strtol(s, ( char ** )0, 0);
+            distance = ( int ) strtol(s, ( char ** ) 0, 0);
             if (!sort) {
-                qsort(( char * )tbl, total, sizeof(rdirent_t *), cmptime);
+                qsort(( char * ) tbl, total, sizeof(rdirent_t *), cmptime);
                 sort++;
             }
         }
@@ -132,7 +132,7 @@ tag_t **tpp;
             if (pattern2time(elist[i], &to) < 0)
                 continue;
             if (!sort) {
-                qsort(( char * )tbl, total, sizeof(rdirent_t *), cmptime);
+                qsort(( char * ) tbl, total, sizeof(rdirent_t *), cmptime);
                 sort++;
             }
             if ((index = lookup_tag_time(tbl, total, to, domain, 0)) < 0)
@@ -397,7 +397,7 @@ time_t *to;
         tbuf, sizeof(tbuf), "%s %d %d:%d:%d", month, dd, hh, mm, ss);
 
     message((3, "tbuf [from] %s", tbuf));
-    *to = tmdate(tbuf, ( char ** )0, ( time_t * )0);
+    *to = tmdate(tbuf, ( char ** ) 0, ( time_t * ) 0);
     return (0);
 }
 

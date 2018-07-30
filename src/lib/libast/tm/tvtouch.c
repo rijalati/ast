@@ -141,7 +141,7 @@ tvtouch(const char *path,
     if (!utimensat(AT_FDCWD,
                    path,
                    ts[0].tv_nsec == UTIME_NOW && ts[1].tv_nsec == UTIME_NOW
-                   ? ( struct timespec * )0
+                   ? ( struct timespec * ) 0
                    : ts,
                    (flags & TV_TOUCH_PHYSICAL) ? AT_SYMLINK_NOFOLLOW : 0))
         return 0;
@@ -176,9 +176,9 @@ tvtouch(const char *path,
     if (!av || !mv) {
         tvgettime(&now);
         if (!av)
-            av = ( const Tv_t * )&now;
+            av = ( const Tv_t * ) &now;
         if (!mv)
-            mv = ( const Tv_t * )&now;
+            mv = ( const Tv_t * ) &now;
     }
 #if _lib_utimets
     if (av == TV_TOUCH_RETAIN) {
@@ -197,8 +197,8 @@ tvtouch(const char *path,
     }
     if (!utimets(path, ts))
         return 0;
-    if (errno != ENOENT && av == ( const Tv_t * )&now
-        && mv == ( const Tv_t * )&now && !utimets(path, NiL)) {
+    if (errno != ENOENT && av == ( const Tv_t * ) &now
+        && mv == ( const Tv_t * ) &now && !utimets(path, NiL)) {
         errno = oerrno;
         return 0;
     }
@@ -220,8 +220,8 @@ tvtouch(const char *path,
     }
     if (!utimes(path, am))
         return 0;
-    if (errno != ENOENT && av == ( const Tv_t * )&now
-        && mv == ( const Tv_t * )&now && !utimes(path, NiL)) {
+    if (errno != ENOENT && av == ( const Tv_t * ) &now
+        && mv == ( const Tv_t * ) &now && !utimes(path, NiL)) {
         errno = oerrno;
         return 0;
     }
@@ -232,8 +232,8 @@ tvtouch(const char *path,
     if (!utime(path, &am))
         return 0;
 #            if _lib_utime_now
-    if (errno != ENOENT && av == ( const Tv_t * )&now
-        && mv == ( const Tv_t * )&now && !utime(path, NiL)) {
+    if (errno != ENOENT && av == ( const Tv_t * ) &now
+        && mv == ( const Tv_t * ) &now && !utime(path, NiL)) {
         errno = oerrno;
         return 0;
     }
@@ -241,7 +241,7 @@ tvtouch(const char *path,
 #        endif
 #    endif
     if (!access(path, F_OK)) {
-        if (av != ( const Tv_t * )&now || mv != ( const Tv_t * )&now) {
+        if (av != ( const Tv_t * ) &now || mv != ( const Tv_t * ) &now) {
             errno = EINVAL;
             return -1;
         }
@@ -268,7 +268,7 @@ tvtouch(const char *path,
         return -1;
     close(fd);
     errno = oerrno;
-    if (av == ( const Tv_t * )&now && mv == ( const Tv_t * )&now)
+    if (av == ( const Tv_t * ) &now && mv == ( const Tv_t * ) &now)
         return 0;
 #if _lib_utimets
     return utimets(path, ts);

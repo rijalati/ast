@@ -154,7 +154,7 @@ char *tmpfile;
     NetGets(nFile, line, sizeof(line));
     logit(line);
     if ((ptr = strchr(line, ' ')) != NULL) {
-        ans = ( int )strtol(ptr + 1, ( char ** )0, 0);
+        ans = ( int ) strtol(ptr + 1, ( char ** ) 0, 0);
     }
     fputs(line, fout);
     while ((len = NetRead(nFile, line, sizeof(line))) > 0) {
@@ -305,7 +305,7 @@ HttpNop()
 
 int HttpInit(tbl) struct agent_item *tbl;
 {
-    tbl->localdata = ( char * )&HttpData;
+    tbl->localdata = ( char * ) &HttpData;
     tbl->connect = HttpNop;
     tbl->disconnect = HttpNop;
     tbl->listdents = HttpGetFile;

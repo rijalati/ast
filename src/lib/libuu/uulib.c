@@ -80,9 +80,9 @@ uu_map(Uudata_t *dp, char *map)
         p[dp->pad] = UU_PAD;
         p[EOF] = UU_END;
     }
-    for (m = ( unsigned char * )dp->map; c = *m; m++)
-        p[c] = m - ( unsigned char * )dp->map;
-    return ( unsigned char * )p;
+    for (m = ( unsigned char * ) dp->map; c = *m; m++)
+        p[c] = m - ( unsigned char * ) dp->map;
+    return ( unsigned char * ) p;
 }
 
 /*
@@ -128,7 +128,7 @@ uu_header(Uu_t *uu)
                         uu->flags |= UU_FREEPATH;
                     }
                     if (meth->name != uu->meth.name) {
-                        if (!((( Uudata_t * )uu->meth.data)->flags
+                        if (!((( Uudata_t * ) uu->meth.data)->flags
                               & UU_DEFAULT)
                             && !streq(meth->id, uu->meth.id)
                             && uu->disc->errorf)
@@ -170,8 +170,8 @@ uu_encode(Uu_t *uu)
     struct stat st;
     char buf[UUOUT * (UUCHUNK + 1)];
 
-    dp = ( Uudata_t * )uu->meth.data;
-    m = ( unsigned char * )dp->map;
+    dp = ( Uudata_t * ) uu->meth.data;
+    m = ( unsigned char * ) dp->map;
     length = !!(dp->flags & UU_LENGTH);
     text = !!(uu->flags & UU_TEXT);
     pad = dp->pad;
@@ -286,7 +286,7 @@ uu_decode(Uu_t *uu)
     char buf[UUIN * UUCHUNK + 1];
     char map[UCHAR_MAX + 2];
 
-    dp = ( Uudata_t * )uu->meth.data;
+    dp = ( Uudata_t * ) uu->meth.data;
     if (uu->path && (uu->flags & UU_CLOSEOUT)
         && (dp->flags & uu->flags & UU_HEADER) && chmod(uu->path, uu->mode)
         && uu->disc->errorf)
@@ -299,12 +299,12 @@ uu_decode(Uu_t *uu)
     text = !!(uu->flags & UU_TEXT);
     m = uu_map(dp, map);
     if (dp->flags & UU_LENGTH) {
-        t = ( char * )dp->end;
+        t = ( char * ) dp->end;
         tl = strlen(t) + 1;
         while (
         ((s = sfgetr(uu->ip, '\n', 0)) || (s = sfgetr(uu->ip, '\n', -1)))
         && ((n = sfvalue(uu->ip)) != tl || !strneq(s, t, tl - 1)))
-            if (c = m[*(( unsigned char * )s++)]) {
+            if (c = m[*(( unsigned char * ) s++)]) {
                 if (c > sizeof(buf)) {
                     if (uu->disc->errorf)
                         (*uu->disc->errorf)(uu,
@@ -317,13 +317,13 @@ uu_decode(Uu_t *uu)
                 p = buf;
                 e = s + (c + UUIN - 1) / UUIN * UUOUT;
                 while (s < e) {
-                    n = m[*(( unsigned char * )s++)];
-                    n
-                    = (n << 6) | ((s < e) ? m[*(( unsigned char * )s++)] : 0);
-                    n
-                    = (n << 6) | ((s < e) ? m[*(( unsigned char * )s++)] : 0);
-                    n
-                    = (n << 6) | ((s < e) ? m[*(( unsigned char * )s++)] : 0);
+                    n = m[*(( unsigned char * ) s++)];
+                    n = (n << 6)
+                        | ((s < e) ? m[*(( unsigned char * ) s++)] : 0);
+                    n = (n << 6)
+                        | ((s < e) ? m[*(( unsigned char * ) s++)] : 0);
+                    n = (n << 6)
+                        | ((s < e) ? m[*(( unsigned char * ) s++)] : 0);
                     if (text) {
                         if ((x = (n >> 16) & 0xFF) == '\r')
                             c--;
@@ -433,12 +433,12 @@ qp_encode(Uu_t *uu)
 
     b = buf;
     x = b + UULINE - 4;
-    while ((s = ( unsigned char * )sfgetr(uu->ip, '\n', 0))
-           || (s = ( unsigned char * )sfgetr(uu->ip, '\n', -1))) {
+    while ((s = ( unsigned char * ) sfgetr(uu->ip, '\n', 0))
+           || (s = ( unsigned char * ) sfgetr(uu->ip, '\n', -1))) {
         e = s + sfvalue(uu->ip);
         switch (*s) {
         case 'F':
-            if ((e - s) >= 5 && strneq(( char * )s, "From ", 5)) {
+            if ((e - s) >= 5 && strneq(( char * ) s, "From ", 5)) {
                 c = *s++;
                 goto quote;
             }
@@ -505,7 +505,7 @@ qp_decode(Uu_t *uu)
         xeh[c] = -1;
     for (c = 0; c < elementsof(hex) - 1; c++)
         xeh[hex[c]] = c >= 16 ? (c - 6) : c;
-    while (s = ( unsigned char * )sfgetr(uu->ip, '\n', 1)) {
+    while (s = ( unsigned char * ) sfgetr(uu->ip, '\n', 1)) {
         if (((b = s + sfvalue(uu->ip)) > s) && !*--b) {
             while (b > s && ((c = *(b - 1)) == ' ' || c == '\t'))
                 b--;
@@ -603,7 +603,7 @@ bx_q_getc(Uu_t *uu, Bx_t *bx)
         if (bx->eof)
             return EOF;
         bx->qp = bx->qbuf;
-        m = ( unsigned char * )bx->map + 1;
+        m = ( unsigned char * ) bx->map + 1;
         ie = (ip = ibuf) + sizeof(ibuf);
         while (ip < ie) {
             while ((c = m[sfgetc(uu->ip)]) >= 64)
@@ -692,13 +692,13 @@ bx_q_put(Uu_t *uu, Bx_t *bx, int c)
 
     *bx->qp++ = c;
     if (bx->qp >= bx->qe) {
-        m = ( unsigned char * )(( Uudata_t * )uu->meth.data)->map;
+        m = ( unsigned char * ) (( Uudata_t * ) uu->meth.data)->map;
         p = bx->qp = bx->qbuf;
         c = (p[0] << 16) | (p[1] << 8) | p[2];
         sfputc(uu->op, m[(c >> 18) & 0x3f]);
         sfputc(uu->op, m[(c >> 12) & 0x3f]);
         sfputc(uu->op, m[(c >> 6) & 0x3f]);
-        sfputc(uu->op, m[( c )&0x3f]);
+        sfputc(uu->op, m[( c ) &0x3f]);
         if ((bx->col += 4) >= 63) {
             bx->col = 0;
             sfputc(uu->op, '\n');
@@ -776,8 +776,8 @@ bx_q_putn(Uu_t *uu, Bx_t *bx, unsigned long v, int n)
 static int
 bx_header(Uu_t *uu)
 {
-    Bx_t *bx = ( Bx_t * )(uu + 1);
-    Uudata_t *dp = ( Uudata_t * )uu->meth.data;
+    Bx_t *bx = ( Bx_t * ) (uu + 1);
+    Uudata_t *dp = ( Uudata_t * ) uu->meth.data;
     int c;
     int bol;
     char *s;
@@ -819,8 +819,8 @@ bx_header(Uu_t *uu)
                  */
 
                 memset(s = bx->map, UU_END, sizeof(bx->map));
-                for (s++, m = ( char * )dp->map; c = *m; m++)
-                    s[c] = m - ( char * )dp->map;
+                for (s++, m = ( char * ) dp->map; c = *m; m++)
+                    s[c] = m - ( char * ) dp->map;
                 s['\n'] = UU_IGN;
                 s['\r'] = UU_IGN;
                 bx->qp = bx->qe = bx->qbuf + sizeof(bx->qbuf);
@@ -891,9 +891,9 @@ bx_o_decode(Uu_t *uu, Bx_t *bx, char *buf, size_t n)
     int c;
     int d;
     unsigned long crc = bx->crc;
-    unsigned char *m = ( unsigned char * )bx->map;
-    char *t = ( char * )hex;
-    unsigned char *s = ( unsigned char * )buf;
+    unsigned char *m = ( unsigned char * ) bx->map;
+    char *t = ( char * ) hex;
+    unsigned char *s = ( unsigned char * ) buf;
 
     memset(m, UU_END, sizeof(bx->map));
     for (c = 0; c < elementsof(hex); c++)
@@ -913,7 +913,7 @@ bx_o_decode(Uu_t *uu, Bx_t *bx, char *buf, size_t n)
  * old binhex compressed line decode
  */
 
-#define BX_O_MASK(c) ((( c )-0x20) & 0x3F)
+#define BX_O_MASK(c) ((( c ) -0x20) & 0x3F)
 #define BX_O_CRC(s, c)                                                       \
     ((s = (s + c) & 0xFF), (s = ((s << 3) & 0xFF) | (s >> 13)))
 
@@ -963,7 +963,7 @@ bx_c_decode(Uu_t *uu, Bx_t *bx, char *s, size_t n)
 static int
 bx_decode(Uu_t *uu)
 {
-    Bx_t *bx = ( Bx_t * )(uu + 1);
+    Bx_t *bx = ( Bx_t * ) (uu + 1);
     off_t n;
     int c;
     char *s;
@@ -1063,7 +1063,7 @@ bx_decode(Uu_t *uu)
 static int
 bx_encode(Uu_t *uu)
 {
-    Bx_t *bx = ( Bx_t * )(uu + 1);
+    Bx_t *bx = ( Bx_t * ) (uu + 1);
     unsigned char *m;
     int c;
     int i;
@@ -1075,9 +1075,9 @@ bx_encode(Uu_t *uu)
     if (fstat(sffileno(uu->ip), &st))
         st.st_size = 0;
     sfprintf(uu->op, "(This file must be converted with BinHex 4.0)\n:");
-    if (!(m = ( unsigned char * )uu->path))
-        m = ( unsigned char * )"-";
-    if ((c = strlen(( char * )m)) > 63)
+    if (!(m = ( unsigned char * ) uu->path))
+        m = ( unsigned char * ) "-";
+    if ((c = strlen(( char * ) m)) > 63)
         c = 63;
     bx_q_putc(uu, bx, c);
     for (i = 0; i < c; i++)
@@ -1157,15 +1157,15 @@ static const Uumeth_t methods[] = {
       uu_header,
       uu_encode,
       uu_decode,
-      ( void * )&uu_posix },
-    { "ucb", "bsd", "", uu_header, uu_encode, uu_decode, ( void * )&uu_ucb },
+      ( void * ) &uu_posix },
+    { "ucb", "bsd", "", uu_header, uu_encode, uu_decode, ( void * ) &uu_ucb },
     { "mime",
       "base64",
       "-base64",
       0,
       uu_encode,
       uu_decode,
-      ( void * )&uu_base64 },
+      ( void * ) &uu_base64 },
     { "quoted-printable", "qp", "", 0, qp_encode, qp_decode, 0 },
     { "binhex",
       "mac-binhex",
@@ -1173,7 +1173,7 @@ static const Uumeth_t methods[] = {
       bx_header,
       bx_encode,
       bx_decode,
-      ( void * )&uu_bx },
+      ( void * ) &uu_bx },
     { "sevenbit", "7bit", "", 0, cat, cat, 0 },
 
     { 0 }
@@ -1213,8 +1213,8 @@ uumeth(const char *name)
      */
 
     if (!name || !*name) {
-        (( Uudata_t * )methods->data)->flags |= UU_DEFAULT;
-        return ( Uumeth_t * )methods;
+        (( Uudata_t * ) methods->data)->flags |= UU_DEFAULT;
+        return ( Uumeth_t * ) methods;
     }
     if ((*name == 'x' || *name == 'X') && *(name + 1) == '-')
         name += 2;
@@ -1224,12 +1224,12 @@ uumeth(const char *name)
          */
 
         if ((c = *(name += UU_BEGIN_LEN)) == ' ')
-            return ( Uumeth_t * )methods;
+            return ( Uumeth_t * ) methods;
         for (mp = methods; mp->name; mp++)
             if (*mp->id == c && !strncasecmp(name, mp->id, strlen(mp->id)))
-                return ( Uumeth_t * )mp;
+                return ( Uumeth_t * ) mp;
         if (c == '-')
-            return ( Uumeth_t * )methods;
+            return ( Uumeth_t * ) methods;
     } else {
         c = *name;
         for (v = name + strlen(name);
@@ -1250,7 +1250,7 @@ uumeth(const char *name)
                     || mp->alias && *mp->alias == c
                        && (!strcasecmp(name, mp->alias)
                            || vl && !strncasecmp(name, mp->alias, vl)))
-                    return ( Uumeth_t * )mp;
+                    return ( Uumeth_t * ) mp;
             np = name;
             if (!(name = strchr(name, '/')))
                 break;
@@ -1266,7 +1266,7 @@ uumeth(const char *name)
 
         for (mp = methods; mp->name; mp++)
             if (*mp->name == c)
-                return ( Uumeth_t * )mp;
+                return ( Uumeth_t * ) mp;
     }
     return 0;
 }
@@ -1282,7 +1282,7 @@ uuopen(Uudisc_t *disc, Uumeth_t *meth)
     Uudata_t *data;
     int extra;
 
-    if (data = ( Uudata_t * )meth->data)
+    if (data = ( Uudata_t * ) meth->data)
         extra = data->size;
     else
         extra = 0;
@@ -1321,7 +1321,7 @@ uuop(Uu_t *uu, Uu_f fun)
     Sfoff_t p;
 
     if (uu->count != SF_UNBOUND
-        && ((p = sfseek(uu->ip, ( Sfoff_t )0, SEEK_CUR)) < 0
+        && ((p = sfseek(uu->ip, ( Sfoff_t ) 0, SEEK_CUR)) < 0
             || !(uu->ip
                  = sfdcsubstream(NiL, uu->lp = uu->ip, p, uu->count)))) {
         if (uu->disc->errorf)
@@ -1336,7 +1336,7 @@ uuop(Uu_t *uu, Uu_f fun)
             uu->count);
         return -1;
     }
-    p = sfseek(uu->op, ( Sfoff_t )0, SEEK_CUR);
+    p = sfseek(uu->op, ( Sfoff_t ) 0, SEEK_CUR);
     n = (*fun)(uu);
     if (uu->lp) {
         sfclose(uu->ip);
@@ -1354,7 +1354,7 @@ uuop(Uu_t *uu, Uu_f fun)
         if (uu->disc->errorf)
             (*uu->disc->errorf)(uu, uu->disc, 2, "read error");
     } else
-        r = sfseek(uu->op, ( Sfoff_t )0, SEEK_CUR) - p;
+        r = sfseek(uu->op, ( Sfoff_t ) 0, SEEK_CUR) - p;
     if (uu->flags & UU_CLOSEOUT) {
         uu->flags &= ~UU_CLOSEOUT;
         sfclose(uu->op);
@@ -1383,7 +1383,7 @@ uuencode(Uu_t *uu, Sfio_t *ip, Sfio_t *op, size_t n, const char *path)
     uu->count = n;
     if ((uu->flags & UU_FREEPATH) && uu->path)
         free(uu->path);
-    uu->path = ( char * )path;
+    uu->path = ( char * ) path;
     uu->flags = uu->disc->flags;
     return uuop(uu, uu->meth.encodef);
 }
@@ -1418,9 +1418,9 @@ uudecode(Uu_t *uu, Sfio_t *ip, Sfio_t *op, size_t n, const char *path)
     uu->count = n;
     if ((uu->flags & UU_FREEPATH) && uu->path)
         free(uu->path);
-    uu->path = ( char * )path;
+    uu->path = ( char * ) path;
     uu->flags = uu->disc->flags;
-    data = ( Uudata_t * )uu->meth.data;
+    data = ( Uudata_t * ) uu->meth.data;
     if (((uu->flags & UU_HEADER) || data && (data->flags & UU_HEADERMUST))
         && uu->meth.headerf) {
         if ((*uu->meth.headerf)(uu))
@@ -1431,9 +1431,9 @@ uudecode(Uu_t *uu, Sfio_t *ip, Sfio_t *op, size_t n, const char *path)
         if (data && (data->flags & UU_DEFAULT)
             && (c = sfgetc(uu->ip)) != EOF) {
             sfungetc(uu->ip, c);
-            for (mp = methods; (( Uudata_t * )mp->data)->flags & UU_LENGTH;
+            for (mp = methods; (( Uudata_t * ) mp->data)->flags & UU_LENGTH;
                  mp++) {
-                m = uu_map(( Uudata_t * )mp->data, map);
+                m = uu_map(( Uudata_t * ) mp->data, map);
                 if (m[c] > 0 && m[c] < (UUIN * UUCHUNK + 1))
                     break;
             }

@@ -44,7 +44,7 @@ int tm;                            /* time in millisecs for select/poll	*/
     if (n <= 0 || !fa)
         return -1;
 
-    if (!(status = ( int * )malloc(2 * n * sizeof(int))))
+    if (!(status = ( int * ) malloc(2 * n * sizeof(int))))
         return -1;
     check = status + n; /* streams that need polling */
 
@@ -70,7 +70,7 @@ int tm;                            /* time in millisecs for select/poll	*/
             eintr++;
         /* check accessibility */
         m = f->mode & SF_RDWR;
-        if (( int )f->mode != m && _sfmode(f, m, 0) < 0)
+        if (( int ) f->mode != m && _sfmode(f, m, 0) < 0)
             continue;
 
         if ((f->flags & SF_READ) && RDREADY(f))
@@ -116,7 +116,7 @@ int tm;                            /* time in millisecs for select/poll	*/
             if (HASAUXFD(f))
                 m += 1;
         }
-        if (!(fds = ( struct pollfd * )malloc(m * sizeof(struct pollfd))))
+        if (!(fds = ( struct pollfd * ) malloc(m * sizeof(struct pollfd))))
             return -1;
 
         for (m = 0, r = 0; r < c; ++r, ++m) {
@@ -166,7 +166,7 @@ int tm;                            /* time in millisecs for select/poll	*/
             }
         }
 
-        free(( Void_t * )fds);
+        free(( Void_t * ) fds);
     }
 #endif /*_lib_poll*/
 
@@ -240,12 +240,12 @@ report:
             continue;
 
         f = fa[c];
-        f->val = ( ssize_t )status[c];
+        f->val = ( ssize_t ) status[c];
 
         /* announce status */
         if (f->disc && f->disc->exceptf)
             (*f->disc->exceptf)(
-            f, SF_READY, ( Void_t * )( long )status[c], f->disc);
+            f, SF_READY, ( Void_t * ) ( long ) status[c], f->disc);
 
         if (c > r) /* move to front of list */
         {
@@ -255,6 +255,6 @@ report:
         r += 1;
     }
 
-    free(( Void_t * )status);
+    free(( Void_t * ) status);
     return r ? r : np < 0 ? -1 : 0;
 }

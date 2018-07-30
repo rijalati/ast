@@ -92,7 +92,7 @@ static struct
 static int
 byint(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 {
-    return *( int * )a - *( int * )b;
+    return *( int * ) a - *( int * ) b;
 }
 
 /*
@@ -102,9 +102,9 @@ byint(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 static int
 byulong(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 {
-    if (*( unsigned long * )a < *( unsigned long * )b)
+    if (*( unsigned long * ) a < *( unsigned long * ) b)
         return -1;
-    if (*( unsigned long * )a > *( unsigned long * )b)
+    if (*( unsigned long * ) a > *( unsigned long * ) b)
         return 1;
     return 0;
 }
@@ -118,8 +118,8 @@ byulong(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 static void
 freeid(Dt_t *dt, Void_t *ip, Dtdisc_t *disc)
 {
-    if ((( Id_t * )ip)->sp)
-        sfclose((( Id_t * )ip)->sp);
+    if ((( Id_t * ) ip)->sp)
+        sfclose((( Id_t * ) ip)->sp);
     free(ip);
 }
 
@@ -166,8 +166,8 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
      */
 
     i = 0;
-    for (ip = ( Id_t * )dtfirst(dp->ids); ip;
-         ip = ( Id_t * )dtnext(dp->ids, ip))
+    for (ip = ( Id_t * ) dtfirst(dp->ids); ip;
+         ip = ( Id_t * ) dtnext(dp->ids, ip))
         if (n = sfstrtell(ip->sp)) {
             i++;
             ip->windows++;
@@ -201,8 +201,8 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
      */
 
     sfputu(op, i);
-    for (ip = ( Id_t * )dtfirst(dp->sqs); ip;
-         ip = ( Id_t * )dtnext(dp->sqs, ip))
+    for (ip = ( Id_t * ) dtfirst(dp->sqs); ip;
+         ip = ( Id_t * ) dtnext(dp->sqs, ip))
         if (n = sfstrtell(ip->sp)) {
             sfputu(op, ip->row);
             sfputu(op, ip->use);
@@ -239,8 +239,8 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
     file = error_info.file;
     line = error_info.line;
     io = dp->pz->io;
-    for (ip = ( Id_t * )dtfirst(dp->sqs); ip;
-         ip = ( Id_t * )dtnext(dp->sqs, ip))
+    for (ip = ( Id_t * ) dtfirst(dp->sqs); ip;
+         ip = ( Id_t * ) dtnext(dp->sqs, ip))
         if (ip->use && (n = sfstrtell(ip->sp))) {
             error_info.file = ip->name;
             error_info.line = n;
@@ -258,8 +258,8 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
      * write the data for the remaining partitions
      */
 
-    for (ip = ( Id_t * )dtfirst(dp->sqs); ip;
-         ip = ( Id_t * )dtnext(dp->sqs, ip))
+    for (ip = ( Id_t * ) dtfirst(dp->sqs); ip;
+         ip = ( Id_t * ) dtnext(dp->sqs, ip))
         if (n = sfstrtell(ip->sp)) {
             sfstrseek(ip->sp, 0, SEEK_SET);
             if (sfwrite(op, sfstrbase(ip->sp), n) != n || sferror(op)) {
@@ -387,7 +387,7 @@ deflate(Pz_t *pz, Sfio_t *op)
         index.block = 0;
     index.offset = extra = 0;
     m = pz->win - 8;
-    error_info.file = ( char * )pz->path;
+    error_info.file = ( char * ) pz->path;
     error_info.line = 0;
     while (rp = (*pz->disc->splitf)(pz, pz->io, pz->disc)) {
         if (rp->record) {
@@ -410,7 +410,7 @@ deflate(Pz_t *pz, Sfio_t *op)
             && (*indexf)(pz, &index, rp->data, pz->disc) < 0)
             goto bad;
         index.offset += rp->size;
-        if (!(ip = ( Id_t * )dtmatch(def.ids, &rp->id))) {
+        if (!(ip = ( Id_t * ) dtmatch(def.ids, &rp->id))) {
             if (pz->disc->namef)
                 s = (*pz->disc->namef)(pz, rp->id, pz->disc);
             else
@@ -419,7 +419,7 @@ deflate(Pz_t *pz, Sfio_t *op)
                 goto nospace;
             if (ip->id = rp->id)
                 ip->row = rp->size;
-            ip->name = strcpy(( char * )(ip + 1), s);
+            ip->name = strcpy(( char * ) (ip + 1), s);
             if (!(ip->sp = sfstropen())) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(pz,
@@ -500,8 +500,8 @@ deflate(Pz_t *pz, Sfio_t *op)
     }
     if ((pz->flags & PZ_DUMP) && pz->disc->errorf) {
         (*pz->disc->errorf)(pz, pz->disc, 0, "totals");
-        for (ip = ( Id_t * )dtfirst(def.ids); ip;
-             ip = ( Id_t * )dtnext(def.ids, ip))
+        for (ip = ( Id_t * ) dtfirst(def.ids); ip;
+             ip = ( Id_t * ) dtnext(def.ids, ip))
             (*pz->disc->errorf)(pz,
                                 pz->disc,
                                 0,
@@ -619,10 +619,10 @@ inflate(Pz_t *pz, Sfio_t *op)
             use = sfgetu(pz->io);
             m = sfgetu(pz->io);
             id = sfgetr(pz->io, 0, 0);
-            if (!(ip = ( Id_t * )dtmatch(ids, id))) {
+            if (!(ip = ( Id_t * ) dtmatch(ids, id))) {
                 if (!(ip = newof(0, Id_t, 1, sfvalue(pz->io))))
                     goto nospace;
-                ip->name = strcpy(( char * )(ip + 1), id);
+                ip->name = strcpy(( char * ) (ip + 1), id);
                 ip->row = row;
                 if ((ip->part = pzpartget(pz, ip->name)) && pz->disc->errorf
                     && ip->row && ip->part->row != ip->row)
@@ -730,7 +730,7 @@ inflate(Pz_t *pz, Sfio_t *op)
                 goto bad;
             }
             ip = tab[m - 1];
-            p = ( unsigned char * )ip->bp;
+            p = ( unsigned char * ) ip->bp;
             if (!(n = ip->row) && ((n = *p++) & SF_MORE)) {
                 n &= (SF_MORE - 1);
                 while ((i = *p++) & SF_MORE)
@@ -752,7 +752,7 @@ inflate(Pz_t *pz, Sfio_t *op)
                                         n);
                 goto bad;
             }
-            ip->bp = ( char * )p + n;
+            ip->bp = ( char * ) p + n;
         }
     }
     if (w || sfgetc(pz->io) != EOF) {
@@ -852,14 +852,14 @@ pzssplit(Pz_t *pz)
      * loop on the records and split by id
      */
 
-    error_info.file = ( char * )pz->path;
+    error_info.file = ( char * ) pz->path;
     error_info.line = 0;
     while (rp = (*pz->disc->splitf)(pz, pz->io, pz->disc)) {
         if (rp->record) {
             error_info.line++;
             pz->count.records++;
         }
-        if (!(ip = ( Id_t * )dtmatch(ids, &rp->id))) {
+        if (!(ip = ( Id_t * ) dtmatch(ids, &rp->id))) {
             if (pz->disc->namef)
                 s = (*pz->disc->namef)(pz, rp->id, pz->disc);
             else
@@ -868,7 +868,7 @@ pzssplit(Pz_t *pz)
                 goto nospace;
             if (ip->id = rp->id)
                 ip->row = rp->size;
-            ip->name = strcpy(( char * )(ip + 1), s);
+            ip->name = strcpy(( char * ) (ip + 1), s);
             if (!pz->split.match || strmatch(ip->name, pz->split.match)) {
                 if (!(ip->sp = sfopen(
                       NiL, ip->name, (pz->flags & PZ_APPEND) ? "a" : "w"))) {
@@ -925,7 +925,8 @@ pzssplit(Pz_t *pz)
     }
     if ((pz->flags & PZ_DUMP) && pz->disc->errorf) {
         (*pz->disc->errorf)(pz, pz->disc, 0, "totals");
-        for (ip = ( Id_t * )dtfirst(ids); ip; ip = ( Id_t * )dtnext(ids, ip))
+        for (ip = ( Id_t * ) dtfirst(ids); ip;
+             ip = ( Id_t * ) dtnext(ids, ip))
             if (ip->sp)
                 (*pz->disc->errorf)(
                 pz,
@@ -946,7 +947,7 @@ pzssplit(Pz_t *pz)
                 ip->modules,
                 ip->used && !ip->part ? "  GENERATE PARTITION" : "");
     }
-    for (ip = ( Id_t * )dtfirst(ids); ip; ip = ( Id_t * )dtnext(ids, ip))
+    for (ip = ( Id_t * ) dtfirst(ids); ip; ip = ( Id_t * ) dtnext(ids, ip))
         if (ip->sp && sfclose(ip->sp)) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(

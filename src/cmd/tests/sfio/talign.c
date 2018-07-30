@@ -37,8 +37,11 @@ Sfdisc_t *disc;
     return n;
 }
 
-Sfdisc_t Disc
-= { readf, ( Sfwrite_f )0, ( Sfseek_f )0, ( Sfexcept_f )0, ( Sfdisc_t * )0 };
+Sfdisc_t Disc = { readf,
+                  ( Sfwrite_f ) 0,
+                  ( Sfseek_f ) 0,
+                  ( Sfexcept_f ) 0,
+                  ( Sfdisc_t * ) 0 };
 
 tmain()
 {
@@ -65,7 +68,7 @@ tmain()
     sfdisc(f, &Disc);
 
     for (i = 0;; i += 64) {
-        sfseek(f, ( Sfoff_t )i, 0);
+        sfseek(f, ( Sfoff_t ) i, 0);
         if (!(s = sfreserve(f, 619, SF_LOCKR)))
             break;
         sfread(f, s, 64);

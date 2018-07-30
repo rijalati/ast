@@ -42,9 +42,9 @@ typedef struct _rs_s Rs_t;
 typedef struct _rsmethod_s Rsmethod_t;
 typedef struct _rsdisc_s Rsdisc_t;
 typedef ssize_t(*Rsdefkey_f) _ARG_(
-( Rs_t *, unsigned char *, size_t, unsigned char *, size_t, Rsdisc_t * ));
+( Rs_t *, unsigned char *, size_t, unsigned char *, size_t, Rsdisc_t * ) );
 typedef int(*Rsevent_f)
-_ARG_(( Rs_t *, int, Void_t *, Void_t *, Rsdisc_t * ));
+_ARG_(( Rs_t *, int, Void_t *, Void_t *, Rsdisc_t * ) );
 
 typedef struct _rskey_s Rskey_t;
 typedef struct _rskeydisc_s Rskeydisc_t;
@@ -56,12 +56,12 @@ typedef ssize_t(*Rskeycode_f) _ARG_(( Rskey_t *,
                                       unsigned char *,
                                       size_t,
                                       unsigned char *,
-                                      unsigned char * ));
+                                      unsigned char * ) );
 
 struct _rsmethod_s
 {
-    int(*insertf) _ARG_(( Rs_t *, Rsobj_t * ));
-    Rsobj_t *( *listf )_ARG_(( Rs_t * ));
+    int(*insertf) _ARG_(( Rs_t *, Rsobj_t * ) );
+    Rsobj_t *( *listf ) _ARG_(( Rs_t * ) );
     ssize_t size; /* size of private data			*/
     int type;     /* method type				*/
     char *name;   /* method name				*/
@@ -217,7 +217,7 @@ struct _rs_s
 #    define RSKEY_KEYS 000002  /* keys specified		*/
 
 #    define RSKEYDISC(p)                                                     \
-        ((( Rskey_t * )(( char * )( p )-offsetof(Rskey_t, disc)))->keydisc)
+        ((( Rskey_t * ) (( char * ) ( p ) -offsetof(Rskey_t, disc)))->keydisc)
 
 #    define rscount(rs) ((rs)->count) /* count # of rsprocess() objs	*/
 
@@ -227,7 +227,7 @@ _BEGIN_EXTERNS_ /* public data */
 #        define extern __EXPORT__
 #    endif
 
-extern Rsdisc_t *rs_disc _ARG_(( Rskey_t *, const char * ));
+extern Rsdisc_t *rs_disc _ARG_(( Rskey_t *, const char * ) );
 
 #    undef extern
 
@@ -252,36 +252,36 @@ _BEGIN_EXTERNS_ /* public functions */
 #        define extern __EXPORT__
 #    endif
 
-extern Rs_t *rsnew _ARG_(( Rsdisc_t * ));
-extern int rsinit _ARG_(( Rs_t *, Rsmethod_t *, ssize_t, int, Rskey_t * ));
+extern Rs_t *rsnew _ARG_(( Rsdisc_t * ) );
+extern int rsinit _ARG_(( Rs_t *, Rsmethod_t *, ssize_t, int, Rskey_t * ) );
 
-extern Rs_t *rsopen _ARG_(( Rsdisc_t *, Rsmethod_t *, ssize_t, int ));
-extern int rsclear _ARG_(( Rs_t * ));
-extern int rsclose _ARG_(( Rs_t * ));
+extern Rs_t *rsopen _ARG_(( Rsdisc_t *, Rsmethod_t *, ssize_t, int ) );
+extern int rsclear _ARG_(( Rs_t * ) );
+extern int rsclose _ARG_(( Rs_t * ) );
 extern ssize_t rsprocess _ARG_((Rs_t *, Void_t *, ssize_t));
-extern int rslib _ARG_(( Rs_t *, Rskey_t *, const char *, int ));
-extern Rsobj_t *rslist _ARG_(( Rs_t * ));
-extern int rswrite _ARG_(( Rs_t *, Sfio_t *, int ));
-extern int rsmerge _ARG_(( Rs_t *, Sfio_t *, Sfio_t **, int, int ));
-extern Rsdisc_t *rsdisc _ARG_(( Rs_t *, Rsdisc_t *, int ));
-extern Rsmethod_t *rsmethod _ARG_(( Rs_t *, Rsmethod_t * ));
+extern int rslib _ARG_(( Rs_t *, Rskey_t *, const char *, int ) );
+extern Rsobj_t *rslist _ARG_(( Rs_t * ) );
+extern int rswrite _ARG_(( Rs_t *, Sfio_t *, int ) );
+extern int rsmerge _ARG_(( Rs_t *, Sfio_t *, Sfio_t **, int, int ) );
+extern Rsdisc_t *rsdisc _ARG_(( Rs_t *, Rsdisc_t *, int ) );
+extern Rsmethod_t *rsmethod _ARG_(( Rs_t *, Rsmethod_t * ) );
 
-extern Rskey_t *rskeyopen _ARG_(( Rskeydisc_t *, Rsdisc_t * ));
-extern int rskey _ARG_(( Rskey_t *, const char *, int ));
-extern int rskeyopt _ARG_(( Rskey_t *, const char *, int ));
-extern Rsmethod_t *rskeymeth _ARG_(( Rskey_t *, const char * ));
-extern int rskeylist _ARG_(( Rskey_t *, Sfio_t *, int ));
-extern void rskeydump _ARG_(( Rskey_t *, Sfio_t * ));
-extern int rskeyinit _ARG_(( Rskey_t * ));
-extern int rskeyclose _ARG_(( Rskey_t * ));
+extern Rskey_t *rskeyopen _ARG_(( Rskeydisc_t *, Rsdisc_t * ) );
+extern int rskey _ARG_(( Rskey_t *, const char *, int ) );
+extern int rskeyopt _ARG_(( Rskey_t *, const char *, int ) );
+extern Rsmethod_t *rskeymeth _ARG_(( Rskey_t *, const char * ) );
+extern int rskeylist _ARG_(( Rskey_t *, Sfio_t *, int ) );
+extern void rskeydump _ARG_(( Rskey_t *, Sfio_t * ) );
+extern int rskeyinit _ARG_(( Rskey_t * ) );
+extern int rskeyclose _ARG_(( Rskey_t * ) );
 
-extern int rsfilewrite _ARG_(( Rs_t *, Sfio_t *, const char * ));
-extern int rsfileread _ARG_(( Rs_t *, Sfio_t *, const char * ));
-extern int rsfileclose _ARG_(( Rs_t *, Sfio_t * ));
+extern int rsfilewrite _ARG_(( Rs_t *, Sfio_t *, const char * ) );
+extern int rsfileread _ARG_(( Rs_t *, Sfio_t *, const char * ) );
+extern int rsfileclose _ARG_(( Rs_t *, Sfio_t * ) );
 
-extern Sfio_t *rstempwrite _ARG_(( Rs_t *, Sfio_t * ));
-extern int rstempread _ARG_(( Rs_t *, Sfio_t * ));
-extern int rstempclose _ARG_(( Rs_t *, Sfio_t * ));
+extern Sfio_t *rstempwrite _ARG_(( Rs_t *, Sfio_t * ) );
+extern int rstempread _ARG_(( Rs_t *, Sfio_t * ) );
+extern int rstempclose _ARG_(( Rs_t *, Sfio_t * ) );
 
 #    undef extern
 _END_EXTERNS_

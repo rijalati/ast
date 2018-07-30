@@ -32,7 +32,7 @@ size_t ns;
 Vmdisc_t *dc;
 #endif
 {
-    return ns <= sizeof(Mem) ? ( Void_t * )Mem : ( Void_t * )0;
+    return ns <= sizeof(Mem) ? ( Void_t * ) Mem : ( Void_t * ) 0;
 }
 
 static Vmdisc_t Disc = { alignmem, NIL(Vmexcept_f), 10 * 1024 };
@@ -47,7 +47,7 @@ tmain()
         terror("Opening region0");
     if (!(data = vmalign(vm, 10, 13)))
         terror("vmalign0");
-    if ((( Vmulong_t )data % 13) != 0)
+    if ((( Vmulong_t ) data % 13) != 0)
         terror("Not aligned0");
     vmclose(vm);
 
@@ -55,7 +55,7 @@ tmain()
         terror("Opening region0.1");
     if (!(data = vmalign(vm, 10, 13)))
         terror("vmalign0.1");
-    if ((( Vmulong_t )data % 13) != 0)
+    if ((( Vmulong_t ) data % 13) != 0)
         terror("Not aligned0.1");
 
     Vmdcheap->round = ALIGN;
@@ -65,7 +65,7 @@ tmain()
         terror("vmalloc1");
     if (!(data = vmalign(vm, 10, 13)))
         terror("vmalign1");
-    if ((( Vmulong_t )data % 13) != 0)
+    if ((( Vmulong_t ) data % 13) != 0)
         terror("Not aligned1");
     vmclose(vm);
 
@@ -75,7 +75,7 @@ tmain()
         terror("vmalloc3");
     if (!(data = vmalign(vm, 10, 13)))
         terror("vmalign3");
-    if ((( Vmulong_t )data % 13) != 0)
+    if ((( Vmulong_t ) data % 13) != 0)
         terror("Not aligned3");
     vmclose(vm);
 
@@ -87,7 +87,7 @@ tmain()
                 terror("vmalloc failed");
         if (!(data = vmalign(vm, 64, 4096)))
             terror("vmalign failed");
-        if ((( Vmulong_t )data % 4096) != 0)
+        if ((( Vmulong_t ) data % 4096) != 0)
             terror("Not aligned");
     }
     vmclose(vm);
@@ -100,7 +100,7 @@ tmain()
                 terror("vmalloc failed");
         if (!(data = vmalign(vm, 64, 4096)))
             terror("vmalign failed");
-        if ((( Vmulong_t )data % 4096) != 0)
+        if ((( Vmulong_t ) data % 4096) != 0)
             terror("Not aligned");
     }
     vmclose(vm);

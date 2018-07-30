@@ -76,7 +76,7 @@ Sfdouble_t v;
 
     s = (ends = &c[0]) + sizeof(c);
     while (s > ends) { /* get 2^SF_PRECIS precision at a time */
-        n = ( int )(x = ldexpl(v, SF_PRECIS));
+        n = ( int ) (x = ldexpl(v, SF_PRECIS));
         *--s = n | SF_MORE;
         v = x - n;
         if (v <= 0.)
@@ -89,7 +89,7 @@ Sfdouble_t v;
 
     /* write out coded bytes */
     n = ends - s + 1;
-    w = SFWRITE(f, ( Void_t * )s, n) == n ? w + n : -1;
+    w = SFWRITE(f, ( Void_t * ) s, n) == n ? w + n : -1;
 
     SFOPEN(f, 0);
     SFMTXRETURN(f, w);

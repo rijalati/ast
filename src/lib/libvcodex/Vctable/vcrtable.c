@@ -104,20 +104,20 @@ typedef struct _rtable_s
 static Vcmtarg_t _Rtargs[]
 = { { "fsep",
       "Fields are separated  by 'fsep=character'",
-      ( Void_t * )RT_FSEP },
+      ( Void_t * ) RT_FSEP },
     { "rsep",
       "Records are separated  by 'rsep=character'",
-      ( Void_t * )RT_RSEP },
+      ( Void_t * ) RT_RSEP },
     { "schema",
       "Schema is defined as 'schema=[fldlen1,fldlen2,...]'",
-      ( Void_t * )RT_SCHEMA },
+      ( Void_t * ) RT_SCHEMA },
     { "align",
       "Field alignment is given as 'align=value'",
-      ( Void_t * )RT_ALIGN },
+      ( Void_t * ) RT_ALIGN },
     { "renew",
       "Context renewal defined as 'renew=[01]'",
-      ( Void_t * )RT_RENEW },
-    { 0, "Field and record separators to be computed.", ( Void_t * )0 } };
+      ( Void_t * ) RT_RENEW },
+    { 0, "Field and record separators to be computed.", ( Void_t * ) 0 } };
 
 /* discipline functions and data structures for the CDT library */
 #if __STD_C
@@ -131,13 +131,13 @@ Dtdisc_t *disc;
 #endif
 {
     int d;
-    Rtval_t *f1 = ( Rtval_t * )o1, *f2 = ( Rtval_t * )o2;
+    Rtval_t *f1 = ( Rtval_t * ) o1, *f2 = ( Rtval_t * ) o2;
     Vcchar_t *s1 = f1->data, *s2 = f2->data, *ends;
 
     /* compare two objects by their data */
     ends = s1 + (f1->dtsz < f2->dtsz ? f1->dtsz : f2->dtsz);
     for (; s1 < ends; ++s1, ++s2)
-        if ((d = ( int )s1[0] - ( int )s2[0]) != 0)
+        if ((d = ( int ) s1[0] - ( int ) s2[0]) != 0)
             return d;
     return f1->dtsz < f2->dtsz ? -1 : f1->dtsz == f2->dtsz ? 0 : 1;
 }
@@ -152,7 +152,7 @@ void *o2;
 Dtdisc_t *disc;
 #endif
 {
-    Rtval_t *f1 = ( Rtval_t * )o1, *f2 = ( Rtval_t * )o2;
+    Rtval_t *f1 = ( Rtval_t * ) o1, *f2 = ( Rtval_t * ) o2;
     return f1->ordn < f2->ordn ? -1 : f1->ordn == f2->ordn ? 0 : 1;
 }
 
@@ -165,7 +165,7 @@ void *o;
 Dtdisc_t *disc;
 #endif
 {
-    Rtval_t *f = ( Rtval_t * )o;
+    Rtval_t *f = ( Rtval_t * ) o;
     return f->dtsz == 0 ? 0 : dtstrhash(0, f->data, f->dtsz);
 }
 
@@ -423,7 +423,7 @@ Void_t **out;
     if (rc->recz <= 0 && (rc->rsep <= 0 || rc->fsep <= 0)) {
         Vcrdformat_t *rdf;
         if (!(rdf
-              = vcrdformat(( Vcchar_t * )data, size, rc->rsep, rc->algn, 1)))
+              = vcrdformat(( Vcchar_t * ) data, size, rc->rsep, rc->algn, 1)))
             return 0;
 
         if (rdf->fsep > 0 && rdf->rsep > 0) {
@@ -431,7 +431,7 @@ Void_t **out;
             rc->rsep = rdf->rsep;
         } else if (rdf->fldn > 0 && rdf->fldz) {
             if ((rc->fldz
-                 = ( ssize_t * )malloc(rdf->fldn * sizeof(ssize_t)))) {
+                 = ( ssize_t * ) malloc(rdf->fldn * sizeof(ssize_t)))) {
                 memcpy(rc->fldz, rdf->fldz, rdf->fldn * sizeof(ssize_t));
                 rc->fldn = rdf->fldn;
 
@@ -462,7 +462,7 @@ Void_t **out;
         recn = fldn = 0; /* count records and number of fields per record */
         fmin = -1;       /* fewest fields in a record */
         rowz = -1;       /* see if this is a fixed length record */
-        for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;) {
+        for (edt = (dt = ( Vcchar_t * ) data) + size; dt < edt;) {
             for (f = 0, d = dt; d < edt; ++d) {
                 if (*d == rc->fsep || *d == rc->rsep)
                     f += 1;
@@ -486,12 +486,12 @@ Void_t **out;
 
             dt = d + 1; /* process next record */
         }
-        size = dt - ( Vcchar_t * )data; /* size of data to be processed */
+        size = dt - ( Vcchar_t * ) data; /* size of data to be processed */
 
         if (fldn == 1 && rowz > 0) /* treat this as a fixed-length table */
         {
             rtctxtclear(rc);
-            if (!(rc->fldz = ( ssize_t * )malloc(sizeof(ssize_t))))
+            if (!(rc->fldz = ( ssize_t * ) malloc(sizeof(ssize_t))))
                 return -1;
             rc->fldn = 1;
             rc->fldz[0] = rc->recz = rowz;
@@ -509,7 +509,7 @@ Void_t **out;
 
     if (!rc->fld) /* allocate field structures */
     {
-        if (!(rc->fld = ( Rtfld_t * )calloc(fldn, sizeof(Rtfld_t))))
+        if (!(rc->fld = ( Rtfld_t * ) calloc(fldn, sizeof(Rtfld_t))))
             GOTO(done);
         for (f = 0; f < fldn; ++f) {
             if (!(rc->fld[f].odt = dtopen(&Rtordn, Dtoset)))
@@ -545,7 +545,7 @@ Void_t **out;
         }
 
         /* check for fields codable in some special way */
-        for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;) {
+        for (edt = (dt = ( Vcchar_t * ) data) + size; dt < edt;) {
             for (u = 0, f = 0;;) {
                 for (d = dt; *d != rc->fsep && *d != rc->rsep;)
                     d += 1;
@@ -597,7 +597,7 @@ Void_t **out;
     }
 
     valz = 0; /* check for new field values and accumulate their total size */
-    for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;) {
+    for (edt = (dt = ( Vcchar_t * ) data) + size; dt < edt;) {
         for (f = 0;;) /* process a record */
         {
             if (rc->fld[f].type & RT_FIXZ) /* fixed length field */
@@ -613,9 +613,9 @@ Void_t **out;
                                     &val))) { /* insert a new value into
                                                  dictionaries */
                     z = sizeof(Rtval_t) + val.dtsz;
-                    if (!(vl = ( Rtval_t * )malloc(z)))
+                    if (!(vl = ( Rtval_t * ) malloc(z)))
                         GOTO(done);
-                    vl->data = ( Vcchar_t * )(vl + 1);
+                    vl->data = ( Vcchar_t * ) (vl + 1);
                     if ((vl->dtsz = val.dtsz) > 0)
                         memcpy(vl->data, dt, vl->dtsz);
                     vl->ordn = (rc->fld[f].vcnt += 1);
@@ -665,7 +665,7 @@ Void_t **out;
     vcioinit(&io, tbldt, tblz);
 
     /* build the representation table from indices or fixed-size data */
-    for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;) {
+    for (edt = (dt = ( Vcchar_t * ) data) + size; dt < edt;) {
         for (f = 0;;) {
             if (rc->fld[f].type & RT_FIXZ) /* fixed length field */
                 d = dt + rc->fldz[f];
@@ -752,7 +752,7 @@ Void_t **out;
 
     /**/ DEBUG_PRINT(2, "Raw tblz=%d\n", tblz);
     rt->tbl->coder = vc->coder; /* transform table with Vctable */
-    vcsetmtarg(rt->tbl, "columns", ( Void_t * )rowz, 2);
+    vcsetmtarg(rt->tbl, "columns", ( Void_t * ) rowz, 2);
     if ((tblz = vcapply(rt->tbl, tbldt, tblz, &tbldt)) < 0)
         GOTO(done);
     /**/ DEBUG_PRINT(2, "Processed tblz=%d\n", tblz);
@@ -875,8 +875,8 @@ Void_t **out;
     {
         rtctxtclear(rc);
         rc->fldn = fldn;
-        if (!(rc->fld = ( Rtfld_t * )calloc(fldn, sizeof(Rtfld_t)))
-            || !(rc->fldz = ( ssize_t * )calloc(fldn, sizeof(ssize_t))))
+        if (!(rc->fld = ( Rtfld_t * ) calloc(fldn, sizeof(Rtfld_t)))
+            || !(rc->fldz = ( ssize_t * ) calloc(fldn, sizeof(ssize_t))))
             GOTO(done);
     }
 
@@ -917,9 +917,9 @@ Void_t **out;
 
         /* add new values for this field */
         if ((val = rc->fld[f].val)) /* get space for new values */
-            val = ( Rtval_t ** )realloc(val, (vcnt + 1) * sizeof(Rtval_t *));
+            val = ( Rtval_t ** ) realloc(val, (vcnt + 1) * sizeof(Rtval_t *));
         else
-            val = ( Rtval_t ** )malloc((vcnt + 1) * sizeof(Rtval_t *));
+            val = ( Rtval_t ** ) malloc((vcnt + 1) * sizeof(Rtval_t *));
         if (!val)
             GOTO(done);
         rc->fld[f].val = val;
@@ -938,9 +938,9 @@ Void_t **out;
                     GOTO(done);
             }
 
-            if (!(vl = ( Rtval_t * )malloc(sizeof(Rtval_t) + (dt - valdt))))
+            if (!(vl = ( Rtval_t * ) malloc(sizeof(Rtval_t) + (dt - valdt))))
                 GOTO(done);
-            vl->data = ( Vcchar_t * )(vl + 1);
+            vl->data = ( Vcchar_t * ) (vl + 1);
             vl->dtsz = dt - valdt;
             memcpy(vl->data, valdt, vl->dtsz);
             val[v] = vl;
@@ -1062,7 +1062,7 @@ Void_t *params;
     int rv = -1;
 
     if (type == VC_OPENING) {
-        if (!(rt = ( Rtable_t * )calloc(1, sizeof(Rtable_t))))
+        if (!(rt = ( Rtable_t * ) calloc(1, sizeof(Rtable_t))))
             return -1;
 
         /* handles to transform table and field value data */
@@ -1073,7 +1073,7 @@ Void_t *params;
             goto do_close;
 
         /* create default context */
-        rt->ctxt = ( Rtctxt_t * )vcinitcontext(vc, NIL(Vccontext_t *));
+        rt->ctxt = ( Rtctxt_t * ) vcinitcontext(vc, NIL(Vccontext_t *));
 
         /* by default, contexts are maintained across windows */
         rt->renew = 0;
@@ -1089,7 +1089,7 @@ Void_t *params;
     vc_setarg:
         if (!(rc = vcgetcontext(vc, Rtctxt_t *)))
             return -1;
-        for (data = ( char * )params; data;) {
+        for (data = ( char * ) params; data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Rtargs, &arg);
 
             type = TYPECAST(int, arg->data);
@@ -1141,16 +1141,16 @@ Void_t *params;
         if (!params)
             return 0;
 
-        if (!(rc = ( Rtctxt_t * )calloc(1, sizeof(Rtctxt_t))))
+        if (!(rc = ( Rtctxt_t * ) calloc(1, sizeof(Rtctxt_t))))
             return -1;
         rc->fsep = 0;
         rc->rsep = 0;
 
-        *(( Rtctxt_t ** )params) = rc;
+        *(( Rtctxt_t ** ) params) = rc;
         return 1;
     } else if (type == VC_FREECONTEXT) /* delete an existing context */
     {
-        if ((rc = ( Rtctxt_t * )params))
+        if ((rc = ( Rtctxt_t * ) params))
             rtctxtclear(rc);
         free(rc);
         return 0;

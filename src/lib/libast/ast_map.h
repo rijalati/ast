@@ -144,7 +144,7 @@ extern __MANGLE__ char *getcwd __PROTO__((char *, size_t));
 #    define opterr _ast_opterr
 #    undef getwd
 #    define getwd _ast_getwd
-extern __MANGLE__ char *getwd __PROTO__(( char * ));
+extern __MANGLE__ char *getwd __PROTO__(( char * ) );
 #    undef glob
 #    define glob _ast_glob
 #    undef globfree
@@ -159,10 +159,10 @@ extern __MANGLE__ char *getwd __PROTO__(( char * ));
 #    define memsum _ast_memsum
 #    undef mkstemp
 #    define mkstemp _ast_mkstemp
-extern __MANGLE__ int mkstemp __PROTO__(( char * ));
+extern __MANGLE__ int mkstemp __PROTO__(( char * ) );
 #    undef mktemp
 #    define mktemp _ast_mktemp
-extern __MANGLE__ char *mktemp __PROTO__(( char * ));
+extern __MANGLE__ char *mktemp __PROTO__(( char * ) );
 #    undef mktime
 #    define mktime _ast_mktime
 #    undef nftw
@@ -241,7 +241,7 @@ extern __MANGLE__ char *mktemp __PROTO__(( char * ));
 #    define re_exec _ast_re_exec
 #    undef realpath
 #    define realpath _ast_realpath
-extern __MANGLE__ char *realpath __PROTO__(( const char *, char * ));
+extern __MANGLE__ char *realpath __PROTO__(( const char *, char * ) );
 #    undef regaddclass
 #    define regaddclass _ast_regaddclass
 #    undef regalloc
@@ -296,13 +296,13 @@ extern __MANGLE__ char *realpath __PROTO__(( const char *, char * ));
 #    define regsubfree _ast_regsubfree
 #    undef remove
 #    define remove _ast_remove
-extern __MANGLE__ int remove __PROTO__(( const char * ));
+extern __MANGLE__ int remove __PROTO__(( const char * ) );
 #    undef resolvepath
 #    define resolvepath _ast_resolvepath
 extern __MANGLE__ int resolvepath __PROTO__((const char *, char *, size_t));
 #    undef setenv
 #    define setenv _ast_setenv
-extern __MANGLE__ int setenv __PROTO__(( const char *, const char *, int ));
+extern __MANGLE__ int setenv __PROTO__(( const char *, const char *, int ) );
 #    undef setenviron
 #    define setenviron _ast_setenviron
 #    undef sigcritical
@@ -389,13 +389,13 @@ extern __MANGLE__ int setenv __PROTO__(( const char *, const char *, int ));
 #    define struniq _ast_struniq
 #    undef system
 #    define system _ast_system
-extern __MANGLE__ int system __PROTO__(( const char * ));
+extern __MANGLE__ int system __PROTO__(( const char * ) );
 #    undef tempnam
 #    define tempnam _ast_tempnam
-extern __MANGLE__ char *tempnam __PROTO__(( const char *, const char * ));
+extern __MANGLE__ char *tempnam __PROTO__(( const char *, const char * ) );
 #    undef tmpnam
 #    define tmpnam _ast_tmpnam
-extern __MANGLE__ char *tmpnam __PROTO__(( char * ));
+extern __MANGLE__ char *tmpnam __PROTO__(( char * ) );
 #    undef touch
 #    define touch _ast_touch
 #    undef wordexp
@@ -412,10 +412,10 @@ extern __MANGLE__ char *tmpnam __PROTO__(( char * ));
 extern __MANGLE__ __V_ *calloc __PROTO__((size_t, size_t));
 #    undef cfree
 #    define cfree _ast_cfree
-extern __MANGLE__ void cfree __PROTO__(( __V_ * ));
+extern __MANGLE__ void cfree __PROTO__(( __V_ * ) );
 #    undef free
 #    define free _ast_free
-extern __MANGLE__ void free __PROTO__(( __V_ * ));
+extern __MANGLE__ void free __PROTO__(( __V_ * ) );
 #    undef mallinfo
 #    define mallinfo _ast_mallinfo
 #    undef malloc
@@ -436,7 +436,7 @@ extern __MANGLE__ int posix_memalign __PROTO__((__V_ **, size_t, size_t));
 extern __MANGLE__ __V_ *realloc __PROTO__((__V_ *, size_t));
 #    undef strdup
 #    define strdup _ast_strdup
-extern __MANGLE__ char *strdup __PROTO__(( const char * ));
+extern __MANGLE__ char *strdup __PROTO__(( const char * ) );
 #    undef valloc
 #    define valloc _ast_valloc
 extern __MANGLE__ __V_ *valloc __PROTO__((size_t));
@@ -452,21 +452,21 @@ extern __MANGLE__ __V_ *valloc __PROTO__((size_t));
 #    define strtod _ast_strtod
 #    undef strtold
 #    define strtold _ast_strtold
-extern __MANGLE__ long strtol __PROTO__(( const char *, char **, int ));
+extern __MANGLE__ long strtol __PROTO__(( const char *, char **, int ) );
 extern __MANGLE__ unsigned long
-strtoul __PROTO__(( const char *, char **, int ));
-extern __MANGLE__ double strtod __PROTO__(( const char *, char ** ));
+strtoul __PROTO__(( const char *, char **, int ) );
+extern __MANGLE__ double strtod __PROTO__(( const char *, char ** ) );
 #    if !_UWIN
 #        undef __MANGLE__
 #        define __MANGLE__ __LINKAGE__
 #    endif
-extern __MANGLE__ _ast_fltmax_t strtold __PROTO__(( const char *, char ** ));
+extern __MANGLE__ _ast_fltmax_t strtold __PROTO__(( const char *, char ** ) );
 #    undef __MANGLE__
 #    define __MANGLE__ __LINKAGE__
 extern __MANGLE__
-_ast_intmax_t strtoll __PROTO__(( const char *, char **, int ));
+_ast_intmax_t strtoll __PROTO__(( const char *, char **, int ) );
 extern __MANGLE__ unsigned
-_ast_intmax_t strtoull __PROTO__(( const char *, char **, int ));
+_ast_intmax_t strtoull __PROTO__(( const char *, char **, int ) );
 
 #    define cmdopen_20120411 _ast_cmdopen_20120411
 #    define cmdopen_20110505 _ast_cmdopen_20110505

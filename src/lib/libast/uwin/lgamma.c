@@ -84,10 +84,10 @@ static int endian;
 #    if defined(vax) || defined(tahoe)
 #        define _IEEE 0
 /* double and float have same size exponent field */
-#        define TRUNC(x) x = ( double )( float )(x)
+#        define TRUNC(x) x = ( double ) ( float ) (x)
 #    else
 #        define _IEEE 1
-#        define TRUNC(x) *((( int * )&x) + endian) &= 0xf8000000
+#        define TRUNC(x) *((( int * ) &x) + endian) &= 0xf8000000
 #        define infnan(x) 0.0
 #    endif
 
@@ -158,7 +158,7 @@ lgamma(double x)
     double r;
 
     signgam = 1;
-    endian = ((*( int * )&one)) ? 1 : 0;
+    endian = ((*( int * ) &one)) ? 1 : 0;
 
     if (!finite(x))
         if (_IEEE)
@@ -224,7 +224,7 @@ small_lgam(double x)
     int x_int;
     double y, z, t, r = 0, p, q, hi, lo;
     struct Double rr;
-    x_int = ( int )(x + .5);
+    x_int = ( int ) (x + .5);
     y = x - x_int;
     if (x_int <= 2 && y > RIGHT) {
         t = y - x0;
@@ -268,9 +268,9 @@ small_lgam(double x)
         q
         = q0 + y * (q1 + y * (q2 + y * (q3 + y * (q4 + y * (q5 + y * q6)))));
         p = p * (y / q);
-        t = ( double )( float )y;
+        t = ( double ) ( float ) y;
         z = y - t;
-        hi = ( double )( float )(p + a1_hi);
+        hi = ( double ) ( float ) (p + a1_hi);
         lo = a1_hi - hi;
         lo += p;
         lo += a1_lo;
@@ -317,7 +317,7 @@ neg_lgam(double x)
 
     /* avoid destructive cancellation as much as possible */
     if (x > -170) {
-        xi = ( int )x;
+        xi = ( int ) x;
         if (xi == x)
             if (_IEEE)
                 return (one / zero);

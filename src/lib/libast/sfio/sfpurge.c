@@ -38,16 +38,16 @@ int sfpurge(f) Sfio_t *f;
 
     SFMTXENTER(f, -1);
 
-    if ((mode = f->mode & SF_RDWR) != ( int )f->mode
+    if ((mode = f->mode & SF_RDWR) != ( int ) f->mode
         && _sfmode(f, mode | SF_SYNCED, 0) < 0)
         SFMTXRETURN(f, -1);
 
     if ((f->flags & SF_IOCHECK) && f->disc && f->disc->exceptf)
-        ( void )(*f->disc->exceptf)(
-        f, SF_PURGE, ( Void_t * )(( int )1), f->disc);
+        ( void ) (*f->disc->exceptf)(
+        f, SF_PURGE, ( Void_t * ) (( int ) 1), f->disc);
 
     if (f->disc == _Sfudisc)
-        ( void )sfclose((*_Sfstack)(f, NIL(Sfio_t *)));
+        ( void ) sfclose((*_Sfstack)(f, NIL(Sfio_t *)));
 
     /* cannot purge read string streams */
     if ((f->flags & SF_STRING) && (f->mode & SF_READ))
@@ -61,7 +61,7 @@ int sfpurge(f) Sfio_t *f;
         f->here -= f->endb - f->next;
         if (f->data) {
             SFMUNMAP(f, f->data, f->endb - f->data);
-            ( void )SFSK(f, f->here, SEEK_SET, f->disc);
+            ( void ) SFSK(f, f->here, SEEK_SET, f->disc);
         }
         SFOPEN(f, 0);
         SFMTXRETURN(f, 0);
@@ -78,12 +78,12 @@ int sfpurge(f) Sfio_t *f;
             break;
 
         /* 2-way pipe, must clear read buffer */
-        ( void )_sfmode(f, SF_READ, 1);
+        ( void ) _sfmode(f, SF_READ, 1);
         /* fall through */
     case SF_READ:
         if (f->extent >= 0 && f->endb > f->next) {
             f->here -= f->endb - f->next;
-            ( void )SFSK(f, f->here, SEEK_SET, f->disc);
+            ( void ) SFSK(f, f->here, SEEK_SET, f->disc);
         }
         f->endb = f->next = f->data;
         break;
@@ -93,8 +93,8 @@ int sfpurge(f) Sfio_t *f;
 
 done:
     if ((f->flags & SF_IOCHECK) && f->disc && f->disc->exceptf)
-        ( void )(*f->disc->exceptf)(
-        f, SF_PURGE, ( Void_t * )(( int )0), f->disc);
+        ( void ) (*f->disc->exceptf)(
+        f, SF_PURGE, ( Void_t * ) (( int ) 0), f->disc);
 
     SFMTXRETURN(f, 0);
 }

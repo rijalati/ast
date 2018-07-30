@@ -77,7 +77,7 @@ b_head(int argc, char **argv, Shbltin_t *context)
     int delim = '\n';
     off_t moved;
     int header = 1;
-    char *format = ( char * )header_fmt + 1;
+    char *format = ( char * ) header_fmt + 1;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     for (;;) {
@@ -133,7 +133,7 @@ b_head(int argc, char **argv, Shbltin_t *context)
         }
         if (argc > header)
             sfprintf(sfstdout, format, cp);
-        format = ( char * )header_fmt;
+        format = ( char * ) header_fmt;
         if (skip > 0) {
             if ((moved = sfmove(fp, NiL, skip, delim)) < 0
                 && !ERROR_PIPE(errno) && errno != EINTR)

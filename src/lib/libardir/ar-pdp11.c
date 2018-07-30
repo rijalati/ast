@@ -58,7 +58,7 @@ pdpclose(Ardir_t *ar)
 {
     State_t *state;
 
-    if (ar && (state = ( State_t * )ar->data))
+    if (ar && (state = ( State_t * ) ar->data))
         free(state);
     return 0;
 }
@@ -83,7 +83,7 @@ pdpopen(Ardir_t *ar, char *buf, size_t n)
         return -1;
     if (!(state = newof(0, State_t, 1, 0)))
         return -1;
-    ar->data = ( void * )state;
+    ar->data = ( void * ) state;
     state->swap = swap;
     state->offset = MAGIC_SIZE;
     ar->truncate = 14;
@@ -97,7 +97,7 @@ pdpopen(Ardir_t *ar, char *buf, size_t n)
 static Ardirent_t *
 pdpnext(Ardir_t *ar)
 {
-    State_t *state = ( State_t * )ar->data;
+    State_t *state = ( State_t * ) ar->data;
     ssize_t z;
 
     state->current = state->offset;
@@ -105,9 +105,9 @@ pdpnext(Ardir_t *ar)
         ar->error = errno;
         return 0;
     }
-    if (read(ar->fd, ( char * )&state->header, sizeof(state->header))
+    if (read(ar->fd, ( char * ) &state->header, sizeof(state->header))
         != sizeof(state->header)) {
-        if ((z = read(ar->fd, ( char * )&state->header, 1)) < 0)
+        if ((z = read(ar->fd, ( char * ) &state->header, 1)) < 0)
             ar->error = errno;
         else if (z > 0)
             ar->error = EINVAL;
@@ -117,20 +117,20 @@ pdpnext(Ardir_t *ar)
             state->header.ar_name,
             sizeof(state->header.ar_name));
     ar->dirent.mtime = swapget(state->swap,
-                               ( char * )&state->header.ar_date,
+                               ( char * ) &state->header.ar_date,
                                sizeof(state->header.ar_date));
     ar->dirent.uid = swapget(state->swap,
-                             ( char * )&state->header.ar_uid,
+                             ( char * ) &state->header.ar_uid,
                              sizeof(state->header.ar_uid));
     ar->dirent.gid = swapget(state->swap,
-                             ( char * )&state->header.ar_gid,
+                             ( char * ) &state->header.ar_gid,
                              sizeof(state->header.ar_gid));
     ar->dirent.mode = swapget(state->swap,
-                              ( char * )&state->header.ar_mode,
+                              ( char * ) &state->header.ar_mode,
                               sizeof(state->header.ar_mode));
     ar->dirent.offset = state->offset += sizeof(state->header);
     ar->dirent.size = swapget(state->swap,
-                              ( char * )&state->header.ar_size,
+                              ( char * ) &state->header.ar_size,
                               sizeof(state->header.ar_size));
     state->offset += ar->dirent.size + (ar->dirent.size & 01);
     return &ar->dirent;
@@ -143,7 +143,7 @@ pdpnext(Ardir_t *ar)
 static int
 pdpchange(Ardir_t *ar, Ardirent_t *ent)
 {
-    State_t *state = ( State_t * )ar->data;
+    State_t *state = ( State_t * ) ar->data;
     off_t o;
 
     o = state->current + offsetof(Header_t, ar_date);
@@ -152,9 +152,9 @@ pdpchange(Ardir_t *ar, Ardirent_t *ent)
         return -1;
     }
     swapput(state->swap,
-            ( char * )&state->header.ar_date,
+            ( char * ) &state->header.ar_date,
             sizeof(state->header.ar_date),
-            ( intmax_t )ent->mtime);
+            ( intmax_t ) ent->mtime);
     if (write(ar->fd, &state->header.ar_date, sizeof(state->header.ar_date))
         != sizeof(state->header.ar_date)) {
         ar->error = errno;

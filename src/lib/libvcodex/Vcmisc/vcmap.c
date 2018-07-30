@@ -31,20 +31,20 @@
 
 #    include <ccode.h>
 
-#    define A2E ( void * )CCOP(CC_ASCII, CC_EBCDIC)
-#    define E2A ( void * )CCOP(CC_EBCDIC, CC_ASCII)
-#    define A2I ( void * )CCOP(CC_ASCII, CC_EBCDIC_I)
-#    define I2A ( void * )CCOP(CC_EBCDIC_I, CC_ASCII)
-#    define A2O ( void * )CCOP(CC_ASCII, CC_EBCDIC_O)
-#    define O2A ( void * )CCOP(CC_EBCDIC_O, CC_ASCII)
-#    define A2S ( void * )CCOP(CC_ASCII, CC_EBCDIC_S)
-#    define S2A ( void * )CCOP(CC_EBCDIC_S, CC_ASCII)
-#    define A2H ( void * )CCOP(CC_ASCII, CC_EBCDIC_H)
-#    define H2A ( void * )CCOP(CC_EBCDIC_H, CC_ASCII)
-#    define A2M ( void * )CCOP(CC_ASCII, CC_EBCDIC_M)
-#    define M2A ( void * )CCOP(CC_EBCDIC_M, CC_ASCII)
-#    define A2U ( void * )CCOP(CC_ASCII, CC_EBCDIC_U)
-#    define U2A ( void * )CCOP(CC_EBCDIC_U, CC_ASCII)
+#    define A2E ( void * ) CCOP(CC_ASCII, CC_EBCDIC)
+#    define E2A ( void * ) CCOP(CC_EBCDIC, CC_ASCII)
+#    define A2I ( void * ) CCOP(CC_ASCII, CC_EBCDIC_I)
+#    define I2A ( void * ) CCOP(CC_EBCDIC_I, CC_ASCII)
+#    define A2O ( void * ) CCOP(CC_ASCII, CC_EBCDIC_O)
+#    define O2A ( void * ) CCOP(CC_EBCDIC_O, CC_ASCII)
+#    define A2S ( void * ) CCOP(CC_ASCII, CC_EBCDIC_S)
+#    define S2A ( void * ) CCOP(CC_EBCDIC_S, CC_ASCII)
+#    define A2H ( void * ) CCOP(CC_ASCII, CC_EBCDIC_H)
+#    define H2A ( void * ) CCOP(CC_EBCDIC_H, CC_ASCII)
+#    define A2M ( void * ) CCOP(CC_ASCII, CC_EBCDIC_M)
+#    define M2A ( void * ) CCOP(CC_EBCDIC_M, CC_ASCII)
+#    define A2U ( void * ) CCOP(CC_ASCII, CC_EBCDIC_U)
+#    define U2A ( void * ) CCOP(CC_EBCDIC_U, CC_ASCII)
 
 #else
 
@@ -414,7 +414,7 @@ static Vcchar_t U2A[] = {
 
 #endif
 
-#define MAP_INPLACE (( Void_t * )1)
+#define MAP_INPLACE (( Void_t * ) 1)
 
 /* shared with Vcetoa */
 Vcmtarg_t _Mapargs[] = { { "a2e", "ASCII -> Xopen dd(1) EBCDIC", A2E },
@@ -455,9 +455,9 @@ Void_t **out;
     Vcmap_t *vcm = vcgetmtdata(vc, Vcmap_t *);
     Vcdisc_t *disc = vcgetdisc(vc);
 
-    if ((sz = ( ssize_t )size) == 0)
+    if ((sz = ( ssize_t ) size) == 0)
         return 0;
-    if (!(dt = ( Vcchar_t * )data))
+    if (!(dt = ( Vcchar_t * ) data))
         return -1;
 
     if (!(map = vcm->map))
@@ -473,7 +473,7 @@ Void_t **out;
             return -1;
 
     if ((vc->flags & VC_ENCODE) && vcm->inplace)
-        output = ( Vcchar_t * )data;
+        output = ( Vcchar_t * ) data;
     else if (!(output = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
         return -1;
 
@@ -517,7 +517,7 @@ Void_t *params;
     Vcmtarg_t *arg;
 
     if (type == VC_OPENING) {
-        if (!(vcm = ( Vcmap_t * )calloc(1, sizeof(Vcmap_t))))
+        if (!(vcm = ( Vcmap_t * ) calloc(1, sizeof(Vcmap_t))))
             return -1;
         vcsetmtdata(vc, vcm);
         goto vc_setarg;
@@ -525,7 +525,7 @@ Void_t *params;
         if (!(vcm = vcgetmtdata(vc, Vcmap_t *)))
             return -1;
     vc_setarg:
-        for (data = ( char * )params; data;) {
+        for (data = ( char * ) params; data;) {
             data = vcgetmtarg(data, 0, 0, _Mapargs, &arg);
             if (arg) {
                 if (arg->data != MAP_INPLACE)

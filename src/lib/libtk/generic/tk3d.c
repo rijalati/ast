@@ -87,7 +87,7 @@ static int initialized = 0; /* 0 means static structures haven't
  * Forward declarations for procedures defined in this file:
  */
 
-static void BorderInit _ANSI_ARGS_(( void ));
+static void BorderInit _ANSI_ARGS_(( void ) );
 static void GetShadows _ANSI_ARGS_((Border * borderPtr, Tk_Window tkwin));
 static int Intersect _ANSI_ARGS_(
 (XPoint * a1Ptr, XPoint *a2Ptr, XPoint *b1Ptr, XPoint *b2Ptr, XPoint *iPtr));
@@ -143,9 +143,9 @@ Tk_Uid colorName;   /* String giving name of color
     key.colormap = Tk_Colormap(tkwin);
     key.screen = Tk_Screen(tkwin);
 
-    hashPtr = Tcl_CreateHashEntry(&borderTable, ( char * )&key, &new);
+    hashPtr = Tcl_CreateHashEntry(&borderTable, ( char * ) &key, &new);
     if (!new) {
-        borderPtr = ( Border * )Tcl_GetHashValue(hashPtr);
+        borderPtr = ( Border * ) Tcl_GetHashValue(hashPtr);
         borderPtr->refCount++;
     } else {
 
@@ -153,7 +153,7 @@ Tk_Uid colorName;   /* String giving name of color
          * No satisfactory border exists yet.  Initialize a new one.
          */
 
-        borderPtr = ( Border * )ckalloc(sizeof(Border));
+        borderPtr = ( Border * ) ckalloc(sizeof(Border));
         borderPtr->screen = Tk_Screen(tkwin);
         borderPtr->visual = Tk_Visual(tkwin);
         borderPtr->depth = Tk_Depth(tkwin);
@@ -182,10 +182,10 @@ Tk_Uid colorName;   /* String giving name of color
         gcValues.foreground = borderPtr->bgColorPtr->pixel;
         borderPtr->bgGC = Tk_GetGC(tkwin, GCForeground, &gcValues);
     }
-    return ( Tk_3DBorder )borderPtr;
+    return ( Tk_3DBorder ) borderPtr;
 
 error:
-    Tk_Free3DBorder(( Tk_3DBorder )borderPtr);
+    Tk_Free3DBorder(( Tk_3DBorder ) borderPtr);
     return NULL;
 }
 
@@ -237,7 +237,7 @@ int relief;              /* Kind of bevel to draw.  For example,
                           * object should appear higher than
                           * exterior. */
 {
-    Border *borderPtr = ( Border * )border;
+    Border *borderPtr = ( Border * ) border;
     GC left, right;
     Display *display = Tk_Display(tkwin);
 
@@ -250,16 +250,16 @@ int relief;              /* Kind of bevel to draw.  For example,
                        (leftBevel) ? borderPtr->lightGC : borderPtr->darkGC,
                        x,
                        y,
-                       ( unsigned )width,
-                       ( unsigned )height);
+                       ( unsigned ) width,
+                       ( unsigned ) height);
     } else if (relief == TK_RELIEF_SUNKEN) {
         XFillRectangle(display,
                        drawable,
                        (leftBevel) ? borderPtr->darkGC : borderPtr->lightGC,
                        x,
                        y,
-                       ( unsigned )width,
-                       ( unsigned )height);
+                       ( unsigned ) width,
+                       ( unsigned ) height);
     } else if (relief == TK_RELIEF_RIDGE) {
         int half;
 
@@ -271,14 +271,14 @@ int relief;              /* Kind of bevel to draw.  For example,
             half++;
         }
         XFillRectangle(
-        display, drawable, left, x, y, ( unsigned )half, ( unsigned )height);
+        display, drawable, left, x, y, ( unsigned ) half, ( unsigned ) height);
         XFillRectangle(display,
                        drawable,
                        right,
                        x + half,
                        y,
-                       ( unsigned )(width - half),
-                       ( unsigned )height);
+                       ( unsigned ) (width - half),
+                       ( unsigned ) height);
     } else if (relief == TK_RELIEF_GROOVE) {
         left = borderPtr->darkGC;
         right = borderPtr->lightGC;
@@ -289,8 +289,8 @@ int relief;              /* Kind of bevel to draw.  For example,
                        borderPtr->bgGC,
                        x,
                        y,
-                       ( unsigned )width,
-                       ( unsigned )height);
+                       ( unsigned ) width,
+                       ( unsigned ) height);
     }
 }
 
@@ -346,7 +346,7 @@ int relief;              /* Kind of bevel to draw.  For example,
                           * object should appear higher than
                           * exterior. */
 {
-    Border *borderPtr = ( Border * )border;
+    Border *borderPtr = ( Border * ) border;
     Display *display = Tk_Display(tkwin);
     int bottom, halfway, x1, x2, x1Delta, x2Delta;
     GC topGC = None, bottomGC = None;
@@ -421,8 +421,8 @@ int relief;              /* Kind of bevel to draw.  For example,
                            (y < halfway) ? topGC : bottomGC,
                            x1,
                            y,
-                           ( unsigned )(x2 - x1),
-                           ( unsigned )1);
+                           ( unsigned ) (x2 - x1),
+                           ( unsigned ) 1);
         }
         x1 += x1Delta;
         x2 += x2Delta;
@@ -519,10 +519,10 @@ int relief;              /* Type of relief: TK_RELIEF_RAISED,
 
 char *Tk_NameOf3DBorder(border) Tk_3DBorder border; /* Token for border. */
 {
-    Border *borderPtr = ( Border * )border;
+    Border *borderPtr = ( Border * ) border;
     void *ptr = borderPtr->hashPtr->key.words;
 
-    return (( BorderKey * )ptr)->colorName;
+    return (( BorderKey * ) ptr)->colorName;
 }
 
 /*
@@ -544,7 +544,7 @@ char *Tk_NameOf3DBorder(border) Tk_3DBorder border; /* Token for border. */
 XColor *Tk_3DBorderColor(border) Tk_3DBorder border; /* Border whose color is
                                                         wanted. */
 {
-    return ((( Border * )border)->bgColorPtr);
+    return ((( Border * ) border)->bgColorPtr);
 }
 
 /*
@@ -571,7 +571,7 @@ int which;          /* Selects one of the border's 3 GC's:
                      * TK_3D_FLAT_GC, TK_3D_LIGHT_GC, or
                      * TK_3D_DARK_GC. */
 {
-    Border *borderPtr = ( Border * )border;
+    Border *borderPtr = ( Border * ) border;
 
     if ((borderPtr->lightGC == None) && (which != TK_3D_FLAT_GC)) {
         GetShadows(borderPtr, tkwin);
@@ -590,7 +590,7 @@ int which;          /* Selects one of the border's 3 GC's:
      * keep compilers happy.
      */
 
-    return ( GC )None;
+    return ( GC ) None;
 }
 
 /*
@@ -615,7 +615,7 @@ int which;          /* Selects one of the border's 3 GC's:
 void Tk_Free3DBorder(border) Tk_3DBorder border; /* Token for border to be
                                                     released. */
 {
-    Border *borderPtr = ( Border * )border;
+    Border *borderPtr = ( Border * ) border;
     Display *display = DisplayOfScreen(borderPtr->screen);
 
     borderPtr->refCount--;
@@ -642,7 +642,7 @@ void Tk_Free3DBorder(border) Tk_3DBorder border; /* Token for border to be
             Tk_FreeGC(display, borderPtr->lightGC);
         }
         Tcl_DeleteHashEntry(borderPtr->hashPtr);
-        ckfree(( char * )borderPtr);
+        ckfree(( char * ) borderPtr);
     }
 }
 
@@ -667,7 +667,7 @@ void Tk_SetBackgroundFromBorder(tkwin, border)
 Tk_Window tkwin;    /* Window whose background is to be set. */
 Tk_3DBorder border; /* Token for border. */
 {
-    Border *borderPtr = ( Border * )border;
+    Border *borderPtr = ( Border * ) border;
 
     Tk_SetWindowBackground(tkwin, borderPtr->bgColorPtr->pixel);
 }
@@ -806,7 +806,7 @@ int leftRelief;     /* TK_RELIEF_RAISED or
     XPoint poly[4], b1, b2, newB1, newB2;
     XPoint perp, c, shift1, shift2; /* Used for handling parallel lines. */
     XPoint *p1Ptr, *p2Ptr;
-    Border *borderPtr = ( Border * )border;
+    Border *borderPtr = ( Border * ) border;
     GC gc;
     int i, lightOnLeft, dx, dy, parallel, pointsSeen;
     Display *display = Tk_Display(tkwin);
@@ -947,12 +947,12 @@ int leftRelief;     /* TK_RELIEF_RAISED or
             if (parallel) {
                 perp.x = p1Ptr->x + (p2Ptr->y - p1Ptr->y);
                 perp.y = p1Ptr->y - (p2Ptr->x - p1Ptr->x);
-                ( void )Intersect(p1Ptr, &perp, &b1, &b2, &poly[2]);
-                ( void )Intersect(p1Ptr, &perp, &newB1, &newB2, &c);
+                ( void ) Intersect(p1Ptr, &perp, &b1, &b2, &poly[2]);
+                ( void ) Intersect(p1Ptr, &perp, &newB1, &newB2, &c);
                 ShiftLine(p1Ptr, &perp, borderWidth, &shift1);
                 shift2.x = shift1.x + (perp.x - p1Ptr->x);
                 shift2.y = shift1.y + (perp.y - p1Ptr->y);
-                ( void )Intersect(p1Ptr, p2Ptr, &shift1, &shift2, &poly[3]);
+                ( void ) Intersect(p1Ptr, p2Ptr, &shift1, &shift2, &poly[3]);
             }
         }
         if (pointsSeen >= 2) {
@@ -1022,15 +1022,15 @@ int borderWidth;         /* Desired width for border, in
 int relief;              /* Indicates 3D effect: TK_RELIEF_FLAT,
                           * TK_RELIEF_RAISED, or TK_RELIEF_SUNKEN. */
 {
-    Border *borderPtr = ( Border * )border;
+    Border *borderPtr = ( Border * ) border;
 
     XFillRectangle(Tk_Display(tkwin),
                    drawable,
                    borderPtr->bgGC,
                    x,
                    y,
-                   ( unsigned int )width,
-                   ( unsigned int )height);
+                   ( unsigned int ) width,
+                   ( unsigned int ) height);
     if (relief != TK_RELIEF_FLAT) {
         Tk_Draw3DRectangle(
         tkwin, drawable, border, x, y, width, height, borderWidth, relief);
@@ -1075,7 +1075,7 @@ int leftRelief;     /* Indicates 3D effect of left side of
                      * TK_RELIEF_FLAT, TK_RELIEF_RAISED,
                      * or TK_RELIEF_SUNKEN. */
 {
-    Border *borderPtr = ( Border * )border;
+    Border *borderPtr = ( Border * ) border;
 
     XFillPolygon(Tk_Display(tkwin),
                  drawable,
@@ -1332,9 +1332,9 @@ Tk_Window tkwin; /* Window where border will be used for
          * better for unsaturated colors, the second for saturated ones).
          */
 
-        darkColor.red = (60 * ( int )borderPtr->bgColorPtr->red) / 100;
-        darkColor.green = (60 * ( int )borderPtr->bgColorPtr->green) / 100;
-        darkColor.blue = (60 * ( int )borderPtr->bgColorPtr->blue) / 100;
+        darkColor.red = (60 * ( int ) borderPtr->bgColorPtr->red) / 100;
+        darkColor.green = (60 * ( int ) borderPtr->bgColorPtr->green) / 100;
+        darkColor.blue = (60 * ( int ) borderPtr->bgColorPtr->blue) / 100;
         borderPtr->darkColorPtr = Tk_GetColorByValue(tkwin, &darkColor);
         gcValues.foreground = borderPtr->darkColorPtr->pixel;
         borderPtr->darkGC = Tk_GetGC(tkwin, GCForeground, &gcValues);
@@ -1345,23 +1345,23 @@ Tk_Window tkwin; /* Window where border will be used for
          * overflow.
          */
 
-        tmp1 = (14 * ( int )borderPtr->bgColorPtr->red) / 10;
+        tmp1 = (14 * ( int ) borderPtr->bgColorPtr->red) / 10;
         if (tmp1 > MAX_INTENSITY) {
             tmp1 = MAX_INTENSITY;
         }
-        tmp2 = (MAX_INTENSITY + ( int )borderPtr->bgColorPtr->red) / 2;
+        tmp2 = (MAX_INTENSITY + ( int ) borderPtr->bgColorPtr->red) / 2;
         lightColor.red = (tmp1 > tmp2) ? tmp1 : tmp2;
-        tmp1 = (14 * ( int )borderPtr->bgColorPtr->green) / 10;
+        tmp1 = (14 * ( int ) borderPtr->bgColorPtr->green) / 10;
         if (tmp1 > MAX_INTENSITY) {
             tmp1 = MAX_INTENSITY;
         }
-        tmp2 = (MAX_INTENSITY + ( int )borderPtr->bgColorPtr->green) / 2;
+        tmp2 = (MAX_INTENSITY + ( int ) borderPtr->bgColorPtr->green) / 2;
         lightColor.green = (tmp1 > tmp2) ? tmp1 : tmp2;
-        tmp1 = (14 * ( int )borderPtr->bgColorPtr->blue) / 10;
+        tmp1 = (14 * ( int ) borderPtr->bgColorPtr->blue) / 10;
         if (tmp1 > MAX_INTENSITY) {
             tmp1 = MAX_INTENSITY;
         }
-        tmp2 = (MAX_INTENSITY + ( int )borderPtr->bgColorPtr->blue) / 2;
+        tmp2 = (MAX_INTENSITY + ( int ) borderPtr->bgColorPtr->blue) / 2;
         lightColor.blue = (tmp1 > tmp2) ? tmp1 : tmp2;
         borderPtr->lightColorPtr = Tk_GetColorByValue(tkwin, &lightColor);
         gcValues.foreground = borderPtr->lightColorPtr->pixel;
@@ -1371,7 +1371,7 @@ Tk_Window tkwin; /* Window where border will be used for
 
     if (borderPtr->shadow == None) {
         borderPtr->shadow
-        = Tk_GetBitmap(( Tcl_Interp * )NULL, tkwin, Tk_GetUid("gray50"));
+        = Tk_GetBitmap(( Tcl_Interp * ) NULL, tkwin, Tk_GetUid("gray50"));
         if (borderPtr->shadow == None) {
             panic("GetShadows couldn't allocate bitmap for border");
         }

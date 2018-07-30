@@ -46,7 +46,7 @@ ptvstats(Ptv_t *a, Sfio_t *sp)
     static char tot[] = "**************************************************";
 
     bits = a->size * 8;
-    if (!(addresses = ( unsigned char ** )newof(
+    if (!(addresses = ( unsigned char ** ) newof(
           0,
           unsigned char,
           (2 * (bits + 1)) * (sizeof(unsigned char *) + a->size),
@@ -57,7 +57,7 @@ ptvstats(Ptv_t *a, Sfio_t *sp)
         return -1;
     }
     prefixes = addresses + bits + 1;
-    total_addresses = ( unsigned char * )(prefixes + bits + 1);
+    total_addresses = ( unsigned char * ) (prefixes + bits + 1);
     total_prefixes = total_addresses + a->size;
     v = total_prefixes + a->size;
     for (i = 0; i <= bits; i++) {
@@ -88,8 +88,8 @@ ptvstats(Ptv_t *a, Sfio_t *sp)
             if (fvcmp(a->size, addresses[i], a->r[1]) >= 0) {
                 fvdiv(a->size, a->r[3], a->r[5], a->r[0], addresses[i]);
                 if (fvcmp(a->size, a->r[3], a->r[2]) < 0)
-                    tc = ( int )(( double )(sizeof(tot) - (sizeof(S) - 10))
-                                 / ( double )a->r[3][a->size - 1]);
+                    tc = ( int ) (( double ) (sizeof(tot) - (sizeof(S) - 10))
+                                  / ( double ) a->r[3][a->size - 1]);
                 else
                     tc = 0;
             } else
@@ -98,8 +98,8 @@ ptvstats(Ptv_t *a, Sfio_t *sp)
                 fvdiv(
                 a->size, a->r[3], a->r[5], total_addresses, addresses[i]);
                 if (fvcmp(a->size, a->r[3], a->r[2]) < 0)
-                    pc = ( int )(( double )(sizeof(prt) - (sizeof(S) - 10))
-                                 / ( double )a->r[3][a->size - 1]);
+                    pc = ( int ) (( double ) (sizeof(prt) - (sizeof(S) - 10))
+                                  / ( double ) a->r[3][a->size - 1]);
                 else
                     pc = 0;
             } else
@@ -121,7 +121,7 @@ ptvstats(Ptv_t *a, Sfio_t *sp)
              sizeof(S) - 1,
              fmtfv(a->size, total_addresses, 10, ',', 3),
              sizeof(Ptvcount_t),
-             ( Ptvcount_t )dtsize(a->dict),
+             ( Ptvcount_t ) dtsize(a->dict),
              sizeof(a->entries),
              a->entries);
     return sfsync(sp);

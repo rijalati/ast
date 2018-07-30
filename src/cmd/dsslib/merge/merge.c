@@ -74,9 +74,9 @@ extern Dsslib_t dss_lib_merge;
 static int
 ordercmp(Dt_t *dict, void *a, void *b, Dtdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
-    File_t *ap = ( File_t * )a;
-    File_t *bp = ( File_t * )b;
+    State_t *state = ( State_t * ) disc;
+    File_t *ap = ( File_t * ) a;
+    File_t *bp = ( File_t * ) b;
     Key_t *kp;
     size_t az;
     size_t bz;
@@ -137,7 +137,7 @@ merge_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
     State_t *state;
     File_t *file;
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     char **files = expr->files;
     Dss_t *dss = DSS(cx);
     int errors = error_info.errors;
@@ -270,7 +270,7 @@ merge_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     expr = expr->pass;
     if (dssbeg(dss, expr))
         goto drop;
-    while (file = ( File_t * )dtfirst(state->order)) {
+    while (file = ( File_t * ) dtfirst(state->order)) {
         if (dsseval(dss, expr, file->record) < 0)
             goto drop;
         enter(dss, state, file);

@@ -119,29 +119,29 @@ int n_copy;   /* length of match	*/
         if (!MERGABLE(n_add, n_copy, k_type))
             i_add = A_ISLOCAL(n_add) ? A_LPUT(n_add) : 0;
 
-        if (VDPUTC(( Vdio_t * )tab, i_add) < 0)
+        if (VDPUTC(( Vdio_t * ) tab, i_add) < 0)
             return -1;
         if (!A_ISLOCAL(n_add)
-            && (*_Vdputu)(( Vdio_t * )tab, ( ulong )A_PUT(n_add)) < 0)
+            && (*_Vdputu)(( Vdio_t * ) tab, ( ulong ) A_PUT(n_add)) < 0)
             return -1;
-        if ((*_Vdwrite)(( Vdio_t * )tab, begs, n_add) < 0)
+        if ((*_Vdwrite)(( Vdio_t * ) tab, begs, n_add) < 0)
             return -1;
     }
 
     if (n_copy > 0) {
         if (!MERGABLE(n_add, n_copy, k_type)
-            && VDPUTC(( Vdio_t * )tab, i_copy) < 0)
+            && VDPUTC(( Vdio_t * ) tab, i_copy) < 0)
             return -1;
 
         if (!C_ISLOCAL(n_copy)
-            && (*_Vdputu)(( Vdio_t * )tab, ( ulong )C_PUT(n_copy)) < 0)
+            && (*_Vdputu)(( Vdio_t * ) tab, ( ulong ) C_PUT(n_copy)) < 0)
             return -1;
 
         if (k_type >= K_QUICK && k_type < (K_QUICK + K_QTYPE)) {
-            if (VDPUTC(( Vdio_t * )tab, ( uchar )best) < 0)
+            if (VDPUTC(( Vdio_t * ) tab, ( uchar ) best) < 0)
                 return -1;
         } else {
-            if ((*_Vdputu)(( Vdio_t * )tab, ( ulong )best) < 0)
+            if ((*_Vdputu)(( Vdio_t * ) tab, ( ulong ) best) < 0)
                 return -1;
         }
     }
@@ -414,32 +414,32 @@ Vddisc_t *delta;                                      /* transform output data	*
     /* try to allocate working space */
     window = DFLTWINDOW;
     while (window > 0) { /* space for the target string */
-        if (( long )(size = ( int )window) > n_tar)
-            size = ( int )n_tar;
+        if (( long ) (size = ( int ) window) > n_tar)
+            size = ( int ) n_tar;
         if (!target->data
-            && !(tab.tar = ( uchar * )malloc(size * sizeof(uchar))))
+            && !(tab.tar = ( uchar * ) malloc(size * sizeof(uchar))))
             goto reduce_window;
         k = size;
 
         /* space for sliding header or source string */
         if (n_src <= 0) /* compression only */
         {
-            if (( long )window >= n_tar) {
+            if (( long ) window >= n_tar) {
                 size = 0;
                 k += n_tar;
             } else {
-                size = ( int )HEADER(window);
+                size = ( int ) HEADER(window);
                 k += size;
             }
         } else /* differencing */
         {
-            if (( long )(size = ( int )window) > n_src)
-                size = ( int )n_src;
+            if (( long ) (size = ( int ) window) > n_src)
+                size = ( int ) n_src;
             k += size;
             if (source->data)
                 size = 0;
         }
-        if (size > 0 && !(tab.src = ( uchar * )malloc(size * sizeof(uchar))))
+        if (size > 0 && !(tab.src = ( uchar * ) malloc(size * sizeof(uchar))))
             goto reduce_window;
 
         /* space for the hash table itself */
@@ -451,7 +451,7 @@ Vddisc_t *delta;                                      /* transform output data	*
             size = 64;
         k += size;
 
-        if (!(tab.hash = ( int * )malloc(k * sizeof(int))))
+        if (!(tab.hash = ( int * ) malloc(k * sizeof(int))))
             goto reduce_window;
 
         /* successful */
@@ -461,11 +461,11 @@ Vddisc_t *delta;                                      /* transform output data	*
 
     reduce_window:
         if (tab.tar) {
-            free(( Void_t * )tab.tar);
+            free(( Void_t * ) tab.tar);
             tab.tar = NIL(uchar *);
         }
         if (tab.src) {
-            free(( Void_t * )tab.src);
+            free(( Void_t * ) tab.src);
             tab.src = NIL(uchar *);
         }
         if ((window >>= 1) <= 0)
@@ -477,10 +477,10 @@ Vddisc_t *delta;                                      /* transform output data	*
 
     /* output magic bytes and sizes */
     k = sizeof(VD_MAGIC) - 1;
-    if ((*_Vdwrite)(&tab.io, ( uchar * )VD_MAGIC, k) != k
-        || (*_Vdputu)(&tab.io, ( ulong )n_tar) <= 0
-        || (*_Vdputu)(&tab.io, ( ulong )n_src) <= 0
-        || (*_Vdputu)(&tab.io, ( ulong )window) <= 0)
+    if ((*_Vdwrite)(&tab.io, ( uchar * ) VD_MAGIC, k) != k
+        || (*_Vdputu)(&tab.io, ( ulong ) n_tar) <= 0
+        || (*_Vdputu)(&tab.io, ( ulong ) n_src) <= 0
+        || (*_Vdputu)(&tab.io, ( ulong ) window) <= 0)
         goto done;
 
     /* do one window at a time */
@@ -490,12 +490,12 @@ Vddisc_t *delta;                                      /* transform output data	*
             if (n <= 0)
                 tab.n_src = 0;
             else {
-                size = ( int )HEADER(window);
+                size = ( int ) HEADER(window);
                 if (target->data)
                     tab.src = tab.tar + tab.n_tar - size;
                 else
-                    memcpy(( Void_t * )tab.src,
-                           ( Void_t * )(tab.tar + tab.n_tar - size),
+                    memcpy(( Void_t * ) tab.src,
+                           ( Void_t * ) (tab.tar + tab.n_tar - size),
                            size);
                 tab.n_src = size;
             }
@@ -508,10 +508,10 @@ Vddisc_t *delta;                                      /* transform output data	*
                     p = n_src - window;
                 else
                     p = n;
-                if ((size = n_src - p) > ( int )window)
-                    size = ( int )window;
+                if ((size = n_src - p) > ( int ) window)
+                    size = ( int ) window;
                 if (source->data)
-                    tab.src = ( uchar * )source->data + p;
+                    tab.src = ( uchar * ) source->data + p;
                 else if ((*source->readf)(tab.src, size, p, source) != size)
                     goto done;
                 tab.n_src = size;
@@ -520,14 +520,14 @@ Vddisc_t *delta;                                      /* transform output data	*
         }
 
         /* prepare the target string */
-        if ((size = ( int )(n_tar - n)) > ( int )window)
-            size = ( int )window;
+        if ((size = ( int ) (n_tar - n)) > ( int ) window)
+            size = ( int ) window;
         tab.n_tar = size;
         if (target->data)
-            tab.tar = ( uchar * )target->data + n;
+            tab.tar = ( uchar * ) target->data + n;
         else {
-            size = (*target->readf)(tab.tar, size, ( long )n, target);
-            if (( long )size != tab.n_tar)
+            size = (*target->readf)(tab.tar, size, ( long ) n, target);
+            if (( long ) size != tab.n_tar)
                 goto done;
         }
 
@@ -543,15 +543,15 @@ Vddisc_t *delta;                                      /* transform output data	*
     }
 
 done:
-    ( void )(*_Vdflsbuf)(&tab.io);
+    ( void ) (*_Vdflsbuf)(&tab.io);
 
     if (!target->data && tab.tar)
-        free(( Void_t * )tab.tar);
+        free(( Void_t * ) tab.tar);
     if (tab.src
         && ((n_src <= 0 && !target->data) || (n_src > 0 && !source->data)))
-        free(( Void_t * )tab.src);
+        free(( Void_t * ) tab.src);
     if (tab.hash)
-        free(( Void_t * )tab.hash);
+        free(( Void_t * ) tab.hash);
 
     return tab.io.here + (tab.io.next - tab.io.data);
 }

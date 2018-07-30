@@ -51,7 +51,7 @@ typedef struct
 static int
 svc_connect(void *handle, int fd, CSID *id, int clone, char **args)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
 
     NoP(fd);
     NoP(id);
@@ -69,7 +69,7 @@ svc_connect(void *handle, int fd, CSID *id, int clone, char **args)
 static int
 svc_read(void *handle, int fd)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     char *b;
     int n;
     int getfd;
@@ -154,7 +154,7 @@ drop:
 static int
 svc_timeout(void *handle)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
 
     if (!state->active) {
         if (state->dormant)

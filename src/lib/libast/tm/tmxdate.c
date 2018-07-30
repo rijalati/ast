@@ -139,8 +139,8 @@ powerize(Tm_t *tm, unsigned long p, unsigned long q, unsigned long u)
         q *= 10;
         t *= 10;
     }
-    tm->tm_nsec += ( int )(( unsigned long )t % TMX_RESOLUTION);
-    tm->tm_sec += ( int )(t / TMX_RESOLUTION);
+    tm->tm_nsec += ( int ) (( unsigned long ) t % TMX_RESOLUTION);
+    tm->tm_sec += ( int ) (t / TMX_RESOLUTION);
 }
 
 #define K1(c1) (c1)
@@ -151,7 +151,7 @@ powerize(Tm_t *tm, unsigned long p, unsigned long q, unsigned long u)
 #define P_INIT(n)                                                            \
     w = n;                                                                   \
     p = q = 0;                                                               \
-    u = ( char * )s + 1
+    u = ( char * ) s + 1
 
 /*
  * parse date expression in s and return Time_t value
@@ -256,7 +256,7 @@ again:
                 break;
             s++;
         }
-        if (!*(last = ( char * )s))
+        if (!*(last = ( char * ) s))
             break;
         if (*s == '#') {
             if (isdigit(*++s)) {
@@ -288,7 +288,7 @@ again:
              */
 
             otm = *tm;
-            t = ( char * )s;
+            t = ( char * ) s;
             m = 0;
             P_INIT('Y');
             do {
@@ -297,7 +297,7 @@ again:
                 switch (c) {
                 case 0:
                     m++;
-                    if (( char * )s > u) {
+                    if (( char * ) s > u) {
                         s--;
                         c = '_';
                         goto duration_next;
@@ -306,7 +306,7 @@ again:
                 case 'T':
                 case 't':
                     m++;
-                    if (( char * )s > u) {
+                    if (( char * ) s > u) {
                         s++;
                         c = 'D';
                         goto duration_next;
@@ -451,7 +451,7 @@ again:
                     continue;
                 case '-':
                     c = 'M';
-                    u = ( char * )s++;
+                    u = ( char * ) s++;
                     while (*++u && *u != ':')
                         if (*u == '-') {
                             c = 'Y';
@@ -460,7 +460,7 @@ again:
                     goto duration_next;
                 case ':':
                     c = 'm';
-                    u = ( char * )s++;
+                    u = ( char * ) s++;
                     while (*++u)
                         if (*u == ':') {
                             c = 'H';
@@ -483,7 +483,7 @@ again:
                 default:
                 exact:
                     *tm = otm;
-                    s = ( const char * )t + 1;
+                    s = ( const char * ) t + 1;
                     if (*t == 'p') {
                         state |= HOLD | EXACT;
                         set &= ~(EXACT | LAST | NEXT | THIS);
@@ -524,7 +524,7 @@ again:
              */
 
             i = 0;
-            n = *(t = ( char * )s);
+            n = *(t = ( char * ) s);
             for (;;) {
                 if (n == '*')
                     n = *++s;
@@ -726,7 +726,7 @@ again:
                 s = t;
                 continue;
             } else if (w == 6 || w == 8 && (n / 1000000) > 12) {
-                t = ( char * )s;
+                t = ( char * ) s;
                 flags = 0;
                 if (w == 8 || w == 6 && *u != 'T' && *u != 't') {
                     dig4(t, m);
@@ -1792,7 +1792,7 @@ done:
     now = tmxtime(tm, zone);
     if (tm->tm_year <= 70 && tmxsec(now) > 31536000) {
         now = 0;
-        last = ( char * )o;
+        last = ( char * ) o;
     }
     if (e)
         *e = last;

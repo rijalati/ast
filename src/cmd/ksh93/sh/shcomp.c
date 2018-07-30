@@ -63,7 +63,7 @@ static const char usage[]
 #include "sys/stat.h"
 #include <shell.h>
 
-#define CNTL(x) (( x )&037)
+#define CNTL(x) (( x ) &037)
 #define VERSION 3
 static const char header[6]
 = { CNTL('k'), CNTL('s'), CNTL('h'), 0, VERSION, 0 };
@@ -96,12 +96,12 @@ main(int argc, char *argv[])
             errormsg(SH_DICT, ERROR_usage(2), "%s", opt_info.arg);
             break;
         }
-    shp = sh_init(argc, argv, ( Shinit_f )0);
+    shp = sh_init(argc, argv, ( Shinit_f ) 0);
     shp->shcomp = 1;
     argv += opt_info.index;
     argc -= opt_info.index;
     if (error_info.errors || argc > 2)
-        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * ) 0));
     if (cp = *argv) {
         argv++;
         in = sh_pathopen(shp, cp);
@@ -109,7 +109,7 @@ main(int argc, char *argv[])
         in = sfstdin;
     if (cp = *argv) {
         struct stat statb;
-        if (!(out = sfopen(( Sfio_t * )0, cp, "w")))
+        if (!(out = sfopen(( Sfio_t * ) 0, cp, "w")))
             errormsg(SH_DICT, ERROR_system(1), "%s: cannot create", cp);
         if (fstat(sffileno(out), &statb) >= 0)
             chmod(cp,
@@ -132,10 +132,10 @@ main(int argc, char *argv[])
     sh_onoption(shp, SH_BRACEEXPAND);
 #endif
     while (1) {
-        stakset(( char * )0, 0);
-        if (t = ( Shnode_t * )sh_parse(shp, in, 0)) {
+        stakset(( char * ) 0, 0);
+        if (t = ( Shnode_t * ) sh_parse(shp, in, 0)) {
             if ((t->tre.tretyp & (COMMSK | COMSCAN)) == 0 && t->com.comnamp
-                && strcmp(nv_name(( Namval_t * )t->com.comnamp), "alias")
+                && strcmp(nv_name(( Namval_t * ) t->com.comnamp), "alias")
                    == 0)
                 sh_exec(shp, t, 0);
             if (!dflag && sh_tdump(out, t) < 0)
@@ -154,7 +154,7 @@ main(int argc, char *argv[])
                     if (t->com.comarg->argnxt.ap)
                         break;
                 } else {
-                    struct dolnod *ap = ( struct dolnod * )t->com.comarg;
+                    struct dolnod *ap = ( struct dolnod * ) t->com.comarg;
                     if (ap->dolnum > 1)
                         break;
                 }

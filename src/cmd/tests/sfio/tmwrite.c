@@ -27,7 +27,7 @@
 static long
 vrandom()
 {
-#define LOWBITS ((~(( unsigned long )0)) >> 1)
+#define LOWBITS ((~(( unsigned long ) 0)) >> 1)
     static unsigned long hash = 0xdeadbeef;
 
     return (hash = hash * 0xbadbeef + 0xdeadbeef) & LOWBITS;
@@ -62,7 +62,7 @@ tmain()
     }
 
     for (done = 0; done < N_WRITER;) {
-        i = ( int )(vrandom() % N_WRITER);
+        i = ( int ) (vrandom() % N_WRITER);
         if (count[i] < N_RECORD) {
             r = size[i][count[i]];
             if (!(s = sfreserve(fw[i], r, SF_LOCKR)) || sfvalue(fw[i]) < r)

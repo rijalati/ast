@@ -66,7 +66,7 @@ int bitOrder;  /* Desired bit order: LSBFirst or MSBFirst. */
             if (j >= image->bytes_per_line) {
                 *destPtr = 0;
             } else if (image->bitmap_bit_order != bitOrder) {
-                *destPtr = xBitReverseTable[( unsigned char )(*(srcPtr++))];
+                *destPtr = xBitReverseTable[( unsigned char ) (*(srcPtr++))];
             } else {
                 *destPtr = *(srcPtr++);
             }

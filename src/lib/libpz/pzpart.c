@@ -59,7 +59,7 @@ pzpartget(Pz_t *pz, const char *name)
     if (!name || !*name || !pz->partdict)
         return pz->mainpart;
     pz->flags &= ~PZ_MAINONLY;
-    return ( Pzpart_t * )dtmatch(pz->partdict, name);
+    return ( Pzpart_t * ) dtmatch(pz->partdict, name);
 }
 
 /*
@@ -73,9 +73,9 @@ Pzpart_t *
 pzpartnext(Pz_t *pz, Pzpart_t *pp)
 {
     if (pz->partdict)
-        return pp ? ( Pzpart_t * )dtnext(pz->partdict, pp)
-                  : ( Pzpart_t * )dtfirst(pz->partdict);
-    return pp ? ( Pzpart_t * )0 : pz->mainpart;
+        return pp ? ( Pzpart_t * ) dtnext(pz->partdict, pp)
+                  : ( Pzpart_t * ) dtfirst(pz->partdict);
+    return pp ? ( Pzpart_t * ) 0 : pz->mainpart;
 }
 
 /*
@@ -116,7 +116,7 @@ range(Pz_t *pz, Pzpart_t *pp, char *s, char **p, int *beg, int *end)
     if (*s == '-')
         n = 0;
     else {
-        n = ( int )strtol(s, &e, 10);
+        n = ( int ) strtol(s, &e, 10);
         if (s == e) {
             if (p)
                 *p = e;
@@ -140,7 +140,7 @@ range(Pz_t *pz, Pzpart_t *pp, char *s, char **p, int *beg, int *end)
             e = s;
             m = (pp ? pp->row : INT_MAX) - 1;
         } else {
-            m = ( int )strtol(s, &e, 10);
+            m = ( int ) strtol(s, &e, 10);
             if (m < n || pp && m >= pp->row) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
@@ -288,9 +288,9 @@ pzpartinit(Pz_t *pz, Pzpart_t *pp, const char *name)
                 sfprintf(pz->tmp, "%s:%d:%d", PZ_PART_SUF, pp->row, pp->nmap);
             else {
                 if (s = strrchr(name, '/'))
-                    name = ( const char * )s + 1;
+                    name = ( const char * ) s + 1;
                 if ((s = strrchr(name, '.')) && streq(s + 1, PZ_PART_SUF))
-                    n = s - ( char * )name;
+                    n = s - ( char * ) name;
                 else
                     n = strlen(name);
                 sfprintf(pz->tmp, "%.*s", n, name);
@@ -716,7 +716,7 @@ pzpartition(Pz_t *pz, const char *partition)
     }
     sp = 0;
     vm = 0;
-    if (!(s = ( char * )partition)) {
+    if (!(s = ( char * ) partition)) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(pz, pz->disc, 2, "partition file omitted");
         goto bad;
@@ -725,7 +725,7 @@ pzpartition(Pz_t *pz, const char *partition)
         if (streq(s, "/") || streq(s, "//") || streq(s, "/gzip/"))
             n = sfsprintf(buf, sizeof(buf), "nopzip\n1\n0-0\n");
         else {
-            n = ( int )strtol(s + 1, &e, 10);
+            n = ( int ) strtol(s + 1, &e, 10);
             if (e[0] == '/' && !e[1])
                 n = sfsprintf(buf, sizeof(buf), "%d\n0-%d\n", n, n - 1);
             else {
@@ -1080,7 +1080,7 @@ buffer(Pz_t *pz, Pzpart_t *pp, char **pv, size_t *pn)
             *pn = n;
         sfread(pz->io, v, n);
     } else
-        sfseek(pz->io, ( Sflong_t )n, SEEK_CUR);
+        sfseek(pz->io, ( Sflong_t ) n, SEEK_CUR);
     return 0;
 }
 
@@ -1119,7 +1119,7 @@ pzpartread(Pz_t *pz)
                 return -1;
             break;
         case PZ_HDR_comment:
-            buffer(pz, pp, ( char ** )&pz->disc->comment, NiL);
+            buffer(pz, pp, ( char ** ) &pz->disc->comment, NiL);
             continue;
         case PZ_HDR_fix:
             if (array(pz, pp, &pp->fix, &pp->nfix, pp->row))
@@ -1143,7 +1143,7 @@ pzpartread(Pz_t *pz)
                 goto bad;
             continue;
         case PZ_HDR_options:
-            buffer(pz, pp, ( char ** )&pz->headoptions, NiL);
+            buffer(pz, pp, ( char ** ) &pz->headoptions, NiL);
             continue;
         case PZ_HDR_prefix:
             buffer(pz, pp, &pz->prefix.data, &pz->prefix.count);
@@ -1158,11 +1158,11 @@ pzpartread(Pz_t *pz)
                 else if (!(pp = vmnewof(pz->vm, 0, Pzpart_t, 1, 0)))
                     return pznospace(pz);
             }
-            buffer(pz, pp, ( char ** )&pp->name, NiL);
+            buffer(pz, pp, ( char ** ) &pp->name, NiL);
             pp->row = sfgetu(pz->io);
             pp->col = sfgetu(pz->io);
             if (pz->partdict
-                && (po = ( Pzpart_t * )dtsearch(pz->partdict, pp))
+                && (po = ( Pzpart_t * ) dtsearch(pz->partdict, pp))
                 || (po = pz->mainpart) && streq(pp->name, po->name)) {
                 if (pp->row != po->row || pp->col != po->col) {
                     if (pz->disc->errorf)
@@ -1244,7 +1244,7 @@ pzpartwrite(Pz_t *pz, Sfio_t *op)
         pp = pz->mainpart;
     } else if (pz->partdict) {
         all = 1;
-        pp = ( Pzpart_t * )dtfirst(pz->partdict);
+        pp = ( Pzpart_t * ) dtfirst(pz->partdict);
     } else {
         all = 0;
         pp = pz->part;
@@ -1283,7 +1283,7 @@ pzpartwrite(Pz_t *pz, Sfio_t *op)
         }
         if (!all)
             break;
-        pp = ( Pzpart_t * )dtnext(pz->partdict, pp);
+        pp = ( Pzpart_t * ) dtnext(pz->partdict, pp);
     }
     sfputc(op, 0);
     return 0;

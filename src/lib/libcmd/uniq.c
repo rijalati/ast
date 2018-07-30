@@ -231,7 +231,7 @@ b_uniq(int argc, char **argv, Shbltin_t *context)
     Sfio_t *fpin, *fpout;
     int *all = 0;
     int sep;
-    Compare_f compare = ( Compare_f )memcmp;
+    Compare_f compare = ( Compare_f ) memcmp;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     for (;;) {
@@ -244,7 +244,7 @@ b_uniq(int argc, char **argv, Shbltin_t *context)
             continue;
         case 'D':
             mode |= D_FLAG;
-            switch (( int )opt_info.num) {
+            switch (( int ) opt_info.num) {
             case 'p':
                 sep = 1;
                 break;
@@ -258,7 +258,7 @@ b_uniq(int argc, char **argv, Shbltin_t *context)
             all = &sep;
             continue;
         case 'i':
-            compare = ( Compare_f )strncasecmp;
+            compare = ( Compare_f ) strncasecmp;
             continue;
         case 'u':
             mode |= U_FLAG;

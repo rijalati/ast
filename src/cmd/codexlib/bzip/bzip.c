@@ -28,7 +28,7 @@ bzip_ident(Codexmeth_t *meth,
            char *name,
            size_t namesize)
 {
-    unsigned char *h = ( unsigned char * )head;
+    unsigned char *h = ( unsigned char * ) head;
 
     if (headsize >= 4 && h[0] == 'B' && h[1] == 'Z' && h[2] == 'h'
         && (h[3] >= '0' && h[3] <= '9')) {
@@ -53,7 +53,7 @@ bzip_open(Codex_t *p, char *const args[], Codexnum_t flags)
         if (isdigit(*s))
             v = strton(s, &e, NiL, 0);
         else {
-            e = ( char * )s;
+            e = ( char * ) s;
             if (e[0] == 'n' && e[1] == 'o') {
                 e += 2;
                 v = 0;
@@ -101,7 +101,7 @@ bzip_open(Codex_t *p, char *const args[], Codexnum_t flags)
 static int
 bzip_init(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
     char *m;
     char mode[8];
 
@@ -120,7 +120,7 @@ bzip_init(Codex_t *p)
 static int
 bzip_done(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
     int r;
 
     r = bzclose(state->bz) ? -1 : 0;
@@ -131,13 +131,13 @@ bzip_done(Codex_t *p)
 static ssize_t
 bzip_read(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *dp)
 {
-    return bzread((( State_t * )CODEX(dp)->data)->bz, buf, n);
+    return bzread((( State_t * ) CODEX(dp)->data)->bz, buf, n);
 }
 
 static ssize_t
 bzip_write(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *dp)
 {
-    return bzwrite((( State_t * )CODEX(dp)->data)->bz, buf, n);
+    return bzwrite((( State_t * ) CODEX(dp)->data)->bz, buf, n);
 }
 
 Codexmeth_t codex_bzip

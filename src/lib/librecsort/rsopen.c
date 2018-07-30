@@ -38,7 +38,7 @@ Rs_t *rsnew(disc) Rsdisc_t *disc; /* discipline describing record types	*/
     reg Rs_t *rs;
 
     if (rs
-        = ( Rs_t * )vmresize(Vmheap, NIL(Void_t *), sizeof(Rs_t), VM_RSZERO))
+        = ( Rs_t * ) vmresize(Vmheap, NIL(Void_t *), sizeof(Rs_t), VM_RSZERO))
         rsdisc(rs, disc, RS_DISC);
     return rs;
 }
@@ -63,11 +63,11 @@ Rskey_t *key;  /* key coder state			*/
         round /= 4;
     if (!(vmdisc = vmdcderive(Vmheap, round, 0))
         || !(rs->vm = vmopen(vmdisc, Vmbest, 0))) {
-        vmfree(Vmheap, ( void * )rs);
+        vmfree(Vmheap, ( void * ) rs);
         return -1;
     }
 
-    if (!(rs->methdata = ( Void_t * )vmresize(
+    if (!(rs->methdata = ( Void_t * ) vmresize(
           Vmheap, NIL(Void_t *), meth->size, VM_RSZERO)))
         goto bad;
 
@@ -75,7 +75,7 @@ Rskey_t *key;  /* key coder state			*/
     rs->c_max = c_max;
     rs->type = rs->disc->type | (type & RS_TYPES);
     rs->key = rs->disc->version < 20111011L
-              ? ( Rskey_t * )(( char * )rs->disc - sizeof(Rskey_t))
+              ? ( Rskey_t * ) (( char * ) rs->disc - sizeof(Rskey_t))
               : key;
 
     rs->events = 0;

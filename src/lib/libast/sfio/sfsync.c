@@ -99,7 +99,7 @@ int sfsync(f) reg Sfio_t *f; /* stream to be synchronized */
     GETLOCAL(origf, local);
 
     if (origf->disc == _Sfudisc) /* throw away ungetc */
-        ( void )sfclose((*_Sfstack)(origf, NIL(Sfio_t *)));
+        ( void ) sfclose((*_Sfstack)(origf, NIL(Sfio_t *)));
 
     rv = 0;
 
@@ -115,8 +115,8 @@ int sfsync(f) reg Sfio_t *f; /* stream to be synchronized */
 
     for (; f; f = f->push) {
         if ((f->flags & SF_IOCHECK) && f->disc && f->disc->exceptf)
-            ( void )(*f->disc->exceptf)(
-            f, SF_SYNC, ( Void_t * )(( int )1), f->disc);
+            ( void ) (*f->disc->exceptf)(
+            f, SF_SYNC, ( Void_t * ) (( int ) 1), f->disc);
 
         SFLOCK(f, local);
 
@@ -140,7 +140,7 @@ int sfsync(f) reg Sfio_t *f; /* stream to be synchronized */
                 && (f->bits & SF_HOLE)) { /* realize a previously created hole
                                              of 0's */
                 if (SFSK(f, (Sfoff_t)(-1), SEEK_CUR, f->disc) >= 0)
-                    ( void )SFWR(f, "", 1, f->disc);
+                    ( void ) SFWR(f, "", 1, f->disc);
                 f->bits &= ~SF_HOLE;
             }
             f->mode |= pool;
@@ -153,7 +153,7 @@ int sfsync(f) reg Sfio_t *f; /* stream to be synchronized */
             f->here -= (f->endb - f->next);
             f->endr = f->endw = f->data;
             f->mode = SF_READ | SF_SYNCED | lock;
-            ( void )SFSK(f, f->here, SEEK_SET, f->disc);
+            ( void ) SFSK(f, f->here, SEEK_SET, f->disc);
 
             if ((f->flags & SF_SHARE) && !(f->flags & SF_PUBLIC)
                 && !(f->bits & SF_MMAP)) {
@@ -167,8 +167,8 @@ int sfsync(f) reg Sfio_t *f; /* stream to be synchronized */
         SFOPEN(f, local);
 
         if ((f->flags & SF_IOCHECK) && f->disc && f->disc->exceptf)
-            ( void )(*f->disc->exceptf)(
-            f, SF_SYNC, ( Void_t * )(( int )0), f->disc);
+            ( void ) (*f->disc->exceptf)(
+            f, SF_SYNC, ( Void_t * ) (( int ) 0), f->disc);
     }
 
 done:

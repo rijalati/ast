@@ -33,8 +33,8 @@ ptvaddresses(Ptv_t *a, unsigned char *r)
 
     fvset(a->size, r, 0);
     fvset(a->size, a->r[1], 1);
-    for (ap = ( Ptvprefix_t * )dtfirst(a->dict); ap;
-         ap = ( Ptvprefix_t * )dtnext(a->dict, ap)) {
+    for (ap = ( Ptvprefix_t * ) dtfirst(a->dict); ap;
+         ap = ( Ptvprefix_t * ) dtnext(a->dict, ap)) {
         fvsub(a->size, a->r[0], ap->max, ap->min);
         fvadd(a->size, a->r[0], a->r[0], a->r[1]);
         fvadd(a->size, r, r, a->r[0]);

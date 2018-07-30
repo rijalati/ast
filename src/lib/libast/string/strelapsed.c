@@ -140,6 +140,6 @@ strelapsed(const char *s, char **e, int n)
     }
 done:
     if (e)
-        *e = ( char * )last;
+        *e = ( char * ) last;
     return t;
 }

@@ -31,8 +31,8 @@ ptdump(Pt_t *a, Sfio_t *sp)
 {
     Ptprefix_t *p;
 
-    for (p = ( Ptprefix_t * )dtfirst(a->dict); p;
-         p = ( Ptprefix_t * )dtnext(a->dict, p))
+    for (p = ( Ptprefix_t * ) dtfirst(a->dict); p;
+         p = ( Ptprefix_t * ) dtnext(a->dict, p))
         sfprintf(sp,
                  "%0*I*x %0*I*x %-16s %-16s\n",
                  sizeof(p->min) * 2,

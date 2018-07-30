@@ -37,6 +37,6 @@ _sfgetu(reg Sfio_t *f)
 Sfulong_t _sfgetu(f) reg Sfio_t *f;
 #endif
 {
-    sfungetc(f, ( unsigned char )_SF_(f)->val);
+    sfungetc(f, ( unsigned char ) _SF_(f)->val);
     return sfgetu(f);
 }

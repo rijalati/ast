@@ -42,13 +42,13 @@ typedef struct
 static void *
 block(void *handle, void *data, size_t size)
 {
-    Env_t *env = ( Env_t * )handle;
+    Env_t *env = ( Env_t * ) handle;
 
     if (data
         || (size = roundof(size, ALIGN_BOUND2))
            > (env->buf + env->size - env->cur))
         return 0;
-    data = ( void * )env->cur;
+    data = ( void * ) env->cur;
     env->cur += size;
     return data;
 }
@@ -56,12 +56,12 @@ block(void *handle, void *data, size_t size)
 int
 _re_comp(regexp_t *re, const char *pattern, char *handle, unsigned int size)
 {
-    Env_t *env = ( Env_t * )handle;
+    Env_t *env = ( Env_t * ) handle;
     int n;
 
     if (size <= sizeof(Env_t))
         return 50;
-    env->buf = env->cur = ( char * )env + sizeof(Env_t);
+    env->buf = env->cur = ( char * ) env + sizeof(Env_t);
     env->size = size - sizeof(Env_t);
     regalloc(env, block, REG_NOFREE);
     n = regcomp(&env->re, pattern, REG_LENIENT | REG_NULL);
@@ -94,18 +94,18 @@ _re_comp(regexp_t *re, const char *pattern, char *handle, unsigned int size)
 int
 _re_exec(regexp_t *re, const char *subject, const char *handle, int anchor)
 {
-    Env_t *env = ( Env_t * )handle;
+    Env_t *env = ( Env_t * ) handle;
     int n;
     regmatch_t match[elementsof(re->re_braslist) + 1];
 
     if (regexec(&env->re, subject, elementsof(match), match, 0)
         || anchor && match[0].rm_so)
         return 0;
-    re->re_loc1 = ( char * )subject + match[0].rm_so;
-    re->re_loc2 = ( char * )subject + match[0].rm_eo;
+    re->re_loc1 = ( char * ) subject + match[0].rm_so;
+    re->re_loc2 = ( char * ) subject + match[0].rm_eo;
     for (n = 1; n <= env->re.re_nsub; n++) {
-        re->re_braslist[n - 1] = ( char * )subject + match[n].rm_so;
-        re->re_braelist[n - 1] = ( char * )subject + match[n].rm_eo;
+        re->re_braslist[n - 1] = ( char * ) subject + match[n].rm_so;
+        re->re_braelist[n - 1] = ( char * ) subject + match[n].rm_eo;
     }
     return 1;
 }

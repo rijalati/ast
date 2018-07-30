@@ -58,7 +58,7 @@ typedef struct State_s
     char spare[SPARE];
 } State_t;
 
-#define GETCHAR(p) ((p)->ip < (p)->ie ? ( int )*(p)->ip++ : fill(p))
+#define GETCHAR(p) ((p)->ip < (p)->ie ? ( int ) *(p)->ip++ : fill(p))
 
 static int
 fill(State_t *state)
@@ -143,7 +143,7 @@ lzd_open(Codex_t *p, char *const args[], Codexnum_t flags)
 static int
 lzd_init(Codex_t *p)
 {
-    State_t *state = ( State_t * )p->data;
+    State_t *state = ( State_t * ) p->data;
 
     state->bitcount = 0;
     state->bad = state->cpy = state->eof = 0;
@@ -156,8 +156,8 @@ lzd_init(Codex_t *p)
 static ssize_t
 lzd_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 {
-    State_t *state = ( State_t * )CODEX(disc)->data;
-    char *s = ( char * )buf;
+    State_t *state = ( State_t * ) CODEX(disc)->data;
+    char *s = ( char * ) buf;
     char *e = s + n;
     int c;
 
@@ -169,7 +169,7 @@ lzd_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
             *s++ = pop(state);
             if (s >= e) {
                 state->cpy = 1;
-                return s - ( char * )buf;
+                return s - ( char * ) buf;
             }
         }
     }
@@ -179,7 +179,7 @@ lzd_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
             *s++ = state->fin_char = state->suf_code = state->old_code = c
             = getcode(state);
             if (s >= e)
-                return s - ( char * )buf;
+                return s - ( char * ) buf;
         } else {
             state->in_code = c;
             if (c >= state->free_code) {
@@ -198,13 +198,13 @@ lzd_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
                 *s++ = pop(state);
                 if (s >= e) {
                     state->cpy = 1;
-                    return s - ( char * )buf;
+                    return s - ( char * ) buf;
                 }
             }
         }
     }
     state->eof = 1;
-    return s - ( char * )buf;
+    return s - ( char * ) buf;
 }
 
 Codexmeth_t codex_lzd = { "lzd",

@@ -33,7 +33,8 @@ const Prefix_t prefix[] = {
     "SI",         2,  CONF_SVID,       CONF_sysinfo,
 };
 
-const int prefix_elements = ( int )sizeof(prefix) / ( int )sizeof(prefix[0]);
+const int prefix_elements
+= ( int ) sizeof(prefix) / ( int ) sizeof(prefix[0]);
 
 /*
  * conf strings sorted in ascending order
@@ -3443,4 +3444,4 @@ const Conf_t conf[] = {
       _SC_XOPEN_XPG4 },
 };
 
-const int conf_elements = ( int )sizeof(conf) / ( int )sizeof(conf[0]);
+const int conf_elements = ( int ) sizeof(conf) / ( int ) sizeof(conf[0]);

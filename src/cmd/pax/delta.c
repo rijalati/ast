@@ -47,7 +47,7 @@ getdeltaops(Archive_t *ap, File_t *f)
     e = s + sizeof(ap->delta->hdrbuf) - 1;
     n = 0;
     while (f->st->st_size > 0
-           && bread(ap, &c, ( off_t )1, ( off_t )1, 1) > 0) {
+           && bread(ap, &c, ( off_t ) 1, ( off_t ) 1, 1) > 0) {
         f->st->st_size--;
         if (c == '\t' || c == '\n') {
             if (n) {
@@ -104,11 +104,11 @@ getdeltaheader(Archive_t *ap, File_t *f)
             ap->delta->index++;
             if (ap->delta->tab && f->name
                 && (f->delta.base
-                    = ( Member_t * )hashget(ap->delta->tab, f->name)))
+                    = ( Member_t * ) hashget(ap->delta->tab, f->name)))
                 f->delta.base->mark = 1;
             if (!(ap->format->flags & DELTAINFO)) {
                 if (f->st->st_size <= 0
-                    || bread(ap, &c, ( off_t )1, ( off_t )1, 1) <= 0)
+                    || bread(ap, &c, ( off_t ) 1, ( off_t ) 1, 1) <= 0)
                     f->delta.op = DELTA_create;
                 else {
                     f->st->st_size--;
@@ -120,9 +120,9 @@ getdeltaheader(Archive_t *ap, File_t *f)
                         sum = ap->memsum;
                         s = ap->delta->hdrbuf;
                         n = 12;
-                        if (bread(ap, s, ( off_t )n, ( off_t )n, 1) > 0) {
+                        if (bread(ap, s, ( off_t ) n, ( off_t ) n, 1) > 0) {
                             if (ap->delta->format->variant == DELTA_88) {
-                                unsigned char *u = ( unsigned char * )s;
+                                unsigned char *u = ( unsigned char * ) s;
                                 int i;
 
                                 i = *u++;
@@ -250,7 +250,7 @@ setdeltaheader(Archive_t *ap, File_t *f)
                    ap->delta->index);
             if (ap->delta->tab
                 && (f->delta.base
-                    = ( Member_t * )hashget(ap->delta->tab, f->name)))
+                    = ( Member_t * ) hashget(ap->delta->tab, f->name)))
                 putkey(ap,
                        ap->tmp.extended,
                        &options[OPT_delta_checksum],
@@ -379,7 +379,7 @@ deltabase(Archive_t *ap)
             bp->checksum = memsum(bp->io->next, bcount(bp), 0L);
         } else {
             if (!state.append && !state.update
-                && lseek(bp->io->fd, ( off_t )0, SEEK_SET) != 0)
+                && lseek(bp->io->fd, ( off_t ) 0, SEEK_SET) != 0)
                 error(ERROR_SYSTEM | 3,
                       "%s: %s: base archive must be seekable",
                       ap->name,
@@ -415,7 +415,7 @@ deltaverify(Archive_t *ap)
         && ap->delta->base != ap && (pos = hashscan(ap->delta->tab, 0))) {
         message((-2, "verify untouched base files"));
         while (hashnext(pos)) {
-            d = ( Member_t * )pos->bucket->value;
+            d = ( Member_t * ) pos->bucket->value;
             message((-1, "%s: mark=%d", d->info->name, d->mark));
             if (!d->mark && selectfile(ap, d->info)
                 && (wfd = openout(ap, d->info)) >= 0) {
@@ -497,7 +497,7 @@ deltaprefix(Archive_t *ip, Archive_t *op, Member_t *d)
     d->mark = 1;
     if (s = strrchr(d->info->path, '/')) {
         *s = 0;
-        if (!(m = ( Member_t * )hashget(ip->delta->tab, d->info->name))) {
+        if (!(m = ( Member_t * ) hashget(ip->delta->tab, d->info->name))) {
             if (!(m = newof(0, Member_t, 1, 0)))
                 nospace();
             m->mark = 1;
@@ -524,8 +524,8 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
     skip = !!ip;
     f->delta.same = 0;
     if (d = op->delta && op->delta->tab && f->name
-            ? ( Member_t * )hashget(op->delta->tab, f->name)
-            : ( Member_t * )0)
+            ? ( Member_t * ) hashget(op->delta->tab, f->name)
+            : ( Member_t * ) 0)
         d->mark = 1;
     if (op->delta && (op->delta->format->flags & DELTAIO)) {
         if (f->type == X_IFREG && f->linktype == NOLINK
@@ -659,7 +659,7 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
         if (ip && ip->delta && ip->delta->tab && f->name
             && (s = strrchr(f->name, '/'))) {
             *s = 0;
-            if ((d = ( Member_t * )hashget(ip->delta->tab, f->name))
+            if ((d = ( Member_t * ) hashget(ip->delta->tab, f->name))
                 && !d->mark)
                 deltaprefix(ip, op, d);
             *s = '/';
@@ -733,7 +733,7 @@ deltadelete(Archive_t *ap)
             message((-2, "copy the base delete entries"));
             f = &ap->file;
             while (hashnext(pos)) {
-                d = ( Member_t * )pos->bucket->value;
+                d = ( Member_t * ) pos->bucket->value;
                 if (!d->mark && (!d->info || !d->info->ro)) {
                     ap->selected++;
                     initfile(ap,
@@ -919,8 +919,8 @@ deltapass(Archive_t *ip, Archive_t *op)
                               __FILE__,
                               __LINE__);
                     if (ip->delta
-                        && (d
-                            = ( Member_t * )hashget(ip->delta->tab, f->name)))
+                        && (d = ( Member_t * ) hashget(ip->delta->tab,
+                                                       f->name)))
                         d->info->delta.op = DELTA_delete;
                     break;
                 case DELTA_update:
@@ -1014,7 +1014,7 @@ deltapass(Archive_t *ip, Archive_t *op)
         if (pos = hashscan(ip->delta->tab, 0)) {
             message((-2, "copy non-empty untouched base hard links"));
             while (hashnext(pos)) {
-                d = ( Member_t * )pos->bucket->value;
+                d = ( Member_t * ) pos->bucket->value;
                 if (!d->mark && d->info->linktype != HARDLINK
                     && d->info->st->st_size > 0 && selectfile(op, d->info)) {
                     d->mark = 1;
@@ -1031,12 +1031,12 @@ deltapass(Archive_t *ip, Archive_t *op)
         if (pos = hashscan(ip->delta->tab, 0)) {
             message((-2, "copy remaining untouched base files"));
             while (hashnext(pos)) {
-                d = ( Member_t * )pos->bucket->value;
+                d = ( Member_t * ) pos->bucket->value;
                 if (!d->mark && selectfile(op, d->info)) {
                     d->mark = 1;
                     if (d->info->linktype == HARDLINK) {
-                        if (!(h = ( Member_t * )hashget(ip->delta->tab,
-                                                        d->info->linkpath)))
+                        if (!(h = ( Member_t * ) hashget(ip->delta->tab,
+                                                         d->info->linkpath)))
                             error(1,
                                   "%s: %s: %s: hard link not in base archive",
                                   ip->name,
@@ -1240,7 +1240,7 @@ typedef struct
 static int
 delread(void *buf, int n, Vdoff_t off, Vddisc_t *vd)
 {
-    Vdio_t *dp = ( Vdio_t * )vd;
+    Vdio_t *dp = ( Vdio_t * ) vd;
     Vdoff_t diff;
 
     message((-6,
@@ -1288,7 +1288,7 @@ delread(void *buf, int n, Vdoff_t off, Vddisc_t *vd)
                  dp->offset));
         return 0;
     }
-    n = (dp->op & DELTA_BIO) ? bread(dp->bp, buf, ( off_t )0, ( off_t )n, 1)
+    n = (dp->op & DELTA_BIO) ? bread(dp->bp, buf, ( off_t ) 0, ( off_t ) n, 1)
                              : read(dp->fd, buf, n);
     if (n > 0)
         dp->offset += n;
@@ -1302,7 +1302,7 @@ delread(void *buf, int n, Vdoff_t off, Vddisc_t *vd)
 static int
 delwrite(void *buf, int n, Vdoff_t off, Vddisc_t *vd)
 {
-    Vdio_t *dp = ( Vdio_t * )vd;
+    Vdio_t *dp = ( Vdio_t * ) vd;
     Buffer_t *bp;
     ssize_t k;
 
@@ -1582,7 +1582,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
                               data[DELTA_TAR].vd.size,
                               data[DELTA_DEL].fd)
                         ? -1L
-                        : lseek(data[DELTA_DEL].fd, ( off_t )0, SEEK_END);
+                        : lseek(data[DELTA_DEL].fd, ( off_t ) 0, SEEK_END);
                     break;
                 case DELTA_PATCH:
                     error(1,
@@ -1674,7 +1674,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
                                data[DELTA_DEL].fd,
                                data[DELTA_TAR].fd)
                         ? -1L
-                        : lseek(data[DELTA_TAR].fd, ( off_t )0, SEEK_END);
+                        : lseek(data[DELTA_TAR].fd, ( off_t ) 0, SEEK_END);
                     break;
                 case DELTA_PATCH:
                     error(
@@ -1689,15 +1689,15 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
             && !data[DELTA_DEL].vd.size)
             n = 0;
         else if (gen == &data[DELTA_DEL]) {
-            n = vddelta(( Vddisc_t * )&data[DELTA_SRC],
-                        ( Vddisc_t * )&data[DELTA_TAR],
-                        ( Vddisc_t * )&data[DELTA_DEL]);
+            n = vddelta(( Vddisc_t * ) &data[DELTA_SRC],
+                        ( Vddisc_t * ) &data[DELTA_TAR],
+                        ( Vddisc_t * ) &data[DELTA_DEL]);
             if (n == 15)
                 f->delta.same = 1;
         } else
-            n = vdupdate(( Vddisc_t * )&data[DELTA_SRC],
-                         ( Vddisc_t * )&data[DELTA_TAR],
-                         ( Vddisc_t * )&data[DELTA_DEL]);
+            n = vdupdate(( Vddisc_t * ) &data[DELTA_SRC],
+                         ( Vddisc_t * ) &data[DELTA_TAR],
+                         ( Vddisc_t * ) &data[DELTA_DEL]);
         break;
     }
 #if DEBUG

@@ -40,7 +40,7 @@ Dtdisc_t *disc;
                 return 0;
             else /* opening a dictionary sharing with some previous one */
             {
-                *(( Void_t ** )obj) = ( Void_t * )(&Space[0]);
+                *(( Void_t ** ) obj) = ( Void_t * ) (&Space[0]);
                 return 1;
             }
         } else
@@ -67,7 +67,7 @@ Dtdisc_t *disc;
     if (!buf) {
         size = ((size + sizeof(Void_t *) - 1) / sizeof(Void_t *))
                * sizeof(Void_t *);
-        buf = ( Void_t * )Current;
+        buf = ( Void_t * ) Current;
         Current += size;
     } else {
         if (Close > 0)
@@ -86,28 +86,28 @@ tmain()
 
     if (!(dt1 = dtopen(&Disc, Dtoset)))
         terror("Opening Dtoset1");
-    if (( long )dtinsert(dt1, 1L) != 1)
+    if (( long ) dtinsert(dt1, 1L) != 1)
         terror("Inserting 1");
-    if (( long )dtinsert(dt1, 3L) != 3)
+    if (( long ) dtinsert(dt1, 3L) != 3)
         terror("Inserting 3");
-    if (( long )dtinsert(dt1, 5L) != 5)
+    if (( long ) dtinsert(dt1, 5L) != 5)
         terror("Inserting 5");
 
     if (!(dt2 = dtopen(&Disc, Dtoset)))
         terror("Opening Dtoset2");
-    if (( long )dtinsert(dt2, 2L) != 2)
+    if (( long ) dtinsert(dt2, 2L) != 2)
         terror("Inserting 2");
-    if (( long )dtinsert(dt2, 4L) != 4)
+    if (( long ) dtinsert(dt2, 4L) != 4)
         terror("Inserting 4");
-    if (( long )dtinsert(dt2, 6L) != 6)
+    if (( long ) dtinsert(dt2, 6L) != 6)
         terror("Inserting 6");
 
     for (i = 1; i <= 6; ++i)
-        if (( long )dtsearch(dt1, i) != i)
+        if (( long ) dtsearch(dt1, i) != i)
             terror("Didn't find a long");
 
-    for (i = ( long )dtlast(dt2), k = 6; i != 0;
-         i = ( long )dtprev(dt2, i), k -= 1)
+    for (i = ( long ) dtlast(dt2), k = 6; i != 0;
+         i = ( long ) dtprev(dt2, i), k -= 1)
         if (i != k)
             terror("Didn't walk a long");
 

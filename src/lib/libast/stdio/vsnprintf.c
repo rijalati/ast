@@ -32,7 +32,7 @@ vsnprintf(char *s, int n, const char *form, va_list args)
     /* make a temp stream */
     if (!(f = sfnew(NIL(Sfio_t *),
                     NIL(char *),
-                    ( size_t )SF_UNBOUND,
+                    ( size_t ) SF_UNBOUND,
                     -1,
                     SF_WRITE | SF_STRING)))
         return -1;

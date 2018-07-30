@@ -47,5 +47,5 @@ codexcmp(const char *s, const char *t)
         s++;
         t++;
     }
-    return *(( unsigned char * )s) - *(( unsigned char * )t);
+    return *(( unsigned char * ) s) - *(( unsigned char * ) t);
 }

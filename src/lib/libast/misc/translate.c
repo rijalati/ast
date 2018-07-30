@@ -37,7 +37,7 @@
 #    define DEBUG_trace 0
 #endif
 
-#define NOCAT (( nl_catd )-1)
+#define NOCAT (( nl_catd ) -1)
 #define GAP 100
 
 typedef struct
@@ -139,7 +139,7 @@ find(const char *locale, const char *catalog)
 
     if (!mcfind(locale, catalog, LC_MESSAGES, 0, path, sizeof(path))
         || (d = catopen(path, NL_CAT_LOCALE)) == NOCAT) {
-        if (locale == ( const char * )lc_categories[AST_LC_MESSAGES].prev)
+        if (locale == ( const char * ) lc_categories[AST_LC_MESSAGES].prev)
             o = 0;
         else if (o = setlocale(LC_MESSAGES, NiL)) {
             ast.locale.set |= AST_LC_internal;
@@ -235,23 +235,23 @@ match(const char *cat, const char *msg)
 
     char buf[1024];
 
-    s = ( char * )cat;
+    s = ( char * ) cat;
     for (;;) {
         if (t = strchr(s, ':')) {
-            if (s == ( char * )cat) {
+            if (s == ( char * ) cat) {
                 if ((n = strlen(s)) >= sizeof(buf))
                     n = sizeof(buf) - 1;
-                s = ( char * )memcpy(buf, s, n);
+                s = ( char * ) memcpy(buf, s, n);
                 s[n] = 0;
                 t = strchr(s, ':');
             }
             *t = 0;
         }
         if (*s
-            && ((cp = ( Catalog_t * )dtmatch(state.catalogs, s))
+            && ((cp = ( Catalog_t * ) dtmatch(state.catalogs, s))
                 || (cp = init(s)))
             && cp->messages
-            && (mp = ( Message_t * )dtmatch(cp->messages, msg))) {
+            && (mp = ( Message_t * ) dtmatch(cp->messages, msg))) {
             mp->cat = cp;
             return mp;
         }
@@ -304,7 +304,7 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
     static char *nlspath;
 
     oerrno = errno;
-    r = ( char * )msg;
+    r = ( char * ) msg;
 
     /*
      * quick out
@@ -313,7 +313,7 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
     if (!cmd && !cat)
         goto done;
     if (cmd && (t = strrchr(cmd, '/')))
-        cmd = ( const char * )(t + 1);
+        cmd = ( const char * ) (t + 1);
 
     /*
      * initialize the catalogs dictionary
@@ -411,9 +411,9 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
          */
 
         r = catgets(cp->cat, mp->set, mp->seq, msg);
-        if (r != ( char * )msg) {
-            if (streq(r, ( char * )msg))
-                r = ( char * )msg;
+        if (r != ( char * ) msg) {
+            if (streq(r, ( char * ) msg))
+                r = ( char * ) msg;
             else if (strcmp(fmtfmt(r), fmtfmt(msg))) {
                 sfprintf(sfstderr,
                          "locale %s catalog %s message %d.%d \"%s\" does not "
@@ -424,7 +424,7 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
                          mp->seq,
                          r,
                          msg);
-                r = ( char * )msg;
+                r = ( char * ) msg;
             }
         }
         if (ast.locale.set & AST_LC_debug) {
@@ -443,9 +443,9 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
         mp->set,
         mp->seq,
         msg,
-        r == ( char * )msg ? "NOPE" : r);
+        r == ( char * ) msg ? "NOPE" : r);
 done:
-    if (r == ( char * )msg
+    if (r == ( char * ) msg
         && (!cp && streq(loc, "debug") || cp && cp->debug)) {
         p = tempget(state.tmp);
         sfprintf(state.tmp, "(%s,%s,%s,%s)", loc, cmd, cat, r);

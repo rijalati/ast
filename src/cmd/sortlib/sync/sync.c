@@ -150,7 +150,7 @@ junk(State_t *state, Rsobj_t *r)
 static int
 dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
 {
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
     Ss_t *ss = state->ss;
     Ssfile_t *fp;
     Ssfile_t *save;
@@ -193,16 +193,16 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         }
         if (ss->stop == 1)
             return RS_DELETE;
-        rp = ( Rsobj_t * )data;
+        rp = ( Rsobj_t * ) data;
         if (ss->expr
-            && (sseval(ss, ss->expr, ( char * )rp->data, rp->datalen) > 0)
+            && (sseval(ss, ss->expr, ( char * ) rp->data, rp->datalen) > 0)
                == ss->omit)
             return RS_DELETE;
         fp = ss->file;
         if (!ss->readexit)
             c = (ss->copy || !fp->next && (rs->type & RS_IGNORE)) ? RS_DELETE
                                                                   : RS_ACCEPT;
-        else if ((c = CALLOUT(ss, ss->readexit, rp, ( Rsobj_t * )arg)) < 0
+        else if ((c = CALLOUT(ss, ss->readexit, rp, ( Rsobj_t * ) arg)) < 0
                  || c == RS_DELETE)
             return c;
         if (ss->stop)
@@ -210,24 +210,24 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         if (ss->in) {
             if ((size = sscopy(ss,
                                &state->in,
-                               ( char * )rp->data,
+                               ( char * ) rp->data,
                                rp->datalen,
                                state->tmp,
                                ss->insize))
                 < 0)
                 return -1;
-            rp->data = ( unsigned char * )state->tmp;
+            rp->data = ( unsigned char * ) state->tmp;
             rp->datalen = size;
         }
         if (ss->copy) {
             if (fp->group && fp->group->io
-                && sswrite(ss, fp, ( char * )rp->data, rp->datalen) < 0)
+                && sswrite(ss, fp, ( char * ) rp->data, rp->datalen) < 0)
                 return -1;
             break;
         }
         return c;
     case RS_SUMMARY:
-        rp = ( Rsobj_t * )data;
+        rp = ( Rsobj_t * ) data;
         state->dupcount++;
         if (!ss->summaryexit)
             c = RS_ACCEPT;
@@ -238,15 +238,15 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
             for (ep = rp->equal; ep; ep = ep->right)
                 if (sssum(ss,
                           ss->sum,
-                          ( char * )ep->data,
+                          ( char * ) ep->data,
                           rp->datalen,
-                          ( char * )rp->data))
+                          ( char * ) rp->data))
                     return -1;
         if (state->junk)
             junk(state, rp);
         return c;
     case RS_WRITE:
-        ep = ( Rsobj_t * )data;
+        ep = ( Rsobj_t * ) data;
         if (!ss->writeexit) {
             if (state->dups && (rp = ep->equal))
                 do
@@ -256,15 +256,15 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         } else if ((c = CALLOUT(ss, ss->writeexit, ep, NiL)) < 0
                    || c == RS_DELETE)
             return c;
-        rp = ( Rsobj_t * )arg;
+        rp = ( Rsobj_t * ) arg;
         fp = ss->file;
         if (!fp->group->io)
             size = 0;
         else if ((size = sscopy(ss,
                                 fp,
-                                ( char * )ep->data,
+                                ( char * ) ep->data,
                                 ep->datalen,
-                                ( char * )rp->data,
+                                ( char * ) rp->data,
                                 rp->datalen))
                  < 0)
             return -1;
@@ -282,16 +282,16 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
     while (fp = fp->next)
         if (fp->group) {
             if (!fp->expr
-                || (sseval(ss, fp->expr, ( char * )rp->data, rp->datalen) > 0)
+                || (sseval(ss, fp->expr, ( char * ) rp->data, rp->datalen) > 0)
                    != fp->omit) {
                 hit = 1;
-                if (sswrite(ss, fp, ( char * )rp->data, rp->datalen) < 0)
+                if (sswrite(ss, fp, ( char * ) rp->data, rp->datalen) < 0)
                     return -1;
             } else if (fp->save)
                 save = fp;
         }
     if (save && !hit
-        && sswrite(ss, save, ( char * )rp->data, rp->datalen) < 0)
+        && sswrite(ss, save, ( char * ) rp->data, rp->datalen) < 0)
         return -1;
     return c;
 }
@@ -469,7 +469,7 @@ rs_disc(Rskey_t *key, const char *options)
                         ssdisc,
                         2,
                         "%d: fixed record length mismatch -- %d expected",
-                        ( int )opt_info.num,
+                        ( int ) opt_info.num,
                         key->fixed);
                     goto drop;
                 }
@@ -516,7 +516,7 @@ rs_disc(Rskey_t *key, const char *options)
                 goto drop;
             }
             s = u;
-            u = ( char * )(v + n);
+            u = ( char * ) (v + n);
             n = 0;
             for (;;) {
                 while (*s == ' ')

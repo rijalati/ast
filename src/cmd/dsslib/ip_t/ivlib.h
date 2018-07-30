@@ -29,9 +29,9 @@
 
 extern void *malloc _ARG_((size_t));
 extern void *calloc _ARG_((size_t, size_t));
-extern void free _ARG_(( void * ));
+extern void free _ARG_(( void * ) );
 
-extern void abort _ARG_(( void ));
+extern void abort _ARG_(( void ) );
 
 #    endif
 
@@ -40,11 +40,11 @@ extern void abort _ARG_(( void ));
 #    include <ivmethods.h>
 
 #    ifndef NIL
-#        define NIL(t) (( t )0)
+#        define NIL(t) (( t ) 0)
 #    endif
 
 #    ifndef OFFSET
-#        define OFFSET(t, e) ((size_t)(&((( t * )0)->e)))
+#        define OFFSET(t, e) ((size_t)(&((( t * ) 0)->e)))
 #    endif
 
 #    ifndef ASSERT

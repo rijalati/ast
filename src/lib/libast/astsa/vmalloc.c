@@ -82,7 +82,7 @@ _vm_resize(Vmalloc_t *vp, void *o, unsigned long size)
         vp->size = n ? 0 : sizeof(vp->current->data);
         if (o) {
             memcpy(vp->data, o, z);
-            o = ( void * )vp->data;
+            o = ( void * ) vp->data;
         }
     } else if (o)
         size -= z;

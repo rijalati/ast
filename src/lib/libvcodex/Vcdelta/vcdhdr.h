@@ -112,18 +112,18 @@ extern Vcdindex_t _Vcdindex;
 extern Vcdtable_t *_Vcdtbl;
 
 extern Vcdcache_t *vcdkaopen _ARG_((ssize_t, ssize_t));
-extern void vcdkaclear _ARG_(( Vcdcache_t * ));
-extern void vcdkaclose _ARG_(( Vcdcache_t * ));
+extern void vcdkaclear _ARG_(( Vcdcache_t * ) );
+extern void vcdkaclose _ARG_(( Vcdcache_t * ) );
 extern ssize_t
-vcdkasetaddr _ARG_(( Vcdcache_t *, ssize_t, ssize_t, ssize_t * ));
+vcdkasetaddr _ARG_(( Vcdcache_t *, ssize_t, ssize_t, ssize_t * ) );
 extern ssize_t vcdkagetaddr _ARG_((Vcdcache_t *, Vcio_t *, ssize_t, ssize_t));
 
 extern Vcdtable_t *
 vcdbmtable();
 extern int vcdbmputinst
-_ARG_(( Vclzparse_t *, ssize_t, ssize_t, ssize_t, ssize_t, int ));
+_ARG_(( Vclzparse_t *, ssize_t, ssize_t, ssize_t, ssize_t, int ) );
 
-extern void _vcdtblinit _ARG_(( void ));
+extern void _vcdtblinit _ARG_(( void ) );
 _END_EXTERNS_
 
 #endif /*_VDELHDR_H*/

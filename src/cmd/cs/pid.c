@@ -77,7 +77,7 @@ typedef struct /* server state			*/
 static void *
 svc_init(void *handle, int fdmax)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
 
     NoP(fdmax);
     if (!(state->pids = hashalloc(NiL,
@@ -106,7 +106,7 @@ svc_read(void *handle, int fd)
     Pid_t *pp;
     Notify_t *np;
     Notify_t *pn;
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     char *m;
     char *s;
     char *e;
@@ -145,7 +145,7 @@ svc_read(void *handle, int fd)
                               state->decay,
                               state->expire);
                 if (pos = hashscan(state->pids, 0)) {
-                    while (pp = ( Pid_t * )hashnext(pos)) {
+                    while (pp = ( Pid_t * ) hashnext(pos)) {
                         n += sfsprintf(m + n,
                                        sizeof(state->buf) - n,
                                        "%6d %ld",
@@ -184,8 +184,8 @@ svc_read(void *handle, int fd)
                 break;
             }
             csto(fd, m, n, &addr);
-        } else if (pp = ( Pid_t * )hashlook(
-                   state->pids, ( char * )&pid, HASH_LOOKUP, NiL)) {
+        } else if (pp = ( Pid_t * ) hashlook(
+                   state->pids, ( char * ) &pid, HASH_LOOKUP, NiL)) {
             if (kill(pid, 0) && errno == ESRCH) {
                 csto(fd, m, n, &addr);
                 np = pp->notify;
@@ -207,11 +207,11 @@ svc_read(void *handle, int fd)
             }
         } else if (kill(pid, 0) && errno == ESRCH)
             csto(fd, m, n, &addr);
-        else if (pp
-                 = ( Pid_t * )hashlook(state->pids,
-                                       NiL,
-                                       HASH_CREATE | HASH_SIZE(sizeof(Pid_t)),
-                                       NiL)) {
+        else if (pp = ( Pid_t * ) hashlook(state->pids,
+                                           NiL,
+                                           HASH_CREATE
+                                           | HASH_SIZE(sizeof(Pid_t)),
+                                           NiL)) {
             pp->pid = pid;
             if (np = newof(0, Notify_t, 1, 0)) {
                 np->addr = addr;
@@ -235,7 +235,7 @@ svc_read(void *handle, int fd)
 static int
 svc_timeout(void *handle)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     Pid_t *pp;
     Hash_position_t *pos;
     Notify_t *np;
@@ -247,7 +247,7 @@ svc_timeout(void *handle)
         exit(0);
     wakeup = ~0;
     if (pos = hashscan(state->pids, 0)) {
-        while (pp = ( Pid_t * )hashnext(pos)) {
+        while (pp = ( Pid_t * ) hashnext(pos)) {
             if (pp->expire <= cs.time) {
                 if (kill(pp->pid, 0) && errno == ESRCH) {
                     n = sfsprintf(
@@ -260,7 +260,7 @@ svc_timeout(void *handle)
                         free(pn);
                     }
                     hashlook(
-                    state->pids, ( char * )&pp->pid, HASH_DELETE, NiL);
+                    state->pids, ( char * ) &pp->pid, HASH_DELETE, NiL);
                     state->active--;
                     continue;
                 }

@@ -27,7 +27,7 @@ int walkf(f, cntp) Sfio_t *f;
 Void_t *cntp;
 #endif
 {
-    return (*(( int * )cntp) += 1);
+    return (*(( int * ) cntp) += 1);
 }
 
 tmain()

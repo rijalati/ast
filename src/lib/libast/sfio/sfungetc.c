@@ -43,7 +43,7 @@ Sfdisc_t *disc;
 
     /* close the unget stream */
     if (type != SF_CLOSING)
-        ( void )sfclose((*_Sfstack)(f, NIL(Sfio_t *)));
+        ( void ) sfclose((*_Sfstack)(f, NIL(Sfio_t *)));
 
     return 1;
 }
@@ -66,7 +66,7 @@ int c;                        /* the value to be pushed back */
     SFLOCK(f, 0);
 
     /* fast handling of the typical unget */
-    if (f->next > f->data && f->next[-1] == ( uchar )c) {
+    if (f->next > f->data && f->next[-1] == ( uchar ) c) {
         f->next -= 1;
         goto done;
     }
@@ -75,7 +75,7 @@ int c;                        /* the value to be pushed back */
     if (f->disc != _Sfudisc) {
         if (!(uf = sfnew(NIL(Sfio_t *),
                          NIL(char *),
-                         ( size_t )SF_UNBOUND,
+                         ( size_t ) SF_UNBOUND,
                          -1,
                          SF_STRING | SF_READ))) {
             c = -1;
@@ -84,7 +84,7 @@ int c;                        /* the value to be pushed back */
         _Sfudisc->exceptf = _uexcept;
         sfdisc(uf, _Sfudisc);
         SFOPEN(f, 0);
-        ( void )sfstack(f, uf);
+        ( void ) sfstack(f, uf);
         SFLOCK(f, 0);
     }
 
@@ -93,20 +93,20 @@ int c;                        /* the value to be pushed back */
         reg uchar *data;
         if (f->size < 0)
             f->size = 0;
-        if (!(data = ( uchar * )malloc(f->size + 16))) {
+        if (!(data = ( uchar * ) malloc(f->size + 16))) {
             c = -1;
             goto done;
         }
         f->flags |= SF_MALLOC;
         if (f->data)
-            memcpy(( char * )(data + 16), ( char * )f->data, f->size);
+            memcpy(( char * ) (data + 16), ( char * ) f->data, f->size);
         f->size += 16;
         f->data = data;
         f->next = data + 16;
         f->endb = data + f->size;
     }
 
-    *--f->next = ( uchar )c;
+    *--f->next = ( uchar ) c;
 done:
     SFOPEN(f, 0);
     SFMTXRETURN(f, c);

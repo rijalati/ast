@@ -48,7 +48,7 @@ Sfoff_t here; /* current target position	*/
     if (size <= 0 || !vcw || !vcw->disc || !(srcf = vcw->disc->srcf))
         return NIL(Vcwmatch_t *);
 
-    if (!(mir = ( Mirror_t * )vcw->mtdata) || mir->ssize <= 0)
+    if (!(mir = ( Mirror_t * ) vcw->mtdata) || mir->ssize <= 0)
         return NIL(Vcwmatch_t *);
 
     mtsz = size + 2 * VCWEXTRA(size);
@@ -56,7 +56,7 @@ Sfoff_t here; /* current target position	*/
         here = 0;
     if ((here + mtsz) > mir->ssize && (here = mir->ssize - mtsz) < 0) {
         here = 0;
-        mtsz = ( size_t )mir->ssize;
+        mtsz = ( size_t ) mir->ssize;
     }
 
     wm->type = VCD_SOURCEFILE;
@@ -84,21 +84,21 @@ int type;
 
     switch (type) {
     case VCW_OPENING:
-        if (!(mir = ( Mirror_t * )malloc(sizeof(Mirror_t))))
+        if (!(mir = ( Mirror_t * ) malloc(sizeof(Mirror_t))))
             return -1;
 
         if (!vcw->disc || !vcw->disc->srcf
-            || sfseek(vcw->disc->srcf, ( Sfoff_t )0, 0) < 0) {
+            || sfseek(vcw->disc->srcf, ( Sfoff_t ) 0, 0) < 0) {
             free(mir);
             return -1;
         }
         mir->ssize = sfsize(vcw->disc->srcf);
 
-        vcw->mtdata = ( Void_t * )mir;
+        vcw->mtdata = ( Void_t * ) mir;
         break;
 
     case VCW_CLOSING:
-        if ((mir = ( Mirror_t * )vcw->mtdata))
+        if ((mir = ( Mirror_t * ) vcw->mtdata))
             free(mir);
 
         vcw->mtdata = NIL(Void_t *);

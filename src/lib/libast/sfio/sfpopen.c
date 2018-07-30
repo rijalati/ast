@@ -62,15 +62,15 @@ static void execute(argcmd) char *argcmd;
     }
 
     /* if there is a meta character, let the shell do it */
-    for (s = ( char * )argcmd; *s; ++s)
-        if (Meta[( uchar )s[0]])
+    for (s = ( char * ) argcmd; *s; ++s)
+        if (Meta[( uchar ) s[0]])
             goto do_interp;
 
     /* try to construct argv */
-    if (!(cmd = ( char * )malloc(strlen(argcmd) + 1)))
+    if (!(cmd = ( char * ) malloc(strlen(argcmd) + 1)))
         goto do_interp;
     strcpy(cmd, argcmd);
-    if (!(argv = ( char ** )malloc(16 * sizeof(char *))))
+    if (!(argv = ( char ** ) malloc(16 * sizeof(char *))))
         goto do_interp;
     for (n = 0, s = cmd;;) {
         while (isspace(s[0]))
@@ -81,7 +81,7 @@ static void execute(argcmd) char *argcmd;
         /* new argument */
         argv[n++] = s;
         if ((n % 16) == 0
-            && !(argv = ( char ** )realloc(argv, (n + 16) * sizeof(char *))))
+            && !(argv = ( char ** ) realloc(argv, (n + 16) * sizeof(char *))))
             goto do_interp;
 
         /* make this into a C string */
@@ -151,7 +151,7 @@ char *mode;    /* mode of the stream */
         return 0;
     sflags = _sftype(mode, NIL(int *), NIL(int *), NIL(int *));
 
-    if (f == ( Sfio_t * )(-1)) { /* stdio compatibility mode */
+    if (f == ( Sfio_t * ) (-1)) { /* stdio compatibility mode */
         f = NIL(Sfio_t *);
         pflags = 1;
     } else
@@ -164,13 +164,13 @@ char *mode;    /* mode of the stream */
         flags |= PROC_WRITE;
     av[0] = "sh";
     av[1] = "-c";
-    av[2] = ( char * )command;
+    av[2] = ( char * ) command;
     av[3] = 0;
     if (!(proc = procopen(0, av, 0, 0, flags)))
         return 0;
     if (!(f = sfnew(f,
                     NIL(Void_t *),
-                    ( size_t )SF_UNBOUND,
+                    ( size_t ) SF_UNBOUND,
                     (sflags & SF_READ) ? proc->rfd : proc->wfd,
                     sflags | ((sflags & SF_RDWR) ? 0 : SF_READ)))
         || _sfpopen(f, (sflags & SF_READ) ? proc->wfd : -1, proc->pid, pflags)
@@ -192,7 +192,7 @@ char *mode;    /* mode of the stream */
         reg char *s;
         Meta[0] = 1;
         for (s = "!@#$%&*(){}[]:;<>~`'|\"\\"; *s; ++s)
-            Meta[( uchar )s[0]] = 1;
+            Meta[( uchar ) s[0]] = 1;
     }
     if (!Path)
         Path = _sfgetpath("PATH");
@@ -221,7 +221,7 @@ char *mode;    /* mode of the stream */
             ckeep = READ;
         }
 
-        if (f == ( Sfio_t * )(-1)) { /* stdio compatibility mode */
+        if (f == ( Sfio_t * ) (-1)) { /* stdio compatibility mode */
             f = NIL(Sfio_t *);
             stdio = 1;
         } else
@@ -230,7 +230,7 @@ char *mode;    /* mode of the stream */
         /* make the streams */
         if (!(f = sfnew(f,
                         NIL(Void_t *),
-                        ( size_t )SF_UNBOUND,
+                        ( size_t ) SF_UNBOUND,
                         parent[pkeep],
                         sflags | ((sflags & SF_RDWR) ? 0 : SF_READ))))
             goto error;
@@ -246,7 +246,7 @@ char *mode;    /* mode of the stream */
         /* save process info */
         fd = (sflags & SF_RDWR) == SF_RDWR ? child[ckeep] : -1;
         if (_sfpopen(f, fd, pid, stdio) < 0) {
-            ( void )sfclose(f);
+            ( void ) sfclose(f);
             goto error;
         }
 

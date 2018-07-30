@@ -63,7 +63,7 @@ initiate(Cs_t *state, const char *svc, char *cmd)
 #endif
     pathcanon(cmd, 0, 0);
     av[0] = cmd;
-    av[1] = ( char * )svc;
+    av[1] = ( char * ) svc;
     av[2] = 0;
     if ((pid = spawnveg(av[0], av, environ, 0)) == -1) {
         messagef(
@@ -112,7 +112,7 @@ cslocal(Cs_t *state, const char *path)
      * validate the path
      */
 
-    p = ( char * )path;
+    p = ( char * ) path;
     if (strncmp(p, DEVLOCAL, sizeof(DEVLOCAL) - 1)) {
         messagef(
         (state->id, NiL, -1, "local: %s: %s* expected", path, DEVLOCAL));
@@ -216,7 +216,7 @@ cslocal(Cs_t *state, const char *path)
                 state->id, NiL, -1, "local: %s: AF_UNIX socket error", path));
                 return -1;
             }
-            if (!connect(fd, ( struct sockaddr * )&nam, namlen)) {
+            if (!connect(fd, ( struct sockaddr * ) &nam, namlen)) {
 #        if CS_LIB_SOCKET_RIGHTS
                 if (read(fd, cmd, 1) != 1)
                     messagef((state->id,

@@ -49,15 +49,15 @@ Sfulong_t m;                    /* the max value of the range */
 
     /* code v as integers in base SF_UBASE */
     s = ps = &(c[N_ARRAY - 1]);
-    *s = ( uchar )SFBVALUE(v);
+    *s = ( uchar ) SFBVALUE(v);
     while ((m >>= SF_BBITS) > 0) {
         v >>= SF_BBITS;
-        *--s = ( uchar )SFBVALUE(v);
+        *--s = ( uchar ) SFBVALUE(v);
     }
     n = (ps - s) + 1;
 
     if (n > 8 || SFWPEEK(f, ps, p) < n)
-        n = SFWRITE(f, ( Void_t * )s, n); /* write the hard way */
+        n = SFWRITE(f, ( Void_t * ) s, n); /* write the hard way */
     else {
         switch (n) {
         case 8:
@@ -81,5 +81,5 @@ Sfulong_t m;                    /* the max value of the range */
     }
 
     SFOPEN(f, 0);
-    SFMTXRETURN(f, ( int )n);
+    SFMTXRETURN(f, ( int ) n);
 }

@@ -139,7 +139,7 @@ setfolder(char *name)
         return 0;
     }
     if (state.folder == FIMAP)
-        imap_setptr(( char * )0, 0);
+        imap_setptr(( char * ) 0, 0);
     if (!(ibuf = fileopen(name, "Rr"))) {
         if (state.var.justcheck)
             exit(1);
@@ -423,7 +423,7 @@ execute(char *linebuf, int contxt)
         }
         break;
     }
-    if (!(com = ( struct cmd * )strpsearch(
+    if (!(com = ( struct cmd * ) strpsearch(
           state.cmdtab, state.cmdnum, sizeof(struct cmd), a, &next))) {
         note(0, "\"%s\": unknown command", a);
         goto out;

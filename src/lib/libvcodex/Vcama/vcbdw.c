@@ -28,7 +28,7 @@
 #define SIZE 4 /* #bytes coding a block size	*/
 #define GETSIZE(dt) (((dt)[0] << 8) + (dt)[1]) /* get blk size	*/
 #define PUTSIZE(dt, v)                                                       \
-    (((dt)[0] = (((v) >> 8) & 0377)), ((dt)[1] = (( v )&0377)))
+    (((dt)[0] = (((v) >> 8) & 0377)), ((dt)[1] = (( v ) &0377)))
 
 #if __STD_C
 static ssize_t
@@ -46,7 +46,7 @@ Void_t **out;
 
     /* count processable blocks */
     vc->undone = 0;
-    for (nblk = 0, enddt = (dt = ( Vcchar_t * )data) + size;;
+    for (nblk = 0, enddt = (dt = ( Vcchar_t * ) data) + size;;
          dt += sz, nblk += 1) {
         if (dt + SIZE > enddt) /* partial block */
             sz = -1;
@@ -82,7 +82,7 @@ Void_t **out;
     vcioskip(&io, blksz);
 
     /* do partitioning */
-    for (enddt = (dt = ( Vcchar_t * )data) + size; dt < enddt; dt += sz) {
+    for (enddt = (dt = ( Vcchar_t * ) data) + size; dt < enddt; dt += sz) {
         sz = GETSIZE(dt);
         PUTSIZE(blkdt, 4); /* make this look like ama data */
         blkdt += 2;
@@ -170,7 +170,7 @@ Void_t **out;
 
     if (!(data = vcbuffer(vc, NIL(Vcchar_t *), dtsz, 0)))
         RETURN(-1);
-    rawdt = ( Vcchar_t * )data;
+    rawdt = ( Vcchar_t * ) data;
     rawsz = dtsz;
     for (; nblk > 0; --nblk) {
         if (GETSIZE(blkdt) != 4)
@@ -194,7 +194,7 @@ Void_t **out;
         RETURN(-1);
 
     if (out)
-        *out = ( Void_t * )data;
+        *out = ( Void_t * ) data;
 
     /**/ DEBUG_PRINT(2, "++++Decoded size=%d\n", dtsz);
     return dtsz;

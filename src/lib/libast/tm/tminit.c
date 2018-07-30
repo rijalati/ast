@@ -171,7 +171,7 @@ tmopt(void *a, const void *p, int n, const char *v)
 
     NoP(a);
     if (p)
-        switch ((( Namval_t * )p)->value) {
+        switch ((( Namval_t * ) p)->value) {
         case TM_DEFAULT:
             tm_info.deformat
             = (n && (n = strlen(v)) > 0
@@ -185,9 +185,9 @@ tmopt(void *a, const void *p, int n, const char *v)
             break;
         default:
             if (n)
-                tm_info.flags |= (( Namval_t * )p)->value;
+                tm_info.flags |= (( Namval_t * ) p)->value;
             else
-                tm_info.flags &= ~(( Namval_t * )p)->value;
+                tm_info.flags &= ~(( Namval_t * ) p)->value;
             break;
         }
     return 0;
@@ -399,7 +399,7 @@ tmlocal(void)
      */
 
     if (!(tm_info.flags & TM_ADJUST)) {
-        now = ( time_t )78811200; /* Jun 30 1972 23:59:60 */
+        now = ( time_t ) 78811200; /* Jun 30 1972 23:59:60 */
         tp = tmlocaltime(&now);
         if (tp->tm_sec != 60)
             tm_info.flags |= TM_ADJUST;
@@ -424,7 +424,7 @@ tmlocal(void)
 void
 tminit(Tm_zone_t *zp)
 {
-    static uint32_t serial = ~( uint32_t )0;
+    static uint32_t serial = ~( uint32_t ) 0;
 
     if (serial != ast.env_serial) {
         serial = ast.env_serial;

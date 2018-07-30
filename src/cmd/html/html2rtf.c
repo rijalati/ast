@@ -631,7 +631,7 @@ start_rendering(Tag_t *tp, Attribute_t *ap)
     Render_t *rp;
     int i;
 
-    if (rp = ( Render_t * )tp->data)
+    if (rp = ( Render_t * ) tp->data)
         for (i = 0; i < rp->tags; i++)
             if ((tp = rp->tag[i]) && tp->start)
                 (*tp->start)(tp, ap);
@@ -644,7 +644,7 @@ end_rendering(Tag_t *tp, Attribute_t *ap)
     Render_t *rp;
     int i;
 
-    if (rp = ( Render_t * )tp->data)
+    if (rp = ( Render_t * ) tp->data)
         for (i = rp->tags - 1; i > 0; i--)
             if ((tp = rp->tag[i]) && tp->end)
                 (*tp->end)(tp, ap);
@@ -661,7 +661,7 @@ start_render(Tag_t *tp, Attribute_t *ap)
     Attribute_t *op;
 
     if ((op = attribute(ap, "TAG")) && (s = op->value)) {
-        if (tp = ( Tag_t * )hashget(state.tags, s)) {
+        if (tp = ( Tag_t * ) hashget(state.tags, s)) {
             if (tp->data)
                 free(tp->data);
             tp->start = 0;
@@ -679,7 +679,7 @@ start_render(Tag_t *tp, Attribute_t *ap)
             do {
                 if (e = strchr(s, ','))
                     *e++ = 0;
-                if (rp->tag[n] = ( Tag_t * )hashget(state.tags, s))
+                if (rp->tag[n] = ( Tag_t * ) hashget(state.tags, s))
                     n++;
             } while (s = e);
             if (!(rp->tags = n))
@@ -687,7 +687,7 @@ start_render(Tag_t *tp, Attribute_t *ap)
             else {
                 tp->start = start_rendering;
                 tp->end = end_rendering;
-                tp->data = ( void * )rp;
+                tp->data = ( void * ) rp;
             }
         }
     }
@@ -947,11 +947,11 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                 }
                 (ap + 1)->name = 0;
                 for (;;) {
-                    ap->name = s + ((( unsigned int )ap->name) >> PUN);
+                    ap->name = s + ((( unsigned int ) ap->name) >> PUN);
                     if (!*ap->name)
                         ap->name = 0;
                     else if (ap->value) {
-                        ap->value = s + ((( unsigned int )ap->value) >> PUN);
+                        ap->value = s + ((( unsigned int ) ap->value) >> PUN);
                         if (!*ap->value)
                             ap->value = 0;
                     }
@@ -961,7 +961,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                 }
                 if (c = *s == '/')
                     s++;
-                if (!(tp = ( Tag_t * )hashget(state.tags, s)))
+                if (!(tp = ( Tag_t * ) hashget(state.tags, s)))
                     error(1, "<%s>: unknown tag", s);
                 else if (!c) {
                     if (tp->end) {
@@ -1045,7 +1045,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
         case '=':
             if (ap && !ap->value) {
                 sfputc(op, 0);
-                ap->value = ( char * )(sfstrtell(op) << PUN);
+                ap->value = ( char * ) (sfstrtell(op) << PUN);
                 continue;
             }
             break;
@@ -1070,12 +1070,12 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     error(ERROR_SYSTEM | 3, "out of space");
                 op = state.out;
                 if (*s == '#') {
-                    n = ( int )strtol(s + 1, NiL, 10) & 0377;
+                    n = ( int ) strtol(s + 1, NiL, 10) & 0377;
                     cc += sfprintf(op, "\\'%02x", n);
                     tc++;
                     if (isspace(n))
                         lastc = ' ';
-                } else if (ep = ( Entity_t * )hashget(state.entities, s)) {
+                } else if (ep = ( Entity_t * ) hashget(state.entities, s)) {
                     cc += sfputr(op, ep->value, -1);
                     tc++;
                     if (ep->flags & ENT_SPACE)
@@ -1114,7 +1114,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                         && ap < &attributes[elementsof(attributes) - 1]) {
                         sfputc(op, 0);
                         ap++;
-                        ap->name = ( char * )(sfstrtell(op) << PUN);
+                        ap->name = ( char * ) (sfstrtell(op) << PUN);
                         ap->value = 0;
                         lastc = ' ';
                     }
@@ -1188,7 +1188,7 @@ static int
 project_update(const char *s, char *v, void *h)
 {
     NoP(s);
-    return v == ( char * )h;
+    return v == ( char * ) h;
 }
 
 /*
@@ -1199,7 +1199,7 @@ static int
 project_list(const char *s, char *v, void *h)
 {
     NoP(v);
-    sfputr(( Sfio_t * )h, s, '\n');
+    sfputr(( Sfio_t * ) h, s, '\n');
     return 0;
 }
 
@@ -1578,7 +1578,7 @@ static const Tag_t tags[] = {
 static unsigned int
 strcasehash(const char *s)
 {
-    const unsigned char *p = ( const unsigned char * )s;
+    const unsigned char *p = ( const unsigned char * ) s;
     unsigned int h = 0;
     unsigned int c;
 

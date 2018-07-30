@@ -45,7 +45,7 @@ Vcodex_t *coder;                         /* continuation processor	*/
 int flags;                               /* control flags		*/
 #endif
 {
-    Vcodex_t *vc = ( Vcodex_t * )Version; /* stop compiler warning */
+    Vcodex_t *vc = ( Vcodex_t * ) Version; /* stop compiler warning */
 
     /* exactly one of VC_EN/DECODE  is allowed */
     if ((flags & VC_ENCODE) && (flags & VC_DECODE))
@@ -53,7 +53,7 @@ int flags;                               /* control flags		*/
     if (!(flags & VC_ENCODE) && !(flags & VC_DECODE))
         return NIL(Vcodex_t *);
 
-    if (!meth || !(vc = ( Vcodex_t * )calloc(1, sizeof(Vcodex_t))))
+    if (!meth || !(vc = ( Vcodex_t * ) calloc(1, sizeof(Vcodex_t))))
         return NIL(Vcodex_t *);
 
     if (!(vc->applyf = (flags & VC_ENCODE) ? meth->encodef : meth->decodef)) {
@@ -146,7 +146,7 @@ int type;                                /* VC_ENCODE, VC_DECODE	*/
         }
 
         /* allocate structure to hold data for now */
-        if (!(mt = ( Meth_t * )malloc(sizeof(Meth_t) + strlen(args))))
+        if (!(mt = ( Meth_t * ) malloc(sizeof(Meth_t) + strlen(args))))
             goto done;
         mt->vcmt = vcmt;
         strcpy(mt->args, args);
@@ -159,7 +159,7 @@ int type;                                /* VC_ENCODE, VC_DECODE	*/
     for (mt = list; mt; mt = mt->next) {
         if (!(coder = vcopen(NIL(Vcdisc_t *),
                              mt->vcmt,
-                             ( Void_t * )mt->args,
+                             ( Void_t * ) mt->args,
                              vc,
                              type | VC_CLOSECODER))) {
             vcclose(vc);

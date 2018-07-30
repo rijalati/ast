@@ -365,7 +365,7 @@ main(int argc, char **argv)
             if (streq(t, "delset")) {
                 while (isspace(*s))
                     s++;
-                num = ( int )strtol(s, NiL, 0);
+                num = ( int ) strtol(s, NiL, 0);
                 if (num < mc->num && mc->set[num].num)
                     for (i = 1; i <= mc->set[num].num; i++)
                         mcput(mc, num, i, NiL);
@@ -374,7 +374,7 @@ main(int argc, char **argv)
             else if (streq(t, "set")) {
                 while (isspace(*s))
                     s++;
-                num = ( int )strtol(s, &e, 0);
+                num = ( int ) strtol(s, &e, 0);
                 if (e != s)
                     set = num;
                 else
@@ -383,7 +383,7 @@ main(int argc, char **argv)
                 xp = translation(xp, s);
         } else {
             t = s + sfvalue(mp);
-            num = ( int )strtol(s, &e, 0);
+            num = ( int ) strtol(s, &e, 0);
             if (e != s) {
                 s = e;
                 if (!*s) {

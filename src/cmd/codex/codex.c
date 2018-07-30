@@ -129,7 +129,7 @@ checkdata(Sfio_t *sp)
 
     if (codexdata(sp, &data) > 0) {
         if (data.buf) {
-            for (e = (u = ( unsigned char * )data.buf) + data.size; u < e;
+            for (e = (u = ( unsigned char * ) data.buf) + data.size; u < e;
                  u++)
                 sfprintf(sfstderr, "%02x", *u);
             sfprintf(sfstderr, "\n");

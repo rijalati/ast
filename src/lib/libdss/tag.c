@@ -143,7 +143,7 @@ tagcontext(Tag_t *tag, Tagframe_t *fp)
 static int
 except(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
 {
-    Include_t *ip = ( Include_t * )dp;
+    Include_t *ip = ( Include_t * ) dp;
 
     switch (op) {
     case SF_CLOSING:
@@ -430,8 +430,8 @@ done:
 }
 
 static Tags_t builtin[] = {
-    "#INCLUDE#", "Push a tag include file.",   0, ( Tagbeg_f )include, 0, 0,
-    "#TABLE#",   "Read delimited table data.", 0, ( Tagbeg_f )table,   0, 0,
+    "#INCLUDE#", "Push a tag include file.",   0, ( Tagbeg_f ) include, 0, 0,
+    "#TABLE#",   "Read delimited table data.", 0, ( Tagbeg_f ) table,   0, 0,
     0,
 };
 
@@ -554,7 +554,7 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                                                 s);
                             return -1;
                         }
-                        if ((*( Builtin_f )tp->begf)(tag, fp, tp, tags, disc))
+                        if ((*( Builtin_f ) tp->begf)(tag, fp, tp, tags, disc))
                             return -1;
                         continue;
                     }
@@ -658,7 +658,7 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                 sfputc(tag->op, 0);
                 s = sfstrseek(tag->op, back, SEEK_SET) + 1;
                 if (*s == '#')
-                    c = ( int )strtol(s + 1, NiL, 10) & 0377;
+                    c = ( int ) strtol(s + 1, NiL, 10) & 0377;
                 else {
                     if (fp)
                         fp->attr |= TAG_ATTR_conv;
@@ -767,7 +767,7 @@ tagopen(Sfio_t *ip, const char *file, int line, Tags_t *tags, Tagdisc_t *disc)
     tag->disc = disc;
     ofile = error_info.file;
     oline = error_info.line;
-    error_info.file = ( char * )file;
+    error_info.file = ( char * ) file;
     error_info.line = line;
     r = tagparse(tag, NiL, tags, disc);
     error_info.file = ofile;
@@ -908,7 +908,7 @@ usage(Tag_t *tag,
       unsigned int flags,
       Tagdisc_t *disc)
 {
-    Sfio_t *op = ( Sfio_t * )handle;
+    Sfio_t *op = ( Sfio_t * ) handle;
 
     if (flags & TAG_SCAN_end) {
         sfprintf(op, "}\n");

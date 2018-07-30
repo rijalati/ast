@@ -64,14 +64,14 @@
 #    endif /*Void_t*/
 
 #    ifndef NIL
-#        define NIL(type) (( type )0)
+#        define NIL(type) (( type ) 0)
 #    endif /*NIL*/
 
 #endif /*__KPV__*/
 
 /* user-supplied functions to do io */
 typedef struct _vddisc_s Vddisc_t;
-typedef int(*Vdio_f) _ARG_(( Void_t *, int, long, Vddisc_t * ));
+typedef int(*Vdio_f) _ARG_(( Void_t *, int, long, Vddisc_t * ) );
 struct _vddisc_s
 {
     long size;     /* total data size	*/
@@ -84,8 +84,8 @@ struct _vddisc_s
 #define VD_MAGIC "vd01"
 
 _BEGIN_EXTERNS_
-extern long _vddelta_01 _ARG_(( Vddisc_t *, Vddisc_t *, Vddisc_t *, long ));
-extern long _vdupdate_01 _ARG_(( Vddisc_t *, Vddisc_t *, Vddisc_t * ));
+extern long _vddelta_01 _ARG_(( Vddisc_t *, Vddisc_t *, Vddisc_t *, long ) );
+extern long _vdupdate_01 _ARG_(( Vddisc_t *, Vddisc_t *, Vddisc_t * ) );
 _END_EXTERNS_
 
 #endif /*_VDELTA_H*/

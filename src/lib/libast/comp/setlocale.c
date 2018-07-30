@@ -175,7 +175,7 @@ native_setlocale(int category, const char *locale)
      */
 
     if (category == LC_MESSAGES)
-        return ( char * )locale;
+        return ( char * ) locale;
     sys = uwin_setlocale(category, usr);
     if (ast.locale.set & AST_LC_debug)
         sfprintf(sfstderr,
@@ -188,7 +188,7 @@ native_setlocale(int category, const char *locale)
 
 #else
 
-#    define native_locale(a, b, c) (( char * )0)
+#    define native_locale(a, b, c) (( char * ) 0)
 
 #endif
 
@@ -239,7 +239,7 @@ native_setlocale(int category, const char *locale)
 #define DR0 '>'
 #define DR1 0xbb /* 8-bit mini >> on xterm	*/
 
-#define DB (( int )sizeof(wchar_t) * 8 - 1)
+#define DB (( int ) sizeof(wchar_t) * 8 - 1)
 #define DC 7                  /* wchar_t embedded char bits	*/
 #define DX (DB / DC)          /* wchar_t max embedded chars	*/
 #define DZ (DB - DX * DC + 1) /* wchar_t embedded size bits	*/
@@ -285,7 +285,7 @@ debug_mbrtowc(wchar_t *p, const char *s, size_t n, mbstate_t *ms)
         mbsinit(ms);
         return 0;
     }
-    switch ((( unsigned char * )s)[0]) {
+    switch ((( unsigned char * ) s)[0]) {
     case DL0:
         dr = DR0;
         break;
@@ -295,12 +295,12 @@ debug_mbrtowc(wchar_t *p, const char *s, size_t n, mbstate_t *ms)
     default:
     single:
         if (p)
-            *p = (( unsigned char * )s)[0] & ((1 << DC) - 1);
+            *p = (( unsigned char * ) s)[0] & ((1 << DC) - 1);
         return 1;
     }
     if (n < 2)
         return -1;
-    if ((w = (( unsigned char * )s)[1]) < '0' || w > ('0' + DX))
+    if ((w = (( unsigned char * ) s)[1]) < '0' || w > ('0' + DX))
         goto single;
     if ((w -= '0' - DD) > n)
         return -1;
@@ -308,13 +308,13 @@ debug_mbrtowc(wchar_t *p, const char *s, size_t n, mbstate_t *ms)
     q = s += 2;
     while (q < r && *q)
         q++;
-    if (q != r || *(( unsigned char * )q) != dr)
+    if (q != r || *(( unsigned char * ) q) != dr)
         return -1;
     if (p) {
         c = 1;
         while (--q >= s) {
             c <<= DC;
-            c |= *(( unsigned char * )q);
+            c |= *(( unsigned char * ) q);
         }
         c <<= DZ;
         c |= (w - DD);
@@ -371,7 +371,7 @@ debug_wctomb(char *s, wchar_t c)
 {
     static mbstate_t ms;
 
-    return ( int )debug_wcrtomb(s, c, &ms);
+    return ( int ) debug_wcrtomb(s, c, &ms);
 }
 
 static size_t
@@ -417,16 +417,16 @@ debug_strxfrm(char *t, const char *s, size_t n)
     if (e = t)
         e += n;
     while (s[0]) {
-        if (((( unsigned char * )s)[0] == DL0
-             || (( unsigned char * )s)[0] == DL1)
+        if (((( unsigned char * ) s)[0] == DL0
+             || (( unsigned char * ) s)[0] == DL1)
             && (w = s[1]) >= '0' && w <= ('0' + DC)) {
             w -= '0';
             q = s + 2;
             r = q + w;
             while (q < r && *q)
                 q++;
-            if (*(( unsigned char * )q) == DR0
-                || *(( unsigned char * )q) == DR1) {
+            if (*(( unsigned char * ) q) == DR0
+                || *(( unsigned char * ) q) == DR1) {
                 if (t) {
                     for (q = s + 2; q < r; q++)
                         if (t < e)
@@ -541,7 +541,7 @@ set_collate(Lc_category_t *cp)
 #if _hdr_wchar && _typ_mbstate_t && _lib_mbrtowc
 
 #    define mb_state                                                         \
-        (( mbstate_t * )&ast.pad[sizeof(ast.pad) - sizeof(mbstate_t)])
+        (( mbstate_t * ) &ast.pad[sizeof(ast.pad) - sizeof(mbstate_t)])
 
 static size_t
 sjis_mbrtowc(wchar_t *p, const char *s, size_t n, mbstate_t *q)
@@ -557,7 +557,7 @@ sjis_mbrtowc(wchar_t *p, const char *s, size_t n, mbstate_t *q)
 static int
 sjis_mbtowc(wchar_t *p, const char *s, size_t n)
 {
-    return ( int )sjis_mbrtowc(p, s, n, mb_state);
+    return ( int ) sjis_mbrtowc(p, s, n, mb_state);
 }
 
 #endif
@@ -565,7 +565,7 @@ sjis_mbtowc(wchar_t *p, const char *s, size_t n)
 static int
 utf8_wctomb(char *u, wchar_t w)
 {
-    return ( int )utf32toutf8(u, w);
+    return ( int ) utf32toutf8(u, w);
 }
 
 static size_t
@@ -581,7 +581,7 @@ utf8_mblen(const char *str, size_t n)
 {
     uint32_t u;
 
-    return ( int )utf8toutf32(&u, str, n);
+    return ( int ) utf8toutf32(&u, str, n);
 }
 
 static const unsigned char utf8_wcw[]
@@ -2673,12 +2673,12 @@ ast_mbrchar(wchar_t *w, const char *s, size_t n, Mbstate_t *q)
 {
     size_t m;
 
-    m = (*ast._ast_mbrtowc)(w, s, n, ( mbstate_t * )q);
+    m = (*ast._ast_mbrtowc)(w, s, n, ( mbstate_t * ) q);
     if (m == (size_t)(-2) && (q->mb_errno = E2BIG)
         || m == (size_t)(-1) && (q->mb_errno = EILSEQ)) {
         m = 1;
         if (w)
-            *w = n ? *( unsigned char * )s : 0;
+            *w = n ? *( unsigned char * ) s : 0;
     } else
         q->mb_errno = 0;
     return m;
@@ -2759,16 +2759,16 @@ static int
 set_ctype(Lc_category_t *cp)
 {
     ast.mb_sync = 0;
-    ast.mb_alpha = ( Isw_f )iswalpha;
-    if (ast.mb_uc2wc != ( void * )(-1)) {
+    ast.mb_alpha = ( Isw_f ) iswalpha;
+    if (ast.mb_uc2wc != ( void * ) (-1)) {
         if (ast.mb_uc2wc)
-            iconv_close(( iconv_t )ast.mb_uc2wc);
-        ast.mb_uc2wc = ( void * )(-1);
+            iconv_close(( iconv_t ) ast.mb_uc2wc);
+        ast.mb_uc2wc = ( void * ) (-1);
     }
-    if (ast.mb_wc2uc != ( void * )(-1)) {
+    if (ast.mb_wc2uc != ( void * ) (-1)) {
         if (ast.mb_wc2uc)
-            iconv_close(( iconv_t )ast.mb_wc2uc);
-        ast.mb_wc2uc = ( void * )(-1);
+            iconv_close(( iconv_t ) ast.mb_wc2uc);
+        ast.mb_wc2uc = ( void * ) (-1);
     }
 #if AHA
     if ((ast.locale.set & (AST_LC_debug | AST_LC_setlocale))
@@ -2798,9 +2798,9 @@ set_ctype(Lc_category_t *cp)
             ast.mb_width = utf8_wcwidth;
         ast.mb_alpha = utf8_alpha;
         ast._ast_mbrlen = utf8_mbrlen;
-        ast._ast_mbrtowc = ( Mbtowc_f )utf8towc;
+        ast._ast_mbrtowc = ( Mbtowc_f ) utf8towc;
         ast._ast_mbsrtowcs = ast_mbsrtowcs;
-        ast._ast_wcrtomb = ( Wctomb_f )utf32toutf8;
+        ast._ast_wcrtomb = ( Wctomb_f ) utf32toutf8;
         ast._ast_wcsrtombs = ast_wcsrtombs;
         ast.mb_len = utf8_mblen;
         ast.mb_towc = utf8towc;
@@ -2906,14 +2906,14 @@ set_numeric(Lc_category_t *cp)
                    : &us_numeric;
         else if ((lp = localeconv()) && (dp = newof(0, Lc_numeric_t, 1, 0))) {
             dp->decimal = lp->decimal_point && *lp->decimal_point
-                          ? *( unsigned char * )lp->decimal_point
+                          ? *( unsigned char * ) lp->decimal_point
                           : '.';
             dp->thousand = lp->thousands_sep && *lp->thousands_sep
-                           ? *( unsigned char * )lp->thousands_sep
+                           ? *( unsigned char * ) lp->thousands_sep
                            : -1;
         } else
             dp = &default_numeric;
-        LCINFO(category)->data = ( void * )dp;
+        LCINFO(category)->data = ( void * ) dp;
     }
     return 0;
 }
@@ -2974,9 +2974,9 @@ setopt(void *a, const void *p, int n, const char *v)
 {
     if (p) {
         if (n)
-            ast.locale.set |= (( Unamval_t * )p)->value;
+            ast.locale.set |= (( Unamval_t * ) p)->value;
         else
-            ast.locale.set &= ~(( Unamval_t * )p)->value;
+            ast.locale.set &= ~(( Unamval_t * ) p)->value;
     }
     return 0;
 }
@@ -3021,7 +3021,7 @@ _sys_setlocale(int category, const char *locale)
 
     k = _vmkeep(1);
     r = setlocale(category, locale);
-    ( void )_vmkeep(k);
+    ( void ) _vmkeep(k);
     return r;
 }
 
@@ -3056,7 +3056,7 @@ single(int category, Lc_t *lc, unsigned int flags)
         if ((flags & LC_setenv) && lc_all && locales[category]) {
             if (lc_categories[category].setf)
                 (*lc_categories[category].setf)(&lc_categories[category]);
-            return ( char * )locales[category]->name;
+            return ( char * ) locales[category]->name;
         }
     }
     if (!lc
@@ -3071,7 +3071,7 @@ single(int category, Lc_t *lc, unsigned int flags)
             == -lc_categories[category].internal) {
             for (i = 1; i < AST_LC_COUNT; i++)
                 if (locales[i] == lc) {
-                    sys = ( char * )lc->name;
+                    sys = ( char * ) lc->name;
                     break;
                 }
         } else if (lc->flags & (LC_debug | LC_local))
@@ -3127,7 +3127,7 @@ single(int category, Lc_t *lc, unsigned int flags)
     } else {
         if (lc_categories[category].setf)
             (*lc_categories[category].setf)(&lc_categories[category]);
-        return ( char * )lc->name;
+        return ( char * ) lc->name;
     }
     if ((ast.locale.set & (AST_LC_debug | AST_LC_setlocale))
         && !(ast.locale.set & AST_LC_internal)) {
@@ -3175,9 +3175,9 @@ single(int category, Lc_t *lc, unsigned int flags)
             ? " debug_alpha"
             : ast.mb_alpha == utf8_alpha
               ? " utf8_alpha"
-              : ast.mb_alpha == ( Isw_f )iswalpha ? " iswalpha" : "");
+              : ast.mb_alpha == ( Isw_f ) iswalpha ? " iswalpha" : "");
         else if (category == AST_LC_NUMERIC) {
-            Lc_numeric_t *dp = ( Lc_numeric_t * )LCINFO(category)->data;
+            Lc_numeric_t *dp = ( Lc_numeric_t * ) LCINFO(category)->data;
 
             sfprintf(sfstderr,
                      " decimal='%c' thousands='%c'",
@@ -3198,7 +3198,7 @@ single(int category, Lc_t *lc, unsigned int flags)
             sfprintf(sfstderr, " setenv");
         sfprintf(sfstderr, "\n");
     }
-    return ( char * )lc->name;
+    return ( char * ) lc->name;
 }
 
 /*
@@ -3333,7 +3333,7 @@ _ast_setlocale(int category, const char *locale)
 
     compose:
         if (category != AST_LC_ALL && category != AST_LC_LANG)
-            return ( char * )locales[category]->name;
+            return ( char * ) locales[category]->name;
         if (!sp && !(sp = sfstropen()))
             return 0;
         for (i = 1; i < AST_LC_COUNT; i++)
@@ -3347,7 +3347,7 @@ _ast_setlocale(int category, const char *locale)
                         cat[j] = i;
             }
         if (k == 1)
-            return ( char * )locales[1]->name;
+            return ( char * ) locales[1]->name;
         for (i = 1; i < AST_LC_COUNT; i++)
             if (cat[i] >= 0 && !(locales[i]->flags & LC_default)) {
                 if (sfstrtell(sp))
@@ -3360,7 +3360,7 @@ _ast_setlocale(int category, const char *locale)
                 sfprintf(sp, "%s", locales[i]->name);
             }
         if (!sfstrtell(sp))
-            return ( char * )locales[0]->name;
+            return ( char * ) locales[0]->name;
         return sfstruse(sp);
     }
     if (!ast.locale.serial++) {
@@ -3382,7 +3382,7 @@ _ast_setlocale(int category, const char *locale)
     }
     if (ast.locale.set & AST_LC_setenv) {
         f = LC_setenv;
-        p = *locale ? lcmake(locale) : ( Lc_t * )0;
+        p = *locale ? lcmake(locale) : ( Lc_t * ) 0;
     } else if (*locale) {
         f = LC_setlocale;
         p = lcmake(locale);
@@ -3441,7 +3441,7 @@ _ast_setlocale(int category, const char *locale)
                              "",
                              lc_categories[i].prev
                              ? lc_categories[i].prev->name
-                             : ( char * )0);
+                             : ( char * ) 0);
             initialized = 1;
         }
         goto compose;
@@ -3467,7 +3467,7 @@ _ast_setlocale(int category, const char *locale)
             return single(category, p, f);
         if (p && !(ast.locale.set & AST_LC_internal))
             lc_categories[category].prev = p;
-        return ( char * )locales[category]->name;
+        return ( char * ) locales[category]->name;
     } else if (composite(locale, 0) < 0)
         return 0;
     else if (lc_all != p) {

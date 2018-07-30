@@ -117,7 +117,7 @@ reg Dtlink_t *list;
             dt->data->size = 0;
             while (list) {
                 t = list->right;
-                (*searchf)(dt, ( Void_t * )list, DT_RENEW);
+                (*searchf)(dt, ( Void_t * ) list, DT_RENEW);
                 list = t;
             }
         }

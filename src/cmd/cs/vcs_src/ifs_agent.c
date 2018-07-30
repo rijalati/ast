@@ -41,7 +41,7 @@ FUNC *initfunc;
 {
     struct agent_item *newitem;
 
-    newitem = ( struct agent_item * )MallocZero(sizeof(*newitem));
+    newitem = ( struct agent_item * ) MallocZero(sizeof(*newitem));
     if (newitem != NULL) {
         newitem->next = AgentTable;
         newitem->name = strdup(name);
@@ -133,7 +133,7 @@ struct mount_list *MountListSearch(uid) int uid;
             return ml;
         ml = ml->next;
     }
-    ml = ( struct mount_list * )MallocZero(sizeof(*ml));
+    ml = ( struct mount_list * ) MallocZero(sizeof(*ml));
     if (ml != NULL) {
         ml->next = MountListTable;
         ml->uid = uid;
@@ -199,7 +199,7 @@ char *option;
     }
 
     /* allocate a new structure */
-    mi = ( struct mount_item * )MallocZero(sizeof(*mi));
+    mi = ( struct mount_item * ) MallocZero(sizeof(*mi));
     mi->lpath = strdup(localpath);
     mi->proto = strdup(proto);
 
@@ -226,7 +226,7 @@ char *option;
     /* parse the host & port number */
     if ((ptr = strchr(host, ':')) != NULL) {
         *ptr++ = '\0';
-        mi->port = ( int )strtol(ptr, ( char ** )0, 0);
+        mi->port = ( int ) strtol(ptr, ( char ** ) 0, 0);
     }
     mi->host = strdup(host);
 
@@ -234,7 +234,7 @@ char *option;
     sfsprintf(mi->timeout,
               sizeof(mi->timeout),
               "/%d",
-              option ? ( int )strtol(option, ( char ** )0, 0) : 86400);
+              option ? ( int ) strtol(option, ( char ** ) 0, 0) : 86400);
 
     /* Insert the mount infomation to the mount list */
     mi->next = ml->mitem;
@@ -424,7 +424,7 @@ char *lpath;
         }
         sfsprintf(csusrmsg, n, "0 %d entry(ies)", num);
     } else if (*lpath != '/') {
-        num = ( int )strtol(lpath, ( char ** )0, 0);
+        num = ( int ) strtol(lpath, ( char ** ) 0, 0);
         while (num > 0 && item != NULL) {
             num--;
             item = item->next;

@@ -38,8 +38,8 @@ NoN(memccpy)
 void *
 memccpy(void *as1, const void *as2, int c, size_t n)
 {
-    char *s1 = ( char * )as1;
-    const char *s2 = ( char * )as2;
+    char *s1 = ( char * ) as1;
+    const char *s2 = ( char * ) as2;
     const char *ep = s2 + n;
 
     while (s2 < ep)

@@ -94,8 +94,8 @@ _isword(int);
 #    define isword(c) _isword(out[c])
 
 #else
-#    define gencpy(a, b) strcpy(( char * )(a), ( char * )(b))
-#    define genncpy(a, b, n) strncpy(( char * )(a), ( char * )(b), n)
+#    define gencpy(a, b) strcpy(( char * ) (a), ( char * ) (b))
+#    define genncpy(a, b, n) strncpy(( char * ) (a), ( char * ) (b), n)
 #    define genlen(str) strlen(str)
 #    define print(c) isprint(c)
 #    define isword(c) (isalnum(out[c]) || (out[c] == '_'))
@@ -187,7 +187,7 @@ xcommands(Emacs_t *, int);
 int
 ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
 {
-    Edit_t *ed = ( Edit_t * )context;
+    Edit_t *ed = ( Edit_t * ) context;
     int c;
     int i;
     genchar *out;
@@ -215,14 +215,14 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
     /* This mess in case the read system call fails */
 
     ed_setup(ep->ed, fd, reedit);
-    out = ( genchar * )buff;
+    out = ( genchar * ) buff;
 #if SHOPT_MULTIBYTE
-    out = ( genchar * )roundof(buff - ( char * )0, sizeof(genchar));
+    out = ( genchar * ) roundof(buff - ( char * ) 0, sizeof(genchar));
     if (reedit)
         ed_internal(buff, out);
 #endif /* SHOPT_MULTIBYTE */
     if (!kstack) {
-        kstack = ( genchar * )malloc(CHARSIZE * MAXLINE);
+        kstack = ( genchar * ) malloc(CHARSIZE * MAXLINE);
         kstack[0] = '\0';
     }
     drawbuff = out;
@@ -270,9 +270,9 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
         if (location.hist_command < histlines) {
             hline = location.hist_command;
             hloff = location.hist_line;
-            hist_copy(( char * )kstack, MAXLINE, hline, hloff);
+            hist_copy(( char * ) kstack, MAXLINE, hline, hloff);
 #    if SHOPT_MULTIBYTE
-            ed_internal(( char * )kstack, kstack);
+            ed_internal(( char * ) kstack, kstack);
 #    endif /* SHOPT_MULTIBYTE */
             ed_ungetchar(ep->ed, cntl('Y'));
         }
@@ -655,9 +655,9 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
 #endif
             cur = 0;
             draw(ep, UPDATE);
-            hist_copy(( char * )out, MAXLINE, hline, hloff);
+            hist_copy(( char * ) out, MAXLINE, hline, hloff);
 #if SHOPT_MULTIBYTE
-            ed_internal(( char * )(out), out);
+            ed_internal(( char * ) (out), out);
 #endif /* SHOPT_MULTIBYTE */
         drawline:
             eol = genlen(out);
@@ -688,7 +688,7 @@ process:
 #if SHOPT_MULTIBYTE
     ed_external(out, buff);
 #endif /* SHOPT_MULTIBYTE */
-    i = ( int )strlen(buff);
+    i = ( int ) strlen(buff);
     if (i)
         return (i);
     return (-1);
@@ -935,7 +935,7 @@ escape(Emacs_t *ep, genchar *out, int count)
         ch = i;
         if (i == '\\' && ep->mark > 0 && out[ep->mark - 1] == '/')
             i = '=';
-        if (ed_expand(ep->ed, ( char * )out, &cur, &eol, ch, count) < 0) {
+        if (ed_expand(ep->ed, ( char * ) out, &cur, &eol, ch, count) < 0) {
             if (ep->ed->e_tabcount == 1) {
                 ep->ed->e_tabcount = 2;
                 ed_ungetchar(ep->ed, cntl('\t'));
@@ -1008,9 +1008,9 @@ escape(Emacs_t *ep, genchar *out, int count)
             {
                 if (ep->lastdraw == APPEND && ep->prevdirection != -2) {
                     out[cur] = 0;
-                    gencpy(( genchar * )lstring + 1, out);
+                    gencpy(( genchar * ) lstring + 1, out);
 #    if SHOPT_MULTIBYTE
-                    ed_external(( genchar * )lstring + 1, lstring + 1);
+                    ed_external(( genchar * ) lstring + 1, lstring + 1);
 #    endif /* SHOPT_MULTIBYTE */
                     *lstring = '^';
                     ep->prevdirection = -2;
@@ -1093,14 +1093,14 @@ xcommands(Emacs_t *ep, int count)
             beep();
         else {
 #        if SHOPT_MULTIBYTE
-            ed_internal(( char * )drawbuff, drawbuff);
+            ed_internal(( char * ) drawbuff, drawbuff);
 #        endif /* SHOPT_MULTIBYTE */
             ed_ungetchar(ep->ed, '\n');
         }
         return;
 
 #        define itos(i)                                                      \
-            fmtbase(( long )(i), 0, 0) /* want signed conversion */
+            fmtbase(( long ) (i), 0, 0) /* want signed conversion */
 
     case cntl('H'): /* ^X^H show history info */
     {
@@ -1215,15 +1215,15 @@ search(Emacs_t *ep, genchar *out, int direction)
         direction = -1;
     if (i != 2) {
 #if SHOPT_MULTIBYTE
-        ed_external(string, ( char * )string);
+        ed_external(string, ( char * ) string);
 #endif /* SHOPT_MULTIBYTE */
-        strncpy(lstring, (( char * )string) + 2, SEARCHSIZE);
+        strncpy(lstring, (( char * ) string) + 2, SEARCHSIZE);
         lstring[SEARCHSIZE - 1] = 0;
         ep->prevdirection = direction;
     } else
         direction = ep->prevdirection;
     location
-    = hist_find(shgd->hist_ptr, ( char * )lstring, hline, 1, direction);
+    = hist_find(shgd->hist_ptr, ( char * ) lstring, hline, 1, direction);
     i = location.hist_command;
     if (i > 0) {
         hline = i;
@@ -1233,9 +1233,9 @@ search(Emacs_t *ep, genchar *out, int direction)
 #else
         hloff = location.hist_line;
 #endif /* ESH_NFIRST */
-        hist_copy(( char * )out, MAXLINE, hline, hloff);
+        hist_copy(( char * ) out, MAXLINE, hline, hloff);
 #if SHOPT_MULTIBYTE
-        ed_internal(( char * )out, out);
+        ed_internal(( char * ) out, out);
 #endif /* SHOPT_MULTIBYTE */
         return;
     }
@@ -1325,11 +1325,11 @@ draw(Emacs_t *ep, Draw_t option)
         int n;
         drawbuff[cur + 1] = 0;
 #    if SHOPT_MULTIBYTE
-        ed_external(drawbuff, ( char * )drawbuff);
+        ed_external(drawbuff, ( char * ) drawbuff);
 #    endif /*SHOPT_MULTIBYTE */
-        n = ed_histgen(ep->ed, ( char * )drawbuff);
+        n = ed_histgen(ep->ed, ( char * ) drawbuff);
 #    if SHOPT_MULTIBYTE
-        ed_internal(( char * )drawbuff, drawbuff);
+        ed_internal(( char * ) drawbuff, drawbuff);
 #    endif /*SHOPT_MULTIBYTE */
         if (ep->ed->hlist) {
             ed_histlist(ep->ed, n);

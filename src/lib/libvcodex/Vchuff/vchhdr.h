@@ -278,8 +278,8 @@
     }
 #define GRPFREQ(fr, o, f, n)                                                 \
     do {                                                                     \
-        Vchobj_t *oo = ( Vchobj_t * )(o);                                    \
-        Vcchar_t *ff = ( Vcchar_t * )(f);                                    \
+        Vchobj_t *oo = ( Vchobj_t * ) (o);                                   \
+        Vcchar_t *ff = ( Vcchar_t * ) (f);                                   \
         ssize_t nn = (ssize_t)(n);                                           \
         for (; nn > 0; nn -= VCH_SW)                                         \
             GRPfreq(fr, oo, ff, nn >= VCH_SW ? VCH_SW : nn);                 \
@@ -355,8 +355,8 @@
     }
 #define GRPSIZE(v, sz, o, f, n)                                              \
     do {                                                                     \
-        Vchobj_t *oo = ( Vchobj_t * )(o);                                    \
-        Vcchar_t *ff = ( Vcchar_t * )(f);                                    \
+        Vchobj_t *oo = ( Vchobj_t * ) (o);                                   \
+        Vcchar_t *ff = ( Vcchar_t * ) (f);                                   \
         ssize_t nn = (ssize_t)(n);                                           \
         v = 0;                                                               \
         for (; nn > 0; nn -= VCH_SW)                                         \

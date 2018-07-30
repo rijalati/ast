@@ -48,7 +48,7 @@ Tk_Window tkwin; /* Token for window;  this selects a
             ProtocolRevision(Tk_Display(tkwin)));
     sprintf(buffer2, " %d", VendorRelease(Tk_Display(tkwin)));
     Tcl_AppendResult(
-    interp, buffer, ServerVendor(Tk_Display(tkwin)), buffer2, ( char * )NULL);
+    interp, buffer, ServerVendor(Tk_Display(tkwin)), buffer2, ( char * ) NULL);
 }
 
 /*

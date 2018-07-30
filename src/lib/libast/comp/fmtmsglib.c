@@ -140,14 +140,14 @@ _mm_severity(void)
             else
                 n = 0;
             if (n) {
-                for (p = ( MM_table_t * )mm_severity_init; p->name; p++)
+                for (p = ( MM_table_t * ) mm_severity_init; p->name; p++)
                     ;
-                n += p - ( MM_table_t * )mm_severity_init + 1;
+                n += p - ( MM_table_t * ) mm_severity_init + 1;
                 if (severity = newof(0, MM_table_t, n, s - e)) {
-                    s = ( char * )severity + n * sizeof(MM_table_t);
+                    s = ( char * ) severity + n * sizeof(MM_table_t);
                     strcpy(s, e);
                     p = severity;
-                    for (q = ( MM_table_t * )mm_severity_init; q->name; q++)
+                    for (q = ( MM_table_t * ) mm_severity_init; q->name; q++)
                         *p++ = *q;
                     p->name = s;
                     c = 0;
@@ -180,9 +180,9 @@ _mm_severity(void)
             }
         }
         if (!severity)
-            severity = ( MM_table_t * )mm_severity_init;
+            severity = ( MM_table_t * ) mm_severity_init;
     }
-    return ( const MM_table_t * )severity;
+    return ( const MM_table_t * ) severity;
 }
 
 static char *
@@ -190,7 +190,7 @@ display(const MM_table_t *tab, int value, int mask)
 {
     while (tab->name) {
         if (value == tab->value || mask && (value & tab->value))
-            return ( char * )tab->display;
+            return ( char * ) tab->display;
         tab++;
     }
     return 0;
@@ -224,7 +224,7 @@ fmtmsg(long classification,
             for (;;) {
                 if (t = strchr(s, ':'))
                     *t = 0;
-                if (!(p = ( MM_table_t * )strlook(
+                if (!(p = ( MM_table_t * ) strlook(
                       mm_verb, sizeof(MM_table_t), s))) {
                     mm.mask = MM_default;
                     if (t)
@@ -243,7 +243,7 @@ fmtmsg(long classification,
     if (!(sp = sfstropen()))
         return MM_NOTOK;
     r = 0;
-    if (s = ( char * )label) {
+    if (s = ( char * ) label) {
         if (t = strchr(s, ':')) {
             if ((n = t - s) > MM_LABEL_1_MAX)
                 n = MM_LABEL_1_MAX;

@@ -40,7 +40,7 @@ static Rsobj_t *rsalloc(rs) Rs_t *rs;
     reg Rsobj_t *r, *endr;
 
     if (!(rs->free = r
-          = ( Rsobj_t * )vmalloc(rs->vm, RS_ALLOC * sizeof(Rsobj_t))))
+          = ( Rsobj_t * ) vmalloc(rs->vm, RS_ALLOC * sizeof(Rsobj_t))))
         return NIL(Rsobj_t *);
     for (endr = r + RS_ALLOC - 1; r < endr; ++r)
         r->right = r + 1;
@@ -62,10 +62,10 @@ ssize_t s_data;                                  /* data size		*/
 {
     reg Rsobj_t *r;
     reg ssize_t datalen;
-    reg uchar *data = ( uchar * )argdata;
+    reg uchar *data = ( uchar * ) argdata;
     reg ssize_t dsamelen = rs->disc->type & RS_DSAMELEN;
     reg ssize_t d = rs->disc->data;
-    int(*insertf) _ARG_(( Rs_t *, Rsobj_t * )) = rs->meth->insertf;
+    int(*insertf) _ARG_(( Rs_t *, Rsobj_t * ) ) = rs->meth->insertf;
     Rsdefkey_f defkeyf = rs->disc->defkeyf;
     ssize_t key = rs->disc->key;
     ssize_t keylen = rs->disc->keylen;
@@ -114,10 +114,10 @@ ssize_t s_data;                                  /* data size		*/
             && (r = (*rs->meth->listf)(rs))) { /* start a new sorted chain */
             Rsobj_t **list;
             list
-            = ( Rsobj_t ** )vmresize(rs->vm,
-                                     rs->list,
-                                     (rs->n_list + 1) * sizeof(Rsobj_t *),
-                                     VM_RSCOPY | VM_RSMOVE);
+            = ( Rsobj_t ** ) vmresize(rs->vm,
+                                      rs->list,
+                                      (rs->n_list + 1) * sizeof(Rsobj_t *),
+                                      VM_RSCOPY | VM_RSMOVE);
             if (!list)
                 return -1;
             else
@@ -145,8 +145,8 @@ ssize_t s_data;                                  /* data size		*/
                                     RS_READ,
                                     r,
                                     (rs->type & RS_LAST) && s_loop == datalen
-                                    ? ( Void_t * )r
-                                    : ( Void_t * )0,
+                                    ? ( Void_t * ) r
+                                    : ( Void_t * ) 0,
                                     rs->disc))
                         < 0)
                         return -1;
@@ -155,8 +155,8 @@ ssize_t s_data;                                  /* data size		*/
                         goto delete_key;
                     }
                     if (r->data != data) {
-                        if (!(endd = ( uchar * )vmalloc(rs->vm, r->datalen))
-                            || !(r->data = ( uchar * )memcpy(
+                        if (!(endd = ( uchar * ) vmalloc(rs->vm, r->datalen))
+                            || !(r->data = ( uchar * ) memcpy(
                                  endd, r->data, r->datalen)))
                             return -1;
                         r->key = r->data + key;
@@ -193,7 +193,7 @@ ssize_t s_data;                                  /* data size		*/
 #endif
             else /* records separated by some separator	*/
             {
-                if (!(endd = ( uchar * )memchr(data, ( int )d, s_loop)))
+                if (!(endd = ( uchar * ) memchr(data, ( int ) d, s_loop)))
                     break;
                 datalen = (endd - data) + 1;
             }
@@ -228,7 +228,7 @@ ssize_t s_data;                                  /* data size		*/
                             }
                         }
                         if (!m_key) {
-                            if (!(m_key = ( uchar * )vmalloc(rs->vm, k)))
+                            if (!(m_key = ( uchar * ) vmalloc(rs->vm, k)))
                                 return -1;
                             c_key = m_key;
                             s_key = k;
@@ -258,8 +258,8 @@ ssize_t s_data;                                  /* data size		*/
                                   RS_READ,
                                   r,
                                   (rs->type & RS_LAST) && s_loop == datalen
-                                  ? ( Void_t * )r
-                                  : ( Void_t * )0,
+                                  ? ( Void_t * ) r
+                                  : ( Void_t * ) 0,
                                   rs->disc))
                     < 0)
                     return -1;
@@ -271,9 +271,9 @@ ssize_t s_data;                                  /* data size		*/
                     RSFREE(rs, r);
                     goto delete_raw;
                 }
-                if (!(endd = ( uchar * )vmalloc(rs->vm, r->datalen))
+                if (!(endd = ( uchar * ) vmalloc(rs->vm, r->datalen))
                     || !(r->data
-                         = ( uchar * )memcpy(endd, r->data, r->datalen)))
+                         = ( uchar * ) memcpy(endd, r->data, r->datalen)))
                     return -1;
             }
 

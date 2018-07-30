@@ -55,13 +55,13 @@ struct Nest_s
 static void *
 nestmake(Dt_t *dt, void *p, Dtdisc_t *disc)
 {
-    Itvl_t *op = ( Itvl_t * )p;
+    Itvl_t *op = ( Itvl_t * ) p;
     Itvl_t *np;
-    int size = (( Nest_t * )disc)->iv->size;
+    int size = (( Nest_t * ) disc)->iv->size;
 
     if (!(np = newof(0, Itvl_t, 1, 2 * size)))
         return 0;
-    fvcpy(size, np->lo = ( unsigned char * )(np + 1), op->lo);
+    fvcpy(size, np->lo = ( unsigned char * ) (np + 1), op->lo);
     fvcpy(size, np->hi = np->lo + size, op->hi);
     np->data = op->data;
     return np;
@@ -71,9 +71,9 @@ nestmake(Dt_t *dt, void *p, Dtdisc_t *disc)
 static void
 nestfree(Dt_t *dt, void *obj, Dtdisc_t *disc)
 {
-    if ((( Nest_t * )disc)->freef && (( Itvl_t * )obj)->data)
-        (( Nest_t * )disc)
-        ->freef((( Nest_t * )disc)->iv, (( Itvl_t * )obj)->data);
+    if ((( Nest_t * ) disc)->freef && (( Itvl_t * ) obj)->data)
+        (( Nest_t * ) disc)
+        ->freef((( Nest_t * ) disc)->iv, (( Itvl_t * ) obj)->data);
     free(obj);
 }
 
@@ -83,11 +83,11 @@ nestcmp(Dt_t *dt, void *o1, void *o2, Dtdisc_t *disc)
 {
     Itvl_t *i1;
     Itvl_t *i2;
-    int size = (( Nest_t * )disc)->iv->size;
+    int size = (( Nest_t * ) disc)->iv->size;
     int l;
     int h;
 
-    if ((i1 = ( Itvl_t * )o1) == (i2 = ( Itvl_t * )o2))
+    if ((i1 = ( Itvl_t * ) o1) == (i2 = ( Itvl_t * ) o2))
         return 0;
     if (fvcmp(size, i1->hi, i2->lo) < 0) /* i1 is to the left of i2	*/
         return -1;
@@ -124,12 +124,12 @@ nestset(Iv_t *iv, unsigned char *lo, unsigned char *hi, void *data)
     Itvl_t *it;
     int size = iv->size;
 
-    if (!iv || !(nst = ( Nest_t * )iv->data))
+    if (!iv || !(nst = ( Nest_t * ) iv->data))
         return -1;
     itvl.lo = lo;
     itvl.hi = hi;
     itvl.data = data;
-    if (!(it = ( Itvl_t * )dtsearch(nst->dt, &itvl))) {
+    if (!(it = ( Itvl_t * ) dtsearch(nst->dt, &itvl))) {
         nst->changed = 1;
         return dtinsert(nst->dt, &itvl) ? 0 : -1;
     } else if (fvcmp(size, it->lo, lo) || fvcmp(size, it->hi, hi))
@@ -151,11 +151,11 @@ nestdel(Iv_t *iv, unsigned char *lo, unsigned char *hi)
     Itvl_t *it;
     int size = iv->size;
 
-    if (!(nst = ( Nest_t * )iv->data))
+    if (!(nst = ( Nest_t * ) iv->data))
         return -1;
     itvl.lo = lo;
     itvl.hi = hi;
-    if (!(it = ( Itvl_t * )dtsearch(nst->dt, &itvl))
+    if (!(it = ( Itvl_t * ) dtsearch(nst->dt, &itvl))
         || fvcmp(size, it->lo, lo) || fvcmp(size, it->hi, hi))
         return -1;
     nst->changed = 1;
@@ -174,8 +174,8 @@ nest2flat(Iv_t *iv, Nest_t *nst)
     if (!(nst->flat = ivopen(&nst->disc, ivmeth("flat"), iv->size, 0)))
         return -1;
     /* insert "in order" all intervals into the Ivflat handle */
-    for (it = ( Itvl_t * )dtfirst(nst->dt); it;
-         it = ( Itvl_t * )dtnext(nst->dt, it))
+    for (it = ( Itvl_t * ) dtfirst(nst->dt); it;
+         it = ( Itvl_t * ) dtnext(nst->dt, it))
         ivset(nst->flat, it->lo, it->hi, it->data);
     nst->changed = 0;
     return 0;
@@ -186,7 +186,7 @@ nestget(Iv_t *iv, unsigned char *pt)
 {
     Nest_t *nst;
 
-    if (!(nst = ( Nest_t * )iv->data)
+    if (!(nst = ( Nest_t * ) iv->data)
         || nst->changed && nest2flat(iv, nst) < 0)
         return 0;
     return nst->flat ? ivget(nst->flat, pt) : 0;
@@ -197,7 +197,7 @@ nestseg(Iv_t *iv, unsigned char *pt)
 {
     Nest_t *nst;
 
-    if (!(nst = ( Nest_t * )iv->data)
+    if (!(nst = ( Nest_t * ) iv->data)
         || nst->changed && nest2flat(iv, nst) < 0)
         return 0;
     return nst->flat ? ivseg(nst->flat, pt) : 0;
@@ -225,10 +225,10 @@ nestevent(Iv_t *iv, int type, void *data)
         nst->iv = iv;
         nst->disc = *iv->disc;
         nst->disc.freef = 0;
-        iv->data = ( void * )nst;
+        iv->data = ( void * ) nst;
         break;
     case IV_CLOSE:
-        if ((nst = ( Nest_t * )iv->data)) {
+        if ((nst = ( Nest_t * ) iv->data)) {
             if (nst->flat)
                 ivclose(nst->flat);
             if (nst->dt)

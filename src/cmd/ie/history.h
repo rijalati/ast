@@ -74,7 +74,7 @@ p_str();
 #    else
 #        define nam_strval(s) getenv("s")
 #    endif /* __STDC__ */
-#    define NIL (( char * )0)
+#    define NIL (( char * ) 0)
 #    define sh_fail ed_failed
 #    define sh_copy ed_movstr
 #    ifdef PROTO

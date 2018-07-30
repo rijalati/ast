@@ -138,11 +138,11 @@ static Vcalias_t *zipalias(s) char *s;         /* spec of new aliases	*/
             b2 = e2 = 0;
         if (e1 <= b1 || e3 <= b3)
             goto skip_line;
-        if (!(al = ( Vcalias_t * )malloc(sizeof(Vcalias_t) + e1 - b1 + 1 + e3
-                                         - b3 + 1 + e2 - b2 + 1)))
+        if (!(al = ( Vcalias_t * ) malloc(sizeof(Vcalias_t) + e1 - b1 + 1 + e3
+                                          - b3 + 1 + e2 - b2 + 1)))
             break;
 
-        al->name = ( char * )(al + 1);
+        al->name = ( char * ) (al + 1);
         memcpy(al->name, s + b1, e1 - b1);
         al->name[e1 - b1] = 0;
         al->value = al->name + e1 - b1 + 1;
@@ -344,7 +344,7 @@ Void_t *disc;
     if (!walkf)
         return -1;
     for (; al; al = al->next)
-        if ((rv = (*walkf)(( Void_t * )0, al->name, al->value, disc)) < 0)
+        if ((rv = (*walkf)(( Void_t * ) 0, al->name, al->value, disc)) < 0)
             return rv;
     return 0;
 }

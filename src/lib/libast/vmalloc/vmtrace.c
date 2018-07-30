@@ -65,7 +65,7 @@ size_t align;       /* alignment			*/
     unsigned int threadid = asothreadid();
 #    define SLOP 64
 
-    if (oldaddr == ( Vmuchar_t * )(-1)) /* printing busy blocks */
+    if (oldaddr == ( Vmuchar_t * ) (-1)) /* printing busy blocks */
     {
         type = 0;
         oldaddr = NIL(Vmuchar_t *);
@@ -86,8 +86,8 @@ size_t align;       /* alignment			*/
     = (*_Vmstrcpy)(bufp, (*_Vmitoa)(oldaddr ? VMLONG(oldaddr) : 0L, 0), ':');
     bufp
     = (*_Vmstrcpy)(bufp, (*_Vmitoa)(newaddr ? VMLONG(newaddr) : 0L, 0), ':');
-    bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t )size, 1), ':');
-    bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t )align, 1), ':');
+    bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t ) size, 1), ':');
+    bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t ) align, 1), ':');
     bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(VMLONG(vm), 0), ':');
     if (type & VM_MTBEST)
         bufp = (*_Vmstrcpy)(bufp, "b", ':');
@@ -119,7 +119,7 @@ size_t align;       /* alignment			*/
         }
         bufp = (*_Vmstrcpy)(bufp, file, ',');
         bufp = (*_Vmstrcpy)(bufp, "line", '=');
-        bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t )line, 1), 0);
+        bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t ) line, 1), 0);
         comma = 1;
     }
     if (func) {
@@ -127,9 +127,9 @@ size_t align;       /* alignment			*/
             *bufp++ = ',';
         bufp = (*_Vmstrcpy)(bufp, "func", '=');
 #    if 1
-        bufp = (*_Vmstrcpy)(bufp, ( const char * )func, 0);
+        bufp = (*_Vmstrcpy)(bufp, ( const char * ) func, 0);
 #    else
-        bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t )func, 0), 0);
+        bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t ) func, 0), 0);
 #    endif
         comma = 1;
     }
@@ -137,14 +137,14 @@ size_t align;       /* alignment			*/
         if (comma)
             *bufp++ = ',';
         bufp = (*_Vmstrcpy)(bufp, "tid", '=');
-        bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t )threadid, 1), 0);
+        bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t ) threadid, 1), 0);
         comma = 1;
     }
     if (Pid >= 0) {
         if (comma)
             *bufp++ = ',';
         bufp = (*_Vmstrcpy)(bufp, "pid", '=');
-        bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t )Pid, 1), 0);
+        bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t ) Pid, 1), 0);
         comma = 1;
     }
     if (comma)
@@ -181,7 +181,7 @@ long n2;
     }
 
     bufp = (*_Vmstrcpy)(bufp, "pid", '=');
-    bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( long )getpid(), 1), ':');
+    bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( long ) getpid(), 1), ':');
 
     *bufp++ = '\n';
     write(2, buf, (bufp - buf));

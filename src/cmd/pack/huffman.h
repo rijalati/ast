@@ -62,7 +62,7 @@ huffdecode(Huff_t *, Sfio_t *, Sfio_t *, int);
 Sfio_t *
 huffdisc(Sfio_t *);
 
-#    define huffend(hp) free(( void * )(hp))
+#    define huffend(hp) free(( void * ) (hp))
 #    define huffisize(hp) ((hp)->insize)
 #    define huffosize(hp) ((hp)->outsize)
 #    define huffhsize(hp) ((hp)->maxlev + (hp)->nchars + 7)

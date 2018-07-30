@@ -171,14 +171,14 @@
 #    define BGP_ORIGIN_egp 'e'
 #    define BGP_ORIGIN_igp 'i'
 
-#    define BGPAIGP(r) (( Bgpnum_t * )((r)->data + (r)->aigp.offset))
-#    define BGPCLUSTER(r) (( Bgpnum_t * )((r)->data + (r)->cluster.offset))
+#    define BGPAIGP(r) (( Bgpnum_t * ) ((r)->data + (r)->aigp.offset))
+#    define BGPCLUSTER(r) (( Bgpnum_t * ) ((r)->data + (r)->cluster.offset))
 #    define BGPCOMMUNITY(r)                                                  \
-        (( Bgpasn_t * )((r)->data + (r)->community.offset))
-#    define BGPEXTENDED(r) (( Bgpasn_t * )((r)->data + (r)->extended.offset))
-#    define BGPLABELS(r) (( Bgpasn_t * )((r)->data + (r)->labels.offset))
-#    define BGPPATH(r) (( Bgpasn_t * )((r)->data + (r)->path.offset))
-#    define BGPPATH32(r) (( Bgpnum_t * )((r)->data + (r)->path32.offset))
+        (( Bgpasn_t * ) ((r)->data + (r)->community.offset))
+#    define BGPEXTENDED(r) (( Bgpasn_t * ) ((r)->data + (r)->extended.offset))
+#    define BGPLABELS(r) (( Bgpasn_t * ) ((r)->data + (r)->labels.offset))
+#    define BGPPATH(r) (( Bgpasn_t * ) ((r)->data + (r)->path.offset))
+#    define BGPPATH32(r) (( Bgpnum_t * ) ((r)->data + (r)->path32.offset))
 
 typedef uint16_t Bgpasn_t;
 typedef int16_t Bgpoff_t;

@@ -11,7 +11,7 @@ TkshMapName(char *name)
     Namval_t *np;
 
     if (strlen(name) >= NAMEBUFLEN) {
-        mapname = ( char * )malloc(strlen(name) + 5);
+        mapname = ( char * ) malloc(strlen(name) + 5);
         memcpy(mapname, namebuf, 4);
     }
     strcpy(mapname + 4, name);
@@ -54,16 +54,16 @@ int TclUpdateReturnInfo(iPtr) Interp *iPtr; /* Interpreter for which
     code = iPtr->returnCode;
     iPtr->returnCode = TCL_OK;
     if (code == TCL_ERROR) {
-        Tcl_SetVar2(( Tcl_Interp * )iPtr,
+        Tcl_SetVar2(( Tcl_Interp * ) iPtr,
                     "errorCode",
-                    ( char * )NULL,
+                    ( char * ) NULL,
                     (iPtr->errorCode != NULL) ? iPtr->errorCode : "NONE",
                     TCL_GLOBAL_ONLY);
         iPtr->flags |= ERROR_CODE_SET;
         if (iPtr->errorInfo != NULL) {
-            Tcl_SetVar2(( Tcl_Interp * )iPtr,
+            Tcl_SetVar2(( Tcl_Interp * ) iPtr,
                         "errorInfo",
-                        ( char * )NULL,
+                        ( char * ) NULL,
                         iPtr->errorInfo,
                         TCL_GLOBAL_ONLY);
             iPtr->flags |= ERR_IN_PROGRESS;
@@ -131,7 +131,7 @@ char *cmd; /* Pointer to TCL command to interpret. */
     int flags;     /* Interp->evalFlags value when the
                     * procedure was called. */
     int result;    /* Return value. */
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     char *termPtr;       /* Contains character just after the
                           * last one in the command. */
     char *cmdStart;      /* Points to first non-blank char. in
@@ -160,7 +160,7 @@ char *cmd; /* Pointer to TCL command to interpret. */
      * result if there are no commands in the command string.
      */
 
-    Tcl_FreeResult(( Tcl_Interp * )iPtr);
+    Tcl_FreeResult(( Tcl_Interp * ) iPtr);
     iPtr->result = iPtr->resultSpace;
     iPtr->resultSpace[0] = 0;
     result = TCL_OK;
@@ -172,7 +172,7 @@ char *cmd; /* Pointer to TCL command to interpret. */
     pv.buffer = copyStorage;
     pv.end = copyStorage + NUM_CHARS - 1;
     pv.expandProc = TclExpandParseValue;
-    pv.clientData = ( ClientData )NULL;
+    pv.clientData = ( ClientData ) NULL;
 
     src = cmd;
     flags = iPtr->evalFlags;
@@ -256,7 +256,7 @@ char *cmd; /* Pointer to TCL command to interpret. */
              */
 
             maxArgs = argSize - argc - 2;
-            result = TclParseWords(( Tcl_Interp * )iPtr,
+            result = TclParseWords(( Tcl_Interp * ) iPtr,
                                    src,
                                    flags,
                                    maxArgs,
@@ -286,7 +286,7 @@ char *cmd; /* Pointer to TCL command to interpret. */
             }
             argc += newArgs;
             if (newArgs < maxArgs) {
-                argv[argc] = ( char * )NULL;
+                argv[argc] = ( char * ) NULL;
                 break;
             }
 
@@ -296,12 +296,12 @@ char *cmd; /* Pointer to TCL command to interpret. */
 
             argSize *= 2;
             newArgv
-            = ( char ** )ckalloc(( unsigned )argSize * sizeof(char *));
+            = ( char ** ) ckalloc(( unsigned ) argSize * sizeof(char *));
             for (i = 0; i < argc; i++) {
                 newArgv[i] = argv[i];
             }
             if (argv != argStorage) {
-                ckfree(( char * )argv);
+                ckfree(( char * ) argv);
             }
             argv = newArgv;
         }
@@ -345,7 +345,7 @@ char *cmd; /* Pointer to TCL command to interpret. */
                                  "invalid command name \"",
                                  argv[0],
                                  "\"",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 result = TCL_ERROR;
                 goto done;
             }
@@ -355,7 +355,7 @@ char *cmd; /* Pointer to TCL command to interpret. */
             argv[0] = "unknown";
             argc++;
         }
-        cmdPtr = ( Command * )Tcl_GetHashValue(hPtr);
+        cmdPtr = ( Command * ) Tcl_GetHashValue(hPtr);
 
         /*
          * Call trace procedures, if any.
@@ -410,10 +410,10 @@ char *cmd; /* Pointer to TCL command to interpret. */
             } else
                 dprintfArgs("Tcl_Eval (Tcl direct)", argc, argv);
             /* NOTE: 2008-03-16 &sh is a cheat here */
-            bd = *( Shbltin_t * )(( Interp * )interp)->shbltin;
+            bd = *( Shbltin_t * ) (( Interp * ) interp)->shbltin;
             bd.shp = &sh;
             bd.ptr = nv->nvfun;
-            result = (*(( ShellProc_t )nv->nvalue))(argc, argv, &bd);
+            result = (*(( ShellProc_t ) nv->nvalue))(argc, argv, &bd);
             if (f) {
                 sfstack(sfstdout, NIL(Sfio_t *));
                 sfputc(f, 0); /* null terminate */
@@ -436,7 +436,7 @@ char *cmd; /* Pointer to TCL command to interpret. */
                 cmd = Tcl_Merge(argc, argv);
                 TkshSetListMode(oldMode);
                 dprintf(("Tcl_Eval (ksh): %s\n", cmd));
-                if ((tclcommand = sfopen(( Sfio_t * )0, cmd, "s")))
+                if ((tclcommand = sfopen(( Sfio_t * ) 0, cmd, "s")))
                     sh_eval(tclcommand, 0x8000); /* closed in sh_eval */
                 iPtr->interpType = INTERP_TCL;
                 /* TkshSetListMode(oldMode); */
@@ -452,7 +452,7 @@ char *cmd; /* Pointer to TCL command to interpret. */
                                      "invalid command name \"",
                                      argv[0],
                                      "\"",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     result = TCL_ERROR;
                     goto done;
                 }
@@ -461,8 +461,8 @@ char *cmd; /* Pointer to TCL command to interpret. */
                 }
                 argv[0] = "unknown";
                 argc++;
-                result = (*(( ShellProc_t )nv->nvalue))(
-                argc, argv, ( void * )nv->nvfun);
+                result = (*(( ShellProc_t ) nv->nvalue))(
+                argc, argv, ( void * ) nv->nvfun);
             }
         }
 #endif
@@ -481,10 +481,10 @@ done:
      */
 
     if (pv.buffer != copyStorage) {
-        ckfree(( char * )pv.buffer);
+        ckfree(( char * ) pv.buffer);
     }
     if (argv != argStorage) {
-        ckfree(( char * )argv);
+        ckfree(( char * ) argv);
     }
     iPtr->numLevels--;
     if (iPtr->numLevels == 0) {

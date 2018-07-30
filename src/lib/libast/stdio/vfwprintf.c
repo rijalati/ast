@@ -47,7 +47,8 @@ vfwprintf(Sfio_t *f, const wchar_t *fmt, va_list args)
                 v = -1;
             else {
                 n = mbstowcs(NiL, x, 0);
-                if (w = ( wchar_t * )sfreserve(f, n * sizeof(wchar_t) + 1, 0))
+                if (w
+                    = ( wchar_t * ) sfreserve(f, n * sizeof(wchar_t) + 1, 0))
                     v = mbstowcs(w, x, n + 1);
                 else
                     v = -1;

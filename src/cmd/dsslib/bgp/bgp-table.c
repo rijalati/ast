@@ -49,7 +49,7 @@ tableident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
     Bgpnum_t addr;
     unsigned char bits;
 
-    s = ( char * )buf;
+    s = ( char * ) buf;
     e = s + n;
     for (;;) {
         for (;;) {
@@ -95,7 +95,7 @@ tableopen(Dssfile_t *file, Dssdisc_t *disc)
     }
     state->route[0].bits = -1;
     state->v6 = file->caller == file;
-    file->data = ( void * )state;
+    file->data = ( void * ) state;
     return 0;
 }
 
@@ -106,7 +106,7 @@ tableopen(Dssfile_t *file, Dssdisc_t *disc)
 static int
 tableread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Tablestate_t *state = ( Tablestate_t * )file->data;
+    Tablestate_t *state = ( Tablestate_t * ) file->data;
     Bgproute_t *rp;
     char *s;
     char *p;
@@ -205,7 +205,7 @@ tableread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 static int
 tablewrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
-    Bgproute_t *rp = ( Bgproute_t * )record->data;
+    Bgproute_t *rp = ( Bgproute_t * ) record->data;
 
     switch (
     rp->attr

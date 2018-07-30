@@ -91,14 +91,14 @@
      ? state.tmppchar                                                        \
      : (state.mam.statix ? mamcanon(x) : pathcanon(x, 0, 0)))
 #define clrbit(v, b) ((v) &= ~(1L << (b)))
-#define getar(name) (( Dir_t * )hashget(table.ar, (name)))
-#define getbound(name) (( char * )hashget(table.bound, (name)))
-#define getdir(id) (( Dir_t * )hashget(table.dir, ( char * )(id)))
-#define getfile(name) (( File_t * )hashget(table.file, (name)))
-#define getold(name) (( char * )hashget(table.oldvalue, (name)))
-#define getreg(name) (( int * )hashget(table.regress, (name)))
-#define getrule(name) (( Rule_t * )hashget(table.rule, (name)))
-#define getvar(name) (( Var_t * )hashget(table.var, (name)))
+#define getar(name) (( Dir_t * ) hashget(table.ar, (name)))
+#define getbound(name) (( char * ) hashget(table.bound, (name)))
+#define getdir(id) (( Dir_t * ) hashget(table.dir, ( char * ) (id)))
+#define getfile(name) (( File_t * ) hashget(table.file, (name)))
+#define getold(name) (( char * ) hashget(table.oldvalue, (name)))
+#define getreg(name) (( int * ) hashget(table.regress, (name)))
+#define getrule(name) (( Rule_t * ) hashget(table.rule, (name)))
+#define getvar(name) (( Var_t * ) hashget(table.var, (name)))
 #define message(x)                                                           \
     do                                                                       \
         if (error_info.trace < 0) {                                          \
@@ -123,19 +123,21 @@
         r->name = r->uname;                                                  \
         r->uname = 0;                                                        \
     } while (0)
-#define putbound(n, d) hashput(table.bound, ( char * )(n), ( char * )(d))
-#define putar(name, d) hashput(table.ar, (name), ( char * )(d))
-#define putdir(id, d) hashput(table.dir, ( char * )(id), ( char * )(d))
-#define putfile(name, f) hashput(table.file, ( char * )(name), ( char * )(f))
+#define putbound(n, d) hashput(table.bound, ( char * ) (n), ( char * ) (d))
+#define putar(name, d) hashput(table.ar, (name), ( char * ) (d))
+#define putdir(id, d) hashput(table.dir, ( char * ) (id), ( char * ) (d))
+#define putfile(name, f)                                                     \
+    hashput(table.file, ( char * ) (name), ( char * ) (f))
 #define putold(name, v)                                                      \
-    hashput(table.oldvalue, ( char * )(name), ( char * )(v))
+    hashput(table.oldvalue, ( char * ) (name), ( char * ) (v))
 #define putptr(f, p)                                                         \
-    (internal.ptr = ( char * )(p),                                           \
+    (internal.ptr = ( char * ) (p),                                          \
      sfwrite(f, &internal.ptr, sizeof(internal.ptr)))
 #define putreg(name, r)                                                      \
-    hashput(table.regress, ( char * )(name), ( char * )(r))
-#define putrule(name, r) hashput(table.rule, ( char * )(name), ( char * )(r))
-#define putvar(name, v) hashput(table.var, ( char * )(name), ( char * )(v))
+    hashput(table.regress, ( char * ) (name), ( char * ) (r))
+#define putrule(name, r)                                                     \
+    hashput(table.rule, ( char * ) (name), ( char * ) (r))
+#define putvar(name, v) hashput(table.var, ( char * ) (name), ( char * ) (v))
 #define reason(x)                                                            \
     do                                                                       \
         if (EXPLAIN)                                                         \
@@ -173,48 +175,48 @@
 #define freelist(x)                                                          \
     do {                                                                     \
         if (x) {                                                             \
-            (x)->rule = ( Rule_t * )internal.freelists;                      \
-            internal.freelists = ( char * )(x);                              \
+            (x)->rule = ( Rule_t * ) internal.freelists;                     \
+            internal.freelists = ( char * ) (x);                             \
         }                                                                    \
     } while (0)
 #define freerule(r)                                                          \
     do {                                                                     \
         zero(*r);                                                            \
-        *(( char ** )r) = internal.freerules;                                \
-        internal.freerules = ( char * )(r);                                  \
+        *(( char ** ) r) = internal.freerules;                               \
+        internal.freerules = ( char * ) (r);                                 \
     } while (0)
 #define freevar(v)                                                           \
     do {                                                                     \
         (v)->property &= (V_free | V_import);                                \
-        *(( char ** )v) = internal.freevars;                                 \
-        internal.freevars = ( char * )(v);                                   \
+        *(( char ** ) v) = internal.freevars;                                \
+        internal.freevars = ( char * ) (v);                                  \
     } while (0)
 
 #define newlist(x)                                                           \
     do {                                                                     \
-        if (x = ( List_t * )internal.freelists) {                            \
+        if (x = ( List_t * ) internal.freelists) {                           \
             if (x->next) {                                                   \
                 x = x->next;                                                 \
-                *(( char ** )internal.freelists) = ( char * )x->next;        \
+                *(( char ** ) internal.freelists) = ( char * ) x->next;      \
             } else                                                           \
-                internal.freelists = ( char * )x->rule;                      \
+                internal.freelists = ( char * ) x->rule;                     \
         } else                                                               \
-            x = ( List_t * )newchunk(&internal.freelists, sizeof(List_t));   \
+            x = ( List_t * ) newchunk(&internal.freelists, sizeof(List_t));  \
     } while (0)
 #define newrule(r)                                                           \
     do {                                                                     \
-        if (r = ( Rule_t * )internal.freerules) {                            \
-            internal.freerules = (*(( char ** )r));                          \
+        if (r = ( Rule_t * ) internal.freerules) {                           \
+            internal.freerules = (*(( char ** ) r));                         \
             zero(*r);                                                        \
         } else                                                               \
-            r = ( Rule_t * )newchunk(&internal.freerules, sizeof(Rule_t));   \
+            r = ( Rule_t * ) newchunk(&internal.freerules, sizeof(Rule_t));  \
     } while (0)
 #define newvar(v)                                                            \
     do {                                                                     \
-        if (v = ( Var_t * )internal.freevars) {                              \
-            internal.freevars = (*(( char ** )v));                           \
+        if (v = ( Var_t * ) internal.freevars) {                             \
+            internal.freevars = (*(( char ** ) v));                          \
         } else                                                               \
-            v = ( Var_t * )newchunk(&internal.freevars, sizeof(Var_t));      \
+            v = ( Var_t * ) newchunk(&internal.freevars, sizeof(Var_t));     \
     } while (0)
 
 #if CHAR_MIN < 0
@@ -240,13 +242,13 @@
 #define COMPILED 2  /* make object compiled (if necessary)	*/
 #define SAVED 3     /* make state saved			*/
 
-#define DELETE NiL         /* delete path component in edit()	*/
-#define KEEP (( char * )1) /* keep path component in edit()	*/
+#define DELETE NiL          /* delete path component in edit()	*/
+#define KEEP (( char * ) 1) /* keep path component in edit()	*/
 
-#define NOTIME TMX_NOTIME                /* not checked time			*/
-#define OLDTIME ((Time_t)(1))            /* oldest valid time			*/
-#define CURTIME TMX_NOW                  /* high resolution current time		*/
-#define CURSECS (( Seconds_t )time(NiL)) /* seconds resolution time	*/
+#define NOTIME TMX_NOTIME                 /* not checked time			*/
+#define OLDTIME ((Time_t)(1))             /* oldest valid time			*/
+#define CURTIME TMX_NOW                   /* high resolution current time		*/
+#define CURSECS (( Seconds_t ) time(NiL)) /* seconds resolution time	*/
 
 /*
  * VAR and RULE must not change -- the rest must be in sequence

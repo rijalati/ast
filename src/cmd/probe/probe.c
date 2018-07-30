@@ -247,7 +247,7 @@ verify(char *path, char *old, char *processor, int must)
                     break;
             }
             sfclose(of);
-            if (!nz && !oz && !touch(old, ( time_t )-1, ( time_t )-1, 0))
+            if (!nz && !oz && !touch(old, ( time_t ) -1, ( time_t ) -1, 0))
                 r = 0;
         }
         sfclose(nf);
@@ -419,7 +419,7 @@ main(int argc, char **argv)
         strcpy(script, path);
         strcpy(script + n, ".ini");
         if (!stat(script, &vs) && vs.st_size
-            && ptime < ( unsigned long )vs.st_mtime)
+            && ptime < ( unsigned long ) vs.st_mtime)
             ptime = vs.st_mtime;
         *(script + n) = 0;
         if (suid >= 0)
@@ -464,11 +464,11 @@ main(int argc, char **argv)
             error(ERROR_SYSTEM | 3, "%s: cannot delete", path);
     } else {
         if (!(options & (FORCE | TEST)) && ps.st_mode
-            && (ptime <= ( unsigned long )ps.st_mtime
-                || ptime <= ( unsigned long )ps.st_ctime
+            && (ptime <= ( unsigned long ) ps.st_mtime
+                || ptime <= ( unsigned long ) ps.st_ctime
                 || (ps.st_mode & S_IWUSR))) {
-            if (ptime <= ( unsigned long )ps.st_mtime
-                || ptime <= ( unsigned long )ps.st_ctime) {
+            if (ptime <= ( unsigned long ) ps.st_mtime
+                || ptime <= ( unsigned long ) ps.st_ctime) {
                 if (!options)
                     error(1, "%s: information already generated", path);
             } else if (!(options & OVERRIDE) && (ps.st_mode & S_IWUSR))
@@ -581,7 +581,7 @@ main(int argc, char **argv)
 
                         if (!stat(path, &ps)) {
                             ps.st_mtime
-                            = ( unsigned long )ps.st_mtime - 24 * 60 * 60;
+                            = ( unsigned long ) ps.st_mtime - 24 * 60 * 60;
                             touch(path, ps.st_mtime, ps.st_mtime, 0);
                         }
                     } else if (!verify(path, NiL, processor, 0)) {

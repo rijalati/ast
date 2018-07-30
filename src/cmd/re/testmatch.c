@@ -36,7 +36,7 @@ static const char id[]
 #if _PACKAGE_ast
 #    include <ast.h>
 #else
-#    define fmtident(s) (( char * )(s) + 10)
+#    define fmtident(s) (( char * ) (s) + 10)
 #endif
 
 #include <ctype.h>
@@ -54,7 +54,7 @@ static const char id[]
 #    ifdef __STDC__
 #        define NiL 0
 #    else
-#        define NiL ( char * )0
+#        define NiL ( char * ) 0
 #    endif
 #endif
 
@@ -243,7 +243,7 @@ static struct
 static void
 quote(char *s, int expand)
 {
-    unsigned char *u = ( unsigned char * )s;
+    unsigned char *u = ( unsigned char * ) s;
     int c;
 
     if (!u)
@@ -404,7 +404,7 @@ escape(char *s)
                 break;
             case 'u':
             case 'x':
-                q = *s == 'u' ? (s + 5) : ( char * )0;
+                q = *s == 'u' ? (s + 5) : ( char * ) 0;
                 c = 0;
                 e = s + 1;
                 while (!e || !q || s < q) {

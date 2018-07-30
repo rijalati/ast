@@ -32,8 +32,8 @@ fsetpos(Sfio_t *f, const fpos_t *pos)
 {
     STDIO_INT(f, "fsetpos", int, ( Sfio_t *, const fpos_t * ), (f, pos))
 
-    return sfseek(f, ( Sfoff_t )pos->_sf_offset, SF_PUBLIC)
-           == ( Sfoff_t )pos->_sf_offset
+    return sfseek(f, ( Sfoff_t ) pos->_sf_offset, SF_PUBLIC)
+           == ( Sfoff_t ) pos->_sf_offset
            ? 0
            : -1;
 }
@@ -45,8 +45,8 @@ fsetpos64(Sfio_t *f, const fpos64_t *pos)
 {
     STDIO_INT(f, "fsetpos64", int, ( Sfio_t *, const fpos64_t * ), (f, pos))
 
-    return sfseek(f, ( Sfoff_t )pos->_sf_offset, SF_PUBLIC)
-           == ( Sfoff_t )pos->_sf_offset
+    return sfseek(f, ( Sfoff_t ) pos->_sf_offset, SF_PUBLIC)
+           == ( Sfoff_t ) pos->_sf_offset
            ? 0
            : -1;
 }

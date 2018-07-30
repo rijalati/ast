@@ -36,7 +36,7 @@
 unsigned int
 memhash(const void *as, int n)
 {
-    const unsigned char *s = ( const unsigned char * )as;
+    const unsigned char *s = ( const unsigned char * ) as;
     const unsigned char *e = s + n;
     unsigned int c = 0;
 

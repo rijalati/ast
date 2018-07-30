@@ -88,13 +88,13 @@ svc_init(void *handle, int maxfd)
         error(ERROR_SYSTEM | 3, "out of space [clone]");
     state->con[fd].state = CON;
     csfd(fd, CS_POLL_READ);
-    return ( void * )state;
+    return ( void * ) state;
 }
 
 static int
 svc_connect(void *handle, int fd, CSID *id, int clone, char **args)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
 
     NoP(fd);
     NoP(clone);
@@ -113,7 +113,7 @@ svc_connect(void *handle, int fd, CSID *id, int clone, char **args)
 static int
 svc_read(void *handle, int fd)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
     Connection_t *con;
     int n;
     int xd;
@@ -182,7 +182,7 @@ svc_read(void *handle, int fd)
             err = ENOSYS;
             break;
         case MSG_read:
-            if (( long )msg.argv[2].number < 0)
+            if (( long ) msg.argv[2].number < 0)
                 err = EINVAL;
             else if ((n = con->size - con->offset) > 0) {
                 if (n > MAXIO)
@@ -221,7 +221,7 @@ svc_read(void *handle, int fd)
             st.st_size = con->size;
             st.st_mode = S_IRUSR | S_IWUSR;
             st.st_mtime = st.st_atime = st.st_ctime = cs.time;
-            op = ( char * )&st;
+            op = ( char * ) &st;
             break;
         case MSG_write:
             err = ENOSYS;
@@ -261,7 +261,7 @@ drop:
 static int
 svc_timeout(void *handle)
 {
-    State_t *state = ( State_t * )handle;
+    State_t *state = ( State_t * ) handle;
 
     if (!state->active) {
         if (state->dormant)

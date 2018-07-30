@@ -179,7 +179,7 @@ char *rem;          /* Path to glob-expand. */
                              dirName,
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -307,7 +307,7 @@ Tcl_DString *bufferPtr; /* May be used to hold result.  Must not hold
                              "variable to expand \"",
                              name,
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return NULL;
         }
         Tcl_DStringAppend(bufferPtr, dir, -1);
@@ -327,7 +327,7 @@ Tcl_DString *bufferPtr; /* May be used to hold result.  Must not hold
                              "user \"",
                              bufferPtr->string,
                              "\" doesn't exist",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             Tcl_DStringFree(bufferPtr);
             return NULL;
         }
@@ -370,7 +370,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " ?switches? name ?name ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     noComplain = 0;
@@ -386,7 +386,7 @@ char **argv;        /* Argument strings. */
                              "bad switch \"",
                              argv[firstArg],
                              "\": must be -nocomplain or --",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
     }
@@ -432,12 +432,12 @@ char **argv;        /* Argument strings. */
         Tcl_AppendResult(interp,
                          "no files matched glob pattern",
                          (argc == 2) ? " \"" : "s \"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         for (i = firstArg; i < argc; i++) {
-            Tcl_AppendResult(interp, sep, argv[i], ( char * )NULL);
+            Tcl_AppendResult(interp, sep, argv[i], ( char * ) NULL);
             sep = " ";
         }
-        Tcl_AppendResult(interp, "\"", ( char * )NULL);
+        Tcl_AppendResult(interp, "\"", ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;

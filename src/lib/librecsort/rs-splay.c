@@ -41,7 +41,7 @@ reg Rsobj_t *obj;
     reg int cmp;
     reg Rsobj_t *r, *root, *t, *l;
     Rsobj_t link;
-    reg Rssplay_t *splay = ( Rssplay_t * )rs->methdata;
+    reg Rssplay_t *splay = ( Rssplay_t * ) rs->methdata;
 
     obj->equal = NIL(Rsobj_t *);
     OBJHEAD(obj);
@@ -179,7 +179,7 @@ static Rsobj_t *splaylist(rs) Rs_t *rs;
 #endif
 {
     reg Rsobj_t *list;
-    reg Rssplay_t *splay = ( Rssplay_t * )rs->methdata;
+    reg Rssplay_t *splay = ( Rssplay_t * ) rs->methdata;
 
     if (!splay->root)
         return NIL(Rsobj_t *);

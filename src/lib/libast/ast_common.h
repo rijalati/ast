@@ -64,7 +64,7 @@
 
 /* _NIL_ simplifies defining nil pointers to a given type */
 #    ifndef _NIL_
-#        define _NIL_(x) (( x )0)
+#        define _NIL_(x) (( x ) 0)
 #    endif
 
 /* __INLINE__, if defined, is the inline keyword */

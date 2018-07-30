@@ -61,7 +61,7 @@ ppbuiltin(void)
         error(2, "%s: #(<identifier>...) expected", p);
         *p = 0;
     }
-    switch (op = ( int )hashget(pp.strtab, p)) {
+    switch (op = ( int ) hashget(pp.strtab, p)) {
     case V_DEFAULT:
         n = 0;
         p = pp.token = pp.valbuf;
@@ -178,7 +178,7 @@ ppbuiltin(void)
             for (in = pp.in; in; in = in->prev)
                 if ((in->type == IN_MACRO || in->type == IN_MULTILINE)
                     && (in->symbol->flags & SYM_FUNCTION)) {
-                    c = *(( unsigned char * )(pp.macp->arg[0] - 2));
+                    c = *(( unsigned char * ) (pp.macp->arg[0] - 2));
                     break;
                 }
             sfsprintf(p = pp.valbuf, MAXTOKEN, "%d", c);
@@ -233,7 +233,7 @@ ppbuiltin(void)
             }
             break;
         case V_VERSION:
-            p = ( char * )pp.version;
+            p = ( char * ) pp.version;
             break;
         case V_DIRECTIVE:
             pp.state |= NEWLINE;
@@ -251,7 +251,7 @@ ppbuiltin(void)
             sfsprintf(p = pp.valbuf, MAXTOKEN, "%ld", ppoption(a));
             break;
         case V_GETPRD:
-            p = (list = ( struct pplist * )hashget(pp.prdtab, a))
+            p = (list = ( struct pplist * ) hashget(pp.prdtab, a))
                 ? list->value
                 : "";
             break;

@@ -48,9 +48,9 @@
 #define WC_MB 0x20
 #define WC_ERR 0x40
 
-#define eol(c) (( c )&WC_NL)
-#define mbc(c) (( c )&WC_MB)
-#define spc(c) (( c )&WC_SP)
+#define eol(c) (( c ) &WC_NL)
+#define mbc(c) (( c ) &WC_MB)
+#define spc(c) (( c ) &WC_SP)
 
 Wc_t *
 wc_init(int mode)
@@ -59,7 +59,7 @@ wc_init(int mode)
     int w;
     Wc_t *wp;
 
-    if (!(wp = ( Wc_t * )stakalloc(sizeof(Wc_t))))
+    if (!(wp = ( Wc_t * ) stakalloc(sizeof(Wc_t))))
         return 0;
     if (!mbwide())
         wp->mb = 0;
@@ -99,7 +99,7 @@ wc_init(int mode)
 static void
 invalid(const char *file, int byte, int nlines)
 {
-    error_info.file = ( char * )file;
+    error_info.file = ( char * ) file;
     error_info.line = nlines;
     error(1, "0x%02x: invalid multibyte character byte", byte);
     error_info.file = 0;
@@ -192,14 +192,14 @@ wc_count(Wc_t *wp, Sfio_t *fd, const char *file)
                         break;
                     x = -1;
                 } else if ((!o || mberrno(&wp->q) == E2BIG)
-                           && o < ( ssize_t )sizeof(side)) {
+                           && o < ( ssize_t ) sizeof(side)) {
                     if (!buff)
                         o = 0;
                     else if (o)
                         memcpy(side, cp, o);
                     cp = side + o;
                     if (!(buff
-                          = ( unsigned char * )sfreserve(fd, SF_UNBOUND, 0))
+                          = ( unsigned char * ) sfreserve(fd, SF_UNBOUND, 0))
                         || (n = sfvalue(fd)) <= 0) {
                         if ((nchars - longest) > wp->longest)
                             wp->longest = nchars - longest;
@@ -258,7 +258,7 @@ wc_count(Wc_t *wp, Sfio_t *fd, const char *file)
                || wp->mb > 0
                   && !(wp->mode & (WC_MBYTE | WC_WORDS | WC_LONGEST))) {
         if (!(wp->mode & (WC_MBYTE | WC_WORDS | WC_LONGEST))) {
-            while ((cp = ( unsigned char * )sfreserve(fd, SF_UNBOUND, 0))
+            while ((cp = ( unsigned char * ) sfreserve(fd, SF_UNBOUND, 0))
                    && (c = sfvalue(fd)) > 0) {
                 nchars += c;
                 endbuff = cp + c;
@@ -275,7 +275,7 @@ wc_count(Wc_t *wp, Sfio_t *fd, const char *file)
             }
         } else {
             while (
-            (cp = buff = ( unsigned char * )sfreserve(fd, SF_UNBOUND, 0))
+            (cp = buff = ( unsigned char * ) sfreserve(fd, SF_UNBOUND, 0))
             && (c = sfvalue(fd)) > 0) {
                 nchars += c;
                 /* check to see whether first character terminates word */
@@ -340,7 +340,7 @@ wc_count(Wc_t *wp, Sfio_t *fd, const char *file)
         lastchar = 0;
         start = (endbuff = side) + 1;
         xspace = iswspace(0xa0) || iswspace(0x85);
-        while ((cp = buff = ( unsigned char * )sfreserve(fd, SF_UNBOUND, 0))
+        while ((cp = buff = ( unsigned char * ) sfreserve(fd, SF_UNBOUND, 0))
                && (c = sfvalue(fd)) > 0) {
             nbytes += c;
             nchars += c;

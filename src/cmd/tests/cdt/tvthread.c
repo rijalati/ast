@@ -50,20 +50,20 @@ static int Nthreads;
 Void_t *
 mymemory(Dt_t *dt, Void_t *data, size_t size, Dtdisc_t *disc)
 {
-    return vmresize((( Mydisc_t * )disc)->vm, data, size, 0);
+    return vmresize((( Mydisc_t * ) disc)->vm, data, size, 0);
 }
 
 /* compare two objects by their integer keys */
 static int
 mycompare(Dt_t *dt, Void_t *key1, Void_t *key2, Dtdisc_t *disc)
 {
-    return *(( int * )key1) - *(( int * )key2);
+    return *(( int * ) key1) - *(( int * ) key2);
 }
 
 unsigned int
 myhash(Dt_t *dt, Void_t *key, Dtdisc_t *disc)
 {
-    return *(( unsigned * )key);
+    return *(( unsigned * ) key);
 }
 
 /* open a shared dictionary */
@@ -78,15 +78,15 @@ opendictionary(Mydisc_t *dc)
         terror("Couldn't create vmalloc region");
 
     /* discipline for objects identified by their decimal values */
-    dc->disc.key = ( ssize_t )DTOFFSET(Obj_t, value);
-    dc->disc.size = ( ssize_t )sizeof(int);
+    dc->disc.key = ( ssize_t ) DTOFFSET(Obj_t, value);
+    dc->disc.size = ( ssize_t ) sizeof(int);
     dc->disc.link = -1;
-    dc->disc.makef = ( Dtmake_f )0;
-    dc->disc.freef = ( Dtfree_f )0;
+    dc->disc.makef = ( Dtmake_f ) 0;
+    dc->disc.freef = ( Dtfree_f ) 0;
     dc->disc.comparf = mycompare;
     dc->disc.hashf = myhash;
     dc->disc.memoryf = mymemory;
-    dc->disc.eventf = ( Dtevent_f )0;
+    dc->disc.eventf = ( Dtevent_f ) 0;
     dc->vm = vm;
 
     if (!(dt
@@ -108,7 +108,7 @@ volley(void *arg)
     while (Nthreads < N_THREADS)
         asorelax(1);
 
-    if ((deldt = ( int )(( long )arg)) < 0 || deldt > 1)
+    if ((deldt = ( int ) (( long ) arg)) < 0 || deldt > 1)
         terror("Thread number must be 0 or 1, not %d", deldt);
     insdt = !deldt;
 
@@ -172,7 +172,7 @@ tmain()
     }
 
     for (p = 0; p < N_THREADS; ++p)
-        pthread_create(&thread[p], 0, volley, ( void * )(( long )(p % 2)));
+        pthread_create(&thread[p], 0, volley, ( void * ) (( long ) (p % 2)));
 
     for (p = 0; p < N_THREADS; ++p)
         pthread_join(thread[p], 0);

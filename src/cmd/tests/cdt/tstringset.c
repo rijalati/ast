@@ -54,7 +54,7 @@ tmain()
         Perm[i] = i;
 #if RANDOM
     for (i = N_obj; i > 1; --i) {
-        k = (( unsigned int )rand()) % i;
+        k = (( unsigned int ) rand()) % i;
         t = Perm[k];
         Perm[k] = Perm[i - 1];
         Perm[i - 1] = t;
@@ -82,8 +82,8 @@ tmain()
             if (dtsize(dt) != i + 1)
                 terror("Bad size=%d, should be %d", k, i + 1);
             for (k = 0; k < 1000; ++k) {
-                sprintf(tmp, Pat, (( unsigned int )rand()) % (i + 1));
-                if (!(ks = ( char * )dtsearch(dt, tmp)))
+                sprintf(tmp, Pat, (( unsigned int ) rand()) % (i + 1));
+                if (!(ks = ( char * ) dtsearch(dt, tmp)))
                     terror("Not finding '%s'", tmp);
             }
         }
@@ -91,7 +91,7 @@ tmain()
 
     /* search in order of insertion */
     for (Count = 0, i = 0; i < N_obj; ++i) {
-        if (!(ks = ( char * )dtsearch(dt, Key[i])))
+        if (!(ks = ( char * ) dtsearch(dt, Key[i])))
             terror("Not finding '%s'", Key[i]);
         if (strcmp(ks, Key[i]) == 0)
             Count += 1;
@@ -101,8 +101,8 @@ tmain()
 
     /* search in a random order */
     for (Count = 0, i = 0; i < N_obj; ++i) {
-        sprintf(tmp, Pat, (( unsigned int )rand()) % N_obj);
-        if (!(ks = ( char * )dtsearch(dt, tmp)))
+        sprintf(tmp, Pat, (( unsigned int ) rand()) % N_obj);
+        if (!(ks = ( char * ) dtsearch(dt, tmp)))
             terror("Not finding '%s'", Key[i]);
         if (strcmp(ks, tmp) == 0)
             Count += 1;
@@ -113,7 +113,7 @@ tmain()
     /* search in increasing order */
     for (Count = 0, i = 0; i < N_obj; ++i) {
         sprintf(tmp, Pat, i);
-        if (!(ks = ( char * )dtsearch(dt, tmp)))
+        if (!(ks = ( char * ) dtsearch(dt, tmp)))
             terror("Not finding '%s'", tmp);
         if (strcmp(ks, tmp) == 0)
             Count += 1;

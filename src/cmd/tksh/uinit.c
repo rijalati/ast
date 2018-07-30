@@ -52,20 +52,20 @@ tksh_userinit(Shell_t *shp, int subshell)
     args[1] = NULL;
     if ((len >= 4) && (strcmp(end - 4, "tksh") == 0))
         /* b_tkinit(0, (char **) 0, (void *) 0); */
-        b_tkinit(1, args, ( Shbltin_t * )0);
+        b_tkinit(1, args, ( Shbltin_t * ) 0);
     else if ((len >= 6) && (strcmp(end - 6, "tclksh") == 0))
         /* b_tclinit(0, (char **) 0, (void *) 0); */
-        b_tclinit(1, args, ( Shbltin_t * )0);
+        b_tclinit(1, args, ( Shbltin_t * ) 0);
     else {
-        sh_addbuiltin("tclinit", b_tclinit, ( void * )0);
-        sh_addbuiltin("tkinit", b_tkinit, ( void * )0);
+        sh_addbuiltin("tclinit", b_tclinit, ( void * ) 0);
+        sh_addbuiltin("tkinit", b_tkinit, ( void * ) 0);
     }
 #else
-    sh_addbuiltin("tkinit", b_tkinit, ( void * )0);
+    sh_addbuiltin("tkinit", b_tkinit, ( void * ) 0);
     if ((len >= 6) && (strcmp(end - 6, "tclksh") == 0))
-        b_tclinit(0, ( char ** )0, ( Shbltin_t * )0);
+        b_tclinit(0, ( char ** ) 0, ( Shbltin_t * ) 0);
     else
-        sh_addbuiltin("tclinit", b_tclinit, ( void * )0);
+        sh_addbuiltin("tclinit", b_tclinit, ( void * ) 0);
 #endif
 }
 

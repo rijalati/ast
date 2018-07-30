@@ -99,7 +99,7 @@
 #define QL 01
 #define QU 02
 
-#define S2I_umax (~(( S2I_unumber )0))
+#define S2I_umax (~(( S2I_unumber ) 0))
 
 #if S2I_unsigned
 #    define S2I_type S2I_unumber
@@ -235,7 +235,7 @@ int base;
 #    endif
 #endif
 {
-    unsigned char *s = ( unsigned char * )a;
+    unsigned char *s = ( unsigned char * ) a;
 #if S2I_size
     unsigned char *z = s + size;
 #endif
@@ -260,7 +260,7 @@ int base;
 #endif
 
 #if S2I_multiplier
-    base = basep ? *(( unsigned char * )basep) : 0;
+    base = basep ? *(( unsigned char * ) basep) : 0;
 #else
     if (base > 36 && base <= SF_RADIX) {
         static int conformance = -1;
@@ -356,7 +356,7 @@ int base;
                 break;
             else if (!p && (s - b) > 4) {
                 if (e)
-                    *e = ( char * )s - 1;
+                    *e = ( char * ) s - 1;
                 if (overflow) {
                     errno = ERANGE;
 #if S2I_unsigned
@@ -414,7 +414,7 @@ int base;
      * optional qualifier suffix
      */
 
-    if (S2I_valid(s) && s > ( unsigned char * )(a + 1)) {
+    if (S2I_valid(s) && s > ( unsigned char * ) (a + 1)) {
         base = 0;
         for (;;) {
             if (!(base & QL) && (c == 'l' || c == 'L')) {
@@ -446,7 +446,7 @@ int base;
          * optional multiplier suffix
          */
 
-        if (m < 0 || s == ( unsigned char * )(a + 1))
+        if (m < 0 || s == ( unsigned char * ) (a + 1))
             s--;
         else {
             x = m != 1;
@@ -535,7 +535,7 @@ int base;
                     v = 0;
                     overflow = 1;
                 } else
-                    v = (( S2I_unumber )1) << shift;
+                    v = (( S2I_unumber ) 1) << shift;
             }
             if (v) {
                 if (MPYOVER(n, v))
@@ -573,17 +573,17 @@ int base;
     }
 #endif
     if (e)
-        *e = ( char * )s;
+        *e = ( char * ) s;
     if (overflow) {
 #if !S2I_unsigned
         if (negative) {
             if (x << 1)
                 errno = ERANGE;
-            return ( S2I_type )S2I_min;
+            return ( S2I_type ) S2I_min;
         }
 #endif
         errno = ERANGE;
-        return ( S2I_type )S2I_max;
+        return ( S2I_type ) S2I_max;
     }
     return negative ? -n : n;
 }

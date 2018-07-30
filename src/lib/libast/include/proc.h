@@ -78,7 +78,8 @@
          | ((a) & ((PROC_ARG_NULL << PROC_ARG_BIT) | PROC_ARG_NULL)))
 #    define PROC_op2(o, a, b)                                                \
         (((o) << (2 * PROC_ARG_BIT))                                         \
-         | ((( b )&PROC_ARG_NULL) << PROC_ARG_BIT) | (( a )&PROC_ARG_NULL))
+         | ((( b ) &PROC_ARG_NULL) << PROC_ARG_BIT)                          \
+         | (( a ) &PROC_ARG_NULL))
 
 #    define PROC_FD_CLOSE(p, f) PROC_op2(PROC_fd_dup | (f), p, PROC_ARG_NULL)
 #    define PROC_FD_CTTY(f) PROC_op1(PROC_fd_ctty, f)
@@ -91,7 +92,7 @@
 #    define PROC_OP(x)                                                       \
         (((x) >> (2 * PROC_ARG_BIT)) & ((1 << PROC_OP_BIT) - 1))
 #    define PROC_ARG(x, n)                                                   \
-        ((n) ? (((x) >> ((( n )-1) * PROC_ARG_BIT)) & PROC_ARG_NULL)         \
+        ((n) ? (((x) >> ((( n ) -1) * PROC_ARG_BIT)) & PROC_ARG_NULL)        \
              : (((x) & ~((1 << (2 * PROC_ARG_BIT)) - 1))                     \
                 == ~((1 << (2 * PROC_ARG_BIT)) - 1))                         \
                ? (-1)                                                        \

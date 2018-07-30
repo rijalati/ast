@@ -50,7 +50,7 @@ tmain()
         terror("Can't open temp file");
     if (sffileno(f) >= 0)
         terror("Attempt to create file detected");
-    if (sfseek(f, ( Sfoff_t )8, SEEK_SET) < 0)
+    if (sfseek(f, ( Sfoff_t ) 8, SEEK_SET) < 0)
         terror("Can't seek on temp file");
     if (sffileno(f) >= 0)
         terror("Attempt to create file detected");

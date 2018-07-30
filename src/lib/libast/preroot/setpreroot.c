@@ -56,7 +56,7 @@ setpreroot(char **argv, const char *dir)
         if (av = newof(0, char *, argc, 0)) {
             ap = av;
             *ap++ = PR_COMMAND;
-            *ap++ = ( char * )dir;
+            *ap++ = ( char * ) dir;
             *ap++ = cmd;
             while (*ap++ = *argv++)
                 ;

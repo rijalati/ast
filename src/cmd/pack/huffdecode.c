@@ -83,7 +83,7 @@ huffdecode(Huff_t *hp, Sfio_t *input, Sfio_t *output, int size)
     }
     /* set up output buffers for faster access */
     if (!(outp = outbuff
-          = ( unsigned char * )sfreserve(output, SF_UNBOUND, SF_LOCKR)))
+          = ( unsigned char * ) sfreserve(output, SF_UNBOUND, SF_LOCKR)))
         return (sfvalue(output));
     n = sfvalue(output);
     if (size >= 0) {
@@ -94,7 +94,8 @@ huffdecode(Huff_t *hp, Sfio_t *input, Sfio_t *output, int size)
     outend = outp + n;
     /* set up input buffers for faster access */
     infile = input;
-    if (!(inp = inbuff = ( unsigned char * )sfreserve(infile, SF_UNBOUND, 0)))
+    if (!(inp = inbuff
+          = ( unsigned char * ) sfreserve(infile, SF_UNBOUND, 0)))
         return (sfvalue(infile));
     inend = inp + sfvalue(infile);
     buffer = hp->buffer;
@@ -138,7 +139,7 @@ huffdecode(Huff_t *hp, Sfio_t *input, Sfio_t *output, int size)
                     sfread(infile, inbuff, inp - inbuff);
                     return (hp->outsize - insize);
                 }
-                if (!(outp = outbuff = ( unsigned char * )sfreserve(
+                if (!(outp = outbuff = ( unsigned char * ) sfreserve(
                       output, SF_UNBOUND, SF_LOCKR)))
                     return (-1);
                 n = sfvalue(output);
@@ -202,7 +203,7 @@ getbuff(void)
 {
     int n;
     unsigned char *cp;
-    if (cp = ( unsigned char * )sfreserve(infile, SF_UNBOUND, 0))
+    if (cp = ( unsigned char * ) sfreserve(infile, SF_UNBOUND, 0))
         inbuff = cp;
     n = sfvalue(infile);
     if (!cp && n < 0)

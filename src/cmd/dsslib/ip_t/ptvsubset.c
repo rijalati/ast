@@ -32,19 +32,19 @@ ptvsubset(Ptv_t *a, Ptv_t *b)
     Ptvprefix_t *ap;
     Ptvprefix_t *bp;
 
-    ap = ( Ptvprefix_t * )dtfirst(a->dict);
-    bp = ( Ptvprefix_t * )dtfirst(b->dict);
+    ap = ( Ptvprefix_t * ) dtfirst(a->dict);
+    bp = ( Ptvprefix_t * ) dtfirst(b->dict);
     while (ap) {
         if (!bp || fvcmp(a->size, ap->max, bp->min) < 0
             || fvcmp(a->size, ap->min, bp->min) < 0)
             return 0;
         if (fvcmp(a->size, ap->max, bp->max) < 0)
-            ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
+            ap = ( Ptvprefix_t * ) dtnext(a->dict, ap);
         else if (fvcmp(a->size, ap->max, bp->max) > 0)
-            bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
+            bp = ( Ptvprefix_t * ) dtnext(b->dict, bp);
         else {
-            ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
-            bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
+            ap = ( Ptvprefix_t * ) dtnext(a->dict, ap);
+            bp = ( Ptvprefix_t * ) dtnext(b->dict, bp);
         }
     }
     return 1;

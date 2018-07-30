@@ -76,14 +76,14 @@ typedef struct _sieve_s
 static Vcmtarg_t _Siargs[]
 = { { "delta",
       "Delta compression with approximate matching",
-      ( Void_t * )VCS_DIFF },
-    { "reverse", "Allowing reverse matching", ( Void_t * )VCS_REVERSE },
+      ( Void_t * ) VCS_DIFF },
+    { "reverse", "Allowing reverse matching", ( Void_t * ) VCS_REVERSE },
     { "map",
       "Specifying byte pairs to map for matching",
-      ( Void_t * )VCS_MAP },
+      ( Void_t * ) VCS_MAP },
     { "mmin",
       "Setting amount of exact match before approximate matching",
-      ( Void_t * )VCS_MMIN },
+      ( Void_t * ) VCS_MMIN },
     { NIL(char *), "Delta compression with exact matching", NIL(Void_t *) } };
 
 /* code and decode addresses of matches */
@@ -147,7 +147,7 @@ ssize_t n;         /* number of fragments		*/
     int md, ty;
     Vcchar_t *cmap
     = (vcpa->type & type & VCLZ_MAP) ? vcpa->cmap : NIL(Vcchar_t *);
-    Sieve_t *si = ( Sieve_t * )vcpa;
+    Sieve_t *si = ( Sieve_t * ) vcpa;
 
     if (n <= 0) /* nothing to do */
         return 0;
@@ -281,9 +281,9 @@ Void_t **del;
     DEBUG_PRINT(2, "mmin=%d\n", si->mmin);
 
     sz = disc ? disc->size : 0;
-    si->vcpa.src = sz == 0 ? NIL(Vcchar_t *) : ( Vcchar_t * )disc->data;
+    si->vcpa.src = sz == 0 ? NIL(Vcchar_t *) : ( Vcchar_t * ) disc->data;
     si->vcpa.nsrc = sz;
-    si->vcpa.tar = ( Vcchar_t * )tar;
+    si->vcpa.tar = ( Vcchar_t * ) tar;
     si->vcpa.ntar = ntar;
     si->vcpa.mmin = si->mmin;
     si->vcpa.cmap = si->cmap;
@@ -457,7 +457,7 @@ Void_t **out;
 
     /* get source data, if any */
     dz = disc ? disc->size : 0;
-    si->vcpa.src = dz == 0 ? NIL(Vcchar_t *) : ( Vcchar_t * )disc->data;
+    si->vcpa.src = dz == 0 ? NIL(Vcchar_t *) : ( Vcchar_t * ) disc->data;
     si->vcpa.nsrc = dz;
 
     vcioinit(&io, del, ndel);
@@ -707,11 +707,11 @@ static int sieverestore(mtcd) Vcmtcode_t *mtcd;
     if (sz == 0)
         args = NIL(char *);
     else {
-        if (!(args = ( char * )malloc(32 + sz)))
+        if (!(args = ( char * ) malloc(32 + sz)))
             return -1;
 
         for (k = 0; _Siargs[k].name; ++k)
-            if (_Siargs[k].data == ( Void_t * )VCS_MAP)
+            if (_Siargs[k].data == ( Void_t * ) VCS_MAP)
                 break;
         memcpy(args, _Siargs[k].name, (n = strlen(_Siargs[k].name)));
         args[n] = '=';
@@ -744,10 +744,10 @@ Void_t *init;
     Vcmtcode_t *mtcd;
 
     if (type == VC_OPENING) {
-        if (!(si = ( Sieve_t * )calloc(1, sizeof(Sieve_t) + 256)))
+        if (!(si = ( Sieve_t * ) calloc(1, sizeof(Sieve_t) + 256)))
             RETURN(-1);
 
-        for (data = ( char * )init; data && *data;) {
+        for (data = ( char * ) init; data && *data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Siargs, &arg);
             switch (TYPECAST(int, arg->data)) {
             case VCS_REVERSE:
@@ -758,7 +758,7 @@ Void_t *init;
                 break;
             case VCS_MAP:
                 si->type |= VCS_MAP;
-                si->cmap = ( Vcchar_t * )(si + 1);
+                si->cmap = ( Vcchar_t * ) (si + 1);
                 for (z = 0; z < 256; ++z)
                     si->cmap[z] = z;
                 for (z = 0; val[z] && val[z + 1]; z += 2) {
@@ -768,7 +768,7 @@ Void_t *init;
                 break;
             case VCS_MMIN:
                 if (isdigit(*val))
-                    si->mmin = ( ssize_t )vcatoi(val);
+                    si->mmin = ( ssize_t ) vcatoi(val);
                 break;
             }
         }
@@ -794,13 +794,13 @@ Void_t *init;
         vcsetmtdata(vc, NIL(Sieve_t *));
         return 0;
     } else if (type == VC_EXTRACT) {
-        if (!(mtcd = ( Vcmtcode_t * )init))
+        if (!(mtcd = ( Vcmtcode_t * ) init))
             return -1;
         if ((mtcd->size = sieveextract(vc, &mtcd->data)) < 0)
             return -1;
         return 1;
     } else if (type == VC_RESTORE) {
-        if (!(mtcd = ( Vcmtcode_t * )init))
+        if (!(mtcd = ( Vcmtcode_t * ) init))
             return -1;
         return sieverestore(mtcd) < 0 ? -1 : 1;
     } else

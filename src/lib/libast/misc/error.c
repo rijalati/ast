@@ -119,7 +119,7 @@ setopt(void *a, const void *p, int n, const char *v)
 {
     NoP(a);
     if (p)
-        switch ((( Namval_t * )p)->value) {
+        switch ((( Namval_t * ) p)->value) {
         case OPT_BREAK:
         case OPT_CORE:
             if (n)
@@ -142,7 +142,7 @@ setopt(void *a, const void *p, int n, const char *v)
                 }
             else
                 error_state.breakpoint = 0;
-            if ((( Namval_t * )p)->value == OPT_CORE)
+            if ((( Namval_t * ) p)->value == OPT_CORE)
                 error_info.core = error_state.breakpoint;
             break;
         case OPT_CATALOG:
@@ -274,8 +274,8 @@ print(Sfio_t *sp, char *name, char *delim)
  */
 
 #define CONTEXT(f, p)                                                        \
-    ((( f )&ERROR_PUSH) ? (( Error_context_t * )&(p)->context->context)      \
-                        : (( Error_context_t * )(p)))
+    ((( f ) &ERROR_PUSH) ? (( Error_context_t * ) &(p)->context->context)    \
+                         : (( Error_context_t * ) (p)))
 
 static void
 context(Sfio_t *sp, Error_context_t *cp)
@@ -360,12 +360,12 @@ errorv(const char *id, int level, va_list ap)
     } else
         flags = 0;
     if ((flags & (ERROR_USAGE | ERROR_NOID)) == ERROR_NOID) {
-        format = ( char * )id;
+        format = ( char * ) id;
         id = 0;
     } else
         format = 0;
     if (id) {
-        catalog = ( char * )id;
+        catalog = ( char * ) id;
         if (!*catalog || *catalog == ':') {
             catalog = 0;
             library = 0;
@@ -378,7 +378,7 @@ errorv(const char *id, int level, va_list ap)
     if (catalog)
         id = 0;
     else {
-        id = ( const char * )error_info.id;
+        id = ( const char * ) error_info.id;
         catalog = error_info.catalog;
     }
     if (level < error_info.trace
@@ -459,8 +459,8 @@ errorv(const char *id, int level, va_list ap)
             sfprintf(stkstd,
                      " %05lu.%05lu.%05lu ",
                      d - error_info.time,
-                     ( unsigned long )us.tms_utime,
-                     ( unsigned long )us.tms_stime);
+                     ( unsigned long ) us.tms_utime,
+                     ( unsigned long ) us.tms_stime);
         }
 #endif
         switch (level) {

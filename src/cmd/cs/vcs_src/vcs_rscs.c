@@ -63,7 +63,7 @@ rscs_out(int argc, char **argv, char *ret, int *n)
         *n = sfsprintf(ret, *n, "E version %s not existed\n", vs.version);
         return (-1);
     }
-    ( void )unlink(vs.path);
+    ( void ) unlink(vs.path);
     if ((vs.fd = sfopen(NULL, vs.path, "w")) == NULL) {
         sfclose(rf.fd);
         *n = sfsprintf(ret, *n, "E %s cannot open for write\n", vs.path);
@@ -79,9 +79,9 @@ rscs_out(int argc, char **argv, char *ret, int *n)
     sfclose(rf.fd);
     sfclose(vs.fd);
     st = &(vs.tp->stat);
-    ( void )touch(vs.path, st->st_atime, st->st_mtime, 1);
-    ( void )chmod(vs.path, st->st_mode);
-    ( void )chown(vs.path, st->st_uid, st->st_gid);
+    ( void ) touch(vs.path, st->st_atime, st->st_mtime, 1);
+    ( void ) chmod(vs.path, st->st_mode);
+    ( void ) chown(vs.path, st->st_uid, st->st_gid);
     *n = sfsprintf(ret, *n, "I %s(%s) checkout\n", vs.path, vs.tp->version);
     return (0);
 }

@@ -377,7 +377,7 @@ b_date(int argc, char **argv, Shbltin_t *context)
             tm_info.flags |= TM_UTC;
             continue;
         case 'U':
-            unelapsed = ( int )opt_info.num;
+            unelapsed = ( int ) opt_info.num;
             continue;
         case 'z':
             listzones = tm_data.zone;
@@ -424,7 +424,7 @@ b_date(int argc, char **argv, Shbltin_t *context)
             else
                 e += ts - te;
         }
-        sfputr(sfstdout, fmtelapsed(( unsigned long )tmxsec(e), 1), '\n');
+        sfputr(sfstdout, fmtelapsed(( unsigned long ) tmxsec(e), 1), '\n');
         show = 1;
     } else if (unelapsed) {
         while (s = *argv++) {

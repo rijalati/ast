@@ -30,7 +30,7 @@ time_t t;
     int num;
 
     /* mm.dd.yy:nn 		*/
-    ( void )tmform(buf, "%x", &t);
+    ( void ) tmform(buf, "%x", &t);
     buf[2] = buf[5] = '.';
 
     if (list == NULL)
@@ -42,7 +42,7 @@ time_t t;
         if (strncmp(et->tag->version, buf, 8) == 0) {
             if (strlen(et->tag->version) > 8) {
                 s = et->tag->version + 9;
-                num = ( int )strtol(s, ( char ** )0, 0);
+                num = ( int ) strtol(s, ( char ** ) 0, 0);
                 if (num && num > seq)
                     seq = num;
             } else
@@ -143,7 +143,7 @@ domaininit()
     char *s;
     int i;
 
-    s = ( char * )malloc(strlen(DOMAINS) + 1);
+    s = ( char * ) malloc(strlen(DOMAINS) + 1);
     strcpy(s, DOMAINS);
     DomainTbl[NumDomain = chop(s, DomainTbl, MAXVCSDOMAIN, ' ')] = NULL;
     /* first entry is reserved */

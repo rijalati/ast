@@ -74,7 +74,7 @@ static const char usage[]
 #    ifdef NCC
 #        define NCCS NCC
 #    else
-#        define NCCS elementsof((( struct termio * )0)->c_cc)
+#        define NCCS elementsof((( struct termio * ) 0)->c_cc)
 #    endif
 #endif
 
@@ -718,7 +718,7 @@ static const Tty_t Ttable[] = {
 };
 
 #if CC_NATIVE == CC_ASCII
-#    define cntl(x) (((x) == '?') ? 0177 : (( x )&037))
+#    define cntl(x) (((x) == '?') ? 0177 : (( x ) &037))
 #else
 #    define cntl(x)                                                          \
         (                                                                    \
@@ -899,7 +899,7 @@ output(struct termios *sp, int flags)
             off = sp->c_cc[tp->mask];
             if (tp->flags & NL)
                 delim = '\n';
-            if (!flags && off == ( unsigned char )tty.c_cc[tp->mask])
+            if (!flags && off == ( unsigned char ) tty.c_cc[tp->mask])
                 continue;
             if (off == _POSIX_VDISABLE)
                 sfprintf(sfstdout, "%s = <undef>;%c", tp->name, delim);
@@ -991,7 +991,7 @@ gettchar(const char *cp)
     if (*cp == 0)
         return (-1);
     if (cp[1] == 0)
-        return (( unsigned )cp[0]);
+        return (( unsigned ) cp[0]);
     if (*cp == '^' && cp[1] && cp[2] == 0) {
         switch (cp[1]) {
         case '-':
@@ -1002,7 +1002,7 @@ gettchar(const char *cp)
     }
     if (streq(cp, "undef") || streq(cp, "<undef>"))
         return (-1);
-    return (*(( unsigned char * )cp));
+    return (*(( unsigned char * ) cp));
 }
 
 static void
@@ -1105,7 +1105,7 @@ set(char *argv[], struct termios *sp)
                 ERROR_exit(1), "%s: missing numeric argument", tp->name);
             }
             argv++;
-            c = ( int )strtol(cp, &ep, 10);
+            c = ( int ) strtol(cp, &ep, 10);
             if (*ep)
                 error(ERROR_exit(1),
                       "%s: %s: numeric argument expected",
@@ -1299,7 +1299,7 @@ b_stty(int argc, char **argv, Shbltin_t *context)
     for (;;) {
         switch (n = optget(argv, usage)) {
         case 'f':
-            fd = ( int )opt_info.num;
+            fd = ( int ) opt_info.num;
             continue;
         case 'a':
         case 'g':

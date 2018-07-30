@@ -33,7 +33,7 @@
 char *
 fmtmatch(const char *as)
 {
-    char *s = ( char * )as;
+    char *s = ( char * ) as;
     int c;
     char *t;
     char **p;

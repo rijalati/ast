@@ -54,7 +54,7 @@ getnow(void)
     now = tp.tv_sec + 1.e-6 * tp.tv_usec;
 
 #else
-    now = ( double )time(( time_t * )0);
+    now = ( double ) time(( time_t * ) 0);
 #endif /* timeofday */
     return (now + .001);
 }
@@ -68,7 +68,7 @@ setalarm(double t)
 #if defined(_lib_setitimer) && defined(ITIMER_REAL)
     struct itimerval tnew, told;
     tnew.it_value.tv_sec = t;
-    tnew.it_value.tv_usec = 1.e6 * (t - ( double )tnew.it_value.tv_sec);
+    tnew.it_value.tv_usec = 1.e6 * (t - ( double ) tnew.it_value.tv_sec);
     if (t && tnew.it_value.tv_sec == 0 && tnew.it_value.tv_usec < 1000)
         tnew.it_value.tv_usec = 1000;
     tnew.it_interval.tv_sec = 0;
@@ -77,10 +77,10 @@ setalarm(double t)
         errormsg(SH_DICT, ERROR_system(1), e_alarm);
     t = told.it_value.tv_sec + 1.e-6 * told.it_value.tv_usec;
 #else
-    unsigned seconds = ( unsigned )t;
+    unsigned seconds = ( unsigned ) t;
     if (t && seconds < 1)
         seconds = 1;
-    t = ( double )alarm(seconds);
+    t = ( double ) alarm(seconds);
 #endif
     return (t);
 }
@@ -170,7 +170,7 @@ sigalrm(int sig)
     }
     if (!tpmin)
         signal(SIGALRM,
-               (sh.sigflag[SIGALRM] & SH_SIGFAULT) ? ( sh_sigfun_t )sh_fault
+               (sh.sigflag[SIGALRM] & SH_SIGFAULT) ? ( sh_sigfun_t ) sh_fault
                                                    : SIG_DFL);
     time_state &= ~IN_SIGALRM;
     errno = EINTR;
@@ -179,7 +179,7 @@ sigalrm(int sig)
 static void
 oldalrm(void *handle)
 {
-    Handler_t fn = *( Handler_t * )handle;
+    Handler_t fn = *( Handler_t * ) handle;
     free(handle);
     (*fn)(SIGALRM);
 }
@@ -193,13 +193,13 @@ sh_timeradd(unsigned long msec,
     Timer_t *tp;
     double t;
     Handler_t fn;
-    t = (( double )msec) / 1000.;
+    t = (( double ) msec) / 1000.;
     if (t <= 0 || !action)
-        return (( void * )0);
+        return (( void * ) 0);
     if (tp = tpfree)
         tpfree = tp->next;
-    else if (!(tp = ( Timer_t * )malloc(sizeof(Timer_t))))
-        return (( void * )0);
+    else if (!(tp = ( Timer_t * ) malloc(sizeof(Timer_t))))
+        return (( void * ) 0);
     tp->wakeup = getnow() + t;
     tp->incr = (flags ? t : 0);
     tp->action = action;
@@ -209,12 +209,12 @@ sh_timeradd(unsigned long msec,
     tptop = tp;
     if (!tpmin || tp->wakeup < tpmin->wakeup) {
         tpmin = tp;
-        fn = ( Handler_t )signal(SIGALRM, sigalrm);
-        if ((t = setalarm(t)) > 0 && fn && fn != ( Handler_t )sigalrm) {
-            Handler_t *hp = ( Handler_t * )malloc(sizeof(Handler_t));
+        fn = ( Handler_t ) signal(SIGALRM, sigalrm);
+        if ((t = setalarm(t)) > 0 && fn && fn != ( Handler_t ) sigalrm) {
+            Handler_t *hp = ( Handler_t * ) malloc(sizeof(Handler_t));
             if (hp) {
                 *hp = fn;
-                sh_timeradd(( long )(1000 * t), 0, oldalrm, ( void * )hp);
+                sh_timeradd(( long ) (1000 * t), 0, oldalrm, ( void * ) hp);
             }
         }
         tp = tptop;
@@ -227,7 +227,7 @@ sh_timeradd(unsigned long msec,
         if (tp != tptop)
             tp = 0;
     }
-    return (( void * )tp);
+    return (( void * ) tp);
 }
 
 /*
@@ -236,7 +236,7 @@ sh_timeradd(unsigned long msec,
 void
 timerdel(void *handle)
 {
-    Timer_t *tp = ( Timer_t * )handle;
+    Timer_t *tp = ( Timer_t * ) handle;
     if (tp)
         tp->action = 0;
     else {
@@ -244,10 +244,10 @@ timerdel(void *handle)
             tp->action = 0;
         if (tpmin) {
             tpmin = 0;
-            setalarm(( double )0);
+            setalarm(( double ) 0);
         }
         signal(SIGALRM,
-               (sh.sigflag[SIGALRM] & SH_SIGFAULT) ? ( sh_sigfun_t )sh_fault
+               (sh.sigflag[SIGALRM] & SH_SIGFAULT) ? ( sh_sigfun_t ) sh_fault
                                                    : SIG_DFL);
     }
 }

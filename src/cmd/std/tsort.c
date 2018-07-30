@@ -75,11 +75,11 @@ visit(Node_t *x)
         for (p = x->prereqs; p; p = p->next)
             if (visit(p->node)) {
                 cycle = 1;
-                error(2, " %s", hashname(( Hash_bucket_t * )x));
+                error(2, " %s", hashname(( Hash_bucket_t * ) x));
                 break;
             }
         x->state = NODE_DONE;
-        sfputr(sfstdout, hashname(( Hash_bucket_t * )x), '\n');
+        sfputr(sfstdout, hashname(( Hash_bucket_t * ) x), '\n');
         break;
     }
     return cycle;
@@ -108,7 +108,7 @@ tsort(Sfio_t *ip)
             for (b = s; (c = *s) && c != ' ' && c != '\t'; s++)
                 ;
             *s++ = 0;
-            if (!(x = ( Node_t * )hashlook(
+            if (!(x = ( Node_t * ) hashlook(
                   tab, b, HASH_CREATE | HASH_SIZE(sizeof(Node_t)), 0)))
                 error(ERROR_exit(1), "out of space [hash entry]");
             if (head) {
@@ -130,7 +130,7 @@ tsort(Sfio_t *ip)
         error(ERROR_exit(1), "odd data");
     if (pos = hashscan(tab, 0)) {
         while (hashnext(pos))
-            visit(( Node_t * )pos->bucket);
+            visit(( Node_t * ) pos->bucket);
         hashdone(pos);
     } else
         error(ERROR_exit(1), "hash error");

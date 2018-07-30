@@ -31,21 +31,21 @@ tmain()
     /* testing Dtdeque */
     if (!(dt = dtopen(&Disc, Dtdeque)))
         terror("dtopen deque");
-    if (( long )dtinsert(dt, 3L) != 3)
+    if (( long ) dtinsert(dt, 3L) != 3)
         terror("Dtdeque insert 3");
-    if (( long )dtappend(dt, 4L) != 4)
+    if (( long ) dtappend(dt, 4L) != 4)
         terror("Dtdeque append 4");
-    if (( long )dtinsert(dt, 2L) != 2)
+    if (( long ) dtinsert(dt, 2L) != 2)
         terror("Dtdeque insert 2");
-    if (( long )dtappend(dt, 5L) != 5)
+    if (( long ) dtappend(dt, 5L) != 5)
         terror("Dtdeque append 5");
-    if (( long )dtinsert(dt, 1L) != 1)
+    if (( long ) dtinsert(dt, 1L) != 1)
         terror("Dtdeque insert 1");
-    if (( long )dtappend(dt, 6L) != 6)
+    if (( long ) dtappend(dt, 6L) != 6)
         terror("Dtdeque append 6");
 
-    for (k = 1, i = ( long )dtfirst(dt); i != 0;
-         i = ( long )dtnext(dt, i), k += 1)
+    for (k = 1, i = ( long ) dtfirst(dt); i != 0;
+         i = ( long ) dtnext(dt, i), k += 1)
         if (i != k)
             terror("Unmatched elements");
     if (k != 7)

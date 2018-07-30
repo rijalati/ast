@@ -25,12 +25,12 @@ tmain()
     Sfio_t *op;
     int n;
 
-    if (!(ip = sfopen(( Sfio_t * )0, "/dev/null", "r")))
+    if (!(ip = sfopen(( Sfio_t * ) 0, "/dev/null", "r")))
         terror("/dev/null read open");
-    if (!(op = sfopen(( Sfio_t * )0, tstfile("sf", 0), "w")))
+    if (!(op = sfopen(( Sfio_t * ) 0, tstfile("sf", 0), "w")))
         terror("Write open");
 
-    n = ( int )sfmove(ip, op, SF_UNBOUND, -1);
+    n = ( int ) sfmove(ip, op, SF_UNBOUND, -1);
 
     if (n)
         terror("move count %d != 0", n);

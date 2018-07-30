@@ -49,8 +49,8 @@ Void_t *disc;
 #endif
 {
     int d;
-    Vchtree_t *o = *(( Vchtree_t ** )one);
-    Vchtree_t *t = *(( Vchtree_t ** )two);
+    Vchtree_t *o = *(( Vchtree_t ** ) one);
+    Vchtree_t *t = *(( Vchtree_t ** ) two);
 
     if ((d = o->freq - t->freq) != 0)
         return d;
@@ -72,8 +72,8 @@ int *runb;     /* the run byte if any	*/
     Vchtree_t *tree, **sort;
     Vchtree_t *f, *s, *p, *list, *tail, *head;
 
-    if (!(tree = ( Vchtree_t * )malloc(nsym * sizeof(Vchtree_t)))
-        || !(sort = ( Vchtree_t ** )malloc(nsym * sizeof(Vchtree_t *))))
+    if (!(tree = ( Vchtree_t * ) malloc(nsym * sizeof(Vchtree_t)))
+        || !(sort = ( Vchtree_t ** ) malloc(nsym * sizeof(Vchtree_t *))))
         return -1;
 
     /* construct list of elements with non-zero weights */
@@ -99,7 +99,7 @@ int *runb;     /* the run byte if any	*/
     if (notz <= 1) /* no Huffman code needed */
     {
         if (notz == 1 && runb)
-            *runb = ( int )(sort[0] - tree);
+            *runb = ( int ) (sort[0] - tree);
         free(tree);
         free(sort);
         return 0;

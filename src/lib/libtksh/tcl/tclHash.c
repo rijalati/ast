@@ -32,7 +32,7 @@
  */
 
 #define RANDOM_INDEX(tablePtr, i)                                            \
-    ((((( long )(i)) * 1103515245) >> (tablePtr)->downShift)                 \
+    ((((( long ) (i)) * 1103515245) >> (tablePtr)->downShift)                \
      & (tablePtr)->mask)
 
 /*
@@ -141,7 +141,7 @@ void Tcl_DeleteHashEntry(entryPtr) Tcl_HashEntry *entryPtr;
         }
     }
     entryPtr->tablePtr->numEntries--;
-    ckfree(( char * )entryPtr);
+    ckfree(( char * ) entryPtr);
 }
 
 /*
@@ -175,7 +175,7 @@ void Tcl_DeleteHashTable(tablePtr) Tcl_HashTable *tablePtr; /* Table to
         hPtr = tablePtr->buckets[i];
         while (hPtr != NULL) {
             nextPtr = hPtr->nextPtr;
-            ckfree(( char * )hPtr);
+            ckfree(( char * ) hPtr);
             hPtr = nextPtr;
         }
     }
@@ -185,7 +185,7 @@ void Tcl_DeleteHashTable(tablePtr) Tcl_HashTable *tablePtr; /* Table to
      */
 
     if (tablePtr->buckets != tablePtr->staticBuckets) {
-        ckfree(( char * )tablePtr->buckets);
+        ckfree(( char * ) tablePtr->buckets);
     }
 
     /*
@@ -326,7 +326,7 @@ char *Tcl_HashStats(tablePtr) Tcl_HashTable *tablePtr; /* Table for which to
      * Print out the histogram and a few other pieces of information.
      */
 
-    result = ( char * )ckalloc(( unsigned )((NUM_COUNTERS * 60) + 300));
+    result = ( char * ) ckalloc(( unsigned ) ((NUM_COUNTERS * 60) + 300));
     sprintf(result,
             "%d entries in table, %d buckets\n",
             tablePtr->numEntries,
@@ -499,9 +499,9 @@ int *newPtr;             /* Store info here telling whether a new
      */
 
     *newPtr = 1;
-    hPtr = ( Tcl_HashEntry * )ckalloc(
-    ( unsigned )(sizeof(Tcl_HashEntry) + strlen(key)
-                 - (sizeof(hPtr->key) - 1)));
+    hPtr = ( Tcl_HashEntry * ) ckalloc(
+    ( unsigned ) (sizeof(Tcl_HashEntry) + strlen(key)
+                  - (sizeof(hPtr->key) - 1)));
     hPtr->tablePtr = tablePtr;
     hPtr->bucketPtr = &(tablePtr->buckets[index]);
     hPtr->nextPtr = *hPtr->bucketPtr;
@@ -611,7 +611,7 @@ int *newPtr;             /* Store info here telling whether a new
      */
 
     *newPtr = 1;
-    hPtr = ( Tcl_HashEntry * )ckalloc(sizeof(Tcl_HashEntry));
+    hPtr = ( Tcl_HashEntry * ) ckalloc(sizeof(Tcl_HashEntry));
     hPtr->tablePtr = tablePtr;
     hPtr->bucketPtr = &(tablePtr->buckets[index]);
     hPtr->nextPtr = *hPtr->bucketPtr;
@@ -654,7 +654,7 @@ Tcl_HashTable *tablePtr; /* Table in which to lookup entry. */
 char *key;               /* Key to use to find matching entry. */
 {
     Tcl_HashEntry *hPtr;
-    int *arrayPtr = ( int * )key;
+    int *arrayPtr = ( int * ) key;
     int *iPtr1, *iPtr2;
     int index, count;
 
@@ -715,7 +715,7 @@ int *newPtr;             /* Store info here telling whether a new
                           * entry was created. */
 {
     Tcl_HashEntry *hPtr;
-    int *arrayPtr = ( int * )key;
+    int *arrayPtr = ( int * ) key;
     int *iPtr1, *iPtr2;
     int index, count;
 
@@ -751,9 +751,9 @@ int *newPtr;             /* Store info here telling whether a new
      */
 
     *newPtr = 1;
-    hPtr = ( Tcl_HashEntry * )ckalloc(
-    ( unsigned )(sizeof(Tcl_HashEntry) + (tablePtr->keyType * sizeof(int))
-                 - 4));
+    hPtr = ( Tcl_HashEntry * ) ckalloc(
+    ( unsigned ) (sizeof(Tcl_HashEntry) + (tablePtr->keyType * sizeof(int))
+                  - 4));
     hPtr->tablePtr = tablePtr;
     hPtr->bucketPtr = &(tablePtr->buckets[index]);
     hPtr->nextPtr = *hPtr->bucketPtr;
@@ -871,8 +871,8 @@ static void RebuildTable(tablePtr) Tcl_HashTable *tablePtr; /* Table to
      */
 
     tablePtr->numBuckets *= 4;
-    tablePtr->buckets = ( Tcl_HashEntry ** )ckalloc(
-    ( unsigned )(tablePtr->numBuckets * sizeof(Tcl_HashEntry *)));
+    tablePtr->buckets = ( Tcl_HashEntry ** ) ckalloc(
+    ( unsigned ) (tablePtr->numBuckets * sizeof(Tcl_HashEntry *)));
     for (count = tablePtr->numBuckets, newChainPtr = tablePtr->buckets;
          count > 0;
          count--, newChainPtr++) {
@@ -917,6 +917,6 @@ static void RebuildTable(tablePtr) Tcl_HashTable *tablePtr; /* Table to
      */
 
     if (oldBuckets != tablePtr->staticBuckets) {
-        ckfree(( char * )oldBuckets);
+        ckfree(( char * ) oldBuckets);
     }
 }

@@ -53,7 +53,7 @@ static const signed char utf8tab[256] = {
 size_t
 utf8towc(wchar_t *wp, const char *str, size_t n)
 {
-    unsigned char *sp = ( unsigned char * )str;
+    unsigned char *sp = ( unsigned char * ) str;
     int m;
     int i;
     int c;
@@ -63,7 +63,7 @@ utf8towc(wchar_t *wp, const char *str, size_t n)
         goto nul;
     if ((m = utf8tab[*sp]) > 0) {
         if (m > n)
-            return ( size_t )-2;
+            return ( size_t ) -2;
         if (wp) {
             if (m == 1)
                 *wp = *sp;
@@ -90,7 +90,7 @@ utf8towc(wchar_t *wp, const char *str, size_t n)
     }
 invalid:
     errno = EILSEQ;
-    return ( size_t )-1;
+    return ( size_t ) -1;
 }
 
 size_t
@@ -100,7 +100,7 @@ utf8toutf32(uint32_t *up, const char *str, size_t n)
     int r;
 
     if ((r = utf8towc(&wc, str, n)) > 0)
-        *up = ( uint32_t )wc;
+        *up = ( uint32_t ) wc;
     return r;
 }
 
@@ -111,7 +111,7 @@ utf8toutf32(uint32_t *up, const char *str, size_t n)
 size_t
 utf8toutf32v(uint32_t *up, const char *str)
 {
-    unsigned char *s = ( unsigned char * )str;
+    unsigned char *s = ( unsigned char * ) str;
 
     switch (utf8tab[*s]) {
     case 1:

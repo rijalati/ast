@@ -26,7 +26,7 @@
 #    define elementsof(x) (sizeof(x) / sizeof(x[0]))
 #endif
 #ifndef integralof
-#    define integralof(x) ((( char * )(x)) - (( char * )0))
+#    define integralof(x) ((( char * ) (x)) - (( char * ) 0))
 #endif
 
 #define N_OBJS 1000000
@@ -48,7 +48,7 @@ static void *
 consumer(void *arg)
 {
     Obj_t *obj;
-    unsigned int id = ( unsigned int )integralof(arg);
+    unsigned int id = ( unsigned int ) integralof(arg);
 
     while (1) {
         asolock(&Asolock, id, ASO_LOCK);
@@ -92,7 +92,7 @@ tmain()
 
     N_free = 0;
     for (i = 0; i < N_THREADS; ++i)
-        pthread_create(&thread[i], NULL, consumer, ( char * )0 + i + 1);
+        pthread_create(&thread[i], NULL, consumer, ( char * ) 0 + i + 1);
 
     for (i = 0; i < N_THREADS; ++i)
         pthread_join(thread[i], NULL);

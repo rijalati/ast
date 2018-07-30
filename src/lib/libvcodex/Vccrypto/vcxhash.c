@@ -63,7 +63,7 @@ _vcxmakekey(Vcchar_t *data, ssize_t dtsz, Vcchar_t *key, ssize_t kysz)
     if (!data)
         return 0;
     if (dtsz == 0) /* a null-terminated string */
-        if ((dtsz = strlen(( char * )data)) == 0)
+        if ((dtsz = strlen(( char * ) data)) == 0)
             return 0;
 
     if (!key || kysz <= 0)

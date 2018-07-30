@@ -36,7 +36,7 @@ main(int argc, char **argv)
     int n;
 
     while (s = *++argv) {
-        n = ( int )strtol(s, &e, 0);
+        n = ( int ) strtol(s, &e, 0);
         if (*e) {
             sfprintf(sfstderr, "%s: number expected", s);
             break;

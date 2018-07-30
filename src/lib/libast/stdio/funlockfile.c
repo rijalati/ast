@@ -28,5 +28,5 @@ funlockfile(Sfio_t *f)
 {
     STDIO_VOID(f, "funlockfile", void, ( Sfio_t * ), (f))
 
-    ( void )sfmutex(f, SFMTX_UNLOCK);
+    ( void ) sfmutex(f, SFMTX_UNLOCK);
 }

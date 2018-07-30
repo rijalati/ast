@@ -35,7 +35,7 @@ Void_t *disc;
 #endif
 {
     int d;
-    ssize_t *o = *(( ssize_t ** )one), *t = *(( ssize_t ** )two);
+    ssize_t *o = *(( ssize_t ** ) one), *t = *(( ssize_t ** ) two);
 
     return (d = *o - *t) != 0 ? d : o < t ? -1 : o > t ? 1 : 0;
 }
@@ -54,7 +54,7 @@ Vcbit_t *bits; /* encoding bits to be computed	*/
     ssize_t **sort;
     Vcbit_t b = 0;
 
-    if (!(sort = ( ssize_t ** )malloc(nsym * sizeof(ssize_t *))))
+    if (!(sort = ( ssize_t ** ) malloc(nsym * sizeof(ssize_t *))))
         return -1;
 
     for (notz = 0, i = 0; i < nsym; ++i) {

@@ -54,12 +54,12 @@ typedef unsigned short u4;
 /* Definitions for doing the crc four data bytes at a time. */
 #ifdef BYFOUR
 #    define REV(w)                                                           \
-        (((w) >> 24) + (((w) >> 8) & 0xff00) + ((( w )&0xff00) << 8)         \
-         + ((( w )&0xff) << 24))
+        (((w) >> 24) + (((w) >> 8) & 0xff00) + ((( w ) &0xff00) << 8)        \
+         + ((( w ) &0xff) << 24))
 local unsigned long
-crc32_little OF(( unsigned long, const unsigned char FAR *, unsigned ));
+crc32_little OF(( unsigned long, const unsigned char FAR *, unsigned ) );
 local unsigned long
-crc32_big OF(( unsigned long, const unsigned char FAR *, unsigned ));
+crc32_big OF(( unsigned long, const unsigned char FAR *, unsigned ) );
 #    define TBLS 8
 #else
 #    define TBLS 1
@@ -74,9 +74,9 @@ local void gf2_matrix_square OF((unsigned long *square, unsigned long *mat));
 
 local volatile int crc_table_empty = 1;
 local unsigned long FAR crc_table[TBLS][256];
-local void make_crc_table OF(( void ));
+local void make_crc_table OF(( void ) );
 #    ifdef MAKECRCH
-local void write_table OF(( FILE *, const unsigned long FAR * ));
+local void write_table OF(( FILE *, const unsigned long FAR * ) );
 #    endif /* MAKECRCH */
 /*
   Generate tables for a byte-wise 32-bit CRC calculation on the polynomial:
@@ -128,7 +128,7 @@ make_crc_table()
 
         /* generate a crc for every 8-bit value */
         for (n = 0; n < 256; n++) {
-            c = ( unsigned long )n;
+            c = ( unsigned long ) n;
             for (k = 0; k < 8; k++)
                 c = c & 1 ? poly ^ (c >> 1) : c >> 1;
             crc_table[0][n] = c;
@@ -214,12 +214,12 @@ get_crc_table()
     if (crc_table_empty)
         make_crc_table();
 #endif /* DYNAMIC_CRC_TABLE */
-    return ( const unsigned long FAR * )crc_table;
+    return ( const unsigned long FAR * ) crc_table;
 }
 
 /* =========================================================================
  */
-#define DO1 crc = crc_table[0][(( int )crc ^ (*buf++)) & 0xff] ^ (crc >> 8)
+#define DO1 crc = crc_table[0][(( int ) crc ^ (*buf++)) & 0xff] ^ (crc >> 8)
 #define DO8                                                                  \
     DO1;                                                                     \
     DO1;                                                                     \
@@ -249,7 +249,7 @@ unsigned len;
         u4 endian;
 
         endian = 1;
-        if (*(( unsigned char * )(&endian)))
+        if (*(( unsigned char * ) (&endian)))
             return crc32_little(crc, buf, len);
         else
             return crc32_big(crc, buf, len);
@@ -294,14 +294,14 @@ unsigned len;
     u4 c;
     const u4 FAR *buf4;
 
-    c = ( u4 )crc;
+    c = ( u4 ) crc;
     c = ~c;
-    while (len && (( ptrdiff_t )buf & 3)) {
+    while (len && (( ptrdiff_t ) buf & 3)) {
         c = crc_table[0][(c ^ *buf++) & 0xff] ^ (c >> 8);
         len--;
     }
 
-    buf4 = ( const u4 FAR * )( const void FAR * )buf;
+    buf4 = ( const u4 FAR * ) ( const void FAR * ) buf;
     while (len >= 32) {
         DOLIT32;
         len -= 32;
@@ -310,14 +310,14 @@ unsigned len;
         DOLIT4;
         len -= 4;
     }
-    buf = ( const unsigned char FAR * )buf4;
+    buf = ( const unsigned char FAR * ) buf4;
 
     if (len)
         do {
             c = crc_table[0][(c ^ *buf++) & 0xff] ^ (c >> 8);
         } while (--len);
     c = ~c;
-    return ( unsigned long )c;
+    return ( unsigned long ) c;
 }
 
 /* =========================================================================
@@ -345,14 +345,14 @@ unsigned len;
     u4 c;
     const u4 FAR *buf4;
 
-    c = REV(( u4 )crc);
+    c = REV(( u4 ) crc);
     c = ~c;
-    while (len && (( ptrdiff_t )buf & 3)) {
+    while (len && (( ptrdiff_t ) buf & 3)) {
         c = crc_table[4][(c >> 24) ^ *buf++] ^ (c << 8);
         len--;
     }
 
-    buf4 = ( const u4 FAR * )( const void FAR * )buf;
+    buf4 = ( const u4 FAR * ) ( const void FAR * ) buf;
     buf4--;
     while (len >= 32) {
         DOBIG32;
@@ -363,14 +363,14 @@ unsigned len;
         len -= 4;
     }
     buf4++;
-    buf = ( const unsigned char FAR * )buf4;
+    buf = ( const unsigned char FAR * ) buf4;
 
     if (len)
         do {
             c = crc_table[4][(c >> 24) ^ *buf++] ^ (c << 8);
         } while (--len);
     c = ~c;
-    return ( unsigned long )(REV(c));
+    return ( unsigned long ) (REV(c));
 }
 
 #endif /* BYFOUR */

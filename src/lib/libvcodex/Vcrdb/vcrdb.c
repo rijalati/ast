@@ -99,28 +99,30 @@ typedef struct _rdb_s
 static Vcmtarg_t _Rdbargs[]
 = { { "fsep",
       "Field separator is defined as 'fsep=character'",
-      ( Void_t * )RDB_FSEP },
+      ( Void_t * ) RDB_FSEP },
     { "rsep",
       "Record separator is defined as 'rsep=character'",
-      ( Void_t * )RDB_RSEP },
+      ( Void_t * ) RDB_RSEP },
     { "schema",
       "Schema is defined as 'schema=[fldlen1,fldlen2,...]'",
-      ( Void_t * )RDB_SCHEMA },
+      ( Void_t * ) RDB_SCHEMA },
     { "align",
       "Field alignment is given as 'align=value'",
-      ( Void_t * )RDB_ALIGN },
+      ( Void_t * ) RDB_ALIGN },
     { "plain",
       "No reordering of field data based on dependency",
-      ( Void_t * )RDB_PLAIN },
-    { "pad", "Padding fields to uniform lengths", ( Void_t * )RDB_PAD },
+      ( Void_t * ) RDB_PLAIN },
+    { "pad", "Padding fields to uniform lengths", ( Void_t * ) RDB_PAD },
     { "whole",
       "Whole table is output or for secondary procesing",
-      ( Void_t * )RDB_WHOLE },
-    { "bwt", "Using BWT to compute transformation plan", ( Void_t * )RDB_BWT },
+      ( Void_t * ) RDB_WHOLE },
+    { "bwt",
+      "Using BWT to compute transformation plan",
+      ( Void_t * ) RDB_BWT },
 #if RDB_BDV
-    { "bdv", "Binh's field sorting method", ( Void_t * )RDB_BDV },
+    { "bdv", "Binh's field sorting method", ( Void_t * ) RDB_BDV },
 #endif
-    { 0, "Field and record separators to be computed", ( Void_t * )0 } };
+    { 0, "Field and record separators to be computed", ( Void_t * ) 0 } };
 
 #if __STD_C
 static ssize_t
@@ -181,7 +183,7 @@ Void_t **out;
     if (rc->info.fldn <= 0 && (rc->info.rsep <= 0 || rc->info.fsep <= 0)) {
         Vcrdformat_t *rdf;
         if (!(rdf = vcrdformat(
-              ( Vcchar_t * )data, size, rc->info.rsep, rc->algn, 1)))
+              ( Vcchar_t * ) data, size, rc->info.rsep, rc->algn, 1)))
             GOTO(done);
 
         if (rdf->fsep > 0 && rdf->rsep > 0) {
@@ -191,7 +193,7 @@ Void_t **out;
             if (rc->info.flen)
                 free(rc->info.flen);
             if ((rc->info.flen
-                 = ( ssize_t * )malloc(rdf->fldn * sizeof(ssize_t)))) {
+                 = ( ssize_t * ) malloc(rdf->fldn * sizeof(ssize_t)))) {
                 memcpy(rc->info.flen, rdf->fldz, rdf->fldn * sizeof(ssize_t));
                 rc->info.fldn = rdf->fldn;
             }
@@ -212,9 +214,10 @@ Void_t **out;
     }
 
     /* construct table */
-    if (!(tbl = vcrdparse(&rc->info, ( Vcchar_t * )data, ( ssize_t )size, 0)))
+    if (!(tbl
+          = vcrdparse(&rc->info, ( Vcchar_t * ) data, ( ssize_t ) size, 0)))
         return 0;
-    vc->undone -= (size = ( size_t )vcrdsize(tbl));
+    vc->undone -= (size = ( size_t ) vcrdsize(tbl));
 
     /* do field conversion as requested */
     for (f = 0; f < tbl->fldn; ++f) {
@@ -274,7 +277,7 @@ Void_t **out;
 
         if (!rc->fld
             && !(rc->fld
-                 = ( Rdbfield_t * )calloc(tbl->fldn, sizeof(Rdbfield_t))))
+                 = ( Rdbfield_t * ) calloc(tbl->fldn, sizeof(Rdbfield_t))))
             GOTO(done);
 
         /* coding each field separately */
@@ -447,8 +450,8 @@ Void_t **out;
         if (rc->cmpz == 0 || rc->rawz == 0) {
             rc->rawz = size;
             rc->cmpz = cmpz;
-        } else if (((( double )cmpz) / size)
-                   > 4 * ((( double )rc->cmpz) / rc->rawz)) {
+        } else if (((( double ) cmpz) / size)
+                   > 4 * ((( double ) rc->cmpz) / rc->rawz)) {
             vcrdfreeplan(rc->plan);
             rc->plan = NIL(Vcrdplan_t *);
             rc->rawz = rc->cmpz = 0;
@@ -517,7 +520,7 @@ Void_t **out;
 
         if (rc->info.flen) /* reset the schema data */
             free(rc->info.flen);
-        if (!(rc->info.flen = ( ssize_t * )calloc(z, sizeof(ssize_t))))
+        if (!(rc->info.flen = ( ssize_t * ) calloc(z, sizeof(ssize_t))))
             GOTO(done);
     }
 
@@ -537,24 +540,24 @@ Void_t **out;
     } else              /* variable fields */
     {
         if ((z = vciogetc(&io)) >= 0)
-            rc->info.rsep = ( Vcchar_t )z;
+            rc->info.rsep = ( Vcchar_t ) z;
         else
             GOTO(done);
         if ((z = vciogetc(&io)) >= 0)
-            rc->info.fsep = ( Vcchar_t )z;
+            rc->info.fsep = ( Vcchar_t ) z;
         else
             GOTO(done);
         if ((z = vciogetc(&io)) >= 0)
-            rc->info.dot = ( Vcchar_t )z;
+            rc->info.dot = ( Vcchar_t ) z;
         else
             GOTO(done);
         if ((z = vciogetc(&io)) >= 0)
-            rc->info.slash = ( Vcchar_t )z;
+            rc->info.slash = ( Vcchar_t ) z;
         else
             GOTO(done);
         for (f = 0; f < 10; ++f) {
             if ((z = vciogetc(&io)) >= 0)
-                rc->info.digit[f] = ( Vcchar_t )z;
+                rc->info.digit[f] = ( Vcchar_t ) z;
             else
                 GOTO(done);
         }
@@ -563,7 +566,7 @@ Void_t **out;
     /* create skeleton field structures if not yet done */
     if (!rc->fld
         && !(rc->fld
-             = ( Rdbfield_t * )calloc(rc->info.fldn, sizeof(Rdbfield_t))))
+             = ( Rdbfield_t * ) calloc(rc->info.fldn, sizeof(Rdbfield_t))))
         GOTO(done);
 
     /* create skeleton table */
@@ -739,7 +742,7 @@ Vcchar_t **datap; /* persistent data	*/
         return 0;
 
     /* allocate memory for identification data, then build it */
-    if (!(ident = ( char * )vcbuffer(vc, NIL(Vcchar_t *), z, 0)))
+    if (!(ident = ( char * ) vcbuffer(vc, NIL(Vcchar_t *), z, 0)))
         return -1;
     for (k = 0, arg = _Rdbargs; arg->name && k < z; ++arg) {
         if (!(rdb->type & TYPECAST(int, arg->data))
@@ -751,7 +754,7 @@ Vcchar_t **datap; /* persistent data	*/
     }
 
     if (datap) /* return string */
-        *datap = ( Void_t * )ident;
+        *datap = ( Void_t * ) ident;
     return z;
 }
 
@@ -768,7 +771,7 @@ static int rdbrestore(mtcd) Vcmtcode_t *mtcd;
     ssize_t dtsz, z, n;
     char id[128], init[1024];
 
-    data = ( char * )mtcd->data;
+    data = ( char * ) mtcd->data;
     dtsz = mtcd->size;
     if (dtsz > sizeof(init)) /* unexpectedly long data! */
         return -1;
@@ -778,7 +781,7 @@ static int rdbrestore(mtcd) Vcmtcode_t *mtcd;
         for (arg = _Rdbargs; arg->name; ++arg) {
             if ((n = strlen(arg->name)) > (dtsz - z))
                 continue;
-            if (vcstrcode(( char * )arg->name, id, sizeof(id))
+            if (vcstrcode(( char * ) arg->name, id, sizeof(id))
                 && strncmp(data, id, n) == 0)
                 break;
         }
@@ -792,7 +795,7 @@ static int rdbrestore(mtcd) Vcmtcode_t *mtcd;
     }
     init[z] = '\0';
 
-    data = init[0] ? ( char * )init : NIL(char *);
+    data = init[0] ? ( char * ) init : NIL(char *);
     mtcd->coder = vcopen(0, Vcrdb, data, mtcd->coder, VC_DECODE);
     return mtcd->coder ? 1 : -1;
 }
@@ -819,25 +822,25 @@ Void_t *params;
             return -1;
 
         /* allocate a default context */
-        rdb->ctxt = ( Rdbctxt_t * )vcinitcontext(vc, NIL(Vccontext_t *));
+        rdb->ctxt = ( Rdbctxt_t * ) vcinitcontext(vc, NIL(Vccontext_t *));
 
         vcsetmtdata(vc, rdb);
         goto vc_setarg;
     } else if (type == VC_EXTRACT) {
-        if (!(mtcd = ( Vcmtcode_t * )params))
+        if (!(mtcd = ( Vcmtcode_t * ) params))
             return -1;
         if ((mtcd->size = rdbextract(vc, &mtcd->data)) < 0)
             return -1;
         return 1;
     } else if (type == VC_RESTORE) {
-        if (!(mtcd = ( Vcmtcode_t * )params))
+        if (!(mtcd = ( Vcmtcode_t * ) params))
             return -1;
         return rdbrestore(mtcd) < 0 ? -1 : 1;
     } else if (type == VC_SETMTARG) {
     vc_setarg:
         if (!(rc = vcgetcontext(vc, Rdbctxt_t *)))
             return -1;
-        for (data = ( char * )params; data;) {
+        for (data = ( char * ) params; data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Rdbargs, &arg);
 
             argtype = TYPECAST(int, arg->data);
@@ -862,7 +865,7 @@ Void_t *params;
                     rc->info.rsep = '\n';
                 break;
             case RDB_ALIGN:
-                rc->algn = ( ssize_t )vcatoi(val);
+                rc->algn = ( ssize_t ) vcatoi(val);
                 break;
             case RDB_SCHEMA:
                 fldz = NIL(ssize_t *); /* get list of field sizes */
@@ -918,7 +921,7 @@ Void_t *params;
         if (!params)
             return 0;
 
-        if (!(rc = ( Rdbctxt_t * )calloc(1, sizeof(Rdbctxt_t))))
+        if (!(rc = ( Rdbctxt_t * ) calloc(1, sizeof(Rdbctxt_t))))
             return -1;
         rc->info.recn = 0;
         rc->info.fldn = 0;
@@ -932,10 +935,10 @@ Void_t *params;
         for (k = 0; k < 10; ++k)
             rc->info.digit[k] = '0' + k;
 
-        *(( Rdbctxt_t ** )params) = rc;
+        *(( Rdbctxt_t ** ) params) = rc;
         return 1;
     } else if (type == VC_FREECONTEXT) {
-        if ((rc = ( Rdbctxt_t * )params)) {
+        if ((rc = ( Rdbctxt_t * ) params)) {
             if (rc->info.fldn > 0 && rc->info.flen)
                 free(rc->info.flen);
             if (rc->plan)

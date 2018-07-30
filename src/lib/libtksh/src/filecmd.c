@@ -51,7 +51,7 @@ char **argv;        /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option name ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -77,7 +77,7 @@ char **argv;        /* Argument strings. */
                              " ",
                              argv[1],
                              " name\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -221,7 +221,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " lstat name varName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -232,7 +232,7 @@ char **argv;        /* Argument strings. */
                              argv[2],
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -284,7 +284,7 @@ char **argv;        /* Argument strings. */
                              argv[2],
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -309,7 +309,7 @@ char **argv;        /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " stat name varName\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -321,7 +321,7 @@ char **argv;        /* Argument strings. */
                              argv[2],
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -336,7 +336,7 @@ char **argv;        /* Argument strings. */
         if (lstat(fileName, &statBuf) == -1) {
             goto badStat;
         }
-        interp->result = GetFileType(( int )statBuf.st_mode);
+        interp->result = GetFileType(( int ) statBuf.st_mode);
         goto done;
     } else {
         Tcl_AppendResult(
@@ -348,7 +348,7 @@ char **argv;        /* Argument strings. */
         "readable, readlink, ",
         "root, size, stat, tail, type, ",
         "or writable",
-        ( char * )NULL);
+        ( char * ) NULL);
         result = TCL_ERROR;
         goto done;
     }
@@ -426,12 +426,12 @@ struct stat *statPtr; /* Pointer to buffer containing
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%ld", ( long )statPtr->st_uid);
+    sprintf(string, "%ld", ( long ) statPtr->st_uid);
     if (Tcl_SetVar2(interp, varName, "uid", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
     }
-    sprintf(string, "%ld", ( long )statPtr->st_gid);
+    sprintf(string, "%ld", ( long ) statPtr->st_gid);
     if (Tcl_SetVar2(interp, varName, "gid", string, TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
@@ -459,7 +459,7 @@ struct stat *statPtr; /* Pointer to buffer containing
     if (Tcl_SetVar2(interp,
                     varName,
                     "type",
-                    GetFileType(( int )statPtr->st_mode),
+                    GetFileType(( int ) statPtr->st_mode),
                     TCL_LEAVE_ERR_MSG)
         == NULL) {
         return TCL_ERROR;
@@ -574,16 +574,17 @@ char ***argvPtr; /* Pointer to place to store pointer to array
      * DString plus the argv pointers and the terminating NULL pointer.
      */
 
-    *argvPtr = ( char ** )ckalloc(
-    ( unsigned )((((*argcPtr) + 1) * sizeof(char *)) + size));
+    *argvPtr = ( char ** ) ckalloc(
+    ( unsigned ) ((((*argcPtr) + 1) * sizeof(char *)) + size));
 
     /*
      * Position p after the last argv pointer and copy the contents of
      * the DString.
      */
 
-    p = ( char * )&(*argvPtr)[(*argcPtr) + 1];
-    memcpy(( VOID * )p, ( VOID * )Tcl_DStringValue(&buffer), ( size_t )size);
+    p = ( char * ) &(*argvPtr)[(*argcPtr) + 1];
+    memcpy(
+    ( VOID * ) p, ( VOID * ) Tcl_DStringValue(&buffer), ( size_t ) size);
 
     /*
      * Now set up the argv pointers.
@@ -677,7 +678,7 @@ Tcl_Interp *interp; /* Current interpreter. */
 int argc;           /* Number of arguments. */
 char **argv;        /* Argument strings. */
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     int oldInterpType = iPtr->interpType, result = TCL_ERROR;
     Tcl_DString buffer;
 
@@ -761,7 +762,7 @@ Tksh_CreatePipeline(Tcl_Interp *interp,
                                          "can't specify \"",
                                          argv[i],
                                          "\" as last word in command",
-                                         ( char * )NULL);
+                                         ( char * ) NULL);
                         goto error;
                     }
                     skip = 1;
@@ -881,14 +882,14 @@ TclCreatePipeline(Tcl_Interp *interp,
     iop = sh_iogetiop(SH_IOCOPROCESS, SF_READ);
     if (outPipePtr) {
         fdOut = fcntl(sffileno(iop), F_DUPFD, 10);
-        *outPipePtr = Tcl_GetFile(( ClientData )fdOut, TCL_UNIX_FD);
+        *outPipePtr = Tcl_GetFile(( ClientData ) fdOut, TCL_UNIX_FD);
     }
     iop = sh_iogetiop(SH_IOCOPROCESS, SF_WRITE);
     if (inPipePtr) {
         fdIn = fcntl(sffileno(iop), F_DUPFD, 10);
-        *inPipePtr = Tcl_GetFile(( ClientData )fdIn, TCL_UNIX_FD);
+        *inPipePtr = Tcl_GetFile(( ClientData ) fdIn, TCL_UNIX_FD);
     }
-    *pidPtr = ( int * )malloc(sizeof(int));
+    *pidPtr = ( int * ) malloc(sizeof(int));
     **pidPtr = 999;
     fprintf(stderr, "%s : %d %d\n", buffer.string, fdIn, fdOut);
     sh_trap("exec 3<&p 3<&- 4>&p 4>&-", 0);
@@ -975,7 +976,7 @@ Tcl_DString *resultPtr; /* Pointer to previously initialized DString. */
          * slashes.
          */
 
-        Tcl_DStringSetLength(resultPtr, ( int )(length + strlen(p)));
+        Tcl_DStringSetLength(resultPtr, ( int ) (length + strlen(p)));
         dest = Tcl_DStringValue(resultPtr) + length;
         for (; *p != '\0'; p++) {
             if (*p == '/') {

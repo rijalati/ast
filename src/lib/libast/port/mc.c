@@ -343,7 +343,7 @@ mcget(Mc_t *mc, int set, int num, const char *msg)
 
     if (!mc || set < 0 || set > mc->num || num < 1 || num > mc->set[set].num
         || !(s = mc->set[set].msg[num]))
-        return ( char * )msg;
+        return ( char * ) msg;
     if (mc->cvt == (iconv_t)(-1))
         return s;
     if ((p = sfstrtell(mc->tmp)) > sfstrsize(mc->tmp) / 2) {
@@ -601,7 +601,7 @@ mcindex(const char *s, char **e, int *set, int *msg)
 
     m = 0;
     n = strtol(s, &t, 0);
-    if (t == ( char * )s) {
+    if (t == ( char * ) s) {
         SFCVINIT();
         cv = _Sfcv36;
         for (n = m = 0; (c = cv[*s]) < 36; s++) {
@@ -611,13 +611,13 @@ mcindex(const char *s, char **e, int *set, int *msg)
         m = (m <= 3) ? 63 : ((1 << (m + 3)) - 1);
         n = ((n - 9) & m) + 1;
     } else
-        s = ( const char * )t;
+        s = ( const char * ) t;
     r = n;
     if (*s)
         m = strtol(s + 1, e, 0);
     else {
         if (e)
-            *e = ( char * )s;
+            *e = ( char * ) s;
         if (m)
             m = 0;
         else {

@@ -90,10 +90,10 @@ dumpname(Sfio_t *sp, Rule_t *r, char *sep)
 static int
 listrule(const char *s, char *v, void *h)
 {
-    Rule_t *r = ( Rule_t * )v;
+    Rule_t *r = ( Rule_t * ) v;
     List_t *p;
     int n;
-    Sfio_t *sp = ( Sfio_t * )h;
+    Sfio_t *sp = ( Sfio_t * ) h;
 
     if (!dumpall && state.list
         && (r->name != s
@@ -416,15 +416,15 @@ listrule(const char *s, char *v, void *h)
 static int
 listvar(const char *s, char *u, void *h)
 {
-    Var_t *v = ( Var_t * )u;
+    Var_t *v = ( Var_t * ) u;
     char *t;
     char *q;
-    Sfio_t *sp = ( Sfio_t * )h;
+    Sfio_t *sp = ( Sfio_t * ) h;
 
     if (dumpall
         || !(v->property & V_import) && (!state.list || !isintvar(v->name))) {
         if (!dumpall && state.list) {
-            for (q = ( char * )s; istype(*q, C_ID1 | C_ID2); q++)
+            for (q = ( char * ) s; istype(*q, C_ID1 | C_ID2); q++)
                 ;
             if (*q)
                 q = "\"";
@@ -673,7 +673,7 @@ void
 dumpvar(Sfio_t *sp, Var_t *v)
 {
     dumpall++;
-    listvar(v->name, ( char * )v, sp);
+    listvar(v->name, ( char * ) v, sp);
     sfsync(sp);
     dumpall--;
 }
@@ -691,17 +691,17 @@ dumprule(Sfio_t *sp, Rule_t *r)
     dumpall++;
     z = 0;
     while ((r->dynamic & D_alias) && r != z) {
-        listrule(r->name, ( char * )r, sp);
+        listrule(r->name, ( char * ) r, sp);
         z = r;
         if (!(r = getrule(unbound(r))))
             r = z;
     }
     if (r != z)
-        listrule(r->name, ( char * )r, sp);
+        listrule(r->name, ( char * ) r, sp);
     if (!(r->property & P_state))
         for (i = RULE; i <= STATERULES; i++)
             if (z = staterule(i, r, NiL, -1))
-                listrule(z->name, ( char * )z, sp);
+                listrule(z->name, ( char * ) z, sp);
     sfsync(sp);
     dumpall--;
 }

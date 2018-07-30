@@ -54,15 +54,15 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: %s: cannot stat\n", id, s);
         return 1;
     }
-    ref = ( unsigned long )st.st_mtime;
+    ref = ( unsigned long ) st.st_mtime;
     if (s = *++argv)
         do {
             if (!stat(s, &st))
-                printf("%s %ld\n", s, ( unsigned long )st.st_mtime - ref);
+                printf("%s %ld\n", s, ( unsigned long ) st.st_mtime - ref);
         } while (s = *++argv);
     else
         while (s = fgets(buf, sizeof(buf), stdin))
             if (!stat(s, &st))
-                printf("%s %ld\n", s, ( unsigned long )st.st_mtime - ref);
+                printf("%s %ld\n", s, ( unsigned long ) st.st_mtime - ref);
     return 0;
 }

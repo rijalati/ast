@@ -59,8 +59,9 @@
 
 #ifndef KSHELL
 #    define sh_heap(s) strcpy(malloc(strlen(s) + 1), (s))
-#    define sh_arith(str) ( int )strtol(str, ( char ** )0, 10)
-#    define new_of(type, x) (( type * )malloc(( unsigned )sizeof(type) + (x)))
+#    define sh_arith(str) ( int ) strtol(str, ( char ** ) 0, 10)
+#    define new_of(type, x)                                                  \
+        (( type * ) malloc(( unsigned ) sizeof(type) + (x)))
 #    define e_unknown "unknown"
 #    define e_create "cannot create"
 #    define path_relative(x) (x)
@@ -151,7 +152,7 @@ retry:
     if ((fd = open(
          histname, O_APPEND | O_RDWR | O_CREAT | O_BINARY, S_IRUSR | S_IWUSR))
         >= 0) {
-        hsize = io_seek(fd, ( off_t )0, SEEK_END);
+        hsize = io_seek(fd, ( off_t ) 0, SEEK_END);
     }
     /* make sure that file has history file format */
     if (hsize && hist_check(fd)) {
@@ -172,7 +173,7 @@ retry:
         return (0);
     fd = io_renumber(fd, FCIO);
     if (cp = nam_strval(HISTSIZE))
-        maxlines = ( unsigned )sh_arith(cp);
+        maxlines = ( unsigned ) sh_arith(cp);
     else
         maxlines = HIS_DFLT;
     for (fixmask = 16; fixmask <= maxlines; fixmask <<= 1)
@@ -184,7 +185,7 @@ retry:
     hist_ptr = fp;
     fp->fixfd = fd;
     fp->fixmax = maxlines;
-    io_init(fd, ( struct fileblk * )0, ( char * )0);
+    io_init(fd, ( struct fileblk * ) 0, ( char * ) 0);
     fp->fixfp = io_ftable[fd];
     fp->fixind = 1;
     fp->fixcmds[1] = 2;
@@ -193,7 +194,7 @@ retry:
     if (hsize == 0)
     /* put special characters at front of file */
     {
-        write(fd, ( char * )hist_stamp, 2);
+        write(fd, ( char * ) hist_stamp, 2);
         p_setout(fd);
     }
     /* initialize history list */
@@ -236,7 +237,7 @@ hist_free()
 {
     struct history *fp = hist_ptr;
     io_fclose(fp->fixfd);
-    free(( char * )fp);
+    free(( char * ) fp);
     hist_ptr = 0;
 }
 
@@ -247,8 +248,8 @@ hist_free()
 static int hist_check(fd) int fd;
 {
     unsigned char magic[2];
-    io_seek(fd, ( off_t )0, SEEK_SET);
-    if ((read(fd, ( char * )magic, 2) != 2) || (magic[0] != H_UNDO))
+    io_seek(fd, ( off_t ) 0, SEEK_SET);
+    if ((read(fd, ( char * ) magic, 2) != 2) || (magic[0] != H_UNDO))
         return (1);
     hist_version = magic[1];
     return (0);
@@ -273,7 +274,7 @@ static int hist_check(fd) int fd;
 #        undef F_SETLK
 #    endif
 static struct flock hislock
-= { F_WRLCK, 0, ( off_t )0, ( off_t )2, ( pid_t )0 };
+= { F_WRLCK, 0, ( off_t ) 0, ( off_t ) 2, ( pid_t ) 0 };
 #endif
 static int hist_clean(fd) int fd;
 {
@@ -295,7 +296,7 @@ static int hist_clean(fd) int fd;
     if (fstat(fd, &statb) >= 0) {
         /* see if history file was recently accessed */
         if (r) {
-            if ((time(( time_t * )0) - statb.st_mtime) < HIST_RECENT)
+            if ((time(( time_t * ) 0) - statb.st_mtime) < HIST_RECENT)
                 r = 0;
         }
     }
@@ -351,7 +352,7 @@ static void hist_trim(n) int n;
     htrim = 0;
     hist_cancel();
     io_fclose(fdo);
-    free(( char * )hist_old);
+    free(( char * ) hist_old);
 }
 
 /*
@@ -405,7 +406,7 @@ off_t size;
             n++;
         }
 begin:
-    io_seek(fd, ( off_t )2, SEEK_SET);
+    io_seek(fd, ( off_t ) 2, SEEK_SET);
     hist_ptr->fixcnt = 2;
     return (1);
 }
@@ -530,7 +531,7 @@ hist_flush()
         fp->fixcnt++;
         goto set_count;
     }
-    if ((fp->fixcnt = lseek(fp->fixfd, ( off_t )0, SEEK_END)) < 0) {
+    if ((fp->fixcnt = lseek(fp->fixfd, ( off_t ) 0, SEEK_END)) < 0) {
 #ifdef DEBUG
         p_setout(ERRIO);
         p_num(getpid(), ':');
@@ -790,7 +791,7 @@ int command, line;
             *s1++ = c;
         }
     }
-    io_seek(fp->fixfd, ( off_t )0, SEEK_END);
+    io_seek(fp->fixfd, ( off_t ) 0, SEEK_END);
     if (s1 == 0)
         return (count);
     if (count && (c = *(s1 - 1)) == '\n')
@@ -813,7 +814,7 @@ int word;
 #    ifdef KSHELL
         return (sh.lastarg);
 #    else
-        return (( char * )0);
+        return (( char * ) 0);
 #    endif /* KSHELL */
     hist_copy(s1, hist_ptr->fixind - 1, -1);
     for (; c = *cp; cp++) {
@@ -928,7 +929,7 @@ char *buf;
 {
     if (!fp) {
         fp = new_of(struct fileblk, IOBSIZE + 1);
-        buf = ( char * )(fp + 1);
+        buf = ( char * ) (fp + 1);
         fp->flag = IOFREE;
     } else
         fp->flag = 0;
@@ -984,7 +985,7 @@ int ptrname;
         && offset < hoffset) {
         p = hoffset - (fp->last - fp->base);
         if (offset >= p) {
-            fp->ptr = fp->base + ( int )(offset - p);
+            fp->ptr = fp->base + ( int ) (offset - p);
             return (offset);
         } else {
             c = offset & (IOBSIZE - 1);

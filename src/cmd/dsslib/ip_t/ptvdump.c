@@ -31,8 +31,8 @@ ptvdump(Ptv_t *a, Sfio_t *sp)
 {
     Ptvprefix_t *p;
 
-    for (p = ( Ptvprefix_t * )dtfirst(a->dict); p;
-         p = ( Ptvprefix_t * )dtnext(a->dict, p))
+    for (p = ( Ptvprefix_t * ) dtfirst(a->dict); p;
+         p = ( Ptvprefix_t * ) dtnext(a->dict, p))
         sfprintf(sp,
                  "%s %s %-24s %-24s\n",
                  fmtfv(a->size, p->min, 16, 0, 0),

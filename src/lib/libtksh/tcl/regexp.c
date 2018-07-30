@@ -157,9 +157,9 @@ static char *errMsg = NULL;
  * Utility definitions.
  */
 #ifndef CHARBITS
-#    define UCHARAT(p) (( int )*( unsigned char * )(p))
+#    define UCHARAT(p) (( int ) *( unsigned char * ) (p))
 #else
-#    define UCHARAT(p) (( int )*( p )&CHARBITS)
+#    define UCHARAT(p) (( int ) *( p ) &CHARBITS)
 #endif
 
 #define FAIL(m)                                                              \
@@ -263,7 +263,7 @@ regexp *TclRegComp(exp) char *exp;
         FAIL("regexp too big");
 
     /* Allocate space. */
-    r = ( regexp * )ckalloc(sizeof(regexp) + ( unsigned )rcstate->regsize);
+    r = ( regexp * ) ckalloc(sizeof(regexp) + ( unsigned ) rcstate->regsize);
     if (r == NULL)
         FAIL("out of space");
 
@@ -303,7 +303,7 @@ regexp *TclRegComp(exp) char *exp;
             len = 0;
             for (; scan != NULL; scan = regnext(scan))
                 if (OP(scan) == EXACTLY
-                    && (( int )strlen(OPERAND(scan))) >= len) {
+                    && (( int ) strlen(OPERAND(scan))) >= len) {
                     longest = OPERAND(scan);
                     len = strlen(OPERAND(scan));
                 }
@@ -420,7 +420,7 @@ struct regcomp_state *rcstate;
         chain = latest;
     }
     if (chain == NULL) /* Loop ran zero times. */
-        ( void )regnode(NOTHING, rcstate);
+        ( void ) regnode(NOTHING, rcstate);
 
     return (ret);
 }
@@ -538,7 +538,7 @@ struct regcomp_state *rcstate;
                     if (clss > classend + 1)
                         FAIL("invalid [] range");
                     for (; clss <= classend; clss++)
-                        regc(( char )clss, rcstate);
+                        regc(( char ) clss, rcstate);
                     rcstate->regparse++;
                 }
             } else
@@ -619,7 +619,7 @@ struct regcomp_state *rcstate;
     }
 
     ptr = ret;
-    *ptr++ = ( char )op;
+    *ptr++ = ( char ) op;
     *ptr++ = '\0'; /* Null "next" pointer. */
     *ptr++ = '\0';
     rcstate->regcode = ptr;
@@ -634,7 +634,7 @@ static void regc(b, rcstate) int b;
 struct regcomp_state *rcstate;
 {
     if (rcstate->regcode != &regdummy)
-        *rcstate->regcode++ = ( char )b;
+        *rcstate->regcode++ = ( char ) b;
     else
         rcstate->regsize++;
 }
@@ -664,7 +664,7 @@ struct regcomp_state *rcstate;
         *--dst = *--src;
 
     place = opnd; /* Op node, where operand used to be. */
-    *place++ = ( char )op;
+    *place++ = ( char ) op;
     *place++ = '\0';
     *place = '\0';
 }
@@ -695,8 +695,8 @@ char *val;
         offset = scan - val;
     else
         offset = val - scan;
-    *(scan + 1) = ( char )((offset >> 8) & 0377);
-    *(scan + 2) = ( char )(offset & 0377);
+    *(scan + 1) = ( char ) ((offset >> 8) & 0377);
+    *(scan + 2) = ( char ) (offset & 0377);
 }
 
 /*
@@ -768,7 +768,7 @@ char *start;
     if (prog->regmust != NULL) {
         s = string;
         while ((s = strchr(s, prog->regmust[0])) != NULL) {
-            if (strncmp(s, prog->regmust, ( size_t )prog->regmlen) == 0)
+            if (strncmp(s, prog->regmust, ( size_t ) prog->regmlen) == 0)
                 break; /* Found it. */
             s++;
         }
@@ -890,7 +890,7 @@ struct regexec_state *restate;
             }
             len = strlen(opnd);
             if (len > 1
-                && strncmp(opnd, restate->reginput, ( size_t )len) != 0) {
+                && strncmp(opnd, restate->reginput, ( size_t ) len) != 0) {
                 return 0;
             }
             restate->reginput += len;
@@ -1159,7 +1159,7 @@ static char *regprop(op) char *op;
     char *p;
     static char buf[50];
 
-    ( void )strcpy(buf, ":");
+    ( void ) strcpy(buf, ":");
 
     switch (OP(op)) {
     case BOL:
@@ -1236,7 +1236,7 @@ static char *regprop(op) char *op;
         break;
     }
     if (p != NULL)
-        ( void )strcat(buf, p);
+        ( void ) strcat(buf, p);
     return (buf);
 }
 #endif

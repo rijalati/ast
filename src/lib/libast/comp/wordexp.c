@@ -64,7 +64,7 @@ int
 wordexp(const char *string, wordexp_t *wdarg, int flags)
 {
     Sfio_t *iop;
-    char *cp = ( char * )string;
+    char *cp = ( char * ) string;
     int c, quoted = 0, literal = 0, ac = 0;
     int offset;
     char *savebase, **av;
@@ -112,7 +112,7 @@ wordexp(const char *string, wordexp_t *wdarg, int flags)
         stakputc(c);
     }
     stakputc(0);
-    if (!(iop = sfpopen(( Sfio_t * )0, stakptr(0), "r"))) {
+    if (!(iop = sfpopen(( Sfio_t * ) 0, stakptr(0), "r"))) {
         c = WRDE_NOSHELL;
         goto err;
     }
@@ -138,23 +138,23 @@ wordexp(const char *string, wordexp_t *wdarg, int flags)
     if (flags & WRDE_DOOFFS)
         c += wdarg->we_offs;
     if (flags & WRDE_APPEND)
-        av = ( char ** )realloc(( void * )&wdarg->we_wordv[-1],
-                                (wdarg->we_wordc + c) * sizeof(char *));
-    else if (av = ( char ** )malloc(c * sizeof(char *))) {
+        av = ( char ** ) realloc(( void * ) &wdarg->we_wordv[-1],
+                                 (wdarg->we_wordc + c) * sizeof(char *));
+    else if (av = ( char ** ) malloc(c * sizeof(char *))) {
         if (flags & WRDE_DOOFFS)
-            memset(( void * )av, 0, (wdarg->we_offs + 1) * sizeof(char *));
+            memset(( void * ) av, 0, (wdarg->we_offs + 1) * sizeof(char *));
         else
             av[0] = 0;
     }
     if (!av)
         return (WRDE_NOSPACE);
     c = staktell();
-    if (!(cp = ( char * )malloc(sizeof(char *) + c))) {
+    if (!(cp = ( char * ) malloc(sizeof(char *) + c))) {
         c = WRDE_NOSPACE;
         goto err;
     }
-    (( struct list * )cp)->next = ( struct list * )(*av);
-    *av++ = ( char * )cp;
+    (( struct list * ) cp)->next = ( struct list * ) (*av);
+    *av++ = ( char * ) cp;
     cp += sizeof(char *);
     wdarg->we_wordv = av;
     if (flags & WRDE_APPEND)
@@ -162,7 +162,7 @@ wordexp(const char *string, wordexp_t *wdarg, int flags)
     wdarg->we_wordc += ac;
     if (flags & WRDE_DOOFFS)
         av += wdarg->we_offs;
-    memcpy(( void * )cp, stakptr(offset), c);
+    memcpy(( void * ) cp, stakptr(offset), c);
     while (ac-- > 0) {
         *av++ = cp;
         sh_unquote(cp);
@@ -187,12 +187,12 @@ wordfree(wordexp_t *wdarg)
 {
     struct list *arg, *argnext;
     if (wdarg->we_wordv) {
-        argnext = ( struct list * )wdarg->we_wordv[-1];
+        argnext = ( struct list * ) wdarg->we_wordv[-1];
         while (arg = argnext) {
             argnext = arg->next;
-            free(( void * )arg);
+            free(( void * ) arg);
         }
-        free(( void * )&wdarg->we_wordv[-1]);
+        free(( void * ) &wdarg->we_wordv[-1]);
         wdarg->we_wordv = 0;
     }
     wdarg->we_wordc = 0;

@@ -38,7 +38,7 @@ huffgethdr(Sfio_t *infile)
     /* allocate space for huffman tree */
     if (!(hp = newof(0, Huff_t, 1, 0))) {
         errno = ENOMEM;
-        return (( Huff_t * )0);
+        return (( Huff_t * ) 0);
     }
     /* check two-byte header */
     if (sfgetc(infile) != HUFFMAG1 || sfgetc(infile) != HUFFMAG2)
@@ -83,5 +83,5 @@ huffgethdr(Sfio_t *infile)
 
 error:
     huffend(hp);
-    return (( Huff_t * )0);
+    return (( Huff_t * ) 0);
 }

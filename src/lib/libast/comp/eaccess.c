@@ -107,11 +107,11 @@ eaccess(const char *path, int flags)
         static gid_t *groups;
 
         if (ngroups == -2) {
-            if ((ngroups = getgroups(0, ( gid_t * )0)) <= 0) {
+            if ((ngroups = getgroups(0, ( gid_t * ) 0)) <= 0) {
 #            if defined(NGROUPS_MAX)
                 ngroups = NGROUPS_MAX;
 #            elif defined(_SC_NGROUPS_MAX)
-                ngroups = ( int )sysconf(_SC_NGROUPS_MAX);
+                ngroups = ( int ) sysconf(_SC_NGROUPS_MAX);
 #            elif defined(_POSIX_NGROUPS_MAX)
                 ngroups = _POSIX_NGROUPS_MAX;
 #            else

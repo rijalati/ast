@@ -34,20 +34,20 @@ recomp(Text *rebuf, Text *t, int sub)
         syntax("unterminated regular expression");
     else if (c != n) {
         assure(rebuf, sizeof(regex_t));
-        if (code = regcomp(( regex_t * )rebuf->w,
-                           ( char * )t->w,
+        if (code = regcomp(( regex_t * ) rebuf->w,
+                           ( char * ) t->w,
                            reflags | REG_DELIMITED | REG_MUSTDELIM
                            | ((reflags & REG_LENIENT) ? 0 : REG_ESCAPE)))
-            badre(( regex_t * )rebuf->w, code);
-        t->w += (( regex_t * )rebuf->w)->re_npat;
+            badre(( regex_t * ) rebuf->w, code);
+        t->w += (( regex_t * ) rebuf->w)->re_npat;
         if (!sub && *t->w == 'I') {
             if (!(reflags & REG_ICASE)
                 && (code = regcomp(
-                    ( regex_t * )rebuf->w,
-                    ( char * )t->w - (( regex_t * )rebuf->w)->re_npat,
+                    ( regex_t * ) rebuf->w,
+                    ( char * ) t->w - (( regex_t * ) rebuf->w)->re_npat,
                     reflags | REG_ICASE | REG_DELIMITED | REG_MUSTDELIM
                     | ((reflags & REG_LENIENT) ? 0 : REG_ESCAPE))))
-                badre(( regex_t * )rebuf->w, code);
+                badre(( regex_t * ) rebuf->w, code);
             t->w++;
         }
         lastre = rebuf->w - rebuf->s;
@@ -57,8 +57,8 @@ recomp(Text *rebuf, Text *t, int sub)
     else {
         if (sub) {
             assure(rebuf, sizeof(regex_t));
-            if (code = regdup(readdr(lastre), ( regex_t * )rebuf->w))
-                badre(( regex_t * )rebuf->w, code);
+            if (code = regdup(readdr(lastre), ( regex_t * ) rebuf->w))
+                badre(( regex_t * ) rebuf->w, code);
             lastre = rebuf->w - rebuf->s;
             rebuf->w += sizeof(regex_t);
         }
@@ -99,13 +99,14 @@ substitute(regex_t *re, Text *data)
     int c;
     regmatch_t matches[100];
     if (reexec(re,
-               ( char * )data->s,
+               ( char * ) data->s,
                data->w - data->s,
                elementsof(matches),
                matches,
                0))
         return 0;
-    if (c = regsubexec(re, ( char * )data->s, elementsof(matches), matches)) {
+    if (c
+        = regsubexec(re, ( char * ) data->s, elementsof(matches), matches)) {
         reerror(re, c);
         return 0;
     }

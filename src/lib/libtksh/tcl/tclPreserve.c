@@ -70,8 +70,8 @@ static void PreserveExitProc(clientData) ClientData clientData; /* NULL
                                                                    -Unused. */
 {
     if (spaceAvl != 0) {
-        ckfree(( char * )refArray);
-        refArray = ( Reference * )NULL;
+        ckfree(( char * ) refArray);
+        refArray = ( Reference * ) NULL;
         inUse = 0;
         spaceAvl = 0;
     }
@@ -121,19 +121,20 @@ void Tcl_Preserve(clientData) ClientData clientData; /* Pointer to malloc'ed
 
     if (inUse == spaceAvl) {
         if (spaceAvl == 0) {
-            Tcl_CreateExitHandler(( Tcl_ExitProc * )PreserveExitProc,
-                                  ( ClientData )NULL);
-            refArray = ( Reference * )ckalloc(
-            ( unsigned )(INITIAL_SIZE * sizeof(Reference)));
+            Tcl_CreateExitHandler(( Tcl_ExitProc * ) PreserveExitProc,
+                                  ( ClientData ) NULL);
+            refArray = ( Reference * ) ckalloc(
+            ( unsigned ) (INITIAL_SIZE * sizeof(Reference)));
             spaceAvl = INITIAL_SIZE;
         } else {
             Reference *new;
 
-            new = ( Reference * )ckalloc(
-            ( unsigned )(2 * spaceAvl * sizeof(Reference)));
-            memcpy(
-            ( VOID * )new, ( VOID * )refArray, spaceAvl * sizeof(Reference));
-            ckfree(( char * )refArray);
+            new = ( Reference * ) ckalloc(
+            ( unsigned ) (2 * spaceAvl * sizeof(Reference)));
+            memcpy(( VOID * ) new,
+                   ( VOID * ) refArray,
+                   spaceAvl * sizeof(Reference));
+            ckfree(( char * ) refArray);
             refArray = new;
             spaceAvl *= 2;
         }
@@ -201,10 +202,10 @@ void Tcl_Release(clientData) ClientData clientData; /* Pointer to malloc'ed
             }
             if (mustFree) {
                 if ((freeProc == TCL_DYNAMIC)
-                    || (freeProc == ( Tcl_FreeProc * )free)) {
-                    ckfree(( char * )clientData);
+                    || (freeProc == ( Tcl_FreeProc * ) free)) {
+                    ckfree(( char * ) clientData);
                 } else {
-                    (*freeProc)(( char * )clientData);
+                    (*freeProc)(( char * ) clientData);
                 }
             }
         }
@@ -265,9 +266,9 @@ Tcl_FreeProc *freeProc; /* Procedure to actually do free. */
      * No reference for this block.  Free it now.
      */
 
-    if ((freeProc == TCL_DYNAMIC) || (freeProc == ( Tcl_FreeProc * )free)) {
-        ckfree(( char * )clientData);
+    if ((freeProc == TCL_DYNAMIC) || (freeProc == ( Tcl_FreeProc * ) free)) {
+        ckfree(( char * ) clientData);
     } else {
-        (*freeProc)(( char * )clientData);
+        (*freeProc)(( char * ) clientData);
     }
 }

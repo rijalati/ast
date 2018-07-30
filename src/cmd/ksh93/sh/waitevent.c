@@ -34,7 +34,7 @@ sh_waitnotify(int (*newevent)(int, long, int))
     int (*old)(int, long, int);
     old = shgd->waitevent;
     shgd->waitevent = newevent;
-    return (( void * )old);
+    return (( void * ) old);
 }
 
 #if __OBSOLETE__ < 20080101

@@ -32,7 +32,7 @@
 #include <ast_wchar.h>
 
 #if !SHOPT_MULTIBYTE
-#    define mbchar(p) (*( unsigned char * )p++)
+#    define mbchar(p) (*( unsigned char * ) p++)
 #endif
 
 static char *
@@ -40,7 +40,7 @@ fmtx(Shell_t *shp, const char *string)
 {
     const char *cp = string;
     int n, c;
-    unsigned char *state = ( unsigned char * )sh_lexstates[2];
+    unsigned char *state = ( unsigned char * ) sh_lexstates[2];
     int offset = stktell(shp->stk);
     if (*cp == '#' || *cp == '~')
         sfputc(shp->stk, '\\');
@@ -48,7 +48,7 @@ fmtx(Shell_t *shp, const char *string)
            (c > UCHAR_MAX) || (n = state[c]) == 0 || n == S_EPAT)
         ;
     if (n == S_EOF && *string != '#')
-        return (( char * )string);
+        return (( char * ) string);
     sfwrite(shp->stk, string, --cp - string);
     for (string = cp; c = mbchar(cp); string = cp) {
         if ((n = cp - string) == 1) {
@@ -83,8 +83,8 @@ static char *
 overlaid(char *str, const char *newstr, int nocase)
 {
     int c, d;
-    while ((c = *( unsigned char * )str)
-           && ((d = *( unsigned char * )newstr++), charcmp(c, d, nocase)))
+    while ((c = *( unsigned char * ) str)
+           && ((d = *( unsigned char * ) newstr++), charcmp(c, d, nocase)))
         str++;
     if (*str)
         *str = 0;
@@ -125,13 +125,13 @@ find_begin(char outbuff[], char *last, int endchar, int *type)
         case '$':
             if (inquote == '\'')
                 break;
-            c = *( unsigned char * )cp;
+            c = *( unsigned char * ) cp;
             if (mode != '*' && (isaletter(c) || c == '{')) {
                 int dot = '.';
                 if (c == '{') {
                     xp = cp;
                     mbchar(cp);
-                    c = *( unsigned char * )cp;
+                    c = *( unsigned char * ) cp;
                     if (c != '.' && !isaletter(c))
                         break;
                 } else
@@ -261,20 +261,20 @@ ed_expand(Edit_t *ep, char outbuff[], int *cur, int *eol, int mode, int count)
             ep->e_nlist = 0;
         }
     }
-    comptr = ( struct comnod * )stkalloc(shp->stk, sizeof(struct comnod));
-    ap = ( struct argnod * )stkseek(shp->stk, ARGVAL);
+    comptr = ( struct comnod * ) stkalloc(shp->stk, sizeof(struct comnod));
+    ap = ( struct argnod * ) stkseek(shp->stk, ARGVAL);
 #if SHOPT_MULTIBYTE
     {
         int c = *cur;
         genchar *cp;
         /* adjust cur */
-        cp = ( genchar * )outbuff + *cur;
+        cp = ( genchar * ) outbuff + *cur;
         c = *cp;
         *cp = 0;
         *cur
-        = ed_external(( genchar * )outbuff, ( char * )stkptr(shp->stk, 0));
+        = ed_external(( genchar * ) outbuff, ( char * ) stkptr(shp->stk, 0));
         *cp = c;
-        *eol = ed_external(( genchar * )outbuff, outbuff);
+        *eol = ed_external(( genchar * ) outbuff, outbuff);
     }
 #endif /* SHOPT_MULTIBYTE */
     out = outbuff + *cur + (sh_isoption(shp, SH_VI) != 0);
@@ -298,7 +298,7 @@ ed_expand(Edit_t *ep, char outbuff[], int *cur, int *eol, int mode, int count)
             np->nvalue.s = '\t';
         if (np = nv_search("COMP_TYPE", shp->var_tree, 0))
             np->nvalue.s = (mode == '\\' ? '\t' : '?');
-        c = *( unsigned char * )out;
+        c = *( unsigned char * ) out;
         var = mode;
         begin = out = find_begin(outbuff, last, 0, &var);
 #if SHOPT_COMPLETE
@@ -319,7 +319,7 @@ ed_expand(Edit_t *ep, char outbuff[], int *cur, int *eol, int mode, int count)
         } else {
             addstar = '*';
             while (out < last) {
-                c = *( unsigned char * )out;
+                c = *( unsigned char * ) out;
                 if (c == 0)
                     break;
                 if (isexp(c))
@@ -340,7 +340,7 @@ ed_expand(Edit_t *ep, char outbuff[], int *cur, int *eol, int mode, int count)
         if (*begin == '~' && !strchr(begin, '/'))
             addstar = 0;
         sfputc(shp->stk, addstar);
-        ap = ( struct argnod * )stkfreeze(shp->stk, 1);
+        ap = ( struct argnod * ) stkfreeze(shp->stk, 1);
     }
     if (mode != '*')
         sh_onoption(shp, SH_MARKDIRS);
@@ -408,7 +408,7 @@ ed_expand(Edit_t *ep, char outbuff[], int *cur, int *eol, int mode, int count)
                 *dir = 0;
                 saveout = begin;
             }
-            if (saveout = astconf("PATH_ATTRIBUTES", saveout, ( char * )0))
+            if (saveout = astconf("PATH_ATTRIBUTES", saveout, ( char * ) 0))
                 nocase = (strchr(saveout, 'c') != 0);
             if (dir)
                 *dir = c;
@@ -524,7 +524,7 @@ done:
         outbuff[*cur] = c;
         *cur = n;
         outbuff[*eol + 1] = 0;
-        *eol = ed_internal(outbuff, ( genchar * )outbuff);
+        *eol = ed_internal(outbuff, ( genchar * ) outbuff);
     }
 #endif /* SHOPT_MULTIBYTE */
     return (rval);
@@ -561,9 +561,9 @@ ed_macro(Edit_t *ep, int i)
         if (c)
             out[LOOKAHEAD] = c;
 #else
-        strncpy(( char * )buff, out, LOOKAHEAD);
+        strncpy(( char * ) buff, out, LOOKAHEAD);
         buff[LOOKAHEAD] = 0;
-        i = strlen(( char * )buff);
+        i = strlen(( char * ) buff);
 #endif /* SHOPT_MULTIBYTE */
         while (i-- > 0)
             ed_ungetchar(ep, buff[i]);
@@ -587,15 +587,16 @@ ed_fulledit(Edit_t *ep)
             return (-1);
 #if SHOPT_MULTIBYTE
         ep->e_inbuf[ep->e_eol + 1] = 0;
-        ed_external(ep->e_inbuf, ( char * )ep->e_inbuf);
+        ed_external(ep->e_inbuf, ( char * ) ep->e_inbuf);
 #endif /* SHOPT_MULTIBYTE */
-        sfwrite(shgd->hist_ptr->histfp, ( char * )ep->e_inbuf, ep->e_eol + 1);
+        sfwrite(
+        shgd->hist_ptr->histfp, ( char * ) ep->e_inbuf, ep->e_eol + 1);
         sh_onstate(ep->sh, SH_HISTORY);
         hist_flush(shgd->hist_ptr);
     }
-    cp = strcopy(( char * )ep->e_inbuf, e_runvi);
-    cp = strcopy(cp, fmtbase(( long )ep->e_hline, 10, 0));
-    ep->e_eol = (( unsigned char * )cp - ( unsigned char * )ep->e_inbuf)
+    cp = strcopy(( char * ) ep->e_inbuf, e_runvi);
+    cp = strcopy(cp, fmtbase(( long ) ep->e_hline, 10, 0));
+    ep->e_eol = (( unsigned char * ) cp - ( unsigned char * ) ep->e_inbuf)
                 - (sh_isoption(ep->sh, SH_VI) != 0);
     return (0);
 }

@@ -64,8 +64,8 @@ msgsend(int fd,
     else if (data)
         switch (MSG_CALL(call)) {
         case MSG_getdents:
-            dp = ( struct dirent * )data;
-            de = ( struct dirent * )(( char * )dp + ret);
+            dp = ( struct dirent * ) data;
+            de = ( struct dirent * ) (( char * ) dp + ret);
             while (dp < de) {
                 i = D_NAMLEN(dp);
                 msgputz(&b, e, dp->d_name, i + 1);
@@ -75,12 +75,12 @@ msgsend(int fd,
 #else
                 i = D_RECSIZ(dp, i);
 #endif
-                dp = ( struct dirent * )(( char * )dp + i);
+                dp = ( struct dirent * ) (( char * ) dp + i);
             }
             msgputu(&b, e, 0);
             break;
         case MSG_stat:
-            sp = ( struct stat * )data;
+            sp = ( struct stat * ) data;
             msgputu(&b, e, sp->st_dev);
             msgputu(&b, e, sp->st_ino);
             msgputu(&b, e, sp->st_mode);
@@ -103,7 +103,7 @@ msgsend(int fd,
 #endif
             break;
         case MSG_statfs:
-            vp = ( struct statvfs * )data;
+            vp = ( struct statvfs * ) data;
             msgputu(&b, e, vp->f_bsize);
             msgputu(&b, e, vp->f_frsize);
             msgputu(&b, e, vp->f_blocks);

@@ -33,8 +33,8 @@ ptunion(Pt_t *a, Pt_t *b)
 
     if (!(a = ptcopy(a)))
         return 0;
-    for (bp = ( Ptprefix_t * )dtfirst(b->dict); bp;
-         bp = ( Ptprefix_t * )dtnext(b->dict, bp))
+    for (bp = ( Ptprefix_t * ) dtfirst(b->dict); bp;
+         bp = ( Ptprefix_t * ) dtnext(b->dict, bp))
         if (!ptinsert(a, bp->min, bp->max))
             break;
     return a;

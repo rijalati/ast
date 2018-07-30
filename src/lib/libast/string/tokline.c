@@ -57,7 +57,7 @@ typedef struct
 static int
 spliceline(Sfio_t *s, int op, void *val, Sfdisc_t *ad)
 {
-    Splice_t *d = ( Splice_t * )ad;
+    Splice_t *d = ( Splice_t * ) ad;
     char *b;
     int c;
     int n;
@@ -162,7 +162,7 @@ tokline(const char *arg, int flags, int *line)
         return 0;
     }
     if (!(flags & (SF_STRING | SF_READ)))
-        f = ( Sfio_t * )arg;
+        f = ( Sfio_t * ) arg;
     else if (!(f = sfopen(NiL, arg, (flags & SF_STRING) ? "s" : "r"))) {
         free(d);
         sfclose(s);
@@ -176,6 +176,6 @@ tokline(const char *arg, int flags, int *line)
     d->disc.exceptf = spliceline;
     d->sp = f;
     *(d->line = line ? line : &hidden) = 0;
-    sfdisc(s, ( Sfdisc_t * )d);
+    sfdisc(s, ( Sfdisc_t * ) d);
     return s;
 }

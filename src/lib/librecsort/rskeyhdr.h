@@ -35,16 +35,16 @@
 #    include <ctype.h>
 
 #    ifndef UCHAR_MAX
-#        define UCHAR_MAX (( unsigned char )(~0))
+#        define UCHAR_MAX (( unsigned char ) (~0))
 #    endif
 #    ifndef SHRT_MAX
-#        define SHRT_MAX (( short )(~(( unsigned short )0)) >> 1)
+#        define SHRT_MAX (( short ) (~(( unsigned short ) 0)) >> 1)
 #    endif
 #    ifndef INT_MAX
-#        define INT_MAX (( int )(~(( unsigned int )0)) >> 1)
+#        define INT_MAX (( int ) (~(( unsigned int ) 0)) >> 1)
 #    endif
 #    ifndef LONG_MAX
-#        define LONG_MAX (( long )(~(( unsigned long )0)) >> 1)
+#        define LONG_MAX (( long ) (~(( unsigned long ) 0)) >> 1)
 #    endif
 
 #    define INSIZE PROCSIZE            /* default insize		*/
@@ -118,7 +118,7 @@ typedef struct
 #            include <string.h>
 #        endif
 #        define elementsof(x) (sizeof(x) / sizeof(x[0]))
-#        define roundof(x, y) (((x) + ( y )-1) & ~(( y )-1))
+#        define roundof(x, y) (((x) + ( y ) -1) & ~(( y ) -1))
 #        define streq(a, b) (*(a) == *(b) && !strcmp(a, b))
 #    endif
 

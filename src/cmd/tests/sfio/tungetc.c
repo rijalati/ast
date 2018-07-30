@@ -29,7 +29,7 @@ tmain()
     str = "0123456789";
     alpha = "abcdefghijklmnop";
 
-    if (!(f = sfopen(( Sfio_t * )0, alpha, "s")))
+    if (!(f = sfopen(( Sfio_t * ) 0, alpha, "s")))
         terror("Opening stream");
 
     for (n = 9; n >= 0; --n)
@@ -42,25 +42,25 @@ tmain()
         terror("Bad data1");
 
     if (!(s = sfreserve(f, SF_UNBOUND, 0))
-        || sfvalue(f) != ( ssize_t )strlen(alpha))
+        || sfvalue(f) != ( ssize_t ) strlen(alpha))
         terror("Peek stream2");
     if (strncmp(s, alpha, strlen(alpha)) != 0)
         terror("Bad data2");
 
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     for (n = 9; n >= 0; --n)
         if (sfungetc(f, n + '0') != n + '0')
             terror("Ungetc2");
     if (sfgetc(f) != '0')
         terror("Sfgetc");
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (!(s = sfreserve(f, SF_UNBOUND, 0))
-        || sfvalue(f) != ( ssize_t )strlen(alpha))
+        || sfvalue(f) != ( ssize_t ) strlen(alpha))
         terror("Peek stream3");
     if (strncmp(s, alpha, strlen(alpha)) != 0)
         terror("Bad data2");
 
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (sfungetc(f, '0') != '0')
         terror("Ungetc3");
 

@@ -45,7 +45,7 @@ dsscomp(Dss_t *dss, const char *s, Sfio_t *sp)
                 dss, dss->disc, 2, "%s: cannot read expression file", s);
             return 0;
         }
-        file = ( char * )s;
+        file = ( char * ) s;
         s = 0;
     } else
         file = 0;

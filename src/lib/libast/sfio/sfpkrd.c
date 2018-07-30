@@ -53,7 +53,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
 {
     reg ssize_t r;
     reg int ntry, t;
-    reg char *buf = ( char * )argbuf, *endbuf;
+    reg char *buf = ( char * ) argbuf, *endbuf;
 
     if (rc < 0 && tm < 0 && action <= 0)
         return sysreadf(fd, buf, n);
@@ -199,7 +199,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
                             break;
                         }
                     } else
-                        r = avail <= 0 ? -1 : ( ssize_t )avail;
+                        r = avail <= 0 ? -1 : ( ssize_t ) avail;
 
                     if (r < 0 && nsec-- > 0)
                         sleep(1);
@@ -270,7 +270,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
             }
 #    endif
             while ((t & SOCKET_PEEK)
-                   && (r = recv(fd, ( char * )buf, n, MSG_PEEK)) < 0) {
+                   && (r = recv(fd, ( char * ) buf, n, MSG_PEEK)) < 0) {
                 if (errno == EINTR)
                     return -1;
                 else if (errno == EAGAIN)
@@ -298,7 +298,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
             return -1;
         else /* get here means: tm < 0 && action <= 0 && rc >= 0 */
         {    /* number of records read at a time */
-            if ((action = action ? -action : 1) > ( int )n)
+            if ((action = action ? -action : 1) > ( int ) n)
                 action = n;
             r = 0;
             while ((t = sysreadf(fd, buf, action)) > 0) {
@@ -306,7 +306,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
                 for (endbuf = buf + t; buf < endbuf;)
                     if (*buf++ == rc)
                         action -= 1;
-                if (action == 0 || ( int )(n - r) < action)
+                if (action == 0 || ( int ) (n - r) < action)
                     break;
             }
             return r == 0 ? t : r;

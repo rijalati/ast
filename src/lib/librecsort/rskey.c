@@ -587,13 +587,13 @@ unsigned char *zp;
     int i;
     unsigned char *mp;
     unsigned char *trans = f->trans;
-    char **month = ( char ** )f->data;
+    char **month = ( char ** ) f->data;
 
     for (; len > 0 && blank(trans[*dp]); dp++, len--)
         ;
     if (len > 0)
         while (++j < 12) {
-            mp = ( unsigned char * )month[j];
+            mp = ( unsigned char * ) month[j];
             for (i = 0; mp[i] && i < len; i++) {
                 c = trans[dp[i]];
                 if (c != mp[i]) {
@@ -639,7 +639,7 @@ Rsdisc_t *disc;
 #endif
 {
     Rskey_t *kp
-    = rs ? rs->key : ( Rskey_t * )(( char * )disc - sizeof(Rskey_t));
+    = rs ? rs->key : ( Rskey_t * ) (( char * ) disc - sizeof(Rskey_t));
     unsigned char *cp;
     Rskeyfield_t *fp;
     unsigned char *ep;
@@ -949,7 +949,7 @@ int end;
         s = e;
         if (!kp->shuffle)
             kp->shuffle
-            = ( unsigned long )time(NiL) * ( unsigned long )getpid();
+            = ( unsigned long ) time(NiL) * ( unsigned long ) getpid();
         addcoder(kp, fp, key_j_code, c, 0);
         break;
     case 'M':
@@ -996,15 +996,15 @@ int all;
     char *s;
 
     fp = all ? kp->head : kp->tail;
-    s = ( char * )key;
+    s = ( char * ) key;
     while (i = addopt(kp, fp, s, 0))
         s += i;
     if (fp->standard && (*s == ',' || *s == ' ')) {
         s++;
-        if ((fp->end.field = ( int )strtol(s, ( char ** )&s, 10) - 1)
+        if ((fp->end.field = ( int ) strtol(s, ( char ** ) &s, 10) - 1)
             > kp->field.maxfield)
             kp->field.maxfield = fp->end.field;
-        if (*s == '.' && !(fp->end.index = ( int )strtol(s + 1, &s, 10)))
+        if (*s == '.' && !(fp->end.index = ( int ) strtol(s + 1, &s, 10)))
             fp->end.index = -1;
         while (i = addopt(kp, fp, s, 1))
             s += i;
@@ -1034,9 +1034,9 @@ int obsolete;
     char buf[32];
 
     kp->keydisc->flags |= RSKEY_KEYS;
-    s = ( char * )key;
+    s = ( char * ) key;
     if (*s == '.') {
-        n = ( int )strtol(s + 1, &t, 10);
+        n = ( int ) strtol(s + 1, &t, 10);
         if (!*t) {
             if (n != kp->fixed && kp->fixed) {
                 if (kp->keydisc->errorf)
@@ -1055,7 +1055,7 @@ int obsolete;
             return 0;
         }
     }
-    n = ( int )strtol(s, &t, 10);
+    n = ( int ) strtol(s, &t, 10);
     if (s == t)
         n = *s != ':';
     else
@@ -1079,8 +1079,8 @@ int obsolete;
         }
         if (!*++s)
             return 0;
-        n = ( int )strtol(s, &s, 10);
-        o = *s == ':' ? ( int )(strtol(s + 1, &s, 10) + 1) : 1;
+        n = ( int ) strtol(s, &s, 10);
+        o = *s == ':' ? ( int ) (strtol(s + 1, &s, 10) + 1) : 1;
         if (kp->fixed && (o + n) > kp->fixed) {
             if (kp->keydisc->errorf)
                 (*kp->keydisc->errorf)(
@@ -1093,20 +1093,20 @@ int obsolete;
             kp->keydisc->flags |= RSKEY_ERROR;
             return -1;
         }
-        key = ( const char * )(s = buf);
+        key = ( const char * ) (s = buf);
         sfsprintf(s, sizeof(buf), ".%d,1.%d", o, o + n - 1);
         n = 1;
     }
     if (obsolete == '-') {
         if (!kp->field.global.next && rskey(kp, "0", 1))
             return -1;
-        s = ( char * )key;
+        s = ( char * ) key;
         if ((kp->tail->end.field
-             = *s == '.' ? kp->tail->begin.field : ( int )strtol(s, &s, 10))
+             = *s == '.' ? kp->tail->begin.field : ( int ) strtol(s, &s, 10))
             > kp->field.maxfield)
             kp->field.maxfield = kp->tail->end.field;
         if (*s == '.')
-            kp->tail->end.index = ( int )strtol(s + 1, &s, 10);
+            kp->tail->end.index = ( int ) strtol(s + 1, &s, 10);
         else
             kp->tail->end.field--;
         if (!kp->tail->end.index)
@@ -1128,11 +1128,11 @@ int obsolete;
         fp->end.field = MAXFIELD;
         fp->code = kp->head->code;
         if (*s == '.') {
-            fp->begin.index = ( int )strtol(s + 1, &s, 10) - fp->standard;
+            fp->begin.index = ( int ) strtol(s + 1, &s, 10) - fp->standard;
             if (*s == '.') {
                 fp->end.field = fp->begin.field;
                 fp->end.index
-                = fp->begin.index + ( int )strtol(s + 1, &s, 10);
+                = fp->begin.index + ( int ) strtol(s + 1, &s, 10);
             }
         }
     }

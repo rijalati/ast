@@ -47,10 +47,10 @@
 #    endif
 
 /* commonly used integers */
-#    define DT_ZERO (( unsigned int )0)         /* all zero bits	*/
+#    define DT_ZERO (( unsigned int ) 0)        /* all zero bits	*/
 #    define DT_ONES (~DT_ZERO)                  /* all one bits	*/
 #    define DT_HIBIT (~(DT_ONES >> 1))          /* highest 1 bit	*/
-#    define DT_LOBIT (( unsigned int )1)        /* lowest 1 bit	*/
+#    define DT_LOBIT (( unsigned int ) 1)       /* lowest 1 bit	*/
 #    define DT_NBITS (sizeof(unsigned int) * 8) /* #bits	*/
 
 /* type of an integer with the same size as a pointer */
@@ -65,14 +65,15 @@ typedef struct _dtdata_s Dtdata_t;
 typedef struct _dtuser_s Dtuser_t;
 typedef struct _dt_s Dt_t;
 typedef struct _dtstat_s Dtstat_t;
-typedef Void_t *( *Dtsearch_f )_ARG_(( Dt_t *, Void_t *, int ));
-typedef Void_t *( *Dtmake_f )_ARG_(( Dt_t *, Void_t *, Dtdisc_t * ));
-typedef void(*Dtfree_f) _ARG_(( Dt_t *, Void_t *, Dtdisc_t * ));
-typedef int(*Dtcompar_f) _ARG_(( Dt_t *, Void_t *, Void_t *, Dtdisc_t * ));
-typedef unsigned int(*Dthash_f) _ARG_(( Dt_t *, Void_t *, Dtdisc_t * ));
-typedef Void_t *( *Dtmemory_f )_ARG_(( Dt_t *, Void_t *, size_t, Dtdisc_t * ));
-typedef int(*Dtevent_f) _ARG_(( Dt_t *, int, Void_t *, Dtdisc_t * ));
-typedef int(*Dttype_f) _ARG_(( Dt_t *, int ));
+typedef Void_t *( *Dtsearch_f ) _ARG_(( Dt_t *, Void_t *, int ) );
+typedef Void_t *( *Dtmake_f ) _ARG_(( Dt_t *, Void_t *, Dtdisc_t * ) );
+typedef void(*Dtfree_f) _ARG_(( Dt_t *, Void_t *, Dtdisc_t * ) );
+typedef int(*Dtcompar_f) _ARG_(( Dt_t *, Void_t *, Void_t *, Dtdisc_t * ) );
+typedef unsigned int(*Dthash_f) _ARG_(( Dt_t *, Void_t *, Dtdisc_t * ) );
+typedef Void_t *( *Dtmemory_f )
+_ARG_(( Dt_t *, Void_t *, size_t, Dtdisc_t * ) );
+typedef int(*Dtevent_f) _ARG_(( Dt_t *, int, Void_t *, Dtdisc_t * ) );
+typedef int(*Dttype_f) _ARG_(( Dt_t *, int ) );
 
 struct _dtuser_s /* for application to access and use */
 {
@@ -115,7 +116,7 @@ struct _dtmethod_s
 {
     Dtsearch_f searchf; /* search function	*/
     unsigned int type;  /* type of operation	*/
-    int(*eventf) _ARG_(( Dt_t *, int, Void_t * ));
+    int(*eventf) _ARG_(( Dt_t *, int, Void_t * ) );
     char *name;        /* name of method	*/
     char *description; /* description */
 };
@@ -135,9 +136,9 @@ struct _dtdisc_s
 };
 
 #    define DTDISC(dc, ky, sz, lk, mkf, frf, cmpf, hshf, memf, evf)          \
-        ((dc)->key = ( int )(ky),                                            \
-         (dc)->size = ( int )(sz),                                           \
-         (dc)->link = ( int )(lk),                                           \
+        ((dc)->key = ( int ) (ky),                                           \
+         (dc)->size = ( int ) (sz),                                          \
+         (dc)->link = ( int ) (lk),                                          \
          (dc)->makef = (mkf),                                                \
          (dc)->freef = (frf),                                                \
          (dc)->comparf = (cmpf),                                             \
@@ -149,7 +150,7 @@ struct _dtdisc_s
 #        define DTOFFSET(struct_s, member) offsetof(struct_s, member)
 #    else
 #        define DTOFFSET(struct_s, member)                                   \
-            (( int )(&(( struct_s * )0)->member))
+            (( int ) (&(( struct_s * ) 0)->member))
 #    endif
 
 /* the dictionary structure itself */
@@ -281,7 +282,7 @@ extern Dtmethod_t *Dtrhbag;
                         plugins -- requires -ldll */
 
 #        define dtplugin(name)                                               \
-            (( Dtmethod_t * )dllmeth("cdt", name, CDT_PLUGIN_VERSION))
+            (( Dtmethod_t * ) dllmeth("cdt", name, CDT_PLUGIN_VERSION))
 
 #        if 0
 #            define Dtrhbag dtplugin("rehash:Dtrhbag")
@@ -289,22 +290,22 @@ extern Dtmethod_t *Dtrhbag;
 
 #    endif /*_PACKAGE_ast*/
 
-extern Dt_t *dtopen _ARG_(( Dtdisc_t *, Dtmethod_t * ));
-extern int dtclose _ARG_(( Dt_t * ));
-extern Dt_t *dtview _ARG_(( Dt_t *, Dt_t * ));
-extern Dtdisc_t *dtdisc _ARG_(( Dt_t * dt, Dtdisc_t *, int ));
-extern Dtmethod_t *dtmethod _ARG_(( Dt_t *, Dtmethod_t * ));
+extern Dt_t *dtopen _ARG_(( Dtdisc_t *, Dtmethod_t * ) );
+extern int dtclose _ARG_(( Dt_t * ) );
+extern Dt_t *dtview _ARG_(( Dt_t *, Dt_t * ) );
+extern Dtdisc_t *dtdisc _ARG_(( Dt_t * dt, Dtdisc_t *, int ) );
+extern Dtmethod_t *dtmethod _ARG_(( Dt_t *, Dtmethod_t * ) );
 extern int
-dtwalk _ARG_(( Dt_t *, int (*)(Dt_t *, Void_t *, Void_t *), Void_t * ));
-extern int dtcustomize _ARG_(( Dt_t *, int, int ));
-extern unsigned int dtstrhash _ARG_(( unsigned int, char *, int ));
-extern int dtuserlock _ARG_(( Dt_t *, unsigned int, int ));
-extern Void_t *dtuserdata _ARG_(( Dt_t *, Void_t *, int ));
-extern int dtuserevent _ARG_(( Dt_t *, int, Void_t * ));
-extern ssize_t dtstat _ARG_(( Dt_t *, Dtstat_t * ));
+dtwalk _ARG_(( Dt_t *, int (*)(Dt_t *, Void_t *, Void_t *), Void_t * ) );
+extern int dtcustomize _ARG_(( Dt_t *, int, int ) );
+extern unsigned int dtstrhash _ARG_(( unsigned int, char *, int ) );
+extern int dtuserlock _ARG_(( Dt_t *, unsigned int, int ) );
+extern Void_t *dtuserdata _ARG_(( Dt_t *, Void_t *, int ) );
+extern int dtuserevent _ARG_(( Dt_t *, int, Void_t * ) );
+extern ssize_t dtstat _ARG_(( Dt_t *, Dtstat_t * ) );
 
 /* deal with upward binary compatibility (operation bit translation, etc.) */
-extern Dt_t *_dtopen _ARG_(( Dtdisc_t *, Dtmethod_t *, unsigned long ));
+extern Dt_t *_dtopen _ARG_(( Dtdisc_t *, Dtmethod_t *, unsigned long ) );
 #    define dtopen(dc, mt) _dtopen((dc), (mt), CDT_VERSION)
 
 #    undef extern
@@ -325,85 +326,89 @@ dllmeth(const char *, const char *, unsigned long);
 _END_EXTERNS_
 
 /* internal functions for translating among holder, object and key */
-#    define _DT(dt) (( Dt_t * )(dt))
+#    define _DT(dt) (( Dt_t * ) (dt))
 
 #    define _DTLNK(dc, o)                                                    \
-        (( Dtlink_t * )(( char * )(o) + (dc)->link)) /* get link from obj */
+        (( Dtlink_t * ) (( char * ) (o) + (dc)->link)) /* get link from obj  \
+                                                        */
 
 #    define _DTO(dc, l)                                                      \
-        ( Void_t * )(( char * )(l) - (dc)->link) /* get object from link */
+        ( Void_t * ) (( char * ) (l) - (dc)->link) /* get object from link   \
+                                                    */
 #    define _DTOBJ(dc, l)                                                    \
-        ((dc)->link >= 0 ? _DTO(dc, l) : (( Dthold_t * )(l))->obj)
+        ((dc)->link >= 0 ? _DTO(dc, l) : (( Dthold_t * ) (l))->obj)
 
 #    define _DTK(dc, o)                                                      \
-        (( char * )(o) + (dc)->key) /* get key from object                   \
-                                     */
+        (( char * ) (o) + (dc)->key) /* get key from object                  \
+                                      */
 #    define _DTKEY(dc, o)                                                    \
-        ( Void_t * )((dc)->size >= 0 ? _DTK(dc, o)                           \
-                                     : *(( char ** )_DTK(dc, o)))
+        ( Void_t * ) ((dc)->size >= 0 ? _DTK(dc, o)                          \
+                                      : *(( char ** ) _DTK(dc, o)))
 
 #    define _DTCMP(dt, k1, k2, dc)                                           \
         ((dc)->comparf                                                       \
          ? (*(dc)->comparf)((dt), (k1), (k2), (dc))                          \
          : (dc)->size > 0                                                    \
-           ? memcmp(( Void_t * )(k1), (( Void_t * )k2), (dc)->size)          \
-           : strcmp(( char * )(k1), (( char * )k2)))
+           ? memcmp(( Void_t * ) (k1), (( Void_t * ) k2), (dc)->size)        \
+           : strcmp(( char * ) (k1), (( char * ) k2)))
 
 #    define _DTHSH(dt, ky, dc)                                               \
         ((dc)->hashf ? (*(dc)->hashf)((dt), (ky), (dc))                      \
-                     : dtstrhash(0, ( char * )(ky), ( int )(dc)->size))
+                     : dtstrhash(0, ( char * ) (ky), ( int ) (dc)->size))
 
 #    define dtvnext(d) (_DT(d)->view)
 #    define dtvcount(d) (_DT(d)->nview)
 #    define dtvhere(d) (_DT(d)->walk)
 
-#    define dtlink(d, e) ((( Dtlink_t * )(e))->rh.__rght)
+#    define dtlink(d, e) ((( Dtlink_t * ) (e))->rh.__rght)
 #    define dtobj(d, e) _DTOBJ(_DT(d)->disc, (e))
 
-#    define dtfirst(d) (*(_DT(d)->searchf))((d), ( Void_t * )(0), DT_FIRST)
-#    define dtnext(d, o) (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_NEXT)
+#    define dtfirst(d) (*(_DT(d)->searchf))((d), ( Void_t * ) (0), DT_FIRST)
+#    define dtnext(d, o) (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_NEXT)
 #    define dtatleast(d, o)                                                  \
-        (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_ATLEAST)
-#    define dtlast(d) (*(_DT(d)->searchf))((d), ( Void_t * )(0), DT_LAST)
-#    define dtprev(d, o) (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_PREV)
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_ATLEAST)
+#    define dtlast(d) (*(_DT(d)->searchf))((d), ( Void_t * ) (0), DT_LAST)
+#    define dtprev(d, o) (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_PREV)
 #    define dtatmost(d, o)                                                   \
-        (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_ATMOST)
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_ATMOST)
 #    define dtsearch(d, o)                                                   \
-        (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_SEARCH)
-#    define dtmatch(d, o) (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_MATCH)
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_SEARCH)
+#    define dtmatch(d, o)                                                    \
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_MATCH)
 #    define dtinsert(d, o)                                                   \
-        (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_INSERT)
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_INSERT)
 #    define dtinstall(d, o)                                                  \
-        (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_INSTALL)
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_INSTALL)
 #    define dtappend(d, o)                                                   \
-        (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_APPEND)
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_APPEND)
 #    define dtdelete(d, o)                                                   \
-        (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_DELETE)
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_DELETE)
 #    define dtremove(d, o)                                                   \
-        (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_REMOVE)
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_REMOVE)
 #    define dtattach(d, o)                                                   \
-        (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_ATTACH)
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_ATTACH)
 #    define dtdetach(d, o)                                                   \
-        (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_DETACH)
-#    define dtclear(d) (*(_DT(d)->searchf))((d), ( Void_t * )(0), DT_CLEAR)
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_DETACH)
+#    define dtclear(d) (*(_DT(d)->searchf))((d), ( Void_t * ) (0), DT_CLEAR)
 
-#    define dtstart(d, o) (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_START)
-#    define dtstep(d, o) (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_STEP)
-#    define dtstop(d, o) (*(_DT(d)->searchf))((d), ( Void_t * )(o), DT_STOP)
+#    define dtstart(d, o)                                                    \
+        (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_START)
+#    define dtstep(d, o) (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_STEP)
+#    define dtstop(d, o) (*(_DT(d)->searchf))((d), ( Void_t * ) (o), DT_STOP)
 
 #    define dtflatten(d)                                                     \
-        ( Dtlink_t * )(*(_DT(d)->searchf))((d), ( Void_t * )(0), DT_FLATTEN)
+        ( Dtlink_t * ) (*(_DT(d)->searchf))((d), ( Void_t * ) (0), DT_FLATTEN)
 #    define dtextract(d)                                                     \
-        ( Dtlink_t * )(*(_DT(d)->searchf))((d), ( Void_t * )(0), DT_EXTRACT)
+        ( Dtlink_t * ) (*(_DT(d)->searchf))((d), ( Void_t * ) (0), DT_EXTRACT)
 #    define dtrestore(d, l)                                                  \
-        ( Dtlink_t * )(*(_DT(d)->searchf))((d), ( Void_t * )(l), DT_RESTORE)
+        ( Dtlink_t * ) (*(_DT(d)->searchf))((d), ( Void_t * ) (l), DT_RESTORE)
 
 #    define dtsize(d)                                                        \
-        (ssize_t) (*(_DT(d)->searchf))((d), ( Void_t * )(0), DT_STAT)
+        (ssize_t) (*(_DT(d)->searchf))((d), ( Void_t * ) (0), DT_STAT)
 
 /* this is for backward compatibility - will be removed someday */
 #    define DT_prime 17109811 /* 2#00000001 00000101 00010011 00110011 */
 #    define dtcharhash(h, c)                                                 \
-        ((( unsigned int )(h) + ( unsigned int )(c)) * DT_prime)
+        ((( unsigned int ) (h) + ( unsigned int ) (c)) * DT_prime)
 
 #endif /* _CDT_H */

@@ -57,7 +57,7 @@ nomalloc(Vmalloc_t *region, int type, void *obj, Vmdisc_t *disc)
         error(ERROR_SYSTEM | 3,
               "storage allocator out of space on %zu byte request ( region "
               "%zu segments %zu busy %zu:%zu free %zu:%zu )",
-              ( size_t )obj,
+              ( size_t ) obj,
               st.extent,
               st.n_seg,
               st.n_busy,
@@ -79,7 +79,7 @@ nomalloc(Vmalloc_t *region, int type, void *obj, Vmdisc_t *disc)
 void
 memfatal(void)
 {
-    ( void )memfatal_20130509(NiL);
+    ( void ) memfatal_20130509(NiL);
 }
 
 #    undef _AST_API_IMPLEMENT

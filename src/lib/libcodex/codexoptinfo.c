@@ -29,8 +29,8 @@
 static int
 optmethod(Void_t *obj, char *name, char *desc, Void_t *handle)
 {
-    Sfio_t *sp = ( Sfio_t * )handle;
-    Vcmethod_t *mt = ( Vcmethod_t * )obj;
+    Sfio_t *sp = ( Sfio_t * ) handle;
+    Vcmethod_t *mt = ( Vcmethod_t * ) obj;
     int i;
 
     sfprintf(sp, "[+%s (vcodex,ident)?", name);
@@ -59,7 +59,7 @@ optmethod(Void_t *obj, char *name, char *desc, Void_t *handle)
 static int
 optalias(Void_t *obj, char *name, char *desc, Void_t *handle)
 {
-    Sfio_t *sp = ( Sfio_t * )handle;
+    Sfio_t *sp = ( Sfio_t * ) handle;
 
     sfprintf(sp, "[+%s?Equivalent to \b%s\b.]", name, desc);
     return 0;
@@ -68,7 +68,7 @@ optalias(Void_t *obj, char *name, char *desc, Void_t *handle)
 static int
 optwindow(Void_t *obj, char *name, char *desc, Void_t *handle)
 {
-    Sfio_t *sp = ( Sfio_t * )handle;
+    Sfio_t *sp = ( Sfio_t * ) handle;
 
     sfprintf(sp, "[+%s?", name);
     optesc(sp, desc, 0);

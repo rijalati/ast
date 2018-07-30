@@ -124,7 +124,7 @@ int newfd;
 
     /* notify changes */
     if (_Sfnotify)
-        (*_Sfnotify)(f, SF_SETFD, ( void * )(( long )newfd));
+        (*_Sfnotify)(f, SF_SETFD, ( void * ) (( long ) newfd));
 
     f->file = newfd;
 

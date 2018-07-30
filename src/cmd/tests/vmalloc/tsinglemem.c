@@ -70,7 +70,7 @@ working(char *store, int type, ssize_t size)
             nfree += 1;
             nbusy -= 1;
             Piece[f].free = 0;
-            Piece[f].addr = ( Void_t * )0;
+            Piece[f].addr = ( Void_t * ) 0;
         }
     }
 

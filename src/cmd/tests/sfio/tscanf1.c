@@ -39,7 +39,7 @@ size_t size;
 Sfdisc_t *disc;
 #endif
 {
-    Mydisc_t *dc = ( Mydisc_t * )disc;
+    Mydisc_t *dc = ( Mydisc_t * ) disc;
 
     if (!f || size <= 0)
         return -1;
@@ -62,7 +62,7 @@ tmain()
         terror("Bad scanned values ");
 
     if (!(f = sfnew(
-          ( Sfio_t * )0, ( Void_t * )0, ( size_t )SF_UNBOUND, 0, SF_READ)))
+          ( Sfio_t * ) 0, ( Void_t * ) 0, ( size_t ) SF_UNBOUND, 0, SF_READ)))
         terror("Can't create stream f");
     if (!(str = sfopen(0, "ten 10 10", "s")))
         terror("Can't open string stream str");

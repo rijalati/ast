@@ -140,7 +140,7 @@ tag_t *tp;
             continue;
         sfsprintf(s, e - s, "/%s/%s.%d", rca->d_name, rf, cs.time);
         if ((fd = sfopen(NULL, dirbuf, "a"))) {
-            sfwrite(fd, ( char * )tp, tp->length);
+            sfwrite(fd, ( char * ) tp, tp->length);
             if (df) {
                 sfseek(df, 0L, 0);
                 sfmove(df, fd, -1, -1);

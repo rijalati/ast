@@ -90,15 +90,15 @@ int dtclose(dt) reg Dt_t *dt;
         return -1;
 
     /* release all allocated data */
-    ( void )(*(dt->meth->searchf))(dt, NIL(Void_t *), DT_CLEAR);
+    ( void ) (*(dt->meth->searchf))(dt, NIL(Void_t *), DT_CLEAR);
     if (dtsize(dt) > 0)
         return -1;
 
     if (dt->data->ntab > 0)
-        (*dt->memoryf)(dt, ( Void_t * )dt->data->htab, 0, dt->disc);
-    (*dt->memoryf)(dt, ( Void_t * )dt->data, 0, dt->disc);
+        (*dt->memoryf)(dt, ( Void_t * ) dt->data->htab, 0, dt->disc);
+    (*dt->memoryf)(dt, ( Void_t * ) dt->data, 0, dt->disc);
 
-    free(( Void_t * )dt);
+    free(( Void_t * ) dt);
 
     return 0;
 }

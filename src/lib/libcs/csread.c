@@ -46,7 +46,7 @@ csread(Cs_t *state, int fd, void *buf, size_t size, int op)
 
     if (restart = !!(op & CS_RESTART))
         op &= ~CS_RESTART;
-    p = ( char * )buf;
+    p = ( char * ) buf;
     e = p + size;
     messagef((state->id,
               NiL,
@@ -63,9 +63,9 @@ csread(Cs_t *state, int fd, void *buf, size_t size, int op)
         } else {
             while (p < e && (n = read(fd, p, 1)) == 1 && *p++ != '\n')
                 ;
-            if (n <= 0 || p == ( char * )buf || *(p - 1) != '\n')
+            if (n <= 0 || p == ( char * ) buf || *(p - 1) != '\n')
                 goto bad;
-            n = p - ( char * )buf;
+            n = p - ( char * ) buf;
             messagef(
             (state->id,
              NiL,
@@ -102,10 +102,10 @@ csread(Cs_t *state, int fd, void *buf, size_t size, int op)
             || op == CS_LINE
                && (*(p - 1) == '\n'
                    || n > 1 && *(p - 1) == '\r' && *(p - 2) == '\n'))
-            return p - ( char * )buf;
+            return p - ( char * ) buf;
         if (p >= e) {
             if (op == CS_EXACT)
-                return p - ( char * )buf;
+                return p - ( char * ) buf;
             break;
         }
         messagef(
@@ -116,12 +116,12 @@ csread(Cs_t *state, int fd, void *buf, size_t size, int op)
          fd,
          size,
          op == CS_EXACT ? "EXACT" : op == CS_LIMIT ? "LIMIT" : "LINE",
-         p - ( char * )buf,
-         p - ( char * )buf,
-         ( char * )buf));
+         p - ( char * ) buf,
+         p - ( char * ) buf,
+         ( char * ) buf));
     }
 bad:
-    if (p != ( char * )buf || n < 0) {
+    if (p != ( char * ) buf || n < 0) {
         errno = EINVAL;
         messagef(
         (state->id,
@@ -131,9 +131,9 @@ bad:
          fd,
          size,
          op == CS_EXACT ? "EXACT" : op == CS_LIMIT ? "LIMIT" : "LINE",
-         p - ( char * )buf,
-         p - ( char * )buf,
-         ( char * )buf));
+         p - ( char * ) buf,
+         p - ( char * ) buf,
+         ( char * ) buf));
         return -1;
     }
     messagef((state->id,

@@ -52,8 +52,8 @@ size_t n;                             /* number of bytes. 		*/
         if (!(f->mode & SF_WRITE) && (f->flags & SF_RDWR) != SF_RDWR)
             SFMTXRETURN(f, (ssize_t)(-1));
 
-        if (( uchar * )buf != f->next
-            && (!f->rsrv || f->rsrv->data != ( uchar * )buf))
+        if (( uchar * ) buf != f->next
+            && (!f->rsrv || f->rsrv->data != ( uchar * ) buf))
             SFMTXRETURN(f, (ssize_t)(-1));
 
         f->mode &= ~SF_PEEK;
@@ -81,7 +81,7 @@ size_t n;                             /* number of bytes. 		*/
             f->next += n;
     }
 
-    s = begs = ( uchar * )buf;
+    s = begs = ( uchar * ) buf;
     for (;; f->mode &= ~SF_LOCK) { /* check stream mode */
         if (SFMODE(f, local) != SF_WRITE && _sfmode(f, SF_WRITE, local) < 0) {
             w = s > begs ? s - begs : -1;
@@ -94,19 +94,19 @@ size_t n;                             /* number of bytes. 		*/
 
         if (s == f->next && s < f->endb) /* after sfreserve */
         {
-            if (w > ( ssize_t )n)
-                w = ( ssize_t )n;
+            if (w > ( ssize_t ) n)
+                w = ( ssize_t ) n;
             f->next = (s += w);
             n -= w;
             break;
         }
 
         /* attempt to create space in buffer */
-        if (w == 0 || ((f->flags & SF_WHOLE) && w < ( ssize_t )n)) {
+        if (w == 0 || ((f->flags & SF_WHOLE) && w < ( ssize_t ) n)) {
             if (f->flags & SF_STRING) /* extend buffer */
             {
-                ( void )SFWR(f, s, n - w, f->disc);
-                if ((w = f->endb - f->next) < ( ssize_t )n) {
+                ( void ) SFWR(f, s, n - w, f->disc);
+                if ((w = f->endb - f->next) < ( ssize_t ) n) {
                     if (!(f->flags & SF_STRING)) /* maybe sftmp */
                     {
                         if (f->next > f->data)
@@ -116,8 +116,8 @@ size_t n;                             /* number of bytes. 		*/
                 }
             } else if (f->next > f->data) {
             fls_buf:
-                ( void )SFFLSBUF(f, -1);
-                if ((w = f->endb - f->next) < ( ssize_t )n
+                ( void ) SFFLSBUF(f, -1);
+                if ((w = f->endb - f->next) < ( ssize_t ) n
                     && (f->flags & SF_WHOLE) && f->next > f->data)
                     break;
             }
@@ -129,8 +129,8 @@ size_t n;                             /* number of bytes. 		*/
             if ((w = SFWR(f, s, n, f->disc)) <= 0)
                 break;
         } else {
-            if (w > ( ssize_t )n)
-                w = ( ssize_t )n;
+            if (w > ( ssize_t ) n)
+                w = ( ssize_t ) n;
             if (w <= 0) /* no forward progress possible */
                 break;
             memmove(f->next, s, w);
@@ -144,7 +144,7 @@ size_t n;                             /* number of bytes. 		*/
 
     /* always flush buffer for share streams */
     if (f->extent < 0 && (f->flags & SF_SHARE) && !(f->flags & SF_PUBLIC))
-        ( void )SFFLSBUF(f, -1);
+        ( void ) SFFLSBUF(f, -1);
 
     /* check to see if buffer should be flushed */
     else if (n == 0 && (f->flags & SF_LINE) && !(f->flags & SF_STRING)) {
@@ -159,7 +159,7 @@ size_t n;                             /* number of bytes. 		*/
             }
         }
         if (n >= HIFORLINE)
-            ( void )SFFLSBUF(f, -1);
+            ( void ) SFFLSBUF(f, -1);
     }
 
     SFOPEN(f, local);

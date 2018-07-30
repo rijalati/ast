@@ -28,6 +28,6 @@ rewind(Sfio_t *f)
 {
     STDIO_VOID(f, "rewind", void, ( Sfio_t * ), (f))
 
-    sfseek(f, ( Sfoff_t )0, SEEK_SET | SF_PUBLIC);
+    sfseek(f, ( Sfoff_t ) 0, SEEK_SET | SF_PUBLIC);
     sfclrlock(f);
 }

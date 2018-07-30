@@ -42,7 +42,7 @@ E00(int index, Rsobj_t *rp, Rsobj_t *dp, void **data)
     int x;
     char env[32];
 
-    if (!(state = ( State_t * )*data)) {
+    if (!(state = ( State_t * ) *data)) {
         sfsprintf(env, sizeof(env), "SORT_E%02u_STATUS", index);
         if (!(s = getenv(env)))
             s = "";
@@ -50,7 +50,7 @@ E00(int index, Rsobj_t *rp, Rsobj_t *dp, void **data)
             error(ERROR_SYSTEM | 3, "out of space");
         state->status = RS_ACCEPT;
         state->pretty = 'A';
-        strcpy(state->sp = ( char * )(state + 1), s);
+        strcpy(state->sp = ( char * ) (state + 1), s);
         *data = state;
         x = SS_EXIT_FIRST;
     } else if (rp == dp)

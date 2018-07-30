@@ -77,7 +77,7 @@ Void_t *obj;
 Dtdisc_t *disc;
 #    endif
 {
-    free((( Hash_t * )obj)->item.key);
+    free((( Hash_t * ) obj)->item.key);
     free(obj);
 }
 
@@ -132,10 +132,10 @@ ACTION action;
     if (!Hashtab)
         return NIL(ENTRY *);
 
-    if (!(o = ( Hash_t * )dtmatch(Hashtab, item.key)) && action == ENTER
-        && (o = ( Hash_t * )malloc(sizeof(Hash_t)))) {
+    if (!(o = ( Hash_t * ) dtmatch(Hashtab, item.key)) && action == ENTER
+        && (o = ( Hash_t * ) malloc(sizeof(Hash_t)))) {
         o->item = item;
-        o = ( Hash_t * )dtinsert(Hashtab, o);
+        o = ( Hash_t * ) dtinsert(Hashtab, o);
     }
 
     return o ? &(o->item) : NIL(ENTRY *);

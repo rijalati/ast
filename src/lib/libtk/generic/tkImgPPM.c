@@ -164,7 +164,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
                          "PPM image file \"",
                          fileName,
                          "\" has dimension(s) <= 0",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if ((maxIntensity <= 0) || (maxIntensity >= 256)) {
@@ -176,7 +176,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
                          fileName,
                          "\" has bad maximum intensity value ",
                          buffer,
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -208,7 +208,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
     Tk_PhotoExpand(imageHandle, destX + width, destY + height);
 
     if (srcY > 0) {
-        fseek(f, ( long )(srcY * block.pitch), SEEK_CUR);
+        fseek(f, ( long ) (srcY * block.pitch), SEEK_CUR);
     }
 
     nLines = (MAX_MEMORY + block.pitch - 1) / block.pitch;
@@ -219,7 +219,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
         nLines = 1;
     }
     nBytes = nLines * block.pitch;
-    pixelPtr = ( unsigned char * )ckalloc(( unsigned )nBytes);
+    pixelPtr = ( unsigned char * ) ckalloc(( unsigned ) nBytes);
     block.pixelPtr = pixelPtr + srcX * block.pixelSize;
 
     for (h = height; h > 0; h -= nLines) {
@@ -227,7 +227,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
             nLines = h;
             nBytes = nLines * block.pitch;
         }
-        count = fread(pixelPtr, 1, ( unsigned )nBytes, f);
+        count = fread(pixelPtr, 1, ( unsigned ) nBytes, f);
         if (count != nBytes) {
             Tcl_AppendResult(interp,
                              "error reading PPM image file \"",
@@ -235,15 +235,15 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
                              "\": ",
                              feof(f) ? "not enough data"
                                      : Tcl_PosixError(interp),
-                             ( char * )NULL);
-            ckfree(( char * )pixelPtr);
+                             ( char * ) NULL);
+            ckfree(( char * ) pixelPtr);
             return TCL_ERROR;
         }
         if (maxIntensity != 255) {
             unsigned char *p;
 
             for (p = pixelPtr; count > 0; count--, p++) {
-                *p = ((( int )*p) * 255) / maxIntensity;
+                *p = ((( int ) *p) * 255) / maxIntensity;
             }
         }
         block.height = nLines;
@@ -251,7 +251,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
         destY += nLines;
     }
 
-    ckfree(( char * )pixelPtr);
+    ckfree(( char * ) pixelPtr);
     return TCL_OK;
 }
 
@@ -286,7 +286,7 @@ Tk_PhotoImageBlock *blockPtr;
 
     if ((f = fopen(fileName, "wb")) == NULL) {
         Tcl_AppendResult(
-        interp, fileName, ": ", Tcl_PosixError(interp), ( char * )NULL);
+        interp, fileName, ": ", Tcl_PosixError(interp), ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -299,7 +299,7 @@ Tk_PhotoImageBlock *blockPtr;
     if ((greenOffset == 1) && (blueOffset == 2) && (blockPtr->pixelSize == 3)
         && (blockPtr->pitch == (blockPtr->width * 3))) {
         nBytes = blockPtr->height * blockPtr->pitch;
-        if (fwrite(pixLinePtr, 1, ( unsigned )nBytes, f) != nBytes) {
+        if (fwrite(pixLinePtr, 1, ( unsigned ) nBytes, f) != nBytes) {
             goto writeerror;
         }
     } else {
@@ -328,7 +328,7 @@ writeerror:
                      fileName,
                      "\": ",
                      Tcl_PosixError(interp),
-                     ( char * )NULL);
+                     ( char * ) NULL);
     if (f != NULL) {
         fclose(f);
     }

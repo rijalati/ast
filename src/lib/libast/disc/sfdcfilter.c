@@ -51,7 +51,7 @@ Sfdisc_t *disc; /* discipline */
     Filter_t *fi;
     ssize_t r, w;
 
-    fi = ( Filter_t * )disc;
+    fi = ( Filter_t * ) disc;
     for (;;) {
         /* get some raw data to stuff down the pipe */
         if (fi->next && fi->next >= fi->endb) {
@@ -141,7 +141,7 @@ Sfdisc_t *disc;
 #endif
 {
     if (type == SF_FINAL || type == SF_DPOP) {
-        sfclose((( Filter_t * )disc)->filter);
+        sfclose((( Filter_t * ) disc)->filter);
         free(disc);
     }
 
@@ -166,7 +166,7 @@ char *cmd;                        /* program to run as a filter	*/
     /* unbuffered stream */
     sfsetbuf(filter, NIL(Void_t *), 0);
 
-    if (!(fi = ( Filter_t * )malloc(sizeof(Filter_t)))) {
+    if (!(fi = ( Filter_t * ) malloc(sizeof(Filter_t)))) {
         sfclose(filter);
         return -1;
     }
@@ -178,7 +178,7 @@ char *cmd;                        /* program to run as a filter	*/
     fi->filter = filter;
     fi->next = fi->endb = fi->raw;
 
-    if (sfdisc(f, ( Sfdisc_t * )fi) != ( Sfdisc_t * )fi) {
+    if (sfdisc(f, ( Sfdisc_t * ) fi) != ( Sfdisc_t * ) fi) {
         sfclose(filter);
         free(fi);
         return -1;

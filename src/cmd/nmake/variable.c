@@ -29,8 +29,8 @@
 #include "options.h"
 
 #define BINDING(r, f)                                                        \
-    ((( f )&VAL_UNBOUND) ? unbound(r)                                        \
-                         : state.localview ? localview(r) : (r)->name)
+    ((( f ) &VAL_UNBOUND) ? unbound(r)                                       \
+                          : state.localview ? localview(r) : (r)->name)
 
 /*
  * generator for genprereqs()
@@ -703,7 +703,7 @@ setvar(char *s, char *v, int flags)
              * save old value for makefile compiler
              */
 
-            s = (p->property & V_oldvalue) ? getold(p->name) : ( char * )0;
+            s = (p->property & V_oldvalue) ? getold(p->name) : ( char * ) 0;
             t = v;
             if (flags & V_append) {
                 if (state.reading && !state.global && isid)

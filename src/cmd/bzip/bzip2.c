@@ -171,7 +171,7 @@
 #    define PATH_SEP '\\'
 #    define MY_LSTAT _stat
 #    define MY_STAT _stat
-#    define MY_S_IFREG(x) (( x )&_S_IFREG)
+#    define MY_S_IFREG(x) (( x ) &_S_IFREG)
 
 #    if 0
    /*-- lcc-win32 seems to expand wildcards itself --*/
@@ -220,8 +220,8 @@ typedef unsigned int UInt32;
 typedef short Int16;
 typedef unsigned short UInt16;
 
-#define True (( Bool )1)
-#define False (( Bool )0)
+#define True (( Bool ) 1)
+#define False (( Bool ) 0)
 
 /*--
   IntNative is your platform's `native' int size.
@@ -337,7 +337,7 @@ compressStream(FILE *stream, FILE *zStream)
         if (ferror(stream))
             goto errhandler_io;
         if (nIbuf > 0)
-            bzWrite(&bzerr, bzf, ( void * )ibuf, nIbuf);
+            bzWrite(&bzerr, bzf, ( void * ) ibuf, nIbuf);
         if (bzerr != BZ_OK)
             goto errhandler;
     }
@@ -369,9 +369,9 @@ compressStream(FILE *stream, FILE *zStream)
         fprintf(stderr,
                 "%6.3f:1, %6.3f bits/byte, "
                 "%5.2f%% saved, %d in, %d out.\n",
-                ( float )nbytes_in / ( float )nbytes_out,
-                (8.0 * ( float )nbytes_out) / ( float )nbytes_in,
-                100.0 * (1.0 - ( float )nbytes_out / ( float )nbytes_in),
+                ( float ) nbytes_in / ( float ) nbytes_out,
+                (8.0 * ( float ) nbytes_out) / ( float ) nbytes_in,
+                100.0 * (1.0 - ( float ) nbytes_out / ( float ) nbytes_in),
                 nbytes_in,
                 nbytes_out);
 
@@ -420,7 +420,7 @@ uncompressStream(FILE *zStream, FILE *stream)
     while (True) {
 
         bzf = bzReadOpen(
-        &bzerr, zStream, verbosity, ( int )smallMode, unused, nUnused);
+        &bzerr, zStream, verbosity, ( int ) smallMode, unused, nUnused);
         if (bzf == NULL || bzerr != BZ_OK)
             goto errhandler;
         streamNo++;
@@ -525,7 +525,7 @@ testStream(FILE *zStream)
     while (True) {
 
         bzf = bzReadOpen(
-        &bzerr, zStream, verbosity, ( int )smallMode, unused, nUnused);
+        &bzerr, zStream, verbosity, ( int ) smallMode, unused, nUnused);
         if (bzf == NULL || bzerr != BZ_OK)
             goto errhandler;
         streamNo++;
@@ -769,9 +769,9 @@ void
 pad(Char *s)
 {
     Int32 i;
-    if (( Int32 )strlen(s) >= longestFileName)
+    if (( Int32 ) strlen(s) >= longestFileName)
         return;
-    for (i = 1; i <= longestFileName - ( Int32 )strlen(s); i++)
+    for (i = 1; i <= longestFileName - ( Int32 ) strlen(s); i++)
         fprintf(stderr, " ");
 }
 
@@ -1389,7 +1389,7 @@ myMalloc(Int32 n)
 {
     void *p;
 
-    p = malloc(( size_t )n);
+    p = malloc(( size_t ) n);
     if (p == NULL)
         outOfMemory();
     return p;
@@ -1402,7 +1402,7 @@ mkCell(void)
 {
     Cell *c;
 
-    c = ( Cell * )myMalloc(sizeof(Cell));
+    c = ( Cell * ) myMalloc(sizeof(Cell));
     c->name = NULL;
     c->link = NULL;
     return c;
@@ -1415,7 +1415,7 @@ snocString(Cell *root, Char *name)
 {
     if (root == NULL) {
         Cell *tmp = mkCell();
-        tmp->name = ( Char * )myMalloc(5 + strlen(name));
+        tmp->name = ( Char * ) myMalloc(5 + strlen(name));
         strcpy(tmp->name, name);
         return tmp;
     } else {
@@ -1497,8 +1497,8 @@ main(IntNative argc, Char *argv[])
     for (aa = argList; aa != NULL; aa = aa->link)
         if (aa->name[0] != '-') {
             numFileNames++;
-            if (longestFileName < ( Int32 )strlen(aa->name))
-                longestFileName = ( Int32 )strlen(aa->name);
+            if (longestFileName < ( Int32 ) strlen(aa->name))
+                longestFileName = ( Int32 ) strlen(aa->name);
         }
 
 

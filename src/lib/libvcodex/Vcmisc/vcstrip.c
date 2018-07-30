@@ -36,12 +36,12 @@ typedef struct _strip_s
 } Strip_t;
 
 static Vcmtarg_t _Stripargs[]
-= { { "nl", "Data is line-oriented", ( Void_t * )ST_LINE },
-    { "head", "Header to strip is 'head=amount'", ( Void_t * )ST_HEAD },
-    { "tail", "Tail to strip is 'tail=amount'", ( Void_t * )ST_TAIL },
+= { { "nl", "Data is line-oriented", ( Void_t * ) ST_LINE },
+    { "head", "Header to strip is 'head=amount'", ( Void_t * ) ST_HEAD },
+    { "tail", "Tail to strip is 'tail=amount'", ( Void_t * ) ST_TAIL },
     { 0,
       "Not stripping anything, only processing 'nl' if specified",
-      ( Void_t * )0 } };
+      ( Void_t * ) 0 } };
 
 #if __STD_C
 static ssize_t
@@ -62,7 +62,7 @@ Void_t **out;
         return -1;
 
     /* set valid interval of data to be processed */
-    edt = (dt = ( Vcchar_t * )data) + (dsz = ( ssize_t )size);
+    edt = (dt = ( Vcchar_t * ) data) + (dsz = ( ssize_t ) size);
     if (!(st->type & ST_LINE))
         vc->undone = 0;
     else /* dealing with lines of text */
@@ -131,7 +131,7 @@ Void_t **out;
     vcioputs(&io, dt, dsz);
 
     if (out)
-        *out = ( Void_t * )output;
+        *out = ( Void_t * ) output;
     return z;
 }
 
@@ -154,7 +154,7 @@ Void_t **out;
         return -1;
     vc->undone = 0;
 
-    vcioinit(&io, ( Vcchar_t * )data, size);
+    vcioinit(&io, ( Vcchar_t * ) data, size);
 
     if ((hsz = vciogetu(&io)) < 0 || hsz > vciomore(&io))
         RETURN(-1);
@@ -204,17 +204,17 @@ Void_t *params;
         if (!(st = calloc(1, sizeof(Strip_t))))
             return -1;
 
-        for (data = ( char * )params; data;) {
+        for (data = ( char * ) params; data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Stripargs, &arg);
             switch (TYPECAST(int, arg->data)) {
             case ST_LINE:
                 st->type = ST_LINE;
                 break;
             case ST_HEAD:
-                st->head = ( ssize_t )vcatoi(val);
+                st->head = ( ssize_t ) vcatoi(val);
                 break;
             case ST_TAIL:
-                st->tail = ( ssize_t )vcatoi(val);
+                st->tail = ( ssize_t ) vcatoi(val);
                 break;
             }
         }

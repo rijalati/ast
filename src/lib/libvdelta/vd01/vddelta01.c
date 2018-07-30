@@ -124,33 +124,33 @@ int n_copy;     /* length of match	*/
         if (!MERGABLE(n_add, n_copy, k_type))
             i_add = A_ISLOCAL(n_add) ? A_LPUT(n_add) : 0;
 
-        if (VDPUTC(( Vdio_t * )tab, i_add) < 0)
+        if (VDPUTC(( Vdio_t * ) tab, i_add) < 0)
             return -1;
         if (!A_ISLOCAL(n_add)
-            && (*_Vdputu)(( Vdio_t * )tab, ( ulong )A_PUT(n_add)) < 0)
+            && (*_Vdputu)(( Vdio_t * ) tab, ( ulong ) A_PUT(n_add)) < 0)
             return -1;
-        if ((*_Vdwrite)(( Vdio_t * )tab, begs, n_add) < 0)
+        if ((*_Vdwrite)(( Vdio_t * ) tab, begs, n_add) < 0)
             return -1;
     }
 
     if (n_copy > 0) {
         if (!MERGABLE(n_add, n_copy, k_type)
-            && VDPUTC(( Vdio_t * )tab, i_copy) < 0)
+            && VDPUTC(( Vdio_t * ) tab, i_copy) < 0)
             return -1;
 
         if (!C_ISLOCAL(n_copy)
-            && (*_Vdputu)(( Vdio_t * )tab, ( ulong )C_PUT(n_copy)) < 0)
+            && (*_Vdputu)(( Vdio_t * ) tab, ( ulong ) C_PUT(n_copy)) < 0)
             return -1;
 
         if (k_type >= K_QUICK && k_type < (K_QUICK + K_QTYPE)) {
-            if (VDPUTC(( Vdio_t * )tab, ( uchar )best) < 0)
+            if (VDPUTC(( Vdio_t * ) tab, ( uchar ) best) < 0)
                 return -1;
         } else {
-            if ((*_Vdputu)(( Vdio_t * )tab, ( ulong )best) < 0)
+            if ((*_Vdputu)(( Vdio_t * ) tab, ( ulong ) best) < 0)
                 return -1;
         }
     } else {
-        if ((*_Vdflsbuf)(( Vdio_t * )tab) < 0)
+        if ((*_Vdflsbuf)(( Vdio_t * ) tab) < 0)
             return -1;
     }
 
@@ -367,10 +367,10 @@ long window;                               /* amount to process each time	*/
 
     /* try to allocate working space */
     while (window > 0) { /* space for the target string */
-        size = (n_tar == 0 || target->data) ? 0 : ( int )window;
-        if (( long )size > n_tar)
-            size = ( int )n_tar;
-        if (size > 0 && !(tab.tar = ( uchar * )malloc(size * sizeof(uchar))))
+        size = (n_tar == 0 || target->data) ? 0 : ( int ) window;
+        if (( long ) size > n_tar)
+            size = ( int ) n_tar;
+        if (size > 0 && !(tab.tar = ( uchar * ) malloc(size * sizeof(uchar))))
             goto reduce_window;
 
         /* space for sliding header or source string */
@@ -379,19 +379,19 @@ long window;                               /* amount to process each time	*/
         else /* differencing */
         {
             size = source->data ? 0 : window;
-            if (( long )size > n_src)
-                size = ( int )n_src;
+            if (( long ) size > n_src)
+                size = ( int ) n_src;
         }
-        if (size > 0 && !(tab.src = ( uchar * )malloc(size * sizeof(uchar))))
+        if (size > 0 && !(tab.src = ( uchar * ) malloc(size * sizeof(uchar))))
             goto reduce_window;
 
         /* space for the hash table elements */
-        size = ( int )(window < n_tar ? window : n_tar);
+        size = ( int ) (window < n_tar ? window : n_tar);
         if (n_src <= 0)
-            size += ( int )(window < n_tar ? HEADER(window) : 0);
+            size += ( int ) (window < n_tar ? HEADER(window) : 0);
         else
-            size += ( int )(window < n_src ? window : n_src);
-        if (!(tab.base = ( Match_t * )malloc(size * sizeof(Match_t))))
+            size += ( int ) (window < n_src ? window : n_src);
+        if (!(tab.base = ( Match_t * ) malloc(size * sizeof(Match_t))))
             goto reduce_window;
 
         /* space for the hash table */
@@ -401,7 +401,7 @@ long window;                               /* amount to process each time	*/
         while ((n &= n - 1) != 0);
         if (size < 64)
             size = 64;
-        while (!(tab.table = ( Match_t ** )malloc(size * sizeof(Match_t *))))
+        while (!(tab.table = ( Match_t ** ) malloc(size * sizeof(Match_t *))))
             if ((size >>= 1) <= 0)
                 goto reduce_window;
 
@@ -411,15 +411,15 @@ long window;                               /* amount to process each time	*/
 
     reduce_window:
         if (tab.tar) {
-            free(( Void_t * )tab.tar);
+            free(( Void_t * ) tab.tar);
             tab.tar = NIL(uchar *);
         }
         if (tab.src) {
-            free(( Void_t * )tab.src);
+            free(( Void_t * ) tab.src);
             tab.src = NIL(uchar *);
         }
         if (tab.base) {
-            free(( Void_t * )tab.base);
+            free(( Void_t * ) tab.base);
             tab.base = NIL(Match_t *);
         }
         if ((window >>= 1) <= 0)
@@ -432,10 +432,10 @@ long window;                               /* amount to process each time	*/
     /* output magic bytes and sizes */
     for (k = 0; VD_MAGIC[k]; k++)
         ;
-    if ((*_Vdwrite)(&tab.io, ( uchar * )VD_MAGIC, k) != k
-        || (*_Vdputu)(&tab.io, ( ulong )n_tar) <= 0
-        || (*_Vdputu)(&tab.io, ( ulong )n_src) <= 0
-        || (*_Vdputu)(&tab.io, ( ulong )window) <= 0)
+    if ((*_Vdwrite)(&tab.io, ( uchar * ) VD_MAGIC, k) != k
+        || (*_Vdputu)(&tab.io, ( ulong ) n_tar) <= 0
+        || (*_Vdputu)(&tab.io, ( ulong ) n_src) <= 0
+        || (*_Vdputu)(&tab.io, ( ulong ) window) <= 0)
         goto done;
 
     /* do one window at a time */
@@ -445,12 +445,12 @@ long window;                               /* amount to process each time	*/
             if (n <= 0)
                 tab.n_src = 0;
             else {
-                size = ( int )HEADER(window);
+                size = ( int ) HEADER(window);
                 if (target->data)
                     tab.src = tab.tar + tab.n_tar - size;
                 else
-                    memcpy(( Void_t * )tab.src,
-                           ( Void_t * )(tab.tar + tab.n_tar - size),
+                    memcpy(( Void_t * ) tab.src,
+                           ( Void_t * ) (tab.tar + tab.n_tar - size),
                            size);
                 tab.n_src = size;
             }
@@ -462,11 +462,11 @@ long window;                               /* amount to process each time	*/
                 else
                     p = n;
                 if (source->data)
-                    tab.src = ( uchar * )source->data + p;
+                    tab.src = ( uchar * ) source->data + p;
                 else {
                     size
-                    = (*source->readf)(tab.src, ( int )window, p, source);
-                    if (( long )size != window)
+                    = (*source->readf)(tab.src, ( int ) window, p, source);
+                    if (( long ) size != window)
                         goto done;
                 }
             } /* else use last window */
@@ -475,13 +475,13 @@ long window;                               /* amount to process each time	*/
         }
 
         /* prepare the target string */
-        size = ( int )((n_tar - n) < window ? (n_tar - n) : window);
+        size = ( int ) ((n_tar - n) < window ? (n_tar - n) : window);
         tab.n_tar = size;
         if (target->data)
-            tab.tar = ( uchar * )target->data + n;
+            tab.tar = ( uchar * ) target->data + n;
         else {
-            size = (*target->readf)(tab.tar, size, ( long )n, target);
-            if (( long )size != tab.n_tar)
+            size = (*target->readf)(tab.tar, size, ( long ) n, target);
+            if (( long ) size != tab.n_tar)
                 goto done;
         }
 
@@ -500,14 +500,14 @@ long window;                               /* amount to process each time	*/
 
 done:
     if (!target->data && tab.tar)
-        free(( Void_t * )tab.tar);
+        free(( Void_t * ) tab.tar);
     if (tab.src
         && ((n_src <= 0 && !target->data) || (n_src > 0 && !source->data)))
-        free(( Void_t * )tab.src);
+        free(( Void_t * ) tab.src);
     if (tab.base)
-        free(( Void_t * )tab.base);
+        free(( Void_t * ) tab.base);
     if (tab.table)
-        free(( Void_t * )tab.table);
+        free(( Void_t * ) tab.table);
 
     return tab.io.here + (tab.io.next - tab.io.data);
 }

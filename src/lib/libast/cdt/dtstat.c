@@ -34,24 +34,24 @@ dtstat(Dt_t *dt, Dtstat_t *dtst)
     char *str;
     char *end;
 
-    sz = (ssize_t)(*dt->meth->searchf)(dt, ( Void_t * )dtst, DT_STAT);
+    sz = (ssize_t)(*dt->meth->searchf)(dt, ( Void_t * ) dtst, DT_STAT);
 
     end = &dtst->mesg[sizeof(dtst->mesg)] - 1;
     str = dtst->mesg;
     str += sfsprintf(str,
                      end - str,
                      "Objects=%ld #Toptablesize=%ld #Level=%ld\n",
-                     ( long )dtst->size,
-                     ( long )dtst->tslot,
-                     ( long )(dtst->mlev + 1));
+                     ( long ) dtst->size,
+                     ( long ) dtst->tslot,
+                     ( long ) (dtst->mlev + 1));
 
     /* print first 5 levels */
     for (k = 0; k < 5 && k <= dtst->mlev; ++k)
         str += sfsprintf(str,
                          end - str,
                          "\t\tlev[%ld]=%ld\n",
-                         ( long )k,
-                         ( long )dtst->lsize[k]);
+                         ( long ) k,
+                         ( long ) dtst->lsize[k]);
     str[0] = 0;
 
     return sz;

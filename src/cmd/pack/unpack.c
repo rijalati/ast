@@ -131,15 +131,15 @@ main(int argc, char *argv[])
         }
     argv += opt_info.index;
     if (error_info.errors || !*argv)
-        error(ERROR_usage(2), "%s", optusage(( char * )0));
+        error(ERROR_usage(2), "%s", optusage(( char * ) 0));
     sfclose(iop);
     while (outfile = *argv++) {
-        fpin = fpout = ( Sfio_t * )0;
-        hp = ( Huff_t * )0;
+        fpin = fpout = ( Sfio_t * ) 0;
+        hp = ( Huff_t * ) 0;
         deleted = 0;
         if (!(infile = inname(outfile)))
             continue;
-        if (!(fpin = sfopen(( Sfio_t * )0, infile, "r"))) {
+        if (!(fpin = sfopen(( Sfio_t * ) 0, infile, "r"))) {
             error(ERROR_system(0), "%s: cannot open", infile);
             continue;
         }
@@ -158,8 +158,8 @@ main(int argc, char *argv[])
                                   O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,
                                   PERM(statb.st_mode)))
                       < 0)
-                     || !((fpout = sfnew(( Sfio_t * )0,
-                                         ( char * )0,
+                     || !((fpout = sfnew(( Sfio_t * ) 0,
+                                         ( char * ) 0,
                                          SF_UNBOUND,
                                          out,
                                          SF_WRITE))))
@@ -215,7 +215,7 @@ inname(char *outfile)
     char *cp;
     int n = strlen(outfile);
     int sufflen = strlen(suffix);
-    if (cp = ( char * )malloc(n + sufflen + 1)) {
+    if (cp = ( char * ) malloc(n + sufflen + 1)) {
         strcpy(cp, outfile);
         if (streq(suffix, cp + n - sufflen))
             outfile[n - sufflen] = 0;

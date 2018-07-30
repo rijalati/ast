@@ -86,7 +86,7 @@ ClientData clientData; /* Argument to pass to handler. */
 {
     AsyncHandler *asyncPtr;
 
-    asyncPtr = ( AsyncHandler * )ckalloc(sizeof(AsyncHandler));
+    asyncPtr = ( AsyncHandler * ) ckalloc(sizeof(AsyncHandler));
     asyncPtr->ready = 0;
     asyncPtr->nextPtr = NULL;
     asyncPtr->proc = proc;
@@ -97,7 +97,7 @@ ClientData clientData; /* Argument to pass to handler. */
         lastHandler->nextPtr = asyncPtr;
     }
     lastHandler = asyncPtr;
-    return ( Tcl_AsyncHandler )asyncPtr;
+    return ( Tcl_AsyncHandler ) asyncPtr;
 }
 
 /*
@@ -121,7 +121,7 @@ ClientData clientData; /* Argument to pass to handler. */
 
 void Tcl_AsyncMark(async) Tcl_AsyncHandler async; /* Token for handler. */
 {
-    (( AsyncHandler * )async)->ready = 1;
+    (( AsyncHandler * ) async)->ready = 1;
     if (!asyncActive) {
         asyncReady = 1;
     }
@@ -214,7 +214,7 @@ int code; /* If interp is non-NULL, this gives
 void Tcl_AsyncDelete(async) Tcl_AsyncHandler async; /* Token for handler to
                                                        delete. */
 {
-    AsyncHandler *asyncPtr = ( AsyncHandler * )async;
+    AsyncHandler *asyncPtr = ( AsyncHandler * ) async;
     AsyncHandler *prevPtr;
 
     if (firstHandler == asyncPtr) {
@@ -232,7 +232,7 @@ void Tcl_AsyncDelete(async) Tcl_AsyncHandler async; /* Token for handler to
             lastHandler = prevPtr;
         }
     }
-    ckfree(( char * )asyncPtr);
+    ckfree(( char * ) asyncPtr);
 }
 
 /*

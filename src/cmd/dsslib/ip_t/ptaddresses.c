@@ -33,8 +33,8 @@ ptaddresses(Pt_t *a)
     Ptprefix_t *ap;
 
     n = 0;
-    for (ap = ( Ptprefix_t * )dtfirst(a->dict); ap;
-         ap = ( Ptprefix_t * )dtnext(a->dict, ap))
+    for (ap = ( Ptprefix_t * ) dtfirst(a->dict); ap;
+         ap = ( Ptprefix_t * ) dtnext(a->dict, ap))
         n += (Ptcount_t)(ap->max - ap->min) + 1;
     return n;
 }

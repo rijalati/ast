@@ -39,10 +39,10 @@ chrtoi(const char *s)
 
     c = 0;
     for (n = 0; n < sizeof(int) * CHAR_BIT; n += CHAR_BIT) {
-        switch (x = *(( unsigned char * )s++)) {
+        switch (x = *(( unsigned char * ) s++)) {
         case '\\':
             x = chresc(s - 1, &p);
-            s = ( const char * )p;
+            s = ( const char * ) p;
             break;
         case 0:
             return (c);

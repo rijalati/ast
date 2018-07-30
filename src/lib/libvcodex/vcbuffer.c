@@ -78,10 +78,10 @@ ssize_t head;    /* head room in front of buffer 	*/
                 return NIL(Vcchar_t *);
             }
 
-            size += (head = trunc - ( Vcchar_t * )b->buf);
+            size += (head = trunc - ( Vcchar_t * ) b->buf);
             if (size < 3 * b->size / 4) {
-                if (!(n = ( Vcbuffer_t * )realloc(b,
-                                                  sizeof(Vcbuffer_t) + size)))
+                if (!(n = ( Vcbuffer_t * ) realloc(
+                      b, sizeof(Vcbuffer_t) + size)))
                     RETURN(NIL(Vcchar_t *));
                 /**/ DEBUG_SET(Busy, Busy - b->size + size);
                 /**/ DEBUG_PRINT(2, "realloc: file=%s ", b->file);
@@ -97,7 +97,7 @@ ssize_t head;    /* head room in front of buffer 	*/
 
             b->next = vc->list;
             vc->list = b;
-            return ( Vcchar_t * )(&b->buf[head]);
+            return ( Vcchar_t * ) (&b->buf[head]);
         }
 
         return NIL(Vcchar_t *);
@@ -125,7 +125,7 @@ ssize_t head;    /* head room in front of buffer 	*/
         return NIL(Vcchar_t *);
     } else {
         head = (head <= 0 ? 0 : head) + vc->head; /* required head room */
-        if (!(b = ( Vcbuffer_t * )malloc(sizeof(Vcbuffer_t) + head + size)))
+        if (!(b = ( Vcbuffer_t * ) malloc(sizeof(Vcbuffer_t) + head + size)))
             RETURN(NIL(Vcchar_t *));
         b->size = head + size;
         b->next = vc->list;
@@ -141,6 +141,6 @@ ssize_t head;    /* head room in front of buffer 	*/
         vc->list = b;
         vc->busy += b->size;
         vc->nbuf += 1;
-        return ( Vcchar_t * )(&b->buf[head]);
+        return ( Vcchar_t * ) (&b->buf[head]);
     }
 }

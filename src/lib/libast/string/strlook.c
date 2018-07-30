@@ -39,12 +39,12 @@
 void *
 strlook(const void *tab, size_t siz, const char *name)
 {
-    char *t = ( char * )tab;
+    char *t = ( char * ) tab;
     char *s;
     int c = *name;
 
-    for (; s = *(( char ** )t); t += siz)
+    for (; s = *(( char ** ) t); t += siz)
         if (*s == c && !strcmp(s, name))
-            return ( void * )t;
+            return ( void * ) t;
     return 0;
 }

@@ -655,7 +655,7 @@ main(int argc, char **argv)
             csvar(CS_VAR_SHARE, 0), "", PATH_EXECUTE, tmp, sizeof(tmp)))
             *ap++ = tmp;
         *ap = 0;
-        ftwalk(( char * )av, list, FTW_MULTIPLE | FTW_PHYSICAL, order);
+        ftwalk(( char * ) av, list, FTW_MULTIPLE | FTW_PHYSICAL, order);
     } else if (attr) {
         if (!path) {
             while (proc = csattr(NiL, attr))

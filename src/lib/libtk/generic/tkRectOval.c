@@ -39,50 +39,50 @@ typedef struct RectOvalItem
  */
 
 static Tk_CustomOption tagsOption
-= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData )NULL };
+= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData ) NULL };
 
 static Tk_ConfigSpec configSpecs[]
 = { { TK_CONFIG_COLOR,
       "-fill",
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       Tk_Offset(RectOvalItem, fillColor),
       TK_CONFIG_NULL_OK },
     { TK_CONFIG_COLOR,
       "-outline",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "black",
       Tk_Offset(RectOvalItem, outlineColor),
       TK_CONFIG_NULL_OK },
     { TK_CONFIG_BITMAP,
       "-stipple",
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       Tk_Offset(RectOvalItem, fillStipple),
       TK_CONFIG_NULL_OK },
     { TK_CONFIG_CUSTOM,
       "-tags",
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       TK_CONFIG_NULL_OK,
       &tagsOption },
     { TK_CONFIG_PIXELS,
       "-width",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "1",
       Tk_Offset(RectOvalItem, width),
       TK_CONFIG_DONT_SET_DEFAULT },
     { TK_CONFIG_END,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 } };
 
@@ -146,49 +146,49 @@ static void TranslateRectOval _ANSI_ARGS_(
  */
 
 Tk_ItemType tkRectangleType = {
-    "rectangle",                    /* name */
-    sizeof(RectOvalItem),           /* itemSize */
-    CreateRectOval,                 /* createProc */
-    configSpecs,                    /* configSpecs */
-    ConfigureRectOval,              /* configureProc */
-    RectOvalCoords,                 /* coordProc */
-    DeleteRectOval,                 /* deleteProc */
-    DisplayRectOval,                /* displayProc */
-    0,                              /* alwaysRedraw */
-    RectToPoint,                    /* pointProc */
-    RectToArea,                     /* areaProc */
-    RectOvalToPostscript,           /* postscriptProc */
-    ScaleRectOval,                  /* scaleProc */
-    TranslateRectOval,              /* translateProc */
-    ( Tk_ItemIndexProc * )NULL,     /* indexProc */
-    ( Tk_ItemCursorProc * )NULL,    /* icursorProc */
-    ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL,    /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL,    /* dTextProc */
-    ( Tk_ItemType * )NULL           /* nextPtr */
+    "rectangle",                     /* name */
+    sizeof(RectOvalItem),            /* itemSize */
+    CreateRectOval,                  /* createProc */
+    configSpecs,                     /* configSpecs */
+    ConfigureRectOval,               /* configureProc */
+    RectOvalCoords,                  /* coordProc */
+    DeleteRectOval,                  /* deleteProc */
+    DisplayRectOval,                 /* displayProc */
+    0,                               /* alwaysRedraw */
+    RectToPoint,                     /* pointProc */
+    RectToArea,                      /* areaProc */
+    RectOvalToPostscript,            /* postscriptProc */
+    ScaleRectOval,                   /* scaleProc */
+    TranslateRectOval,               /* translateProc */
+    ( Tk_ItemIndexProc * ) NULL,     /* indexProc */
+    ( Tk_ItemCursorProc * ) NULL,    /* icursorProc */
+    ( Tk_ItemSelectionProc * ) NULL, /* selectionProc */
+    ( Tk_ItemInsertProc * ) NULL,    /* insertProc */
+    ( Tk_ItemDCharsProc * ) NULL,    /* dTextProc */
+    ( Tk_ItemType * ) NULL           /* nextPtr */
 };
 
 Tk_ItemType tkOvalType = {
-    "oval",                         /* name */
-    sizeof(RectOvalItem),           /* itemSize */
-    CreateRectOval,                 /* createProc */
-    configSpecs,                    /* configSpecs */
-    ConfigureRectOval,              /* configureProc */
-    RectOvalCoords,                 /* coordProc */
-    DeleteRectOval,                 /* deleteProc */
-    DisplayRectOval,                /* displayProc */
-    0,                              /* alwaysRedraw */
-    OvalToPoint,                    /* pointProc */
-    OvalToArea,                     /* areaProc */
-    RectOvalToPostscript,           /* postscriptProc */
-    ScaleRectOval,                  /* scaleProc */
-    TranslateRectOval,              /* translateProc */
-    ( Tk_ItemIndexProc * )NULL,     /* indexProc */
-    ( Tk_ItemCursorProc * )NULL,    /* cursorProc */
-    ( Tk_ItemSelectionProc * )NULL, /* selectionProc */
-    ( Tk_ItemInsertProc * )NULL,    /* insertProc */
-    ( Tk_ItemDCharsProc * )NULL,    /* dTextProc */
-    ( Tk_ItemType * )NULL           /* nextPtr */
+    "oval",                          /* name */
+    sizeof(RectOvalItem),            /* itemSize */
+    CreateRectOval,                  /* createProc */
+    configSpecs,                     /* configSpecs */
+    ConfigureRectOval,               /* configureProc */
+    RectOvalCoords,                  /* coordProc */
+    DeleteRectOval,                  /* deleteProc */
+    DisplayRectOval,                 /* displayProc */
+    0,                               /* alwaysRedraw */
+    OvalToPoint,                     /* pointProc */
+    OvalToArea,                      /* areaProc */
+    RectOvalToPostscript,            /* postscriptProc */
+    ScaleRectOval,                   /* scaleProc */
+    TranslateRectOval,               /* translateProc */
+    ( Tk_ItemIndexProc * ) NULL,     /* indexProc */
+    ( Tk_ItemCursorProc * ) NULL,    /* cursorProc */
+    ( Tk_ItemSelectionProc * ) NULL, /* selectionProc */
+    ( Tk_ItemInsertProc * ) NULL,    /* insertProc */
+    ( Tk_ItemDCharsProc * ) NULL,    /* dTextProc */
+    ( Tk_ItemType * ) NULL           /* nextPtr */
 };
 
 /*
@@ -219,7 +219,7 @@ Tk_Item *itemPtr;   /* Record to hold new item;  header
 int argc;           /* Number of arguments in argv. */
 char **argv;        /* Arguments describing rectangle. */
 {
-    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * ) itemPtr;
 
     if (argc < 4) {
         Tcl_AppendResult(interp,
@@ -228,7 +228,7 @@ char **argv;        /* Arguments describing rectangle. */
                          " create ",
                          itemPtr->typePtr->name,
                          " x1 y1 x2 y2 ?options?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -295,7 +295,7 @@ int argc;           /* Number of coordinates supplied in
 char **argv;        /* Array of coordinates: x1, y1,
                      * x2, y2, ... */
 {
-    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * ) itemPtr;
     char c0[TCL_DOUBLE_SPACE], c1[TCL_DOUBLE_SPACE];
     char c2[TCL_DOUBLE_SPACE], c3[TCL_DOUBLE_SPACE];
 
@@ -305,7 +305,7 @@ char **argv;        /* Array of coordinates: x1, y1,
         Tcl_PrintDouble(interp, rectOvalPtr->bbox[2], c2);
         Tcl_PrintDouble(interp, rectOvalPtr->bbox[3], c3);
         Tcl_AppendResult(
-        interp, c0, " ", c1, " ", c2, " ", c3, ( char * )NULL);
+        interp, c0, " ", c1, " ", c2, " ", c3, ( char * ) NULL);
     } else if (argc == 4) {
         if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &rectOvalPtr->bbox[0])
              != TCL_OK)
@@ -357,7 +357,7 @@ int argc;           /* Number of elements in argv.  */
 char **argv;        /* Arguments describing things to configure. */
 int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
-    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * ) itemPtr;
     XGCValues gcValues;
     GC newGC;
     unsigned long mask;
@@ -365,7 +365,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     tkwin = Tk_CanvasTkwin(canvas);
     if (Tk_ConfigureWidget(
-        interp, tkwin, configSpecs, argc, argv, ( char * )rectOvalPtr, flags)
+        interp, tkwin, configSpecs, argc, argv, ( char * ) rectOvalPtr, flags)
         != TCL_OK) {
         return TCL_ERROR;
     }
@@ -439,7 +439,7 @@ Tk_Item *itemPtr; /* Item that is being deleted. */
 Display *display; /* Display containing window for
                    * canvas. */
 {
-    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * ) itemPtr;
 
     if (rectOvalPtr->outlineColor != NULL) {
         Tk_FreeColor(rectOvalPtr->outlineColor);
@@ -563,7 +563,7 @@ Drawable drawable;       /* Pixmap or window in which to draw
 int x, y, width, height; /* Describes region of canvas that
                           * must be redisplayed (not used). */
 {
-    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * ) itemPtr;
     short x1, y1, x2, y2;
 
     /*
@@ -600,16 +600,16 @@ int x, y, width, height; /* Describes region of canvas that
                            rectOvalPtr->fillGC,
                            x1,
                            y1,
-                           ( unsigned int )(x2 - x1),
-                           ( unsigned int )(y2 - y1));
+                           ( unsigned int ) (x2 - x1),
+                           ( unsigned int ) (y2 - y1));
         } else {
             XFillArc(display,
                      drawable,
                      rectOvalPtr->fillGC,
                      x1,
                      y1,
-                     ( unsigned )(x2 - x1),
-                     ( unsigned )(y2 - y1),
+                     ( unsigned ) (x2 - x1),
+                     ( unsigned ) (y2 - y1),
                      0,
                      360 * 64);
         }
@@ -624,16 +624,16 @@ int x, y, width, height; /* Describes region of canvas that
                            rectOvalPtr->outlineGC,
                            x1,
                            y1,
-                           ( unsigned )(x2 - x1),
-                           ( unsigned )(y2 - y1));
+                           ( unsigned ) (x2 - x1),
+                           ( unsigned ) (y2 - y1));
         } else {
             XDrawArc(display,
                      drawable,
                      rectOvalPtr->outlineGC,
                      x1,
                      y1,
-                     ( unsigned )(x2 - x1),
-                     ( unsigned )(y2 - y1),
+                     ( unsigned ) (x2 - x1),
+                     ( unsigned ) (y2 - y1),
                      0,
                      360 * 64);
         }
@@ -670,7 +670,7 @@ RectToPoint(canvas, itemPtr, pointPtr) Tk_Canvas canvas; /* Canvas containing
 Tk_Item *itemPtr; /* Item to check against point. */
 double *pointPtr; /* Pointer to x and y coordinates. */
 {
-    RectOvalItem *rectPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *rectPtr = ( RectOvalItem * ) itemPtr;
     double xDiff, yDiff, x1, y1, x2, y2, inc, tmp;
 
     /*
@@ -775,7 +775,7 @@ OvalToPoint(canvas, itemPtr, pointPtr) Tk_Canvas canvas; /* Canvas containing
 Tk_Item *itemPtr; /* Item to check against point. */
 double *pointPtr; /* Pointer to x and y coordinates. */
 {
-    RectOvalItem *ovalPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *ovalPtr = ( RectOvalItem * ) itemPtr;
     double width;
     int filled;
 
@@ -817,7 +817,7 @@ double *areaPtr;  /* Pointer to array of four coordinates
                    * (x1, y1, x2, y2) describing rectangular
                    * area.  */
 {
-    RectOvalItem *rectPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *rectPtr = ( RectOvalItem * ) itemPtr;
     double halfWidth;
 
     halfWidth = rectPtr->width / 2.0;
@@ -876,7 +876,7 @@ double *areaPtr;  /* Pointer to array of four coordinates
                    * (x1, y1, x2, y2) describing rectangular
                    * area.  */
 {
-    RectOvalItem *ovalPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *ovalPtr = ( RectOvalItem * ) itemPtr;
     double oval[4], halfWidth;
     int result;
 
@@ -955,7 +955,7 @@ double originX, originY; /* Origin about which to scale rect. */
 double scaleX;           /* Amount to scale in X direction. */
 double scaleY;           /* Amount to scale in Y direction. */
 {
-    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * ) itemPtr;
 
     rectOvalPtr->bbox[0]
     = originX + scaleX * (rectOvalPtr->bbox[0] - originX);
@@ -993,7 +993,7 @@ Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
-    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * ) itemPtr;
 
     rectOvalPtr->bbox[0] += deltaX;
     rectOvalPtr->bbox[1] += deltaY;
@@ -1033,7 +1033,7 @@ int prepass;        /* 1 means this is a prepass to
                      * final Postscript is being created. */
 {
     char pathCmd[500], string[100];
-    RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
+    RectOvalItem *rectOvalPtr = ( RectOvalItem * ) itemPtr;
     double y1, y2;
 
     y1 = Tk_CanvasPsY(canvas, rectOvalPtr->bbox[1]);
@@ -1070,22 +1070,22 @@ int prepass;        /* 1 means this is a prepass to
      */
 
     if (rectOvalPtr->fillColor != NULL) {
-        Tcl_AppendResult(interp, pathCmd, ( char * )NULL);
+        Tcl_AppendResult(interp, pathCmd, ( char * ) NULL);
         if (Tk_CanvasPsColor(interp, canvas, rectOvalPtr->fillColor)
             != TCL_OK) {
             return TCL_ERROR;
         }
         if (rectOvalPtr->fillStipple != None) {
-            Tcl_AppendResult(interp, "clip ", ( char * )NULL);
+            Tcl_AppendResult(interp, "clip ", ( char * ) NULL);
             if (Tk_CanvasPsStipple(interp, canvas, rectOvalPtr->fillStipple)
                 != TCL_OK) {
                 return TCL_ERROR;
             }
             if (rectOvalPtr->outlineColor != NULL) {
-                Tcl_AppendResult(interp, "grestore gsave\n", ( char * )NULL);
+                Tcl_AppendResult(interp, "grestore gsave\n", ( char * ) NULL);
             }
         } else {
-            Tcl_AppendResult(interp, "fill\n", ( char * )NULL);
+            Tcl_AppendResult(interp, "fill\n", ( char * ) NULL);
         }
     }
 
@@ -1094,15 +1094,15 @@ int prepass;        /* 1 means this is a prepass to
      */
 
     if (rectOvalPtr->outlineColor != NULL) {
-        Tcl_AppendResult(interp, pathCmd, ( char * )NULL);
+        Tcl_AppendResult(interp, pathCmd, ( char * ) NULL);
         sprintf(string, "%d setlinewidth", rectOvalPtr->width);
         Tcl_AppendResult(
-        interp, string, " 0 setlinejoin 2 setlinecap\n", ( char * )NULL);
+        interp, string, " 0 setlinejoin 2 setlinecap\n", ( char * ) NULL);
         if (Tk_CanvasPsColor(interp, canvas, rectOvalPtr->outlineColor)
             != TCL_OK) {
             return TCL_ERROR;
         }
-        Tcl_AppendResult(interp, "stroke\n", ( char * )NULL);
+        Tcl_AppendResult(interp, "stroke\n", ( char * ) NULL);
     }
     return TCL_OK;
 }

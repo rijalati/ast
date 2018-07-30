@@ -70,8 +70,8 @@ va_list args;
     f.flags = SF_STRING | SF_READ;
     f.bits = SF_PRIVATE;
     f.mode = SF_READ;
-    f.size = strlen(( char * )s);
-    f.data = f.next = f.endw = ( uchar * )s;
+    f.size = strlen(( char * ) s);
+    f.data = f.next = f.endw = ( uchar * ) s;
     f.endb = f.endr = f.data + f.size;
 
     return sfvscanf(&f, form, args);

@@ -26,7 +26,7 @@ int isort[] = { 1, 1, 2, 2, 3, 4, 4, 5, 6, 7 };
 int
 intcmp(Void_t *one, Void_t *two, Void_t *disc)
 {
-    int i1 = *(( int * )one), i2 = *(( int * )two);
+    int i1 = *(( int * ) one), i2 = *(( int * ) two);
     return i1 - i2;
 }
 

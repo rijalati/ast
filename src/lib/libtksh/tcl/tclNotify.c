@@ -113,7 +113,7 @@ ClientData clientData;         /* One-word argument to pass to
 {
     TclEventSource *sourcePtr;
 
-    sourcePtr = ( TclEventSource * )ckalloc(sizeof(TclEventSource));
+    sourcePtr = ( TclEventSource * ) ckalloc(sizeof(TclEventSource));
     sourcePtr->setupProc = setupProc;
     sourcePtr->checkProc = checkProc;
     sourcePtr->clientData = clientData;
@@ -163,7 +163,7 @@ ClientData clientData;         /* One-word argument to pass to
         } else {
             prevPtr->nextPtr = sourcePtr->nextPtr;
         }
-        ckfree(( char * )sourcePtr);
+        ckfree(( char * ) sourcePtr);
         return;
     }
 }
@@ -266,20 +266,20 @@ ClientData clientData; /* type-specific data. */
 {
     Tcl_Event *evPtr, *prevPtr, *hold;
 
-    for (prevPtr = ( Tcl_Event * )NULL, evPtr = firstEventPtr;
-         evPtr != ( Tcl_Event * )NULL;) {
+    for (prevPtr = ( Tcl_Event * ) NULL, evPtr = firstEventPtr;
+         evPtr != ( Tcl_Event * ) NULL;) {
         if ((*proc)(evPtr, clientData) == 1) {
             if (firstEventPtr == evPtr) {
                 firstEventPtr = evPtr->nextPtr;
-                if (evPtr->nextPtr == ( Tcl_Event * )NULL) {
-                    lastEventPtr = ( Tcl_Event * )NULL;
+                if (evPtr->nextPtr == ( Tcl_Event * ) NULL) {
+                    lastEventPtr = ( Tcl_Event * ) NULL;
                 }
             } else {
                 prevPtr->nextPtr = evPtr->nextPtr;
             }
             hold = evPtr;
             evPtr = evPtr->nextPtr;
-            ckfree(( char * )hold);
+            ckfree(( char * ) hold);
         } else {
             prevPtr = evPtr;
             evPtr = evPtr->nextPtr;
@@ -372,7 +372,7 @@ ServiceEvent(flags) int flags; /* Indicates what events should be processed.
                     markerEventPtr = prevPtr;
                 }
             }
-            ckfree(( char * )evPtr);
+            ckfree(( char * ) evPtr);
             return 1;
         } else {
             /*
@@ -486,7 +486,7 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
          */
 
         if (Tcl_AsyncReady()) {
-            ( void )Tcl_AsyncInvoke(( Tcl_Interp * )NULL, 0);
+            ( void ) Tcl_AsyncInvoke(( Tcl_Interp * ) NULL, 0);
             return 1;
         }
 

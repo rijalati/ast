@@ -71,7 +71,7 @@ ITLEXTERNAL(Cx_t *cx,
     int g;
 
     if (j = value->buffer.size / sizeof(ITLINT)) {
-        sep = ( char * )CXDETAILS(details, formats[0], type, "");
+        sep = ( char * ) CXDETAILS(details, formats[0], type, "");
         if (!(fmt = *sep++)) {
             fmt = 'd';
             sep = ",";
@@ -84,7 +84,7 @@ ITLEXTERNAL(Cx_t *cx,
             sep = ",";
         bet = ":";
         sp = cx->buf;
-        ap = ( ITLINT * )value->buffer.data;
+        ap = ( ITLINT * ) value->buffer.data;
         i = 0;
         j -= tuple - 1;
         g = j + 1 + !group;
@@ -107,7 +107,7 @@ ITLEXTERNAL(Cx_t *cx,
             for (k = 0; k < tuple; i++, k++, t = bet) {
                 sfprintf(sp, "%s", t);
                 if (def && formats && formats[k] && formats[k]->map
-                    && !cxnum2str(cx, formats[k], ( Cxinteger_t )ap[i], &s))
+                    && !cxnum2str(cx, formats[k], ( Cxinteger_t ) ap[i], &s))
                     sfprintf(sp, "%s", s);
                 else if (ap[i])
                     switch (fmt) {
@@ -201,7 +201,7 @@ ITLINTERNAL(Cx_t *cx,
     sp = cx->buf;
     o = 0;
     t = 0;
-    s = ( char * )buf;
+    s = ( char * ) buf;
     e = s + size;
     if (!dots)
         dots = 1;
@@ -260,7 +260,7 @@ ITLINTERNAL(Cx_t *cx,
         vp = 0;
     value->buffer.data = vp;
     value->buffer.size = z * sizeof(n);
-    return s - ( char * )buf;
+    return s - ( char * ) buf;
 }
 
 #undef ITLINT

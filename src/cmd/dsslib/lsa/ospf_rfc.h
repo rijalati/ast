@@ -282,7 +282,7 @@ extern "C"
 #define lssla_tosmet32 _lssla_u.lssla_u_tosmet32
 
 #define SLAMETRIC_TOS(tosmet) (((tosmet) >> 24) & 0xff)
-#define SLAMETRIC_METRIC(tosmet) (( tosmet )&0xffffff)
+#define SLAMETRIC_METRIC(tosmet) (( tosmet ) &0xffffff)
 
     /*
      * External Link advertisement.
@@ -316,7 +316,7 @@ extern "C"
 
 #define EXTMETRIC_TOS(tosmet) (((tosmet) >> 24) & 0x7f)
 #define EXTMETRIC_TYPE(tosmet) ((((tosmet) >> 31) & 0x1) + 1)
-#define EXTMETRIC_METRIC(tosmet) (( tosmet )&0xffffff)
+#define EXTMETRIC_METRIC(tosmet) (( tosmet ) &0xffffff)
 
     /*
      * Define type 7 LSA exactly same as type 5 LSA.
@@ -330,13 +330,13 @@ extern "C"
 
 #define NSSAMETRIC_TOS(tosmet) (((tosmet) >> 24) & 0x7f)
 #define NSSAMETRIC_TYPE(tosmet) ((((tosmet) >> 31) & 0x1) + 1)
-#define NSSAMETRIC_METRIC(tosmet) (( tosmet )&0xffffff)
+#define NSSAMETRIC_METRIC(tosmet) (( tosmet ) &0xffffff)
 
 #if _OSPF_OPQ_
 
 /* Assume 'lsaid' is a 32-bit integer in host order. */
 #    define LSA_ID_TO_OPQ_TYPE(lsaid) (((lsaid) >> 24) & 0xff)
-#    define LSA_ID_TO_OPQ_ID(lsaid) (( lsaid )&0xffffff)
+#    define LSA_ID_TO_OPQ_ID(lsaid) (( lsaid ) &0xffffff)
 
 /* Opaque types assigned by IANA */
 #    define OPQ_TYPE_TE 1 /* Traffic Engineering */
@@ -407,7 +407,7 @@ extern "C"
  * Given an MTU, compute the size of an OSPF packet,
  * and different number of LS which can fit in one packet.
  */
-#define MTU2PKT(mtu) (( mtu )-2 * sizeof(struct ip))
+#define MTU2PKT(mtu) (( mtu ) -2 * sizeof(struct ip))
 #define MTU2LSA(mtu) (MTU2PKT(mtu) - sizeof(ospf_pkt_hdr_t))
 #define MTU2DD(mtu)                                                          \
     ((MTU2PKT(mtu) - sizeof(ospf_dd_pkt_t)) / sizeof(ospf_lsa_hdr_t))

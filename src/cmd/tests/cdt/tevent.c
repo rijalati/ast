@@ -30,7 +30,7 @@ event(Dt_t *dt, int type, Void_t *obj, Dtdisc_t *disc)
     Event[Index++] = type;
 
     if (type == DT_HASHSIZE) {
-        *( ssize_t * )obj = 1024;
+        *( ssize_t * ) obj = 1024;
         return 1;
     }
 

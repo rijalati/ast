@@ -78,7 +78,7 @@ void
 TkshCreateInterp(Tcl_Interp *interp, void *data)
 {
     CmdInfo *cmdInfoPtr;
-    CmdInfo *builtInCmds = ( CmdInfo * )data;
+    CmdInfo *builtInCmds = ( CmdInfo * ) data;
     char *name, *libDir, buf[100];
     CmdMap *map;
     int i;
@@ -88,7 +88,7 @@ TkshCreateInterp(Tcl_Interp *interp, void *data)
     buf[2] = 'l';
     buf[3] = '_';
     buf[4] = 0;
-    (( Interp * )interp)->interpType = INTERP_TCL;
+    (( Interp * ) interp)->interpType = INTERP_TCL;
 
     if (initFirstInterp)
         return;
@@ -102,7 +102,7 @@ TkshCreateInterp(Tcl_Interp *interp, void *data)
             name = buf;
         }
         Tcl_CreateCommand(
-        interp, name, cmdInfoPtr->proc, ( ClientData )NULL, NULL);
+        interp, name, cmdInfoPtr->proc, ( ClientData ) NULL, NULL);
     }
 
     Tcl_InitHashTable(&commandMapTable, TCL_STRING_KEYS);
@@ -111,7 +111,7 @@ TkshCreateInterp(Tcl_Interp *interp, void *data)
                          &commandMapTable,
                          (map->fromName ? map->fromName : (map->toName + 4)),
                          &i),
-                         ( ClientData )map->toName);
+                         ( ClientData ) map->toName);
     libDir = TkshLibDir();
     Tcl_SetVar(interp, "tcl_library", libDir, TCL_GLOBAL_ONLY);
     Tcl_SetVar(interp, "tcl_patchLevel", TCL_PATCH_LEVEL, TCL_GLOBAL_ONLY);
@@ -119,10 +119,10 @@ TkshCreateInterp(Tcl_Interp *interp, void *data)
     Tcl_SetVar(interp, "tksh_version", TCL_VERSION, TCL_GLOBAL_ONLY);
     Tcl_TraceVar2(interp,
                   "tcl_precision",
-                  ( char * )NULL,
+                  ( char * ) NULL,
                   TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                   TclPrecTraceProc,
-                  ( ClientData )NULL);
+                  ( ClientData ) NULL);
 }
 
 char *
@@ -130,7 +130,7 @@ TkshMapKeyword(char *name)
 {
     Tcl_HashEntry *h;
     return (h = Tcl_FindHashEntry(&commandMapTable, name))
-           ? (( char * )Tcl_GetHashValue(h))
+           ? (( char * ) Tcl_GetHashValue(h))
            : name;
 }
 
@@ -177,13 +177,13 @@ static char initScript[] =
 int
 Tcl_Init(Tcl_Interp *interp)
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     dprintf(("Using TKSH, compiled %s %s\n", __DATE__, __TIME__));
 #ifdef DEBUG
     Tcl_CreateCommand(interp, "testit", TestCommand, NULL, NULL);
 #endif
-    sh_addbuiltin("tksh_info", b_TkshInfoCmd, ( void * )interp);
-    sh_addbuiltin("setlist", b_TkshSetlistCmd, ( void * )interp);
+    sh_addbuiltin("tksh_info", b_TkshInfoCmd, ( void * ) interp);
+    sh_addbuiltin("setlist", b_TkshSetlistCmd, ( void * ) interp);
     Tksh_SetCommandType(interp, "tcl_eval", INTERP_TCL);
     Tksh_SetCommandType(interp, "tcl_vwait", INTERP_TCL);
     iPtr->interpType = INTERP_CURRENT;
@@ -237,7 +237,7 @@ TkshLibDir(void)
 void
 TkshSubShell(void)
 {
-    sh_waitnotify(( ShellNote_t )0);
+    sh_waitnotify(( ShellNote_t ) 0);
     TkshTracesOff();
 }
 
@@ -299,7 +299,7 @@ void Tcl_SourceRCFile(interp) Tcl_Interp *interp; /* Interpreter to source rc
              */
 
             c = Tcl_OpenFileChannel(NULL, fullName, "r", 0);
-            if (c != ( Tcl_Channel )NULL) {
+            if (c != ( Tcl_Channel ) NULL) {
                 Tcl_Close(NULL, c);
                 if (Tcl_EvalFile(interp, fullName) != TCL_OK) {
                     errChannel = Tcl_GetStdChannel(TCL_STDERR);

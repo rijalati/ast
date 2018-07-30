@@ -50,15 +50,15 @@ ssize_t s_same;
     sz = sizeof(Vcdcache_t) + s_near * sizeof(ssize_t)
          + s_same * 256 * sizeof(ssize_t);
 
-    if (!(ka = ( Vcdcache_t * )calloc(1, sz)))
+    if (!(ka = ( Vcdcache_t * ) calloc(1, sz)))
         return NIL(Vcdcache_t *);
     ka->c_same = ka->c_near = NIL(ssize_t *);
 
     if ((ka->s_near = s_near) > 0)
-        ka->c_near = ( ssize_t * )(ka + 1);
+        ka->c_near = ( ssize_t * ) (ka + 1);
 
     if ((ka->s_same = s_same) > 0)
-        ka->c_same = (( ssize_t * )(ka + 1)) + s_near;
+        ka->c_same = (( ssize_t * ) (ka + 1)) + s_near;
 
     return ka;
 }

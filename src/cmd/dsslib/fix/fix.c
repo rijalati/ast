@@ -63,8 +63,8 @@ struct State_s
 static int
 fieldcmp(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 {
-    Field_t *fa = ( Field_t * )a;
-    Field_t *fb = ( Field_t * )b;
+    Field_t *fa = ( Field_t * ) a;
+    Field_t *fb = ( Field_t * ) b;
 
     if (fa->representation < fb->representation)
         return -1;
@@ -82,7 +82,7 @@ extern Dsslib_t dss_lib_fix;
 static int
 fix_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    char **argv = ( char ** )data;
+    char **argv = ( char ** ) data;
     int errors = error_info.errors;
     char *s;
     State_t *state;
@@ -137,8 +137,8 @@ fix_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         goto bad;
     }
-    for (variable = ( Cxvariable_t * )dtfirst(cx->fields); variable;
-         variable = ( Cxvariable_t * )dtnext(cx->fields, variable)) {
+    for (variable = ( Cxvariable_t * ) dtfirst(cx->fields); variable;
+         variable = ( Cxvariable_t * ) dtnext(cx->fields, variable)) {
         if (!(field = vmnewof(vm, 0, Field_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -177,7 +177,7 @@ bad:
 static int
 fix_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
     Field_t *field;
     Cxoperand_t arg;
 
@@ -207,7 +207,7 @@ fix_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 static int
 fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
-    State_t *state = ( State_t * )expr->data;
+    State_t *state = ( State_t * ) expr->data;
     Field_t *field;
     size_t w;
     size_t x;
@@ -219,14 +219,14 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     b = 0;
     for (field = state->train; field; field = field->train) {
         if (field->representation == FIELD_number) {
-            if (field->max != ( Cxinteger_t )field->max) {
+            if (field->max != ( Cxinteger_t ) field->max) {
                 field->width = 8;
                 field->flags = CX_FLOAT;
             } else {
                 field->flags ^= CX_UNSIGNED | CX_INTEGER;
-                if (field->max > ( unsigned long )0xffffffff)
+                if (field->max > ( unsigned long ) 0xffffffff)
                     field->width = 8;
-                else if (field->max > ( unsigned long )0xffff)
+                else if (field->max > ( unsigned long ) 0xffff)
                     field->width = 4;
                 else
                     field->width = 2;
@@ -252,8 +252,8 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         dtinsert(state->fields, field);
     }
     r = 0;
-    for (field = ( Field_t * )dtfirst(state->fields); field;
-         field = ( Field_t * )dtnext(state->fields, field))
+    for (field = ( Field_t * ) dtfirst(state->fields); field;
+         field = ( Field_t * ) dtnext(state->fields, field))
         r += field->width;
     x = r;
     if ((r += 2 * b) < 16)
@@ -264,7 +264,7 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     sfprintf(expr->op, "<METHOD>flat</>\n");
     sfprintf(expr->op, "<FLAT>\n");
     sfprintf(expr->op, "	<NAME>%s</>\n", DSS(cx)->meth->name);
-    s = ( char * )DSS(cx)->meth->description;
+    s = ( char * ) DSS(cx)->meth->description;
     if ((w = strlen(s)) && s[w - 1] == '.')
         w--;
     sfprintf(expr->op,
@@ -289,8 +289,8 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     sfprintf(expr->op, "	</>\n");
     sfprintf(expr->op, "	<COMPRESS>pzip %s-bin</>\n", DSS(cx)->meth->name);
     w = 0;
-    for (lib = ( Dsslib_t * )dtfirst(cx->state->libraries); lib;
-         lib = ( Dsslib_t * )dtnext(cx->state->libraries, lib))
+    for (lib = ( Dsslib_t * ) dtfirst(cx->state->libraries); lib;
+         lib = ( Dsslib_t * ) dtnext(cx->state->libraries, lib))
         if (lib->types && !lib->meth) {
             sfprintf(expr->op, "	<LIBRARY>%s</>\n", lib->name);
             if (!w && streq(lib->name, "num_t"))
@@ -298,14 +298,13 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         }
     if (!w)
         sfprintf(expr->op, "	<LIBRARY>num_t</>\n");
-    for (field = ( Field_t * )dtfirst(state->fields); field;
-         field = ( Field_t * )dtnext(state->fields, field)) {
+    for (field = ( Field_t * ) dtfirst(state->fields); field;
+         field = ( Field_t * ) dtnext(state->fields, field)) {
         sfprintf(expr->op, "	<FIELD>\n");
         sfprintf(expr->op, "		<NAME>%s</>\n", field->variable->name);
         sfprintf(
         expr->op, "		<DESCRIPTION>%s</>\n", field->variable->description);
-        sfprintf(
-        expr->op, "		<TYPE>%s</>\n", field->variable->type->name);
+        sfprintf(expr->op, "		<TYPE>%s</>\n", field->variable->type->name);
         sfprintf(expr->op, "		<PHYSICAL>\n");
         switch (field->representation) {
         case FIELD_buffer:

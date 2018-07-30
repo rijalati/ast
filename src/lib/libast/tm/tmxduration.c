@@ -54,14 +54,14 @@ tmxduration(const char *s, char **e)
             t = sfstruse(f);
             ts = tmxdate(t, &x, now);
             if ((i = x - t - 6) > (last - s)) {
-                last = ( char * )s + i;
+                last = ( char * ) s + i;
                 ns = ts - now;
             } else {
                 sfprintf(f, "p%s", s);
                 t = sfstruse(f);
                 ts = tmxdate(t, &x, now);
                 if ((i = x - t - 1) > (last - s)) {
-                    last = ( char * )s + i;
+                    last = ( char * ) s + i;
                     ns = ts - now;
                 }
             }

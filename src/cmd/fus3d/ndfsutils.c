@@ -228,8 +228,8 @@ dircmp(const void *a, const void *b)
     int aindex, bindex;
     long long lld;
 
-    ap = *( Ndfsdirinfo_t ** )a;
-    bp = *( Ndfsdirinfo_t ** )b;
+    ap = *( Ndfsdirinfo_t ** ) a;
+    bp = *( Ndfsdirinfo_t ** ) b;
     if (ap->name[0] == '.' && ap->name[1] == 0)
         aindex = 1;
     else if (ap->name[0] == '.' && ap->name[1] == '.' && ap->name[2] == 0)
@@ -244,7 +244,7 @@ dircmp(const void *a, const void *b)
         bindex = 3;
     if (aindex != bindex)
         return aindex = bindex;
-    lld = ( ino_t )ap->ino - ( ino_t )bp->ino;
+    lld = ( ino_t ) ap->ino - ( ino_t ) bp->ino;
     return (lld < 0) ? -1 : 1;
 }
 
@@ -450,7 +450,7 @@ utilisspecialname(const char *name, char **rnamep)
                        NDFS_SPECIALPATH_sfxlen)
                 == 0) {
                 if (rnamep)
-                    *rnamep = ( char * )name + NDFS_SPECIALPATH_sfxlen;
+                    *rnamep = ( char * ) name + NDFS_SPECIALPATH_sfxlen;
                 return pt;
             }
         }
@@ -577,7 +577,7 @@ log(int level,
         if (base = strrchr(file, '/'))
             base++;
         else
-            base = ( char * )file;
+            base = ( char * ) file;
         n = debug_sprintf(
         buf, sizeof(buf), "fus3d:%d:%s:%d: %s: ", level, base, line, func);
         va_start(args, fmt);

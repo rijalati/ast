@@ -51,7 +51,7 @@
 
 #    ifdef CMD_STANDALONE
 
-#        define CMD_CONTEXT(c) (( Shbltin_t * )0)
+#        define CMD_CONTEXT(c) (( Shbltin_t * ) 0)
 
 #        if CMD_DYNAMIC
 
@@ -88,7 +88,7 @@ cmdinit(int argc,
         cp = pp + 1;
     error_info.id = cp;
     if (!error_info.catalog)
-        error_info.catalog = ( char * )catalog;
+        error_info.catalog = ( char * ) catalog;
     opt_info.index = 0;
     if (context)
         error_info.flags |= flags & ~(ERROR_CALLBACK | ERROR_NOTIFY);
@@ -122,15 +122,15 @@ main(int argc, char **argv)
         *t = 0;
     for (;;) {
         if (dll = dlopen(NiL, RTLD_LAZY)) {
-            if (fun = ( Shbltin_f )dlsym(dll, buf + 1))
+            if (fun = ( Shbltin_f ) dlsym(dll, buf + 1))
                 break;
-            if (fun = ( Shbltin_f )dlsym(dll, buf))
+            if (fun = ( Shbltin_f ) dlsym(dll, buf))
                 break;
         }
         if (dll = dllplug(NiL, "cmd", NiL, RTLD_LAZY, NiL, 0)) {
-            if (fun = ( Shbltin_f )dlsym(dll, buf + 1))
+            if (fun = ( Shbltin_f ) dlsym(dll, buf + 1))
                 break;
-            if (fun = ( Shbltin_f )dlsym(dll, buf))
+            if (fun = ( Shbltin_f ) dlsym(dll, buf))
                 break;
         }
         return 127;
@@ -145,7 +145,7 @@ main(int argc, char **argv)
 
 #        undef cmdinit
 #        ifdef _MSC_VER
-#            define CMD_CONTEXT(p) (( Shbltin_t * )(p))
+#            define CMD_CONTEXT(p) (( Shbltin_t * ) (p))
 #            define cmdinit(a, b, c, d, e)                                   \
                 do {                                                         \
                     if (_cmd_init(a, b, c, d, e))                            \
@@ -153,9 +153,9 @@ main(int argc, char **argv)
                 } while (0)
 #        else
 #            define CMD_CONTEXT(p)                                           \
-                (((p) && (( Shbltin_t * )(p))->version >= 20071012           \
-                  && (( Shbltin_t * )(p))->version < 20350101)               \
-                 ? (( Shbltin_t * )(p))                                      \
+                (((p) && (( Shbltin_t * ) (p))->version >= 20071012          \
+                  && (( Shbltin_t * ) (p))->version < 20350101)              \
+                 ? (( Shbltin_t * ) (p))                                     \
                  : 0)
 #            define cmdinit(a, b, c, d, e)                                   \
                 do {                                                         \

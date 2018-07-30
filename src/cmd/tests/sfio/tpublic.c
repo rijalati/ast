@@ -38,7 +38,7 @@ tmain()
         terror("Can't open file to read1");
     if (!(g = sfnew(NIL(Sfio_t *),
                     NIL(Void_t *),
-                    ( size_t )SF_UNBOUND,
+                    ( size_t ) SF_UNBOUND,
                     dup(sffileno(f)),
                     SF_READ)))
         terror("Can't open file to read2");
@@ -65,7 +65,7 @@ tmain()
         terror("Can't open file to write2");
     if (!(g = sfnew(NIL(Sfio_t *),
                     NIL(Void_t *),
-                    ( size_t )SF_UNBOUND,
+                    ( size_t ) SF_UNBOUND,
                     dup(sffileno(f)),
                     SF_READ)))
         terror("Can't open file to read3");
@@ -131,16 +131,17 @@ tmain()
     sfclose(f);
     if (sfopen(sfstdin, tstfile("sf", 0), "r") != sfstdin)
         terror("Can't open file as sfstdin");
-    if ((n
-         = ( int )sfmove(sfstdin, NIL(Sfio_t *), ( Sfoff_t )SF_UNBOUND, '\n'))
+    if ((n = ( int ) sfmove(
+         sfstdin, NIL(Sfio_t *), ( Sfoff_t ) SF_UNBOUND, '\n'))
         != 3)
         terror("sfmove wrong number of lines %d", n);
-    if (sfseek(sfstdin, ( Sfoff_t )0, 0) != 0)
+    if (sfseek(sfstdin, ( Sfoff_t ) 0, 0) != 0)
         terror("Can't seek back to 0");
-    if ((n = ( int )sfmove(sfstdin, NIL(Sfio_t *), ( Sfoff_t )2, '\n')) != 2)
+    if ((n = ( int ) sfmove(sfstdin, NIL(Sfio_t *), ( Sfoff_t ) 2, '\n'))
+        != 2)
         terror("sfmove2 wrong number of lines %d", n);
-    if ((n
-         = ( int )sfmove(sfstdin, NIL(Sfio_t *), ( Sfoff_t )SF_UNBOUND, '\n'))
+    if ((n = ( int ) sfmove(
+         sfstdin, NIL(Sfio_t *), ( Sfoff_t ) SF_UNBOUND, '\n'))
         != 1)
         terror("sfmove3 wrong number of lines %d", n);
 

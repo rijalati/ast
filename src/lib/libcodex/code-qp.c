@@ -50,9 +50,9 @@ typedef struct State_s
 
 static const char hex[] = "0123456789ABCDEFabcdef";
 
-#define GETCHAR(p) ((p)->bp < (p)->be ? ( int )*(p)->bp++ : fill(p))
+#define GETCHAR(p) ((p)->bp < (p)->be ? ( int ) *(p)->bp++ : fill(p))
 #define PUTCHAR(p, c)                                                        \
-    ((p)->bp < (p)->be ? ( int )(*(p)->bp++ = (c)) : flush(p, c))
+    ((p)->bp < (p)->be ? ( int ) (*(p)->bp++ = (c)) : flush(p, c))
 
 static int
 fill(State_t *state)
@@ -113,8 +113,8 @@ qp_open(Codex_t *p, char *const args[], Codexnum_t flags)
 static ssize_t
 qp_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 {
-    State_t *state = ( State_t * )CODEX(disc)->data;
-    char *s = ( char * )buf;
+    State_t *state = ( State_t * ) CODEX(disc)->data;
+    char *s = ( char * ) buf;
     char *e = s + n;
     char *x;
     int c;
@@ -134,7 +134,7 @@ qp_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
             }
             /*FALLTHROUGH*/
         case EOF:
-            return s - ( char * )buf;
+            return s - ( char * ) buf;
         case '\n':
             if (x) {
                 s = x;
@@ -156,13 +156,13 @@ qp_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
     if (x)
         while (s > x && state->bp > state->buf)
             *--state->bp = *--s;
-    return s - ( char * )buf;
+    return s - ( char * ) buf;
 }
 
 static ssize_t
 qp_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
 {
-    State_t *state = ( State_t * )CODEX(disc)->data;
+    State_t *state = ( State_t * ) CODEX(disc)->data;
     unsigned char *s;
     unsigned char *e;
     int c;
@@ -174,7 +174,7 @@ again:
         e = state->pp;
         state->col = 0;
     } else {
-        s = ( unsigned char * )buf;
+        s = ( unsigned char * ) buf;
         e = s + n;
         col = state->col;
     }
@@ -258,7 +258,7 @@ again:
 static int
 qp_sync(Codex_t *p)
 {
-    return flush(( State_t * )p->data, -1);
+    return flush(( State_t * ) p->data, -1);
 }
 
 Codexmeth_t codex_qp

@@ -80,7 +80,7 @@ strntod(const char *s, size_t n, char **e)
     buf[n] = 0;
     r = strtod(buf, &p);
     if (e)
-        *e = ( char * )s + (p - buf);
+        *e = ( char * ) s + (p - buf);
     return r;
 }
 
@@ -99,7 +99,7 @@ strntold(const char *s, size_t n, char **e)
     buf[n] = 0;
     r = strtold(buf, &p);
     if (e)
-        *e = ( char * )s + (p - buf);
+        *e = ( char * ) s + (p - buf);
     return r;
 }
 

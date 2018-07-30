@@ -111,9 +111,9 @@ struct checkpt
          (bp)->olist = 0,                                                    \
          (bp)->topfd = shp->topfd,                                           \
          (bp)->prev = shp->jmplist,                                          \
-         (bp)->vexi = (( Spawnvex_t * )shp->vexp)->cur,                      \
+         (bp)->vexi = (( Spawnvex_t * ) shp->vexp)->cur,                     \
          (bp)->err = *ERROR_CONTEXT_BASE,                                    \
-         shp->jmplist = ( sigjmp_buf * )(&(bp)->buff))
+         shp->jmplist = ( sigjmp_buf * ) (&(bp)->buff))
 #    define sh_popcontext(shp, bp)                                           \
         (shp->jmplist = (bp)->prev, errorpop(&((bp)->err)))
 

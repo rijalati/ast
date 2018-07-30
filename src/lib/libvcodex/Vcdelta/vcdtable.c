@@ -34,7 +34,7 @@ Void_t *argstr;
 #endif
 {
     int i;
-    Vcchar_t *str = ( Vcchar_t * )argstr;
+    Vcchar_t *str = ( Vcchar_t * ) argstr;
     Vcdcode_t *code = tbl->code;
 
     for (i = 0; i < 256; ++i)
@@ -60,7 +60,7 @@ Void_t *argstr;
 #endif
 {
     int i;
-    Vcchar_t *str = ( Vcchar_t * )argstr;
+    Vcchar_t *str = ( Vcchar_t * ) argstr;
     Vcdcode_t *code = tbl->code;
 
     for (i = 0; i < 256; ++i)

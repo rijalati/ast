@@ -228,7 +228,7 @@ keywords(Sfio_t *out)
 static bool
 evaluate(struct Complete *comp, Sfio_t *out, const char *str)
 {
-    Sfio_t *in = sfopen(( Sfio_t * )0, str, "s");
+    Sfio_t *in = sfopen(( Sfio_t * ) 0, str, "s");
     int n = sh_eval(comp->sh, in, 0);
     return (n == 0);
 }
@@ -270,18 +270,18 @@ ed_pcomplete(struct Complete *comp,
         if ((1L << c) > comp->action)
             break;
         if (comp->action & (1L << c)) {
-            str = ( char * )Action_eval[c];
+            str = ( char * ) Action_eval[c];
             switch (*str++) {
             case 'k':
                 keywords(tmp);
                 break;
             case 'x':
                 sfsync(sfstdout);
-                saveout = sfswap(sfstdout, ( Sfio_t * )0);
+                saveout = sfswap(sfstdout, ( Sfio_t * ) 0);
                 sfswap(tmp, sfstdout);
                 sh_trap(shp, str, 0);
                 sfsync(sfstdout);
-                tmp = sfswap(sfstdout, ( Sfio_t * )0);
+                tmp = sfswap(sfstdout, ( Sfio_t * ) 0);
                 sfswap(saveout, sfstdout);
                 break;
             case 'y':
@@ -289,7 +289,7 @@ ed_pcomplete(struct Complete *comp,
                 sfprintf(shp->stk, "{ %s ;} >&%d\n", str, sffileno(tmp));
                 sfputc(shp->stk, 0);
                 sh_trap(shp, stkptr(shp->stk, 0), 0);
-                sfseek(tmp, ( Sfoff_t )0, SEEK_END);
+                sfseek(tmp, ( Sfoff_t ) 0, SEEK_END);
                 sfsync(tmp);
                 stkseek(shp->stk, 0);
                 break;
@@ -320,7 +320,7 @@ ed_pcomplete(struct Complete *comp,
             _nv_unset(COMPREPLY, 0);
             COMP_POINT->nvalue.s = index + 1;
             COMP_LINE->nvalue.cp = line;
-            cp = ( char * )&line[index] - strlen(prefix);
+            cp = ( char * ) &line[index] - strlen(prefix);
             csave = *(cpsave = cp);
             while (--cp >= line) {
                 if (isspace(*cp))
@@ -337,7 +337,7 @@ ed_pcomplete(struct Complete *comp,
                          ERROR_warn(0),
                          "-F option may not work as you expect");
             _nv_unset(COMP_WORDS, NV_RDONLY);
-            cp = ( char * )line;
+            cp = ( char * ) line;
             if (strchr(" \t", *cp))
                 cp++;
             n = 1;
@@ -352,8 +352,8 @@ ed_pcomplete(struct Complete *comp,
             stkseek(shp->stk, 0);
             len = (n + 1) * sizeof(char *) + strlen(line) + 1;
             stkseek(shp->stk, len);
-            av = ( char ** )stkptr(shp->stk, 0);
-            cp = ( char * )&av[n + 1];
+            av = ( char ** ) stkptr(shp->stk, 0);
+            cp = ( char * ) &av[n + 1];
             strcpy(cp, line);
             spaces = 0;
             while (*cp) {
@@ -374,7 +374,7 @@ ed_pcomplete(struct Complete *comp,
                     cp++;
             }
             *av = 0;
-            av = ( char ** )stkptr(shp->stk, 0);
+            av = ( char ** ) stkptr(shp->stk, 0);
             nv_setvec(COMP_WORDS, 0, n, av);
             stkseek(shp->stk, 0);
             *cpsave = 0;
@@ -390,7 +390,7 @@ ed_pcomplete(struct Complete *comp,
             sh_trap(shp, str, 0);
             stkseek(shp->stk, 0);
             if ((ap = nv_arrayptr(np)) && ap->nelem > 0) {
-                nv_putsub(np, ( char * )0, 0, ARRAY_SCAN);
+                nv_putsub(np, ( char * ) 0, 0, ARRAY_SCAN);
                 do {
                     cp = nv_getval(np);
                     sfputr(tmp, cp, '\n');
@@ -417,7 +417,7 @@ ed_pcomplete(struct Complete *comp,
             *cpsave = csave;
             str = stkptr(shp->stk, 0);
             sh_trap(shp, str, 0);
-            sfseek(tmp, ( Sfoff_t )0, SEEK_END);
+            sfseek(tmp, ( Sfoff_t ) 0, SEEK_END);
             stkseek(shp->stk, 0);
         }
     }
@@ -452,7 +452,7 @@ ed_pcomplete(struct Complete *comp,
     }
 again:
     c = 0;
-    sfseek(tmp, ( Sfoff_t )0, SEEK_SET);
+    sfseek(tmp, ( Sfoff_t ) 0, SEEK_SET);
     while (str = sfgetr(tmp, '\n', 0)) {
         wlen = sfvalue(tmp) - 1;
         if (prefix && memcmp(prefix, str, len))
@@ -489,7 +489,7 @@ again:
     if (complete == 2) {
         *av = 0;
         sfclose(tmp);
-        return (( char ** )stkptr(shp->stk, 0));
+        return (( char ** ) stkptr(shp->stk, 0));
     }
     if (complete) {
         /* reserved space on stack and try again */
@@ -497,8 +497,8 @@ again:
         tlen = (c + 1) * sizeof(char *) + len * c + 1024;
         stkseek(shp->stk, tlen);
         complete = 2;
-        av = ( char ** )stkptr(shp->stk, 0);
-        cp = ( char * )av + (c + 1) * sizeof(char *);
+        av = ( char ** ) stkptr(shp->stk, 0);
+        cp = ( char * ) av + (c + 1) * sizeof(char *);
         goto again;
     }
     sfclose(tmp);
@@ -509,12 +509,12 @@ static bool
 delete_and_add(const char *name, struct Complete *comp)
 {
     struct Complete *old = 0;
-    Dt_t *compdict = (( Edit_t * )(shgd->ed_context))->compdict;
-    if (compdict && (old = ( struct Complete * )dtmatch(compdict, name))) {
+    Dt_t *compdict = (( Edit_t * ) (shgd->ed_context))->compdict;
+    if (compdict && (old = ( struct Complete * ) dtmatch(compdict, name))) {
         dtdelete(compdict, old);
-        free(( void * )old);
+        free(( void * ) old);
     } else if (comp && !compdict)
-        (( Edit_t * )(shgd->ed_context))->compdict = compdict
+        (( Edit_t * ) (shgd->ed_context))->compdict = compdict
         = dtopen(&_Compdisc, Dtoset);
     if (!comp && old)
         return (false);
@@ -538,7 +538,7 @@ delete_and_add(const char *name, struct Complete *comp)
             size += (fn = strlen(comp->fname) + 1);
         old = malloc(sizeof(struct Complete) + size);
         *old = *comp;
-        cp = ( char * )(old + 1);
+        cp = ( char * ) (old + 1);
         old->name = cp;
         memcpy(old->name, comp->name, n);
         cp += n;
@@ -737,16 +737,16 @@ b_complete(int argc, char *argv[], Shbltin_t *context)
     if (complete) {
         char *name;
         struct Complete *cp;
-        Dt_t *compdict = (( Edit_t * )(shgd->ed_context))->compdict;
+        Dt_t *compdict = (( Edit_t * ) (shgd->ed_context))->compdict;
         if (!empty && !argv[0]) {
             if (!print && !delete)
                 errormsg(
                 SH_DICT, ERROR_usage(0), "complete requires command name");
             if (compdict) {
                 struct Complete *cpnext;
-                for (cp = ( struct Complete * )dtfirst(compdict); cp;
+                for (cp = ( struct Complete * ) dtfirst(compdict); cp;
                      cp = cpnext) {
-                    cpnext = ( struct Complete * )dtnext(compdict, cp);
+                    cpnext = ( struct Complete * ) dtnext(compdict, cp);
                     if (print)
                         print_out(cp, sfstdout);
                     else
@@ -759,7 +759,7 @@ b_complete(int argc, char *argv[], Shbltin_t *context)
         while (name = *argv++) {
             if (print) {
                 if (!compdict
-                    || !(cp = ( struct Complete * )dtmatch(compdict, name)))
+                    || !(cp = ( struct Complete * ) dtmatch(compdict, name)))
                     r = 1;
                 else
                     print_out(cp, sfstdout);

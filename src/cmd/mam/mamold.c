@@ -323,8 +323,8 @@ dump(struct rule *r)
 static int
 dumpvar(const char *an, char *av, void *handle)
 {
-    char *name = ( char * )an;
-    struct var *v = ( struct var * )av;
+    char *name = ( char * ) an;
+    struct var *v = ( struct var * ) av;
     char *s;
     char *t;
     int c;
@@ -356,7 +356,7 @@ omit(char *prefix)
 
     n = strlen(prefix);
     p = newof(0, struct block, 1, n + 1);
-    strcpy(p->data = ( char * )p + sizeof(struct block), prefix);
+    strcpy(p->data = ( char * ) p + sizeof(struct block), prefix);
     strcpy(p->data + n, "*");
     p->next = state.omit;
     state.omit = p;

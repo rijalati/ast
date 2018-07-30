@@ -107,7 +107,7 @@ hashnext(Hash_position_t *pos)
             && (!pos->flags || !(b->hash & (HASH_HIDDEN | HASH_HIDES))))
             break;
         if (b->hash & HASH_HIDES) {
-            Hash_bucket_t *h = ( Hash_bucket_t * )b->name;
+            Hash_bucket_t *h = ( Hash_bucket_t * ) b->name;
 
             if (!(h->hash & HASH_HIDDEN)) {
                 h->hash |= HASH_HIDDEN;

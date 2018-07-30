@@ -64,7 +64,8 @@ static const char usage[]
 
 #define CLOSE 256
 
-#define EXTRACT(f, p, b, n) (((b) && (( f )&D_FLAG)) ? extract(p, b, n) : (p))
+#define EXTRACT(f, p, b, n)                                                  \
+    (((b) && (( f ) &D_FLAG)) ? extract(p, b, n) : (p))
 
 static char *
 extract(const char *cp, char *buff, int len)
@@ -119,7 +120,7 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
                 n = len;
         } else
             n = len;
-        buff = ( void * )malloc(n + 1);
+        buff = ( void * ) malloc(n + 1);
     } else
         n = len = strlen(prefix);
     if (maxprefix && (*compare)(prefix, maxprefix, n) > 0)
@@ -127,8 +128,8 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
     if (flags & H_FLAG)
         while (sfgetr(fp, '\n', 0) && sfvalue(fp) > 1)
             ;
-    if ((low = sfseek(fp, ( Sfoff_t )0, SEEK_CUR)) < 0
-        || (high = sfseek(fp, ( Sfoff_t )0, SEEK_END)) <= 0) {
+    if ((low = sfseek(fp, ( Sfoff_t ) 0, SEEK_CUR)) < 0
+        || (high = sfseek(fp, ( Sfoff_t ) 0, SEEK_END)) <= 0) {
         found = 0;
         n = 0;
         while (cp = sfgetr(fp, '\n', 0)) {
@@ -205,7 +206,7 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
                 n = 0;
         }
         if (buff)
-            free(( void * )buff);
+            free(( void * ) buff);
     }
     return !found;
 }
@@ -261,7 +262,7 @@ b_look(int argc, char **argv, Shbltin_t *context)
     if (!file) {
         for (n = 0; n < elementsof(dict); n++)
             if (!eaccess(dict[n], R_OK)) {
-                file = ( char * )dict[n];
+                file = ( char * ) dict[n];
                 break;
             }
         if (!file)

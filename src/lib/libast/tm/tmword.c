@@ -62,7 +62,7 @@ tmword(const char *s, char **e, const char *t, char **suf, int n)
             if (c == '_')
                 s++;
             if (e)
-                *e = ( char * )s;
+                *e = ( char * ) s;
             return s > b;
         }
         if (!*t && s > (b + 1)) {
@@ -77,7 +77,7 @@ tmword(const char *s, char **e, const char *t, char **suf, int n)
                     if (c != '_')
                         s--;
                     if (e)
-                        *e = ( char * )s;
+                        *e = ( char * ) s;
                     return 1;
                 }
             }

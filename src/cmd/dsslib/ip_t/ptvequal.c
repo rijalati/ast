@@ -34,15 +34,15 @@ ptvequal(Ptv_t *a, Ptv_t *b)
 
     if (a == b)
         return 1;
-    ap = ( Ptvprefix_t * )dtfirst(a->dict);
-    bp = ( Ptvprefix_t * )dtfirst(b->dict);
+    ap = ( Ptvprefix_t * ) dtfirst(a->dict);
+    bp = ( Ptvprefix_t * ) dtfirst(b->dict);
     while (ap && bp) {
         if (fvcmp(a->size, ap->min, bp->min))
             return 0;
         if (fvcmp(a->size, ap->max, bp->max))
             return 0;
-        ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
-        bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
+        ap = ( Ptvprefix_t * ) dtnext(a->dict, ap);
+        bp = ( Ptvprefix_t * ) dtnext(b->dict, bp);
     }
     return !ap && !bp;
 }

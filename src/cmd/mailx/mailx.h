@@ -151,19 +151,19 @@ extern int opterr;
 
 #define shquote shellquote /* netbsd has one in <stdlib.h>! */
 
-#define ESCAPE '~'                   /* Default escape for sending */
-#define NMLSIZE 1024                 /* max names in a message list */
-#define PATHSIZE MAXPATHLEN          /* Size of pathnames throughout */
-#define LINESIZE (32 * STRINGLEN)    /* max readable line width */
-#define HEADSIZE 128                 /* maximum header line length */
-#define LASTSIZE 256                 /* max saved cmd line size */
-#define STRINGSIZE (( unsigned )128) /* Dynamic allocation units */
-#define MAILMODE (S_IRUSR | S_IWUSR) /* private mail file mode */
-#define METAFILE "%#&+/"             /* `Metafile' prefix */
-#define REGDEP 2                     /* Maximum regret depth. */
-#define STRINGLEN 1024               /* Maximum length of string token */
-#define MARGIN 72                    /* Right line margin */
-#define REFLEN (12 * MARGIN)         /* Maximum length or References: */
+#define ESCAPE '~'                    /* Default escape for sending */
+#define NMLSIZE 1024                  /* max names in a message list */
+#define PATHSIZE MAXPATHLEN           /* Size of pathnames throughout */
+#define LINESIZE (32 * STRINGLEN)     /* max readable line width */
+#define HEADSIZE 128                  /* maximum header line length */
+#define LASTSIZE 256                  /* max saved cmd line size */
+#define STRINGSIZE (( unsigned ) 128) /* Dynamic allocation units */
+#define MAILMODE (S_IRUSR | S_IWUSR)  /* private mail file mode */
+#define METAFILE "%#&+/"              /* `Metafile' prefix */
+#define REGDEP 2                      /* Maximum regret depth. */
+#define STRINGLEN 1024                /* Maximum length of string token */
+#define MARGIN 72                     /* Right line margin */
+#define REFLEN (12 * MARGIN)          /* Maximum length or References: */
 
 typedef struct msg
 {
@@ -209,9 +209,9 @@ typedef struct msg
  * Given a file address, determine the block number it represents.
  */
 
-#define blocknumber(off) (( int )((off) / 4096))
-#define blockoffset(off) (( int )((off) % 4096))
-#define blockposition(block, offset) ((off_t)( block )*4096 + (offset))
+#define blocknumber(off) (( int ) ((off) / 4096))
+#define blockoffset(off) (( int ) ((off) % 4096))
+#define blockposition(block, offset) ((off_t)( block ) *4096 + (offset))
 
 /*
  * Format of the command description table.
@@ -558,7 +558,7 @@ struct sender
  * ignore flags
  */
 
-#define dictflags(p) ((( struct dict * )(*(p))->disc)->flags)
+#define dictflags(p) ((( struct dict * ) (*(p))->disc)->flags)
 
 #define HIT (1 << 0)    /* Global table flag */
 #define IGNORE (1 << 1) /* Global table flag */
@@ -1426,7 +1426,7 @@ imap_setptr(char *, int);
 #    define imap_rename(a, b) (-1)
 #    define imap_rmdir(a) (-1)
 #    define imap_save(a) (-1)
-#    define imap_setinput(a) (( FILE * )0)
+#    define imap_setinput(a) (( FILE * ) 0)
 
 #endif
 

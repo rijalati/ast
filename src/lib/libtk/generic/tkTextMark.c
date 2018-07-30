@@ -21,7 +21,7 @@
  */
 
 #define MSEG_SIZE                                                            \
-    (( unsigned )(Tk_Offset(TkTextSegment, body) + sizeof(TkTextMark)))
+    (( unsigned ) (Tk_Offset(TkTextSegment, body) + sizeof(TkTextMark)))
 
 /*
  * Forward references for procedures defined in this file:
@@ -61,25 +61,25 @@ static int MarkFindPrev _ANSI_ARGS_((Tcl_Interp * interp,
  */
 
 Tk_SegType tkTextRightMarkType = {
-    "mark",                         /* name */
-    0,                              /* leftGravity */
-    ( Tk_SegSplitProc * )NULL,      /* splitProc */
-    MarkDeleteProc,                 /* deleteProc */
-    MarkCleanupProc,                /* cleanupProc */
-    ( Tk_SegLineChangeProc * )NULL, /* lineChangeProc */
-    MarkLayoutProc,                 /* layoutProc */
-    MarkCheckProc                   /* checkProc */
+    "mark",                          /* name */
+    0,                               /* leftGravity */
+    ( Tk_SegSplitProc * ) NULL,      /* splitProc */
+    MarkDeleteProc,                  /* deleteProc */
+    MarkCleanupProc,                 /* cleanupProc */
+    ( Tk_SegLineChangeProc * ) NULL, /* lineChangeProc */
+    MarkLayoutProc,                  /* layoutProc */
+    MarkCheckProc                    /* checkProc */
 };
 
 Tk_SegType tkTextLeftMarkType = {
-    "mark",                         /* name */
-    1,                              /* leftGravity */
-    ( Tk_SegSplitProc * )NULL,      /* splitProc */
-    MarkDeleteProc,                 /* deleteProc */
-    MarkCleanupProc,                /* cleanupProc */
-    ( Tk_SegLineChangeProc * )NULL, /* lineChangeProc */
-    MarkLayoutProc,                 /* layoutProc */
-    MarkCheckProc                   /* checkProc */
+    "mark",                          /* name */
+    1,                               /* leftGravity */
+    ( Tk_SegSplitProc * ) NULL,      /* splitProc */
+    MarkDeleteProc,                  /* deleteProc */
+    MarkCleanupProc,                 /* cleanupProc */
+    ( Tk_SegLineChangeProc * ) NULL, /* lineChangeProc */
+    MarkLayoutProc,                  /* layoutProc */
+    MarkCheckProc                    /* checkProc */
 };
 
 /*
@@ -123,7 +123,7 @@ char **argv; /* Argument strings.  Someone else has already
                          "wrong # args: should be \"",
                          argv[0],
                          " mark option ?arg arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[2][0];
@@ -134,7 +134,7 @@ char **argv; /* Argument strings.  Someone else has already
                              "wrong # args: should be \"",
                              argv[0],
                              " mark gravity markName ?gravity?",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         hPtr = Tcl_FindHashEntry(&textPtr->markTable, argv[3]);
@@ -143,10 +143,10 @@ char **argv; /* Argument strings.  Someone else has already
                              "there is no mark named \"",
                              argv[3],
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
-        markPtr = ( TkTextSegment * )Tcl_GetHashValue(hPtr);
+        markPtr = ( TkTextSegment * ) Tcl_GetHashValue(hPtr);
         if (argc == 4) {
             if (markPtr->typePtr == &tkTextRightMarkType) {
                 interp->result = "right";
@@ -166,7 +166,7 @@ char **argv; /* Argument strings.  Someone else has already
                              "bad mark gravity \"",
                              argv[4],
                              "\": must be left or right",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         TkTextMarkSegToIndex(textPtr, markPtr, &index);
@@ -180,7 +180,7 @@ char **argv; /* Argument strings.  Someone else has already
                              "wrong # args: should be \"",
                              argv[0],
                              " mark names\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         for (hPtr = Tcl_FirstHashEntry(&textPtr->markTable, &search);
@@ -195,7 +195,7 @@ char **argv; /* Argument strings.  Someone else has already
                              "wrong # args: should be \"",
                              argv[0],
                              " mark next index\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         return MarkFindNext(interp, textPtr, argv[3]);
@@ -205,7 +205,7 @@ char **argv; /* Argument strings.  Someone else has already
                              "wrong # args: should be \"",
                              argv[0],
                              " mark previous index\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         return MarkFindPrev(interp, textPtr, argv[3]);
@@ -215,7 +215,7 @@ char **argv; /* Argument strings.  Someone else has already
                              "wrong # args: should be \"",
                              argv[0],
                              " mark set markName index\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         if (TkTextGetIndex(interp, textPtr, argv[4], &index) != TCL_OK) {
@@ -226,7 +226,7 @@ char **argv; /* Argument strings.  Someone else has already
         for (i = 3; i < argc; i++) {
             hPtr = Tcl_FindHashEntry(&textPtr->markTable, argv[i]);
             if (hPtr != NULL) {
-                markPtr = ( TkTextSegment * )Tcl_GetHashValue(hPtr);
+                markPtr = ( TkTextSegment * ) Tcl_GetHashValue(hPtr);
                 if ((markPtr == textPtr->insertMarkPtr)
                     || (markPtr == textPtr->currentMarkPtr)) {
                     continue;
@@ -234,7 +234,7 @@ char **argv; /* Argument strings.  Someone else has already
                 TkBTreeUnlinkSegment(
                 textPtr->tree, markPtr, markPtr->body.mark.linePtr);
                 Tcl_DeleteHashEntry(hPtr);
-                ckfree(( char * )markPtr);
+                ckfree(( char * ) markPtr);
             }
         }
     } else {
@@ -243,7 +243,7 @@ char **argv; /* Argument strings.  Someone else has already
         "bad mark option \"",
         argv[2],
         "\": must be gravity, names, next, previous, set, or unset",
-        ( char * )NULL);
+        ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -277,7 +277,7 @@ TkTextIndex *indexPtr; /* Where to set mark. */
     int new;
 
     hPtr = Tcl_CreateHashEntry(&textPtr->markTable, name, &new);
-    markPtr = ( TkTextSegment * )Tcl_GetHashValue(hPtr);
+    markPtr = ( TkTextSegment * ) Tcl_GetHashValue(hPtr);
     if (!new) {
         /*
          * If this is the insertion point that's being moved, be sure
@@ -300,7 +300,7 @@ TkTextIndex *indexPtr; /* Where to set mark. */
         TkBTreeUnlinkSegment(
         textPtr->tree, markPtr, markPtr->body.mark.linePtr);
     } else {
-        markPtr = ( TkTextSegment * )ckalloc(MSEG_SIZE);
+        markPtr = ( TkTextSegment * ) ckalloc(MSEG_SIZE);
         markPtr->typePtr = &tkTextRightMarkType;
         markPtr->size = 0;
         markPtr->body.mark.textPtr = textPtr;
@@ -395,7 +395,7 @@ TkTextIndex *indexPtr; /* Index information gets stored here. */
         return TCL_ERROR;
     }
     TkTextMarkSegToIndex(
-    textPtr, ( TkTextSegment * )Tcl_GetHashValue(hPtr), indexPtr);
+    textPtr, ( TkTextSegment * ) Tcl_GetHashValue(hPtr), indexPtr);
     return TCL_OK;
 }
 
@@ -505,8 +505,8 @@ TkTextDispChunk *chunkPtr;
 
     chunkPtr->displayProc = TkTextInsertDisplayProc;
     chunkPtr->undisplayProc = InsertUndisplayProc;
-    chunkPtr->measureProc = ( Tk_ChunkMeasureProc * )NULL;
-    chunkPtr->bboxProc = ( Tk_ChunkBboxProc * )NULL;
+    chunkPtr->measureProc = ( Tk_ChunkMeasureProc * ) NULL;
+    chunkPtr->bboxProc = ( Tk_ChunkBboxProc * ) NULL;
     chunkPtr->numChars = 0;
     chunkPtr->minAscent = 0;
     chunkPtr->minDescent = 0;
@@ -520,7 +520,7 @@ TkTextDispChunk *chunkPtr;
      */
 
     chunkPtr->breakIndex = -1;
-    chunkPtr->clientData = ( ClientData )textPtr;
+    chunkPtr->clientData = ( ClientData ) textPtr;
     return 1;
 }
 
@@ -566,7 +566,7 @@ Drawable dst;              /* Pixmap or window in which to draw
 int screenY;               /* Y-coordinate in text window that
                             * corresponds to y. */
 {
-    TkText *textPtr = ( TkText * )chunkPtr->clientData;
+    TkText *textPtr = ( TkText * ) chunkPtr->clientData;
     int halfWidth = textPtr->insertWidth / 2;
 
     if ((x + halfWidth) <= 0) {
@@ -715,7 +715,7 @@ char *string; /* The starting index or mark name */
          * If given a mark name, return the next mark in the list of
          * segments, even if it happens to be at the same character position.
          */
-        segPtr = ( TkTextSegment * )Tcl_GetHashValue(hPtr);
+        segPtr = ( TkTextSegment * ) Tcl_GetHashValue(hPtr);
         TkTextMarkSegToIndex(textPtr, segPtr, &index);
         segPtr = segPtr->nextPtr;
     } else {
@@ -748,7 +748,7 @@ char *string; /* The starting index or mark name */
             }
         }
         index.linePtr = TkBTreeNextLine(index.linePtr);
-        if (index.linePtr == ( TkTextLine * )NULL) {
+        if (index.linePtr == ( TkTextLine * ) NULL) {
             return TCL_OK;
         }
         index.charIndex = 0;
@@ -790,7 +790,7 @@ char *string; /* The starting index or mark name */
          * If given a mark name, return the previous mark in the list of
          * segments, even if it happens to be at the same character position.
          */
-        segPtr = ( TkTextSegment * )Tcl_GetHashValue(hPtr);
+        segPtr = ( TkTextSegment * ) Tcl_GetHashValue(hPtr);
         TkTextMarkSegToIndex(textPtr, segPtr, &index);
     } else {
         /*
@@ -827,7 +827,7 @@ char *string; /* The starting index or mark name */
             return TCL_OK;
         }
         index.linePtr = TkBTreePreviousLine(index.linePtr);
-        if (index.linePtr == ( TkTextLine * )NULL) {
+        if (index.linePtr == ( TkTextLine * ) NULL) {
             return TCL_OK;
         }
         segPtr = NULL;

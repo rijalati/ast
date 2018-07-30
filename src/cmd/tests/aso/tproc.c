@@ -59,7 +59,7 @@ tmain()
 
     tchild();
 
-    Lock = ( unsigned int * )tshared(
+    Lock = ( unsigned int * ) tshared(
     3 * sizeof(unsigned int)); /* this is used by asolock() */
     Count
     = Lock + 1; /* this is the shared counter to be updated asynchronously */
@@ -85,14 +85,14 @@ tmain()
         } else /* child process */
         {
             workload(
-            ( unsigned int )getpid()); /* now start working concurrently */
+            ( unsigned int ) getpid()); /* now start working concurrently */
             texit(0);
         }
 
     if (twait(cpid, N_PROC))
         terror("workload subprocess error");
 #else
-    workload(( unsigned int )getpid());
+    workload(( unsigned int ) getpid());
 #endif
 
     if (*Lock != 0)

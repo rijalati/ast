@@ -65,13 +65,13 @@ ptstats(Pt_t *a, Sfio_t *sp)
         if (prefixes[i]) {
             n++;
             total_prefixes += prefixes[i];
-            tc = ( int )(( double )(sizeof(tot) - (sizeof(S) - 10))
-                         * (( double )(( intmax_t )addresses[i])
-                            / ( double )(( Ptaddr_t )~0)));
+            tc = ( int ) (( double ) (sizeof(tot) - (sizeof(S) - 10))
+                          * (( double ) (( intmax_t ) addresses[i])
+                             / ( double ) (( Ptaddr_t ) ~0)));
             pc = total_addresses
-                 ? (( int )(( double )(sizeof(prt) - (sizeof(S) - 10))
-                            * (( double )(( intmax_t )addresses[i])
-                               / ( double )(( intmax_t )total_addresses)))
+                 ? (( int ) (( double ) (sizeof(prt) - (sizeof(S) - 10))
+                             * (( double ) (( intmax_t ) addresses[i])
+                                / ( double ) (( intmax_t ) total_addresses)))
                     - tc)
                  : 0;
             sfprintf(sp,
@@ -95,7 +95,7 @@ ptstats(Pt_t *a, Sfio_t *sp)
              sizeof(total_addresses),
              total_addresses,
              sizeof(Ptcount_t),
-             ( Ptcount_t )dtsize(a->dict),
+             ( Ptcount_t ) dtsize(a->dict),
              sizeof(a->entries),
              a->entries,
              sizeof(Ptcount_t));

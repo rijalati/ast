@@ -127,7 +127,7 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
     /* only one option at a time for setting */
     label = (hit & (hit - 1));
     if (error_info.errors || (limit && label) || argc > opt_info.index + 1)
-        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * )0));
+        errormsg(SH_DICT, ERROR_usage(2), optusage(( char * ) 0));
     if (mode == 0)
         mode = (HARD | SOFT);
     for (tp = shtab_limits; tp->option && hit; tp++, hit >>= 1) {
@@ -201,7 +201,7 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
             }
             if (nosupport) {
                 if (!tp->conf || !*(conf = astconf(tp->conf, NiL, NiL)))
-                    conf = ( char * )e_nosupport;
+                    conf = ( char * ) e_nosupport;
                 sfputr(sfstdout, conf, '\n');
             } else if (i != INFINITY) {
                 i += (unit - 1);

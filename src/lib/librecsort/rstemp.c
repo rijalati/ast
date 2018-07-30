@@ -51,7 +51,7 @@ Sfio_t *sp;
     } else
         sfresize(sp, 0);
     if ((rs->events & RS_TEMP_WRITE)
-        && rsnotify(rs, RS_TEMP_WRITE, sp, ( Void_t * )0, rs->disc) < 0) {
+        && rsnotify(rs, RS_TEMP_WRITE, sp, ( Void_t * ) 0, rs->disc) < 0) {
         if (!op)
             sfclose(sp);
         sp = 0;
@@ -76,12 +76,13 @@ Sfio_t *sp;
     if (sfsync(sp))
         return -1;
     if (rs->events & RS_TEMP_READ) {
-        if ((n = rsnotify(rs, RS_TEMP_READ, sp, ( Void_t * )0, rs->disc)) < 0)
+        if ((n = rsnotify(rs, RS_TEMP_READ, sp, ( Void_t * ) 0, rs->disc))
+            < 0)
             return -1;
         if (n)
             return 0;
     }
-    return sfseek(sp, ( Sfoff_t )0, SEEK_SET) ? -1 : 0;
+    return sfseek(sp, ( Sfoff_t ) 0, SEEK_SET) ? -1 : 0;
 }
 
 /*
@@ -99,7 +100,7 @@ Sfio_t *sp;
     int n;
 
     if (rs->events & RS_TEMP_CLOSE) {
-        if ((n = rsnotify(rs, RS_TEMP_CLOSE, sp, ( Void_t * )0, rs->disc))
+        if ((n = rsnotify(rs, RS_TEMP_CLOSE, sp, ( Void_t * ) 0, rs->disc))
             < 0)
             return -1;
         if (n)

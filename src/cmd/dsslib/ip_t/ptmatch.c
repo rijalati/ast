@@ -32,5 +32,5 @@ ptmatch(Pt_t *tab, Ptaddr_t addr)
     Ptprefix_t key;
 
     key.min = key.max = addr;
-    return ( Ptprefix_t * )dtsearch(tab->dict, &key);
+    return ( Ptprefix_t * ) dtsearch(tab->dict, &key);
 }

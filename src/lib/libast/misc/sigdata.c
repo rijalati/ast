@@ -31,7 +31,8 @@
 
 #include "FEATURE/signal"
 
-Sig_info_t _sig_info_ = { ( char ** )sig_name, ( char ** )sig_text, SIG_MAX };
+Sig_info_t _sig_info_
+= { ( char ** ) sig_name, ( char ** ) sig_text, SIG_MAX };
 
 __EXTERN__(Sig_info_t, _sig_info_);
 

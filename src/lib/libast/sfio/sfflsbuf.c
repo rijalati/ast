@@ -59,7 +59,7 @@ int c;                         /* if c>=0, c is also written out */
             && (f->flags & SF_STRING)) { /* call sfwr() to extend string
                                             buffer and process events */
             w = ((f->bits & SF_PUTR) && f->val > 0) ? f->val : 1;
-            ( void )SFWR(f, data, w, f->disc);
+            ( void ) SFWR(f, data, w, f->disc);
 
             /* !(f->flags&SF_STRING) is required because exception
                handlers may turn a string stream to a file stream */
@@ -81,7 +81,7 @@ int c;                         /* if c>=0, c is also written out */
                 } else
                     break;
             } else if (n == 0) { /* unbuffered io */
-                outc = ( uchar )c;
+                outc = ( uchar ) c;
                 data = &outc;
                 c = -1;
                 n = 1;
@@ -94,7 +94,7 @@ int c;                         /* if c>=0, c is also written out */
         isall = SFISALL(f, isall);
         if ((w = SFWR(f, data, n, f->disc)) > 0) {
             if ((n -= w) > 0) /* save unwritten data, then resume */
-                memmove(( char * )f->data, ( char * )data + w, n);
+                memmove(( char * ) f->data, ( char * ) data + w, n);
             written += w;
             f->next = f->data + n;
             if (c < 0 && (!isall || n == 0))

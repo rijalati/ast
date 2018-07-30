@@ -38,7 +38,7 @@ typedef struct
 static long
 userconv(const char *s, char **end, void *handle)
 {
-    return ((*(( Handle_t * )handle)->convert)(s, end));
+    return ((*(( Handle_t * ) handle)->convert)(s, end));
 }
 
 long
@@ -48,5 +48,5 @@ streval(const char *s, char **end, Old_convert_t convert)
 
     return ((handle.convert = convert)
             ? strexpr(s, end, userconv, &handle)
-            : strexpr(s, end, ( Convert_t )0, NiL));
+            : strexpr(s, end, ( Convert_t ) 0, NiL));
 }

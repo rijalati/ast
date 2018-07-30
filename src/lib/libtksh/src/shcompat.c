@@ -20,7 +20,7 @@ _nv_scan(Hashtab_t *root,
          int mask,
          int flags)
 {
-    return nv_scan(root, ( void (*)(Namval_t *) )fn, mask, flags);
+    return nv_scan(root, ( void (*)(Namval_t *) ) fn, mask, flags);
 }
 #endif
 
@@ -34,5 +34,5 @@ nv_globalscope()
 int
 sh_openmax()
 {
-    return ( int )strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0);
+    return ( int ) strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0);
 }

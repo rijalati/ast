@@ -55,7 +55,7 @@ sfgetr(Sfio_t *sp, int c, int z)
             return 0;
     }
     if (z < 0)
-        return *buf ? buf : ( char * )0;
+        return *buf ? buf : ( char * ) 0;
     s = buf;
     e = s + siz;
     for (;;) {

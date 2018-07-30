@@ -51,7 +51,7 @@ tmain()
     int pid;
     char *buf;
 
-    if (!(buf = ( char * )malloc(TEST_BUFSIZE)))
+    if (!(buf = ( char * ) malloc(TEST_BUFSIZE)))
         terror("malloc(%ld) failed", TEST_BUFSIZE);
     /* test to see if transforming to file is ok with sfwrite */
     memset(buf, 1, TEST_BUFSIZE);
@@ -63,12 +63,12 @@ tmain()
     /* ast ed does this */
     if (!(f = sftmp(SF_BUFSIZE)))
         terror("sftmp");
-    if (pos = sfseek(f, ( Sfoff_t )0, SEEK_CUR))
+    if (pos = sfseek(f, ( Sfoff_t ) 0, SEEK_CUR))
         terror("top offset %I*d expected 0", sizeof(pos), pos);
     if ((siz = sfputr(f, Rec, 0)) != sizeof(Rec))
         terror(
         "put record size %I*d expected %d", sizeof(siz), siz, sizeof(Rec));
-    if ((nxt = sfseek(f, ( Sfoff_t )0, SEEK_CUR)) != (pos + siz))
+    if ((nxt = sfseek(f, ( Sfoff_t ) 0, SEEK_CUR)) != (pos + siz))
         terror("put record size %I*d offset %I*d expected %I*d",
                sizeof(siz),
                siz,
@@ -76,7 +76,7 @@ tmain()
                nxt,
                sizeof(nxt),
                nxt + sizeof(Rec));
-    if ((pos = sfseek(f, ( Sfoff_t )SF_BUFSIZE, SEEK_CUR))
+    if ((pos = sfseek(f, ( Sfoff_t ) SF_BUFSIZE, SEEK_CUR))
         != (nxt + SF_BUFSIZE))
         terror("skip block size %d offset %I*d expected %I*d",
                SF_BUFSIZE,
@@ -90,15 +90,15 @@ tmain()
     if ((pid = fork()) < 0)
         return 0;
 
-    f = sftmp(( size_t )SF_UNBOUND);
+    f = sftmp(( size_t ) SF_UNBOUND);
 
-    sfputr(f, "1234", '\n');    /* write a string into it */
-    sfseek(f, ( Sfoff_t )0, 0); /* get back so we can read the string */
+    sfputr(f, "1234", '\n');     /* write a string into it */
+    sfseek(f, ( Sfoff_t ) 0, 0); /* get back so we can read the string */
     s = sfreserve(f, SF_UNBOUND, 0);
     if (sfvalue(f) != 5)
         terror("Get n=%d, expect n=5", sfvalue(f));
 
-    sfseek(f, ( Sfoff_t )10, 1); /* seek to extend buffer */
+    sfseek(f, ( Sfoff_t ) 10, 1); /* seek to extend buffer */
     if (s = sfreserve(f, SF_UNBOUND, 0))
         terror("Get n=%d, expect n=0", sfvalue(f));
 
@@ -110,7 +110,7 @@ tmain()
     strcpy(s, "5678\n");
 
     sfset(f, SF_READ, 1);
-    sfseek(f, ( Sfoff_t )0, 0); /* read 1234\n5678\n */
+    sfseek(f, ( Sfoff_t ) 0, 0); /* read 1234\n5678\n */
     if (!(s = sfreserve(f, SF_UNBOUND, SF_LOCKR)) || sfread(f, s, 0) != 0)
         terror("Get n=%d, expect n > 0", sfvalue(f));
     if (strncmp(s, "1234\n5678\n", 10) != 0)
@@ -151,7 +151,7 @@ tmain()
     if (!(f = sftmp(1024)))
         terror("sftmp");
     sfwrite(f, "1234567890", 10);
-    sfseek(f, ( Sfoff_t )0, 0);
+    sfseek(f, ( Sfoff_t ) 0, 0);
     if (sfsize(f) != 10)
         terror("Wrong size");
     sfdisc(f, SF_POPDISC);

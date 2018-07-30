@@ -46,7 +46,7 @@ void *MallocZero(nSize) int nSize;
 
     if (nSize <= 0)
         return NULL;
-    pBuf = ( void * )malloc(nSize);
+    pBuf = ( void * ) malloc(nSize);
     if (pBuf == NULL)
         return NULL;
     memset(pBuf, 0, nSize);
@@ -105,13 +105,13 @@ int len;
         ent = ent->next;
     }
     if (ent == NULL) {
-        ent = ( struct DataEntry * )MallocZero(sizeof(*ent));
+        ent = ( struct DataEntry * ) MallocZero(sizeof(*ent));
         ent->next = DataSpool;
         DataSpool = ent;
         ent->fpath = strdup(fpath);
         ent->key = strdup(key);
     }
-    ent->data = ( void * )SecurityDataAccess(0, data, len);
+    ent->data = ( void * ) SecurityDataAccess(0, data, len);
     ent->len = len;
     return 0;
 }

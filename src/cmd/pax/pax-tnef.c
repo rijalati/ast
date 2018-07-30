@@ -50,11 +50,11 @@ tnef_getprologue(Pax_t *pax,
         return 0;
     magic = TNEF_MAGIC;
     if ((ap->swap = swapop(&magic, buf, 4)) < 0
-        || paxread(pax, ap, NiL, ( off_t )6, ( off_t )6, 0) != 6)
+        || paxread(pax, ap, NiL, ( off_t ) 6, ( off_t ) 6, 0) != 6)
         return 0;
     if (!(tnef = newof(0, Tnef_t, 1, 0)))
         nospace();
-    ap->data = ( void * )tnef;
+    ap->data = ( void * ) tnef;
     ap->swap = 3;
     return 1;
 }
@@ -62,7 +62,7 @@ tnef_getprologue(Pax_t *pax,
 static int
 tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
 {
-    Tnef_t *tnef = ( Tnef_t * )ap->data;
+    Tnef_t *tnef = ( Tnef_t * ) ap->data;
     char *s;
     char *e;
     unsigned char *x;
@@ -87,7 +87,7 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
     IDEVICE(f->st, 0);
     f->st->st_mtime = f->st->st_ctime = f->st->st_atime = NOW;
     f->st->st_size = 0;
-    while (paxread(pax, ap, s = state.tmp.buffer, ( off_t )0, ( off_t )9, 0)
+    while (paxread(pax, ap, s = state.tmp.buffer, ( off_t ) 0, ( off_t ) 9, 0)
            > 0) {
         level = swapget(ap->swap, s + 0, 1);
         n = swapget(ap->swap, s + 1, 4);
@@ -101,7 +101,7 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                 level = 0;
                 if (name == 0x800f) {
                     f->st->st_size = size;
-                    tnef->offset = paxseek(pax, ap, ( off_t )0, SEEK_CUR, 0);
+                    tnef->offset = paxseek(pax, ap, ( off_t ) 0, SEEK_CUR, 0);
                 } else
                     error(1,
                           "%s: %s format 0x%04x attribute ignored",
@@ -119,9 +119,9 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                           ap->format->name,
                           name,
                           part);
-                x = ( unsigned char * )s;
+                x = ( unsigned char * ) s;
                 e = s + part;
-                while (x < ( unsigned char * )e)
+                while (x < ( unsigned char * ) e)
                     n += *x++;
             }
         }
@@ -134,9 +134,9 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
             name,
             size);
         checksum = swapget(ap->swap, s + size, 2);
-        x = ( unsigned char * )s;
+        x = ( unsigned char * ) s;
         e = s + size;
-        while (x < ( unsigned char * )e)
+        while (x < ( unsigned char * ) e)
             n += *x++;
         n &= ((1 << 16) - 1);
         if (checksum != n)
@@ -149,7 +149,7 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
             case 0x800f: /* data */
                 f->st->st_size = size;
                 tnef->offset
-                = paxseek(pax, ap, ( off_t )0, SEEK_CUR, 0) - size - 2;
+                = paxseek(pax, ap, ( off_t ) 0, SEEK_CUR, 0) - size - 2;
                 break;
             case 0x8010: /* title */
                 if (!f->name)
@@ -214,7 +214,7 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                     }
                 }
                 n = tnef->offset;
-                tnef->offset = paxseek(pax, ap, ( off_t )0, SEEK_CUR, 0);
+                tnef->offset = paxseek(pax, ap, ( off_t ) 0, SEEK_CUR, 0);
                 if (paxseek(pax, ap, n, SEEK_SET, 1) != n)
                     error(3,
                           "%s: %s input must be seekable",
@@ -257,7 +257,7 @@ tnef_done(Pax_t *pax, Archive_t *ap)
 static int
 tnef_gettrailer(Pax_t *pax, Archive_t *ap, File_t *f)
 {
-    Tnef_t *tnef = ( Tnef_t * )ap->data;
+    Tnef_t *tnef = ( Tnef_t * ) ap->data;
 
     if (paxseek(pax, ap, tnef->offset, SEEK_SET, 1) != tnef->offset)
         error(3, "%s: %s format seek error", ap->name, ap->format->name);

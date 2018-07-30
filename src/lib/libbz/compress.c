@@ -92,7 +92,7 @@ static void
 bsFinishWrite(EState *s)
 {
     while (s->bsLive > 0) {
-        (( UChar * )(s->quadrant))[s->numZ] = (UChar)(s->bsBuff >> 24);
+        (( UChar * ) (s->quadrant))[s->numZ] = (UChar)(s->bsBuff >> 24);
         s->numZ++;
         s->bsBuff <<= 8;
         s->bsLive -= 8;
@@ -104,7 +104,7 @@ bsFinishWrite(EState *s)
 #define bsNEEDW(nz)                                                          \
     {                                                                        \
         while (s->bsLive >= 8) {                                             \
-            (( UChar * )(s->quadrant))[s->numZ] = (UChar)(s->bsBuff >> 24);  \
+            (( UChar * ) (s->quadrant))[s->numZ] = (UChar)(s->bsBuff >> 24); \
             s->numZ++;                                                       \
             s->bsBuff <<= 8;                                                 \
             s->bsLive -= 8;                                                  \
@@ -137,7 +137,7 @@ bsPutUInt32(EState *s, UInt32 u)
 static void
 bsPutUChar(EState *s, UChar c)
 {
-    bsW(s, 8, ( UInt32 )c);
+    bsW(s, 8, ( UInt32 ) c);
 }
 
 
@@ -180,7 +180,7 @@ generateMTFValues(EState *s)
     wr = 0;
     zPend = 0;
     for (i = 0; i < s->nInUse; i++)
-        yy[i] = ( UChar )i;
+        yy[i] = ( UChar ) i;
 
     for (i = 0; i < s->nblock; i++) {
         UChar ll_i;
@@ -342,7 +342,7 @@ sendMTFValues(EState *s)
                 gs,
                 ge,
                 aFreq,
-                (100.0 * ( float )aFreq) / ( float )(s->nMTF));
+                (100.0 * ( float ) aFreq) / ( float ) (s->nMTF));
 
             for (v = 0; v < alphaSize; v++)
                 if (v >= gs && v <= ge)

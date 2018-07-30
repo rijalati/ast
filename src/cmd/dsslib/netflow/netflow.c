@@ -411,10 +411,10 @@ op_get(Cx_t *cx,
        Cxdisc_t *disc)
 {
     Netflow_method_t *gp
-    = ( Netflow_method_t * )((( Dssrecord_t * )(data))->file)->dss->data;
+    = ( Netflow_method_t * ) ((( Dssrecord_t * ) (data))->file)->dss->data;
     Netflow_file_t *pp
-    = ( Netflow_file_t * )((( Dssrecord_t * )(data))->file)->data;
-    Netflow_t *rp = ( Netflow_t * )DSSDATA(data);
+    = ( Netflow_file_t * ) ((( Dssrecord_t * ) (data))->file)->data;
+    Netflow_t *rp = ( Netflow_t * ) DSSDATA(data);
     Cxvariable_t *vp = pc->data.variable;
     Netflow_field_t *fp;
 
@@ -491,12 +491,12 @@ op_get(Cx_t *cx,
             r->type = gp->type_ipv6prefix;
         } else {
             r->value.number
-            = ( Cxnumber_t )rp->dst_addrv4 * 64 + rp->dst_maskv4;
+            = ( Cxnumber_t ) rp->dst_addrv4 * 64 + rp->dst_maskv4;
             r->type = gp->type_ipv4prefix;
         }
         break;
     case NETFLOW_dst_prefixv4:
-        r->value.number = ( Cxnumber_t )rp->dst_addrv4 * 64 + rp->dst_maskv4;
+        r->value.number = ( Cxnumber_t ) rp->dst_addrv4 * 64 + rp->dst_maskv4;
         break;
     case NETFLOW_dst_prefixv6:
         r->value.buffer.data = rp->dst_addrv6;
@@ -510,7 +510,7 @@ op_get(Cx_t *cx,
         break;
     case NETFLOW_end:
 #if _typ_int64_t
-        r->value.number = ( int64_t )rp->end; /* ms cc requires signed */
+        r->value.number = ( int64_t ) rp->end; /* ms cc requires signed */
 #else
         r->value.number = rp->end;
 #endif
@@ -579,11 +579,11 @@ op_get(Cx_t *cx,
         break;
     case NETFLOW_if_desc:
         r->value.string.size
-        = strlen(r->value.string.data = ( char * )rp->if_desc);
+        = strlen(r->value.string.data = ( char * ) rp->if_desc);
         break;
     case NETFLOW_if_name:
         r->value.string.size
-        = strlen(r->value.string.data = ( char * )rp->if_name);
+        = strlen(r->value.string.data = ( char * ) rp->if_name);
         break;
     case NETFLOW_in_bytes:
         r->value.number = rp->in_bytes;
@@ -726,7 +726,7 @@ op_get(Cx_t *cx,
         break;
     case NETFLOW_sampler_name:
         r->value.string.size
-        = strlen(r->value.string.data = ( char * )rp->sampler_name);
+        = strlen(r->value.string.data = ( char * ) rp->sampler_name);
         break;
     case NETFLOW_src_addr:
         if (rp->set & NETFLOW_SET_src_addrv6) {
@@ -775,12 +775,12 @@ op_get(Cx_t *cx,
             r->type = gp->type_ipv6prefix;
         } else {
             r->value.number
-            = ( Cxnumber_t )rp->src_addrv4 * 64 + rp->src_maskv4;
+            = ( Cxnumber_t ) rp->src_addrv4 * 64 + rp->src_maskv4;
             r->type = gp->type_ipv4prefix;
         }
         break;
     case NETFLOW_src_prefixv4:
-        r->value.number = ( Cxnumber_t )rp->src_addrv4 * 64 + rp->src_maskv4;
+        r->value.number = ( Cxnumber_t ) rp->src_addrv4 * 64 + rp->src_maskv4;
         break;
     case NETFLOW_src_prefixv6:
         r->value.buffer.data = rp->src_addrv6;
@@ -794,7 +794,7 @@ op_get(Cx_t *cx,
         break;
     case NETFLOW_start:
 #if _typ_int64_t
-        r->value.number = ( int64_t )rp->start; /* ms cc requires signed */
+        r->value.number = ( int64_t ) rp->start; /* ms cc requires signed */
 #else
         r->value.number = rp->start;
 #endif
@@ -1054,7 +1054,7 @@ netflowopen(Dss_t *dss, Dssdisc_t *disc)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    flow->base = ( Netflow_template_t * )&template;
+    flow->base = ( Netflow_template_t * ) &template;
     dss->data = flow;
     return 0;
 }

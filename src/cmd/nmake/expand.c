@@ -284,19 +284,19 @@ getedit(char **p, int del)
     int v;
     unsigned char *s;
     unsigned char *t;
-    Edit_map_t *mid = ( Edit_map_t * )editmap;
+    Edit_map_t *mid = ( Edit_map_t * ) editmap;
     Edit_map_t *lo = mid;
     Edit_map_t *hi = mid + elementsof(editmap) - 1;
 
     while (lo <= hi) {
         mid = lo + (hi - lo) / 2;
-        s = ( unsigned char * )*p;
-        t = ( unsigned char * )mid->name;
+        s = ( unsigned char * ) *p;
+        t = ( unsigned char * ) mid->name;
         for (;;) {
             if (!*t && (*s == del || isspace(*s) || !*s)) {
                 while (isspace(*s))
                     s++;
-                *p = ( char * )s;
+                *p = ( char * ) s;
                 return mid;
             }
             if ((v = *s++ - *t++) > 0) {
@@ -332,7 +332,7 @@ uniq(Sfio_t *xp, char *v, char *w, int sep)
             if (!stat(s, &st)) {
                 id.dev = st.st_dev;
                 id.ino = st.st_ino;
-                hashput(tab, ( char * )&id, ( char * )tab);
+                hashput(tab, ( char * ) &id, ( char * ) tab);
             }
         tokclose(tok);
         sep = 0;
@@ -341,8 +341,8 @@ uniq(Sfio_t *xp, char *v, char *w, int sep)
             if (!stat(s, &st)) {
                 id.dev = st.st_dev;
                 id.ino = st.st_ino;
-                if (!hashget(tab, ( char * )&id)) {
-                    hashput(tab, ( char * )0, ( char * )tab);
+                if (!hashget(tab, ( char * ) &id)) {
+                    hashput(tab, ( char * ) 0, ( char * ) tab);
                     if (sep)
                         sfputc(xp, ' ');
                     else
@@ -353,13 +353,13 @@ uniq(Sfio_t *xp, char *v, char *w, int sep)
     } else {
         tab = hashalloc(table.rule, 0);
         while (s = tokread(tok))
-            hashput(tab, s, ( char * )tab);
+            hashput(tab, s, ( char * ) tab);
         tokclose(tok);
         sep = 0;
         tok = tokopen(v, 1);
         while (s = tokread(tok))
             if (!hashget(tab, s)) {
-                hashput(tab, ( char * )0, ( char * )tab);
+                hashput(tab, ( char * ) 0, ( char * ) tab);
                 if (sep)
                     sfputc(xp, ' ');
                 else
@@ -734,7 +734,7 @@ listtab(Sfio_t *xp, Hash_table_t *tab, char *pat, int flags)
     if (sfstrtell(hit) > 0) {
         n = sfstrtell(hit);
         putptr(hit, 0);
-        v = ( char ** )sfstrbase(hit);
+        v = ( char ** ) sfstrbase(hit);
         if (flags & SORT_sort)
             strsort(v, n / sizeof(v), sortcmpf(flags));
         sfputr(xp, *v, -1);
@@ -797,7 +797,7 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
     }
     putptr(vec, 0);
     tokclose(tok);
-    for (v = ( char ** )sfstrbase(vec); r = ( Rule_t * )*v;) {
+    for (v = ( char ** ) sfstrbase(vec); r = ( Rule_t * ) *v;) {
         r->mark &= ~M_mark;
         *v++ = r->name;
     }
@@ -810,7 +810,7 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
         while (hashnext(pos)) {
             if ((s = pos->bucket->name)[0] != '.'
                 || s[1] && (s[1] != '.' || s[2])) {
-                f = ( File_t * )pos->bucket->value;
+                f = ( File_t * ) pos->bucket->value;
                 if (*pat) {
                     if (f->dir->ignorecase) {
                         re = &ire;
@@ -836,7 +836,7 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
                     }
                 }
                 for (; f; f = f->next)
-                    for (v = ( char ** )sfstrbase(vec); s = *v++;)
+                    for (v = ( char ** ) sfstrbase(vec); s = *v++;)
                         if (f->dir->name == s) {
                             putptr(hit, pos->bucket->name);
                             goto next;
@@ -854,13 +854,13 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
     if (sfstrtell(hit) > 0) {
         n = sfstrtell(hit);
         putptr(hit, 0);
-        v = ( char ** )sfstrbase(hit);
+        v = ( char ** ) sfstrbase(hit);
         if (flags & SORT_sort)
             strsort(v, n / sizeof(v), sortcmpf(flags));
         if (flags & (SORT_first | SORT_qualified)) {
             if (flags & SORT_version) {
-                for (v = ( char ** )sfstrbase(hit); *v; v++)
-                    for (w = ( char ** )sfstrbase(vec); s = *w++;)
+                for (v = ( char ** ) sfstrbase(hit); *v; v++)
+                    for (w = ( char ** ) sfstrbase(vec); s = *w++;)
                         for (f = getfile(*v); f; f = f->next)
                             if (f->dir->name == s) {
                                 if (flags & SORT_qualified)
@@ -871,8 +871,8 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
                                     goto first;
                             }
             } else {
-                for (w = ( char ** )sfstrbase(vec); s = *w++;)
-                    for (v = ( char ** )sfstrbase(hit); *v; v++)
+                for (w = ( char ** ) sfstrbase(vec); s = *w++;)
+                    for (v = ( char ** ) sfstrbase(hit); *v; v++)
                         for (f = getfile(*v); f; f = f->next)
                             if (f->dir->name == s) {
                                 if (flags & SORT_qualified)
@@ -922,7 +922,7 @@ sort(Sfio_t *xp, char *s, int flags)
     tokclose(tok);
     if (n = sfstrtell(vec) / sizeof(s)) {
         putptr(vec, 0);
-        p = ( char ** )sfstrbase(vec);
+        p = ( char ** ) sfstrbase(vec);
         if (flags & SORT_reverse) {
             r = p + n - 1;
             sfputr(xp, *r, -1);
@@ -930,7 +930,7 @@ sort(Sfio_t *xp, char *s, int flags)
                 sfprintf(xp, " %s", *r);
         } else {
             cmp = sortcmpf(flags);
-            strsort(( char ** )sfstrbase(vec), n, cmp);
+            strsort(( char ** ) sfstrbase(vec), n, cmp);
             sfputr(xp, *p, -1);
             if (!(flags & SORT_first)) {
                 flags &= SORT_uniq;
@@ -1109,7 +1109,7 @@ order_descend(Sfio_t *xp,
         if ((flags & (ORDER_all | ORDER_prereqs))
             == (ORDER_all | ORDER_prereqs)) {
             for (p = r->prereqs; p; p = p->next) {
-                if (!(a = ( Rule_t * )hashget(tab, p->rule->name)))
+                if (!(a = ( Rule_t * ) hashget(tab, p->rule->name)))
                     a = p->rule;
                 else if (a == r)
                     continue;
@@ -1127,7 +1127,7 @@ order_descend(Sfio_t *xp,
             }
         }
         for (p = r->prereqs; p; p = p->next) {
-            if (!(a = ( Rule_t * )hashget(tab, p->rule->name)))
+            if (!(a = ( Rule_t * ) hashget(tab, p->rule->name)))
                 a = p->rule;
             if (a->mark & M_MUST)
                 mark = order_descend(xp, tab, a, mark, flags);
@@ -1348,8 +1348,8 @@ order_find(Sfio_t *xp,
 static int
 order_cmp(const void *a, const void *b)
 {
-    return strcoll((*(( Rule_t ** )a + 1))->name,
-                   (*(( Rule_t ** )b + 1))->name);
+    return strcoll((*(( Rule_t ** ) a + 1))->name,
+                   (*(( Rule_t ** ) b + 1))->name);
 }
 
 /*
@@ -1394,7 +1394,7 @@ order_recurse(Sfio_t *xp,
     int p;
     int var;
 
-    order = targets ? ( Rule_t * )0 : getrule(external.order);
+    order = targets ? ( Rule_t * ) 0 : getrule(external.order);
     tab = hashalloc(table.rule, 0);
     tmp = sfstropen();
     vec = sfstropen();
@@ -1404,7 +1404,7 @@ order_recurse(Sfio_t *xp,
     order_find(xp, tmp, vec, tab, NiL, directories, makefiles, skip, flags);
     mark = sfstrtell(vec);
     putptr(vec, 0);
-    v = ( Rule_t ** )sfstrbase(vec);
+    v = ( Rule_t ** ) sfstrbase(vec);
     qsort(v, mark / sizeof(v) / 2, sizeof(v) * 2, order_cmp);
     while (r = *v++) {
         d = *v++;
@@ -1533,10 +1533,10 @@ order_recurse(Sfio_t *xp,
                                 break;
                             }
                     if (k
-                        && ((r = ( Rule_t * )hashget(tab, t))
+                        && ((r = ( Rule_t * ) hashget(tab, t))
                             && (r->mark & M_MUST) && r != d
                             || *t++ == 'l' && *t++ == 'i' && *t++ == 'b' && *t
-                               && (r = ( Rule_t * )hashget(tab, t))
+                               && (r = ( Rule_t * ) hashget(tab, t))
                                && (r->mark & M_MUST) && r != d)) {
                         if (t = strrchr(d->name, '/'))
                             t++;
@@ -1601,7 +1601,7 @@ order_recurse(Sfio_t *xp,
     if (targets) {
         tok = tokopen(targets, 1);
         while (s = tokread(tok))
-            if ((r = ( Rule_t * )hashget(tab, s)) && (r->mark & M_MUST))
+            if ((r = ( Rule_t * ) hashget(tab, s)) && (r->mark & M_MUST))
                 mark = order_descend(xp, tab, r, mark, flags | ORDER_all);
         tokclose(tok);
     } else {
@@ -1612,14 +1612,14 @@ order_recurse(Sfio_t *xp,
         flags |= ORDER_all;
         if (order)
             for (q = order->prereqs; q; q = q->next)
-                if ((r = ( Rule_t * )hashget(tab, unbound(q->rule)))
+                if ((r = ( Rule_t * ) hashget(tab, unbound(q->rule)))
                     && (r->mark & M_MUST)) {
                     mark = order_descend(xp, tab, r, mark, flags);
                     if (!(flags & ORDER_prereqs))
                         sfputr(xp, "-", ' ');
                 }
     }
-    v = ( Rule_t ** )sfstrbase(vec);
+    v = ( Rule_t ** ) sfstrbase(vec);
     while (*v++) {
         r = *v++;
         if (r->mark & M_MUST)
@@ -1628,7 +1628,7 @@ order_recurse(Sfio_t *xp,
     e = v - 1;
     if (flags & ORDER_prereqs) {
         sfprintf(xp, "all :");
-        v = ( Rule_t ** )sfstrbase(vec);
+        v = ( Rule_t ** ) sfstrbase(vec);
         while (*v++) {
             r = *v++;
             if (r->mark & M_INIT)
@@ -1636,7 +1636,7 @@ order_recurse(Sfio_t *xp,
         }
     }
     k = 1;
-    v = ( Rule_t ** )sfstrbase(vec);
+    v = ( Rule_t ** ) sfstrbase(vec);
     while (--e >= v) {
         r = *e;
         if ((flags & ORDER_prereqs)
@@ -1776,7 +1776,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
                 *s = '/';
             s = (!(state.questionable & 0x00008000) && *r->name == '/')
                 ? r->uname
-                : ( char * )0;
+                : ( char * ) 0;
             t = state.localview ? localview(x) : x->name;
             if ((r->dynamic & D_alias)
                 && !(state.questionable & 0x10000000)) {
@@ -2034,12 +2034,12 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
              * return bound name if bound in view level 0 [n]
              */
 
-            n = (*op == '=') ? ( int )strtol(op + 1, NiL, 0) : 0;
+            n = (*op == '=') ? ( int ) strtol(op + 1, NiL, 0) : 0;
             if (sepcmp(sep,
-                       ( unsigned long )((r->dynamic & D_global)
-                                         ? state.maxview
-                                         : r->view),
-                       ( unsigned long )n))
+                       ( unsigned long ) ((r->dynamic & D_global)
+                                          ? state.maxview
+                                          : r->view),
+                       ( unsigned long ) n))
                 sfputr(xp, s, -1);
         }
         return;
@@ -2439,7 +2439,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
     }
     r = makerule(s);
     if (dounbind)
-        unbind(NiL, ( char * )r, NiL);
+        unbind(NiL, ( char * ) r, NiL);
     if (dobind) {
         tst = state.mam.regress && state.user > 1 && !(r->dynamic & D_bound);
         r = bind(r);
@@ -3330,7 +3330,7 @@ expandall(Sfio_t *xp, unsigned long all)
     sep = 0;
     if (pos = hashscan(table.rule, 0)) {
         while (hashnext(pos)) {
-            r = ( Rule_t * )pos->bucket->value;
+            r = ( Rule_t * ) pos->bucket->value;
             if (pos->bucket->name == r->name && !(r->dynamic & D_alias)
                 && (!all || (r->dynamic & all))) {
                 if (sep)
@@ -4010,7 +4010,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
             case 'O':
                 cntlim = (*val == 'N' || *val == 'n' || *val == '*')
                          ? -1
-                         : ( int )strtol(val, NiL, 0);
+                         : ( int ) strtol(val, NiL, 0);
                 break;
             case 'U':
                 uniq(xp, x, val, sep);
@@ -4150,7 +4150,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 for (;;) {
                     if (!hashnext(pos))
                         goto breakloop;
-                    r = ( Rule_t * )pos->bucket->value;
+                    r = ( Rule_t * ) pos->bucket->value;
                     if (pos->bucket->name == r->name
                         && !(r->dynamic & D_alias)
                         && (exp < 0 || (r->dynamic & all))) {
@@ -4359,7 +4359,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                      */
 
                     while (hashnext(pos)) {
-                        r = ( Rule_t * )pos->bucket->value;
+                        r = ( Rule_t * ) pos->bucket->value;
                         r->dynamic &= ~all;
                     }
                     hashdone(pos);
@@ -4712,7 +4712,7 @@ expand(Sfio_t *xp, char *a)
                           s);
                 }
                 expandvars(
-                xp, s, ed ? sfstrbase(xp) + ed + 1 : ( char * )0, del, nvars);
+                xp, s, ed ? sfstrbase(xp) + ed + 1 : ( char * ) 0, del, nvars);
             }
         } else if (*a == '$') {
             for (s = a; *s == '$'; s++)

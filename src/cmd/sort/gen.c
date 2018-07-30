@@ -41,7 +41,7 @@ static unsigned char data[UCHAR_MAX + 1];
 #define NUMERIC 10
 
 #define RAND() (state.seed = (state.seed * 0x63c63cd9L + 1) & 0xffffffff)
-#define ROUND(n, s) ((n) = (((n) + ( s )-1) / (s)) * (s))
+#define ROUND(n, s) ((n) = (((n) + ( s ) -1) / (s)) * (s))
 
 typedef struct
 {

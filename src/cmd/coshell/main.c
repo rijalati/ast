@@ -132,7 +132,7 @@ init(void *handle, int fdmax)
     state.grace = GRACE;
     state.maxidle = INT_MAX;
     state.pool
-    = ((s = getenv(CO_ENV_PROC)) && *s) ? ( int )strtol(s, NiL, 0) : POOL;
+    = ((s = getenv(CO_ENV_PROC)) && *s) ? ( int ) strtol(s, NiL, 0) : POOL;
     state.profile = strdup(
     "{ . ./.profile; eval test -f \\$ENV \\&\\& . \\$ENV; } >/dev/null 2>&1 "
     "</dev/null");
@@ -224,7 +224,7 @@ init(void *handle, int fdmax)
      */
 
     shellopen(state.home, 2);
-    return (( void * )&state);
+    return (( void * ) &state);
 }
 
 /*
@@ -337,7 +337,7 @@ service(void *handle, int fd)
             message((-3, "%s-message: %s", sp ? sp->name : "", s - 1));
             while (isspace(*s))
                 s++;
-            if ((jp = state.job + ( int )strtol(s, NiL, 0)) > state.jobmax)
+            if ((jp = state.job + ( int ) strtol(s, NiL, 0)) > state.jobmax)
                 continue;
             while (*s && !isspace(*s))
                 s++;
@@ -357,7 +357,7 @@ service(void *handle, int fd)
                 if (!sp)
                     break;
                 i = jp->pid;
-                jp->pid = ( int )strtol(s, NiL, 0);
+                jp->pid = ( int ) strtol(s, NiL, 0);
                 if (i == WARP)
                     goto nuke;
                 if (jp->cmd) {
@@ -385,7 +385,7 @@ service(void *handle, int fd)
                             s++;
                         while (isspace(*s))
                             s++;
-                        sp->pid = ( int )strtol(s, NiL, 0);
+                        sp->pid = ( int ) strtol(s, NiL, 0);
                         sp->fd = fd;
                         sp->open++;
                         state.shellwait--;
@@ -453,16 +453,17 @@ service(void *handle, int fd)
         break;
     case DEST:
         if (csread(fd, s = state.buf, 13, CS_EXACT) != 13 || s[0] != '#'
-            || (jp = state.job + ( int )strtol(s + 1, NiL, 10)) > state.jobmax
+            || (jp = state.job + ( int ) strtol(s + 1, NiL, 10))
+               > state.jobmax
             || fstat(state.con[fd].info.pass.fd
-                     = ( int )strtol(s + 7, NiL, 10),
+                     = ( int ) strtol(s + 7, NiL, 10),
                      &st))
             drop(fd);
         else {
             state.con[fd].type = PASS;
             state.con[fd].info.pass.job = jp->pid ? jp : 0;
             state.con[fd].info.pass.serialize
-            = (jp->flags & CO_SERIALIZE) ? sfstropen() : ( Sfio_t * )0;
+            = (jp->flags & CO_SERIALIZE) ? sfstropen() : ( Sfio_t * ) 0;
         }
         break;
     case IDENT:
@@ -504,7 +505,7 @@ service(void *handle, int fd)
         break;
     case INIT:
         if (csread(fd, s = cmd, 7, CS_EXACT) != 7 || s[0] != '#'
-            || (i = ( int )strtol(s + 1, NiL, 10))
+            || (i = ( int ) strtol(s + 1, NiL, 10))
                && (i < 0 || i > state.buflen
                    || csread(fd, state.buf, i, CS_EXACT) != i)) {
             drop(fd);
@@ -675,7 +676,7 @@ service(void *handle, int fd)
         break;
     case USER:
         if (csread(fd, cmd, 7, CS_EXACT) != 7 || cmd[0] != '#'
-            || (n = ( int )strtol(cmd + 1, NiL, 10)) <= 0) {
+            || (n = ( int ) strtol(cmd + 1, NiL, 10)) <= 0) {
             drop(fd);
             break;
         }
@@ -769,7 +770,7 @@ indirect(void *handle, int fdmax)
     pass[state.indirect.con] = state.indirect.msg;
     csfd(state.indirect.cmd, CS_POLL_READ);
     pass[state.indirect.cmd] = state.indirect.con;
-    return (( void * )pass);
+    return (( void * ) pass);
 }
 
 /*
@@ -781,14 +782,14 @@ pump(void *handle, int fd)
 {
     int n;
     int pd;
-    int *pass = ( int * )handle + fd;
+    int *pass = ( int * ) handle + fd;
     char *s = state.buf;
 
     if ((n = read(fd, s, state.buflen)) <= 0)
         goto drop;
     if (!(pd = *pass)) {
         if ((n -= 7) < 0 || s[0] != '#'
-            || (pd = ( int )strtol(s + 1, NiL, 10)) < 1 || pd > 2)
+            || (pd = ( int ) strtol(s + 1, NiL, 10)) < 1 || pd > 2)
             goto drop;
         *pass = pd == 1 ? state.indirect.out : state.indirect.err;
         if (!n)
@@ -884,7 +885,7 @@ main(int argc, char **argv)
 
     if ((s = *argv) && strneq(s, "/dev/fd/", 8)) {
         argv++;
-        if (i = ( int )strtol(s + 8, NiL, 0)) {
+        if (i = ( int ) strtol(s + 8, NiL, 0)) {
             close(0);
             if (dup(i))
                 error(ERROR_SYSTEM | 3, "%s: cannot open", s);
@@ -924,7 +925,7 @@ main(int argc, char **argv)
             if (n == COMMAND)
                 i--;
             else if (!(s = getenv(CO_ENV_MSGFD))
-                     || (state.indirect.msg = ( int )strtol(s, &t, 0)) <= 0
+                     || (state.indirect.msg = ( int ) strtol(s, &t, 0)) <= 0
                      || *t)
                 state.indirect.msg = i - 1;
             fds[i - 1] = state.indirect.msg;
@@ -933,7 +934,7 @@ main(int argc, char **argv)
         s = state.buf;
         if ((state.indirect.con || !cssend(fd, fds, i))
             && csread(fd, s, 7, CS_EXACT) == 7 && s[0] == '#'
-            && !(errno = ( int )strtol(s + 1, NiL, 10)))
+            && !(errno = ( int ) strtol(s + 1, NiL, 10)))
             do {
                 if (state.indirect.con) {
                     if ((pfd = csopen(t = "/dev/tcp/local/normal/slave",
@@ -994,7 +995,7 @@ main(int argc, char **argv)
                                && csread(fds[0], s, 7, CS_EXACT) == 7
                                && s[0] == '#';
                              d--)
-                            if ((n = ( int )strtol(s + 1, NiL, 10)) == 1)
+                            if ((n = ( int ) strtol(s + 1, NiL, 10)) == 1)
                                 state.indirect.out = fds[0];
                             else if (n == 2)
                                 state.indirect.err = fds[0];
@@ -1004,7 +1005,7 @@ main(int argc, char **argv)
                             break;
                         state.indirect.con = pfd;
                     }
-                    exit(command(fd, (*argv)[1] ? argv : ( char ** )0));
+                    exit(command(fd, (*argv)[1] ? argv : ( char ** ) 0));
                 }
                 if ((state.indirect.cmd = dup(0)) < 0)
                     break;

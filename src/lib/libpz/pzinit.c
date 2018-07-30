@@ -35,10 +35,10 @@ pzinit(Pz_t *pz, const char *name, Pzinit_f initf)
     options = pz->disc->options;
     if (!(usage = (*initf)(pz, pz->disc))) {
         if (pz->disc && pz->disc->errorf) {
-            if (id = strchr(( char * )state.id, ':'))
+            if (id = strchr(( char * ) state.id, ':'))
                 id++;
             else
-                id = ( char * )state.id;
+                id = ( char * ) state.id;
             (*pz->disc->errorf)(pz,
                                 pz->disc,
                                 2,

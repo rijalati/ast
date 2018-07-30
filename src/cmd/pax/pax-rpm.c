@@ -106,19 +106,19 @@ rpm_getprologue(Pax_t *pax,
         if (size < (sizeof(magic) + sizeof(lead_old)))
             return 0;
         paxread(
-        pax, ap, NiL, ( off_t )sizeof(magic), ( off_t )sizeof(magic), 0);
+        pax, ap, NiL, ( off_t ) sizeof(magic), ( off_t ) sizeof(magic), 0);
         if (paxread(pax,
                     ap,
                     &lead_old,
-                    ( off_t )sizeof(lead_old),
-                    ( off_t )sizeof(lead_old),
+                    ( off_t ) sizeof(lead_old),
+                    ( off_t ) sizeof(lead_old),
                     0)
             <= 0)
             return 0;
         if (swap)
             swapmem(swap, &lead_old, &lead_old, sizeof(lead_old));
-        if (paxseek(pax, ap, ( off_t )lead_old.archoff, SEEK_SET, 0)
-            != ( off_t )lead_old.archoff) {
+        if (paxseek(pax, ap, ( off_t ) lead_old.archoff, SEEK_SET, 0)
+            != ( off_t ) lead_old.archoff) {
             error(
             2, "%s: %s embedded archive seek error", ap->name, fp->name);
             return -1;
@@ -127,9 +127,9 @@ rpm_getprologue(Pax_t *pax,
         if (size < (sizeof(magic) + sizeof(lead)))
             return 0;
         paxread(
-        pax, ap, NiL, ( off_t )sizeof(magic), ( off_t )sizeof(magic), 0);
+        pax, ap, NiL, ( off_t ) sizeof(magic), ( off_t ) sizeof(magic), 0);
         if (paxread(
-            pax, ap, &lead, ( off_t )sizeof(lead), ( off_t )sizeof(lead), 0)
+            pax, ap, &lead, ( off_t ) sizeof(lead), ( off_t ) sizeof(lead), 0)
             <= 0)
             return 0;
         memcpy(state.volume, lead.name, sizeof(state.volume) - 1);
@@ -154,7 +154,7 @@ rpm_getprologue(Pax_t *pax,
             break;
         case 1:
             num = 256;
-            if (paxread(pax, ap, NiL, ( off_t )num, ( off_t )num, 0) <= 0) {
+            if (paxread(pax, ap, NiL, ( off_t ) num, ( off_t ) num, 0) <= 0) {
                 error(2,
                       "%s: %s format header %ld byte data block expected",
                       ap->name,
@@ -168,8 +168,8 @@ rpm_getprologue(Pax_t *pax,
                 if (paxread(pax,
                             ap,
                             zip,
-                            ( off_t )sizeof(zip),
-                            ( off_t )sizeof(zip),
+                            ( off_t ) sizeof(zip),
+                            ( off_t ) sizeof(zip),
                             0)
                     <= 0) {
                     error(2,
@@ -180,7 +180,7 @@ rpm_getprologue(Pax_t *pax,
                     return -1;
                 }
                 if (zip[0] == 0x1f && zip[1] == 0x8b) {
-                    paxunread(pax, ap, zip, ( off_t )sizeof(zip));
+                    paxunread(pax, ap, zip, ( off_t ) sizeof(zip));
                     break;
                 }
                 num = (ap->io->count - 2) & 7;
@@ -188,16 +188,16 @@ rpm_getprologue(Pax_t *pax,
                 (-2, "%s: align pad=%ld", ap->name, num ? (8 - num) : num));
                 switch (num) {
                 case 0:
-                    paxunread(pax, ap, zip, ( off_t )2);
+                    paxunread(pax, ap, zip, ( off_t ) 2);
                     break;
                 case 7:
-                    paxunread(pax, ap, zip + 1, ( off_t )1);
+                    paxunread(pax, ap, zip + 1, ( off_t ) 1);
                     break;
                 case 6:
                     break;
                 default:
                     num = 6 - num;
-                    if (paxread(pax, ap, NiL, ( off_t )num, ( off_t )num, 0)
+                    if (paxread(pax, ap, NiL, ( off_t ) num, ( off_t ) num, 0)
                         <= 0) {
                         error(2,
                               "%s: %s format header %ld byte pad expected",
@@ -211,8 +211,8 @@ rpm_getprologue(Pax_t *pax,
                 if (paxread(pax,
                             ap,
                             &verify,
-                            ( off_t )sizeof(verify),
-                            ( off_t )sizeof(verify),
+                            ( off_t ) sizeof(verify),
+                            ( off_t ) sizeof(verify),
                             0)
                     <= 0) {
                     error(2,
@@ -222,9 +222,9 @@ rpm_getprologue(Pax_t *pax,
                           ap->io->offset + ap->io->count);
                     return -1;
                 }
-                if ((( unsigned char * )&verify)[0] == 0x1f
-                    && (( unsigned char * )&verify)[1] == 0x8b) {
-                    paxunread(pax, ap, &verify, ( off_t )sizeof(verify));
+                if ((( unsigned char * ) &verify)[0] == 0x1f
+                    && (( unsigned char * ) &verify)[1] == 0x8b) {
+                    paxunread(pax, ap, &verify, ( off_t ) sizeof(verify));
                     break;
                 }
                 if (swap) {
@@ -253,8 +253,8 @@ rpm_getprologue(Pax_t *pax,
                 if (paxread(pax,
                             ap,
                             &head,
-                            ( off_t )sizeof(head),
-                            ( off_t )sizeof(head),
+                            ( off_t ) sizeof(head),
+                            ( off_t ) sizeof(head),
                             0)
                     <= 0) {
                     error(2,
@@ -272,7 +272,7 @@ rpm_getprologue(Pax_t *pax,
                          head.entries,
                          head.datalen,
                          num));
-                if (paxread(pax, ap, NiL, ( off_t )num, ( off_t )num, 0)
+                if (paxread(pax, ap, NiL, ( off_t ) num, ( off_t ) num, 0)
                     <= 0) {
                     error(2,
                           "%s: %s format header %ld byte data block expected",

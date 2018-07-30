@@ -103,7 +103,7 @@ paxunread(Pax_t *pax, Paxarchive_t *ap, void *b, off_t n)
 static int
 paxwrite(Pax_t *pax, Paxarchive_t *ap, const void *b, off_t n)
 {
-    bwrite(ap, ( void * )b, n);
+    bwrite(ap, ( void * ) b, n);
     return 0;
 }
 
@@ -172,7 +172,7 @@ paxnospace(Pax_t *pax)
 static ssize_t
 part_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 {
-    Part_t *part = ( Part_t * )disc;
+    Part_t *part = ( Part_t * ) disc;
     ssize_t r;
 
     if (part->n <= 0)
@@ -187,7 +187,7 @@ part_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 static ssize_t
 part_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
 {
-    Part_t *part = ( Part_t * )disc;
+    Part_t *part = ( Part_t * ) disc;
     ssize_t r;
 
     if ((r = paxwrite(part->pax, part->ap, buf, n)) > 0)

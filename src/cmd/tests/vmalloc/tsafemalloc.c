@@ -48,7 +48,7 @@ static size_t Curbusy = 0; /* size of busy space at current time	*/
 #define CH_RESIZE 05
 
 #ifndef NIL
-#    define NIL(t) (( t )0)
+#    define NIL(t) (( t ) 0)
 #endif
 
 /* define alignment requirement */
@@ -102,10 +102,10 @@ emphemeral(void *arg) /* an empheral thread, allocate a few times, free then
         sz = (RANDOM() % (Smallhi - Smalllo + 1)) + Smalllo;
         sz = sz > sizeof(size_t) ? sz : sizeof(size_t);
 
-        if (!(blk = ( void * )malloc(sz)))
+        if (!(blk = ( void * ) malloc(sz)))
             terror("Malloc failed");
 
-        *(( size_t * )blk) = sz;
+        *(( size_t * ) blk) = sz;
         asoaddsize(&Curbusy, sz);
         asomaxsize(&Maxbusy, Curbusy);
 
@@ -113,7 +113,7 @@ emphemeral(void *arg) /* an empheral thread, allocate a few times, free then
         if (asocasptr(&Emp[k], emp, blk) == emp) {
             if (emp) /* free previous block if any */
             {
-                sz = *(( size_t * )emp);
+                sz = *(( size_t * ) emp);
                 free(emp);
             }
         } else
@@ -122,7 +122,7 @@ emphemeral(void *arg) /* an empheral thread, allocate a few times, free then
         asosubsize(&Curbusy, sz);
     }
 
-    return ( void * )0;
+    return ( void * ) 0;
 }
 
 void *
@@ -133,7 +133,7 @@ simulate(void *arg)
     size_t sz, nalloc, lf;
     Piece_t *list, *up, *next;
     void *data;
-    int thread = ( int )(( long )arg);
+    int thread = ( int ) (( long ) arg);
     pthread_t ethread;
     Tdata_t *tdata = &Tdata[thread];
     int warn_align = 1;
@@ -144,7 +144,7 @@ simulate(void *arg)
     nalloc = tdata->nalloc;
     for (k = 0; k < nalloc; ++k) {
         if (Empperiod > 0 && k > 0 && k % Empperiod == 0)
-            if (pthread_create(&ethread, NULL, emphemeral, ( void * )0) != 0)
+            if (pthread_create(&ethread, NULL, emphemeral, ( void * ) 0) != 0)
                 terror("Can't create emphemeral thread");
 
         /* update all that needs updating */
@@ -164,7 +164,7 @@ simulate(void *arg)
                     terror("Thread %d: failed to realloc(org=%d sz=%d)",
                            up->size,
                            sz);
-                if ((a = ( unsigned long )(list[k].data) % ALIGNMENT) != 0)
+                if ((a = ( unsigned long ) (list[k].data) % ALIGNMENT) != 0)
                     terror("Thread %d: block=%#0x mod %d == %d",
                            thread,
                            list[k].data,
@@ -196,7 +196,7 @@ simulate(void *arg)
 
         if (!(list[k].data = malloc(sz)))
             terror("Thread %d: failed to malloc(%d)", thread, sz);
-        if ((a = ( unsigned long )(list[k].data) % ALIGNMENT) != 0) {
+        if ((a = ( unsigned long ) (list[k].data) % ALIGNMENT) != 0) {
             if (warn_align)
                 tinfo("Thread %d: block=%#0x mod %d == %d",
                       thread,
@@ -222,7 +222,7 @@ simulate(void *arg)
                 terror("Can't wait for emphemeral thread");
     }
 
-    return ( void * )0;
+    return ( void * ) 0;
 }
 
 tmain()
@@ -275,7 +275,7 @@ tmain()
     for (i = 0; i < N_THREAD; ++i) {
         Tdata[i].nalloc = nalloc;
         sz = Tdata[i].nalloc * sizeof(Piece_t);
-        if (!(Tdata[i].list = ( Piece_t * )malloc(sz)))
+        if (!(Tdata[i].list = ( Piece_t * ) malloc(sz)))
             terror("Failed allocating list of objects nalloc=%d",
                    Tdata[i].nalloc);
         memset(Tdata[i].list, 0, Tdata[i].nalloc * sizeof(Piece_t));
@@ -298,8 +298,8 @@ tmain()
     Empcount);
 
     for (i = 0; i < N_THREAD; ++i) {
-        if ((rv
-             = pthread_create(&th[i], NULL, simulate, ( void * )(( long )i)))
+        if ((rv = pthread_create(
+             &th[i], NULL, simulate, ( void * ) (( long ) i)))
             != 0)
             terror("Failed to create simulation thread %d", i);
     }

@@ -100,7 +100,7 @@ translate(const char *locale,
 
     sfprintf(sfstdout, "id=%s catalog=%s text=\"%s\"\n", id, catalog, msg);
     i = !catalog;
-    s = ( char * )msg;
+    s = ( char * ) msg;
     t = buf;
     e = buf + sizeof(buf) - 1;
     while ((c = *s++) && t < e) {
@@ -146,7 +146,7 @@ translate(const char *locale,
         *t++ = c;
     }
     *t = 0;
-    return streq(buf, msg) ? ( char * )msg : buf;
+    return streq(buf, msg) ? ( char * ) msg : buf;
 }
 #endif
 

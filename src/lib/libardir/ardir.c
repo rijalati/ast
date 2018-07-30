@@ -37,7 +37,7 @@ ardiropen(const char *file, Ardirmeth_t *meth, int flags)
 
     if (!(ar = newof(0, Ardir_t, 1, strlen(file) + 1)))
         return 0;
-    strcpy(ar->path = ( char * )(ar + 1), file);
+    strcpy(ar->path = ( char * ) (ar + 1), file);
     ar->flags = flags;
     if (((ar->fd = open(file,
                         (flags & ARDIR_CREATE)
@@ -52,7 +52,7 @@ ardiropen(const char *file, Ardirmeth_t *meth, int flags)
         return 0;
     }
     if (ar->fd >= 0
-        && ((pos = lseek(ar->fd, ( off_t )0, SEEK_CUR)) < 0
+        && ((pos = lseek(ar->fd, ( off_t ) 0, SEEK_CUR)) < 0
             || (n = read(ar->fd, buf, sizeof(buf))) < 0
             || lseek(ar->fd, pos, SEEK_SET) != pos)) {
         ardirclose(ar);
@@ -79,7 +79,7 @@ Ardirent_t *
 ardirnext(Ardir_t *ar)
 {
     return (ar->meth && ar->meth->nextf) ? (*ar->meth->nextf)(ar)
-                                         : ( Ardirent_t * )0;
+                                         : ( Ardirent_t * ) 0;
 }
 
 off_t
@@ -95,7 +95,7 @@ ardircopy(Ardir_t *ar, Ardirent_t *ent, int fd)
         ar->error = ENOSYS;
         return -1;
     }
-    pos = lseek(ar->fd, ( off_t )0, SEEK_CUR);
+    pos = lseek(ar->fd, ( off_t ) 0, SEEK_CUR);
     if (lseek(ar->fd, ent->offset, SEEK_SET) != ent->offset)
         return -1;
     z = ent->size;

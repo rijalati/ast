@@ -50,7 +50,7 @@ ppmacref(struct ppsymbol *sym,
                    type);
     if (type > 0) {
         if (sym->macro && sym->macro->value)
-            sum = strsum(sym->macro->value, ( long )sym->macro->arity);
+            sum = strsum(sym->macro->value, ( long ) sym->macro->arity);
         p += sfsprintf(p, MAXTOKEN, " %lu", sum);
     }
     if ((pp.state & (DIRECTIVE | JOINING)) == DIRECTIVE) {

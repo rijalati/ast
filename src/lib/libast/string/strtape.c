@@ -71,7 +71,7 @@ strtape(const char *s, char **e)
         break;
     }
     if (e)
-        *e = ( char * )s;
+        *e = ( char * ) s;
     if (!access("/dev/rmt/.", F_OK)) {
         /*
          * system V

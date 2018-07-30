@@ -246,7 +246,7 @@ sha1_transform(uint32_t state[5], const unsigned char buffer[64])
     CHAR64LONG16 workspace;
 
     block = &workspace;
-    ( void )memcpy(block, buffer, 64);
+    ( void ) memcpy(block, buffer, 64);
 
     /* Copy sha->state[] to working vars */
     a = state[0];
@@ -358,8 +358,8 @@ sha1_transform(uint32_t state[5], const unsigned char buffer[64])
 static int
 sha1_block(Sum_t *p, const void *s, size_t len)
 {
-    Sha1_t *sha = ( Sha1_t * )p;
-    uint8_t *data = ( uint8_t * )s;
+    Sha1_t *sha = ( Sha1_t * ) p;
+    uint8_t *data = ( uint8_t * ) s;
     unsigned int i, j;
 
     if (len) {
@@ -368,7 +368,7 @@ sha1_block(Sum_t *p, const void *s, size_t len)
             sha->count[1] += (len >> 29) + 1;
         j = (j >> 3) & 63;
         if ((j + len) > 63) {
-            ( void )memcpy(&sha->buffer[j], data, (i = 64 - j));
+            ( void ) memcpy(&sha->buffer[j], data, (i = 64 - j));
             sha1_transform(sha->state, sha->buffer);
             for (; i + 63 < len; i += 64)
                 sha1_transform(sha->state, &data[i]);
@@ -377,7 +377,7 @@ sha1_block(Sum_t *p, const void *s, size_t len)
             i = 0;
         }
 
-        ( void )memcpy(&sha->buffer[j], &data[i], len - i);
+        ( void ) memcpy(&sha->buffer[j], &data[i], len - i);
     }
     return 0;
 }
@@ -385,7 +385,7 @@ sha1_block(Sum_t *p, const void *s, size_t len)
 static int
 sha1_init(Sum_t *p)
 {
-    Sha1_t *sha = ( Sha1_t * )p;
+    Sha1_t *sha = ( Sha1_t * ) p;
 
     sha->count[0] = sha->count[1] = 0;
     sha->state[0] = 0x67452301;
@@ -403,11 +403,11 @@ sha1_open(const Method_t *method, const char *name)
     Sha1_t *sha;
 
     if (sha = newof(0, Sha1_t, 1, 0)) {
-        sha->method = ( Method_t * )method;
+        sha->method = ( Method_t * ) method;
         sha->name = name;
-        sha1_init(( Sum_t * )sha);
+        sha1_init(( Sum_t * ) sha);
     }
-    return ( Sum_t * )sha;
+    return ( Sum_t * ) sha;
 }
 
 /*
@@ -420,15 +420,15 @@ static const unsigned char final_0 = 0;
 static int
 sha1_done(Sum_t *p)
 {
-    Sha1_t *sha = ( Sha1_t * )p;
+    Sha1_t *sha = ( Sha1_t * ) p;
     unsigned int i;
     unsigned char finalcount[8];
 
     for (i = 0; i < 8; i++) {
         /* Endian independent */
-        finalcount[i] = ( unsigned char )((sha->count[(i >= 4 ? 0 : 1)]
-                                           >> ((3 - (i & 3)) * 8))
-                                          & 255);
+        finalcount[i] = ( unsigned char ) ((sha->count[(i >= 4 ? 0 : 1)]
+                                            >> ((3 - (i & 3)) * 8))
+                                           & 255);
     }
 
     sha1_block(p, &final_200, 1);
@@ -439,8 +439,8 @@ sha1_done(Sum_t *p)
 
     for (i = 0; i < elementsof(sha->digest); i++) {
         sha->digest[i]
-        = ( unsigned char )((sha->state[i >> 2] >> ((3 - (i & 3)) * 8))
-                            & 255);
+        = ( unsigned char ) ((sha->state[i >> 2] >> ((3 - (i & 3)) * 8))
+                             & 255);
         sha->digest_sum[i] ^= sha->digest[i];
     }
     memset(sha->count, 0, sizeof(sha->count));
@@ -452,7 +452,7 @@ sha1_done(Sum_t *p)
 static int
 sha1_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 {
-    Sha1_t *sha = ( Sha1_t * )p;
+    Sha1_t *sha = ( Sha1_t * ) p;
     unsigned char *d;
     int n;
 
@@ -465,7 +465,7 @@ sha1_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 static int
 sha1_data(Sum_t *p, Sumdata_t *data)
 {
-    Sha1_t *sha = ( Sha1_t * )p;
+    Sha1_t *sha = ( Sha1_t * ) p;
 
     data->size = elementsof(sha->digest);
     data->num = 0;

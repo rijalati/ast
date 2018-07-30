@@ -256,7 +256,7 @@ helpvar(FILE *fp, const struct var *vp)
         sfprintf(state.path.temp, T("Equivalent to %s."), vp->help);
         help = struse(state.path.temp);
     } else
-        help = ( char * )vp->help;
+        help = ( char * ) vp->help;
     margin(fp, vp->name, help, 14, 2, 0, vp);
 }
 
@@ -282,7 +282,7 @@ help(char **argv)
         || !(fp = pipeopen(state.var.pager, "w")))
         fp = stdout;
     s = *argv++;
-    a = s ? *argv : ( char * )0;
+    a = s ? *argv : ( char * ) 0;
     l = "commands";
     t = T(l);
     r = "--------";
@@ -298,16 +298,16 @@ help(char **argv)
         t = T(l);
         r = "---------";
         if (all && !(cp = 0)
-            || (cp = ( const struct cmd * )strpsearch(
+            || (cp = ( const struct cmd * ) strpsearch(
                 state.cmdtab, state.cmdnum, sizeof(struct cmd), s, NiL))
             || (streq(s, l) || streq(s, t)) && ++cat) {
-            if (!cp || a && cp->c_func == ( Cmd_f )set) {
+            if (!cp || a && cp->c_func == ( Cmd_f ) set) {
                 if (!cp && !cat || !a || isall(a)) {
                     fprintf(fp, "%s\n%s\n%s\n", r, t, r);
                     for (vp = state.vartab; vp < &state.vartab[state.varnum];
                          vp++)
                         helpvar(fp, vp);
-                } else if (vp = ( const struct var * )strsearch(
+                } else if (vp = ( const struct var * ) strsearch(
                            state.vartab,
                            state.varnum,
                            sizeof(struct var),
@@ -337,7 +337,7 @@ help(char **argv)
                     for (ep = state.esctab; ep < &state.esctab[state.escnum];
                          ep++)
                         helpesc(fp, ep);
-                } else if (ep = ( const struct esc * )strsearch(
+                } else if (ep = ( const struct esc * ) strsearch(
                            state.esctab,
                            state.escnum,
                            sizeof(struct esc),
@@ -617,8 +617,8 @@ size(struct msg *msgvec)
         note(0,
              "%d: %ld/%ld",
              mp->m_index,
-             ( long )mp->m_lines,
-             ( long )mp->m_size);
+             ( long ) mp->m_lines,
+             ( long ) mp->m_size);
     }
     return 0;
 }
@@ -705,8 +705,8 @@ listalias(Dt_t *dt, void *object, void *context)
 {
     struct list *mp;
 
-    printf("%-16s", (( struct name * )object)->name);
-    for (mp = ( struct list * )(( struct name * )object)->value; mp;
+    printf("%-16s", (( struct name * ) object)->name);
+    for (mp = ( struct list * ) (( struct name * ) object)->value; mp;
          mp = mp->next)
         printf(" %s", mp->name);
     putchar('\n');
@@ -767,8 +767,8 @@ alias1(char **argv, unsigned long flags)
                                       0, struct list, 1, strlen(t) + 1)))
                                     note(PANIC, "Out of space");
                                 strcpy(mp->name, t);
-                                mp->next = ( struct list * )ap->value;
-                                ap->value = ( void * )mp;
+                                mp->next = ( struct list * ) ap->value;
+                                ap->value = ( void * ) mp;
                             } while (*(t = v));
                         }
                     }
@@ -786,8 +786,8 @@ alias1(char **argv, unsigned long flags)
             if (!(mp = newof(0, struct list, 1, strlen(name) + 1)))
                 note(PANIC, "Out of space");
             strcpy(mp->name, name);
-            mp->next = ( struct list * )ap->value;
-            ap->value = ( void * )mp;
+            mp->next = ( struct list * ) ap->value;
+            ap->value = ( void * ) mp;
         }
     }
     return 0;
@@ -822,8 +822,8 @@ unalias(char **argv)
 static int
 listalternate(Dt_t *dt, void *object, void *context)
 {
-    if ((( struct name * )object)->flags & GALTERNATE)
-        printf("%s\n", (( struct name * )object)->name);
+    if ((( struct name * ) object)->flags & GALTERNATE)
+        printf("%s\n", (( struct name * ) object)->name);
     return 0;
 }
 
@@ -915,7 +915,7 @@ cmdif(char **argv)
         return 1;
     }
     s = argv[0];
-    t = (x = argv[1]) ? argv[2] : ( char * )0;
+    t = (x = argv[1]) ? argv[2] : ( char * ) 0;
     if (n = streq(s, "!")) {
         s = x;
         x = t;

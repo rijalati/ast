@@ -52,7 +52,7 @@ typedef struct Ast4_s
 static int
 ast4_init(Sum_t *p)
 {
-    Ast4_t *a = ( Ast4_t * )p;
+    Ast4_t *a = ( Ast4_t * ) p;
 
     a->tot.sum0 ^= a->cur.sum0;
     a->cur.sum0 = 0;
@@ -71,17 +71,17 @@ ast4_open(const Method_t *method, const char *name)
     Ast4_t *p;
 
     if (p = newof(0, Ast4_t, 1, 0)) {
-        p->method = ( Method_t * )method;
+        p->method = ( Method_t * ) method;
         p->name = name;
     }
-    return ( Sum_t * )p;
+    return ( Sum_t * ) p;
 }
 
 static int
 ast4_block(Sum_t *p, const void *s, size_t n)
 {
-    Ast4_sum_t *a = &(( Ast4_t * )p)->cur;
-    unsigned char *b = ( unsigned char * )s;
+    Ast4_sum_t *a = &(( Ast4_t * ) p)->cur;
+    unsigned char *b = ( unsigned char * ) s;
     unsigned char *e = b + n;
     int c;
 
@@ -100,7 +100,7 @@ ast4_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 {
     Ast4_sum_t *a;
 
-    a = (flags & SUM_TOTAL) ? &(( Ast4_t * )p)->tot : &(( Ast4_t * )p)->cur;
+    a = (flags & SUM_TOTAL) ? &(( Ast4_t * ) p)->tot : &(( Ast4_t * ) p)->cur;
     sfprintf(sp,
              "%06..64u%06..64u%06..64u%06..64u",
              a->sum0,
@@ -113,15 +113,15 @@ ast4_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 static int
 ast4_data(Sum_t *p, Sumdata_t *data)
 {
-    data->size = sizeof((( Ast4_t * )p)->cur);
+    data->size = sizeof((( Ast4_t * ) p)->cur);
     data->num = 0;
 #if _ast_intswap
     swapmem(_ast_intswap,
-            data->buf = (( Ast4_t * )p)->buf,
-            &(( Ast4_t * )p)->cur,
-            sizeof((( Ast4_t * )p)->cur));
+            data->buf = (( Ast4_t * ) p)->buf,
+            &(( Ast4_t * ) p)->cur,
+            sizeof((( Ast4_t * ) p)->cur));
 #else
-    data->buf = &(( Ast4_t * )p)->cur;
+    data->buf = &(( Ast4_t * ) p)->cur;
 #endif
     return 0;
 }

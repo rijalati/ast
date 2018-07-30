@@ -114,9 +114,9 @@ typedef struct _nl_
 } Nl_t;
 
 static const char letter_a, letter_t, letter_n;
-#define TYPE_ALL (( void * )(&letter_a))
-#define TYPE_NONE (( void * )(&letter_n))
-#define TYPE_TEXT (( void * )(&letter_t))
+#define TYPE_ALL (( void * ) (&letter_a))
+#define TYPE_NONE (( void * ) (&letter_n))
+#define TYPE_TEXT (( void * ) (&letter_t))
 
 
 #define SECTION_HEAD 0
@@ -184,7 +184,7 @@ donl(Nl_t *pp, Sfio_t *in, Sfio_t *out)
             }
         } else if (pp->section[sectnum] != TYPE_TEXT)
             outline = !regnexec(
-            ( regex_t * )pp->section[sectnum], cp, n, ( size_t )0, NULL, 0);
+            ( regex_t * ) pp->section[sectnum], cp, n, ( size_t ) 0, NULL, 0);
         else if (*cp != '\n')
             outline = 1;
         if (outline) {
@@ -206,7 +206,7 @@ b_nl(int argc, char **argv, Shbltin_t *context)
     Nl_t nl;
     regex_t re[3];
 
-    cmdinit(argc, argv, context, ( const char * )0, 0);
+    cmdinit(argc, argv, context, ( const char * ) 0, 0);
     nl.width = 6;
     nl.startnum = 1;
     nl.blines = 1;
@@ -290,12 +290,12 @@ b_nl(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     argc -= opt_info.index;
     if (argc > 1 || error_info.errors)
-        error(ERROR_usage(2), "%s", optusage(( char * )0));
-    if (*argv && !(in = sfopen(( Sfio_t * )0, *argv, "r")))
+        error(ERROR_usage(2), "%s", optusage(( char * ) 0));
+    if (*argv && !(in = sfopen(( Sfio_t * ) 0, *argv, "r")))
         error(ERROR_system(1), "%s: cannot open for reading", *argv);
     n = donl(&nl, in, sfstdout);
     for (m = 0; m < 3; m++) {
-        if (nl.section[m] == ( void * )&re[m])
+        if (nl.section[m] == ( void * ) &re[m])
             regfree(&re[m]);
     }
     return (n ? 1 : 0);

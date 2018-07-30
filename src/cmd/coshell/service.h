@@ -99,7 +99,7 @@
 #define ACCESS_SEARCH (60 * 60)         /* CS_SVC_ACCESS search	*/
 #define ACCESS_UPDATE (10 * 60)         /* CS_SVC_ACCESS update	*/
 #define BIAS 100                        /* default bias		*/
-#define BUSY (( UPDATE )*2)             /* default max busy	*/
+#define BUSY (( UPDATE ) *2)            /* default max busy	*/
 #define CHUNK 1024                      /* allocation chunk	*/
 #define ERRORS 8                        /* max csstat() errors	*/
 #define FORGET (5 * LOST)               /* forget lost shell	*/

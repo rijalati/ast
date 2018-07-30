@@ -169,11 +169,11 @@ getids(char *s, char **e, Key_t *key, int options)
         options |= OPT_CHOWN;
         if ((n = t++ - s) >= sizeof(buf))
             n = sizeof(buf) - 1;
-        *((s = ( char * )memcpy(buf, s, n)) + n) = 0;
+        *((s = ( char * ) memcpy(buf, s, n)) + n) = 0;
     }
     if (options & OPT_CHOWN) {
         if (*s) {
-            n = ( int )strtol(s, &z, 0);
+            n = ( int ) strtol(s, &z, 0);
             if (*z || !(options & OPT_NUMERIC)) {
                 if ((m = struid(s)) != NOID)
                     n = m;
@@ -187,11 +187,11 @@ getids(char *s, char **e, Key_t *key, int options)
         if (n) {
             if ((n = t++ - s) >= sizeof(buf))
                 n = sizeof(buf) - 1;
-            *((s = ( char * )memcpy(buf, s, n)) + n) = 0;
+            *((s = ( char * ) memcpy(buf, s, n)) + n) = 0;
         }
     }
     if (*s) {
-        n = ( int )strtol(s, &z, 0);
+        n = ( int ) strtol(s, &z, 0);
         if (*z || !(options & OPT_NUMERIC)) {
             if ((m = strgid(s)) != NOID)
                 n = m;
@@ -343,8 +343,8 @@ b_chgrp(int argc, char **argv, Shbltin_t *context)
             error(ERROR_exit(1), "%s: cannot read", s);
         while (s = sfgetr(sp, '\n', 1)) {
             getids(s, &t, &key, options);
-            if (!(m = ( Map_t * )dtmatch(map, &key))) {
-                if (!(m = ( Map_t * )stakalloc(sizeof(Map_t))))
+            if (!(m = ( Map_t * ) dtmatch(map, &key))) {
+                if (!(m = ( Map_t * ) stakalloc(sizeof(Map_t))))
                     error(ERROR_exit(1), "out of space [id dictionary]");
                 m->key = key;
                 m->to.uid = m->to.gid = NOID;
@@ -403,7 +403,7 @@ b_chgrp(int argc, char **argv, Shbltin_t *context)
             chownf = chown;
             op = "chown";
         commit:
-            if (( unsigned long )ent->fts_statp->st_ctime >= before)
+            if (( unsigned long ) ent->fts_statp->st_ctime >= before)
                 break;
             if (map) {
                 options &= ~(OPT_UID | OPT_GID);
@@ -412,7 +412,7 @@ b_chgrp(int argc, char **argv, Shbltin_t *context)
                 keys[0].gid = keys[2].gid = ent->fts_statp->st_gid;
                 i = 0;
                 do {
-                    if (m = ( Map_t * )dtmatch(map, &keys[i])) {
+                    if (m = ( Map_t * ) dtmatch(map, &keys[i])) {
                         if (uid == NOID && m->to.uid != NOID) {
                             uid = m->to.uid;
                             options |= OPT_UID;

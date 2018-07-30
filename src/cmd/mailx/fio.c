@@ -133,7 +133,7 @@ setptr(FILE *ibuf, off_t offset)
          * If any messages have been edited, this will be
          * different from the offset into the mail file.
          */
-        fseek(state.msg.op, ( off_t )0, SEEK_END);
+        fseek(state.msg.op, ( off_t ) 0, SEEK_END);
         offset = ftell(state.msg.op);
     } else
         state.msg.count = 0;
@@ -161,7 +161,7 @@ setptr(FILE *ibuf, off_t offset)
                      "%d nul%s at offset %lld",
                      count,
                      count == 1 ? "" : "s",
-                     ( Sflong_t )roff);
+                     ( Sflong_t ) roff);
             count = cp2 - cp;
         } else if (count >= 2 && cp[count - 1] == '\n'
                    && cp[count - 2] == '\r') {
@@ -303,7 +303,7 @@ mhgetcontext(struct mhcontext *xp, const char *name, int next)
         }
     }
     if (next
-        && (fts = fts_open(( char ** )name,
+        && (fts = fts_open(( char ** ) name,
                            FTS_ONEPATH | FTS_NOCHDIR | FTS_NOPOSTORDER,
                            dirmax))) {
         while (ent = fts_read(fts)) {
@@ -375,7 +375,7 @@ mh_setptr(char *name, int isedit)
     FILE *fp;
     char buf[LINESIZE];
 
-    if (!(fts = fts_open(( char ** )name,
+    if (!(fts = fts_open(( char ** ) name,
                          FTS_ONEPATH | FTS_NOCHDIR | FTS_NOPOSTORDER,
                          dircmp))) {
         note(SYSTEM, "%s", name);
@@ -741,7 +741,7 @@ moreout(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *dp)
     if (!state.more.col)
         return sfwr(fp, buf, n, dp);
     w = 0;
-    b = ( char * )buf;
+    b = ( char * ) buf;
     s = b;
     e = s + n;
     if (state.more.match) {
@@ -756,7 +756,7 @@ moreout(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *dp)
                 break;
         }
         s = b;
-        w += b - ( char * )buf;
+        w += b - ( char * ) buf;
         state.more.match = 0;
     }
     while (s < e) {

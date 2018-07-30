@@ -38,7 +38,7 @@ static const char id[] = "\n@(#)$Id: sumlib (AT&T Research) 2013-09-25 $\0\n";
 #include <sum.h>
 #include <swap.h>
 
-#define SCALE(n, m) (((n) + ( m )-1) / (m))
+#define SCALE(n, m) (((n) + ( m ) -1) / (m))
 
 typedef struct Method_s
 {
@@ -83,23 +83,23 @@ long_open(const Method_t *method, const char *name)
     Integral_t *p;
 
     if (p = newof(0, Integral_t, 1, 0)) {
-        p->method = ( Method_t * )method;
+        p->method = ( Method_t * ) method;
         p->name = name;
     }
-    return ( Sum_t * )p;
+    return ( Sum_t * ) p;
 }
 
 static int
 long_init(Sum_t *p)
 {
-    (( Integral_t * )p)->sum = 0;
+    (( Integral_t * ) p)->sum = 0;
     return 0;
 }
 
 static int
 long_done(Sum_t *p)
 {
-    Integral_t *x = ( Integral_t * )p;
+    Integral_t *x = ( Integral_t * ) p;
 
     x->total_sum ^= (x->sum &= 0xffffffff);
     return 0;
@@ -108,7 +108,7 @@ long_done(Sum_t *p)
 static int
 short_done(Sum_t *p)
 {
-    Integral_t *x = ( Integral_t * )p;
+    Integral_t *x = ( Integral_t * ) p;
 
     x->total_sum ^= (x->sum &= 0xffff);
     return 0;
@@ -117,7 +117,7 @@ short_done(Sum_t *p)
 static int
 long_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 {
-    Integral_t *x = ( Integral_t * )p;
+    Integral_t *x = ( Integral_t * ) p;
     uint32_t c;
     uintmax_t z;
     size_t n;
@@ -142,7 +142,7 @@ long_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 static int
 long_data(Sum_t *p, Sumdata_t *data)
 {
-    Integral_t *x = ( Integral_t * )p;
+    Integral_t *x = ( Integral_t * ) p;
 
     data->size = sizeof(data->num);
     data->num = x->sum;

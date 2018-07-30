@@ -45,7 +45,7 @@ Sfdisc_t *disc;
 
     GETLOCAL(f, local);
     if (!local && !(f->bits & SF_DCDOWN)) {
-        if ((mode = f->mode & SF_RDWR) != ( int )f->mode
+        if ((mode = f->mode & SF_RDWR) != ( int ) f->mode
             && _sfmode(f, mode, 0) < 0)
             SFMTXRETURN(f, (Sfoff_t)(-1));
         if (SFSYNC(f) < 0)
@@ -67,7 +67,7 @@ Sfdisc_t *disc;
         if (f->flags & SF_STRING) {
             SFSTRSIZE(f);
             if (type == SEEK_SET)
-                s = ( ssize_t )addr;
+                s = ( ssize_t ) addr;
             else if (type == SEEK_CUR)
                 s = (ssize_t)(addr + f->here);
             else
@@ -77,7 +77,7 @@ Sfdisc_t *disc;
             if (dc && dc->seekf) {
                 SFDCSK(f, addr, type, dc, p);
             } else {
-                p = syslseekf(f->file, ( sfoff_t )addr, type);
+                p = syslseekf(f->file, ( sfoff_t ) addr, type);
             }
             if (p >= 0)
                 SFMTXRETURN(f, p);
@@ -90,7 +90,7 @@ Sfdisc_t *disc;
         case SF_EDISC:
         case SF_ECONT:
             if (f->flags & SF_STRING)
-                SFMTXRETURN(f, ( Sfoff_t )s);
+                SFMTXRETURN(f, ( Sfoff_t ) s);
             goto do_continue;
         default:
             SFMTXRETURN(f, (Sfoff_t)(-1));

@@ -111,7 +111,7 @@ edit1(struct msg *msgvec, int type)
             setinput(mp), mp->m_size, NiL, type, state.readonly)) {
             if (!state.msg.op)
                 settmp(NiL, 0);
-            fseek(state.msg.op, ( off_t )0, SEEK_END);
+            fseek(state.msg.op, ( off_t ) 0, SEEK_END);
             size = ftell(state.msg.op);
             mp->m_block = blocknumber(size);
             mp->m_offset = blockoffset(size);
@@ -122,7 +122,7 @@ edit1(struct msg *msgvec, int type)
                      state.tmp.dir,
                      state.msg.op,
                      NiL,
-                     ( off_t )0,
+                     ( off_t ) 0,
                      &mp->m_lines,
                      &mp->m_size,
                      0);
@@ -218,7 +218,7 @@ run_editor(FILE *fp, off_t size, struct header *hp, int type, int readonly)
         if (!(ep = fileopen(state.tmp.edit, "EMa+")))
             goto ret1;
         filecopy(
-        NiL, pp.fp, state.tmp.edit, ep, NiL, ( off_t )0, NiL, NiL, 0);
+        NiL, pp.fp, state.tmp.edit, ep, NiL, ( off_t ) 0, NiL, NiL, 0);
         fileclose(pp.fp);
     }
     /*
@@ -234,7 +234,7 @@ run_editor(FILE *fp, off_t size, struct header *hp, int type, int readonly)
      * is too full, reads should continue to work and I see no reason
      * to discard the user's work.
      */
-    if (fseek(ep, ( off_t )-2, SEEK_END) < 0)
+    if (fseek(ep, ( off_t ) -2, SEEK_END) < 0)
         return ep;
     lc = getc(ep) == '\n' ? 1 : 0;
     if (getc(ep) == '\n')

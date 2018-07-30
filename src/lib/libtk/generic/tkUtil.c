@@ -111,7 +111,7 @@ int *intPtr;        /* Filled in with number of pages
                              " ",
                              argv[1],
                              " moveto fraction\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TK_SCROLL_ERROR;
         }
         if (Tcl_GetDouble(interp, argv[3], dblPtr) != TCL_OK) {
@@ -126,7 +126,7 @@ int *intPtr;        /* Filled in with number of pages
                              " ",
                              argv[1],
                              " scroll number units|pages\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TK_SCROLL_ERROR;
         }
         if (Tcl_GetInt(interp, argv[3], intPtr) != TCL_OK) {
@@ -143,7 +143,7 @@ int *intPtr;        /* Filled in with number of pages
                              "bad argument \"",
                              argv[4],
                              "\": must be units or pages",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TK_SCROLL_ERROR;
         }
     }
@@ -151,7 +151,7 @@ int *intPtr;        /* Filled in with number of pages
                      "unknown option \"",
                      argv[2],
                      "\": must be moveto or scroll",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TK_SCROLL_ERROR;
 }
 
@@ -233,9 +233,9 @@ CONST char *strKey;       /* String to try to find in lookup table. */
                          strKey,
                          "\": must be ",
                          mPtr->strKey,
-                         ( char * )NULL);
+                         ( char * ) NULL);
         for (mPtr++; mPtr->strKey != NULL; mPtr++) {
-            Tcl_AppendResult(interp, ", ", mPtr->strKey, ( char * )NULL);
+            Tcl_AppendResult(interp, ", ", mPtr->strKey, ( char * ) NULL);
         }
     }
     return mPtr->numKey;

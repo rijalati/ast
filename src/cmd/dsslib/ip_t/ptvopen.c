@@ -42,7 +42,7 @@ typedef struct Prefixdisc_s
 static int
 byprefix(Dt_t *dt, Ptvprefix_t *a, Ptvprefix_t *b, Dtdisc_t *disc)
 {
-    Prefixdisc_t *p = ( Prefixdisc_t * )disc;
+    Prefixdisc_t *p = ( Prefixdisc_t * ) disc;
 
     NoP(dt);
     NoP(disc);
@@ -57,11 +57,11 @@ byprefix(Dt_t *dt, Ptvprefix_t *a, Ptvprefix_t *b, Dtdisc_t *disc)
 static void *
 makef(Dt_t *dt, Ptvprefix_t *a, Dtdisc_t *disc)
 {
-    Prefixdisc_t *p = ( Prefixdisc_t * )disc;
+    Prefixdisc_t *p = ( Prefixdisc_t * ) disc;
     Ptvprefix_t *b;
 
     if (b = oldof(0, Ptvprefix_t, 1, 2 * p->size)) {
-        fvcpy(p->size, b->min = ( unsigned char * )(b + 1), a->min);
+        fvcpy(p->size, b->min = ( unsigned char * ) (b + 1), a->min);
         fvcpy(p->size, b->max = b->min + p->size, a->max);
     }
     return b;
@@ -90,11 +90,11 @@ ptvopen(Ptvdisc_t *disc, int size)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
     }
-    p = ( Prefixdisc_t * )(a + 1);
+    p = ( Prefixdisc_t * ) (a + 1);
     p->dtdisc.link = offsetof(Ptvprefix_t, link);
-    p->dtdisc.comparf = ( Dtcompar_f )byprefix;
-    p->dtdisc.makef = ( Dtmake_f )makef;
-    p->dtdisc.freef = ( Dtfree_f )freef;
+    p->dtdisc.comparf = ( Dtcompar_f ) byprefix;
+    p->dtdisc.makef = ( Dtmake_f ) makef;
+    p->dtdisc.freef = ( Dtfree_f ) freef;
     p->size = size;
     if (!(a->dict = dtopen(&p->dtdisc, Dtoset))) {
         if (disc->errorf)
@@ -104,7 +104,7 @@ ptvopen(Ptvdisc_t *disc, int size)
     }
     a->disc = disc;
     a->size = size;
-    a->r[0] = ( unsigned char * )(p + 1);
+    a->r[0] = ( unsigned char * ) (p + 1);
     for (i = 1; i < PTV_REGISTERS; i++)
         a->r[i] = a->r[i - 1] + a->size;
     return a;
@@ -143,8 +143,8 @@ ptvinsert(Ptv_t *tab, Ptvaddr_t min, Ptvaddr_t max)
         key.min = key.max = tab->r[3];
     } else
         key.min = key.max = min;
-    if (!(xp = ( Ptvprefix_t * )dtsearch(tab->dict, &key)))
-        xp = ( Ptvprefix_t * )dtnext(tab->dict, &key);
+    if (!(xp = ( Ptvprefix_t * ) dtsearch(tab->dict, &key)))
+        xp = ( Ptvprefix_t * ) dtnext(tab->dict, &key);
     key.min = min;
     key.max = max;
     pp = 0;
@@ -162,7 +162,7 @@ ptvinsert(Ptv_t *tab, Ptvaddr_t min, Ptvaddr_t max)
             do {
                 max = xp->max;
                 pp = xp;
-                xp = ( Ptvprefix_t * )dtnext(tab->dict, xp);
+                xp = ( Ptvprefix_t * ) dtnext(tab->dict, xp);
                 dtdelete(tab->dict, pp);
                 if (!xp)
                     break;
@@ -172,7 +172,7 @@ ptvinsert(Ptv_t *tab, Ptvaddr_t min, Ptvaddr_t max)
                 key.max = max;
         }
     }
-    return ( Ptvprefix_t * )dtinsert(tab->dict, &key);
+    return ( Ptvprefix_t * ) dtinsert(tab->dict, &key);
 }
 
 /*
@@ -190,7 +190,7 @@ ptvdelete(Ptv_t *tab, Ptvaddr_t min, Ptvaddr_t max)
     tab->entries++;
     key.min = min;
     key.max = max;
-    if (xp = ( Ptvprefix_t * )dtsearch(tab->dict, &key)) {
+    if (xp = ( Ptvprefix_t * ) dtsearch(tab->dict, &key)) {
         fvset(tab->size, tab->r[1], 1);
         do {
             cur.min = xp->min;
@@ -216,7 +216,7 @@ ptvdelete(Ptv_t *tab, Ptvaddr_t min, Ptvaddr_t max)
                 if (!dtinsert(tab->dict, xp))
                     goto bad;
             }
-        } while (xp = ( Ptvprefix_t * )dtnext(tab->dict, xp));
+        } while (xp = ( Ptvprefix_t * ) dtnext(tab->dict, xp));
     }
     return 0;
 bad:

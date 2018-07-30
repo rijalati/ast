@@ -119,7 +119,7 @@ main(int argc, char *argv[])
         }
     argv += opt_info.index;
     if (error_info.errors || !*argv)
-        error(ERROR_usage(2), "%s", optusage(( char * )0));
+        error(ERROR_usage(2), "%s", optusage(( char * ) 0));
 
     while (infile = *argv++) {
         if (*infile == '-') {
@@ -134,12 +134,12 @@ main(int argc, char *argv[])
             }
         }
         nfile++;
-        fpin = fpout = ( Sfio_t * )0;
-        hp = ( Huff_t * )0;
+        fpin = fpout = ( Sfio_t * ) 0;
+        hp = ( Huff_t * ) 0;
         deleted = 0;
         if (!(outfile = outname(infile)))
             continue;
-        if (!(fpin = sfopen(( Sfio_t * )0, infile, "r")))
+        if (!(fpin = sfopen(( Sfio_t * ) 0, infile, "r")))
             error(ERROR_system(0), "%s: cannot open", infile);
         else if (fstat(sffileno(fpin), &statb) < 0)
             error(ERROR_system(0), "%s: cannot stat", infile);
@@ -155,8 +155,9 @@ main(int argc, char *argv[])
                               O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,
                               PERM(statb.st_mode)))
                   < 0)
-                 || !(fpout = sfnew(
-                      ( Sfio_t * )0, ( char * )0, SF_UNBOUND, out, SF_WRITE)))
+                 || !(
+                    fpout = sfnew(
+                    ( Sfio_t * ) 0, ( char * ) 0, SF_UNBOUND, out, SF_WRITE)))
             error(ERROR_system(0), "%s: cannot create", outfile);
         else if ((deleted++, chmod(outfile, statb.st_mode)) < 0)
             error(ERROR_system(0),
@@ -165,9 +166,9 @@ main(int argc, char *argv[])
                   statb.st_mode);
         else {
             chown(outfile, statb.st_uid, statb.st_gid);
-            if (!(hp = huffinit(fpin, ( Sfoff_t )-1)))
+            if (!(hp = huffinit(fpin, ( Sfoff_t ) -1)))
                 error(2, "%s: read error", infile);
-            else if (sfseek(fpin, ( Sfoff_t )0, 0) < 0)
+            else if (sfseek(fpin, ( Sfoff_t ) 0, 0) < 0)
                 error(ERROR_system(0), "%s: seek error", infile);
             else if ((dsize = huffputhdr(hp, fpout)) < 0)
                 error(2, "%s: write error", infile);
@@ -185,7 +186,7 @@ main(int argc, char *argv[])
                          "%s: %s : %.1f%% Compression\n",
                          command,
                          infile,
-                         (100 * diff) / (( double )huffisize(hp)));
+                         (100 * diff) / (( double ) huffisize(hp)));
                 if (verbose)
                     vprint(hp, dsize);
                 npack++;
@@ -218,9 +219,9 @@ outname(char *infile)
     char *cp;
     if (streq(suffix, infile + n - sufflen)) {
         error(ERROR_exit(1), "%s: already packed", infile);
-        return (( char * )0);
+        return (( char * ) 0);
     }
-    if (cp = ( char * )malloc(n + sufflen + 1)) {
+    if (cp = ( char * ) malloc(n + sufflen + 1)) {
         strcpy(cp, infile);
         strcat(cp + n, suffix);
     }
@@ -238,10 +239,10 @@ vprint(Huff_t *hp, int dsize)
     sfprintf(sfstdout, "	dictionary overhead = %ld bytes\n", dsize);
     sfprintf(sfstdout,
              "	effective  entropy  = %.2f bits/byte\n",
-             (( double )(huffosize(hp)) / ( double )huffisize(hp))
+             (( double ) (huffosize(hp)) / ( double ) huffisize(hp))
              * CHAR_BIT);
     sfprintf(sfstdout,
              "	asymptotic entropy  = %.2f bits/byte\n",
-             (( double )(huffosize(hp) - dsize) / ( double )huffisize(hp))
+             (( double ) (huffosize(hp) - dsize) / ( double ) huffisize(hp))
              * CHAR_BIT);
 }

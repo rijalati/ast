@@ -40,7 +40,7 @@ vswscanf(const wchar_t *s, const wchar_t *fmt, va_list args)
     f.bits = SF_PRIVATE;
     f.mode = SF_READ;
     f.size = wcslen(s) * sizeof(wchar_t);
-    f.data = f.next = f.endw = ( uchar * )s;
+    f.data = f.next = f.endw = ( uchar * ) s;
     f.endb = f.endr = f.data + f.size;
 
     /*

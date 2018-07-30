@@ -35,13 +35,13 @@ ptvintersect(Ptv_t *a, Ptv_t *b)
 
     if (!(t = ptvopen(a->disc, a->size)))
         return 0;
-    ap = ( Ptvprefix_t * )dtfirst(a->dict);
-    bp = ( Ptvprefix_t * )dtfirst(b->dict);
+    ap = ( Ptvprefix_t * ) dtfirst(a->dict);
+    bp = ( Ptvprefix_t * ) dtfirst(b->dict);
     while (ap && bp) {
         if (fvcmp(a->size, ap->max, bp->min) < 0)
-            ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
+            ap = ( Ptvprefix_t * ) dtnext(a->dict, ap);
         else if (fvcmp(a->size, ap->min, bp->max) > 0)
-            bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
+            bp = ( Ptvprefix_t * ) dtnext(b->dict, bp);
         else {
             if (!ptvinsert(
                 t,
@@ -49,12 +49,12 @@ ptvintersect(Ptv_t *a, Ptv_t *b)
                 fvcmp(a->size, ap->max, bp->max) < 0 ? ap->max : bp->max))
                 break;
             if (fvcmp(a->size, ap->max, bp->max) < 0)
-                ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
+                ap = ( Ptvprefix_t * ) dtnext(a->dict, ap);
             else if (fvcmp(a->size, ap->max, bp->max) > 0)
-                bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
+                bp = ( Ptvprefix_t * ) dtnext(b->dict, bp);
             else {
-                ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
-                bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
+                ap = ( Ptvprefix_t * ) dtnext(a->dict, ap);
+                bp = ( Ptvprefix_t * ) dtnext(b->dict, bp);
             }
         }
     }

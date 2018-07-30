@@ -63,9 +63,9 @@ int options;
     int result;
     pid_t real_pid;
 
-    real_pid = ( pid_t )pid;
+    real_pid = ( pid_t ) pid;
     while (1) {
-        result = ( int )waitpid(real_pid, statPtr, options);
+        result = ( int ) waitpid(real_pid, statPtr, options);
         if ((result != -1) || (errno != EINTR)) {
             return result;
         }
@@ -92,9 +92,9 @@ int options;
 /* ARGSUSED */
 static void FreeCurrentDir(clientData) ClientData clientData; /* Not used. */
 {
-    if (currentDir != ( char * )NULL) {
+    if (currentDir != ( char * ) NULL) {
         ckfree(currentDir);
-        currentDir = ( char * )NULL;
+        currentDir = ( char * ) NULL;
     }
 }
 
@@ -120,9 +120,9 @@ static void FreeCurrentDir(clientData) ClientData clientData; /* Not used. */
 static void FreeExecutableName(clientData) ClientData clientData; /* Not used.
                                                                    */
 {
-    if (tclExecutableName != ( char * )NULL) {
+    if (tclExecutableName != ( char * ) NULL) {
         ckfree(tclExecutableName);
-        tclExecutableName = ( char * )NULL;
+        tclExecutableName = ( char * ) NULL;
     }
 }
 
@@ -160,7 +160,7 @@ char *dirName; /* Path to new working directory. */
                              dirName,
                              "\": ",
                              Tcl_PosixError(interp),
-                             ( char * )NULL);
+                             ( char * ) NULL);
         }
         return TCL_ERROR;
     }
@@ -197,7 +197,7 @@ char *TclGetCwd(interp) Tcl_Interp *interp; /* If non NULL, used for error
     if (currentDir == NULL) {
         if (!currentDirExitHandlerSet) {
             currentDirExitHandlerSet = 1;
-            Tcl_CreateExitHandler(FreeCurrentDir, ( ClientData )NULL);
+            Tcl_CreateExitHandler(FreeCurrentDir, ( ClientData ) NULL);
         }
         if (getcwd(buffer, MAXPATHLEN + 1) == NULL) {
             if (interp != NULL) {
@@ -207,12 +207,12 @@ char *TclGetCwd(interp) Tcl_Interp *interp; /* If non NULL, used for error
                     Tcl_AppendResult(interp,
                                      "error getting working directory name: ",
                                      Tcl_PosixError(interp),
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                 }
             }
             return NULL;
         }
-        currentDir = ( char * )ckalloc(( unsigned )(strlen(buffer) + 1));
+        currentDir = ( char * ) ckalloc(( unsigned ) (strlen(buffer) + 1));
         strcpy(currentDir, buffer);
     }
     return currentDir;
@@ -244,7 +244,7 @@ int mode;                               /* In what mode to open the file? */
     fname, mode, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
     if (fd != -1) {
         fcntl(fd, F_SETFD, FD_CLOEXEC);
-        return Tcl_GetFile(( ClientData )fd, TCL_UNIX_FD);
+        return Tcl_GetFile(( ClientData ) fd, TCL_UNIX_FD);
     }
     return NULL;
 }
@@ -271,7 +271,7 @@ int TclCloseFile(file) Tcl_File file; /* The file to close. */
     int fd;
     int result;
 
-    fd = ( int )Tcl_GetFileInfo(file, &type);
+    fd = ( int ) Tcl_GetFileInfo(file, &type);
     if (type != TCL_UNIX_FD) {
         panic("Tcl_CloseFile: unexpected file type");
     }
@@ -317,12 +317,12 @@ int toRead;                            /* Number of characters to read. */
 {
     int type, fd;
 
-    fd = ( int )Tcl_GetFileInfo(file, &type);
+    fd = ( int ) Tcl_GetFileInfo(file, &type);
     if (type != TCL_UNIX_FD) {
         panic("Tcl_ReadFile: unexpected file type");
     }
 
-    return read(fd, buf, ( size_t )toRead);
+    return read(fd, buf, ( size_t ) toRead);
 }
 
 /*
@@ -352,11 +352,11 @@ int toWrite;                             /* Number of characters to write. */
 {
     int type, fd;
 
-    fd = ( int )Tcl_GetFileInfo(file, &type);
+    fd = ( int ) Tcl_GetFileInfo(file, &type);
     if (type != TCL_UNIX_FD) {
         panic("Tcl_WriteFile: unexpected file type");
     }
-    return write(fd, buf, ( size_t )toWrite);
+    return write(fd, buf, ( size_t ) toWrite);
 }
 
 /*
@@ -384,7 +384,7 @@ int whence; /* And from where to seek? */
 {
     int type, fd;
 
-    fd = ( int )Tcl_GetFileInfo(file, &type);
+    fd = ( int ) Tcl_GetFileInfo(file, &type);
     if (type != TCL_UNIX_FD) {
         panic("Tcl_SeekFile: unexpected file type");
     }
@@ -432,7 +432,7 @@ Tcl_DString *namePtr; /* If non-NULL, pointer to initialized
     unlink(fileName);
 
     if ((file != NULL) && (length > 0)) {
-        int fd = ( int )Tcl_GetFileInfo(file, NULL);
+        int fd = ( int ) Tcl_GetFileInfo(file, NULL);
         while (1) {
             if (write(fd, contents, length) != -1) {
                 break;
@@ -542,7 +542,8 @@ void Tcl_FindExecutable(argv0) char *argv0; /* The value of the application's
 
 gotName:
     if (name[0] == '/') {
-        tclExecutableName = ( char * )ckalloc(( unsigned )(strlen(name) + 1));
+        tclExecutableName
+        = ( char * ) ckalloc(( unsigned ) (strlen(name) + 1));
         strcpy(tclExecutableName, name);
         goto done;
     }
@@ -556,14 +557,14 @@ gotName:
     if ((name[0] == '.') && (name[1] == '/')) {
         name += 2;
     }
-    cwd = TclGetCwd(( Tcl_Interp * )NULL);
+    cwd = TclGetCwd(( Tcl_Interp * ) NULL);
     if (cwd == NULL) {
         tclExecutableName = NULL;
         goto done;
     }
     length = strlen(cwd);
     tclExecutableName
-    = ( char * )ckalloc(( unsigned )(length + strlen(name) + 2));
+    = ( char * ) ckalloc(( unsigned ) (length + strlen(name) + 2));
     strcpy(tclExecutableName, cwd);
     tclExecutableName[length] = '/';
     strcpy(tclExecutableName + length + 1, name);
@@ -573,7 +574,7 @@ done:
 
     if (!executableNameExitHandlerSet) {
         executableNameExitHandlerSet = 1;
-        Tcl_CreateExitHandler(FreeExecutableName, ( ClientData )NULL);
+        Tcl_CreateExitHandler(FreeExecutableName, ( ClientData ) NULL);
     }
 }
 

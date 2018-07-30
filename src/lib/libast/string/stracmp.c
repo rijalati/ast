@@ -47,8 +47,8 @@ stracmp(const char *aa, const char *ab)
 
     if (!(m = ccmap(CC_NATIVE, CC_ASCII)))
         return strcmp(aa, ab);
-    a = ( unsigned char * )aa;
-    b = ( unsigned char * )ab;
+    a = ( unsigned char * ) aa;
+    b = ( unsigned char * ) ab;
     for (;;) {
         c = m[*a++];
         if (d = c - m[*b++])

@@ -106,7 +106,7 @@ getlabstr(char *p, int byte, int width, char *s)
 static int
 getlabel(Pax_t *pax, Archive_t *ap, File_t *f)
 {
-    Slt_t *slt = ( Slt_t * )ap->data;
+    Slt_t *slt = ( Slt_t * ) ap->data;
     int c;
     int n;
 
@@ -116,7 +116,7 @@ getlabel(Pax_t *pax, Archive_t *ap, File_t *f)
     }
     if (slt->done
         || (c = paxread(
-            pax, ap, slt->buf, ( off_t )HDR_SIZE, ( off_t )LABEL_MAX, 0))
+            pax, ap, slt->buf, ( off_t ) HDR_SIZE, ( off_t ) LABEL_MAX, 0))
            < HDR_SIZE)
         return *slt->last = slt->done = c = 0;
     if (slt->buf[4] == 'V'
@@ -125,7 +125,7 @@ getlabel(Pax_t *pax, Archive_t *ap, File_t *f)
         if ((c = n - c) > 0) {
             if (ap->io->blocked
                 || paxread(
-                   pax, ap, slt->buf + HDR_SIZE, ( off_t )0, ( off_t )c, 1)
+                   pax, ap, slt->buf + HDR_SIZE, ( off_t ) 0, ( off_t ) c, 1)
                    != c) {
                 c = HDR_SIZE;
                 error(2,
@@ -158,7 +158,7 @@ getlabel(Pax_t *pax, Archive_t *ap, File_t *f)
 static void
 putlabels(Pax_t *pax, Archive_t *ap, File_t *f, char *type)
 {
-    Slt_t *slt = ( Slt_t * )ap->data;
+    Slt_t *slt = ( Slt_t * ) ap->data;
     struct tm *tm;
 
     switch (*type) {
@@ -284,7 +284,7 @@ slt_done(Pax_t *pax, Archive_t *ap)
 static int
 slt_getheader(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
 {
-    Slt_t *slt = ( Slt_t * )ap->data;
+    Slt_t *slt = ( Slt_t * ) ap->data;
     char *s;
     int i;
     off_t n;
@@ -387,7 +387,7 @@ again:
 static int
 slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
 {
-    Slt_t *slt = ( Slt_t * )ap->data;
+    Slt_t *slt = ( Slt_t * ) ap->data;
     off_t n;
     off_t size;
     int c;
@@ -412,17 +412,17 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
             n = paxread(pax,
                         ap,
                         state.tmp.buffer,
-                        ( off_t )0,
-                        ( off_t )state.buffersize,
+                        ( off_t ) 0,
+                        ( off_t ) state.buffersize,
                         0);
         else if ((m = f->st->st_size - size) <= 0)
             n = 0;
         else if (wfp) {
             if (m > state.buffersize)
                 m = state.buffersize;
-            n = paxread(pax, ap, state.tmp.buffer, ( off_t )0, m, 1);
+            n = paxread(pax, ap, state.tmp.buffer, ( off_t ) 0, m, 1);
         } else
-            n = paxread(pax, ap, NiL, ( off_t )0, m, 1);
+            n = paxread(pax, ap, NiL, ( off_t ) 0, m, 1);
         if (n < 0)
             break;
         if (n == 0) {
@@ -487,8 +487,8 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
             continue;
         }
         if (f->record.format == 'V') {
-            if ((k = (( unsigned char * )state.tmp.buffer)[0] << 8
-                     | (( unsigned char * )state.tmp.buffer)[1])
+            if ((k = (( unsigned char * ) state.tmp.buffer)[0] << 8
+                     | (( unsigned char * ) state.tmp.buffer)[1])
                 != n)
                 error(3,
                       "%s: invalid %s V format block descriptor [%d!=%d]",
@@ -556,8 +556,8 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
                 break;
             case 'V':
                 nl = !(state.tmp.buffer[i + 2] & 01);
-                k = (( unsigned char * )state.tmp.buffer)[i] << 8
-                    | (( unsigned char * )state.tmp.buffer)[i + 1];
+                k = (( unsigned char * ) state.tmp.buffer)[i] << 8
+                    | (( unsigned char * ) state.tmp.buffer)[i + 1];
                 j = i + 4;
                 break;
             }
@@ -648,7 +648,7 @@ slt_backup(Pax_t *pax, Archive_t *ap)
 static int
 slt_putprologue(Pax_t *pax, Archive_t *ap, int append)
 {
-    Slt_t *slt = ( Slt_t * )ap->data;
+    Slt_t *slt = ( Slt_t * ) ap->data;
 
     if (!ap->locked && slt->vol) {
         slt->vol = 0;
@@ -718,8 +718,8 @@ slt_putprologue(Pax_t *pax, Archive_t *ap, int append)
                   "              ",
                   ID,
                   ap->delta->compress ? TYPE_COMPRESS : TYPE_DELTA,
-                  (( Compress_format_t * )ap->delta->format)->variant,
-                  state.operation == OUT ? ( long )ap->size : ( long )0,
+                  (( Compress_format_t * ) ap->delta->format)->variant,
+                  state.operation == OUT ? ( long ) ap->size : ( long ) 0,
                   state.operation == OUT ? ap->checksum : 0L);
         paxwrite(pax, ap, slt->buf, HDR_SIZE);
     }
@@ -738,7 +738,7 @@ slt_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
 static int
 recordout(Pax_t *pax, Archive_t *ap, File_t *f, Sfio_t *fp)
 {
-    Slt_t *slt = ( Slt_t * )ap->data;
+    Slt_t *slt = ( Slt_t * ) ap->data;
     int c;
     char *p;
     char *recdat;
@@ -952,8 +952,8 @@ slt_putdata(Pax_t *pax, Archive_t *ap, File_t *f, int rfd)
                     } else if (paxread(pax,
                                        f->ap,
                                        state.tmp.buffer,
-                                       ( off_t )0,
-                                       ( off_t )m,
+                                       ( off_t ) 0,
+                                       ( off_t ) m,
                                        1)
                                <= 0)
                         n = -1;
@@ -1001,7 +1001,7 @@ slt_puttrailer(Pax_t *pax, Archive_t *ap, File_t *f)
 static off_t
 slt_putepilogue(Pax_t *pax, Archive_t *ap)
 {
-    Slt_t *slt = ( Slt_t * )ap->data;
+    Slt_t *slt = ( Slt_t * ) ap->data;
 
     if (!ap->locked) {
         ap->locked = 1;
@@ -1017,7 +1017,7 @@ slt_putepilogue(Pax_t *pax, Archive_t *ap)
 static int
 slt_validate(Pax_t *pax, Archive_t *ap, File_t *f)
 {
-    Slt_t *slt = ( Slt_t * )ap->data;
+    Slt_t *slt = ( Slt_t * ) ap->data;
     char *s;
 
     if (f->type != X_IFREG) {
@@ -1079,7 +1079,7 @@ ibm_getprologue(Pax_t *pax,
 
     if ((n = slt_getprologue(pax, fp, ap, f, buf, size)) > 0
         && state.record.charset) {
-        slt = ( Slt_t * )ap->data;
+        slt = ( Slt_t * ) ap->data;
         slt->mapin = state.map.e2n;
         slt->mapout = state.map.n2e;
     }

@@ -43,7 +43,7 @@ errorv(const char *id, int level, va_list ap)
         level &= ERROR_LEVEL;
     }
     a = va_arg(ap, char *);
-    if (level && ((s = error_info.id) || (s = ( char * )id))) {
+    if (level && ((s = error_info.id) || (s = ( char * ) id))) {
         if (!(flags & ERROR_USAGE))
             sfprintf(sfstderr, "%s: ", s);
         else if (strcmp(a, "%s"))
@@ -90,7 +90,7 @@ errorf(void *handle, void *discipline, int level, ...)
     va_list ap;
 
     va_start(ap, level);
-    errorv((discipline && handle) ? *(( char ** )handle) : ( char * )handle,
+    errorv((discipline && handle) ? *(( char ** ) handle) : ( char * ) handle,
            level,
            ap);
     va_end(ap);

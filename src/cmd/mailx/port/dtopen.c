@@ -81,7 +81,7 @@ Dt_t *dtopen(disc, meth) Dtdisc_t *disc;
 Dtmethod_t *meth;
 #endif
 {
-    Dt_t *dt = ( Dt_t * )Version; /* shut-up unuse warning */
+    Dt_t *dt = ( Dt_t * ) Version; /* shut-up unuse warning */
     reg int e;
     Dtdata_t *data;
 
@@ -89,7 +89,7 @@ Dtmethod_t *meth;
         return NIL(Dt_t *);
 
     /* allocate space for dictionary */
-    if (!(dt = ( Dt_t * )malloc(sizeof(Dt_t))))
+    if (!(dt = ( Dt_t * ) malloc(sizeof(Dt_t))))
         return NIL(Dt_t *);
 
     /* initialize all absolutely private data */
@@ -103,10 +103,10 @@ Dtmethod_t *meth;
     if (disc->eventf) { /* if this is a shared dictionary, get the shared data
                          */
         data = NIL(Dtdata_t *);
-        if ((e = (*disc->eventf)(dt, DT_OPEN, ( Void_t * )(&data), disc))
+        if ((e = (*disc->eventf)(dt, DT_OPEN, ( Void_t * ) (&data), disc))
             != 0) {
             if (e < 0 || !data || !(data->type & meth->type)) {
-                free(( Void_t * )dt);
+                free(( Void_t * ) dt);
                 return NIL(Dt_t *);
             } else
                 goto done;
@@ -115,9 +115,9 @@ Dtmethod_t *meth;
 
     /* allocate sharable data */
     data
-    = ( Dtdata_t * )(dt->memoryf)(dt, NIL(Void_t *), sizeof(Dtdata_t), disc);
+    = ( Dtdata_t * ) (dt->memoryf)(dt, NIL(Void_t *), sizeof(Dtdata_t), disc);
     if (!data) {
-        free(( Void_t * )dt);
+        free(( Void_t * ) dt);
         return NIL(Dt_t *);
     }
     data->type = meth->type;

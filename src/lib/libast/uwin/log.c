@@ -83,11 +83,11 @@ static char sccsid[] = "@(#)log.c	8.2 (Berkeley) 11/30/93";
 
 #    if defined(vax) || defined(tahoe)
 #        define _IEEE 0
-#        define TRUNC(x) x = ( double )( float )(x)
+#        define TRUNC(x) x = ( double ) ( float ) (x)
 #    else
 #        define _IEEE 1
-#        define endian (((*( int * )&one)) ? 1 : 0)
-#        define TRUNC(x) *((( int * )&x) + endian) &= 0xf8000000
+#        define endian (((*( int * ) &one)) ? 1 : 0)
+#        define TRUNC(x) *((( int * ) &x) + endian) &= 0xf8000000
 #        define infnan(x) 0.0
 #    endif
 
@@ -461,13 +461,13 @@ __log__D(x) double x;
     /* Argument reduction: 1 <= g < 2; x/2^m = g;	*/
     /* y = F*(1 + f/F) for |f| <= 2^-8		*/
 
-    m = ( int )logb(x);
+    m = ( int ) logb(x);
     g = ldexp(x, -m);
     if (_IEEE && m == -1022) {
-        j = ( int )logb(g), m += j;
+        j = ( int ) logb(g), m += j;
         g = ldexp(g, -j);
     }
-    j = ( int )(N * (g - 1) + .5);
+    j = ( int ) (N * (g - 1) + .5);
     F = (1.0 / N) * j + 1;
     f = g - F;
 

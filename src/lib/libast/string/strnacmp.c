@@ -42,8 +42,8 @@ strnacmp(const char *a, const char *b, size_t n)
 #    if CC_NATIVE == CC_ASCII
     return strncmp(a, b, n);
 #    else
-    unsigned char *ua = ( unsigned char * )a;
-    unsigned char *ub = ( unsigned char * )b;
+    unsigned char *ua = ( unsigned char * ) a;
+    unsigned char *ub = ( unsigned char * ) b;
     unsigned char *ue;
     unsigned char *m;
     int c;

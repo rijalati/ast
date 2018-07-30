@@ -64,7 +64,7 @@ asoactivecpu(void)
         }
 #ifdef _SC_NPROCESSORS_ONLN
         if (_AsoCpuCount <= 0)
-            _AsoCpuCount = ( int )sysconf(_SC_NPROCESSORS_ONLN);
+            _AsoCpuCount = ( int ) sysconf(_SC_NPROCESSORS_ONLN);
 #endif
         if (_AsoCpuCount <= 0)
             _AsoCpuCount = 1; /* there must be at least one CPU */

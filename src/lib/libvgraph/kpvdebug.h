@@ -4,7 +4,7 @@
 #ifdef DEBUG
 
 _BEGIN_EXTERNS_
-extern void abort _ARG_(( void ));
+extern void abort _ARG_(( void ) );
 _END_EXTERNS_
 #    ifndef __LINE__
 #        define __LINE__ 0
@@ -30,8 +30,8 @@ _getTime(void)
     double tm;
     struct rusage u;
     getrusage(RUSAGE_SELF, &u);
-    tm
-    = ( double )u.ru_utime.tv_sec + ( double )u.ru_utime.tv_usec / 1000000.0;
+    tm = ( double ) u.ru_utime.tv_sec
+         + ( double ) u.ru_utime.tv_usec / 1000000.0;
     return tm;
 }
 

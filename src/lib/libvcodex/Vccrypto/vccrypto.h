@@ -27,7 +27,7 @@
 ** Written by Kiem-Phong Vo.
 */
 
-typedef ssize_t(*Vcxpasskey_f) _ARG_(( char *, ssize_t, int ));
+typedef ssize_t(*Vcxpasskey_f) _ARG_(( char *, ssize_t, int ) );
 
 typedef struct _vcxmethod_s Vcxmethod_t;
 typedef struct _vcx_s Vcx_t;
@@ -35,11 +35,11 @@ typedef struct _vcx_s Vcx_t;
 struct _vcxmethod_s
 {
     ssize_t(*initf) _ARG_((Vcx_t *, Vcxmethod_t *, Vcchar_t *, ssize_t));
-    int(*stopf) _ARG_(( Vcx_t * ));
+    int(*stopf) _ARG_(( Vcx_t * ) );
     ssize_t(*encodef)
-    _ARG_(( Vcx_t *, const Void_t *, ssize_t, Vcchar_t ** ));
+    _ARG_(( Vcx_t *, const Void_t *, ssize_t, Vcchar_t ** ) );
     ssize_t(*decodef)
-    _ARG_(( Vcx_t *, const Void_t *, ssize_t, Vcchar_t ** ));
+    _ARG_(( Vcx_t *, const Void_t *, ssize_t, Vcchar_t ** ) );
 };
 
 struct _vcx_s

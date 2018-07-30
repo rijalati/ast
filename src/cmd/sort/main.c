@@ -348,7 +348,7 @@ verify(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
 {
     if (op == RS_VERIFY)
         error(
-        3, "disorder at record %lld", (Sflong_t)(( Rsobj_t * )data)->order);
+        3, "disorder at record %lld", (Sflong_t)(( Rsobj_t * ) data)->order);
     return 0;
 }
 
@@ -412,7 +412,7 @@ showlib(Sort_t *sp, Rskey_t *kp, const char *name, const char *style)
     if (style)
         sfsprintf(args = buf, sizeof(buf), "%s,%s", name, style);
     else
-        args = ( char * )name;
+        args = ( char * ) name;
     if (!rslib(sp->rec, kp, args, RS_IGNORE) && !style)
         sfprintf(sfstdout, "%s\t--library=%s,${style}\n", name, name);
 }
@@ -842,7 +842,7 @@ dumpkey(Rs_t *rs,
         size_t keylen,
         Rsdisc_t *disc)
 {
-    Sort_t *sp = ( Sort_t * )RSKEYDISC(disc);
+    Sort_t *sp = ( Sort_t * ) RSKEYDISC(disc);
     ssize_t n;
     int i;
     char buf[2];
@@ -941,7 +941,7 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
         for (;;) {
             if (fixed)
                 x += fixed - x % fixed;
-            if (sp->buf = ( char * )vmalign(Vmheap, x, key->alignsize))
+            if (sp->buf = ( char * ) vmalign(Vmheap, x, key->alignsize))
                 break;
             if ((x >>= 1) < INMIN)
                 error(ERROR_SYSTEM | 3, "out of space");
@@ -1058,13 +1058,13 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
                             ERROR_SYSTEM | 3,
                             "%s: record boundary seek error at offset %lld",
                             file,
-                            ( Sflong_t )offset + size);
-                        if (!(b = ( char * )sfreserve(ip, scan, 0)))
+                            ( Sflong_t ) offset + size);
+                        if (!(b = ( char * ) sfreserve(ip, scan, 0)))
                             error(
                             ERROR_SYSTEM | 3,
                             "%s: record boundary read error at offset %lld",
                             file,
-                            ( Sflong_t )offset + size);
+                            ( Sflong_t ) offset + size);
                         s = t = b + scan / 2 - 1;
                         while (*s++ != '\n') {
                             if (t < b) {
@@ -1073,20 +1073,20 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
                                     >= (total - scan))
                                     error(3,
                                           "%s: monster record at offset %lld",
-                                          ( Sflong_t )offset);
+                                          ( Sflong_t ) offset);
                                 if (sfseek(ip, offset + size, SEEK_SET)
                                     != (offset + size))
                                     error(ERROR_SYSTEM | 3,
                                           "%s: record boundary input seek "
                                           "error at %lld",
                                           file,
-                                          ( Sflong_t )offset + size);
-                                if (!(b = ( char * )sfreserve(ip, scan, 0)))
+                                          ( Sflong_t ) offset + size);
+                                if (!(b = ( char * ) sfreserve(ip, scan, 0)))
                                     error(
                                     ERROR_SYSTEM | 3,
                                     "%s: record boundary read error at %lld",
                                     file,
-                                    ( Sflong_t )offset + size);
+                                    ( Sflong_t ) offset + size);
                                 t = (s = b) + scan;
                                 do {
                                     if (s >= t)
@@ -1253,7 +1253,7 @@ flush(Sort_t *sp, size_t r)
          */
 
         if (!(fp = sp->files[sp->nfiles])) {
-            if (sp->child || !(fp = rstempwrite(sp->rec, ( Sfio_t * )0)))
+            if (sp->child || !(fp = rstempwrite(sp->rec, ( Sfio_t * ) 0)))
                 error(ERROR_SYSTEM | 3,
                       "cannot create intermediate sort file %d",
                       sp->nfiles);
@@ -1276,7 +1276,7 @@ flush(Sort_t *sp, size_t r)
          */
 
         if (sp->nfiles >= sp->xfiles) {
-            if (sp->child || !(fp = rstempwrite(sp->rec, ( Sfio_t * )0)))
+            if (sp->child || !(fp = rstempwrite(sp->rec, ( Sfio_t * ) 0)))
                 error(ERROR_SYSTEM | 3,
                       "cannot create intermediate merge file");
             if (sp->verbose)
@@ -1346,7 +1346,7 @@ input(Sort_t *sp, Sfio_t *ip, const char *name, int last)
      * loop on insize chunks
      */
 
-    error_info.file = ip == sfstdin ? ( char * )0 : ( char * )name;
+    error_info.file = ip == sfstdin ? ( char * ) 0 : ( char * ) name;
     m = -1;
     z = 0;
     if (sp->bufsize)
@@ -1378,12 +1378,12 @@ input(Sort_t *sp, Sfio_t *ip, const char *name, int last)
                     sfungetc(ip, c);
             }
         } else {
-            sp->buf = ( char * )sfreserve(ip, m, SF_LOCKR);
+            sp->buf = ( char * ) sfreserve(ip, m, SF_LOCKR);
             n = sfvalue(ip);
             if (!sp->buf) {
                 if (m < 0 && n < -m && z == sp->end) {
                     sfsetbuf(ip, NiL, z = 2 * sp->end);
-                    sp->buf = ( char * )sfreserve(ip, m, SF_LOCKR);
+                    sp->buf = ( char * ) sfreserve(ip, m, SF_LOCKR);
                     n = sfvalue(ip);
                     if (sp->verbose && n)
                         error(0,
@@ -1445,9 +1445,9 @@ input(Sort_t *sp, Sfio_t *ip, const char *name, int last)
                       "%s process %lld -> %lld",
                       error_info.id,
                       (Sflong_t)(sp->cur - r),
-                      ( Sflong_t )p);
+                      ( Sflong_t ) p);
             else
-                error(0, " %lld", ( Sflong_t )p);
+                error(0, " %lld", ( Sflong_t ) p);
         }
         if (sp->map) {
             if (sp->map > 2)
@@ -1506,7 +1506,7 @@ input(Sort_t *sp, Sfio_t *ip, const char *name, int last)
 static ssize_t
 partread(Sfio_t *fp, Void_t *buf, size_t size, Sfdisc_t *dp)
 {
-    Part_t *pp = ( Part_t * )dp;
+    Part_t *pp = ( Part_t * ) dp;
 
     if (pp->remain <= 0)
         return 0;
@@ -1523,7 +1523,7 @@ partread(Sfio_t *fp, Void_t *buf, size_t size, Sfdisc_t *dp)
 static Sfoff_t
 partseek(Sfio_t *fp, Sfoff_t lloffset, int op, Sfdisc_t *dp)
 {
-    Part_t *pp = ( Part_t * )dp;
+    Part_t *pp = ( Part_t * ) dp;
     off_t offset = lloffset;
 
     switch (op) {
@@ -1571,7 +1571,7 @@ jobs(Sort_t *sp)
               "%s %d processes %lld total",
               error_info.id,
               sp->key->nproc,
-              ( Sflong_t )sp->total);
+              ( Sflong_t ) sp->total);
     xp = sp->jobs + sp->key->nproc;
     if (sp->test & TEST_show) {
         for (jp = sp->jobs; jp < xp; jp++)
@@ -1579,16 +1579,16 @@ jobs(Sort_t *sp)
                   "%s#%d pos %12lld : len %10lld : buf %10lld : num %2d",
                   error_info.id,
                   jp - sp->jobs + 1,
-                  ( Sflong_t )jp->offset,
-                  ( Sflong_t )jp->size,
-                  ( Sflong_t )jp->chunk,
+                  ( Sflong_t ) jp->offset,
+                  ( Sflong_t ) jp->size,
+                  ( Sflong_t ) jp->chunk,
                   jp->intermediates);
         exit(0);
     }
     f = 0;
     for (jp = sp->jobs; jp < xp; jp++)
         for (i = 0; i < jp->intermediates; i++)
-            if (!(sp->files[f++] = rstempwrite(sp->rec, ( Sfio_t * )0)))
+            if (!(sp->files[f++] = rstempwrite(sp->rec, ( Sfio_t * ) 0)))
                 error(
                 ERROR_SYSTEM | 3, "cannot create intermediate file %d", i);
     part.disc.readf = partread;
@@ -1620,9 +1620,9 @@ jobs(Sort_t *sp)
                 error(0,
                       "%s pos %12lld : len %10lld : buf %10lld : num %2d",
                       error_info.id,
-                      ( Sflong_t )jp->offset,
-                      ( Sflong_t )jp->size,
-                      ( Sflong_t )jp->chunk,
+                      ( Sflong_t ) jp->offset,
+                      ( Sflong_t ) jp->size,
+                      ( Sflong_t ) jp->chunk,
                       jp->intermediates);
             exit(input(sp, ip, file, 0) < 0);
         }
@@ -1735,7 +1735,7 @@ main(int argc, char **argv)
     } else {
         merge = sort.key->merge && sort.key->input[0] && sort.key->input[1]
                 ? sort.key->input
-                : ( char ** )0;
+                : ( char ** ) 0;
         fp = 0;
         if (sort.jobs)
             jobs(&sort);

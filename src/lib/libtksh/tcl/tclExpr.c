@@ -291,37 +291,41 @@ typedef struct
 
 static BuiltinFunc funcTable[] = {
 #ifndef TCL_NO_MATH
-    { "acos", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )acos },
-    { "asin", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )asin },
-    { "atan", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )atan },
+    { "acos", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) acos },
+    { "asin", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) asin },
+    { "atan", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) atan },
     { "atan2",
       2,
       { TCL_DOUBLE, TCL_DOUBLE },
       ExprBinaryFunc,
-      ( ClientData )atan2 },
-    { "ceil", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )ceil },
-    { "cos", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )cos },
-    { "cosh", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )cosh },
-    { "exp", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )exp },
-    { "floor", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )floor },
+      ( ClientData ) atan2 },
+    { "ceil", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) ceil },
+    { "cos", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) cos },
+    { "cosh", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) cosh },
+    { "exp", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) exp },
+    { "floor", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) floor },
     { "fmod",
       2,
       { TCL_DOUBLE, TCL_DOUBLE },
       ExprBinaryFunc,
-      ( ClientData )fmod },
+      ( ClientData ) fmod },
     { "hypot",
       2,
       { TCL_DOUBLE, TCL_DOUBLE },
       ExprBinaryFunc,
-      ( ClientData )hypot },
-    { "log", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )log },
-    { "log10", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )log10 },
-    { "pow", 2, { TCL_DOUBLE, TCL_DOUBLE }, ExprBinaryFunc, ( ClientData )pow },
-    { "sin", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )sin },
-    { "sinh", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )sinh },
-    { "sqrt", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )sqrt },
-    { "tan", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )tan },
-    { "tanh", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData )tanh },
+      ( ClientData ) hypot },
+    { "log", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) log },
+    { "log10", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) log10 },
+    { "pow",
+      2,
+      { TCL_DOUBLE, TCL_DOUBLE },
+      ExprBinaryFunc,
+      ( ClientData ) pow },
+    { "sin", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) sin },
+    { "sinh", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) sinh },
+    { "sqrt", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) sqrt },
+    { "tan", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) tan },
+    { "tanh", 1, { TCL_DOUBLE }, ExprUnaryFunc, ( ClientData ) tanh },
 #endif
     { "abs", 1, { TCL_EITHER }, ExprAbsFunc, 0 },
     { "double", 1, { TCL_EITHER }, ExprDoubleFunc, 0 },
@@ -378,7 +382,7 @@ Value *valuePtr;    /* Where to store value information.
             }
             if (*p == '-') {
                 start = p + 1;
-                valuePtr->intValue = -(( int )strtoul(start, &term, 0));
+                valuePtr->intValue = -(( int ) strtoul(start, &term, 0));
             } else if (*p == '+') {
                 start = p + 1;
                 valuePtr->intValue = strtoul(start, &term, 0);
@@ -400,7 +404,7 @@ Value *valuePtr;    /* Where to store value information.
                                      "ARITH",
                                      "IOVERFLOW",
                                      interp->result,
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 } else {
                     return TCL_OK;
@@ -503,7 +507,7 @@ Value *valuePtr;   /* Where to store value, if that is
             if (errno == ERANGE) {
                 interp->result = "integer value too large to represent";
                 Tcl_SetErrorCode(
-                interp, "ARITH", "IOVERFLOW", interp->result, ( char * )NULL);
+                interp, "ARITH", "IOVERFLOW", interp->result, ( char * ) NULL);
                 return TCL_ERROR;
             }
             infoPtr->token = VALUE;
@@ -541,7 +545,7 @@ Value *valuePtr;   /* Where to store value, if that is
             return TCL_ERROR;
         }
         Tcl_ResetResult(interp);
-        if ((( Interp * )interp)->noEval) {
+        if ((( Interp * ) interp)->noEval) {
             valuePtr->type = TYPE_INT;
             valuePtr->intValue = 0;
             return TCL_OK;
@@ -550,14 +554,14 @@ Value *valuePtr;   /* Where to store value, if that is
 
     case '[':
         infoPtr->token = VALUE;
-        (( Interp * )interp)->evalFlags = TCL_BRACKET_TERM;
+        (( Interp * ) interp)->evalFlags = TCL_BRACKET_TERM;
         result = Tcl_Eval(interp, p + 1);
-        infoPtr->expr = (( Interp * )interp)->termPtr;
+        infoPtr->expr = (( Interp * ) interp)->termPtr;
         if (result != TCL_OK) {
             return result;
         }
         infoPtr->expr++;
-        if ((( Interp * )interp)->noEval) {
+        if ((( Interp * ) interp)->noEval) {
             valuePtr->type = TYPE_INT;
             valuePtr->intValue = 0;
             Tcl_ResetResult(interp);
@@ -752,7 +756,7 @@ Value *valuePtr;    /* Where to store the value of the
                      * expression.   Caller must have
                      * initialized pv field. */
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     Value value2; /* Second operand for current
                    * operator.  */
     int operator; /* Current operator (either unary
@@ -774,7 +778,7 @@ Value *valuePtr;    /* Where to store the value of the
     value2.pv.buffer = value2.pv.next = value2.staticSpace;
     value2.pv.end = value2.pv.buffer + STATIC_STRING_SPACE - 1;
     value2.pv.expandProc = TclExpandParseValue;
-    value2.pv.clientData = ( ClientData )NULL;
+    value2.pv.clientData = ( ClientData ) NULL;
     result = ExprLex(interp, infoPtr, valuePtr);
     if (result != TCL_OK) {
         goto done;
@@ -794,7 +798,7 @@ Value *valuePtr;    /* Where to store the value of the
                              "unmatched parentheses in expression \"",
                              infoPtr->originalExpr,
                              "\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             result = TCL_ERROR;
             goto done;
         }
@@ -1144,7 +1148,7 @@ Value *valuePtr;    /* Where to store the value of the
             divideByZero:
                 interp->result = "divide by zero";
                 Tcl_SetErrorCode(
-                interp, "ARITH", "DIVZERO", interp->result, ( char * )NULL);
+                interp, "ARITH", "DIVZERO", interp->result, ( char * ) NULL);
                 result = TCL_ERROR;
                 goto done;
             }
@@ -1326,7 +1330,7 @@ syntaxError:
                      "syntax error in expression \"",
                      infoPtr->originalExpr,
                      "\"",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     result = TCL_ERROR;
     goto done;
 
@@ -1415,10 +1419,10 @@ Value *valuePtr;    /* Where to store result.  Should
      * evaluated.
      */
 
-    if (!((( Interp * )interp)->flags & EXPR_INITIALIZED)) {
+    if (!((( Interp * ) interp)->flags & EXPR_INITIALIZED)) {
         BuiltinFunc *funcPtr;
 
-        (( Interp * )interp)->flags |= EXPR_INITIALIZED;
+        (( Interp * ) interp)->flags |= EXPR_INITIALIZED;
         for (funcPtr = funcTable; funcPtr->name != NULL; funcPtr++) {
             Tcl_CreateMathFunc(interp,
                                funcPtr->name,
@@ -1434,15 +1438,18 @@ Value *valuePtr;    /* Where to store result.  Should
     valuePtr->pv.buffer = valuePtr->pv.next = valuePtr->staticSpace;
     valuePtr->pv.end = valuePtr->pv.buffer + STATIC_STRING_SPACE - 1;
     valuePtr->pv.expandProc = TclExpandParseValue;
-    valuePtr->pv.clientData = ( ClientData )NULL;
+    valuePtr->pv.clientData = ( ClientData ) NULL;
 
     result = ExprGetValue(interp, &info, -1, valuePtr);
     if (result != TCL_OK) {
         return result;
     }
     if (info.token != END) {
-        Tcl_AppendResult(
-        interp, "syntax error in expression \"", string, "\"", ( char * )NULL);
+        Tcl_AppendResult(interp,
+                         "syntax error in expression \"",
+                         string,
+                         "\"",
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if ((valuePtr->type == TYPE_DOUBLE)
@@ -1493,7 +1500,7 @@ long *ptr;    /* Where to store result. */
         if (value.type == TYPE_INT) {
             *ptr = value.intValue;
         } else if (value.type == TYPE_DOUBLE) {
-            *ptr = ( long )value.doubleValue;
+            *ptr = ( long ) value.doubleValue;
         } else {
             interp->result = "expression didn't have numeric value";
             result = TCL_ERROR;
@@ -1638,7 +1645,7 @@ Tcl_MathProc *proc;      /* Procedure that implements the
 ClientData clientData;   /* Additional value to pass to the
                           * function. */
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     Tcl_HashEntry *hPtr;
     MathFunc *mathFuncPtr;
     int new, i;
@@ -1647,7 +1654,7 @@ ClientData clientData;   /* Additional value to pass to the
     if (new) {
         Tcl_SetHashValue(hPtr, ckalloc(sizeof(MathFunc)));
     }
-    mathFuncPtr = ( MathFunc * )Tcl_GetHashValue(hPtr);
+    mathFuncPtr = ( MathFunc * ) Tcl_GetHashValue(hPtr);
     if (numArgs > MAX_MATH_ARGS) {
         numArgs = MAX_MATH_ARGS;
     }
@@ -1694,7 +1701,7 @@ Value *valuePtr;    /* Where to store value, if that is
                      * must have initialized pv field
                      * correctly. */
 {
-    Interp *iPtr = ( Interp * )interp;
+    Interp *iPtr = ( Interp * ) interp;
     MathFunc *mathFuncPtr;         /* Info about math function. */
     Tcl_Value args[MAX_MATH_ARGS]; /* Arguments for function call. */
     Tcl_Value funcResult;          /* Result of function call. */
@@ -1724,12 +1731,12 @@ Value *valuePtr;    /* Where to store value, if that is
     hPtr = Tcl_FindHashEntry(&iPtr->mathFuncTable, funcName);
     if (hPtr == NULL) {
         Tcl_AppendResult(
-        interp, "unknown math function \"", funcName, "\"", ( char * )NULL);
+        interp, "unknown math function \"", funcName, "\"", ( char * ) NULL);
         *p = savedChar;
         return TCL_ERROR;
     }
     *p = savedChar;
-    mathFuncPtr = ( MathFunc * )Tcl_GetHashValue(hPtr);
+    mathFuncPtr = ( MathFunc * ) Tcl_GetHashValue(hPtr);
 
     /*
      * Scan off the arguments for the function, if there are any.
@@ -1769,7 +1776,7 @@ Value *valuePtr;    /* Where to store value, if that is
             } else {
                 if (mathFuncPtr->argTypes[i] == TCL_INT) {
                     args[i].type = TCL_INT;
-                    args[i].intValue = ( long )valuePtr->doubleValue;
+                    args[i].intValue = ( long ) valuePtr->doubleValue;
                 } else {
                     args[i].type = TCL_DOUBLE;
                     args[i].doubleValue = valuePtr->doubleValue;
@@ -1835,7 +1842,7 @@ syntaxError:
                      "syntax error in expression \"",
                      infoPtr->originalExpr,
                      "\"",
-                     ( char * )NULL);
+                     ( char * ) NULL);
     return TCL_ERROR;
 }
 
@@ -1867,16 +1874,16 @@ double value; /* Value returned after error;  used to
     if ((errno == EDOM) || (value != value)) {
         interp->result = "domain error: argument not in valid range";
         Tcl_SetErrorCode(
-        interp, "ARITH", "DOMAIN", interp->result, ( char * )NULL);
+        interp, "ARITH", "DOMAIN", interp->result, ( char * ) NULL);
     } else if ((errno == ERANGE) || IS_INF(value)) {
         if (value == 0.0) {
             interp->result = "floating-point value too small to represent";
             Tcl_SetErrorCode(
-            interp, "ARITH", "UNDERFLOW", interp->result, ( char * )NULL);
+            interp, "ARITH", "UNDERFLOW", interp->result, ( char * ) NULL);
         } else {
             interp->result = "floating-point value too large to represent";
             Tcl_SetErrorCode(
-            interp, "ARITH", "OVERFLOW", interp->result, ( char * )NULL);
+            interp, "ARITH", "OVERFLOW", interp->result, ( char * ) NULL);
         }
     } else {
         sprintf(buf, "%d", errno);
@@ -1884,9 +1891,9 @@ double value; /* Value returned after error;  used to
                          "unknown floating-point error, ",
                          "errno = ",
                          buf,
-                         ( char * )NULL);
+                         ( char * ) NULL);
         Tcl_SetErrorCode(
-        interp, "ARITH", "UNKNOWN", interp->result, ( char * )NULL);
+        interp, "ARITH", "UNKNOWN", interp->result, ( char * ) NULL);
     }
 }
 
@@ -1917,8 +1924,8 @@ Tcl_Interp *interp;
 Tcl_Value *args;
 Tcl_Value *resultPtr;
 {
-    double(*func) _ANSI_ARGS_(( double ))
-    = ( double(*) _ANSI_ARGS_(( double )) )clientData;
+    double(*func) _ANSI_ARGS_(( double ) )
+    = ( double(*) _ANSI_ARGS_(( double ) ) ) clientData;
 
     errno = 0;
     resultPtr->type = TCL_DOUBLE;
@@ -1938,8 +1945,8 @@ Tcl_Interp *interp;
 Tcl_Value *args;
 Tcl_Value *resultPtr;
 {
-    double(*func) _ANSI_ARGS_(( double, double ))
-    = ( double(*) _ANSI_ARGS_(( double, double )) )clientData;
+    double(*func) _ANSI_ARGS_(( double, double ) )
+    = ( double(*) _ANSI_ARGS_(( double, double ) ) ) clientData;
 
     errno = 0;
     resultPtr->type = TCL_DOUBLE;
@@ -1974,7 +1981,7 @@ Tcl_Value *resultPtr;
             if (resultPtr->intValue < 0) {
                 interp->result = "integer value too large to represent";
                 Tcl_SetErrorCode(
-                interp, "ARITH", "IOVERFLOW", interp->result, ( char * )NULL);
+                interp, "ARITH", "IOVERFLOW", interp->result, ( char * ) NULL);
                 return TCL_ERROR;
             }
         } else {
@@ -2012,19 +2019,19 @@ Tcl_Value *resultPtr;
         resultPtr->intValue = args[0].intValue;
     } else {
         if (args[0].doubleValue < 0) {
-            if (args[0].doubleValue < ( double )( long )LONG_MIN) {
+            if (args[0].doubleValue < ( double ) ( long ) LONG_MIN) {
             tooLarge:
                 interp->result = "integer value too large to represent";
                 Tcl_SetErrorCode(
-                interp, "ARITH", "IOVERFLOW", interp->result, ( char * )NULL);
+                interp, "ARITH", "IOVERFLOW", interp->result, ( char * ) NULL);
                 return TCL_ERROR;
             }
         } else {
-            if (args[0].doubleValue > ( double )LONG_MAX) {
+            if (args[0].doubleValue > ( double ) LONG_MAX) {
                 goto tooLarge;
             }
         }
-        resultPtr->intValue = ( long )args[0].doubleValue;
+        resultPtr->intValue = ( long ) args[0].doubleValue;
     }
     return TCL_OK;
 }
@@ -2041,19 +2048,20 @@ Tcl_Value *resultPtr;
         resultPtr->intValue = args[0].intValue;
     } else {
         if (args[0].doubleValue < 0) {
-            if (args[0].doubleValue <= ((( double )( long )LONG_MIN) - 0.5)) {
+            if (args[0].doubleValue
+                <= ((( double ) ( long ) LONG_MIN) - 0.5)) {
             tooLarge:
                 interp->result = "integer value too large to represent";
                 Tcl_SetErrorCode(
-                interp, "ARITH", "IOVERFLOW", interp->result, ( char * )NULL);
+                interp, "ARITH", "IOVERFLOW", interp->result, ( char * ) NULL);
                 return TCL_ERROR;
             }
-            resultPtr->intValue = ( long )(args[0].doubleValue - 0.5);
+            resultPtr->intValue = ( long ) (args[0].doubleValue - 0.5);
         } else {
-            if (args[0].doubleValue >= ((( double )LONG_MAX + 0.5))) {
+            if (args[0].doubleValue >= ((( double ) LONG_MAX + 0.5))) {
                 goto tooLarge;
             }
-            resultPtr->intValue = ( long )(args[0].doubleValue + 0.5);
+            resultPtr->intValue = ( long ) (args[0].doubleValue + 0.5);
         }
     }
     return TCL_OK;

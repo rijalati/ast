@@ -76,7 +76,7 @@ aixclose(Ardir_t *ar)
 {
     State_t *state;
 
-    if (ar && (state = ( State_t * )ar->data)) {
+    if (ar && (state = ( State_t * ) ar->data)) {
         if (state->name)
             free(state->name);
         free(state);
@@ -97,12 +97,12 @@ aixopen(Ardir_t *ar, char *buf, size_t n)
 
     if (n <= sizeof(Header_t))
         return -1;
-    hdr = ( Header_t * )buf;
+    hdr = ( Header_t * ) buf;
     if (memcmp(hdr->fl_magic, MAGIC, MAGIC_SIZE))
         return -1;
     if (!(state = newof(0, State_t, 1, 0)))
         return -1;
-    ar->data = ( void * )state;
+    ar->data = ( void * ) state;
     if (sfsscanf(hdr->fl_gstoff, "%ld", &m) != 1)
         goto nope;
     if (sfsscanf(hdr->fl_fstmoff, "%ld", &m) != 1)
@@ -124,7 +124,7 @@ nope:
 static Ardirent_t *
 aixnext(Ardir_t *ar)
 {
-    State_t *state = ( State_t * )ar->data;
+    State_t *state = ( State_t * ) ar->data;
     long n;
     unsigned long u;
 
@@ -134,9 +134,9 @@ aixnext(Ardir_t *ar)
         ar->error = errno;
         return 0;
     }
-    if (read(ar->fd, ( char * )&state->member, sizeof(state->member))
+    if (read(ar->fd, ( char * ) &state->member, sizeof(state->member))
         != sizeof(state->member)) {
-        if ((n = read(ar->fd, ( char * )&state->member, 1)) < 0)
+        if ((n = read(ar->fd, ( char * ) &state->member, 1)) < 0)
             ar->error = errno;
         else if (n > 0)
             ar->error = EINVAL;
@@ -207,7 +207,7 @@ aixnext(Ardir_t *ar)
 static int
 aixchange(Ardir_t *ar, Ardirent_t *ent)
 {
-    State_t *state = ( State_t * )ar->data;
+    State_t *state = ( State_t * ) ar->data;
     off_t o;
     char buf[sizeof(state->member.ar_date) + 1];
 
@@ -217,7 +217,7 @@ aixchange(Ardir_t *ar, Ardirent_t *ent)
         return -1;
     }
     sfsprintf(
-    buf, sizeof(buf), "%-*lu", sizeof(buf) - 1, ( unsigned long )ent->mtime);
+    buf, sizeof(buf), "%-*lu", sizeof(buf) - 1, ( unsigned long ) ent->mtime);
     if (write(ar->fd, buf, sizeof(buf) - 1) != (sizeof(buf) - 1)) {
         ar->error = errno;
         return -1;

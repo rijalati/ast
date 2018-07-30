@@ -88,71 +88,71 @@ typedef struct TextItem
  */
 
 static Tk_CustomOption tagsOption
-= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData )NULL };
+= { Tk_CanvasTagsParseProc, Tk_CanvasTagsPrintProc, ( ClientData ) NULL };
 
 static Tk_ConfigSpec configSpecs[]
 = { { TK_CONFIG_ANCHOR,
       "-anchor",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "center",
       Tk_Offset(TextItem, anchor),
       TK_CONFIG_DONT_SET_DEFAULT },
     { TK_CONFIG_COLOR,
       "-fill",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "black",
       Tk_Offset(TextItem, color),
       0 },
     { TK_CONFIG_FONT,
       "-font",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "-Adobe-Helvetica-Bold-R-Normal--*-120-*-*-*-*-*-*",
       Tk_Offset(TextItem, fontPtr),
       0 },
     { TK_CONFIG_JUSTIFY,
       "-justify",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "left",
       Tk_Offset(TextItem, justify),
       TK_CONFIG_DONT_SET_DEFAULT },
     { TK_CONFIG_BITMAP,
       "-stipple",
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       Tk_Offset(TextItem, stipple),
       TK_CONFIG_NULL_OK },
     { TK_CONFIG_CUSTOM,
       "-tags",
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       TK_CONFIG_NULL_OK,
       &tagsOption },
     { TK_CONFIG_STRING,
       "-text",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "",
       Tk_Offset(TextItem, text),
       0 },
     { TK_CONFIG_PIXELS,
       "-width",
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       "0",
       Tk_Offset(TextItem, width),
       TK_CONFIG_DONT_SET_DEFAULT },
     { TK_CONFIG_END,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
-      ( char * )NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
+      ( char * ) NULL,
       0,
       0 } };
 
@@ -227,26 +227,26 @@ static void TranslateText _ANSI_ARGS_(
  */
 
 Tk_ItemType tkTextType = {
-    "text",               /* name */
-    sizeof(TextItem),     /* itemSize */
-    CreateText,           /* createProc */
-    configSpecs,          /* configSpecs */
-    ConfigureText,        /* configureProc */
-    TextCoords,           /* coordProc */
-    DeleteText,           /* deleteProc */
-    DisplayText,          /* displayProc */
-    0,                    /* alwaysRedraw */
-    TextToPoint,          /* pointProc */
-    TextToArea,           /* areaProc */
-    TextToPostscript,     /* postscriptProc */
-    ScaleText,            /* scaleProc */
-    TranslateText,        /* translateProc */
-    GetTextIndex,         /* indexProc */
-    SetTextCursor,        /* icursorProc */
-    GetSelText,           /* selectionProc */
-    TextInsert,           /* insertProc */
-    TextDeleteChars,      /* dTextProc */
-    ( Tk_ItemType * )NULL /* nextPtr */
+    "text",                /* name */
+    sizeof(TextItem),      /* itemSize */
+    CreateText,            /* createProc */
+    configSpecs,           /* configSpecs */
+    ConfigureText,         /* configureProc */
+    TextCoords,            /* coordProc */
+    DeleteText,            /* deleteProc */
+    DisplayText,           /* displayProc */
+    0,                     /* alwaysRedraw */
+    TextToPoint,           /* pointProc */
+    TextToArea,            /* areaProc */
+    TextToPostscript,      /* postscriptProc */
+    ScaleText,             /* scaleProc */
+    TranslateText,         /* translateProc */
+    GetTextIndex,          /* indexProc */
+    SetTextCursor,         /* icursorProc */
+    GetSelText,            /* selectionProc */
+    TextInsert,            /* insertProc */
+    TextDeleteChars,       /* dTextProc */
+    ( Tk_ItemType * ) NULL /* nextPtr */
 };
 
 /*
@@ -277,7 +277,7 @@ Tk_Item *itemPtr;   /* Record to hold new item;  header
 int argc;           /* Number of arguments in argv. */
 char **argv;        /* Arguments describing rectangle. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
 
     if (argc < 2) {
         Tcl_AppendResult(interp,
@@ -286,7 +286,7 @@ char **argv;        /* Arguments describing rectangle. */
                          " create ",
                          itemPtr->typePtr->name,
                          " x y ?options?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
 
@@ -358,13 +358,13 @@ int argc;           /* Number of coordinates supplied in
 char **argv;        /* Array of coordinates: x1, y1,
                      * x2, y2, ... */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
     char x[TCL_DOUBLE_SPACE], y[TCL_DOUBLE_SPACE];
 
     if (argc == 0) {
         Tcl_PrintDouble(interp, textPtr->x, x);
         Tcl_PrintDouble(interp, textPtr->y, y);
-        Tcl_AppendResult(interp, x, " ", y, ( char * )NULL);
+        Tcl_AppendResult(interp, x, " ", y, ( char * ) NULL);
     } else if (argc == 2) {
         if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &textPtr->x) != TCL_OK)
             || (Tk_CanvasGetCoord(interp, canvas, argv[1], &textPtr->y)
@@ -407,7 +407,7 @@ int argc;           /* Number of elements in argv.  */
 char **argv;        /* Arguments describing things to configure. */
 int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
     XGCValues gcValues;
     GC newGC, newSelGC;
     unsigned long mask;
@@ -417,7 +417,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     tkwin = Tk_CanvasTkwin(canvas);
     if (Tk_ConfigureWidget(
-        interp, tkwin, configSpecs, argc, argv, ( char * )textPtr, flags)
+        interp, tkwin, configSpecs, argc, argv, ( char * ) textPtr, flags)
         != TCL_OK) {
         return TCL_ERROR;
     }
@@ -518,7 +518,7 @@ Tk_Item *itemPtr; /* Item that is being deleted. */
 Display *display; /* Display containing window for
                    * canvas. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
 
     if (textPtr->text != NULL) {
         ckfree(textPtr->text);
@@ -536,7 +536,7 @@ Display *display; /* Display containing window for
         Tk_FreeGC(display, textPtr->gc);
     }
     if (textPtr->linePtr != NULL) {
-        ckfree(( char * )textPtr->linePtr);
+        ckfree(( char * ) textPtr->linePtr);
     }
     if (textPtr->cursorOffGC != None) {
         Tk_FreeGC(display, textPtr->cursorOffGC);
@@ -585,7 +585,7 @@ TextItem *textPtr; /* Item whose bbos is to be
     Tk_CanvasTextInfo *textInfoPtr = textPtr->textInfoPtr;
 
     if (textPtr->linePtr != NULL) {
-        ckfree(( char * )textPtr->linePtr);
+        ckfree(( char * ) textPtr->linePtr);
         textPtr->linePtr = NULL;
     }
 
@@ -696,7 +696,7 @@ TextItem *textPtr; /* Item whose bbos is to be
 
     if (numLines > 0) {
         textPtr->linePtr
-        = ( TextLine * )ckalloc(( unsigned )(numLines * sizeof(TextLine)));
+        = ( TextLine * ) ckalloc(( unsigned ) (numLines * sizeof(TextLine)));
     } else {
         textPtr->linePtr = NULL;
     }
@@ -785,7 +785,7 @@ Drawable drawable;       /* Pixmap or window in which to draw
 int x, y, width, height; /* Describes region of canvas that
                           * must be redisplayed (not used). */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
     TextLine *linePtr;
     int i, focusHere, insertX, insertIndex, lineIndex, tabOrigin;
     int beforeSelect, inSelect, afterSelect, selStartX, selEndX;
@@ -830,14 +830,14 @@ int x, y, width, height; /* Describes region of canvas that
                 beforeSelect = 0;
                 selStartX = linePtr->x;
             } else {
-                ( void )TkMeasureChars(textPtr->fontPtr,
-                                       linePtr->firstChar,
-                                       beforeSelect,
-                                       0,
-                                       ( int )1000000,
-                                       0,
-                                       TK_PARTIAL_OK,
-                                       &selStartX);
+                ( void ) TkMeasureChars(textPtr->fontPtr,
+                                        linePtr->firstChar,
+                                        beforeSelect,
+                                        0,
+                                        ( int ) 1000000,
+                                        0,
+                                        TK_PARTIAL_OK,
+                                        &selStartX);
                 selStartX += linePtr->x;
             }
             inSelect
@@ -858,20 +858,20 @@ int x, y, width, height; /* Describes region of canvas that
                     goto fillSelectBackground;
                 }
             }
-            ( void )TkMeasureChars(textPtr->fontPtr,
-                                   linePtr->firstChar + beforeSelect,
-                                   inSelect,
-                                   selStartX - linePtr->x,
-                                   ( int )1000000,
-                                   0,
-                                   TK_PARTIAL_OK,
-                                   &selEndX);
+            ( void ) TkMeasureChars(textPtr->fontPtr,
+                                    linePtr->firstChar + beforeSelect,
+                                    inSelect,
+                                    selStartX - linePtr->x,
+                                    ( int ) 1000000,
+                                    0,
+                                    TK_PARTIAL_OK,
+                                    &selEndX);
             selEndX += linePtr->x;
         fillSelectBackground:
             Tk_CanvasDrawableCoords(
             canvas,
-            ( double )(selStartX - textInfoPtr->selBorderWidth),
-            ( double )(linePtr->y - textPtr->fontPtr->ascent),
+            ( double ) (selStartX - textInfoPtr->selBorderWidth),
+            ( double ) (linePtr->y - textPtr->fontPtr->ascent),
             &drawableX,
             &drawableY);
             Tk_Fill3DRectangle(
@@ -899,19 +899,19 @@ int x, y, width, height; /* Describes region of canvas that
             insertIndex
             = textPtr->insertPos - (linePtr->firstChar - textPtr->text);
             if ((insertIndex >= 0) && (insertIndex <= linePtr->numChars)) {
-                ( void )TkMeasureChars(textPtr->fontPtr,
-                                       linePtr->firstChar,
-                                       insertIndex,
-                                       0,
-                                       ( int )1000000,
-                                       0,
-                                       TK_PARTIAL_OK,
-                                       &insertX);
+                ( void ) TkMeasureChars(textPtr->fontPtr,
+                                        linePtr->firstChar,
+                                        insertIndex,
+                                        0,
+                                        ( int ) 1000000,
+                                        0,
+                                        TK_PARTIAL_OK,
+                                        &insertX);
                 Tk_CanvasDrawableCoords(
                 canvas,
-                ( double )(linePtr->x + insertX
-                           - (textInfoPtr->insertWidth) / 2),
-                ( double )(linePtr->y - textPtr->fontPtr->ascent),
+                ( double ) (linePtr->x + insertX
+                            - (textInfoPtr->insertWidth) / 2),
+                ( double ) (linePtr->y - textPtr->fontPtr->ascent),
                 &drawableX,
                 &drawableY);
                 if (textInfoPtr->cursorOn) {
@@ -933,14 +933,15 @@ int x, y, width, height; /* Describes region of canvas that
                      * color.
                      */
 
-                    XFillRectangle(display,
-                                   drawable,
-                                   textPtr->cursorOffGC,
-                                   drawableX,
-                                   drawableY,
-                                   ( unsigned )textInfoPtr->insertWidth,
-                                   ( unsigned )(textPtr->fontPtr->ascent
-                                                + textPtr->fontPtr->descent));
+                    XFillRectangle(
+                    display,
+                    drawable,
+                    textPtr->cursorOffGC,
+                    drawableX,
+                    drawableY,
+                    ( unsigned ) textInfoPtr->insertWidth,
+                    ( unsigned ) (textPtr->fontPtr->ascent
+                                  + textPtr->fontPtr->descent));
                 }
             }
         }
@@ -952,8 +953,8 @@ int x, y, width, height; /* Describes region of canvas that
          */
 
         Tk_CanvasDrawableCoords(canvas,
-                                ( double )linePtr->x,
-                                ( double )linePtr->y,
+                                ( double ) linePtr->x,
+                                ( double ) linePtr->y,
                                 &drawableX,
                                 &drawableY);
         tabOrigin = drawableX;
@@ -971,8 +972,8 @@ int x, y, width, height; /* Describes region of canvas that
         }
         if (inSelect != 0) {
             Tk_CanvasDrawableCoords(canvas,
-                                    ( double )selStartX,
-                                    ( double )linePtr->y,
+                                    ( double ) selStartX,
+                                    ( double ) linePtr->y,
                                     &drawableX,
                                     &drawableY);
             TkDisplayChars(display,
@@ -989,8 +990,8 @@ int x, y, width, height; /* Describes region of canvas that
         afterSelect = linePtr->numChars - beforeSelect - inSelect;
         if (afterSelect > 0) {
             Tk_CanvasDrawableCoords(canvas,
-                                    ( double )selEndX,
-                                    ( double )linePtr->y,
+                                    ( double ) selEndX,
+                                    ( double ) linePtr->y,
                                     &drawableX,
                                     &drawableY);
             TkDisplayChars(display,
@@ -1035,7 +1036,7 @@ int beforeThis;   /* Index of character before which text is
                    * to be inserted. */
 char *string;     /* New characters to be inserted. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
     int length;
     char *new;
     Tk_CanvasTextInfo *textInfoPtr = textPtr->textInfoPtr;
@@ -1051,8 +1052,8 @@ char *string;     /* New characters to be inserted. */
         beforeThis = textPtr->numChars;
     }
 
-    new = ( char * )ckalloc(( unsigned )(textPtr->numChars + length + 1));
-    strncpy(new, textPtr->text, ( size_t )beforeThis);
+    new = ( char * ) ckalloc(( unsigned ) (textPtr->numChars + length + 1));
+    strncpy(new, textPtr->text, ( size_t ) beforeThis);
     strcpy(new + beforeThis, string);
     strcpy(new + beforeThis + length, textPtr->text + beforeThis);
     ckfree(textPtr->text);
@@ -1106,7 +1107,7 @@ Tk_Item *itemPtr; /* Item in which to delete characters. */
 int first;        /* Index of first character to delete. */
 int last;         /* Index of last character to delete. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
     int count;
     char *new;
     Tk_CanvasTextInfo *textInfoPtr = textPtr->textInfoPtr;
@@ -1122,8 +1123,8 @@ int last;         /* Index of last character to delete. */
     }
     count = last + 1 - first;
 
-    new = ( char * )ckalloc(( unsigned )(textPtr->numChars + 1 - count));
-    strncpy(new, textPtr->text, ( size_t )first);
+    new = ( char * ) ckalloc(( unsigned ) (textPtr->numChars + 1 - count));
+    strncpy(new, textPtr->text, ( size_t ) first);
     strcpy(new + first, textPtr->text + last + 1);
     ckfree(textPtr->text);
     textPtr->text = new;
@@ -1194,7 +1195,7 @@ TextToPoint(canvas, itemPtr, pointPtr) Tk_Canvas canvas; /* Canvas containing
 Tk_Item *itemPtr; /* Item to check against point. */
 double *pointPtr; /* Pointer to x and y coordinates. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
     TextLine *linePtr;
     int i;
     double xDiff, yDiff, dist, minDist;
@@ -1277,7 +1278,7 @@ double *rectPtr;  /* Pointer to array of four coordinates
                    * (x1, y1, x2, y2) describing rectangular
                    * area.  */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
     TextLine *linePtr;
     int i, result;
 
@@ -1337,7 +1338,7 @@ double originX, originY; /* Origin about which to scale rect. */
 double scaleX;           /* Amount to scale in X direction. */
 double scaleY;           /* Amount to scale in Y direction. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
 
     textPtr->x = originX + scaleX * (textPtr->x - originX);
     textPtr->y = originY + scaleY * (textPtr->y - originY);
@@ -1370,7 +1371,7 @@ Tk_Item *itemPtr;      /* Item that is being moved. */
 double deltaX, deltaY; /* Amount by which item is to be
                         * moved. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
 
     textPtr->x += deltaX;
     textPtr->y += deltaY;
@@ -1406,7 +1407,7 @@ char *string;       /* Specification of a particular character
                      * in itemPtr's text. */
 int *indexPtr;      /* Where to store converted index. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
     size_t length;
     Tk_CanvasTextInfo *textInfoPtr = textPtr->textInfoPtr;
 
@@ -1423,9 +1424,9 @@ int *indexPtr;      /* Where to store converted index. */
              * so we have to clear it out before storing our own message.
              */
 
-            Tcl_SetResult(interp, ( char * )NULL, TCL_STATIC);
+            Tcl_SetResult(interp, ( char * ) NULL, TCL_STATIC);
             Tcl_AppendResult(
-            interp, "bad index \"", string, "\"", ( char * )NULL);
+            interp, "bad index \"", string, "\"", ( char * ) NULL);
             return TCL_ERROR;
         }
     } else if (string[0] == 'i') {
@@ -1527,7 +1528,7 @@ Tk_Item *itemPtr; /* Text item in which cursor position
 int index;        /* Index of character just before which
                    * cursor is to be positioned. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
 
     if (index < 0) {
         textPtr->insertPos = 0;
@@ -1570,7 +1571,7 @@ int maxBytes;     /* Maximum number of bytes to place
                    * at buffer, not including terminating
                    * NULL character. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
     int count;
     Tk_CanvasTextInfo *textInfoPtr = textPtr->textInfoPtr;
 
@@ -1586,7 +1587,7 @@ int maxBytes;     /* Maximum number of bytes to place
     }
     strncpy(buffer,
             textPtr->text + textInfoPtr->selectFirst + offset,
-            ( size_t )count);
+            ( size_t ) count);
     buffer[count] = '\0';
     return count;
 }
@@ -1622,7 +1623,7 @@ int prepass;        /* 1 means this is a prepass to
                      * collect font information;  0 means
                      * final Postscript is being created. */
 {
-    TextItem *textPtr = ( TextItem * )itemPtr;
+    TextItem *textPtr = ( TextItem * ) itemPtr;
     TextLine *linePtr;
     int i;
     char *xoffset = NULL, *yoffset = NULL; /* Initializations needed */
@@ -1641,18 +1642,18 @@ int prepass;        /* 1 means this is a prepass to
         return TCL_ERROR;
     }
     if (textPtr->stipple != None) {
-        Tcl_AppendResult(interp, "/StippleText {\n    ", ( char * )NULL);
+        Tcl_AppendResult(interp, "/StippleText {\n    ", ( char * ) NULL);
         Tk_CanvasPsStipple(interp, canvas, textPtr->stipple);
-        Tcl_AppendResult(interp, "} bind def\n", ( char * )NULL);
+        Tcl_AppendResult(interp, "} bind def\n", ( char * ) NULL);
     }
     sprintf(
     buffer, "%.15g %.15g [\n", textPtr->x, Tk_CanvasPsY(canvas, textPtr->y));
-    Tcl_AppendResult(interp, buffer, ( char * )NULL);
+    Tcl_AppendResult(interp, buffer, ( char * ) NULL);
     for (i = textPtr->numLines, linePtr = textPtr->linePtr; i > 0;
          i--, linePtr++) {
-        Tcl_AppendResult(interp, "    ", ( char * )NULL);
+        Tcl_AppendResult(interp, "    ", ( char * ) NULL);
         LineToPostscript(interp, linePtr->firstChar, linePtr->numChars);
-        Tcl_AppendResult(interp, "\n", ( char * )NULL);
+        Tcl_AppendResult(interp, "\n", ( char * ) NULL);
     }
     switch (textPtr->anchor) {
     case TK_ANCHOR_NW:
@@ -1710,7 +1711,7 @@ int prepass;        /* 1 means this is a prepass to
             yoffset,
             justify,
             (textPtr->stipple == None) ? "false" : "true");
-    Tcl_AppendResult(interp, buffer, ( char * )NULL);
+    Tcl_AppendResult(interp, buffer, ( char * ) NULL);
     return TCL_OK;
 }
 
@@ -1762,11 +1763,11 @@ int numChars;       /* Number of characters in the string. */
         }
         if (used >= BUFFER_SIZE) {
             buffer[used] = 0;
-            Tcl_AppendResult(interp, buffer, ( char * )NULL);
+            Tcl_AppendResult(interp, buffer, ( char * ) NULL);
             used = 0;
         }
     }
     buffer[used] = ')';
     buffer[used + 1] = 0;
-    Tcl_AppendResult(interp, buffer, ( char * )NULL);
+    Tcl_AppendResult(interp, buffer, ( char * ) NULL);
 }

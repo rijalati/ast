@@ -80,19 +80,19 @@
 #        define sfrd(s, b, n, d) fread((b), 1, (n), (s))
 #        define sfwr(s, b, n, d) fwrite((b), 1, (n), (s))
 #        define sfseek(s, p, t)                                              \
-            (fseek((s), ( long )(p), (t)) >= 0 ? ( Sfoff_t )ftell(s)         \
-                                               : (Sfoff_t)(-1))
+            (fseek((s), ( long ) (p), (t)) >= 0 ? ( Sfoff_t ) ftell(s)       \
+                                                : (Sfoff_t)(-1))
 #        define sfdisc(s, d) (d)
 #        define sfset(f, m, t) (0)
 #        define sfsetbuf(f, b, n) (0)
 #        define sffileno(f) fileno(f)
 #        define sftmp(n) tmpfile()
 
-extern Void_t *sfreserve _ARG_(( Sfio_t *, ssize_t, int ));
-extern char *sfgetr _ARG_(( Sfio_t *, int, int ));
-extern ssize_t sfvalue _ARG_(( Sfio_t * ));
-extern Sfoff_t sfsize _ARG_(( Sfio_t * ));
-extern int sfclose _ARG_(( Sfio_t * ));
+extern Void_t *sfreserve _ARG_(( Sfio_t *, ssize_t, int ) );
+extern char *sfgetr _ARG_(( Sfio_t *, int, int ) );
+extern ssize_t sfvalue _ARG_(( Sfio_t * ) );
+extern Sfoff_t sfsize _ARG_(( Sfio_t * ) );
+extern int sfclose _ARG_(( Sfio_t * ) );
 #    endif /*_SFIO_H*/
 
 /* define 32-bit integer types */
@@ -125,11 +125,11 @@ typedef struct _vcmethod_s Vcmethod_t;
 typedef struct _vcmtarg_s Vcmtarg_t;
 typedef struct _vcmtcode_s Vcmtcode_t;
 typedef struct _vccontext_s Vccontext_t;
-typedef int(*Vcevent_f) _ARG_(( Vcodex_t *, int, Void_t *, Vcdisc_t * ));
+typedef int(*Vcevent_f) _ARG_(( Vcodex_t *, int, Void_t *, Vcdisc_t * ) );
 typedef ssize_t(*Vcapply_f)
-_ARG_(( Vcodex_t *, const Void_t *, size_t, Void_t ** ));
+_ARG_(( Vcodex_t *, const Void_t *, size_t, Void_t ** ) );
 
-typedef int(*Vcwalk_f) _ARG_(( Void_t *, char *, char *, Void_t * ));
+typedef int(*Vcwalk_f) _ARG_(( Void_t *, char *, char *, Void_t * ) );
 
 /* type of buffers allocated for transformed data */
 typedef struct _vcbuffer_s Vcbuffer_t;
@@ -179,7 +179,7 @@ struct _vcmethod_s
 {
     Vcapply_f encodef; /* function to encode		*/
     Vcapply_f decodef; /* function to decode		*/
-    int(*eventf) _ARG_(( Vcodex_t *, int, Void_t * ));
+    int(*eventf) _ARG_(( Vcodex_t *, int, Void_t * ) );
     char *name;      /* string name, 0-terminated	*/
     char *desc;      /* description, 0-terminated	*/
     char *about;     /* [-name?value]...0-terminated	*/
@@ -250,7 +250,7 @@ struct _vcodex_s
         ((dc)->data = (dt), (dc)->size = (sz), (dc)->eventf = (fn))
 
 /* return vcodex discipline event */
-#    define VCSF_DISC (((( int )('V')) << 7) | (( int )('C')))
+#    define VCSF_DISC (((( int ) ('V')) << 7) | (( int ) ('C')))
 
 _BEGIN_EXTERNS_
 
@@ -272,40 +272,40 @@ _BEGIN_EXTERNS_
 
 /* public functions */
 extern Vcodex_t *
-vcopen _ARG_(( Vcdisc_t *, Vcmethod_t *, Void_t *, Vcodex_t *, int ));
-extern Vcodex_t *vcmake _ARG_(( char *, int ));
-extern ssize_t vcextract _ARG_(( Vcodex_t *, Void_t ** ));
+vcopen _ARG_(( Vcdisc_t *, Vcmethod_t *, Void_t *, Vcodex_t *, int ) );
+extern Vcodex_t *vcmake _ARG_(( char *, int ) );
+extern ssize_t vcextract _ARG_(( Vcodex_t *, Void_t ** ) );
 extern Vcodex_t *vcrestore _ARG_((Void_t *, size_t));
-extern int vcclose _ARG_(( Vcodex_t * ));
-extern ssize_t vcapply _ARG_(( Vcodex_t *, Void_t *, size_t, Void_t ** ));
-extern size_t vcundone _ARG_(( Vcodex_t * ));
-extern Vcdisc_t *vcdisc _ARG_(( Vcodex_t *, Vcdisc_t * ));
+extern int vcclose _ARG_(( Vcodex_t * ) );
+extern ssize_t vcapply _ARG_(( Vcodex_t *, Void_t *, size_t, Void_t ** ) );
+extern size_t vcundone _ARG_(( Vcodex_t * ) );
+extern Vcdisc_t *vcdisc _ARG_(( Vcodex_t *, Vcdisc_t * ) );
 
 extern int vcaddmeth _ARG_((Vcmethod_t **, ssize_t));
-extern Vcmethod_t *vcgetmeth _ARG_(( char *, int ));
-extern int vcwalkmeth _ARG_(( Vcwalk_f, Void_t * ));
+extern Vcmethod_t *vcgetmeth _ARG_(( char *, int ) );
+extern int vcwalkmeth _ARG_(( Vcwalk_f, Void_t * ) );
 
-extern void vcaddalias _ARG_(( char ** ));
+extern void vcaddalias _ARG_(( char ** ) );
 extern char *vcgetalias _ARG_((char *, char *, ssize_t));
-extern int vcwalkalias _ARG_(( Vcwalk_f, Void_t * ));
-extern int vcgetfname _ARG_(( char *, char **, char ** ));
-extern int vcwalkfname _ARG_(( Vcwalk_f, Void_t * ));
-extern int vcgetsuff _ARG_(( char *, char ** ));
+extern int vcwalkalias _ARG_(( Vcwalk_f, Void_t * ) );
+extern int vcgetfname _ARG_(( char *, char **, char ** ) );
+extern int vcwalkfname _ARG_(( Vcwalk_f, Void_t * ) );
+extern int vcgetsuff _ARG_(( char *, char ** ) );
 
 extern char *vcgetident _ARG_((Vcmethod_t *, char *, ssize_t));
 extern char *
-vcgetmtarg _ARG_(( char *, char *, ssize_t, Vcmtarg_t *, Vcmtarg_t ** ));
-extern int vcsetmtarg _ARG_(( Vcodex_t *, char *, Void_t *, int ));
+vcgetmtarg _ARG_(( char *, char *, ssize_t, Vcmtarg_t *, Vcmtarg_t ** ) );
+extern int vcsetmtarg _ARG_(( Vcodex_t *, char *, Void_t *, int ) );
 
-extern char *vcsubstring _ARG_(( char *, int, char *, ssize_t, int ));
+extern char *vcsubstring _ARG_(( char *, int, char *, ssize_t, int ) );
 extern double vclog _ARG_((size_t));  /* fast log2 */
 extern size_t vclogi _ARG_((size_t)); /* integer part of log2 */
 extern ssize_t
-vcbcktsort _ARG_(( ssize_t *, ssize_t *, ssize_t, Vcchar_t *, ssize_t * ));
+vcbcktsort _ARG_(( ssize_t *, ssize_t *, ssize_t, Vcchar_t *, ssize_t * ) );
 
-typedef int(*Vccompare_f) _ARG_(( Void_t *, Void_t *, Void_t * ));
+typedef int(*Vccompare_f) _ARG_(( Void_t *, Void_t *, Void_t * ) );
 extern Void_t
-vcqsort _ARG_(( Void_t *, ssize_t, ssize_t, Vccompare_f, Void_t * ));
+vcqsort _ARG_(( Void_t *, ssize_t, ssize_t, Vccompare_f, Void_t * ) );
 
 #    undef extern
 
@@ -314,7 +314,8 @@ _END_EXTERNS_
 /* macro functions to run the transformation and return amount of data left
  * unprocessed */
 #    define vcapply(vc, s, sz, b)                                            \
-        (*(vc)->applyf)((vc), ( Void_t * )(s), (size_t)(sz), ( Void_t ** )(b))
+        (*(vc)->applyf)(                                                     \
+        (vc), ( Void_t * ) (s), (size_t)(sz), ( Void_t ** ) (b))
 #    define vcundone(vc)                                                     \
         ((vc)->undone) /* amount left unprocessed by transform	*/
 
@@ -329,45 +330,45 @@ _BEGIN_EXTERNS_
 #        define extern __EXPORT__
 #    endif
 
-extern Vcint_t vcatoi _ARG_(( char * ));
+extern Vcint_t vcatoi _ARG_(( char * ) );
 extern ssize_t vcitoa _ARG_((Vcint_t, char *, ssize_t));
-extern Vcint_t vcintcode _ARG_(( Vcint_t, Vcint_t, Vcint_t, Vcint_t, int ));
+extern Vcint_t vcintcode _ARG_(( Vcint_t, Vcint_t, Vcint_t, Vcint_t, int ) );
 extern char *vcstrcode _ARG_((char *, char *, ssize_t));
 extern ssize_t
-vchexcode _ARG_(( Vcchar_t *, ssize_t, Vcchar_t *, ssize_t, int ));
-extern ssize_t vcstr2list _ARG_(( char *, int, ssize_t ** ));
+vchexcode _ARG_(( Vcchar_t *, ssize_t, Vcchar_t *, ssize_t, int ) );
+extern ssize_t vcstr2list _ARG_(( char *, int, ssize_t ** ) );
 
-extern ssize_t vcioputc _ARG_(( Vcio_t *, int ));
-extern int vciogetc _ARG_(( Vcio_t * ));
+extern ssize_t vcioputc _ARG_(( Vcio_t *, int ) );
+extern int vciogetc _ARG_(( Vcio_t * ) );
 extern ssize_t vcioputs _ARG_((Vcio_t *, Void_t *, size_t));
 extern ssize_t vciogets _ARG_((Vcio_t *, Void_t *, size_t));
 
 extern ssize_t vcioputu _ARG_((Vcio_t *, Vcint_t));
-extern Vcint_t vciogetu _ARG_(( Vcio_t * ));
+extern Vcint_t vciogetu _ARG_(( Vcio_t * ) );
 extern ssize_t vcioputm _ARG_((Vcio_t *, Vcint_t, Vcint_t));
 extern Vcint_t vciogetm _ARG_((Vcio_t *, Vcint_t));
 extern ssize_t vcioput2 _ARG_((Vcio_t *, Vcchar_t, Vcchar_t, Vcint_t));
 extern Vcint_t vcioget2 _ARG_((Vcio_t *, Vcchar_t, Vcchar_t));
 extern ssize_t vcioputg _ARG_((Vcio_t *, Vcint_t));
-extern Vcint_t vciogetg _ARG_(( Vcio_t * ));
+extern Vcint_t vciogetg _ARG_(( Vcio_t * ) );
 extern ssize_t vcioputlist _ARG_((Vcio_t *, Vcint_t *, ssize_t));
 extern ssize_t vciogetlist _ARG_((Vcio_t *, Vcint_t *, ssize_t));
 
 extern ssize_t _vcioputu _ARG_((Vcio_t *, Vcint_t));
-extern Vcint_t _vciogetu _ARG_(( Vcio_t * ));
+extern Vcint_t _vciogetu _ARG_(( Vcio_t * ) );
 extern ssize_t _vcioputm _ARG_((Vcio_t *, Vcint_t, Vcint_t));
 extern Vcint_t _vciogetm _ARG_((Vcio_t *, Vcint_t));
 extern ssize_t _vcioput2 _ARG_((Vcio_t *, Vcint_t, Vcchar_t, Vcchar_t));
 extern Vcint_t _vcioget2 _ARG_((Vcio_t *, Vcchar_t, Vcchar_t));
 extern ssize_t _vcioputg _ARG_((Vcio_t *, Vcint_t));
-extern Vcint_t _vciogetg _ARG_(( Vcio_t * ));
+extern Vcint_t _vciogetg _ARG_(( Vcio_t * ) );
 
 #    undef extern
 
 _END_EXTERNS_
 
 #    define vcioinit(io, b, n)                                               \
-        ((io)->data = (io)->next = ( Vcchar_t * )(b),                        \
+        ((io)->data = (io)->next = ( Vcchar_t * ) (b),                       \
          (io)->endb = (io)->data + (n))
 #    define vciosize(io) ((io)->next - (io)->data)
 #    define vciomore(io) ((io)->endb - (io)->next)
@@ -487,7 +488,7 @@ typedef Vcuint32_t Vchash_t; /* 32-bit hash value	*/
 
 /* get/set private method data */
 #    define vcgetmtdata(vc, tp) ((tp)(vc)->data)
-#    define vcsetmtdata(vc, mt) ((vc)->data = ( Void_t * )(mt))
+#    define vcsetmtdata(vc, mt) ((vc)->data = ( Void_t * ) (mt))
 
 /* get disciplines */
 #    define vcgetdisc(vc) ((vc)->disc)
@@ -502,7 +503,7 @@ typedef Vcuint32_t Vchash_t; /* 32-bit hash value	*/
 */
 #    if defined(__FILE__) && defined(__LINE__)
 #        define vcbuffer(vv, bb, zz, hh)                                     \
-            (!(vv) ? (( Vcchar_t * )0)                                       \
+            (!(vv) ? (( Vcchar_t * ) 0)                                      \
                    : ((vv)->file = __FILE__,                                 \
                       (vv)->line = __LINE__,                                 \
                       _vcbuffer((vv), (bb), (zz), (hh))))
@@ -527,9 +528,9 @@ _BEGIN_EXTERNS_
 
 extern Vcchar_t *_vcbuffer _ARG_((Vcodex_t *, Vcchar_t *, ssize_t, ssize_t));
 extern int
-vcrecode _ARG_(( Vcodex_t *, Vcchar_t **, ssize_t *, ssize_t, int ));
-extern Vccontext_t *vcinitcontext _ARG_(( Vcodex_t *, Vccontext_t * ));
-extern int vcfreecontext _ARG_(( Vcodex_t *, Vccontext_t * ));
+vcrecode _ARG_(( Vcodex_t *, Vcchar_t **, ssize_t *, ssize_t, int ) );
+extern Vccontext_t *vcinitcontext _ARG_(( Vcodex_t *, Vccontext_t * ) );
+extern int vcfreecontext _ARG_(( Vcodex_t *, Vccontext_t * ) );
 
 #    undef extern
 

@@ -29,7 +29,7 @@ typedef struct _vcwmatch_s Vcwmatch_t;
 typedef struct _vcwmethod_s Vcwmethod_t;
 typedef struct _vcwdisc_s Vcwdisc_t;
 typedef struct _vcwindow_s Vcwindow_t;
-typedef int(*Vcwevent_f) _ARG_(( Vcwindow_t *, int, Void_t *, Vcwdisc_t * ));
+typedef int(*Vcwevent_f) _ARG_(( Vcwindow_t *, int, Void_t *, Vcwdisc_t * ) );
 
 struct _vcwmatch_s
 {
@@ -43,8 +43,8 @@ struct _vcwmatch_s
 
 struct _vcwmethod_s
 {
-    Vcwmatch_t *( *applyf )_ARG_((Vcwindow_t *, Void_t *, size_t, Sfoff_t));
-    int(*eventf) _ARG_(( Vcwindow_t *, int ));
+    Vcwmatch_t *( *applyf ) _ARG_((Vcwindow_t *, Void_t *, size_t, Sfoff_t));
+    int(*eventf) _ARG_(( Vcwindow_t *, int ) );
     char *name;
     char *desc;
     char *about;
@@ -93,10 +93,10 @@ extern Vcwmethod_t *Vcwprefix;
 #        define extern __EXPORT__
 #    endif
 
-extern Vcwindow_t *vcwopen _ARG_(( Vcwdisc_t *, Vcwmethod_t * ));
-extern int vcwclose _ARG_(( Vcwindow_t * ));
-extern Vcwmethod_t *vcwgetmeth _ARG_(( char * ));
-extern int vcwwalkmeth _ARG_(( Vcwalk_f, Void_t * ));
+extern Vcwindow_t *vcwopen _ARG_(( Vcwdisc_t *, Vcwmethod_t * ) );
+extern int vcwclose _ARG_(( Vcwindow_t * ) );
+extern Vcwmethod_t *vcwgetmeth _ARG_(( char * ) );
+extern int vcwwalkmeth _ARG_(( Vcwalk_f, Void_t * ) );
 
 #    undef extern
 

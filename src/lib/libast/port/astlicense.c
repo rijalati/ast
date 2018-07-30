@@ -109,7 +109,7 @@
      (b)->nxt - (b)->buf)
 
 #ifndef NiL
-#    define NiL (( char * )0)
+#    define NiL (( char * ) 0)
 #endif
 
 typedef struct Buffer_s
@@ -366,7 +366,7 @@ copyright(Notice_t *notice, Buffer_t *b)
 
     copy(b, "Copyright (c) ", -1);
     if (notice->test) {
-        clock = ( time_t )1000212300;
+        clock = ( time_t ) 1000212300;
         t = ctime(&clock) + 20;
     } else if (!(t = notice->item[SOURCE].data)) {
         time(&clock);
@@ -739,7 +739,7 @@ astlicense(char *p,
                         }
                     if (h >= 0) {
                         notice.item[h].data
-                        = (notice.item[h].size = s - v) ? v : ( char * )0;
+                        = (notice.item[h].size = s - v) ? v : ( char * ) 0;
                         notice.item[h].quote = quote;
                         k = 1;
                     }

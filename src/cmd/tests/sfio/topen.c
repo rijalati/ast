@@ -36,7 +36,7 @@ tmain()
     if (sfopen(f, "123", "s") != NIL(Sfio_t *))
         terror("can't reopen a closed stream!");
 
-    if (sfnew(&sf, NIL(char *), ( size_t )SF_UNBOUND, 0, SF_EOF | SF_READ)
+    if (sfnew(&sf, NIL(char *), ( size_t ) SF_UNBOUND, 0, SF_EOF | SF_READ)
         != &sf)
         terror("Did not open sf");
     sfset(&sf, SF_STATIC, 1);

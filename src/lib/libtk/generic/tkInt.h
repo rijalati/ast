@@ -626,7 +626,7 @@ extern TkDisplay *tkDisplayList;
  * macros such as isspace.
  */
 
-#define UCHAR(c) (( unsigned char )(c))
+#define UCHAR(c) (( unsigned char ) (c))
 
 /*
  * Miscellaneous variables shared among Tk modules but not exported
@@ -676,7 +676,7 @@ EXTERN void TkComputeTextGeometry _ANSI_ARGS_((XFontStruct * fontStructPtr,
                                                int wrapLength,
                                                int *widthPtr,
                                                int *heightPtr));
-EXTERN void TkConsoleCreate _ANSI_ARGS_(( void ));
+EXTERN void TkConsoleCreate _ANSI_ARGS_(( void ) );
 EXTERN int TkConsoleInit _ANSI_ARGS_((Tcl_Interp * interp));
 EXTERN void TkConsolePrint
 _ANSI_ARGS_((Tcl_Interp * interp, int devId, char *buffer, long size));
@@ -701,7 +701,7 @@ EXTERN Tk_Window TkCreateMainWindow _ANSI_ARGS_((Tcl_Interp * interp,
                                                  char *screenName,
                                                  char *baseName));
 #ifndef TkCreateRegion
-EXTERN TkRegion TkCreateRegion _ANSI_ARGS_(( void ));
+EXTERN TkRegion TkCreateRegion _ANSI_ARGS_(( void ) );
 #endif
 EXTERN Time TkCurrentTime _ANSI_ARGS_((TkDisplay * dispPtr));
 EXTERN int TkDeadAppCmd _ANSI_ARGS_(

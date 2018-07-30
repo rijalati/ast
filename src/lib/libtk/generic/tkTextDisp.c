@@ -376,7 +376,7 @@ void TkTextCreateDInfo(textPtr) TkText *textPtr; /* Overall information for
     TextDInfo *dInfoPtr;
     XGCValues gcValues;
 
-    dInfoPtr = ( TextDInfo * )ckalloc(sizeof(TextDInfo));
+    dInfoPtr = ( TextDInfo * ) ckalloc(sizeof(TextDInfo));
     Tcl_InitHashTable(&dInfoPtr->styleTable,
                       sizeof(StyleValues) / sizeof(int));
     dInfoPtr->dLinePtr = NULL;
@@ -430,16 +430,16 @@ void TkTextFreeDInfo(textPtr) TkText *textPtr; /* Overall information for text
      * all free then styleTable will be empty.
      */
 
-    FreeDLines(textPtr, dInfoPtr->dLinePtr, ( DLine * )NULL, 1);
+    FreeDLines(textPtr, dInfoPtr->dLinePtr, ( DLine * ) NULL, 1);
     Tcl_DeleteHashTable(&dInfoPtr->styleTable);
     if (dInfoPtr->copyGC != None) {
         Tk_FreeGC(textPtr->display, dInfoPtr->copyGC);
     }
     Tk_FreeGC(textPtr->display, dInfoPtr->scrollGC);
     if (dInfoPtr->flags & REDRAW_PENDING) {
-        Tcl_CancelIdleCall(DisplayText, ( ClientData )textPtr);
+        Tcl_CancelIdleCall(DisplayText, ( ClientData ) textPtr);
     }
-    ckfree(( char * )dInfoPtr);
+    ckfree(( char * ) dInfoPtr);
 }
 
 /*
@@ -501,7 +501,7 @@ TkTextIndex *indexPtr; /* The character in the text for which
     lMargin1Prio = lMargin2Prio = rMarginPrio = -1;
     spacing1Prio = spacing2Prio = spacing3Prio = -1;
     overstrikePrio = tabPrio = wrapPrio = -1;
-    memset(( VOID * )&styleValues, 0, sizeof(StyleValues));
+    memset(( VOID * ) &styleValues, 0, sizeof(StyleValues));
     styleValues.relief = TK_RELIEF_FLAT;
     styleValues.fgColor = textPtr->fgColor;
     styleValues.fontPtr = textPtr->fontPtr;
@@ -608,7 +608,7 @@ TkTextIndex *indexPtr; /* The character in the text for which
         }
     }
     if (tagPtrs != NULL) {
-        ckfree(( char * )tagPtrs);
+        ckfree(( char * ) tagPtrs);
     }
 
     /*
@@ -616,9 +616,9 @@ TkTextIndex *indexPtr; /* The character in the text for which
      */
 
     hPtr = Tcl_CreateHashEntry(
-    &textPtr->dInfoPtr->styleTable, ( char * )&styleValues, &new);
+    &textPtr->dInfoPtr->styleTable, ( char * ) &styleValues, &new);
     if (!new) {
-        stylePtr = ( TextStyle * )Tcl_GetHashValue(hPtr);
+        stylePtr = ( TextStyle * ) Tcl_GetHashValue(hPtr);
         stylePtr->refCount++;
         return stylePtr;
     }
@@ -627,7 +627,7 @@ TkTextIndex *indexPtr; /* The character in the text for which
      * No existing style matched.  Make a new one.
      */
 
-    stylePtr = ( TextStyle * )ckalloc(sizeof(TextStyle));
+    stylePtr = ( TextStyle * ) ckalloc(sizeof(TextStyle));
     stylePtr->refCount = 1;
     if (styleValues.border != NULL) {
         gcValues.foreground = Tk_3DBorderColor(styleValues.border)->pixel;
@@ -651,7 +651,7 @@ TkTextIndex *indexPtr; /* The character in the text for which
     }
     stylePtr->fgGC = Tk_GetGC(textPtr->tkwin, mask, &gcValues);
     stylePtr->sValuePtr
-    = ( StyleValues * )Tcl_GetHashKey(&textPtr->dInfoPtr->styleTable, hPtr);
+    = ( StyleValues * ) Tcl_GetHashKey(&textPtr->dInfoPtr->styleTable, hPtr);
     stylePtr->hPtr = hPtr;
     Tcl_SetHashValue(hPtr, stylePtr);
     return stylePtr;
@@ -689,7 +689,7 @@ TextStyle *stylePtr; /* Information about style to free. */
         }
         Tk_FreeGC(textPtr->display, stylePtr->fgGC);
         Tcl_DeleteHashEntry(stylePtr->hPtr);
-        ckfree(( char * )stylePtr);
+        ckfree(( char * ) stylePtr);
     }
 }
 
@@ -764,7 +764,7 @@ TkTextIndex *indexPtr; /* Beginning of display line.  May not
      * Create and initialize a new DLine structure.
      */
 
-    dlPtr = ( DLine * )ckalloc(sizeof(DLine));
+    dlPtr = ( DLine * ) ckalloc(sizeof(DLine));
     dlPtr->index = *indexPtr;
     dlPtr->count = 0;
     dlPtr->y = 0;
@@ -816,7 +816,7 @@ TkTextIndex *indexPtr; /* Beginning of display line.  May not
             continue;
         }
         if (chunkPtr == NULL) {
-            chunkPtr = ( TkTextDispChunk * )ckalloc(sizeof(TkTextDispChunk));
+            chunkPtr = ( TkTextDispChunk * ) ckalloc(sizeof(TkTextDispChunk));
             chunkPtr->nextPtr = NULL;
         }
         chunkPtr->stylePtr = GetStyle(textPtr, &curIndex);
@@ -896,7 +896,7 @@ TkTextIndex *indexPtr; /* Beginning of display line.  May not
              */
 
             if (chunkPtr != NULL) {
-                ckfree(( char * )chunkPtr);
+                ckfree(( char * ) chunkPtr);
             }
             break;
         }
@@ -981,7 +981,7 @@ TkTextIndex *indexPtr; /* Beginning of display line.  May not
             FreeStyle(textPtr, chunkPtr->stylePtr);
             breakChunkPtr->nextPtr = chunkPtr->nextPtr;
             (*chunkPtr->undisplayProc)(textPtr, chunkPtr);
-            ckfree(( char * )chunkPtr);
+            ckfree(( char * ) chunkPtr);
         }
         if (breakCharOffset != breakChunkPtr->numChars) {
             (*breakChunkPtr->undisplayProc)(textPtr, breakChunkPtr);
@@ -1192,7 +1192,7 @@ static void UpdateDisplayInfo(textPtr) TkText *textPtr; /* Text widget to
                 TkTextPrintIndex(&index, string);
                 Tcl_SetVar2(textPtr->interp,
                             "tk_textRelayout",
-                            ( char * )NULL,
+                            ( char * ) NULL,
                             string,
                             TCL_GLOBAL_ONLY | TCL_APPEND_VALUE
                             | TCL_LIST_ELEMENT);
@@ -1292,7 +1292,7 @@ static void UpdateDisplayInfo(textPtr) TkText *textPtr; /* Text widget to
      * Delete any DLine structures that don't fit on the screen.
      */
 
-    FreeDLines(textPtr, dlPtr, ( DLine * )NULL, 1);
+    FreeDLines(textPtr, dlPtr, ( DLine * ) NULL, 1);
 
     /*
      *--------------------------------------------------------------
@@ -1354,13 +1354,13 @@ static void UpdateDisplayInfo(textPtr) TkText *textPtr; /* Text widget to
                     TkTextPrintIndex(&dlPtr->index, string);
                     Tcl_SetVar2(textPtr->interp,
                                 "tk_textRelayout",
-                                ( char * )NULL,
+                                ( char * ) NULL,
                                 string,
                                 TCL_GLOBAL_ONLY | TCL_APPEND_VALUE
                                 | TCL_LIST_ELEMENT);
                 }
             }
-            FreeDLines(textPtr, lowestPtr, ( DLine * )NULL, 0);
+            FreeDLines(textPtr, lowestPtr, ( DLine * ) NULL, 0);
             charsToCount = INT_MAX;
         }
 
@@ -1521,9 +1521,9 @@ int unlink;      /* 1 means DLines are currently linked
             }
             FreeStyle(textPtr, chunkPtr->stylePtr);
             nextChunkPtr = chunkPtr->nextPtr;
-            ckfree(( char * )chunkPtr);
+            ckfree(( char * ) chunkPtr);
         }
-        ckfree(( char * )firstPtr);
+        ckfree(( char * ) firstPtr);
         firstPtr = nextDLinePtr;
     }
     textPtr->dInfoPtr->dLinesInvalidated = 1;
@@ -1684,8 +1684,8 @@ Pixmap pixmap;   /* Pixmap to use for double-buffering.
               dInfoPtr->copyGC,
               dInfoPtr->x,
               0,
-              ( unsigned )(dInfoPtr->maxX - dInfoPtr->x),
-              ( unsigned )height,
+              ( unsigned ) (dInfoPtr->maxX - dInfoPtr->x),
+              ( unsigned ) height,
               dInfoPtr->x,
               dlPtr->y);
     linesRedrawn++;
@@ -1779,8 +1779,8 @@ Pixmap pixmap;   /* Pixmap to use for double-buffering.
                            chunkPtr->stylePtr->bgGC,
                            leftX + xOffset,
                            0,
-                           ( unsigned int )(rightX - leftX),
-                           ( unsigned int )dlPtr->height);
+                           ( unsigned int ) (rightX - leftX),
+                           ( unsigned int ) dlPtr->height);
             if (sValuePtr->relief != TK_RELIEF_FLAT) {
                 Tk_3DVerticalBevel(textPtr->tkwin,
                                    pixmap,
@@ -2107,7 +2107,7 @@ Pixmap pixmap;   /* Pixmap to use for double-buffering.
 static void DisplayText(clientData) ClientData clientData; /* Information
                                                               about widget. */
 {
-    TkText *textPtr = ( TkText * )clientData;
+    TkText *textPtr = ( TkText * ) clientData;
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
     Tk_Window tkwin;
     DLine *dlPtr;
@@ -2128,11 +2128,11 @@ static void DisplayText(clientData) ClientData clientData; /* Information
     }
 
     interp = textPtr->interp;
-    Tcl_Preserve(( ClientData )interp);
+    Tcl_Preserve(( ClientData ) interp);
 
     if (tkTextDebug) {
         Tcl_SetVar2(
-        interp, "tk_textRelayout", ( char * )NULL, "", TCL_GLOBAL_ONLY);
+        interp, "tk_textRelayout", ( char * ) NULL, "", TCL_GLOBAL_ONLY);
     }
 
     if (textPtr->tkwin == NULL) {
@@ -2153,7 +2153,7 @@ static void DisplayText(clientData) ClientData clientData; /* Information
     numRedisplays++;
     if (tkTextDebug) {
         Tcl_SetVar2(
-        interp, "tk_textRedraw", ( char * )NULL, "", TCL_GLOBAL_ONLY);
+        interp, "tk_textRedraw", ( char * ) NULL, "", TCL_GLOBAL_ONLY);
     }
 
     if (textPtr->tkwin == NULL) {
@@ -2174,11 +2174,11 @@ static void DisplayText(clientData) ClientData clientData; /* Information
      */
 
     while (dInfoPtr->flags & REPICK_NEEDED) {
-        Tcl_Preserve(( ClientData )textPtr);
+        Tcl_Preserve(( ClientData ) textPtr);
         dInfoPtr->flags &= ~REPICK_NEEDED;
         TkTextPickCurrent(textPtr, &textPtr->pickEvent);
         tkwin = textPtr->tkwin;
-        Tcl_Release(( ClientData )textPtr);
+        Tcl_Release(( ClientData ) textPtr);
         if (tkwin == NULL) {
             goto end;
         }
@@ -2303,7 +2303,7 @@ static void DisplayText(clientData) ClientData clientData; /* Information
         if (tkTextDebug) {
             Tcl_SetVar2(interp,
                         "tk_textRedraw",
-                        ( char * )NULL,
+                        ( char * ) NULL,
                         "borders",
                         TCL_GLOBAL_ONLY | TCL_APPEND_VALUE
                         | TCL_LIST_ELEMENT);
@@ -2422,7 +2422,7 @@ static void DisplayText(clientData) ClientData clientData; /* Information
                     TkTextPrintIndex(&dlPtr->index, string);
                     Tcl_SetVar2(textPtr->interp,
                                 "tk_textRedraw",
-                                ( char * )NULL,
+                                ( char * ) NULL,
                                 string,
                                 TCL_GLOBAL_ONLY | TCL_APPEND_VALUE
                                 | TCL_LIST_ELEMENT);
@@ -2453,7 +2453,7 @@ static void DisplayText(clientData) ClientData clientData; /* Information
         if (tkTextDebug) {
             Tcl_SetVar2(textPtr->interp,
                         "tk_textRedraw",
-                        ( char * )NULL,
+                        ( char * ) NULL,
                         "eof",
                         TCL_GLOBAL_ONLY | TCL_APPEND_VALUE
                         | TCL_LIST_ELEMENT);
@@ -2513,7 +2513,7 @@ doScrollbars:
     }
 
 end:
-    Tcl_Release(( ClientData )interp);
+    Tcl_Release(( ClientData ) interp);
 }
 
 /*
@@ -2543,7 +2543,7 @@ void TkTextEventuallyRepick(textPtr) TkText *textPtr; /* Widget record for
     dInfoPtr->flags |= REPICK_NEEDED;
     if (!(dInfoPtr->flags & REDRAW_PENDING)) {
         dInfoPtr->flags |= REDRAW_PENDING;
-        Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+        Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
     }
 }
 
@@ -2587,7 +2587,7 @@ int width, height; /* Width and height of area to be redrawn. */
 
     if (!(dInfoPtr->flags & REDRAW_PENDING)) {
         dInfoPtr->flags |= REDRAW_PENDING;
-        Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+        Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
     }
     TkDestroyRegion(damageRgn);
 }
@@ -2631,7 +2631,7 @@ TkRegion region; /* Region of area to redraw. */
                                rect.x,
                                dlPtr->y,
                                rect.width,
-                               ( unsigned int )dlPtr->height)
+                               ( unsigned int ) dlPtr->height)
                 != RectangleOut)) {
             dlPtr->oldY = -1;
         }
@@ -2705,7 +2705,7 @@ TkTextIndex *index2Ptr; /* Index of character just after last one
      */
 
     if (!(dInfoPtr->flags & REDRAW_PENDING)) {
-        Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+        Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
     }
     dInfoPtr->flags |= REDRAW_PENDING | DINFO_OUT_OF_DATE | REPICK_NEEDED;
 
@@ -2829,7 +2829,7 @@ int withTag;            /* 1 means redraw characters that have the
      */
 
     if (!(dInfoPtr->flags & REDRAW_PENDING)) {
-        Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+        Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
     }
     dInfoPtr->flags |= REDRAW_PENDING | DINFO_OUT_OF_DATE | REPICK_NEEDED;
 
@@ -2933,7 +2933,7 @@ void TkTextRelayoutWindow(textPtr) TkText *textPtr; /* Widget record for text
      */
 
     if (!(dInfoPtr->flags & REDRAW_PENDING)) {
-        Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+        Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
     }
     dInfoPtr->flags
     |= REDRAW_PENDING | REDRAW_BORDERS | DINFO_OUT_OF_DATE | REPICK_NEEDED;
@@ -2954,7 +2954,7 @@ void TkTextRelayoutWindow(textPtr) TkText *textPtr; /* Widget record for text
      * Throw away all the current layout information.
      */
 
-    FreeDLines(textPtr, dInfoPtr->dLinePtr, ( DLine * )NULL, 1);
+    FreeDLines(textPtr, dInfoPtr->dLinePtr, ( DLine * ) NULL, 1);
     dInfoPtr->dLinePtr = NULL;
 
     /*
@@ -3140,7 +3140,7 @@ int pickPlace;         /* 0 means topLine must appear at top of
 
 scheduleUpdate:
     if (!(dInfoPtr->flags & REDRAW_PENDING)) {
-        Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+        Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
     }
     dInfoPtr->flags |= REDRAW_PENDING | DINFO_OUT_OF_DATE | REPICK_NEEDED;
 }
@@ -3234,7 +3234,7 @@ TkTextIndex *dstPtr; /* Index to fill in with result. */
          * for the next display line to lay out.
          */
 
-        FreeDLines(textPtr, lowestPtr, ( DLine * )NULL, 0);
+        FreeDLines(textPtr, lowestPtr, ( DLine * ) NULL, 0);
         if (distance < 0) {
             return;
         }
@@ -3288,7 +3288,7 @@ char **argv; /* Argument strings.  Someone else has already
                          "wrong # args: should be \"",
                          argv[0],
                          " see index\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (TkTextGetIndex(interp, textPtr, argv[2], &index) != TCL_OK) {
@@ -3377,7 +3377,7 @@ char **argv; /* Argument strings.  Someone else has already
     dInfoPtr->flags |= DINFO_OUT_OF_DATE;
     if (!(dInfoPtr->flags & REDRAW_PENDING)) {
         dInfoPtr->flags |= REDRAW_PENDING;
-        Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+        Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
     }
     return TCL_OK;
 }
@@ -3455,7 +3455,7 @@ char **argv; /* Argument strings.  Someone else has already
     dInfoPtr->flags |= DINFO_OUT_OF_DATE;
     if (!(dInfoPtr->flags & REDRAW_PENDING)) {
         dInfoPtr->flags |= REDRAW_PENDING;
-        Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+        Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
     }
     return TCL_OK;
 }
@@ -3530,7 +3530,7 @@ int offset; /* Amount by which to scroll, in *screen*
              * for the next display line to lay out.
              */
 
-            FreeDLines(textPtr, lowestPtr, ( DLine * )NULL, 0);
+            FreeDLines(textPtr, lowestPtr, ( DLine * ) NULL, 0);
             if (offset >= 0) {
                 goto scheduleUpdate;
             }
@@ -3555,7 +3555,7 @@ int offset; /* Amount by which to scroll, in *screen*
             dlPtr = LayoutDLine(textPtr, &textPtr->topIndex);
             dlPtr->nextPtr = NULL;
             TkTextIndexForwChars(&textPtr->topIndex, dlPtr->count, &new);
-            FreeDLines(textPtr, dlPtr, ( DLine * )NULL, 0);
+            FreeDLines(textPtr, dlPtr, ( DLine * ) NULL, 0);
             if (new.linePtr == lastLinePtr) {
                 break;
             }
@@ -3565,7 +3565,7 @@ int offset; /* Amount by which to scroll, in *screen*
 
 scheduleUpdate:
     if (!(dInfoPtr->flags & REDRAW_PENDING)) {
-        Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+        Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
     }
     dInfoPtr->flags |= REDRAW_PENDING | DINFO_OUT_OF_DATE | REPICK_NEEDED;
 }
@@ -3631,7 +3631,7 @@ char **argv; /* Argument strings.  Someone else has already
                                  "wrong # args: should be \"",
                                  argv[0],
                                  " yview -pickplace lineNum|index\"",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
@@ -3718,7 +3718,7 @@ char **argv; /* Argument strings.  Someone else has already
                 dlPtr->nextPtr = NULL;
                 TkTextIndexForwChars(&textPtr->topIndex, dlPtr->count, &new);
                 pixels -= dlPtr->height;
-                FreeDLines(textPtr, dlPtr, ( DLine * )NULL, 0);
+                FreeDLines(textPtr, dlPtr, ( DLine * ) NULL, 0);
                 if (new.linePtr == lastLinePtr) {
                     break;
                 }
@@ -3726,7 +3726,7 @@ char **argv; /* Argument strings.  Someone else has already
             } while (pixels > 0);
         }
         if (!(dInfoPtr->flags & REDRAW_PENDING)) {
-            Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+            Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
         }
         dInfoPtr->flags |= REDRAW_PENDING | DINFO_OUT_OF_DATE | REPICK_NEEDED;
         break;
@@ -3776,7 +3776,7 @@ char **argv; /* Argument strings.  Someone else has already
                          "wrong # args: should be \"",
                          argv[0],
                          " scan mark|dragto x y\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     if (Tcl_GetInt(interp, argv[3], &x) != TCL_OK) {
@@ -3838,13 +3838,13 @@ char **argv; /* Argument strings.  Someone else has already
                          "bad scan option \"",
                          argv[2],
                          "\": must be mark or dragto",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     dInfoPtr->flags |= DINFO_OUT_OF_DATE;
     if (!(dInfoPtr->flags & REDRAW_PENDING)) {
         dInfoPtr->flags |= REDRAW_PENDING;
-        Tcl_DoWhenIdle(DisplayText, ( ClientData )textPtr);
+        Tcl_DoWhenIdle(DisplayText, ( ClientData ) textPtr);
     }
     return TCL_OK;
 }
@@ -3888,10 +3888,10 @@ int report;         /* Non-zero means report info to
     int code;
 
     if (dInfoPtr->maxLength > 0) {
-        first = (( double )dInfoPtr->curPixelOffset) / dInfoPtr->maxLength;
+        first = (( double ) dInfoPtr->curPixelOffset) / dInfoPtr->maxLength;
         last
         = first
-          + (( double )(dInfoPtr->maxX - dInfoPtr->x)) / dInfoPtr->maxLength;
+          + (( double ) (dInfoPtr->maxX - dInfoPtr->x)) / dInfoPtr->maxLength;
         if (last > 1.0) {
             last = 1.0;
         }
@@ -3910,7 +3910,7 @@ int report;         /* Non-zero means report info to
     dInfoPtr->xScrollFirst = first;
     dInfoPtr->xScrollLast = last;
     sprintf(buffer, " %g %g", first, last);
-    code = Tcl_VarEval(interp, textPtr->xScrollCmd, buffer, ( char * )NULL);
+    code = Tcl_VarEval(interp, textPtr->xScrollCmd, buffer, ( char * ) NULL);
     if (code != TCL_OK) {
         Tcl_AddErrorInfo(
         interp, "\n    (horizontal scrolling command executed by text)");
@@ -3959,8 +3959,8 @@ int report;         /* Non-zero means report info to
 
     dlPtr = dInfoPtr->dLinePtr;
     totalLines = TkBTreeNumLines(textPtr->tree);
-    first = (( double )TkBTreeLineIndex(dlPtr->index.linePtr))
-            + (( double )dlPtr->index.charIndex)
+    first = (( double ) TkBTreeLineIndex(dlPtr->index.linePtr))
+            + (( double ) dlPtr->index.charIndex)
               / (TkBTreeCharsInLine(dlPtr->index.linePtr));
     first /= totalLines;
     while (1) {
@@ -3978,8 +3978,8 @@ int report;         /* Non-zero means report info to
         }
         dlPtr = dlPtr->nextPtr;
     }
-    last = (( double )TkBTreeLineIndex(dlPtr->index.linePtr))
-           + (( double )(dlPtr->index.charIndex + count))
+    last = (( double ) TkBTreeLineIndex(dlPtr->index.linePtr))
+           + (( double ) (dlPtr->index.charIndex + count))
              / (TkBTreeCharsInLine(dlPtr->index.linePtr));
     last /= totalLines;
     if (!report) {
@@ -3993,7 +3993,7 @@ int report;         /* Non-zero means report info to
     dInfoPtr->yScrollFirst = first;
     dInfoPtr->yScrollLast = last;
     sprintf(buffer, " %g %g", first, last);
-    code = Tcl_VarEval(interp, textPtr->yScrollCmd, buffer, ( char * )NULL);
+    code = Tcl_VarEval(interp, textPtr->yScrollCmd, buffer, ( char * ) NULL);
     if (code != TCL_OK) {
         Tcl_AddErrorInfo(
         interp, "\n    (vertical scrolling command executed by text)");
@@ -4473,11 +4473,11 @@ TkTextDispChunk *chunkPtr;
     chunkPtr->minHeight = 0;
     chunkPtr->width = nextX - chunkPtr->x;
     chunkPtr->breakIndex = -1;
-    ciPtr = ( CharInfo * )ckalloc(
-    ( unsigned )(sizeof(CharInfo) - 3 + charsThatFit));
-    chunkPtr->clientData = ( ClientData )ciPtr;
+    ciPtr = ( CharInfo * ) ckalloc(
+    ( unsigned ) (sizeof(CharInfo) - 3 + charsThatFit));
+    chunkPtr->clientData = ( ClientData ) ciPtr;
     ciPtr->numChars = charsThatFit;
-    strncpy(ciPtr->chars, p, ( size_t )charsThatFit);
+    strncpy(ciPtr->chars, p, ( size_t ) charsThatFit);
     if (p[charsThatFit - 1] == '\n' || p[charsThatFit - 1] == '\r') {
         ciPtr->numChars--;
     }
@@ -4548,7 +4548,7 @@ Drawable dst;              /* Pixmap or window in which to draw
 int screenY;               /* Y-coordinate in text window that
                             * corresponds to y. */
 {
-    CharInfo *ciPtr = ( CharInfo * )chunkPtr->clientData;
+    CharInfo *ciPtr = ( CharInfo * ) chunkPtr->clientData;
     TextStyle *stylePtr;
     StyleValues *sValuePtr;
     int offsetChars, offsetX;
@@ -4654,9 +4654,9 @@ CharUndisplayProc(textPtr, chunkPtr) TkText *textPtr; /* Overall information
                                                        * about text widget. */
 TkTextDispChunk *chunkPtr; /* Chunk that is about to be freed. */
 {
-    CharInfo *ciPtr = ( CharInfo * )chunkPtr->clientData;
+    CharInfo *ciPtr = ( CharInfo * ) chunkPtr->clientData;
 
-    ckfree(( char * )ciPtr);
+    ckfree(( char * ) ciPtr);
 }
 
 /*
@@ -4683,7 +4683,7 @@ static int CharMeasureProc(chunkPtr,
 int x; /* X-coordinate, in same coordinate
         * system as chunkPtr->x. */
 {
-    CharInfo *ciPtr = ( CharInfo * )chunkPtr->clientData;
+    CharInfo *ciPtr = ( CharInfo * ) chunkPtr->clientData;
     int endX;
 
     return TkMeasureChars(chunkPtr->stylePtr->sValuePtr->fontPtr,
@@ -4745,7 +4745,7 @@ int *widthPtr;             /* Gets filled in with width of
 int *heightPtr;            /* Gets filled in with height of
                             * character, in pixels. */
 {
-    CharInfo *ciPtr = ( CharInfo * )chunkPtr->clientData;
+    CharInfo *ciPtr = ( CharInfo * ) chunkPtr->clientData;
     int maxX;
 
     maxX = chunkPtr->width + chunkPtr->x;
@@ -4916,7 +4916,7 @@ TkTextDispChunk *chunkPtr;   /* Chunk whose last character is
         if (chunkPtr2->displayProc != CharDisplayProc) {
             continue;
         }
-        ciPtr = ( CharInfo * )chunkPtr2->clientData;
+        ciPtr = ( CharInfo * ) chunkPtr2->clientData;
         for (p = ciPtr->chars, i = 0; i < ciPtr->numChars; p++, i++) {
             if (isdigit(UCHAR(*p))) {
                 gotDigit = 1;
@@ -4936,7 +4936,7 @@ endOfNumber:
     if (decimalChunkPtr != NULL) {
         int curX;
 
-        ciPtr = ( CharInfo * )decimalChunkPtr->clientData;
+        ciPtr = ( CharInfo * ) decimalChunkPtr->clientData;
         TkMeasureChars(decimalChunkPtr->stylePtr->sValuePtr->fontPtr,
                        ciPtr->chars,
                        decimal,

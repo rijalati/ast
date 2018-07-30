@@ -68,7 +68,7 @@ Void_t **datap;
             mtcd.data = NIL(Vcchar_t *);
             mtcd.size = 0;
             rv
-            = (*coder->meth->eventf)(coder, VC_EXTRACT, ( Void_t * )(&mtcd));
+            = (*coder->meth->eventf)(coder, VC_EXTRACT, ( Void_t * ) (&mtcd));
             if (rv < 0)
                 return -1;
             else if (rv > 0) {
@@ -95,7 +95,7 @@ Void_t **datap;
     }
 
     if (datap)
-        *datap = ( Void_t * )data;
+        *datap = ( Void_t * ) data;
     return dtsz;
 }
 
@@ -124,7 +124,7 @@ size_t dtsz;
     vc = coder = NIL(Vcodex_t *);
 
     while (vciomore(&io) > 0) {
-        mt = ( char * )vcionext(&io);
+        mt = ( char * ) vcionext(&io);
         for (sz = vciomore(&io), k = 0; k < sz; ++k)
             if (mt[k] == 0)
                 break;
@@ -135,7 +135,7 @@ size_t dtsz;
         vcioskip(&io, k + 1);
 
         /* get the initialization data, if any */
-        if ((sz = ( ssize_t )vciogetu(&io)) < 0 || sz > vciomore(&io))
+        if ((sz = ( ssize_t ) vciogetu(&io)) < 0 || sz > vciomore(&io))
             goto error;
         dt = vcionext(&io);
         vcioskip(&io, sz);
@@ -145,7 +145,7 @@ size_t dtsz;
             mtcd.data = dt;
             mtcd.size = sz;
             mtcd.coder = NIL(Vcodex_t *);
-            rv = (*meth->eventf)(0, VC_RESTORE, ( Void_t * )(&mtcd));
+            rv = (*meth->eventf)(0, VC_RESTORE, ( Void_t * ) (&mtcd));
             if (rv < 0)
                 goto error;
             else if (rv > 0)

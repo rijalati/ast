@@ -173,7 +173,7 @@ Tcl_Interp *interp;    /* Current interpreter. */
 int argc;              /* Number of arguments. */
 char **argv;           /* Argument strings. */
 {
-    Tk_Window tkwin = ( Tk_Window )clientData;
+    Tk_Window tkwin = ( Tk_Window ) clientData;
     size_t length;
     int c;
 
@@ -185,7 +185,7 @@ char **argv;           /* Argument strings. */
                          "wrong # args: should be \"",
                          argv[0],
                          " option arg ?arg ...?\"",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     c = argv[1][0];
@@ -202,7 +202,7 @@ char **argv;           /* Argument strings. */
         prevPtr = GetPacker(tkwin2);
         if (prevPtr->masterPtr == NULL) {
             Tcl_AppendResult(
-            interp, "window \"", argv[2], "\" isn't packed", ( char * )NULL);
+            interp, "window \"", argv[2], "\" isn't packed", ( char * ) NULL);
             return TCL_ERROR;
         }
         return PackAfter(
@@ -237,7 +237,7 @@ char **argv;           /* Argument strings. */
         packPtr = GetPacker(tkwin2);
         if (packPtr->masterPtr == NULL) {
             Tcl_AppendResult(
-            interp, "window \"", argv[2], "\" isn't packed", ( char * )NULL);
+            interp, "window \"", argv[2], "\" isn't packed", ( char * ) NULL);
             return TCL_ERROR;
         }
         masterPtr = packPtr->masterPtr;
@@ -261,7 +261,7 @@ char **argv;           /* Argument strings. */
                              "bad argument \"",
                              argv[2],
                              "\": must be name of window",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         return ConfigureSlaves(interp, tkwin, argc - 2, argv + 2);
@@ -278,7 +278,7 @@ char **argv;           /* Argument strings. */
             slavePtr = GetPacker(slave);
             if ((slavePtr != NULL) && (slavePtr->masterPtr != NULL)) {
                 Tk_ManageGeometry(
-                slave, ( Tk_GeomMgr * )NULL, ( ClientData )NULL);
+                slave, ( Tk_GeomMgr * ) NULL, ( ClientData ) NULL);
                 if (slavePtr->masterPtr->tkwin
                     != Tk_Parent(slavePtr->tkwin)) {
                     Tk_UnmaintainGeometry(slavePtr->tkwin,
@@ -299,7 +299,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " info window\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         slave = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -309,7 +309,7 @@ char **argv;           /* Argument strings. */
         slavePtr = GetPacker(slave);
         if (slavePtr->masterPtr == NULL) {
             Tcl_AppendResult(
-            interp, "window \"", argv[2], "\" isn't packed", ( char * )NULL);
+            interp, "window \"", argv[2], "\" isn't packed", ( char * ) NULL);
             return TCL_ERROR;
         }
         Tcl_AppendElement(interp, "-in");
@@ -320,19 +320,19 @@ char **argv;           /* Argument strings. */
                          " -expand ",
                          (slavePtr->flags & EXPAND) ? "1" : "0",
                          " -fill ",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         switch (slavePtr->flags & (FILLX | FILLY)) {
         case 0:
-            Tcl_AppendResult(interp, "none", ( char * )NULL);
+            Tcl_AppendResult(interp, "none", ( char * ) NULL);
             break;
         case FILLX:
-            Tcl_AppendResult(interp, "x", ( char * )NULL);
+            Tcl_AppendResult(interp, "x", ( char * ) NULL);
             break;
         case FILLY:
-            Tcl_AppendResult(interp, "y", ( char * )NULL);
+            Tcl_AppendResult(interp, "y", ( char * ) NULL);
             break;
         case FILLX | FILLY:
-            Tcl_AppendResult(interp, "both", ( char * )NULL);
+            Tcl_AppendResult(interp, "both", ( char * ) NULL);
             break;
         }
         sprintf(buffer,
@@ -342,7 +342,7 @@ char **argv;           /* Argument strings. */
                 slavePtr->padX / 2,
                 slavePtr->padY / 2);
         Tcl_AppendResult(
-        interp, buffer, " -side ", sideNames[slavePtr->side], ( char * )NULL);
+        interp, buffer, " -side ", sideNames[slavePtr->side], ( char * ) NULL);
     } else if ((c == 'p') && (strncmp(argv[1], "propagate", length) == 0)) {
         Tk_Window master;
         Packer *masterPtr;
@@ -353,7 +353,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " propagate window ?boolean?\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         master = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -385,7 +385,7 @@ char **argv;           /* Argument strings. */
             }
             if (!(masterPtr->flags & REQUESTED_REPACK)) {
                 masterPtr->flags |= REQUESTED_REPACK;
-                Tcl_DoWhenIdle(ArrangePacking, ( ClientData )masterPtr);
+                Tcl_DoWhenIdle(ArrangePacking, ( ClientData ) masterPtr);
             }
         } else {
             masterPtr->flags |= DONT_PROPAGATE;
@@ -399,7 +399,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " slaves window\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         master = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -420,7 +420,7 @@ char **argv;           /* Argument strings. */
                              "wrong # args: should be \"",
                              argv[0],
                              " unpack window\"",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         tkwin2 = Tk_NameToWindow(interp, argv[2], tkwin);
@@ -430,7 +430,7 @@ char **argv;           /* Argument strings. */
         packPtr = GetPacker(tkwin2);
         if ((packPtr != NULL) && (packPtr->masterPtr != NULL)) {
             Tk_ManageGeometry(
-            tkwin2, ( Tk_GeomMgr * )NULL, ( ClientData )NULL);
+            tkwin2, ( Tk_GeomMgr * ) NULL, ( ClientData ) NULL);
             if (packPtr->masterPtr->tkwin != Tk_Parent(packPtr->tkwin)) {
                 Tk_UnmaintainGeometry(packPtr->tkwin,
                                       packPtr->masterPtr->tkwin);
@@ -444,7 +444,7 @@ char **argv;           /* Argument strings. */
                          argv[1],
                          "\": must be configure, forget, info, ",
                          "propagate, or slaves",
-                         ( char * )NULL);
+                         ( char * ) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -477,12 +477,12 @@ static void PackReqProc(clientData,
 Tk_Window tkwin; /* Other Tk-related information
                   * about the window. */
 {
-    Packer *packPtr = ( Packer * )clientData;
+    Packer *packPtr = ( Packer * ) clientData;
 
     packPtr = packPtr->masterPtr;
     if (!(packPtr->flags & REQUESTED_REPACK)) {
         packPtr->flags |= REQUESTED_REPACK;
-        Tcl_DoWhenIdle(ArrangePacking, ( ClientData )packPtr);
+        Tcl_DoWhenIdle(ArrangePacking, ( ClientData ) packPtr);
     }
 }
 
@@ -509,7 +509,7 @@ ClientData clientData; /* Packer structure for slave window that
                         * was stolen away. */
 Tk_Window tkwin;       /* Tk's handle for the slave window. */
 {
-    Packer *slavePtr = ( Packer * )clientData;
+    Packer *slavePtr = ( Packer * ) clientData;
 
     if (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin)) {
         Tk_UnmaintainGeometry(slavePtr->tkwin, slavePtr->masterPtr->tkwin);
@@ -543,7 +543,7 @@ static void ArrangePacking(clientData)
 ClientData clientData; /* Structure describing parent whose slaves
                         * are to be re-layed out. */
 {
-    Packer *masterPtr = ( Packer * )clientData;
+    Packer *masterPtr = ( Packer * ) clientData;
     Packer *slavePtr;
     int cavityX, cavityY, cavityWidth, cavityHeight;
     /* These variables keep track of the
@@ -583,7 +583,7 @@ ClientData clientData; /* Structure describing parent whose slaves
     }
     masterPtr->abortPtr = &abort;
     abort = 0;
-    Tcl_Preserve(( ClientData )masterPtr);
+    Tcl_Preserve(( ClientData ) masterPtr);
 
     /*
      * Pass #1: scan all the slaves to figure out the total amount
@@ -647,7 +647,7 @@ ClientData clientData; /* Structure describing parent whose slaves
         && !(masterPtr->flags & DONT_PROPAGATE)) {
         Tk_GeometryRequest(masterPtr->tkwin, maxWidth, maxHeight);
         masterPtr->flags |= REQUESTED_REPACK;
-        Tcl_DoWhenIdle(ArrangePacking, ( ClientData )masterPtr);
+        Tcl_DoWhenIdle(ArrangePacking, ( ClientData ) masterPtr);
         goto done;
     }
 
@@ -830,7 +830,7 @@ ClientData clientData; /* Structure describing parent whose slaves
 
 done:
     masterPtr->abortPtr = NULL;
-    Tcl_Release(( ClientData )masterPtr);
+    Tcl_Release(( ClientData ) masterPtr);
 }
 
 /*
@@ -991,11 +991,11 @@ static Packer *GetPacker(tkwin) Tk_Window tkwin; /* Token for window for which
      * then create a new one.
      */
 
-    hPtr = Tcl_CreateHashEntry(&packerHashTable, ( char * )tkwin, &new);
+    hPtr = Tcl_CreateHashEntry(&packerHashTable, ( char * ) tkwin, &new);
     if (!new) {
-        return ( Packer * )Tcl_GetHashValue(hPtr);
+        return ( Packer * ) Tcl_GetHashValue(hPtr);
     }
-    packPtr = ( Packer * )ckalloc(sizeof(Packer));
+    packPtr = ( Packer * ) ckalloc(sizeof(Packer));
     packPtr->tkwin = tkwin;
     packPtr->masterPtr = NULL;
     packPtr->nextPtr = NULL;
@@ -1009,7 +1009,7 @@ static Packer *GetPacker(tkwin) Tk_Window tkwin; /* Token for window for which
     packPtr->flags = 0;
     Tcl_SetHashValue(hPtr, packPtr);
     Tk_CreateEventHandler(
-    tkwin, StructureNotifyMask, PackStructureProc, ( ClientData )packPtr);
+    tkwin, StructureNotifyMask, PackStructureProc, ( ClientData ) packPtr);
     return packPtr;
 }
 
@@ -1061,7 +1061,7 @@ char **argv;        /* Array of lists, each containing 2
                              "wrong # args: window \"",
                              argv[0],
                              "\" should be followed by options",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -1081,18 +1081,18 @@ char **argv;        /* Array of lists, each containing 2
             if (ancestor == parent) {
                 break;
             }
-            if ((( Tk_FakeWin * )(ancestor))->flags & TK_TOP_LEVEL) {
+            if ((( Tk_FakeWin * ) (ancestor))->flags & TK_TOP_LEVEL) {
             badWindow:
                 Tcl_AppendResult(interp,
                                  "can't pack ",
                                  argv[0],
                                  " inside ",
                                  Tk_PathName(masterPtr->tkwin),
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
-        if ((( Tk_FakeWin * )(tkwin))->flags & TK_TOP_LEVEL) {
+        if ((( Tk_FakeWin * ) (tkwin))->flags & TK_TOP_LEVEL) {
             goto badWindow;
         }
         if (tkwin == masterPtr->tkwin) {
@@ -1147,7 +1147,7 @@ char **argv;        /* Array of lists, each containing 2
                     "wrong # args: \"",
                     curOpt,
                     "\" option must be followed by screen distance",
-                    ( char * )NULL);
+                    ( char * ) NULL);
                     goto error;
                 }
                 if ((Tk_GetPixels(interp, tkwin, options[index + 1], &tmp)
@@ -1158,7 +1158,7 @@ char **argv;        /* Array of lists, each containing 2
                                      "bad pad value \"",
                                      options[index + 1],
                                      "\": must be positive screen distance",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     goto error;
                 }
                 packPtr->padX = tmp;
@@ -1183,7 +1183,7 @@ char **argv;        /* Array of lists, each containing 2
                     interp,
                     "wrong # args: \"frame\" ",
                     "option must be followed by anchor point",
-                    ( char * )NULL);
+                    ( char * ) NULL);
                     goto error;
                 }
                 if (Tk_GetAnchor(interp, options[index + 1], &packPtr->anchor)
@@ -1198,7 +1198,7 @@ char **argv;        /* Array of lists, each containing 2
                 curOpt,
                 "\": should be top, bottom, left, right, ",
                 "expand, fill, fillx, filly, padx, pady, or frame",
-                ( char * )NULL);
+                ( char * ) NULL);
                 goto error;
             }
         }
@@ -1233,9 +1233,9 @@ char **argv;        /* Array of lists, each containing 2
                 packPtr->nextPtr = prevPtr->nextPtr;
                 prevPtr->nextPtr = packPtr;
             }
-            Tk_ManageGeometry(tkwin, &packerType, ( ClientData )packPtr);
+            Tk_ManageGeometry(tkwin, &packerType, ( ClientData ) packPtr);
         }
-        ckfree(( char * )options);
+        ckfree(( char * ) options);
     }
 
     /*
@@ -1248,12 +1248,12 @@ char **argv;        /* Array of lists, each containing 2
     }
     if (!(masterPtr->flags & REQUESTED_REPACK)) {
         masterPtr->flags |= REQUESTED_REPACK;
-        Tcl_DoWhenIdle(ArrangePacking, ( ClientData )masterPtr);
+        Tcl_DoWhenIdle(ArrangePacking, ( ClientData ) masterPtr);
     }
     return TCL_OK;
 
 error:
-    ckfree(( char * )options);
+    ckfree(( char * ) options);
     return TCL_ERROR;
 }
 
@@ -1296,7 +1296,7 @@ static void Unlink(packPtr) Packer *packPtr; /* Window to unlink. */
     }
     if (!(masterPtr->flags & REQUESTED_REPACK)) {
         masterPtr->flags |= REQUESTED_REPACK;
-        Tcl_DoWhenIdle(ArrangePacking, ( ClientData )masterPtr);
+        Tcl_DoWhenIdle(ArrangePacking, ( ClientData ) masterPtr);
     }
     if (masterPtr->abortPtr != NULL) {
         *masterPtr->abortPtr = 1;
@@ -1326,8 +1326,8 @@ static void Unlink(packPtr) Packer *packPtr; /* Window to unlink. */
 static void DestroyPacker(memPtr) char *memPtr; /* Info about packed window
                                                  * that is now dead. */
 {
-    Packer *packPtr = ( Packer * )memPtr;
-    ckfree(( char * )packPtr);
+    Packer *packPtr = ( Packer * ) memPtr;
+    ckfree(( char * ) packPtr);
 }
 
 /*
@@ -1354,12 +1354,12 @@ ClientData clientData; /* Our information about window
                         * referred to by eventPtr. */
 XEvent *eventPtr;      /* Describes what just happened. */
 {
-    Packer *packPtr = ( Packer * )clientData;
+    Packer *packPtr = ( Packer * ) clientData;
     if (eventPtr->type == ConfigureNotify) {
         if ((packPtr->slavePtr != NULL)
             && !(packPtr->flags & REQUESTED_REPACK)) {
             packPtr->flags |= REQUESTED_REPACK;
-            Tcl_DoWhenIdle(ArrangePacking, ( ClientData )packPtr);
+            Tcl_DoWhenIdle(ArrangePacking, ( ClientData ) packPtr);
         }
         if (packPtr->doubleBw
             != 2 * Tk_Changes(packPtr->tkwin)->border_width) {
@@ -1369,7 +1369,7 @@ XEvent *eventPtr;      /* Describes what just happened. */
                 = 2 * Tk_Changes(packPtr->tkwin)->border_width;
                 packPtr->masterPtr->flags |= REQUESTED_REPACK;
                 Tcl_DoWhenIdle(ArrangePacking,
-                               ( ClientData )packPtr->masterPtr);
+                               ( ClientData ) packPtr->masterPtr);
             }
         }
     } else if (eventPtr->type == DestroyNotify) {
@@ -1381,19 +1381,19 @@ XEvent *eventPtr;      /* Describes what just happened. */
         for (slavePtr = packPtr->slavePtr; slavePtr != NULL;
              slavePtr = nextPtr) {
             Tk_ManageGeometry(
-            slavePtr->tkwin, ( Tk_GeomMgr * )NULL, ( ClientData )NULL);
+            slavePtr->tkwin, ( Tk_GeomMgr * ) NULL, ( ClientData ) NULL);
             Tk_UnmapWindow(slavePtr->tkwin);
             slavePtr->masterPtr = NULL;
             nextPtr = slavePtr->nextPtr;
             slavePtr->nextPtr = NULL;
         }
         Tcl_DeleteHashEntry(
-        Tcl_FindHashEntry(&packerHashTable, ( char * )packPtr->tkwin));
+        Tcl_FindHashEntry(&packerHashTable, ( char * ) packPtr->tkwin));
         if (packPtr->flags & REQUESTED_REPACK) {
-            Tcl_CancelIdleCall(ArrangePacking, ( ClientData )packPtr);
+            Tcl_CancelIdleCall(ArrangePacking, ( ClientData ) packPtr);
         }
         packPtr->tkwin = NULL;
-        Tcl_EventuallyFree(( ClientData )packPtr, DestroyPacker);
+        Tcl_EventuallyFree(( ClientData ) packPtr, DestroyPacker);
     } else if (eventPtr->type == MapNotify) {
         /*
          * When a master gets mapped, must redo the geometry computation
@@ -1403,7 +1403,7 @@ XEvent *eventPtr;      /* Describes what just happened. */
         if ((packPtr->slavePtr != NULL)
             && !(packPtr->flags & REQUESTED_REPACK)) {
             packPtr->flags |= REQUESTED_REPACK;
-            Tcl_DoWhenIdle(ArrangePacking, ( ClientData )packPtr);
+            Tcl_DoWhenIdle(ArrangePacking, ( ClientData ) packPtr);
         }
     } else if (eventPtr->type == UnmapNotify) {
         Packer *packPtr2;
@@ -1490,7 +1490,7 @@ char *argv[];       /* Argument strings:  contains one or more
                              "can't pack \"",
                              argv[j],
                              "\": it's a top-level window",
-                             ( char * )NULL);
+                             ( char * ) NULL);
             return TCL_ERROR;
         }
         slavePtr = GetPacker(slave);
@@ -1516,7 +1516,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                  "extra option \"",
                                  argv[i],
                                  "\" (option with no value?)",
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
             length = strlen(argv[i]);
@@ -1538,7 +1538,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                          "window \"",
                                          argv[i + 1],
                                          "\" isn't packed",
-                                         ( char * )NULL);
+                                         ( char * ) NULL);
                         return TCL_ERROR;
                     }
                     masterPtr = prevPtr->masterPtr;
@@ -1597,7 +1597,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                      "bad fill style \"",
                                      argv[i + 1],
                                      "\": must be none, x, y, or both",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
             } else if ((c == 'i') && (strcmp(argv[i], "-in") == 0)) {
@@ -1624,7 +1624,7 @@ char *argv[];       /* Argument strings:  contains one or more
                                      "bad pad value \"",
                                      argv[i + 1],
                                      "\": must be positive screen distance",
-                                     ( char * )NULL);
+                                     ( char * ) NULL);
                     return TCL_ERROR;
                 }
                 slavePtr->iPadX = tmp * 2;
@@ -1665,7 +1665,7 @@ char *argv[];       /* Argument strings:  contains one or more
                     "bad side \"",
                     argv[i + 1],
                     "\": must be top, bottom, left, or right",
-                    ( char * )NULL);
+                    ( char * ) NULL);
                     return TCL_ERROR;
                 }
             } else {
@@ -1677,7 +1677,7 @@ char *argv[];       /* Argument strings:  contains one or more
                 "\": must be -after, -anchor, -before, ",
                 "-expand, -fill, -in, -ipadx, -ipady, -padx, ",
                 "-pady, or -side",
-                ( char * )NULL);
+                ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
@@ -1736,13 +1736,13 @@ char *argv[];       /* Argument strings:  contains one or more
                                  argv[j],
                                  " inside ",
                                  Tk_PathName(masterPtr->tkwin),
-                                 ( char * )NULL);
+                                 ( char * ) NULL);
                 return TCL_ERROR;
             }
         }
         if (slave == masterPtr->tkwin) {
             Tcl_AppendResult(
-            interp, "can't pack ", argv[j], " inside itself", ( char * )NULL);
+            interp, "can't pack ", argv[j], " inside itself", ( char * ) NULL);
             return TCL_ERROR;
         }
 
@@ -1768,7 +1768,7 @@ char *argv[];       /* Argument strings:  contains one or more
             slavePtr->nextPtr = prevPtr->nextPtr;
             prevPtr->nextPtr = slavePtr;
         }
-        Tk_ManageGeometry(slave, &packerType, ( ClientData )slavePtr);
+        Tk_ManageGeometry(slave, &packerType, ( ClientData ) slavePtr);
         prevPtr = slavePtr;
 
         /*
@@ -1782,7 +1782,7 @@ char *argv[];       /* Argument strings:  contains one or more
         }
         if (!(masterPtr->flags & REQUESTED_REPACK)) {
             masterPtr->flags |= REQUESTED_REPACK;
-            Tcl_DoWhenIdle(ArrangePacking, ( ClientData )masterPtr);
+            Tcl_DoWhenIdle(ArrangePacking, ( ClientData ) masterPtr);
         }
     }
     return TCL_OK;

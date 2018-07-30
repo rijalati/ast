@@ -701,7 +701,7 @@ string(Sfio_t *sp, Keyword_t *key, char **v, int n, unsigned int flags)
             sfputc(sp, ';');
             value(sp, *v, flags);
         }
-    } else if (v && (a = *(( Lc_attribute_list_t ** )v))) {
+    } else if (v && (a = *(( Lc_attribute_list_t ** ) v))) {
         value(sp, a->attribute->name, flags);
         while (a = a->next) {
             sfputc(sp, ';');
@@ -726,7 +726,7 @@ extract(Sfio_t *sp, Keyword_t *key, void *data, unsigned int flags)
     switch (key->type) {
     case C:
         if (key->offset >= 0)
-            i = *(( char * )data + key->offset);
+            i = *(( char * ) data + key->offset);
         else
             i = CHAR_MAX;
         if (i == CHAR_MAX)
@@ -735,7 +735,7 @@ extract(Sfio_t *sp, Keyword_t *key, void *data, unsigned int flags)
         break;
     case I:
         if (key->offset >= 0)
-            i = *( int * )(( char * )data + key->offset);
+            i = *( int * ) (( char * ) data + key->offset);
         else
             i = -1;
         number(sp, key, i, flags);
@@ -754,10 +754,10 @@ extract(Sfio_t *sp, Keyword_t *key, void *data, unsigned int flags)
              * values -- botch botch botch
              */
 
-            if ((( unsigned int )s) < 8196) {
+            if ((( unsigned int ) s) < 8196) {
                 static char xxx[32];
 
-                sfsprintf(xxx, sizeof(xxx), "%d", ( unsigned int )s);
+                sfsprintf(xxx, sizeof(xxx), "%d", ( unsigned int ) s);
                 s = xxx;
             }
 #    endif
@@ -768,7 +768,7 @@ extract(Sfio_t *sp, Keyword_t *key, void *data, unsigned int flags)
         break;
     case S:
         if (key->offset >= 0) {
-            v = ( char ** )(( char * )data + key->offset);
+            v = ( char ** ) (( char * ) data + key->offset);
             i = key->elements;
         } else {
             s = "";
@@ -778,16 +778,16 @@ extract(Sfio_t *sp, Keyword_t *key, void *data, unsigned int flags)
         string(sp, key, v, i, flags);
         break;
     case X:
-        lc = ( Lc_t * )lcinfo(state.categories[key->index].external)->lc;
+        lc = ( Lc_t * ) lcinfo(state.categories[key->index].external)->lc;
         i = 1;
         if (key->offset == CV_language && lc->language) {
-            s = ( char * )lc->language->name;
+            s = ( char * ) lc->language->name;
             flags |= LC_proper;
         } else if (key->offset == CV_territory && lc->territory) {
-            s = ( char * )lc->territory->name;
+            s = ( char * ) lc->territory->name;
             flags |= LC_proper;
         } else if (key->offset == CV_attributes && lc->attributes) {
-            s = ( char * )lc->attributes;
+            s = ( char * ) lc->attributes;
             i = 0;
         } else
             s = "";
@@ -804,7 +804,7 @@ static void
 list_all(Sfio_t *sp, Lc_t *lc, unsigned long flags)
 {
     if (!lc)
-        lc = ( Lc_t * )lcinfo(LC_CTYPE)->lc;
+        lc = ( Lc_t * ) lcinfo(LC_CTYPE)->lc;
     if (!state.sep)
         state.sep = 1;
     else
@@ -847,7 +847,7 @@ list_keyword(Sfio_t *sp, Keyword_t *key, char *value, unsigned int flags)
     case AST_LC_CTYPE:
         switch (key->offset) {
         case CV_charset:
-            s = ( char * )lcinfo(LC_CTYPE)->lc->charset->code;
+            s = ( char * ) lcinfo(LC_CTYPE)->lc->charset->code;
             string(sp, key, &s, 1, flags | LC_upper);
             break;
         case CV_mb_cur_max:
@@ -1044,7 +1044,7 @@ main(int argc, char **argv)
                 }
             }
             for (i = 0, j = '\t'; i < collate; i++, j = ' ')
-                sfprintf(sfstdout, "%c%02x", j, (( unsigned char * )col)[i]);
+                sfprintf(sfstdout, "%c%02x", j, (( unsigned char * ) col)[i]);
             sfputc(sfstdout, '\n');
         }
         return error_info.errors != 0;
@@ -1058,7 +1058,7 @@ main(int argc, char **argv)
             sfprintf(sfstdout, "%s", name);
             collate = mbxfrm(col, name, sizeof(col));
             for (i = 0, j = '\t'; i < collate; i++, j = ' ')
-                sfprintf(sfstdout, "%c%02x", j, (( unsigned char * )col)[i]);
+                sfprintf(sfstdout, "%c%02x", j, (( unsigned char * ) col)[i]);
             sfputc(sfstdout, '\n');
         }
         return error_info.errors != 0;
@@ -1120,13 +1120,13 @@ main(int argc, char **argv)
     while (name = *argv++) {
         if (value = strchr(name, '='))
             *value++ = 0;
-        if (!(key = ( Keyword_t * )dtmatch(state.dict, name))) {
+        if (!(key = ( Keyword_t * ) dtmatch(state.dict, name))) {
             if (name[0] == 'L' && name[1] == 'C' && name[2] == '_')
                 error(2, "%s: unknown category", name);
             else if (oargv[0][0] != '/') {
                 char *cmd[3];
 
-                cmd[0] = ( char * )defer;
+                cmd[0] = ( char * ) defer;
                 cmd[1] = name;
                 cmd[2] = 0;
                 procrun(defer, cmd, 0);
@@ -1139,7 +1139,7 @@ main(int argc, char **argv)
     if (!error_info.errors && !state.output)
         list_keyword(
         sfstdout,
-        ( Keyword_t * )dtmatch(state.dict, state.categories[0].name),
+        ( Keyword_t * ) dtmatch(state.dict, state.categories[0].name),
         NiL,
         flags);
     return error_info.errors != 0;

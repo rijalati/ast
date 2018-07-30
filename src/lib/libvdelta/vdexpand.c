@@ -132,8 +132,8 @@ Void_t *delta; /* delta data	*/
     Table_t tab;
 
     /* get true target size */
-    tab.tar = ( uchar * )target;
-    tab.delta = ( uchar * )delta;
+    tab.tar = ( uchar * ) target;
+    tab.delta = ( uchar * ) delta;
     STRGETU(&tab, t);
     if (t > size)
         return -1;

@@ -51,9 +51,9 @@ static char *Zero = "0";
 #        define isnanl(n) (fpclassify(n) == FP_NAN)
 #    else
 #        define isnan(n)                                                     \
-            (memcmp(( void * )&n, ( void * )&_Sfdnan, sizeof(n)) == 0)
+            (memcmp(( void * ) &n, ( void * ) &_Sfdnan, sizeof(n)) == 0)
 #        define isnanl(n)                                                    \
-            (memcmp(( void * )&n, ( void * )&_Sflnan, sizeof(n)) == 0)
+            (memcmp(( void * ) &n, ( void * ) &_Sflnan, sizeof(n)) == 0)
 #    endif
 #else
 #    if !_lib_isnanl
@@ -144,7 +144,7 @@ int format;  /* conversion format		*/
 
 #if !_ast_fltmax_double
     if (format & SFFMT_LDOUBLE) {
-        Sfdouble_t f = *( Sfdouble_t * )vp;
+        Sfdouble_t f = *( Sfdouble_t * ) vp;
 
         if (isnanl(f)) {
 #    if _lib_signbit
@@ -174,7 +174,7 @@ int format;  /* conversion format		*/
         if (copysignl(1.0, f) < 0.0)
 #            else
 #                if _lib_copysign
-        if (copysign(1.0, ( double )f) < 0.0)
+        if (copysign(1.0, ( double ) f) < 0.0)
 #                else
         if (f < 0.0)
 #                endif
@@ -236,8 +236,8 @@ int format;  /* conversion format		*/
         }
 
         n = 0;
-        if (f >= ( Sfdouble_t )CVT_LDBL_MAXINT) { /* scale to a small enough
-                                                     number to fit an int */
+        if (f >= ( Sfdouble_t ) CVT_LDBL_MAXINT) { /* scale to a small enough
+                                                      number to fit an int */
             v = SF_MAXEXP10 - 1;
             do {
                 if (f < _Sfpos10[v])
@@ -247,7 +247,7 @@ int format;  /* conversion format		*/
                     if ((n += (1 << v)) >= SF_IDIGITS)
                         return SF_INF;
                 }
-            } while (f >= ( Sfdouble_t )CVT_LDBL_MAXINT);
+            } while (f >= ( Sfdouble_t ) CVT_LDBL_MAXINT);
         } else if (f > 0.0 && f < 0.1) { /* scale to avoid excessive multiply
                                             by 10 below */
             v = SF_MAXEXP10 - 1;
@@ -261,16 +261,16 @@ int format;  /* conversion format		*/
             } while (f < 0.1);
             n = -n;
         }
-        *decpt = ( int )n;
+        *decpt = ( int ) n;
 
         b = sp = buf + SF_INTPART;
-        if ((v = ( CVT_LDBL_INT )f) != 0) { /* translate the integer part */
-            f -= ( Sfdouble_t )v;
+        if ((v = ( CVT_LDBL_INT ) f) != 0) { /* translate the integer part */
+            f -= ( Sfdouble_t ) v;
 
             sfucvt(v, sp, n, ep, CVT_LDBL_INT, unsigned CVT_LDBL_INT);
 
             n = b - sp;
-            if ((*decpt += ( int )n) >= SF_IDIGITS)
+            if ((*decpt += ( int ) n) >= SF_IDIGITS)
                 return SF_INF;
             b = sp;
             sp = buf + SF_INTPART;
@@ -301,7 +301,7 @@ int format;  /* conversion format		*/
         else {
             if ((format & SFFMT_EFORMAT) && *decpt == 0 && f > 0.) {
                 Sfdouble_t d;
-                while (( long )(d = f * 10.) == 0) {
+                while (( long ) (d = f * 10.) == 0) {
                     f = d;
                     *decpt -= 1;
                 }
@@ -313,7 +313,7 @@ int format;  /* conversion format		*/
                         *sp++ = '0';
                     } while (sp < ep);
                     goto done;
-                } else if ((n = ( long )(f *= 10.)) < 10) {
+                } else if ((n = ( long ) (f *= 10.)) < 10) {
                     *sp++ = '0' + n;
                     f -= n;
                 } else /* n == 10 */
@@ -327,7 +327,7 @@ int format;  /* conversion format		*/
     } else
 #endif
     {
-        double f = *( double * )vp;
+        double f = *( double * ) vp;
 
         if (isnan(f)) {
 #if _lib_signbit
@@ -414,8 +414,8 @@ int format;  /* conversion format		*/
             }
         }
         n = 0;
-        if (f >= ( double )CVT_DBL_MAXINT) { /* scale to a small enough number
-                                                to fit an int */
+        if (f >= ( double ) CVT_DBL_MAXINT) { /* scale to a small enough
+                                                 number to fit an int */
             v = SF_MAXEXP10 - 1;
             do {
                 if (f < _Sfpos10[v])
@@ -425,7 +425,7 @@ int format;  /* conversion format		*/
                     if ((n += (1 << v)) >= SF_IDIGITS)
                         return SF_INF;
                 }
-            } while (f >= ( double )CVT_DBL_MAXINT);
+            } while (f >= ( double ) CVT_DBL_MAXINT);
         } else if (f > 0.0 && f < 1e-8) { /* scale to avoid excessive multiply
                                              by 10 below */
             v = SF_MAXEXP10 - 1;
@@ -439,16 +439,16 @@ int format;  /* conversion format		*/
             } while (f < 0.1);
             n = -n;
         }
-        *decpt = ( int )n;
+        *decpt = ( int ) n;
 
         b = sp = buf + SF_INTPART;
-        if ((v = ( CVT_DBL_INT )f) != 0) { /* translate the integer part */
-            f -= ( double )v;
+        if ((v = ( CVT_DBL_INT ) f) != 0) { /* translate the integer part */
+            f -= ( double ) v;
 
             sfucvt(v, sp, n, ep, CVT_DBL_INT, unsigned CVT_DBL_INT);
 
             n = b - sp;
-            if ((*decpt += ( int )n) >= SF_IDIGITS)
+            if ((*decpt += ( int ) n) >= SF_IDIGITS)
                 return SF_INF;
             b = sp;
             sp = buf + SF_INTPART;
@@ -479,7 +479,7 @@ int format;  /* conversion format		*/
         else {
             if ((format & SFFMT_EFORMAT) && *decpt == 0 && f > 0.) {
                 reg double d;
-                while (( long )(d = f * 10.) == 0) {
+                while (( long ) (d = f * 10.) == 0) {
                     f = d;
                     *decpt -= 1;
                 }
@@ -491,8 +491,8 @@ int format;  /* conversion format		*/
                         *sp++ = '0';
                     } while (sp < ep);
                     goto done;
-                } else if ((n = ( long )(f *= 10.)) < 10) {
-                    *sp++ = ( char )('0' + n);
+                } else if ((n = ( long ) (f *= 10.)) < 10) {
+                    *sp++ = ( char ) ('0' + n);
                     f -= n;
                 } else /* n == 10 */
                 {

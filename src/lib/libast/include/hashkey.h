@@ -38,7 +38,7 @@
 
 #    define HASHKEYN(n) ((n) - '0' + 'z' + 1)
 
-#    define HASHKEY1(c1) (( c1 )-HASHKEYOFF)
+#    define HASHKEY1(c1) (( c1 ) -HASHKEYOFF)
 #    define HASHKEY2(c1, c2) HASHKEYPART(HASHKEY1(c1), c2)
 #    define HASHKEY3(c1, c2, c3) HASHKEYPART(HASHKEY2(c1, c2), c3)
 #    define HASHKEY4(c1, c2, c3, c4) HASHKEYPART(HASHKEY3(c1, c2, c3), c4)

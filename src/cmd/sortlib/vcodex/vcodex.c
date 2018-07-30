@@ -85,7 +85,7 @@ typedef struct State_s
 } State_t;
 
 #define tempid(s, f)                                                         \
-    ((s)->regress ? (++(s)->regress) : sffileno(( Sfio_t * )(f)))
+    ((s)->regress ? (++(s)->regress) : sffileno(( Sfio_t * ) (f)))
 #define ZIPSUFFIX(p, s)                                                      \
     ((s = strrchr(p, '.')) && strchr(s, 'z') && !strchr(s, '/'))
 
@@ -112,7 +112,7 @@ push(Sfio_t *sp, Encoding_t *code, const char *trans, int type)
         return sfraise(sp, VCSF_DISC, NiL) == VCSF_DISC;
     if (!(vcsf = newof(0, Vcsfdata_t, 1, 0)))
         return -1;
-    vcsf->trans = ( char * )trans;
+    vcsf->trans = ( char * ) trans;
     vcsf->type = VCSF_FREE;
     if (code)
         vcsf->type |= VCSF_TRANS;
@@ -150,7 +150,7 @@ encode(State_t *state, Sfio_t *sp, const char *path)
             if (rename(path, p))
                 error(ERROR_SYSTEM | 1, "%s: cannot rename to %s", path, p);
             else
-                path = ( const char * )p;
+                path = ( const char * ) p;
         }
         if (state->verbose)
             error(0, "sort vcodex encode %s (%s)", path, state->output.trans);
@@ -164,7 +164,7 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
     int i;
     char *s;
     Delay_t *delay;
-    State_t *state = ( State_t * )disc;
+    State_t *state = ( State_t * ) disc;
 
     if (state->test & 0x10)
         error(0,
@@ -180,14 +180,14 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
               arg);
     switch (op) {
     case RS_FILE_WRITE:
-        if ((!state->outputs++ || ( Sfio_t * )data == sfstdout || zipit(arg))
+        if ((!state->outputs++ || ( Sfio_t * ) data == sfstdout || zipit(arg))
             && (state->output.use > 0
                 || !state->output.use && state->input.use > 0))
-            return encode(state, ( Sfio_t * )data, ( char * )arg);
+            return encode(state, ( Sfio_t * ) data, ( char * ) arg);
         if (!state->output.use && zipit(arg)
-            && (arg || (arg = ( Void_t * )"(output-stream)"))
+            && (arg || (arg = ( Void_t * ) "(output-stream)"))
             && (delay = newof(0, Delay_t, 1, strlen(arg)))) {
-            delay->sp = ( Sfio_t * )data;
+            delay->sp = ( Sfio_t * ) data;
             strcpy(delay->name, arg);
             delay->next = state->delay;
             state->delay = delay;
@@ -195,7 +195,7 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         break;
     case RS_FILE_READ:
         if (state->input.use >= 0) {
-            if ((i = push(( Sfio_t * )data,
+            if ((i = push(( Sfio_t * ) data,
                           &state->input,
                           NiL,
                           VC_DECODE | VC_OPTIONAL))
@@ -213,7 +213,7 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
                     i = 0;
                     while (delay = state->delay) {
                         if (!i && state->input.use > 0
-                            && !sfseek(delay->sp, ( Sfoff_t )0, SEEK_CUR))
+                            && !sfseek(delay->sp, ( Sfoff_t ) 0, SEEK_CUR))
                             i = encode(state, delay->sp, delay->name);
                         state->delay = delay->next;
                         free(delay);
@@ -231,7 +231,7 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
             || !state->temporary.use && state->input.use > 0) {
             if (!state->temporary.use)
                 state->temporary = state->input;
-            if (push(( Sfio_t * )data, NiL, state->temporary.trans, VC_ENCODE)
+            if (push(( Sfio_t * ) data, NiL, state->temporary.trans, VC_ENCODE)
                 < 0) {
                 error(
                 2,
@@ -253,14 +253,14 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
             || !state->temporary.use && state->input.use > 0) {
             if (!state->temporary.use)
                 state->temporary = state->input;
-            if (!sfdisc(( Sfio_t * )data, SF_POPDISC)
-                || sfseek(( Sfio_t * )data, ( Sfoff_t )0, SEEK_SET)) {
+            if (!sfdisc(( Sfio_t * ) data, SF_POPDISC)
+                || sfseek(( Sfio_t * ) data, ( Sfoff_t ) 0, SEEK_SET)) {
                 error(2,
                       "temporary-%d: cannot rewind temporary data",
                       tempid(state, data));
                 return -1;
             }
-            if ((i = push(( Sfio_t * )data, NiL, NiL, VC_DECODE)) < 0) {
+            if ((i = push(( Sfio_t * ) data, NiL, NiL, VC_DECODE)) < 0) {
                 error(2,
                       "temporary-%d: cannot push vcodex decode discipline",
                       tempid(state, data));
