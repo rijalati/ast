@@ -151,7 +151,7 @@ B_echo(int, char *[], Shbltin_t *);
 extern int
 b_poll(int, char *[], Shbltin_t *);
 #    endif
-#    if 0
+#    if 1
     extern int b_mkservice(int, char*[],Shbltin_t*);
     extern int b_eloop(int, char*[],Shbltin_t*);
 #    endif

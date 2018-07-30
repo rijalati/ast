@@ -1,25 +1,25 @@
 /***********************************************************************
- *                                                                      *
- *               This software is part of the ast package               *
- *          Copyright (c) 2006-2015 AT&T Intellectual Property          *
- *                      and is licensed under the                       *
- *                 Eclipse Public License, Version 1.0                  *
- *                    by AT&T Intellectual Property                     *
- *                                                                      *
- *                A copy of the License is available at                 *
- *          http://www.eclipse.org/org/documents/epl-v10.html           *
- *         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
- *                                                                      *
- *              Information and Software Systems Research               *
- *                            AT&T Research                             *
- *                           Florham Park NJ                            *
- *                                                                      *
- *               Roland Mainz <roland.mainz@nrubsig.org>                *
- *                                                                      *
- ***********************************************************************/
+*                                                                      *
+*               This software is part of the ast package               *
+*          Copyright (c) 2006-2015 AT&T Intellectual Property          *
+*                      and is licensed under the                       *
+*                 Eclipse Public License, Version 1.0                  *
+*                    by AT&T Intellectual Property                     *
+*                                                                      *
+*                A copy of the License is available at                 *
+*          http://www.eclipse.org/org/documents/epl-v10.html           *
+*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
+*                                                                      *
+*              Information and Software Systems Research               *
+*                            AT&T Research                             *
+*                           Florham Park NJ                            *
+*                                                                      *
+*               Roland Mainz <roland.mainz@nrubsig.org>                *
+*                                                                      *
+***********************************************************************/
 
 #ifndef _GNULINUX_KSH_CMDLIST_H
-#define _GNULINUX_KSH_CMDLIST_H
+#define        _GNULINUX_KSH_CMDLIST_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,12 +35,9 @@ extern "C" {
 /* GNU coreutils compatible commands.
  * Be careful, some are in /bin while others are in /usr/bin
  */
-#define ASTCMDLIST(f) \
-	{ "/usr/ast/bin/" #f, NV_BLTIN | NV_BLTINOPT | NV_NOFREE, bltin(f) },
-#define BINCMDLIST(f) \
-	{ "/bin/" #f, NV_BLTIN | NV_BLTINOPT | NV_NOFREE, bltin(f) },
-#define USRBINCMDLIST(f) \
-	{ "/usr/bin/" #f, NV_BLTIN | NV_BLTINOPT | NV_NOFREE, bltin(f) },
+#define	ASTCMDLIST(f)		{ "/usr/ast/bin/"	#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
+#define	BINCMDLIST(f)		{ "/bin/"		#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
+#define	USRBINCMDLIST(f)	{ "/usr/bin/"		#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
 
 /* undo ast_map.h #defines to avoid collision */
 #undef basename

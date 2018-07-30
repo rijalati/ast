@@ -33,7 +33,7 @@
 #    define _AST_STD_H 1
 #    define _AST_STD_I 1
 
-#    include <ast_common.h>
+#    include "ast_common.h"
 
 #    if _BLD_ast
 #        define _BLD_aso 1
@@ -62,12 +62,12 @@ struct _sfio_s;
 #        endif
 #    endif
 
-#    include <ast_botch.h>
-#    include <ast_fcntl.h>
-#    include <ast_getopt.h> /* <stdlib.h> does this */
-#    include <ast_lib.h>
-#    include <ast_limits.h>
-#    include <ast_sys.h>
+#    include "ast_botch.h"
+#    include "ast_fcntl.h"
+#    include "ast_getopt.h" /* <stdlib.h> does this */
+#    include "ast_lib.h"
+#    include "ast_limits.h"
+#    include "ast_sys.h"
 
 /*
  * <stdio.h> and <wchar.h> are entangled on some systems
@@ -96,9 +96,9 @@ struct _sfio_s;
 #    endif
 
 #    if _AST_H
-#        include <sfio.h> /* moved from <ast.h> because mbstate_t entangled with <stdio.h> on some systems */
+#        include "sfio.h" /* moved from <ast.h> because mbstate_t entangled with <stdio.h> on some systems */
 #    endif
-#    include <ast_wchar.h>
+#    include "ast_wchar.h"
 
 /* locale stuff */
 
@@ -417,7 +417,7 @@ _ast_getpgrp(void);
  * _AST_STD_I delays headers that require <ast_map.h>
  */
 
-#    include <ast_map.h>
+#    include "ast_map.h"
 
 #    undef _AST_STD_I
 
